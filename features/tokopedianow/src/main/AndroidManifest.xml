@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name="com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
@@ -20,10 +20,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
@@ -39,10 +38,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
@@ -58,10 +56,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".datefilter.presentation.activity.TokoNowDateFilterActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
@@ -77,53 +74,53 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tokopedianow.search.presentation.view.TokoNowSearchActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_tokopedia_now"
-                    android:path="@string/path_tokopedia_now_search"/>
+                    android:path="@string/path_tokopedia_now_search" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_tokopedia_now"
-                    android:pathPattern="@string/path_tokopedia_now_category"/>
+                    android:pathPattern="@string/path_tokopedia_now_category" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="com.tokopedia.tokopedianow.repurchase.presentation.activity.TokoNowRepurchaseActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -133,10 +130,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
@@ -149,6 +145,25 @@
                 <data
                     android:host="@string/host_tokopedia_now"
                     android:pathPattern="@string/path_tokopedia_now_category_filter"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.educationalinfo.presentation.activity.TokoNowEducationalInfoActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_educational_info"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

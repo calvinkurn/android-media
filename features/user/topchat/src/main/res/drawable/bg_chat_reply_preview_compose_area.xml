@@ -7,5 +7,5 @@
     <solid android:color="@color/Unify_N50" />
     <stroke
         android:width="@dimen/unify_space_2"
-        android:color="@color/Unify_N0" />
+        android:color="@color/Unify_Background" />
 </shape>

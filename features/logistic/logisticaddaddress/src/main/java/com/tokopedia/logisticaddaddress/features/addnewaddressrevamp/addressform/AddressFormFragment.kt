@@ -36,6 +36,7 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticCommon.util.LogisticCommonUtil
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
@@ -339,7 +340,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        LogisticCommonUtil.displayUserConsent(activity as Context, binding.userConsent, getString(R.string.btn_simpan))
+        LogisticUserConsentHelper().displayUserConsent(activity as Context, binding.userConsent, getString(R.string.btn_simpan))
 
         binding.btnSaveAddressNew.setOnClickListener {
             if (validateForm()) {

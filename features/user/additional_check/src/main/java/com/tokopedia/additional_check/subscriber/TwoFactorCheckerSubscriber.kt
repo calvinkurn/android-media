@@ -67,7 +67,10 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
     }
 
-    private fun getTwoFactorRemoteConfigSellerApp(): Boolean? {
+    private fun getTwoFactorRemoteConfigSellerApp(activity: Activity): Boolean? {
+        if(remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(activity)
+        }
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA_SELLER_APP, false)
     }
 
@@ -86,7 +89,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checkSellerApp(activity: Activity) {
-        if(!exceptionPageSeller.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfigSellerApp() == true) {
+        if(!exceptionPageSeller.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfigSellerApp(activity) == true) {
             checking(activity)
         }
     }

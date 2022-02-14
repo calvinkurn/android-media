@@ -7,7 +7,9 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.user.session.UserSessionInterface

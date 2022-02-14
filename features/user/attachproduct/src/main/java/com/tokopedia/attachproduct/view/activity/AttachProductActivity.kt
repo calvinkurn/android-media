@@ -82,7 +82,7 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
         shopName =
                 intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) ?: ""
 
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, R.color.Unify_N0))
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         toolbar.subtitle = shopName
     }
 

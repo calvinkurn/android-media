@@ -7,6 +7,7 @@ object MacroIntent {
     /**
      * Target test package
      * In this test class, the target is :testapp with package com.tokopedia.tkpd
+     * Target package for dynamic feature module is com.tokopedia.tkpd.df_${module_name}
      */
     const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
 
@@ -53,6 +54,23 @@ object MacroIntent {
             val intent = Intent()
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
+            return intent
+        }
+    }
+
+    object TokopediaNow {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID = "rv_home"
+
+        private const val DF_MODULE_NAME = "df_tokopedianow"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        fun getHomeIntent(): Intent {
+            val intent = Intent()
+            intent.data = Uri.parse("tokopedia-android-internal://now/home")
             return intent
         }
     }

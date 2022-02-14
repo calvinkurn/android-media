@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
 import com.tokopedia.otp.verification.domain.data.OtpConstant
@@ -129,10 +130,11 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
 
                             sendOtp()
                             viewBound.pin?.value = ""
+                            analytics.trackClickResendOtp(otpData, modeListData)
                         }
 
                         override fun updateDrawState(ds: TextPaint) {
-                            ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                            ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                             ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                         }
                     },
@@ -156,7 +158,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
                         }
 
                         override fun updateDrawState(ds: TextPaint) {
-                            ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                            ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                             ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                         }
                     },

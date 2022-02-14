@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
@@ -194,6 +195,10 @@ class RechargeHomepageViewModel @Inject constructor(
         else RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
     }
 
+    fun getSearchBarRedirection(): String = rechargeHomepageSectionSkeleton.value.let {
+        if (it is Success) it.data.searchBarRedirection else ""
+    }
+
     companion object {
         const val ID_TICKER = "0"
 
@@ -223,5 +228,6 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_PRODUCT_CARD_CUSTOM_BANNER = "PRODUCT_CARD_CUSTOM_BANNER"
         const val SECTION_MINI_CAROUSELL = "MINI_CAROUSELL"
         const val SECTION_TICKER = "TICKER"
+        const val SECTION_SWIPE_BANNER = "SWIPE_BANNER"
     }
 }

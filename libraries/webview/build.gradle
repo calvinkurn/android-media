@@ -52,6 +52,10 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.multiDex
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.testDependencies.testCore
 }
 
 project.ext {
@@ -62,3 +66,4 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'

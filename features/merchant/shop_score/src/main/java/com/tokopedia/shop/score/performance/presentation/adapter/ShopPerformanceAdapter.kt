@@ -1,12 +1,14 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.score.performance.presentation.adapter.diffutilscallback.ShopPerformanceDiffUtilCallback
 import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
+import com.tokopedia.shop.score.performance.presentation.model.TickerReactivatedUiModel
 
 class ShopPerformanceAdapter(
     shopPerformanceAdapterTypeFactory: ShopPerformanceAdapterTypeFactory
@@ -53,6 +55,14 @@ class ShopPerformanceAdapter(
         if (visitables.getOrNull(lastIndex) is LoadingModel) {
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
+        }
+    }
+
+    fun removeTickerReactivated() {
+        val tickerReactivatedIndex = visitables.indexOfFirst { it is TickerReactivatedUiModel }
+        if (tickerReactivatedIndex != RecyclerView.NO_POSITION) {
+            visitables.removeAt(tickerReactivatedIndex)
+            notifyItemRemoved(tickerReactivatedIndex)
         }
     }
 }

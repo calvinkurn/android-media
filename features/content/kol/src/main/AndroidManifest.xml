@@ -7,7 +7,8 @@
             android:label="@string/kol_title_comment"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,13 +21,13 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.comment.view.activity.KolCommentNewActivity"
             android:label="@string/kol_activity_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter android:autoVerify="true">
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -39,13 +40,13 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
             android:label="@string/kol_title_post_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -58,11 +59,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.post.view.activity.KolPostYouTubeActivity"
             android:label="@string/kol_title_post_youtube"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -74,13 +75,13 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.report.view.activity.ContentReportActivity"
             android:label="@string/kol_title_report"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -93,11 +94,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.video.view.activity.VideoDetailActivity"
             android:label="@string/kol_title_video_detail"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -113,7 +114,8 @@
         <activity
             android:name=".feature.video.view.activity.MediaPreviewActivity"
             android:label="@string/kol_title_media_preview"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -126,7 +128,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>

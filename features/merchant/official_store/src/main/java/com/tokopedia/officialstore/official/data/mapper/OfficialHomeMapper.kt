@@ -3,8 +3,8 @@ package com.tokopedia.officialstore.official.data.mapper
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
@@ -89,7 +89,7 @@ class OfficialHomeMapper (
             val views = mutableListOf<Visitable<*>>()
             officialStoreChannels.forEachIndexed { position, officialStore ->
                 when (officialStore.channel.layout) {
-                    DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
+                    DynamicChannelLayout.LAYOUT_MIX_LEFT -> {
                         views.add(
                             MixLeftDataModel(
                                 OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
@@ -99,7 +99,7 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
+                    DynamicChannelLayout.LAYOUT_MIX_TOP -> {
                         views.add(
                             MixTopDataModel(
                                 OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
@@ -109,7 +109,7 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND -> {
+                    DynamicChannelLayout.LAYOUT_FEATURED_BRAND -> {
                         views.add(
                             FeaturedBrandDataModel(
                                 OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
@@ -119,7 +119,7 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP -> {
+                    DynamicChannelLayout.LAYOUT_FEATURED_SHOP -> {
                         views.add(
                             FeaturedShopDataModel(
                                 channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
@@ -131,7 +131,7 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    DynamicChannelIdentifiers.LAYOUT_BEST_SELLING -> {
+                    DynamicChannelLayout.LAYOUT_BEST_SELLING -> {
                         val channel = officialStore.channel
                         views.add(
                             BestSellerDataModel(
@@ -141,7 +141,10 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    DynamicChannelIdentifiers.LAYOUT_6_IMAGE, DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE -> {
+                    DynamicChannelLayout.LAYOUT_6_IMAGE,
+                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE,
+                    DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE,
+                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
                         views.add(
                             DynamicLegoBannerDataModel(
                                 OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
@@ -289,6 +292,13 @@ class OfficialHomeMapper (
             if(index == -1) add(RECOM_WIDGET_POSITION, data)
             else set(index, data)
 
+            adapter?.submitList(this.toMutableList())
+        }
+    }
+
+    fun removeRecomWidget(adapter: OfficialHomeAdapter?){
+        listOfficialStore.run {
+            removeAll { it is BestSellerDataModel}
             adapter?.submitList(this.toMutableList())
         }
     }

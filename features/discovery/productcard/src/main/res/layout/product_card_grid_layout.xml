@@ -10,7 +10,8 @@
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_height="wrap_content">
+    tools:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
@@ -135,7 +136,7 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="@string/product_card_topads"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/product_card_dms_ad_color"
             android:visibility="gone"
             android:shadowColor="@color/Unify_N700_44"
             android:shadowDy="1"
@@ -173,10 +174,44 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toTopOf="@id/productCardFooterLayout"
+            app:layout_constraintBottom_toTopOf="@id/progressBarStock"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_ic_three_dots"
             tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/progressBarStock"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_progressbar_height"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/textViewStockLabel"
+            app:layout_constraintVertical_bias="1.0"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewStockLabel"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_label_height"
+            android:textStyle="bold"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/sp_10"
+            android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/ic_pdp_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/productCardFooterLayout"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="989jt orang"
+            tools:visibility="visible"/>
 
         <include
             android:id="@+id/productCardFooterLayout"

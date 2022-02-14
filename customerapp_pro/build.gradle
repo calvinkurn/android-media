@@ -345,7 +345,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
-    implementation projectOrAar(rootProject.ext.features.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -385,11 +384,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
 
-    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
@@ -438,9 +433,6 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
-    androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint

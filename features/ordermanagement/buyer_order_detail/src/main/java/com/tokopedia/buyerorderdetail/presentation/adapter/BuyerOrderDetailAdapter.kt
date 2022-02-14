@@ -19,8 +19,14 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             setupProductListSection(newData.productListUiModel)
             setupShipmentInfoSection(newData.shipmentInfoUiModel)
             setupPaymentInfoSection(newData.paymentInfoUiModel)
+            addThickDividerSection()
+            setUpPhysicalRecommendationSection(newData.pgRecommendationWidgetUiModel)
             setupDigitalRecommendationSection()
         }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
+        add(pgRecommendationWidgetUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(
@@ -52,6 +58,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addTickerSection(shipmentInfoUiModel.ticker)
         addCourierInfoSection(shipmentInfoUiModel.courierInfoUiModel)
         addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
+        addDriverTippingInfoSection(shipmentInfoUiModel.driverTippingInfoUiModel)
         addAwbInfoSection(shipmentInfoUiModel.awbInfoUiModel)
         addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
         addDropShipperInfoSection(shipmentInfoUiModel.dropShipperInfoUiModel)
@@ -71,7 +78,6 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
-        addThickDividerSection()
         add(DigitalRecommendationUiModel())
     }
 
@@ -148,6 +154,15 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             addThinDashedDividerSection()
             add(courierDriverInfoUiModel)
             addThinDashedDividerSection()
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDriverTippingInfoSection(
+        driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel
+    ) {
+        if (driverTippingInfoUiModel.shouldShow()) {
+            add(driverTippingInfoUiModel)
+            addThinDividerSection()
         }
     }
 
@@ -229,5 +244,22 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             visitables.removeAt(index)
             notifyItemRemoved(index)
         }
+    }
+
+    fun removePgRecommendation() {
+        val index = visitables.indexOfLast { it is PGRecommendationWidgetUiModel }
+
+        if (index != -1) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
+
+    fun getItemPosition(uiModel: BaseVisitableUiModel?): Int {
+        return visitables.indexOf(uiModel)
+    }
+
+    fun getBaseVisitableUiModels(): List<BaseVisitableUiModel> {
+        return visitables.filterIsInstance<BaseVisitableUiModel>()
     }
 }

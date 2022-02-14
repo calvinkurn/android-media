@@ -104,11 +104,13 @@ internal fun WishlistTrackingModel.assert(
 }
 
 internal fun List<InspirationCarouselDataView.Option.Product>.assert(
-        expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
-        inspirationCarouselType: String,
-        inspirationCarouselLayout: String,
-        optionPosition: Int,
-        optionTitle: String,
+    expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
+    inspirationCarouselTitle: String,
+    inspirationCarouselType: String,
+    inspirationCarouselLayout: String,
+    optionPosition: Int,
+    optionTitle: String,
+    expectedDimension90: String
 ) {
     var productPosition = 1
     listShouldBe(expectedInspirationCarouselProduct) { actualProduct, expectedProduct ->
@@ -142,6 +144,9 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
         }
+        actualProduct.componentId shouldBe expectedProduct.componentId
+        actualProduct.inspirationCarouselTitle shouldBe inspirationCarouselTitle
+        actualProduct.dimension90 shouldBe expectedDimension90
         productPosition++
     }
 }

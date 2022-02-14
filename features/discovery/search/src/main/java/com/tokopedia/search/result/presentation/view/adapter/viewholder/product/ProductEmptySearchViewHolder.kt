@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
@@ -16,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.search.databinding.SearchEmptyStateProductBinding
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SpacingItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
@@ -28,9 +28,7 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductEmptySearchViewHolder(
         view: View,
@@ -47,15 +45,7 @@ class ProductEmptySearchViewHolder(
     }
 
     private val context: Context? = itemView.context
-    private val noResultImage: ImageView? = itemView.findViewById(com.tokopedia.search.R.id.no_result_image)
-    private val emptyTitleTextView: TextView? = itemView.findViewById(com.tokopedia.search.R.id.text_view_empty_title_text)
-    private val emptyContentTextView: TextView? = itemView.findViewById(com.tokopedia.search.R.id.text_view_empty_content_text)
-    private val emptyButtonItemButton: TextView? = itemView.findViewById(com.tokopedia.search.R.id.button_add_promo)
-    private val topAdsBannerView: TopAdsBannerView? = itemView.findViewById(com.tokopedia.search.R.id.banner_ads)
-    private val buttonEmptySearchToGlobalSearch: UnifyButton? =
-            itemView.findViewById(com.tokopedia.search.R.id.buttonEmptySearchToGlobalSearch)
-    private val selectedFilterRecyclerView: RecyclerView? =
-            itemView.findViewById(com.tokopedia.search.R.id.selectedFilterRecyclerView)
+    private var binding: SearchEmptyStateProductBinding? by viewBinding()
 
     private var topAdsParams: TopAdsParams? = null
     private var productSelectedFilterAdapter: ProductSelectedFilterAdapter? = null
@@ -69,20 +59,20 @@ class ProductEmptySearchViewHolder(
     }
 
     private fun initSelectedFilterRecyclerView() {
-        selectedFilterRecyclerView ?: return
+        val binding = binding ?: return
 
         val layoutManager = ChipsLayoutManager.newBuilder(itemView.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(R.dimen.unify_space_8)
+        val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
 
-        selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
-        selectedFilterRecyclerView.layoutManager = layoutManager
-        ViewCompat.setLayoutDirection(selectedFilterRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
+        binding.selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
+        binding.selectedFilterRecyclerView.layoutManager = layoutManager
+        ViewCompat.setLayoutDirection(binding.selectedFilterRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
 
         productSelectedFilterAdapter = ProductSelectedFilterAdapter(emptyStateListener)
-        selectedFilterRecyclerView.adapter = productSelectedFilterAdapter
+        binding.selectedFilterRecyclerView.adapter = productSelectedFilterAdapter
     }
 
     override fun onProductItemClicked(position: Int, product: Product) {
@@ -116,24 +106,26 @@ class ProductEmptySearchViewHolder(
     }
 
     private fun bindNoResultImage() {
-        noResultImage?.setImageResource(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found)
+        binding?.noResultImage?.setImageResource(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found)
     }
 
     private fun bindTitleTextView() {
+        val binding = binding ?: return
         if (boundedEmptySearchModel?.isLocalSearch == true)
-            emptyTitleTextView?.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_title_local)
+            binding.textViewEmptyTitleText.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_title_local)
         else
-            emptyTitleTextView?.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_title)
+            binding.textViewEmptyTitleText.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_title)
     }
 
     private fun bindContentTextView() {
+        val binding = binding ?: return
         when {
             boundedEmptySearchModel?.isLocalSearch == true ->
-                emptyContentTextView?.text = getLocalSearchEmptyMessage()
+                binding.textViewEmptyContentText.text = getLocalSearchEmptyMessage()
             boundedEmptySearchModel?.isFilterActive == true ->
-                emptyContentTextView?.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_content_with_filter)
+                binding.textViewEmptyContentText.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_content_with_filter)
             else ->
-                emptyContentTextView?.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_content)
+                binding.textViewEmptyContentText.text = getString(com.tokopedia.search.R.string.msg_empty_search_product_content)
         }
     }
 
@@ -146,10 +138,11 @@ class ProductEmptySearchViewHolder(
             )
 
     private fun bindNewSearchButton() {
+        val binding = binding ?: return
         val shouldShow = boundedEmptySearchModel?.isFilterActive == false
 
-        emptyButtonItemButton?.shouldShowWithAction(shouldShow) {
-            emptyButtonItemButton.setOnClickListener(this::newSearchButtonOnClick)
+        binding.buttonAddPromo.shouldShowWithAction(shouldShow) {
+            binding.buttonAddPromo.setOnClickListener(this::newSearchButtonOnClick)
         }
     }
 
@@ -159,10 +152,11 @@ class ProductEmptySearchViewHolder(
     }
 
     private fun bindRecyclerView() {
+        val binding = binding ?: return
         val selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList() ?: return
         val shouldShowSelectedFilterList = selectedFilterFromEmptyStateListener.isNotEmpty()
 
-        selectedFilterRecyclerView?.shouldShowWithAction(shouldShowSelectedFilterList) {
+        binding.selectedFilterRecyclerView.shouldShowWithAction(shouldShowSelectedFilterList) {
             populateSelectedFilterToRecyclerView(selectedFilterFromEmptyStateListener)
         }
     }
@@ -178,6 +172,7 @@ class ProductEmptySearchViewHolder(
     }
 
     private fun loadBannerAds(topAdsParams: TopAdsParams) {
+        val binding = binding ?: return
         val emptySearchModel = boundedEmptySearchModel ?: return
         if (!emptySearchModel.isBannerAdsAllowed) return
 
@@ -189,19 +184,18 @@ class ProductEmptySearchViewHolder(
                 .setEndpoint(Endpoint.CPM)
                 .build()
 
-        topAdsBannerView?.let { topAdsBannerView ->
-            topAdsBannerView.setConfig(bannerAdsConfig)
-            topAdsBannerView.setTopAdsBannerClickListener { position, appLink: String?, data: CpmData? ->
-                bannerAdsListener.onBannerAdsClicked(position, appLink, data)
-            }
-            topAdsBannerView.loadTopAds()
+        binding.bannerAds.setConfig(bannerAdsConfig)
+        binding.bannerAds.setTopAdsBannerClickListener { position, appLink: String?, data: CpmData? ->
+            bannerAdsListener.onBannerAdsClicked(position, appLink, data)
         }
+        binding.bannerAds.loadTopAds()
     }
 
     private fun bindGlobalSearchButton() {
+        val binding = binding ?: return
         val shouldShowButtonToGlobalSearch = boundedEmptySearchModel?.isLocalSearch == true
-        buttonEmptySearchToGlobalSearch?.shouldShowWithAction(shouldShowButtonToGlobalSearch) {
-            buttonEmptySearchToGlobalSearch.setOnClickListener(this::onEmptySearchToGlobalSearchClicked)
+        binding.buttonEmptySearchToGlobalSearch.shouldShowWithAction(shouldShowButtonToGlobalSearch) {
+            binding.buttonEmptySearchToGlobalSearch.setOnClickListener(this::onEmptySearchToGlobalSearchClicked)
         }
     }
 

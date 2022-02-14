@@ -4,7 +4,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberErrorStateBinding
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView
 
 class FavoriteNumberErrorViewHolder(
     private val binding: ItemTopupBillsFavoriteNumberErrorStateBinding,

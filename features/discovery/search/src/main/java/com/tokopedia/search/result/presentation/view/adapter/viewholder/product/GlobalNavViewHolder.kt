@@ -1,25 +1,28 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalnavwidget.GlobalNavWidgetListener
 import com.tokopedia.globalnavwidget.GlobalNavWidgetModel
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchGlobalNavViewHolderBinding
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
-import kotlinx.android.synthetic.main.search_global_nav_view_holder.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class GlobalNavViewHolder(
         itemView: View,
         private val globalNavListener: GlobalNavListener?
 ) : AbstractViewHolder<GlobalNavDataView>(itemView) {
 
+    private var binding: SearchGlobalNavViewHolderBinding? by viewBinding()
+
     override fun bind(element: GlobalNavDataView) {
         val globalNavWidgetModel = createGlobalNavWidgetModel(element)
         val globalNavWidgetListener = createGlobalNavWidgetListener(element)
 
-        itemView.globalNavWidget?.setData(globalNavWidgetModel, globalNavWidgetListener)
+        binding?.globalNavWidget?.setData(globalNavWidgetModel, globalNavWidgetListener)
     }
 
     private fun createGlobalNavWidgetModel(element: GlobalNavDataView): GlobalNavWidgetModel {

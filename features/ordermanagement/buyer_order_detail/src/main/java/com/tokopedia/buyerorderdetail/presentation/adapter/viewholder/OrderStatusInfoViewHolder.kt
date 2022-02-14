@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
+import android.os.Build
+import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
@@ -117,6 +119,11 @@ class OrderStatusInfoViewHolder(
 
     private fun copyInvoice() {
         element?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                icBuyerOrderDetailCopyInvoice?.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            } else {
+                icBuyerOrderDetailCopyInvoice?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
             Utils.copyText(itemView.context, LABEL_INVOICE, it.invoice.invoice)
             showToaster(itemView.context.getString(R.string.message_invoice_copied))
             BuyerOrderDetailTracker.eventClickCopyOrderInvoice(it.orderStatusId, it.orderId)

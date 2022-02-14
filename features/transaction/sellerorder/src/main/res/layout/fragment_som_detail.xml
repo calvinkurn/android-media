@@ -71,59 +71,53 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl0"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toTopOf="@id/containerBtnDetail"
+                    app:layout_constraintBottom_toTopOf="@id/shadow_container_btn_detail"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.cardview.widget.CardView
+                <View
+                    android:id="@+id/shadow_container_btn_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@drawable/sompickup_shadow_top"
+                    app:layout_constraintBottom_toTopOf="@id/containerBtnDetail" />
+
+                <LinearLayout
                     android:id="@+id/containerBtnDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:cardBackgroundColor="@color/Unify_N0"
-                    app:cardCornerRadius="@dimen/layout_lvl0"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_detail"
-                    tools:visibility="visible">
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/spacing_lvl3"
+                    android:paddingEnd="@dimen/spacing_lvl4"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
-                    <LinearLayout
+                    <com.tokopedia.unifycomponents.UnifyImageButton
+                        android:id="@+id/btn_secondary"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:layout_marginLeft="@dimen/spacing_lvl3"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="@string/content_desc_btn_secondary"
+                        app:srcCompat="@drawable/ic_horizontal"
+                        app:unifyImageButtonType="main"
+                        app:unifyImageButtonVariant="ghost" />
+
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btn_primary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingStart="@dimen/spacing_lvl3"
-                        android:paddingEnd="@dimen/spacing_lvl4">
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/terima_pesanan"
+                        app:unifyButtonSize="medium"
+                        app:unifyButtonType="main"
+                        app:unifyButtonVariant="filled" />
 
-                        <com.tokopedia.unifycomponents.UnifyImageButton
-                            android:id="@+id/btn_secondary"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="@dimen/spacing_lvl3"
-                            android:layout_marginLeft="@dimen/spacing_lvl3"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:contentDescription="@string/content_desc_btn_secondary"
-                            app:srcCompat="@drawable/ic_horizontal"
-                            app:unifyImageButtonType="main"
-                            app:unifyImageButtonVariant="ghost" />
-
-                        <com.tokopedia.unifycomponents.UnifyButton
-                            android:id="@+id/btn_primary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_lvl3"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/terima_pesanan"
-                            app:unifyButtonSize="medium"
-                            app:unifyButtonType="main"
-                            app:unifyButtonVariant="filled" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,6 +2,8 @@ package com.tokopedia.discovery2.discoverymapper
 
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
+import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.SINGLE_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
 import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
@@ -129,7 +131,7 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = ""): ArrayList<ComponentsItem> {
+    fun mapDataItemToMerchantVoucherComponent(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = ""): ArrayList<ComponentsItem>{
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
@@ -137,6 +139,26 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             componentsItem.creativeName = creativeName
+            val dataItem = mutableListOf<DataItem>()
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            componentsItem.design = if(itemList.size>1) CAROUSEL_ITEM_DESIGN else SINGLE_ITEM_DESIGN
+            list.add(componentsItem)
+        }
+        return list
+    }
+
+    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = "", parentComponentPosition: Int? = null): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList?.forEachIndexed { index, it ->
+            val componentsItem = ComponentsItem()
+            componentsItem.position = index
+            componentsItem.name = subComponentName
+            componentsItem.properties = properties
+            componentsItem.creativeName = creativeName
+            if(parentComponentPosition!=null){
+                componentsItem.parentComponentPosition = parentComponentPosition
+            }
             val dataItem = mutableListOf<DataItem>()
             it.typeProductCard = subComponentName
             it.creativeName = creativeName

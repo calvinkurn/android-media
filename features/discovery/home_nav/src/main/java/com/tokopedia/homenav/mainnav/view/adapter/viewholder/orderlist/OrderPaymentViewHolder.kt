@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.databinding.HolderTransactionPaymentBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
@@ -19,9 +20,10 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.holder_transaction_payment.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderPaymentModel>(itemView) {
+    private var binding: HolderTransactionPaymentBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_payment
@@ -44,60 +46,60 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             )
         }
         //title
-        itemView.order_payment_name.text = String.format(
+        binding?.orderPaymentName?.text = String.format(
                 context.getString(R.string.transaction_rupiah_value),
                 CurrencyFormatHelper.convertToRupiah(paymentModel.navPaymentModel.paymentAmountText)
         )
 
         //image
         if (paymentModel.navPaymentModel.imageUrl.isNotEmpty()) {
-            val imageView = itemView.order_payment_image
-            val shimmer = itemView.order_payment_image_shimmer
-            imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            Glide.with(imageView.context)
+            val imageView = binding?.orderPaymentImage
+            val shimmer = binding?.orderPaymentImageShimmer
+            imageView?.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            Glide.with(itemView.context)
                     .load(paymentModel.navPaymentModel.imageUrl)
                     .centerInside()
                     .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                     .into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            imageView.setImageDrawable(resource)
-                            shimmer.gone()
+                            imageView?.setImageDrawable(resource)
+                            shimmer?.gone()
                         }
 
                         override fun onLoadStarted(placeholder: Drawable?) {
-                            shimmer.visible()
+                            shimmer?.visible()
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
-                            shimmer.gone()
+                            shimmer?.gone()
                         }
 
                         override fun onLoadFailed(errorDrawable: Drawable?) {
-                            shimmer.gone()
+                            shimmer?.gone()
                         }
                     })
 
         }
 
         //description
-        itemView.order_payment_description.text = paymentModel.navPaymentModel.descriptionText
+        binding?.orderPaymentDescription?.text = paymentModel.navPaymentModel.descriptionText
 
         //status
-        itemView.order_payment_status.text =
+        binding?.orderPaymentStatus?.text =
                 if (paymentModel.navPaymentModel.statusText.isNotEmpty())
                     paymentModel.navPaymentModel.statusText
                 else
                     context.getString(R.string.transaction_item_default_status)
 
-        itemView.order_payment_status.setTextColor(
+        binding?.orderPaymentStatus?.setTextColor(
                 ContextCompat.getColor(context, R.color.Unify_Y400)
         )
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
-                    itemView.order_payment_status.text.toString())
-            RouteManager.route(context, if(itemView.order_payment_status.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
+                    binding?.orderPaymentStatus?.text.toString())
+            RouteManager.route(context, if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
         }
     }
 }

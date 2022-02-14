@@ -46,6 +46,7 @@ public interface ApplinkConst {
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
+    String SHOP_OPERATIONAL_HOUR = "tokopedia://shop/{shop_id}/operational-hour";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
@@ -207,6 +208,7 @@ public interface ApplinkConst {
 
     String OMS_ORDER_DETAIL = "tokopedia://order/";
     String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
+    String BUYER_ORDER_EXTENSION = "tokopedia://marketplace/buyer-order-extension";
     String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -303,8 +305,6 @@ public interface ApplinkConst {
     String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
     String SALDO_INTRO = "tokopedia://saldo-intro";
 
-
-    String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";
@@ -368,7 +368,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-
+    
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";

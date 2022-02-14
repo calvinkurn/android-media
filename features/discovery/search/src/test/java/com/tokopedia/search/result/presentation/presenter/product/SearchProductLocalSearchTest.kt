@@ -58,7 +58,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         `Then verify visitable list contains title`()
         `Then verify visitable list does not contain CPM`()
         `Then verify visitable list does not contain top ads`(searchProductModel)
-        `Then verify product item contains page title`()
+        `Then verify product item`(searchProductModel)
         `Then verify product has dimension90`()
     }
 
@@ -112,10 +112,16 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         }
     }
 
-    private fun `Then verify product item contains page title`() {
-        visitableList.filterIsInstance<ProductItemDataView>().all {
-            it.pageTitle == searchProductPageTitle
-        } shouldBe true
+    private fun `Then verify product item`(
+        searchProductModel: SearchProductModel,
+    ) {
+        visitableList
+            .filterIsInstance<ProductItemDataView>()
+            .forEachIndexed { index, productItemDataView ->
+            val productItem = searchProductModel.searchProduct.data.productList[index]
+
+            productItemDataView.assertOrganicProduct(productItem, index + 1)
+        }
     }
 
     private fun `Then verify product has dimension90`() {
@@ -143,7 +149,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `Then verify request params during local search`(requestParamsLoadMore)
         `Then verify visitable list does not contain top ads`(searchProductModelPage2)
-        `Then verify product item contains page title`()
+        `Then verify product item`(searchProductModelPage2)
         `Then verify product has dimension90`()
     }
 

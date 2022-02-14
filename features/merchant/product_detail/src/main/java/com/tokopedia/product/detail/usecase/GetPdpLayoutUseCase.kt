@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -26,7 +27,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                                                    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
 
     companion object {
-        val QUERY = """
+        const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam) {
                 name
@@ -59,6 +60,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     title
                     breadcrumbURL
                     isAdult
+                    isKyc
                     lastUpdateCategory
                     detail {
                       id
@@ -229,6 +231,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       parentID
                       defaultChild
                       sizeChart
+                      maxFinalPrice
                       variants {
                         productVariantID
                         variantID
@@ -314,9 +317,15 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 }
               }
             }
-        """.trimIndent()
+        """
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest, extParam: String): RequestParams =
+        fun createParams(productId: String,
+                         shopDomain: String,
+                         productKey: String,
+                         whId: String,
+                         layoutId: String,
+                         userLocationRequest: UserLocationRequest,
+                         extParam: String): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                 putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
@@ -330,6 +339,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
 
     var requestParams = RequestParams.EMPTY
 
+    @GqlQuery("PdpGetLayoutQuery", QUERY)
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
@@ -337,7 +347,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
         }
 
-        gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
+        gqlUseCase.addRequest(GraphqlRequest(PdpGetLayoutQuery(), ProductDetailLayout::class.java, requestParams.parameters))
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")

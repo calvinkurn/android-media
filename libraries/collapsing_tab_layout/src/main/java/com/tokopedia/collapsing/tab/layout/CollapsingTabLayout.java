@@ -350,14 +350,6 @@ public class CollapsingTabLayout extends TabLayout {
                 shimmeringView.setVisibility(View.VISIBLE);
             }
         });
-        int dp16 = rootView.getResources().getDimensionPixelSize(R.dimen.dp_16);
-        if (position == 0) {
-            rootView.setPadding(dp16, 0, 0, 0);
-        } else if (position == getTabCount() - 1) {
-            rootView.setPadding(0, 0, dp16, 0);
-        } else {
-            rootView.setPadding(0, 0, 0, 0);
-        }
         return rootView;
     }
 

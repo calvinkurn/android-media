@@ -100,8 +100,10 @@
     <string name="title_seller_info">Info Penjual</string>
     <string name="notifcenter_btn_buy">Beli</string>
     <string name="notifcenter_btn_atc">+ Keranjang</string>
+    <string name="notifcenter_btn_preorder">PreOrder</string>
     <string name="notifcenter_btn_reminder">Ingatkan Saya</string>
     <string name="notifcenter_btn_delete_reminder">Hapus Pengingat</string>
+    <string name="notifcenter_btn_check_wishlist">Cek Wishlist Kamu</string>
     <string name="notifcenter_btn_out_of_stock">Stock Habis</string>
 
     <string name="product_reminder_success">Kami akan mengabarkan bila barang sudah di stok kembali</string>
@@ -121,6 +123,7 @@
     <string name="title_notifcenter_empty_with_recom">Belum ada notifikasi baru, nih. Coba cek pilihan produk menarik di bawah ini, yuk!.</string>
     <string name="title_success_bump_reminder">Siap-siap, kamu bakal jadi yang pertama dapat kabar saat barang ini tersedia lagi.</string>
     <string name="title_success_delete_reminder">Pengingat telah dihapus.</string>
+    <string name="title_success_add_to_wishlist">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di Wishlist, ya.</string>
     <string name="title_empty_stock">Stok Habis</string>
 
     <string name="cta_widget_notifcenter_see_previous">Lihat sebelumnya</string>

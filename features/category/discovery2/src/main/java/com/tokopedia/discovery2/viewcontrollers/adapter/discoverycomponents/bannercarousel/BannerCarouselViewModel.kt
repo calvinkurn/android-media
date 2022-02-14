@@ -8,7 +8,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class BannerCarouselViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BannerCarouselViewModel(application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val bannerCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val title: MutableLiveData<String> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()

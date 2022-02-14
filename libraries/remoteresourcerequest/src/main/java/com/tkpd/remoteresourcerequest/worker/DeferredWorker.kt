@@ -100,7 +100,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                     )
                                     .setInputData(createInputData(resourceId))
                                     .build()
-                            WorkManager.getInstance()
+                            WorkManager.getInstance(context)
                                     .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
                             resourceDownloadManager.logCurrentState(
                                     context.getString(R.string.rem_res_req_worker_scheduled_message).format(WORKER_TAG)

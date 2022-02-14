@@ -74,7 +74,7 @@ class AddEmailViewModelTest {
         verify {
             addEmaillUseCase.setTypeClass(any())
             addEmaillUseCase.setRequestParams(mockParam)
-            addEmaillUseCase.setGraphqlQuery(any())
+            addEmaillUseCase.setGraphqlQuery(any<String>())
             addEmaillUseCase.execute(any(), any())
         }
     }
@@ -154,7 +154,7 @@ class AddEmailViewModelTest {
         verify {
             checkEmaillUseCase.setTypeClass(any())
             checkEmaillUseCase.setRequestParams(mockParam)
-            checkEmaillUseCase.setGraphqlQuery(any())
+            checkEmaillUseCase.setGraphqlQuery(any<String>())
             checkEmaillUseCase.execute(any(), any())
         }
     }

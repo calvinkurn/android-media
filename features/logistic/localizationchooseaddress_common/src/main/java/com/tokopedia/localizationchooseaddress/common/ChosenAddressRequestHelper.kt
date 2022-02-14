@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @Parcelize

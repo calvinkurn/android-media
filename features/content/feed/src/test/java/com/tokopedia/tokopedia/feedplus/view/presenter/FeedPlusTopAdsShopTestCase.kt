@@ -44,7 +44,7 @@ class FeedPlusTopAdsShopTestCase {
                 baseDispatcher, mockk(), mockk(),
                 mockk(), mockk(), mockk(),
                 mockk(), mockk(), trackAffiliateClickUseCase,
-                mockk(), sendTopAdsUseCase, mockk(), mockk(), mockk(), mockk(), mockk()
+                mockk(), sendTopAdsUseCase, mockk(), mockk(), mockk(), mockk(), mockk(),mockk()
             )
         )
     }

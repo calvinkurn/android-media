@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.usecase.AttachInvoiceUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -39,7 +40,7 @@ class AttachInvoiceViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        vm = AttachInvoiceViewModel(useCase, CoroutineDispatchersProvider)
+        vm = AttachInvoiceViewModel(useCase, CoroutineTestDispatchersProvider)
         vm.invoices.observeForever(observer)
     }
 
@@ -74,7 +75,6 @@ class AttachInvoiceViewModelTest {
     @Test
     fun `fail load invoices` () {
         //GIVEN
-        val expectedValue = exInvoiceResponse.invoices
         coEvery { useCase(any()) } throws exErrorInvoiceResponse
 
         //WHEN

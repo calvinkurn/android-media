@@ -6,15 +6,17 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.*
-import kotlinx.android.synthetic.main.empty_product_info.view.*
-import kotlinx.android.synthetic.main.fragment_product_info.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : AbstractViewHolder<ProductInfoDataModel>(view) {
 
+    private var binding: FragmentProductInfoBinding? by viewBinding()
+    
     init {
         view.hide()
     }
@@ -23,7 +25,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         if (element.productDetailData == null) {
             // show error
             itemView.show()
-            itemView.container_empty.show()
+            binding?.emptyLayout?.root?.show()
         } else {
             initView(element)
         }
@@ -36,24 +38,24 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     private fun initView(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let {productDetailData ->
             itemView.show()
-            itemView.product_name?.text = productDetailData.name
-            itemView.product_price?.text = productDetailData.price
-            itemView.location?.text = productDetailData.shop.location
+            binding?.productName?.text = productDetailData.name
+            binding?.productPrice?.text = productDetailData.price
+            binding?.location?.text = productDetailData.shop.location
             if (productDetailData.badges.isNotEmpty()) {
-                itemView.badge?.show()
+                binding?.badge?.show()
                 itemView.context?.let{
-                    ImageHandler.loadImageFitCenter(it, itemView.badge, productDetailData.badges[0].imageUrl)
+                    ImageHandler.loadImageFitCenter(it, binding?.badge, productDetailData.badges[0].imageUrl)
                 }
             } else {
-                itemView.badge?.hide()
+                binding?.badge?.hide()
             }
-            itemView.textTopAds.gone()
+            binding?.textTopAds?.gone()
             if (productDetailData.isTopads) {
-                itemView.textTopAds.visible()
+                binding?.textTopAds?.visible()
             }
             setRatingReviewCount(productDetailData.rating, productDetailData.countReview)
             itemView.context?.let{
-                ImageHandler.loadImageRounded2(it, itemView.product_image, productDetailData.imageUrl)
+                ImageHandler.loadImageRounded2(it, binding?.productImage, productDetailData.imageUrl)
             }
             setStatusStock(productDetailData)
             handleDiscount(productDetailData.discountPercentage, productDetailData.slashedPrice)
@@ -68,37 +70,37 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
 
     private fun handleDiscount(discountPercentage: Int, slashedPrice: String){
         if(discountPercentage > 0){
-            itemView.product_discount?.show()
-            itemView.product_slashed_price?.show()
-            itemView.product_discount?.text = "$discountPercentage%"
+            binding?.productDiscount?.show()
+            binding?.productSlashedPrice?.show()
+            binding?.productDiscount?.text = "$discountPercentage%"
             setSplashedText(slashedPrice)
         } else {
-            itemView.product_discount?.gone()
-            itemView.product_slashed_price?.gone()
+            binding?.productDiscount?.gone()
+            binding?.productSlashedPrice?.gone()
         }
     }
     
     private fun setStatusStock(productDetailData: ProductDetailData){
         when(productDetailData.status){
             0 or -2 -> {
-                itemView.container_product?.hide()
-                itemView.container_empty?.show()
+                binding?.containerProduct?.hide()
+                binding?.emptyLayout?.root?.show()
             }
             3 -> {
-                itemView.add_to_cart?.isEnabled = false
-                itemView.buy_now?.hide()
-                itemView.add_to_cart?.text = getString(R.string.empty_stock)
+                binding?.addToCart?.isEnabled = false
+                binding?.buyNow?.hide()
+                binding?.addToCart?.text = getString(R.string.empty_stock)
             }
         }
     }
 
     private fun setRatingReviewCount(rating: Int, review: Int){
         if (rating in 1..5) {
-            itemView.rating?.setImageResource(getRatingDrawable(rating))
-            itemView.review_count?.text = String.format(getString(R.string.recom_review_count), review)
+            binding?.rating?.setImageResource(getRatingDrawable(rating))
+            binding?.reviewCount?.text = String.format(getString(R.string.recom_review_count), review)
         } else {
-            itemView.rating?.visibility = View.GONE
-            itemView.review_count?.visibility = View.GONE
+            binding?.rating?.visibility = View.GONE
+            binding?.reviewCount?.visibility = View.GONE
         }
     }
 
@@ -115,12 +117,16 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     }
 
     private fun setSplashedText(text: String){
-        itemView.product_slashed_price?.text = text
-        itemView.product_slashed_price?.paintFlags = itemView.product_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        binding?.productSlashedPrice?.text = text
+        var flags = Paint.STRIKE_THRU_TEXT_FLAG
+        binding?.productSlashedPrice?.paintFlags?.let {
+            flags = it or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+        binding?.productSlashedPrice?.paintFlags = flags
     }
 
     private fun updateWishlist(wishlisted: Boolean) {
-        itemView.fab_detail?.let{
+        binding?.fabDetail?.let{
             with(it){
                 show()
                 if (wishlisted) {
@@ -148,31 +154,32 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     }
 
     private fun onClickProductCard(productInfoDataModel: ProductInfoDataModel){
-        itemView.product_card?.setOnClickListener {
+        binding?.productCard?.setOnClickListener {
             listener?.onProductAnchorClick(productInfoDataModel)
         }
     }
 
     private fun onClickAddToCart(productInfoDataModel: ProductInfoDataModel){
-        itemView.add_to_cart?.show()
-        itemView.add_to_cart?.setOnClickListener {
+        binding?.addToCart?.show()
+        binding?.addToCart?.setOnClickListener {
             listener?.onProductAnchorAddToCart(productInfoDataModel)
         }
     }
 
     private fun onClickBuyNow(productInfoDataModel: ProductInfoDataModel){
-        itemView.buy_now?.show()
-        itemView.buy_now?.setOnClickListener {
+        binding?.buyNow?.show()
+        binding?.buyNow?.setOnClickListener {
             listener?.onProductAnchorBuyNow(productInfoDataModel)
         }
     }
 
     private fun onClickWishlist(productInfoDataModel: ProductInfoDataModel){
-        itemView.fab_detail?.setOnClickListener {
-            listener?.onProductAnchorClickWishlist(productInfoDataModel, !itemView.fab_detail.isActivated) { state, throwable ->
+        binding?.fabDetail?.setOnClickListener {
+            val fabDetailActivated = binding?.fabDetail?.isActivated == true
+            listener?.onProductAnchorClickWishlist(productInfoDataModel, !fabDetailActivated) { state, throwable ->
                 if (state) {
-                    itemView.fab_detail.isActivated = !itemView.fab_detail.isActivated
-                    updateWishlist(itemView.fab_detail.isActivated)
+                    binding?.fabDetail?.isActivated = !fabDetailActivated
+                    updateWishlist(fabDetailActivated)
                 }
             }
         }

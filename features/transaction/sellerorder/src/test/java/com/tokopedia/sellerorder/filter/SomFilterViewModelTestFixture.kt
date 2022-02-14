@@ -4,33 +4,38 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
+import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.sellerorder.util.TestHelper
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.spyk
 import junit.framework.TestCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
-import java.lang.reflect.Field
 
+@ExperimentalCoroutinesApi
 abstract class SomFilterViewModelTestFixture {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val dispatcher = CoroutineTestDispatchersProvider
+    @get:Rule
+    var coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getSomOrderFilterUseCase: GetSomOrderFilterUseCase
 
     protected lateinit var somFilterViewModel: SomFilterViewModel
-
-    lateinit var somFilterUiModelField: Field
-    lateinit var requestCancelFilterModel: SomFilterUiModel
 
     companion object {
         val mockDate = "14 Okt 2020 - 24 Okt 2020"
@@ -41,23 +46,12 @@ abstract class SomFilterViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        somFilterViewModel = SomFilterViewModel(dispatcher, getSomOrderFilterUseCase)
-
-        somFilterUiModelField = SomFilterViewModel::class.java.getDeclaredField("somFilterUiModel").apply {
-            isAccessible = true
-        }
-
-        requestCancelFilterModel = SomFilterUiModel(
-                nameFilter = FILTER_TYPE_ORDER,
-                canSelectMany = true,
-                isDividerVisible = true,
-                somFilterData = listOf(
-                        SomFilterChipsUiModel(
-                                id = DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST,
-                                idFilter = FILTER_TYPE_ORDER,
-                                isSelected = false
-                        )
-                ))
+        somFilterViewModel = spyk(
+            SomFilterViewModel(
+                coroutineTestRule.dispatchers,
+                getSomOrderFilterUseCase
+            )
+        )
     }
 
     protected fun LiveData<*>.verifyErrorEquals(expected: Fail) {
@@ -69,5 +63,14 @@ abstract class SomFilterViewModelTestFixture {
     protected fun List<SomFilterUiModel>.getRequestCancelFilter(): SomFilterChipsUiModel? {
         return find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData
                 ?.find { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }
+    }
+
+    protected fun getMockSomFilterList(): List<BaseSomFilter> {
+        val mockResponseSomFilterList = TestHelper.createSuccessResponse<SomFilterResponse>(
+            SOM_FILTER_SUCCESS_RESPONSE
+        )
+        return GetSomFilterMapper.mapToSomFilterVisitable(mockResponseSomFilterList).apply {
+            filterIsInstance<SomFilterDateUiModel>().first().date = mockDate
+        }
     }
 }

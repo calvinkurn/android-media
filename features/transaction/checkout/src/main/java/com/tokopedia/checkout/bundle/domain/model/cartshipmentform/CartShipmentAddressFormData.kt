@@ -1,12 +1,13 @@
 package com.tokopedia.checkout.bundle.domain.model.cartshipmentform
 
 import android.os.Parcelable
+import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CartShipmentAddressFormData(
@@ -22,6 +23,7 @@ data class CartShipmentAddressFormData(
         var keroDiscomToken: String? = null,
         var keroUnixTime: Int = 0,
         var donation: Donation? = null,
+        var crossSell: List<CrossSellModel> = ArrayList(),
         var cod: CodModel? = null,
         var isHidingCourier: Boolean = false,
         var isBlackbox: Boolean = false,

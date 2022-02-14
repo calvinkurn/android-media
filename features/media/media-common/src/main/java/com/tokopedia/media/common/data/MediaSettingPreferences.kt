@@ -1,7 +1,6 @@
 package com.tokopedia.media.common.data
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
 class MediaSettingPreferences constructor(
@@ -33,15 +32,6 @@ class MediaSettingPreferences constructor(
     fun hasGlideMigration(value: Boolean) {
         putBoolean(KEY_GLIDE_CLEAR_CACHE, value)
         applyEditor()
-    }
-
-    fun getQualitySetting(index: Int): String {
-        return when(index) {
-            0 -> "Automatic"
-            1 -> "Low"
-            2 -> "High"
-            else -> "Unknown"
-        }
     }
 
     companion object {

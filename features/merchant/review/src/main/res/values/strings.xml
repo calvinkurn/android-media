@@ -107,14 +107,17 @@
     <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>
     <string name="review_create_activity_title">Tulis Ulasan</string>
     <string name="review_create_submit_edit">Simpan</string>
+    <string name="review_form_progress_bar_bad_empty_old">Ceritain alasanmu, yuk ✍️</string>
     <string name="review_form_progress_bar_good_empty">Makin lengkap, makin mantap 👍</string>
     <string name="review_form_progress_bar_good_need_photo">Fotoin barangnya dong 📸</string>
     <string name="review_form_progress_bar_good_need_text">Ceritain dong pengalamanmu</string>
     <string name="review_form_progress_bar_good_complete">Udah lengkap nih, keren! 😍</string>
-    <string name="review_form_progress_bar_bad_empty">Ceritain alasanmu, yuk ✍️</string>
     <string name="review_form_progress_bar_bad_need_photo">Lengkapi juga dengan foto 📸</string>
     <string name="review_form_progress_bar_bad_need_text">Harus dilengkapi alasan, ya ✍️</string>
+    <string name="review_form_progress_bar_bad_need_reason">Harus pilih dulu alasanmu, ya️ 🙏</string>
     <string name="review_form_progress_bar_bad_complete">Oke, udah siap kirim! 👉</string>
+    <string name="review_form_progress_bar_new_flow_need_review_only">Ceritain lebih lengkap, ya 🙏</string>
+    <string name="review_form_progress_bar_bad_need_bad_rating_reason">Pilih dulu alasanmu, yuk</string>
     <string name="review_form_add_photo">Kasih liat foto barang</string>
     <string name="review_form_send_rating_only_dialog_title">Mau kirim Rating aja?</string>
     <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu masih bisa ubah dan lengkapi ulasan ini di halaman Riwayat.</string>
@@ -128,7 +131,8 @@
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
     <string name="review_form_good_helper">Yuk, ceritain kepuasanmu tentang kualitas barang &amp; pelayanan penjual.</string>
     <string name="review_form_neutral_helper">Kasih tahu apa yang kurang dan yang perlu ditingkatkan.</string>
-    <string name="review_form_bad_helper">Kasih tahu apa yang tidak memuaskan dan perlu ditingkatkan.</string>
+    <string name="review_form_bad_helper">Ceritain lebih lengkap apa yang bikin kamu tidak puas dan perlu ditingkatkan.</string>
+    <string name="review_form_bad_helper_must_fill">Harus ceritain lebih lengkap apa yang bikin kamu kurang puas dan perlu ditingkatkan, ya.</string>
     <string name="review_form_worst_helper">Kasih tahu apa yang mengecewakan dan perlu ditingkatkan.</string>
     <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar? 😢</string>
     <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat hadiah dari ulasan, lho. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
@@ -195,7 +199,7 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="set_date">Atur Tanggal</string>
+    <string name="reputation_history_set_date">Atur Tanggal</string>
 
     <string name="title_tab_waiting_review">Menunggu Diulas</string>
     <string name="title_rating_product">Rating Produk</string>
@@ -296,7 +300,7 @@
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
     <string name="review_create_bottom_sheet_text_area_empty">Tulis min. 40 karakter buat dapetin hadiahnya ✍️</string>
     <string name="review_create_bottom_sheet_text_area_partial">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
+    <string name="review_create_bottom_sheet_text_area_eligible">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>

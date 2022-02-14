@@ -17,4 +17,6 @@
     <dimen name="otp_dp_210">210dp</dimen>
 
     <dimen name="otp_sp_6">6sp</dimen>
+    <dimen name="silent_verif_lottie_success_width">260dp</dimen>
+    <dimen name="silent_verif_lottie_success_height">160dp</dimen>
 </resources>

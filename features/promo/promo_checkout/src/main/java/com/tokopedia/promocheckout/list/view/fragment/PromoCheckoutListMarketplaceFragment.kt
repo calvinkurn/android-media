@@ -38,7 +38,11 @@ import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
-
+/**
+ * Old Promo List Page for Marketplace
+ *
+ * No longer used by minion bob & PP tribe
+ */
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         PromoCheckoutListMarketplaceContract.View,
         MarketplacePromoLastSeenViewHolder.ListenerLastSeen,

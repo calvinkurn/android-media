@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -24,7 +24,7 @@ class InvoicePreviewViewHolder(
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
     private val bg = ViewUtil.generateBackgroundWithShadow(
             container,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
@@ -52,7 +52,7 @@ class InvoicePreviewViewHolder(
     private fun bindViewWithModel(model: InvoicePreviewUiModel) {
         val labelType = getLabelType(model.statusId)
 
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, model.imageUrl, 8f.toPx())
+        thumbnail?.loadImageRounded(model.imageUrl, 8f.toPx())
         status?.text = model.status
         status?.setLabelType(labelType)
         invoiceId?.text = model.invoiceCode

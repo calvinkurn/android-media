@@ -15,6 +15,12 @@ class TitleAnimatedChevron @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val ANIMATE_ROTATE_TOP_DEGREE = 180f
+        private const val ANIMATE_ROTATE_TOP_DURATION = 300L
+        private const val ANIMATE_ROTATE_DOWN_DURATION = 300L
+    }
+
     private val binding = LayoutTitleAnimatedChevronBinding.inflate(LayoutInflater.from(context))
 
     init {
@@ -41,13 +47,13 @@ class TitleAnimatedChevron @JvmOverloads constructor(
 
     private fun rotateTop() {
         binding.productDetailToggle.run {
-            animate().rotation(180F).duration = 300
+            animate().rotation(ANIMATE_ROTATE_TOP_DEGREE).duration = ANIMATE_ROTATE_TOP_DURATION
         }
     }
 
     private fun rotateDown() {
         binding.productDetailToggle.run {
-            animate().rotation(0F).duration = 300
+            animate().rotation(0F).duration = ANIMATE_ROTATE_DOWN_DURATION
         }
     }
 }

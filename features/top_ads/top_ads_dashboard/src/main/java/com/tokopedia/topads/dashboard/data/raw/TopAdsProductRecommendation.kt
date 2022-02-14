@@ -4,8 +4,8 @@ package com.tokopedia.topads.dashboard.data.raw
  * Created by Pika on 11/12/20.
  */
 const val PRODUCT_RECOMMENDATION = """
-    query topadsGetProductRecommendation(${'$'}shop_id : Int!){
-  topadsGetProductRecommendation(shop_id:${'$'}shop_id){
+    query topadsGetProductRecommendationV2(${'$'}shop_id : String!){
+  topadsGetProductRecommendationV2(shop_id:${'$'}shop_id){
     data {
       info
       nominal_id

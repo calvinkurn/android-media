@@ -26,6 +26,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         private const val LIMIT = "limit"
         private const val PAGE = "page"
         private const val TIME_FILTER = "timeFilter"
+        private const val DEFAULT_LIMIT = 10
         const val GET_PRODUCT_FEEDBACK_FILTER_QUERY_CLASS_NAME = "ProductFeedbackFilter"
         const val GET_PRODUCT_FEEDBACK_FILTER_QUERY = """
         query get_product_feedback_detail(${'$'}productID: String!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
@@ -52,6 +53,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                ratingAverage
                ratingCount
                period
+               ratingDisclaimer
             }
         }
         """
@@ -85,7 +87,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         val feedbackDetailListParams = mapOf(PRODUCT_ID to productId,
                 SORT_BY to sortBy,
                 FILTER_BY to filterBy,
-                LIMIT to 10,
+                LIMIT to DEFAULT_LIMIT,
                 PAGE to page)
         val feedbackDetailListRequest = GraphqlRequest(FeedbackDetailList.GQL_QUERY, ProductFeedbackDetailResponse::class.java,
                 feedbackDetailListParams)
@@ -93,7 +95,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         val feedbackFilterParams = mapOf(PRODUCT_ID to productId,
                 SORT_BY to sortBy,
                 FILTER_BY to timeFilter,
-                LIMIT to 10,
+                LIMIT to DEFAULT_LIMIT,
                 PAGE to 0)
         val feedbackDetailFilterRequest = GraphqlRequest(ProductFeedbackFilter.GQL_QUERY, ProductFeedbackFilterResponse::class.java,
                 feedbackFilterParams)

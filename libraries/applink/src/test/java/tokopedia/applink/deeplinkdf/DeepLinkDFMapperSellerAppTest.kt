@@ -224,6 +224,12 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check shop operational hour bottom sheet appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+        val internalAppLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop/widget/operational-hour/12345/"
+        assertEqualDeepLinkSellerApp(internalAppLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
     fun `check merchant statistic dashboard appLink then should return DF_BASE in sellerapp`() {
         val appLink = "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/statistic_dashboard"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)

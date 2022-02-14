@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.imagepreviewslider">
 
-    <uses-sdk tools:overrideLibrary="com.stfalcon.imageviewer"/>
-
+    <uses-sdk tools:overrideLibrary="com.stfalcon.imageviewer" />
     <application>
         <activity
             android:name=".presentation.activity.ImagePreviewSliderActivity"

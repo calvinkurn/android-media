@@ -59,7 +59,7 @@ class SomBottomSheetBuyerNoResponse(
                     showToasterError(context.getString(R.string.cancel_order_notes_empty_warning))
                 }
             }
-            btnPrimary.setOnTouchListener(hideKeyboardTouchListener)
+            hideKeyboardHandler.attachListener(btnPrimary)
         }
     }
 

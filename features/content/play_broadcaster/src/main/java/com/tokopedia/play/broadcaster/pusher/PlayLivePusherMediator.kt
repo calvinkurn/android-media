@@ -99,6 +99,10 @@ class PlayLivePusherMediator(
         mListeners.remove(listener)
     }
 
+    fun clearListener() {
+        mListeners.clear()
+    }
+
     fun onCameraChanged(surfaceView: SurfaceAspectRatioView) {
         if (livePusher.state.isStopped) return
 

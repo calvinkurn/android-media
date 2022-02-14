@@ -3,10 +3,7 @@ package com.tokopedia.inbox.fake.di.notifcenter
 import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifOrderListUseCase
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterCacheManager
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterDetailUseCase
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterFilterV2UseCase
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.*
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.recom.FakeGetRecommendationUseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.recom.FakeRecommendationGraphqlUseCase
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
@@ -21,6 +18,7 @@ import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -117,4 +115,19 @@ class FakeNotifcenterUsecase {
             FakeRecommendationGraphqlUseCase(), userSession
         )
     }
+
+    // -- separator -- //
+
+    @Provides
+    @NotificationScope
+    fun provideAddWishlistUseCase(
+        fake: FakeNotifCenterAddWishlist
+    ): AddWishListUseCase = fake
+
+    @Provides
+    @NotificationScope
+    fun provideFakeAddWishlistUseCase(
+        @NotificationContext
+        context: Context
+    ): FakeNotifCenterAddWishlist = FakeNotifCenterAddWishlist(context)
 }

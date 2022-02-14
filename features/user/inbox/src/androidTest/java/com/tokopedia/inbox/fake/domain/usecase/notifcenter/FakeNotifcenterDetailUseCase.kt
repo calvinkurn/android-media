@@ -111,6 +111,12 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val productOnly: NotifcenterDetailResponse
+        get() = AndroidFileUtil.parseRaw(
+            R.raw.notifcenter_detail_v3_product_only,
+            NotifcenterDetailResponse::class.java
+        )
+
     val noTrackHistoryWidget: NotifcenterDetailResponse
         get() = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_detail_v3_no_track_history_widget,

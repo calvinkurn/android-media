@@ -65,7 +65,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:gravity="center"
-            android:textSize="@dimen/sp_12"
+            android:textSize="12sp"
             app:typographyType="body_3"
             android:textColor="@color/Unify_N700_68"
             android:textStyle="bold"
@@ -80,7 +80,7 @@
             android:singleLine="true"
             android:textColor="@color/Unify_G500"
             app:typographyType="small"
-            android:textSize="@dimen/sp_10"
+            android:textSize="10sp"
             tools:text="Kupon Baru" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

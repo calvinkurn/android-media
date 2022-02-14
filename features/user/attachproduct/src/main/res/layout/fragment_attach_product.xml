@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:clipToPadding="false"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:elevation="@dimen/spacing_lvl3"
         android:padding="@dimen/spacing_lvl4">
 

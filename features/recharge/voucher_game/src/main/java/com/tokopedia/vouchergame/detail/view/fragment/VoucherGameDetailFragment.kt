@@ -680,7 +680,10 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         processCheckoutData()
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         // do nothing
     }
     

@@ -5,7 +5,7 @@
     android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <include
@@ -85,11 +85,11 @@
 
             <include
                 layout="@layout/item_shipment_seller_info"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/item_cart_product"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/item_shipment_other_product"

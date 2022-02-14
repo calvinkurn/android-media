@@ -69,6 +69,8 @@ data class ComponentData(
         val errorCode: Int = 0,
         @SerializedName("sizeChart")
         val sizeChart: String = "",
+        @SerializedName("maxFinalPrice")
+        val maxFinalPrice: Float = 0F,
         @SerializedName("defaultChild")
         val defaultChild: String = "",
         @SerializedName("variants")

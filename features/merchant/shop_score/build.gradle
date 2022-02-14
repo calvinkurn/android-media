@@ -35,6 +35,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

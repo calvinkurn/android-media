@@ -15,6 +15,11 @@ object Constant {
         const val RECTANGLE_DESIGN = "v2"
     }
 
+    object MultipleShopMVCCarousel{
+        const val SINGLE_ITEM_DESIGN = "s1"
+        const val CAROUSEL_ITEM_DESIGN = "s2"
+    }
+
     object TOP_NAV_BUTTON {
         const val BACK_BUTTON = "Back Button"
         const val SEARCH_BAR = "Search Bar"
@@ -55,6 +60,7 @@ object Constant {
         const val RPC_USER_LONG = "rpc_UserLong"
         const val RPC_USER_POST_CODE = "rpc_UserPostCode"
         const val RPC_USER_WAREHOUSE_ID = "rpc_UserWarehouseId"
+        const val USER_ADDRESS_KEY = "user_address"
     }
 
     object ChooseAddressGTMSSource{
@@ -63,6 +69,16 @@ object Constant {
 
         const val CATEGORY_HOST_SOURCE = "category"
         const val CATEGORY_HOST_TRACKING_SOURCE = "category page"
+    }
+
+    object Calendar{
+        const val CAROUSEL = "carousel"
+        const val DYNAMIC = "dynamic"
+        const val STATIC = "static"
+        const val SINGLE = "single"
+        const val DOUBLE = "double"
+        const val GRID = "grid"
+        const val TRIPLE = "triple"
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"

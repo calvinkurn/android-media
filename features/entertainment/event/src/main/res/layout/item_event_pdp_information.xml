@@ -3,7 +3,7 @@
     android:id="@+id/expand_event_pdp_information"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     app:eo_use_rotate_animation="true"
     app:eo_checked="false"
     app:eo_theme="@style/ExpandableStyleArrow"

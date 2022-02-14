@@ -10,7 +10,6 @@ import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created by mzennis on 15/02/21.
  */
@@ -170,15 +169,6 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on play button video",
-                "$mChannelId - ${mChannelType.value}"
-        )
-    }
-
-    fun clickCartIcon() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK cart icon",
                 "$mChannelId - ${mChannelType.value}"
         )
     }

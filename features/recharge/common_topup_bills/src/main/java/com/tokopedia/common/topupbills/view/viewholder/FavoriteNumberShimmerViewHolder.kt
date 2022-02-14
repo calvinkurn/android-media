@@ -4,7 +4,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberShimmerBinding
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberShimmerDataView
 
 class FavoriteNumberShimmerViewHolder(
         binding: ItemTopupBillsFavoriteNumberShimmerBinding

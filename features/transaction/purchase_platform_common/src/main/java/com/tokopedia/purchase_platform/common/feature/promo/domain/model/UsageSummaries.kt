@@ -7,17 +7,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class UsageSummaries(
         @field:SerializedName("description")
-        val desc: String? = null,
-
+        val desc: String = "",
         @field:SerializedName("type")
-        val type: String? = null,
-
+        val type: String = "",
         @field:SerializedName("amount_str")
-        val amountStr: String? = null,
-
+        val amountStr: String = "",
         @field:SerializedName("amount")
-        val amount: Int? = null,
-
+        val amount: Int = 0,
         @field:SerializedName("currency_details_str")
         val currencyDetailsStr: String = ""
 )

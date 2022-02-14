@@ -262,7 +262,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
 
         // When
         orderSummaryPageViewModel.getOccCart(true, "")
@@ -281,7 +281,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.orderShipment.value.getRealShipperId())
         verify(exactly = 1) { ratesUseCase.execute(any()) }
-        verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
+        coVerify(exactly = 1) { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() }
     }
 
     @Test

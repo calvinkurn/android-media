@@ -12,6 +12,7 @@ import com.tokopedia.checkout.bundle.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
@@ -28,7 +29,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -79,11 +79,7 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
-        void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
-
         void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
-
-        void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
@@ -178,6 +174,10 @@ public interface ShipmentContract {
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
+
+        void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel,
+                                               String userId,
+                                               List<Object> listProducts);
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
@@ -301,6 +301,10 @@ public interface ShipmentContract {
 
         ShipmentDonationModel getShipmentDonationModel();
 
+        void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel);
+
+        ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel();
+
         void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel);
 
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
@@ -335,9 +339,8 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        void processSubmitHelpTicket(CheckoutData checkoutData);
-
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, String leasingId);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
+                                                int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         ShipmentDataConverter getShipmentDataConverter();
 

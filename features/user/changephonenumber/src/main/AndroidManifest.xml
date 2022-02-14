@@ -7,24 +7,24 @@
             android:name=".features.ChangePhoneNumberActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_change_phone_number"/>
+                    android:pathPattern="@string/path_change_phone_number" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".features.webview.ChangePhoneNumberWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
     </application>
-
 </manifest>

@@ -12,7 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -41,12 +44,13 @@ import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.util.toSp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
-import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
-import com.tokopedia.searchbar.navigation_component.icons.IconList
-import kotlinx.android.synthetic.main.item_balance_widget.view.*
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -117,6 +121,13 @@ class BalanceAdapter(
         private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
         private var isOvoAvailable: Boolean = false
+        private var home_container_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_balance)
+        private var home_iv_logo_shimmering: LoaderUnify? = itemView.findViewById(R.id.home_iv_logo_shimmering)
+        private var home_progress_bar_balance_layout: ConstraintLayout? = itemView.findViewById(R.id.home_progress_bar_balance_layout)
+        private var home_tv_btn_action_balance: TextView = itemView.findViewById(R.id.home_tv_btn_action_balance)
+        private var home_iv_logo_balance: ImageView? = itemView.findViewById<ImageView>(R.id.home_iv_logo_balance)
+        private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
+        private var home_container_action_balance: LinearLayout? = itemView.findViewById(R.id.home_container_action_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
                  listener: HomeCategoryListener?,
@@ -134,34 +145,34 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            itemView.home_iv_logo_shimmering.show()
-            itemView.home_progress_bar_balance_layout.show()
-            itemView.home_tv_btn_action_balance.show()
+            home_iv_logo_shimmering?.show()
+            home_progress_bar_balance_layout?.show()
+            home_tv_btn_action_balance?.show()
 
             animationJob?.cancel()
 
             when (element?.state) {
                 BalanceDrawerItemModel.STATE_LOADING -> {
-                    itemView.home_iv_logo_balance.invisible()
+                    home_iv_logo_balance?.invisible()
 
-                    itemView.home_tv_balance.invisible()
-                    itemView.home_tv_btn_action_balance.invisible()
+                    home_tv_balance?.invisible()
+                    home_tv_btn_action_balance?.invisible()
 
-                    itemView.home_iv_logo_shimmering.show()
-                    itemView.home_progress_bar_balance_layout.show()
+                    home_iv_logo_shimmering?.show()
+                    home_progress_bar_balance_layout?.show()
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
-                    itemView.home_progress_bar_balance_layout.gone()
+                    home_progress_bar_balance_layout?.gone()
 
-                    itemView.home_iv_logo_balance.show()
-                    itemView.home_container_action_balance.show()
+                    home_iv_logo_balance?.show()
+                    home_container_action_balance?.show()
 
-                    itemView.home_tv_balance.show()
-                    itemView.home_tv_btn_action_balance.show()
+                    home_tv_balance?.show()
+                    home_tv_btn_action_balance?.show()
 
-                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
-                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
-                    itemView.home_container_balance.handleItemCLickType(
+                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, home_tv_balance)
+                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
+                    home_container_balance?.handleItemCLickType(
                             element = element,
                             tokopointsAction = {
                                 //handle click for type tokopoints
@@ -255,7 +266,7 @@ class BalanceAdapter(
                             }
                     )
 
-                    itemView.home_tv_btn_action_balance.handleItemCLickType(
+                    home_tv_btn_action_balance?.handleItemCLickType(
                             element = element,
                             tokopointsAction = {
                                 listener?.actionTokoPointClicked(
@@ -359,11 +370,11 @@ class BalanceAdapter(
                     }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
-                    itemView.home_progress_bar_balance_layout.gone()
-                    itemView.home_container_action_balance.show()
-                    renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, itemView.home_tv_balance)
-                    renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
-                    itemView.home_container_balance.handleItemCLickType(
+                    home_progress_bar_balance_layout?.gone()
+                    home_container_action_balance?.show()
+                    renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, home_tv_balance)
+                    renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
+                    home_container_balance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
                             rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
@@ -371,7 +382,7 @@ class BalanceAdapter(
                             tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
                             walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
                     )
-                    itemView.home_tv_btn_action_balance.handleItemCLickType(
+                    home_tv_btn_action_balance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
                             rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
@@ -390,20 +401,19 @@ class BalanceAdapter(
                         element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
                         element.drawerItemType == TYPE_WALLET_OTHER
                     ) {
-                        itemView.home_iv_logo_balance.visible()
-                        itemView.home_iv_logo_shimmering.invisible()
-
-                        itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                        home_iv_logo_balance?.visible()
+                        home_iv_logo_shimmering?.invisible()
+                        home_iv_logo_balance?.setImageDrawable(itemView.context.getDrawable(it))
                     } else {
-                        itemView.home_iv_logo_balance.invisible()
-                        itemView.home_iv_logo_shimmering.visible()
+                        home_iv_logo_balance?.invisible()
+                        home_iv_logo_shimmering?.visible()
                     }
                 }
                 element?.iconImageUrl?.let {
-                    itemView.home_iv_logo_balance.visible()
-                    itemView.home_iv_logo_shimmering.invisible()
+                    home_iv_logo_balance?.visible()
+                    home_iv_logo_shimmering?.invisible()
 
-                    if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
+                    if (it.isNotEmpty()) home_iv_logo_balance?.loadImage(it)
                 }
             }
         }
@@ -449,14 +459,14 @@ class BalanceAdapter(
                     titleTag = item.balanceTitleTagAttribute
                     subtitleTag = item.balanceSubTitleTagAttribute
                     setItemText(title, titleTag, subtitle, subtitleTag)
-                    itemView.home_container_action_balance?.startAnimation(slideIn)
+                    home_container_action_balance?.startAnimation(slideIn)
                 }
 
                 override fun onAnimationStart(animation: Animation?) {}
             })
-            itemView.home_container_action_balance?.startAnimation(slideOut)
+            home_container_action_balance?.startAnimation(slideOut)
 
-            itemView.home_container_action_balance?.addOnAttachStateChangeListener(object:
+            home_container_action_balance?.addOnAttachStateChangeListener(object:
                 View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View?) {
 
@@ -469,7 +479,7 @@ class BalanceAdapter(
                     titleTag = element?.balanceTitleTagAttribute
                     subtitleTag = element?.balanceSubTitleTagAttribute
                     setItemText(title, titleTag, subtitle, subtitleTag)
-                    itemView.home_container_action_balance?.removeOnAttachStateChangeListener(this)
+                    home_container_action_balance?.removeOnAttachStateChangeListener(this)
                 }
             })
         }
@@ -482,17 +492,17 @@ class BalanceAdapter(
         ) {
             renderBalanceText(
                 textAttr = title,
-                textView = itemView.home_tv_balance,
+                textView = home_tv_balance,
                 tagAttr = titleTag
             )
             renderBalanceText(
                 textAttr = subtitle,
-                textView = itemView.home_tv_btn_action_balance,
+                textView = home_tv_btn_action_balance,
                 tagAttr = subtitleTag
             )
         }
 
-        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {
+        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.home_balance_default_text_size) {
             textView.setTypeface(null, Typeface.NORMAL)
 
             textView.background = null
@@ -513,12 +523,12 @@ class BalanceAdapter(
                 (drawable as GradientDrawable?)?.let {
                     it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                     textView.background = it
-                    val horizontalPadding = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_8))
+                    val horizontalPadding = 2f.toDpInt()
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                     textView.setTypeface(null, Typeface.NORMAL)
                     textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
                 }
-                textView.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N0))
+                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
                 textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }

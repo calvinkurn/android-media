@@ -119,7 +119,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         iconOne = parentView.findViewById(R.id.ic_x_1)
         iconTwo = parentView.findViewById(R.id.ic_x_2)
         kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
-        containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

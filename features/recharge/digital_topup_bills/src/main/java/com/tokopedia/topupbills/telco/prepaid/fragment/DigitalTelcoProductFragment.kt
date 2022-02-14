@@ -110,6 +110,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
             sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
                 clearFilterIfTabNotActive()
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
+                hideShimmering()
                 when (it) {
                     is Success -> onSuccessProductList()
                     is Fail -> onErrorProductList(it.throwable)
@@ -150,6 +151,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     }
                 }
             })
+
+            sharedModelPrepaid.selectedProductById.observe(viewLifecycleOwner, {
+                val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+                if (activeCategory == titleProduct) {
+                    telcoTelcoProductView.selectProductById(it.toString())
+                }
+            })
         }
 
         telcoTelcoProductView.setListener(this)
@@ -157,6 +165,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
 
     override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+        sharedModelPrepaid.setInputWidgetFocus(false)
         telcoTelcoProductView.selectProductItem(position)
         if (::selectedOperatorName.isInitialized) {
             topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
@@ -173,6 +182,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                 position, userSession.userId, titleProduct)
 
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+        sharedModelPrepaid.setInputWidgetFocus(false)
         telcoTelcoProductView.selectMccmProductItem(position)
     }
 
@@ -184,6 +194,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     telcoTelcoProductView.selectProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                    sharedModelPrepaid.setInputWidgetFocus(false)
                     topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName,
                             userSession.userId, isSpecialProduct)
                 }
@@ -199,6 +210,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     telcoTelcoProductView.selectMccmProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                    sharedModelPrepaid.setInputWidgetFocus(false)
                     topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId,
                             isSpecialProduct, TelcoComponentName.SPECIAL_PROMO_MCCM)
                 }
@@ -217,6 +229,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
 
     override fun onScrollToPositionItem(position: Int) {
         sharedModelPrepaid.setPositionScrollToItem(position)
+    }
+
+    override fun onFailedAutoSelectById() {
+        sharedModelPrepaid.resetSelectedProduct()
     }
 
     private fun renderSeeMoreBottomSheet(itemProduct: TelcoProduct, bottomSheetListener: DigitalProductBottomSheet.ActionListener) {
@@ -329,13 +345,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                 //do nothing
             }
         }
-
-        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { productId ->
-            val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
-            if (activeCategory == titleProduct) {
-                telcoTelcoProductView.selectProductFromFavNumber(productId)
-            }
-        })
     }
 
     private fun clearFilterIfTabNotActive() {
@@ -354,9 +363,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         emptyStateProductView.show()
         telcoTelcoProductView.hide()
         error?.let {
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             if (!it.message.isNullOrEmpty()) {
-                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
-                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(requireView(), errorMessage.orEmpty(), Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR).show()
             }
         }
     }

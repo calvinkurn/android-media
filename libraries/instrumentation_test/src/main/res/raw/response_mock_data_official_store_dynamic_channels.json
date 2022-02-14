@@ -1250,6 +1250,46 @@
             "persona": "Fashion Wanita",
             "category_persona": "1845,1865,1921,1926,1952,1925,1919,1927,1908,1855",
             "brand_id": ""
+          },
+          {
+            "id": 105697,
+            "layout": "shop_widget",
+            "name": "Featured Shop",
+            "perso_type": 1,
+            "contextualInfo": 1,
+            "showPromoBadge": false,
+            "type": "inspiration",
+            "widgetParam": "headline_product_count=3&item=10&device=android&user_id=16939915&page=1&ep=cpm&src=homepage&template_id=3",
+            "header": {
+              "id": 68100,
+              "name": "Android Featured Shop",
+              "url": "https://m.tokopedia.com/discovery/kejar-diskon",
+              "applink": "tokopedia://discovery/kejar-diskon",
+              "serverTime": 1611029545,
+              "expiredTime": "2999-01-19T11:59:00+07:00",
+              "backColor": "",
+              "backImage": ""
+            },
+            "banner": {
+              "applink": "",
+              "attribution": "",
+              "back_color": "#1aaba6",
+              "cta": {
+                "coupon_code": "",
+                "mode": "",
+                "text": "",
+                "type": ""
+              },
+              "description": "This is sample widget of featured shop or headline ads",
+              "gradient_color": [
+                "red"
+              ],
+              "id": 14093,
+              "image_url": "",
+              "text_color": "#ffffff",
+              "title": "Android Featured Shop",
+              "url": ""
+            }
           }
         ]
       }

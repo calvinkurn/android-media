@@ -1,0 +1,6 @@
+query unsetReminder($campaignID: Int!) {
+  notifier_unsetReminder(campaign: $campaignID) {
+    is_success
+    error_message
+  }
+}

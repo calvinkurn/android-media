@@ -20,7 +20,7 @@
       "userId": ".*",
       "eventAction": "click lanjut transaksi",
       "sessionIris": ".+",
-      "eventLabel": ".+ - .+"
+      "eventLabel": ".+"
     }
   ]
 }

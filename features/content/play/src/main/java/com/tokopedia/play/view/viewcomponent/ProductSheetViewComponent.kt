@@ -179,6 +179,7 @@ class ProductSheetViewComponent(
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
         showContent(false)
+        clProductEmpty.hide()
 
         globalError.setActionClickListener {
             onError()
@@ -192,7 +193,6 @@ class ProductSheetViewComponent(
     fun showEmpty(partnerId: Long) {
         showContent(false)
         globalError.hide()
-        clProductEmpty.show()
 
         btnProductEmpty.setOnClickListener {
             listener.onEmptyButtonClicked(this@ProductSheetViewComponent, partnerId)
@@ -211,6 +211,7 @@ class ProductSheetViewComponent(
             rvVoucherList.hide()
 
             globalError.show()
+            clProductEmpty.show()
         }
     }
 

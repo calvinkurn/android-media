@@ -77,6 +77,66 @@
       "userId": ".*",
       "businessUnit": "recharge",
       "sessionIris": ".*"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".*",
+      "eventAction": "view favorite number chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".*",
+      "eventAction": "view favorite contact chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click favorite number chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click favorite contact chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click autocomplete fav number",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click autocomplete fav contact",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
     }
   ]
 }

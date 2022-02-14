@@ -3,24 +3,23 @@
     package="com.tokopedia.favorite">
 
     <application>
-
-        <activity android:name="com.tokopedia.favorite.view.FavoriteShopsActivity"
+        <activity
+            android:name="com.tokopedia.favorite.view.FavoriteShopsActivity"
             android:label="@string/title_favorite_page"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_home"
-                    android:path="@string/path_favorite"/>
+                    android:path="@string/path_favorite" />
             </intent-filter>
-
         </activity>
-
     </application>
-
 </manifest>

@@ -212,6 +212,10 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
                 price_format
                 applinks
                 rating_average
+                free_ongkir{
+                    is_active
+                    img_url
+                }
                 label_group {
                     title
                     type

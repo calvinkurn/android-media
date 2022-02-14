@@ -54,6 +54,16 @@
       "userId": ".+"
     },
     {
+      "event": "viewCheckoutIris",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "view tick box auto debit",
+      "eventLabel": "enabled|disabled",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".+",
+      "userId": ".+"
+    },
+    {
       "event": "select_content",
       "eventCategory": "digital - checkout page",
       "eventAction": "click crossell ticker",

@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TokopointsDetailUiModel(
-	var conversionRateUiModel: ConversionRateUiModel? = ConversionRateUiModel()
-): Parcelable
+        var conversionRateUiModel: ConversionRateUiModel = ConversionRateUiModel()
+) : Parcelable

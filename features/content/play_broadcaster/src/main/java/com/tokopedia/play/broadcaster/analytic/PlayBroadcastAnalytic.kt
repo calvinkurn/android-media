@@ -380,6 +380,16 @@ class PlayBroadcastAnalytic(
     }
 
     /**
+     * Click 'Batalkan' on Count Down
+     */
+    fun clickCancelOnCountDown(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            action = "batalkan livestream",
+            label = "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
      * Click `Simpan` on Preparation Page Title Edit
      */
     fun clickSubmitOnEditTitleBottomSheet() {
@@ -450,6 +460,36 @@ class PlayBroadcastAnalytic(
         clickGeneralEvent(
                 "camera switch live",
                 "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Add Pin Chat Message
+     */
+    fun clickAddPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "add pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Edit Pin Chat Message
+     */
+    fun clickEditPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "edit pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Save Pin Chat Message
+     */
+    fun clickSavePinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "save pin chat message",
+            "- $channelId - $titleChannel"
         )
     }
 

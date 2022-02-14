@@ -2,12 +2,14 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
+    android:layout_marginTop="16dp"
     android:layout_marginRight="16dp"
     app:cardCornerRadius="4dp"
-    android:layout_marginTop="16dp">
+    tools:viewBindingIgnore="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,9 +19,9 @@
             android:id="@+id/imageView"
             android:layout_width="@dimen/image_width_brand"
             android:layout_height="@dimen/image_width_brand"
-            android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@color/Unify_N50"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"

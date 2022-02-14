@@ -8,7 +8,7 @@
     <application android:label="@string/app_name">
         <activity
             android:name=".testenv.HomeTestSetupActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
@@ -17,6 +17,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_home_setting"
                     android:pathPrefix="@string/path_home_dev_opt"
@@ -24,5 +25,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

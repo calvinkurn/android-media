@@ -129,14 +129,14 @@
                 app:typographyWeight="bold"
                 tools:text="Sep 15; 14.40" />
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListBuyerName" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker

@@ -3,10 +3,13 @@ package com.tokopedia.affiliate.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
-import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.*
+import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
+import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
+import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import dagger.Component
 
 @AffiliateScope
@@ -16,12 +19,26 @@ interface AffiliateComponent {
     @get:ApplicationContext
     val context: Context
 
+    fun injectActivity(affiliateActivity : AffiliateActivity)
+
+    fun injectComponentActivity(affiliateComponentActivity : AffiliateComponentActivity)
+
     fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
 
     fun injectHelpFragment(affiliateHelpFragment: AffiliateHelpFragment)
 
-    fun inject(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
+    fun injectPromotionBottomSheet(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
+
+    fun injectLoginFragment(affiliateLoginFragment : AffiliateLoginFragment)
+
+    fun injectPortfolioFragment(affiliatePortfolioFragment: AffiliatePortfolioFragment)
+
+    fun injectTermAndConditionFragment(affiliateTermsAndConditionFragment: AffiliateTermsAndConditionFragment)
+
+    fun injectRecommendedProductFragment(viewModel: AffiliateRecommendedProductFragment)
+
+    fun injectRecommendedProductFragment(viewModel: AffiliatePromotionHistoryFragment)
 
 }

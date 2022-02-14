@@ -60,6 +60,7 @@ class DigitalRecommendationViewModelTest {
             digitalRecommendationUseCase.execute(any(), any(), any())
         } returns Success(DigitalRecommendationModel(
                 userType = "non login",
+                title = "",
                 items = arrayListOf(
                         DigitalRecommendationItemModel(
                                 "someurl.com",

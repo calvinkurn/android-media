@@ -12,6 +12,7 @@ object RechargeHomepageQueries {
                     search_bar_app_link
                     search_bar_web_link
                     search_bar_screen_name
+                    search_bar_redirection
                     sections {
                       id
                       template

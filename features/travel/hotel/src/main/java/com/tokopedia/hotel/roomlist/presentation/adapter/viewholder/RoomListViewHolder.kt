@@ -10,11 +10,9 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
-import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
 import kotlin.math.min
 
 /**
@@ -100,8 +98,7 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
             else roomImageViewPager.setImages(imageUrls)
             roomImageViewPager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
-                    listener.onPhotoClickListener(room)
-                    ImagePreviewSlider.instance.start(itemView.context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
+                    listener.onPhotoClickListener(room, imageUrls, position)
                 }
             }
             roomImageViewPager.buildView()
@@ -144,7 +141,7 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
 
     interface OnClickBookListener {
         fun onClickBookListener(room: HotelRoom)
-        fun onPhotoClickListener(room: HotelRoom)
+        fun onPhotoClickListener(room: HotelRoom, imageUrls: List<String>, position: Int)
     }
 
 }

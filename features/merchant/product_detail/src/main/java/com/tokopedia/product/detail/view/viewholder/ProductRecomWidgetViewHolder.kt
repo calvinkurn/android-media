@@ -58,7 +58,6 @@ class ProductRecomWidgetViewHolder(
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
         listener.onSeeAllRecomClicked(data.recommendationData, data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
-        listener.goToApplink(applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {

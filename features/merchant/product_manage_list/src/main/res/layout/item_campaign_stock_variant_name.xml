@@ -10,7 +10,7 @@
     android:paddingEnd="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/product_manage_campaign_stock_item_padding"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_campaign_stock_variant_name"

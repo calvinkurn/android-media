@@ -1,7 +1,22 @@
 package com.tokopedia.search.mock
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatch
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
+import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 object MockSearchProductModel {
@@ -36,6 +51,7 @@ object MockSearchProductModel {
         productItem.topadsImpressionUrl = "productModel.ads.productViewUrl"
         productItem.topadsClickUrl = "productModel.ads.productClickUrl"
         productItem.topadsWishlistUrl = "productModel.ads.productWishlistUrl"
+        productItem.applink = "tokopedia://product/937515116?extParam=whid%3D0"
         return productItem
     }
 
@@ -102,7 +118,8 @@ object MockSearchProductModel {
                         getBroadMatchItemViewModel(1), getBroadMatchItemViewModel(2),
                         getBroadMatchItemViewModel(3), getBroadMatchItemViewModel(4),
                         getBroadMatchItemViewModel(5), getBroadMatchItemViewModel(6)
-                )
+                ),
+                carouselOptionType = BroadMatch,
         )
     }
 

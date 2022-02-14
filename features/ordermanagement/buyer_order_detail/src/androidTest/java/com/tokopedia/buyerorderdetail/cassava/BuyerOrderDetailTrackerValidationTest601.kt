@@ -8,9 +8,12 @@ class BuyerOrderDetailTrackerValidationTest601 : BuyerOrderDetailTrackerValidati
     @Test
     fun validateTrackersOnOrder601() {
         setupMock {
-            mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_601)
+            mockOrderDetail(
+                BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_601,
+                graphqlRepositoryStub,
+                context
+            )
         } actionTest {
-            login()
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
             testClickToolbarChatIcon()
@@ -25,15 +28,15 @@ class BuyerOrderDetailTrackerValidationTest601 : BuyerOrderDetailTrackerValidati
         } validate {
             clearQueries()
             addQueriesToValidate(
-                    BuyerOrderDetailTrackerValidationConstant.clickToolbarChatIconQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickShipmentInfoTnCQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonSeeComplaintQueryPath
+                BuyerOrderDetailTrackerValidationConstant.clickToolbarChatIconQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickShipmentInfoTnCQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonSeeComplaintQueryPath
             )
         }
     }

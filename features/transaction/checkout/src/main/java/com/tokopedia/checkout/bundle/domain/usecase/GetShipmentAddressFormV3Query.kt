@@ -476,6 +476,28 @@ fun getQueryShipmentAddressFormV3(): String {
                   }
                 }
               }
+              cross_sell {
+                id
+                checkbox_disabled
+                is_checked
+                price
+                info {
+                  title
+                  sub_title
+                  tooltip_text
+                  icon_url
+                }
+                order_summary {
+                  title
+                  price_wording
+                }
+                bottom_sheet {
+                  title
+                  sub_title
+                }
+                additional_vertical_id
+                transaction_type
+              }
             }
           }
         }

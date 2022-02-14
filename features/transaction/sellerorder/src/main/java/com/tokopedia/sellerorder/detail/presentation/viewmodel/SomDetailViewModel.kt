@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
-import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
+import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
@@ -23,21 +25,23 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailViewModel @Inject constructor(
-        somAcceptOrderUseCase: SomAcceptOrderUseCase,
-        somRejectOrderUseCase: SomRejectOrderUseCase,
-        somEditRefNumUseCase: SomEditRefNumUseCase,
-        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
-        somValidateOrderUseCase: SomValidateOrderUseCase,
-        userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatchers,
-        private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
-        private val somReasonRejectUseCase: SomReasonRejectUseCase,
-        private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
-        authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
-        authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
-) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
-        authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
+    somAcceptOrderUseCase: SomAcceptOrderUseCase,
+    somRejectOrderUseCase: SomRejectOrderUseCase,
+    somEditRefNumUseCase: SomEditRefNumUseCase,
+    somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+    somValidateOrderUseCase: SomValidateOrderUseCase,
+    userSession: UserSessionInterface,
+    dispatcher: CoroutineDispatchers,
+    private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
+    private val somReasonRejectUseCase: SomReasonRejectUseCase,
+    private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
+    authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
+    authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
+) : SomOrderBaseViewModel(
+    dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+    somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
+    authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase
+) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
     val orderDetailResult: LiveData<Result<GetSomDetailResponse>>
@@ -69,7 +73,12 @@ class SomDetailViewModel @Inject constructor(
 
     fun getRejectReasons(rejectReasonQuery: String) {
         launchCatchError(block = {
-            _rejectReasonResult.postValue(somReasonRejectUseCase.execute(rejectReasonQuery, SomReasonRejectParam()))
+            _rejectReasonResult.postValue(
+                somReasonRejectUseCase.execute(
+                    rejectReasonQuery,
+                    SomReasonRejectParam()
+                )
+            )
         }, onError = {
             _rejectReasonResult.postValue(Fail(it))
         })
@@ -82,14 +91,20 @@ class SomDetailViewModel @Inject constructor(
             _setDelivered.postValue(Fail(it))
         })
     }
+
     fun getAdminPermission() {
         launchCatchError(
-                block = {
-                    _somDetailChatEligibility.postValue(getAdminAccessEligibilityPair(AccessId.SOM_DETAIL, AccessId.CHAT_REPLY))
-                },
-                onError = {
-                    _somDetailChatEligibility.postValue(Fail(it))
-                }
+            block = {
+                _somDetailChatEligibility.postValue(
+                    getAdminAccessEligibilityPair(
+                        AccessId.SOM_DETAIL,
+                        AccessId.CHAT_REPLY
+                    )
+                )
+            },
+            onError = {
+                _somDetailChatEligibility.postValue(Fail(it))
+            }
         )
     }
 }

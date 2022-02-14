@@ -4,14 +4,16 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.globalnavwidget.databinding.GlobalNavWidgetPillItemLayoutBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.global_nav_widget_pill_item_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class GlobalNavWidgetPillViewHolder(
         itemView: View,
         private val listener: GlobalNavWidgetListener
 ): RecyclerView.ViewHolder(itemView) {
 
+    private var binding: GlobalNavWidgetPillItemLayoutBinding? by viewBinding()
     companion object {
         val LAYOUT = R.layout.global_nav_widget_pill_item_layout
     }
@@ -19,20 +21,20 @@ internal class GlobalNavWidgetPillViewHolder(
     private val context: Context? = itemView.context
 
     internal fun bind(item: GlobalNavWidgetModel.Item) {
-        itemView.globalNavPillItemContainer?.setOnClickListener { _ ->
+        binding?.globalNavPillItemContainer?.setOnClickListener { _ ->
             listener.onClickItem(item)
         }
 
-        itemView.globalNavPillItemImage?.let {
+        binding?.globalNavPillItemImage?.let {
             ImageHandler.loadImageFitCenter(context, it, item.imageUrl)
         }
 
-        itemView.globalNavPillItemName?.shouldShowWithAction(item.name.isNotEmpty()) {
-            itemView.globalNavPillItemName?.text = item.name
+        binding?.globalNavPillItemName?.shouldShowWithAction(item.name.isNotEmpty()) {
+            binding?.globalNavPillItemName?.text = item.name
         }
 
-        itemView.globalNavPillItemInfo?.shouldShowWithAction(item.info.isNotEmpty()) {
-            itemView.globalNavPillItemInfo?.text = item.info
+        binding?.globalNavPillItemInfo?.shouldShowWithAction(item.info.isNotEmpty()) {
+            binding?.globalNavPillItemInfo?.text = item.info
         }
     }
 }

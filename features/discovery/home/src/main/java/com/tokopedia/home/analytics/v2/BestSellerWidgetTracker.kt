@@ -14,6 +14,10 @@ object BestSellerWidgetTracker : BaseTracking(){
     private const val IMPRESSION_ON_PRODUCT = "impression on product %s"
     private const val CLICK_ON_PRODUCT = "click on product %s"
     private const val BEST_SELLER = "dynamic channel best seller"
+    private const val TOPADS = "topads"
+    private const val NONTOPADS = "non topads"
+
+    private const val CAROUSEL = "carousel"
 
     //list:"/ - p{x} - dynamic channel best seller - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name}|{chips_filter_group}|{recomm_model_source} - {header name}"
     private const val LIST_BEST_SELLER = "/ - p%s - dynamic channel best seller - product - %s - %s - %s - %s|%s|%s - %s"
@@ -27,7 +31,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                         eventCategory = Category.HOMEPAGE,
                         eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
                         eventLabel = Label.NONE,
-                        list = "",
+                        list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
                         buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
                         products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName))
                 )
@@ -42,8 +46,8 @@ object BestSellerWidgetTracker : BaseTracking(){
             String.format(
                     LIST_BEST_SELLER,
                     position,
-                    if (it.isTopAds == true) "topads" else "non topads",
-                    "carousel",
+                    if (it.isTopAds == true) TOPADS else NONTOPADS,
+                    CAROUSEL,
                     it.recommendationType,
                     it.pageName,
                     bestSellerDataModel.chipsPosition,
@@ -53,6 +57,20 @@ object BestSellerWidgetTracker : BaseTracking(){
         }
     }
 
+    private fun getCustomListBestSellerString(recommendationItem: RecommendationItem, position: Int, bestSellerDataModel: BestSellerDataModel): String {
+        return String.format(
+            LIST_BEST_SELLER,
+            position,
+            if (recommendationItem.isTopAds) TOPADS else NONTOPADS,
+            CAROUSEL,
+            recommendationItem.recommendationType,
+            recommendationItem.pageName,
+            bestSellerDataModel.chipsPosition,
+            "",
+            recommendationItem.header
+        )
+    }
+
     fun sendClickTracker(recommendationItem: RecommendationItem, bestSellerDataModel: BestSellerDataModel, userId: String, position: Int) {
         val tracker = BaseTrackerBuilder()
                 .constructBasicProductClick(
@@ -60,7 +78,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                         eventCategory = Category.HOMEPAGE,
                         eventAction = CLICK_ON_PRODUCT.format(BEST_SELLER),
                         eventLabel = "${bestSellerDataModel.id} - ${bestSellerDataModel.title}",
-                        list = "",
+                        list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
                         products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName)),
                         buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel)
                 )

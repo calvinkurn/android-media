@@ -63,8 +63,9 @@
     <string name="ent_pdp_about_this">Tentang Kegiatan Ini</string>
     <string name="ent_pdp_choose_date">Pilih Tanggal Kunjungan</string>
     <string name="ent_pdp_share_title">Event %s</string>
-    <string name="ent_pdp_share_web_link">https://www.tokopedia.com/events/detail/%s</string>
+    <string name="ent_pdp_share_web_link">events/detail/%s</string>
     <string name="ent_pdp_share_app_link">tokopedia://events/detail/%s</string>
+    <string name="ent_pdp_share_title_intent">Bagikan Produk Ini</string>
     <string name="ent_pdp_choose_date_bottom_sheet">Pilih tanggal</string>
     <string name="ent_pdp_empty_package">Mohon maaf tiket saat ini sedang tidak tersedia</string>
 

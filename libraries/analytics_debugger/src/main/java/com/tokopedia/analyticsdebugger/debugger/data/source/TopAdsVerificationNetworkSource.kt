@@ -52,7 +52,7 @@ constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
                 TopAdsVerificationData::class.java
         )
         val variables = createParametersForQuery(urlCheckList)
-        graphqlRequest.setVariables(variables)
+        graphqlRequest.variables = variables
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         val response: TopAdsVerificationData? = graphqlUseCase.getData(RequestParams.EMPTY)

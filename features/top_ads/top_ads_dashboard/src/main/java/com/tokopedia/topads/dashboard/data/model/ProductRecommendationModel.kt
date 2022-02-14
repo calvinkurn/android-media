@@ -8,7 +8,7 @@ import com.tokopedia.topads.common.data.response.Error
 import kotlinx.android.parcel.Parcelize
 
 data class ProductRecommendationModel(
-        @SerializedName("topadsGetProductRecommendation")
+        @SerializedName("topadsGetProductRecommendationV2")
         val topadsGetProductRecommendation: TopadsGetProductRecommendation = TopadsGetProductRecommendation()
 )
 
@@ -39,7 +39,7 @@ data class ProductRecommendation(
         @SerializedName("image_url")
         val imgUrl: String = "",
         @SerializedName("search_count")
-        val searchCount: Int = 0,
+        val searchCount: String = "",
         @SerializedName("search_percent")
         val searchPercentage: String = "",
         @SerializedName("recommended_bid")

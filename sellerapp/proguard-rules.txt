@@ -18,7 +18,6 @@
 -dontwarn com.squareup.picasso.**
 -dontwarn com.squareup.javapoet.**
 -dontwarn com.squareup.okhttp.**
--dontwarn com.facebook.**
 -dontwarn okio.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
@@ -278,4 +277,3 @@
 
 # Keep fragment class name
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review_shop.shop.view.ReviewShopFragment

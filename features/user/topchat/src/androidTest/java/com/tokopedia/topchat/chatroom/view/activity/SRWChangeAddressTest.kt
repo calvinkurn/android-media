@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.isSender
@@ -9,6 +10,7 @@ import com.tokopedia.topchat.test.R
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class SRWChangeAddressTest : TopchatRoomTest() {
 
     @Test

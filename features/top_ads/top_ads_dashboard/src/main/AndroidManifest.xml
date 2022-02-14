@@ -2,91 +2,96 @@
     package="com.tokopedia.topads.dashboard">
 
     <application>
-
         <activity
             android:name=".view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_topads"
-                    android:pathPattern="@string/path_topads_dashboard"/>
+                    android:pathPattern="@string/path_topads_dashboard" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
-                    android:pathPattern="@string/path_topads_dashboard"/>
+                    android:pathPattern="@string/path_topads_dashboard" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
-            android:theme="@style/Theme.TopAds.Transparent" >
+            android:theme="@style/Theme.TopAds.Transparent"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/sellerapp_scheme"
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_buy_credit"/>
+                    android:path="@string/path_topads_buy_credit" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_buy_credit"/>
+                    android:path="@string/path_topads_buy_credit" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity"
             android:label="@string/topads_headline_detail_title"
             android:theme="@style/Theme.WhiteUnify"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_headline_ads_detail"/>
+                    android:path="@string/path_topads_headline_ads_detail" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity"
             android:label="@string/topads_dash_desc_credit_label"
             android:theme="@style/Theme.WhiteUnify"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_history_credit"/>
+                    android:path="@string/path_topads_history_credit" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity"
             android:label="@string/topads_dash_auto_topup_title"
             android:theme="@style/Theme.WhiteUnify"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -99,7 +104,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.activity.TopAdsGroupDetailViewActivity"
             android:label="@string/topads_group_detail"
@@ -110,17 +114,17 @@
             android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.TopAdsKeywordInsightsActivity"
             android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".view.activity.TopAdsTypeSelectionActivity"
+        <activity
+            android:name=".view.activity.TopAdsTypeSelectionActivity"
             android:label="@string/topads_dashboard_ad_type_selection_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -133,6 +137,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
     </application>
 </manifest>

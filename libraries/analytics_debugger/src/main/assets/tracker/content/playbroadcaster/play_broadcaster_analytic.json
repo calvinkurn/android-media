@@ -473,6 +473,17 @@
       "businessUnit": "play"
     },
     {
+      "eventAction": "click batalkan livestream",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - .+",
+      "sessionIris": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
       "eventAction": "click pilih ulang product",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
@@ -548,6 +559,39 @@
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
       "currentSite": ".*",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click add pin chat message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - .+",
+      "sessionIris": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click edit pin chat message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - .+",
+      "sessionIris": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click save pin chat message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - .+",
+      "sessionIris": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"

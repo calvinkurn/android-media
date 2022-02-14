@@ -163,6 +163,9 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

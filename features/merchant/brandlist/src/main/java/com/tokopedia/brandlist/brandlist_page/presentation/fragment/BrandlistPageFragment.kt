@@ -36,13 +36,13 @@ import com.tokopedia.brandlist.common.Constant.DEFAULT_SELECTED_CHIPS
 import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
+import com.tokopedia.brandlist.common.widget.StickySingleHeaderView
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_brandlist_page.*
 import javax.inject.Inject
 
 class BrandlistPageFragment :
@@ -72,6 +72,7 @@ class BrandlistPageFragment :
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
+    private var stickySingleHeaderView: StickySingleHeaderView? = null
     private var category: Category? = null
     private var adapter: BrandlistPageAdapter? = null
     private var isLoadedOnce: Boolean = false
@@ -123,6 +124,7 @@ class BrandlistPageFragment :
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
         recyclerView = rootView.findViewById(R.id.recycler_view)
         layoutManager = GridLayoutManager(context, BRANDLIST_GRID_SPAN_COUNT)
+        stickySingleHeaderView = rootView.findViewById(R.id.stickySingleHeaderView)
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory(this, this)
@@ -311,20 +313,23 @@ class BrandlistPageFragment :
                         BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
 
                         recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
-                        layoutManager?.scrollToPositionWithOffset(
+                        stickySingleHeaderView?.let { headerView ->
+                            layoutManager?.scrollToPositionWithOffset(
                                 BrandlistPageMapper.ALL_BRAND_POSITION,
-                                stickySingleHeaderView.containerHeight
-                        )
+                                headerView.containerHeight)
+                        }
+
 
                     } else {
                         BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
 
                         if (isChipSelected && !isLoadMore) {
                             recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
-                            layoutManager?.scrollToPositionWithOffset(
+                            stickySingleHeaderView?.let { headerView ->
+                                layoutManager?.scrollToPositionWithOffset(
                                     BrandlistPageMapper.ALL_BRAND_POSITION,
-                                    stickySingleHeaderView.containerHeight
-                            )
+                                    headerView.containerHeight)
+                            }
                         }
                     }
 

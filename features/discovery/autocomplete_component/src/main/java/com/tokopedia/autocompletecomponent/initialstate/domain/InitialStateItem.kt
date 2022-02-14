@@ -50,7 +50,10 @@ data class InitialStateItem(
         val originalPrice: String = "",
 
         @SerializedName("campaign_code")
-        val campaignCode: String = ""
+        val campaignCode: String = "",
+
+        @SerializedName("component_id")
+        val componentId: String = "",
 ) {
         fun getObjectDataLayerForRecentView(position: Int): Any {
                 return DataLayer.mapOf(

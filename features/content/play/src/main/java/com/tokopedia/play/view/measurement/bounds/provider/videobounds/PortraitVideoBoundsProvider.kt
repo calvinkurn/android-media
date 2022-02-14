@@ -20,8 +20,9 @@ class PortraitVideoBoundsProvider(
         private val container: ViewGroup
 ) : VideoBoundsProvider {
 
-    private val toolbarView = container.findViewById<View>(R.id.view_toolbar)
+    private val toolbarView = container.findViewById<View>(R.id.view_toolbar_room)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)
+    private val partnerInfoView = container.findViewById<View>(R.id.view_partner_info)
     private val sendChatView = container.findViewById<View>(R.id.view_send_chat)
     private val quickReplyView = container.findViewById<View>(R.id.rv_quick_reply)
     private val chatListView = container.findViewById<View>(R.id.view_chat_list)
@@ -31,8 +32,9 @@ class PortraitVideoBoundsProvider(
         return@coroutineScope if (videoOrientation.isHorizontal) {
             val toolbarLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, toolbarView::awaitMeasured) }) {}
             val statsInfoLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, statsInfoView::awaitMeasured) }) {}
+            val partnerInfoLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, partnerInfoView::awaitMeasured) }) {}
 
-            awaitAll(toolbarLayout, statsInfoLayout)
+            awaitAll(toolbarLayout, statsInfoLayout, partnerInfoLayout)
 
             val toolbarViewTotalHeight = run {
                 val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
@@ -44,9 +46,14 @@ class PortraitVideoBoundsProvider(
                 statsInfoView.height + marginLp.bottomMargin + marginLp.topMargin
             }
 
+            val partnerInfoTotalHeight = run {
+                val marginLp = partnerInfoView.layoutParams as ViewGroup.MarginLayoutParams
+                partnerInfoView.height + marginLp.bottomMargin + marginLp.topMargin
+            }
+
             val statusBarHeight = container.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
 
-            toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight
+            toolbarViewTotalHeight + statsInfoTotalHeight + partnerInfoTotalHeight + statusBarHeight
         } else 0
     }
 

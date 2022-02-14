@@ -21,7 +21,6 @@ abstract class InboxReputationReportPresenterTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         presenter = InboxReputationReportPresenter(reportReviewUseCase)
-        presenter.attachView(view)
     }
 
     @After

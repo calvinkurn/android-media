@@ -304,13 +304,20 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun onBankAccountChanged() {
-        val withdrawal: Long = StringUtils.convertToNumeric(tfWithdrawal.textFieldInput.text.toString(),
-                false).toLong()
-        updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
-        if (withdrawal == 0L) {
-            tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
+        try {
+            tfWithdrawal?.textFieldInput?.let { textFieldInput ->
+                val inputText = (textFieldInput.text ?: "").toString()
+                val withdrawal: Long = StringUtils.convertToNumeric(inputText,
+                    false).toLong()
+                updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
+                if (withdrawal == 0L) {
+                    textFieldInput.setSelection(textFieldInput.length())
+                }
+                updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
+            }
+        } catch (e: Exception) {
+
         }
-        updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
     }
 
     override fun showCoachMarkOnRPIcon(iconView: View) {

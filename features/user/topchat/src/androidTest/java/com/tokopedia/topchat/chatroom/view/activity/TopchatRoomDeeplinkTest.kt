@@ -1,20 +1,17 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
 import com.tokopedia.test.application.matcher.lastPathSegmentEqualTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class TopchatRoomDeeplinkTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -70,7 +67,7 @@ class TopchatRoomDeeplinkTest {
 
         // When
         val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
+            context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
         )
 
         // Then
@@ -102,7 +99,7 @@ class TopchatRoomDeeplinkTest {
 
         // When
         val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER_WITH_MSG, shopId, customMsg
+            context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER_WITH_MSG, shopId, customMsg
         )
 
         // Then
@@ -131,7 +128,7 @@ class TopchatRoomDeeplinkTest {
 
         // When
         val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER, userId
+            context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER, userId
         )
 
         // Then
@@ -163,7 +160,7 @@ class TopchatRoomDeeplinkTest {
 
         // When
         val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG, userId, customMsg
+            context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG, userId, customMsg
         )
 
         // Then
@@ -192,7 +189,7 @@ class TopchatRoomDeeplinkTest {
 
         // When
         val intent = RouteManager.getIntent(
-                context, ApplinkConstInternalGlobal.TOPCHAT_ROOM, msgId
+            context, ApplinkConstInternalGlobal.TOPCHAT_ROOM, msgId
         )
 
         // Then

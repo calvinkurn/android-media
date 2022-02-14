@@ -441,6 +441,11 @@
         <key>android_async_hansel_init</key>
         <value>true</value>
     </entry>
+
+    <entry>
+        <key>android_async_gratification_init</key>
+        <value>false</value>
+    </entry>
     <entry>
         <key>android_async_home_dagger</key>
         <value>false</value>
@@ -582,6 +587,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_enable_fdl_host_webview</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_enable_pdp_custom_sharing</key>
         <value>true</value>
     </entry>
@@ -615,6 +624,10 @@
     </entry>
     <entry>
         <key>android_main_app_enable_add_bills_sbm</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_new_recharge_order_detail</key>
         <value>true</value>
     </entry>
 </defaultsMap>

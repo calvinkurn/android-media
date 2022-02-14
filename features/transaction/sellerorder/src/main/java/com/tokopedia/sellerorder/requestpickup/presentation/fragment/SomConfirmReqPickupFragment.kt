@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.databinding.FragmentSomConfirmReqPickupBinding
 import com.tokopedia.sellerorder.requestpickup.data.mapper.SchedulePickupMapper
-import com.tokopedia.sellerorder.requestpickup.data.model.*
+import com.tokopedia.sellerorder.requestpickup.data.model.ScheduleTime
+import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
+import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupParam
 import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmSchedulePickupAdapter
@@ -98,6 +103,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupHeader()
         observingConfirmReqPickup()
     }
 
@@ -105,6 +111,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
     override fun initInjector() {
         getComponent(SomConfirmReqPickupComponent::class.java).inject(this)
+    }
+
+    private fun setupHeader() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(binding?.headerSomConfirmRequestPickup)
+        }
     }
 
     private fun loadConfirmRequestPickup() {

@@ -30,6 +30,8 @@ class MoneyInHomeViewModel @Inject constructor(
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
     var imei: String? = null
 
+    var tradeInType: Int = 2
+
     override fun doOnCreate() {
         super.doOnCreate()
         checkLogin()
@@ -50,7 +52,7 @@ class MoneyInHomeViewModel @Inject constructor(
         }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics, tradeInType), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -191,7 +193,7 @@ class MoneyInHomeViewModel @Inject constructor(
 
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn) {
         progBarVisibility.value = true
-        laku6TradeIn.getMinMaxPrice(this)
+        laku6TradeIn.getMinMaxPrice(-1, this)
     }
 
     fun setDeviceId(deviceId: String?) {

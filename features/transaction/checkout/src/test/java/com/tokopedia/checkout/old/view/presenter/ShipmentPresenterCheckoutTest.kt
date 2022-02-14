@@ -6,7 +6,6 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.old.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.old.data.model.request.checkout.DataCheckoutRequest
 import com.tokopedia.checkout.old.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.old.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.old.domain.model.checkout.MessageData
 import com.tokopedia.checkout.old.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.old.domain.usecase.*
@@ -27,10 +26,9 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,7 +45,7 @@ import java.security.PublicKey
 class ShipmentPresenterCheckoutTest {
 
     @MockK
-    private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
 
     @MockK(relaxed = true)
     private lateinit var compositeSubscription: CompositeSubscription
@@ -71,10 +69,7 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
+    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter
@@ -116,7 +111,7 @@ class ShipmentPresenterCheckoutTest {
                 compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
@@ -222,34 +217,6 @@ class ShipmentPresenterCheckoutTest {
             view.setHasRunningApiCall(false)
             view.hideLoading()
             view.renderCheckoutPriceUpdated(priceValidationData)
-        }
-    }
-
-    @Test
-    fun checkoutFailedErrorReporter_ShouldRenderErrorReporter() {
-        // Given
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
-
-        val errorReporter = ErrorReporter().apply {
-            eligible = true
-        }
-        val checkoutData = CheckoutData().apply {
-            this.isError = true
-            this.errorReporter = errorReporter
-        }
-        every { checkoutUseCase.createObservable(any()) } returns Observable.just(checkoutData)
-
-        // When
-        presenter.processCheckout(false, false, false, "", "", "")
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.renderCheckoutCartErrorReporter(checkoutData)
         }
     }
 

@@ -19,7 +19,9 @@ import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
 import com.tokopedia.cart.bundle.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -141,7 +143,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                             renderActionWishlist(it, data)
                         }
                     }
-                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP -> {
+                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP, Action.ACTION_VERIFICATION -> {
                         when {
                             data.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER && it.id == Action.ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
@@ -151,6 +153,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                             }
                             data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
                                 renderFollowShop(it, data)
+                            }
+                            data.selectedUnavailableActionId == Action.ACTION_VERIFICATION && it.id == Action.ACTION_VERIFICATION -> {
+                                renderVerification(it, data)
                             }
                         }
                     }
@@ -287,10 +292,11 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
                 binding.containerProductAction.gone()
+                binding.holderItemCartDivider.gone()
             } else {
                 binding.containerProductAction.show()
+                binding.holderItemCartDivider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
             }
-            binding.holderItemCartDivider.gone()
         } else {
             binding.containerProductAction.show()
             binding.holderItemCartDivider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
@@ -518,14 +524,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
     private fun renderProductNotesEditable(element: CartItemHolderData) {
         with(binding) {
-            textFieldNotes.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            textFieldNotes.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldNotes.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
             textFieldNotes.context?.let {
-                textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+                textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         KeyboardHandler.DropKeyboard(it, v)
-                        textFieldNotes.textFieldInput.clearFocus()
+                        textFieldNotes.editText.clearFocus()
                         if (element.notes.isNotBlank()) {
                             renderProductNotesFilled(element)
                         } else {
@@ -536,16 +542,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                 }
             }
 
-            textFieldNotes.requestFocus()
             textNotes.gone()
             textFieldNotes.show()
             textNotesChange.gone()
             textNotesFilled.gone()
-            textNotesFilled.text = element.notes
+            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
             textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.textFieldInput.setText(element.notes)
-            textFieldNotes.textFieldInput.setSelection(textFieldNotes.textFieldInput.length())
-            textFieldNotes.textFieldInput.addTextChangedListener(object : TextWatcher {
+            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.notes))
+            textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
+            textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
                 }
@@ -559,6 +564,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
                 }
             })
+            textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    KeyboardHandler.DropKeyboard(v.context, v)
+                }
+            }
+            textFieldNotes.editText.requestFocus()
+            showSoftKeyboard(textFieldNotes.context, textFieldNotes.editText)
         }
     }
 
@@ -574,7 +586,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
     private fun renderProductNotesFilled(element: CartItemHolderData) {
         with(binding) {
             textFieldNotes.gone()
-            textNotesFilled.text = element.notes
+            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
             setProductNotesWidth(element)
             textNotesFilled.show()
             textNotesChange.show()
@@ -721,11 +733,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
     private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
         val textMoveToWishlist = binding.textMoveToWishlist
-        if (data.isError) {
-            textMoveToWishlist.gone()
-            return
-        }
-
         if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
@@ -786,6 +793,19 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                 }
             }
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            show()
+        }
+    }
+
+    private fun renderVerification(action: Action, data: CartItemHolderData) {
+        binding.textProductUnavailableAction.apply {
+            text = action.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotEmpty()) {
+                    actionListener?.onVerificationClicked(data.selectedUnavailableActionLink)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             show()
         }
     }

@@ -87,7 +87,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         }
 
         verify(exactly = 0) {
-            productListView.trackDynamicProductCarouselImpression(any(), any())
+            productListView.trackDynamicProductCarouselImpression(any(), any(), any())
         }
     }
 
@@ -117,7 +117,11 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
     private fun `Then verify interaction for dynamic carousel impression`(dynamicProductCarousel: BroadMatchItemDataView) {
         verify {
             val carouselProductType = dynamicProductCarousel.carouselProductType as DynamicCarouselProduct
-            productListView.trackDynamicProductCarouselImpression(dynamicProductCarousel, carouselProductType.type)
+            productListView.trackDynamicProductCarouselImpression(
+                dynamicProductCarousel,
+                carouselProductType.type,
+                carouselProductType.inspirationCarouselProduct,
+            )
         }
 
         verify(exactly = 0) {

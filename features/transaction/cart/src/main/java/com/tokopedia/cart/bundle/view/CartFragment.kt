@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -81,11 +82,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -99,6 +98,7 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -111,8 +111,6 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -132,7 +130,6 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.lang.IndexOutOfBoundsException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -230,6 +227,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NAVIGATION_SHIPMENT = 567
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
         const val NAVIGATION_EDIT_BUNDLE = 789
+        const val NAVIGATION_VERIFICATION = 890
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -238,6 +236,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
+        const val PROMO_POSITION_BUFFER = 10
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val ANIMATED_IMAGE_ALPHA = 0.5f
         const val ANIMATED_IMAGE_FILLED = 1.0f
@@ -411,6 +410,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
+            NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -666,20 +666,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (binding?.topLayout?.root?.visibility == View.VISIBLE) {
             if (show) {
                 binding?.topLayoutShadow?.show()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-                }
+                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
             } else {
                 binding?.topLayoutShadow?.gone()
             }
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (show) {
-                    binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
-                    binding?.topLayoutShadow?.gone()
-                } else {
-                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-                }
+            if (show) {
+                binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
+                binding?.topLayoutShadow?.gone()
+            } else {
+                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
             }
         }
     }
@@ -785,12 +781,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (newState == RecyclerView.SCROLL_STATE_IDLE && initialPromoButtonPosition > 0) {
             // Delay after recycler view idle, then show promo button
             delayShowPromoButtonJob?.cancel()
-            delayShowPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+            delayShowPromoButtonJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
-                binding?.llPromoCheckout?.animate()
-                        ?.y(initialPromoButtonPosition)
-                        ?.setDuration(PROMO_ANIMATION_DURATION)
-                        ?.start()
+                binding?.apply {
+                    val initialPosition = bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(resources.displayMetrics)
+                    llPromoCheckout.animate()
+                            .y(initialPosition)
+                            .setDuration(PROMO_ANIMATION_DURATION)
+                            .start()
+                }
             }
         }
     }
@@ -821,10 +820,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animatePromoButtonToStartingPosition() {
-        binding?.llPromoCheckout?.animate()
-                ?.y(initialPromoButtonPosition)
-                ?.setDuration(0)
-                ?.start()
+        binding?.apply {
+            val initialPosition = bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(resources.displayMetrics)
+            llPromoCheckout.animate()
+                    .y(initialPosition)
+                    .setDuration(0)
+                    .start()
+        }
     }
 
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
@@ -1039,8 +1041,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
 
                     it.voucherOrderUiModels.forEach {
-                        val promoCode = it?.code ?: ""
-                        if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                        val promoCode = it.code
+                        if (promoCode.isNotBlank() && it.messageUiModel.state == "red" && !redStatePromo.contains(promoCode)) {
                             redStatePromo.add(promoCode)
                         }
                     }
@@ -1058,8 +1060,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 it.voucherOrderUiModels.forEach {
-                    val promoCode = it?.code ?: ""
-                    if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                    val promoCode = it.code
+                    if (promoCode.isNotBlank() && it.messageUiModel.state == "red" && !redStatePromo.contains(promoCode)) {
                         redStatePromo.add(promoCode)
                     }
                 }
@@ -1488,7 +1490,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         recommendationItemClick?.let {
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                    index.toString(),
                     dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index)
             )
         }
@@ -1581,6 +1582,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onFollowShopClicked(shopId: String, errorType: String) {
         cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
         dPresenter.followShop(shopId)
+    }
+
+    override fun onVerificationClicked(applink: String) {
+        activity?.also {
+            val intent = RouteManager.getIntentNoFallback(it, applink) ?: return
+            startActivityForResult(intent, NAVIGATION_VERIFICATION)
+        }
     }
 
     override fun onSeeErrorProductsClicked() {
@@ -2194,19 +2202,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var isPromoApplied = false
         val allPromoApplied = arrayListOf<String>()
         if (params.orders.isNotEmpty()) {
-            params.orders.forEach {
-                it?.let { orderItem ->
-                    if (orderItem.codes.isNotEmpty()) {
-                        orderItem.codes.forEach { merchantCode ->
-                            allPromoApplied.add(merchantCode)
-                        }
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
                     }
                 }
             }
-            params.codes.forEach {
-                it?.let { globalCode ->
-                    allPromoApplied.add(globalCode)
-                }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
             }
         }
         if (params.orders.isNotEmpty() && allPromoApplied.isNotEmpty()) isPromoApplied = true
@@ -2216,19 +2220,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun getAllAppliedPromoCodes(params: ValidateUsePromoRequest): List<String> {
         val allPromoApplied = arrayListOf<String>()
         if (params.orders.isNotEmpty()) {
-            params.orders.forEach {
-                it?.let { orderItem ->
-                    if (orderItem.codes.isNotEmpty()) {
-                        orderItem.codes.forEach { merchantCode ->
-                            allPromoApplied.add(merchantCode)
-                        }
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
                     }
                 }
             }
-            params.codes.forEach {
-                it?.let { globalCode ->
-                    allPromoApplied.add(globalCode)
-                }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
             }
         }
         return allPromoApplied
@@ -2278,8 +2278,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderCheckboxGlobal(cartData: CartData) {
+        // Just add view item to fill space. This view item will always be covered by sticky global checkbox view.
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
-            cartAdapter.addItem(CartUiModelMapper.mapSelectAllUiModel())
+            cartAdapter.addItem(CartSelectAllHolderData())
         }
     }
 
@@ -2697,10 +2698,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartAdapter.hasAvailableItemLeft()) {
             binding?.topLayout?.root?.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                    isShowToolbarShadow = true
-                }
+            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
+                isShowToolbarShadow = true
             }
         } else {
             binding?.topLayout?.root?.gone()
@@ -2714,10 +2713,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (isShow) {
             binding?.topLayout?.root?.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                    isShowToolbarShadow = true
-                }
+            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
+                isShowToolbarShadow = true
             }
         } else {
             binding?.topLayout?.root?.gone()

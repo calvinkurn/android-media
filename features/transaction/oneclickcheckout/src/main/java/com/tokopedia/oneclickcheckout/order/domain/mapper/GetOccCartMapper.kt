@@ -11,6 +11,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.Pu
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
+import com.tokopedia.purchase_platform.common.utils.Utils
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -156,9 +157,9 @@ class GetOccCartMapper @Inject constructor() {
             wholesalePriceList = mapWholesalePrice(product.wholesalePrice)
             maxCharNote = data.maxCharNote
             notes = if (product.productNotes.length > data.maxCharNote) {
-                product.productNotes.substring(0, data.maxCharNote)
+                Utils.getHtmlFormat(product.productNotes.substring(0, data.maxCharNote))
             } else {
-                product.productNotes
+                Utils.getHtmlFormat(product.productNotes)
             }
             cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             warehouseId = product.warehouseId

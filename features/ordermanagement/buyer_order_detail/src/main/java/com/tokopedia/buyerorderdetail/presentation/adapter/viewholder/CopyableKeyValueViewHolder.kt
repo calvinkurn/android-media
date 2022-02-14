@@ -1,9 +1,11 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
-import android.text.Spannable
+import android.os.Build
+import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
@@ -43,6 +45,11 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
 
     private fun setupClickListener() {
         icBuyerOrderDetailCopy?.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                it?.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            } else {
+                it?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
             copyText()
         }
     }
@@ -58,13 +65,19 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         }
     }
 
-    private fun setupTextToShow(text: Spannable) {
-        tvBuyerOrderDetailCopyableValue?.text = text
+    private fun setupTextToShow(text: String) {
+        tvBuyerOrderDetailCopyableValue?.let {
+            it.text = MethodChecker.fromHtmlWithoutExtraSpace(text)
+        }
     }
 
     protected open fun copyText() {
         element?.let {
-            Utils.copyText(itemView.context, it.copyLabel, it.copyableText.toString())
+            Utils.copyText(
+                itemView.context,
+                it.copyLabel,
+                MethodChecker.fromHtmlWithoutExtraSpace(it.copyableText)
+            )
             showToaster(it.copyMessage)
         }
     }

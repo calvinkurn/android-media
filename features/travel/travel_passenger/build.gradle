@@ -17,10 +17,6 @@ buildscript {
     }
 }
 
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     implementation projectOrAar(rootProject.ext.features.travelCountryCode)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

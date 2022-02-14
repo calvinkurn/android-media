@@ -48,7 +48,6 @@ import timber.log.Timber;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
-    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
@@ -99,7 +98,12 @@ public class BranchWrapper implements WrapperInterface {
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
 
-            if (isFDLActivated(context)){
+            if(((LinkerShareData)linkerShareRequest.getDataObj()).getLinkerData().isAffiliate()){
+                generateAffiliateLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }
+            else if (isFDLActivated(context)){
                 generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -350,10 +354,19 @@ public class BranchWrapper implements WrapperInterface {
         return branchUniversalObject;
     }
 
+    private void generateAffiliateLink(){
+
+    }
+
     private void generateFirebaseLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
         new FirebaseDLWrapper().createShortLink(shareCallback,data);
 
+    }
+
+    private void generateAffiliateLink(final LinkerData data, final Context context,
+                                      final ShareCallback shareCallback, final UserData userData) {
+        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback);
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,
@@ -437,7 +450,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
-                desktopUrl = DESKTOP_GROUPCHAT_URL;
+                desktopUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL;
                 linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
@@ -462,6 +475,12 @@ public class BranchWrapper implements WrapperInterface {
             }
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
+            deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())){
+            if (!desktopUrl.isEmpty()) {
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+            }
             deeplinkPath = data.getDeepLink();
         }
 

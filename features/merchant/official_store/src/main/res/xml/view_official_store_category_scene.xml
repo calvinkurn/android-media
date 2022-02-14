@@ -4,8 +4,8 @@
 
     <ConstraintSet android:id="@+id/start">
         <Constraint android:id="@id/image_view_category_icon"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         <Constraint android:id="@id/image_view_category_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginRight="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_view_category_title"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_category_title"

@@ -46,12 +46,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
-
     implementation rootProject.ext.playServicesDependencies.auth
-
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     // unit test

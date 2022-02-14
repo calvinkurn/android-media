@@ -3,10 +3,10 @@
     package="com.tokopedia.csat_rating">
 
     <application>
-        <activity android:name=".activity.BaseProvideRatingActivity"
+        <activity
+            android:name=".activity.BaseProvideRatingActivity"
             android:label="@string/cu_surey_layana"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.Launcher" />
     </application>
-
 </manifest>

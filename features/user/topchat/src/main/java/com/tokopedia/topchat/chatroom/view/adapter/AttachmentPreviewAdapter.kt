@@ -17,6 +17,7 @@ class AttachmentPreviewAdapter(
     interface AttachmentPreviewListener {
         fun clearAttachmentPreview()
         fun hideProductPreviewLayout()
+        fun notifyPreviewRemoved(model: SendablePreview)
     }
 
     private var attachments = arrayListOf<SendablePreview>()
@@ -62,6 +63,7 @@ class AttachmentPreviewAdapter(
         if (noAttachmentPreview()) {
             attachmentPreviewListener.clearAttachmentPreview()
         }
+        attachmentPreviewListener.notifyPreviewRemoved(model)
     }
 
     private fun noAttachmentPreview(): Boolean = attachments.isEmpty()

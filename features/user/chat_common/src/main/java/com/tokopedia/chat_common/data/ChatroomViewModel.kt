@@ -2,6 +2,10 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_GOLD_MERCHANT
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_OFFICIAL_STORE
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_REGULAR
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,11 +26,12 @@ class ChatroomViewModel constructor(
         return headerModel.name
     }
     val shopType: String get() {
-        var shopType = "reguler"
-        if (headerModel.isGold) {
-            shopType = "gold_merchant"
-        } else if (headerModel.isOfficial) {
-            shopType = "official_Store"
+        var shopType = ""
+        when (headerModel.shopType) {
+            1 -> shopType = SHOP_TYPE_REGULAR
+            2 -> shopType = SHOP_TYPE_GOLD_MERCHANT
+            3 -> shopType = SHOP_TYPE_OFFICIAL_STORE
+            4 -> shopType = SHOP_TYPE_TOKONOW
         }
         return shopType
     }

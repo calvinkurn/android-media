@@ -99,11 +99,6 @@ class PlayBroadcastModule(private val mContext: Context) {
         return PlayBroadcastUiMapper(htmlTextTransformer)
 
         /**
-         * If you want configurable
-         */
-//        return PlayBroadcastConfigurableMapper(PlayBroadcastUiMapper(), PlayBroadcastMockMapper())
-
-        /**
          * If you want mock
          */
 //        return PlayBroadcastMockMapper()

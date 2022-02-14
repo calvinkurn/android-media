@@ -17,5 +17,10 @@ class ResultProduct constructor(
     val dropPercentage: String = "",
     val isFreeOngkirActive: Boolean = false,
     val imgUrlFreeOngkir: String = "",
-    val stock: Int = 1
+    val stock: Int = 1,
+    val isSupportVariant: Boolean = false,
+    val campaignId: Long = 0,
+    val isPreorder: Boolean = false,
+    val priceInt: Long = 0,
+    val categoryId: Long = 0
 ) : Parcelable

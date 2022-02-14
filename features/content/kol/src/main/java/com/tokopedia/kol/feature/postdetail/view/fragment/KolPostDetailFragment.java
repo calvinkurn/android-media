@@ -635,7 +635,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NotNull String authorId, @NotNull String authorType, @NotNull String postType, boolean isVideo, String caption) {
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NonNull String authorId, @NonNull String authorType, @NonNull String postType, boolean isVideo, @NonNull String caption, @NonNull String playChannelId) {
         if (getContext() != null) {
             Menus menus = createBottomMenu(getContext(), deletable,
                     reportable, false, new PostMenuListener() {
@@ -689,7 +689,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId) {
+    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId,@NotNull String playChannelId, boolean isIconClick) {
         onGoToKolComment(positionInFeed, id);
     }
 
@@ -704,7 +704,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video , boolean isTopads) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video , boolean isTopads, @NotNull String playChannelId) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
             }, "", imageUrl, url, description, title, "").show(getActivity().getSupportFragmentManager());
@@ -1028,12 +1028,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed) {
+    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed, boolean isVOD) {
 
     }
 
     @Override
-    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, boolean isVideo, int positionInFeed) {
+    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, boolean isVideo, int positionInFeed, @NotNull String playChannelId, @NotNull String shopName) {
 
     }
 
@@ -1043,7 +1043,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, boolean isVideo) {
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, boolean isVideo, @NotNull String playChannelId) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id);
         } else {
@@ -1085,4 +1085,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void userCarouselImpression(@NonNull String activityId, @NonNull FeedXMedia media, int positionInFeed, @NonNull String postType, boolean isFollowed, @NonNull String shopId, int postPosition, @NonNull CpmData cpmData, @NonNull List<? extends Product> products) {
 
     }
+
+    @Override
+    public void onFullScreenCLick(@NotNull FeedXCard feedXCard,int positionInFeed, @NonNull String redirectUrl, long currentTime, boolean shouldTrack, boolean isFullScreen) {
+
+    }
+    @Override
+    public void addVODView(@NotNull FeedXCard feedXCard,@NonNull String playChannelId, int rowNumber, long time, boolean hitTrackerApi) {
+
+    }
+
 }

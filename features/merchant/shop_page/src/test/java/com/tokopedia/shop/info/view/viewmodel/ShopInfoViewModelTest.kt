@@ -135,6 +135,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         assert(viewModel.shopBadgeReputation.value is Fail)
     }
 
+    @Test
+    fun `check whether userId should return mocked value`() {
+        val mockUserId = "753348464"
+        onGetUserId_thenReturn(mockUserId)
+        val userId =  viewModel.userId()
+        assert(userId == mockUserId)
+    }
+
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
@@ -162,6 +170,10 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
 
     private fun onGetShopId_thenReturn(shopId: String) {
         every { userSessionInterface.shopId } returns shopId
+    }
+
+    private fun onGetUserId_thenReturn(userId: String) {
+        every { userSessionInterface.userId } returns userId
     }
     //endregion
 

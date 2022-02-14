@@ -6,10 +6,8 @@
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyStatePenalty"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:unifyEmptyStateType="page"
         app:unifyEmptyStateOrientation="vertical"

@@ -86,7 +86,6 @@ open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed 
 
     private fun initView() {
         startAnimation()
-        analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
         viewBound.btnCallMe?.setOnClickListener {
             (activity as VerificationActivity).goToVerificationPage(modeListData)
         }

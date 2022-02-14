@@ -19,6 +19,9 @@ data class GroupEditInput(
     @Parcelize
     data class Group(
 
+            @field:SerializedName("type")
+            var type: String = "",
+
             @field:SerializedName("adOperations")
             var adOperations: List<AdOperationsItem>? = null,
 

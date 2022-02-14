@@ -21,10 +21,13 @@ open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccou
 
     private var homeAccountUserComponents: HomeAccountUserComponents? = null
 
+    lateinit var fragment: HomeAccountUserFragment
+
     override fun getTagFragment(): String = TAG
 
     override fun getNewFragment(): Fragment? {
-        return createHomeAccountUserFragment()
+        fragment = createHomeAccountUserFragment() as HomeAccountUserFragment
+        return fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

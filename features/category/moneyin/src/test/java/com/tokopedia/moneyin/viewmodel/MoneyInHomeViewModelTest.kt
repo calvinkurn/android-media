@@ -110,7 +110,7 @@ class MoneyInHomeViewModelTest {
     @Test
     fun processMessageException() {
         coEvery { tradeInHomeViewModel.getDiagnosticData(androidIntent) } returns deviceDiagnostics
-        coEvery { processMessageUseCase.processMessage(any(), any()) } throws Exception("check warningmessage value is called when exception thrown in Process Message")
+        coEvery { processMessageUseCase.processMessage(any(), any(), any()) } throws Exception("check warningmessage value is called when exception thrown in Process Message")
         every { deviceDiagnostics.imei } returns "3"
 
         tradeInHomeViewModel.processMessage(androidIntent)
@@ -122,7 +122,7 @@ class MoneyInHomeViewModelTest {
     @Test
     fun processMessage() {
         coEvery { tradeInHomeViewModel.getDiagnosticData(androidIntent) } returns deviceDiagnostics
-        coEvery { processMessageUseCase.processMessage(any(), any()) } returns response
+        coEvery { processMessageUseCase.processMessage(any(), any(), any()) } returns response
         every { deviceDiagnostics.imei } returns "3"
 
         tradeInHomeViewModel.processMessage(androidIntent)
@@ -311,7 +311,7 @@ class MoneyInHomeViewModelTest {
     fun getMaxPrice() {
         tradeInHomeViewModel.getMaxPrice(laku6TradeIn)
 
-        verify { laku6TradeIn.getMinMaxPrice(any()) }
+        verify { laku6TradeIn.getMinMaxPrice(any(), any()) }
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
     }
 

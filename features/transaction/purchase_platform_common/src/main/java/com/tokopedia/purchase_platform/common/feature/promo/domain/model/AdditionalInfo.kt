@@ -1,26 +1,18 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 
-@Generated("com.robohorse.robopojogenerator")
 data class AdditionalInfo(
-
         @field:SerializedName("sp_ids")
-        val spIds: List<Int?>? = null,
-
+        val spIds: List<Int> = emptyList(),
         @field:SerializedName("message_info")
-        val messageInfo: MessageInfo? = null,
-
+        val messageInfo: MessageInfo = MessageInfo(),
         @field:SerializedName("error_detail")
-        val errorDetail: ErrorDetail? = null,
-
+        val errorDetail: ErrorDetail = ErrorDetail(),
         @field:SerializedName("empty_cart_info")
-        val cartEmptyInfo: CartEmptyInfo? = null,
-
+        val cartEmptyInfo: CartEmptyInfo = CartEmptyInfo(),
         @field:SerializedName("usage_summaries")
-        val listUsageSummaries: List<UsageSummaries>? = null,
-
+        val listUsageSummaries: List<UsageSummaries> = emptyList(),
         @field:SerializedName("promo_sp_ids")
         val promoSpIds: List<PromoSpId> = emptyList()
 )

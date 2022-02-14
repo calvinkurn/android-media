@@ -1,11 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.seller.action">
-    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
 
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx" />
     <application>
-        <activity android:name=".SellerActionActivity"
-            android:launchMode="singleTask">
+        <activity
+            android:name=".SellerActionActivity"
+            android:launchMode="singleTask"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -29,6 +31,4 @@
             </intent-filter>
         </provider>
     </application>
-
-
 </manifest>

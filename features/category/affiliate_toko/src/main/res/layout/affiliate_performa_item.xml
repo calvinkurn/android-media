@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_56">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/performa_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:text="Pendapatan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@id/performa_type"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/performa_type" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Rp1.500.000"
+            app:layout_constraintStart_toStartOf="@+id/performa_type"
+            app:layout_constraintTop_toBottomOf="@+id/performa_type"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/value_change_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="+Rp550.000"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/increase_value_icon"
+            app:layout_constraintTop_toBottomOf="@+id/value"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/increase_value_icon"
+            android:layout_width="8dp"
+            android:layout_height="@dimen/dp_10"
+            android:rotation="90"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_name="ARROW_BACK"
+            app:layout_constraintBottom_toBottomOf="@+id/value_change_value"
+            app:layout_constraintStart_toStartOf="@+id/value"
+            app:layout_constraintTop_toTopOf="@+id/value_change_value" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

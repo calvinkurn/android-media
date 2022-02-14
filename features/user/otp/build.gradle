@@ -16,22 +16,16 @@ buildscript {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
+
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
-    }
-    androidExtensions {
-        experimental = true
     }
 }
 
@@ -51,6 +45,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -78,6 +73,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation rootProject.ext.tkpdInternalLibDependencies.secUtilObs
 
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.testDependencies.espressoIdlingResource

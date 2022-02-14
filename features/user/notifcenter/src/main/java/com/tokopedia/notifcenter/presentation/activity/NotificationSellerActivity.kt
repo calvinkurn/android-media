@@ -39,14 +39,14 @@ class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer 
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
-            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         supportActionBar?.elevation = 0F
     }

@@ -69,6 +69,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_VARIANT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENCY_CODE_IDR
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
@@ -213,7 +214,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onImpressBannerPromo(userId: String, channelModel: ChannelModel) {
+    fun onImpressBannerPromo(userId: String, channelModel: ChannelModel, warehouseId: String) {
         val promotions = arrayListOf<Bundle>()
         channelModel.channelGrids.forEachIndexed { position, channelGrid ->
             promotions.add(
@@ -232,8 +233,8 @@ class HomeAnalytics {
                 affinityLabel = channelModel.trackingAttributionModel.persona,
                 userId = userId,
                 promotions = promotions
-
         )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 

@@ -120,6 +120,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
         }
         BenchmarkHelper.endSystraceSection()

@@ -2,7 +2,8 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 
@@ -25,7 +26,8 @@ object VisitableMapper {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
-            is TokoNowLayoutUiModel -> visitableId
+            is TokoNowRepurchaseUiModel -> id
+            is TokoNowCategoryGridUiModel -> id
             else -> null
         }
     }

@@ -1,7 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -26,6 +32,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    viewBinding {
+        enabled true
     }
 }
 

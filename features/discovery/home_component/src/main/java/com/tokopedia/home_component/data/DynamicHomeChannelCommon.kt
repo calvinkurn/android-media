@@ -151,6 +151,7 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("shop")
             val shop: Shop = Shop(),
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",

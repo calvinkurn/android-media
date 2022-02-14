@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -63,7 +64,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
                 saveProductDraftUseCase.executeOnBackground()
             }
         }, onError = {
-
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         })
     }
 

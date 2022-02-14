@@ -63,12 +63,20 @@
         android:id="@+id/read_review_attached_images"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
         tools:visibility="visible" />
+
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/read_review_bad_rating_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_review_attached_images" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/read_review_like_button"
@@ -76,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="@id/read_review_item_review"
-        app:layout_constraintTop_toBottomOf="@id/read_review_attached_images"
+        app:layout_constraintTop_toBottomOf="@id/read_review_bad_rating_reason"
         app:srcCompat="@drawable/ic_read_review_like" />
 
     <com.tokopedia.unifyprinciples.Typography

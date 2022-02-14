@@ -59,6 +59,13 @@
     <string name="mul">MULAI</string>
     <string name="prs_hny">Proses hanya membutuhkan waktu beberapa menit</string>
     <string name="mhn_spkn">Mohon siapkan KTP Anda bagi WNI dan Passport Anda bagi WNA/Foreigner</string>
+    <string name="kyc_title_loading">Loading</string>
+    <string name="kyc_pstkn_info">Pastikan informasi di dalamnya dapat terbaca dengan jelas</string>
+    <string name="kyc_foto_ktp_wni">Foto KTP (WNI) / Passport (Foreigner) Anda</string>
+    <string name="kyc_pstkn_wjh">Pastikan wajah Anda berada di area oval dan Kartu Identitas Anda berada di area kotak</string>
+    <string name="kyc_hc_camera_recapture_text">Foto Ulang</string>
+    <string name="kyc_hc_image_upload">Lanjut</string>
+
 
     <!--Error Messages-->
     <string name="er_ktp_no">Nomor KTP tidak valid</string>

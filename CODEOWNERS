@@ -53,10 +53,8 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev
 /features/merchant/report/                              @tokopedia/android-minionstuart-dev
-/features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
-/features/merchant/review_shop/                         @tokopedia/android-minionken-dev
 /features/merchant/review_inbox/                        @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
@@ -81,6 +79,7 @@
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
 /features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
+/features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev
@@ -213,7 +212,6 @@
 /features/user/attachcommon/                            @tokopedia/android-minionkevin-dev
 /features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
 /features/user/campaign_shake_landing/                  @tokopedia/android-minionkevin-dev
-/features/home/account-home/                        	@tokopedia/android-minionkevin-dev
 /features/user/home_account/                        	@tokopedia/android-minionkevin-dev
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
@@ -248,7 +246,6 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
-/features/im/moengage_wrapper                   		@tokopedia/android-minionyoda-dev
 /features/ovop2p                                        @tokopedia/android-minionyoda-dev
 /features/payment/common_payment                        @tokopedia/android-minionyoda-dev
 /features/digital/instant_debit_bca                     @tokopedia/android-minionyoda-dev
@@ -258,6 +255,7 @@
 
 /features/payment/payment_setting/              		@tokopedia/android-minionyoda-dev
 /features/payment/pms/                          		@tokopedia/android-minionyoda-dev
+/features/payment/gopay.kyc/                          	@tokopedia/android-minionyoda-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
@@ -358,6 +356,7 @@
 /testapp/                                               @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
+/testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev @tokopedia/android-minionyoda-dev
 
 /features/transaction/buyerorder/                      @tokopedia/android-minionstuart-dev @tokopedia/android-minionmark-dev
 

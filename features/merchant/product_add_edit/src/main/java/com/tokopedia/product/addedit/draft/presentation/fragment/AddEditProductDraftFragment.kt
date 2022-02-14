@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
@@ -27,18 +28,19 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.presentation.adapter.ProductDraftListAdapter
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
 import com.tokopedia.product.addedit.draft.presentation.viewmodel.AddEditProductDraftViewModel
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.tracking.ProductDraftTracking
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_edit_product_draft.*
 import javax.inject.Inject
 
 open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListener {
@@ -52,6 +54,12 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         @JvmStatic
         fun newInstance() = AddEditProductDraftFragment()
     }
+
+    private var loaderUnify: LoaderUnify? = null
+    private var frameLayout: ViewGroup? = null
+    private var emptyLayout: ViewGroup? = null
+    private var geDraft: GlobalError? = null
+    private var rvDraft: RecyclerView? = null
 
     @Inject
     lateinit var viewModel: AddEditProductDraftViewModel
@@ -85,7 +93,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup()
+        setup(view)
         observer()
     }
 
@@ -182,13 +190,17 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         }
     }
 
-    private fun setup() {
-        requireActivity().window.decorView.setBackgroundColor(
-                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+    private fun setup(view: View) {
+        setFragmentToUnifyBgColor()
 
-        tvEmptyTitle = activity?.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
-        tvEmptyContent = activity?.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)
-        btnAddProduct = activity?.findViewById(com.tokopedia.baselist.R.id.button_add_promo)
+        tvEmptyTitle = view.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
+        tvEmptyContent = view.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)
+        btnAddProduct = view.findViewById(com.tokopedia.baselist.R.id.button_add_promo)
+        loaderUnify = view.findViewById(R.id.loaderUnify)
+        frameLayout = view.findViewById(R.id.frameLayout)
+        emptyLayout = view.findViewById(R.id.emptyLayout)
+        geDraft = view.findViewById(R.id.geDraft)
+        rvDraft = view.findViewById(R.id.rvDraft)
 
         tvEmptyTitle?.text = getString(R.string.label_draft_product_empty)
         tvEmptyContent?.hide()
@@ -205,8 +217,8 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         }
 
         draftListAdapter = ProductDraftListAdapter(this)
-        rvDraft.adapter = draftListAdapter
-        rvDraft.layoutManager = LinearLayoutManager(context)
+        rvDraft?.adapter = draftListAdapter
+        rvDraft?.layoutManager = LinearLayoutManager(context)
 
         viewModel.getAllProductDraft()
         displayLoader()
@@ -217,19 +229,19 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
             dismissLoader()
             when(it) {
                 is Success -> {
-                    geDraft.hide()
+                    geDraft?.hide()
                     draftListAdapter?.setDrafts(it.data)
                     displayEmptyListLayout()
                 }
                 is Fail -> {
-                    rvDraft.hide()
-                    geDraft.apply {
+                    rvDraft?.hide()
+                    geDraft?.apply {
                         setType(GlobalError.SERVER_ERROR)
                         setActionClickListener {
                             viewModel.getAllProductDraft()
                             displayLoader()
                         }
-                    }.show()
+                    }?.show()
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
@@ -250,50 +262,52 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
         observe(viewModel.deleteAllDraft) {
             dismissLoader()
-            when(it) {
-                is Success -> {
-                    Toaster.build(
-                            frameLayout,
+            frameLayout?.let { toasterParent ->
+                when(it) {
+                    is Success -> {
+                        Toaster.build(
+                            toasterParent,
                             getString(R.string.label_draft_success_delete_draft_message),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_NORMAL
-                    ).show()
-                    draftListAdapter?.deleteAllDrafts()
-                    displayEmptyListLayout()
-                }
-                is Fail -> {
-                    Toaster.build(
-                            frameLayout,
+                        ).show()
+                        draftListAdapter?.deleteAllDrafts()
+                        displayEmptyListLayout()
+                    }
+                    is Fail -> {
+                        Toaster.build(
+                            toasterParent,
                             getString(R.string.label_draft_error_delete_draft_message),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR
-                    ).show()
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        ).show()
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
         }
     }
 
     private fun displayLoader() {
-        loaderUnify.show()
-        rvDraft.hide()
-        geDraft.hide()
+        loaderUnify?.show()
+        rvDraft?.hide()
+        geDraft?.hide()
     }
 
     private fun dismissLoader() {
-        loaderUnify.hide()
-        rvDraft.show()
+        loaderUnify?.hide()
+        rvDraft?.show()
     }
 
     private fun displayEmptyListLayout() {
         draftListAdapter?.isDraftEmpty()?.let { isEmpty ->
             if (isEmpty) {
-                emptyLayout.show()
-                rvDraft.hide()
+                emptyLayout?.show()
+                rvDraft?.hide()
                 mMenu?.findItem(R.id.item_delete_all_draft)?.isVisible = false
             } else {
-                rvDraft.show()
-                emptyLayout.hide()
+                rvDraft?.show()
+                emptyLayout?.hide()
                 mMenu?.findItem(R.id.item_delete_all_draft)?.isVisible = true
             }
         }

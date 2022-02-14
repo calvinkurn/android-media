@@ -5,8 +5,8 @@
         <activity
             android:name="com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

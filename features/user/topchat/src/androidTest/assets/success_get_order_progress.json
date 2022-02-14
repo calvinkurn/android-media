@@ -1,0 +1,28 @@
+{
+  "chatOrderProgress": {
+    "enable": true,
+    "state": "new_order",
+    "orderId": "1000116964",
+    "invoiceId": "INV/20211116/MPL/1768216885",
+    "shipment": {
+      "id": 999,
+      "name": "Custom Logistik",
+      "productId": 999,
+      "productName": "Service Normal",
+      "awb": ""
+    },
+    "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/11/15/07bb56ec-3fd8-4f63-867a-55ffc70cf957.jpg",
+    "name": "variant pre-order - 0",
+    "status": "Menunggu Konfirmasi",
+    "label": {
+      "title": "Batal Otomatis",
+      "value": "23 Jam"
+    },
+    "button": {
+      "key": "",
+      "label": "",
+      "uri": ""
+    },
+    "uri": "tokopedia://marketplace/order/1000116964"
+  }
+}

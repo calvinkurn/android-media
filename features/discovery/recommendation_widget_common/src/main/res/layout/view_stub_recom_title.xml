@@ -8,10 +8,10 @@
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
     android:maxEms="12"
-    android:textSize="@dimen/sp_16"
+    android:textSize="16sp"
     android:lines="1"
     android:ellipsize="end"
     tools:text="Hypebeast Banget Pokoknya"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" />
+    xmlns:tools="http://schemas.android.com/tools"/>

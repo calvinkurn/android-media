@@ -7,7 +7,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".presentation.activity.NotificationSellerActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_seller_info"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Green">
@@ -22,12 +22,10 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
-
         <service
             android:name=".service.MarkAsSeenService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
-
 </manifest>

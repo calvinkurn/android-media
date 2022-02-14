@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
 
-import android.text.TextUtils
 import java.util.*
 
 class EnhancedECommerceRecomProductCartMapData {
@@ -22,8 +21,8 @@ class EnhancedECommerceRecomProductCartMapData {
         const val KEY_DIMENSION_53 = "dimension53"
         const val KEY_DIMENSION_83 = "dimension83"
 
-        val DEFAULT_VALUE_NONE_OTHER = "none/other"
-        val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val DEFAULT_VALUE_NONE_OTHER = "none/other"
+        const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     }
 
     private val Product = HashMap<String, Any>()

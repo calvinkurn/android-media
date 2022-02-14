@@ -72,8 +72,6 @@ import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
-import com.tokopedia.loginregister.login.const.LoginConstants.DiscoverLoginId.FACEBOOK
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -553,10 +551,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         socmedButtonsContainer?.removeAllViews()
 
         discoverData.providers.forEach { provider ->
-            if (provider.id.equals(FACEBOOK, ignoreCase = true)) {
-                return@forEach
-            }
-
             context?.let {
                 val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(provider.name)

@@ -14,209 +14,258 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE
-import com.tokopedia.product.detail.databinding.ItemDynamicShopCredibilityBinding
+import com.tokopedia.product.detail.databinding.ItemShopCredibilityBinding
+import com.tokopedia.product.detail.databinding.ViewShopCredibilityBinding
+import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Yehezkiel on 15/06/20
  */
-class ProductShopCredibilityViewHolder(private val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductShopCredibilityDataModel>(view) {
+class ProductShopCredibilityViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductShopCredibilityDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_dynamic_shop_credibility
+        val LAYOUT = R.layout.item_shop_credibility
     }
 
-    private val binding = ItemDynamicShopCredibilityBinding.bind(view)
+    private val itemBinding = ItemShopCredibilityBinding.bind(view)
+    private var mainBinding: ViewShopCredibilityBinding? = null
+    private var shimmeringBinding: ViewShopCredibilityShimmeringBinding? = null
 
-    var componentTracker: ComponentTrackDataModel? = null
+    private val context = view.context
 
     init {
-        showShopLoading()
+        itemBinding.shopCredibilityMain.setOnInflateListener { _, view ->
+            mainBinding = ViewShopCredibilityBinding.bind(view)
+        }
+        itemBinding.shopCredibilityShimmering.setOnInflateListener { _, view ->
+            shimmeringBinding = ViewShopCredibilityShimmeringBinding.bind(view)
+        }
+        itemBinding.shopCredibilityShimmering.inflate()
     }
 
     override fun bind(element: ProductShopCredibilityDataModel) {
+        val shopName = element.shopName
+        if (shopName.isEmpty()) return
+
+        shimmeringBinding?.root?.hide()
+        if (mainBinding == null) {
+            itemBinding.shopCredibilityMain.inflate()
+        }
+
+        val binding = mainBinding ?: return
         with(binding) {
-            if (element.shopName.isNotEmpty()) {
-                if (componentTracker == null) {
-                    componentTracker = getComponentTrackData(element)
-                }
-                shopName.text = MethodChecker.fromHtml(element.shopName)
-                shopLocationOnline.shouldShowWithAction(element.shopLocation.isNotEmpty()) {
-                    shopLocationOnline.text = view.context.getString(R.string.location_dot_builder, element.shopLocation)
-                }
-                setupLastActive(element.shopLastActive)
-                setupBadgeAndImage(element.shopAva, element.isOs, element.isPm, element.shopTierBadgeUrl)
-                setupGoApotik(element.isGoApotik)
-                setupInfoRegion(element)
-                setupFollow(element.isFavorite, componentTracker!!)
+            val componentTracker = getComponentTrackData(element)
+            val shopLocation = element.shopLocation
 
-                shopAva.setOnClickListener {
-                    listener.gotoShopDetail(componentTracker!!)
-                }
+            shopCredibilityName.text = HtmlLinkHelper(context, shopName).spannedString
+            shopCredibilityLocation.shouldShowWithAction(shopLocation.isNotEmpty()) {
+                shopCredibilityLocation.text =
+                    view.context.getString(R.string.location_dot_builder, shopLocation)
+            }
+            setupLastActive(element.shopLastActive, this)
+            setupBadgeAndImage(element, this)
+            setupGoApotik(element.isGoApotik, this)
+            setupInfoRegion(element, this)
+            setupFollow(element.isFavorite, componentTracker, this)
 
-                shopName.setOnClickListener {
-                    listener.gotoShopDetail(componentTracker!!)
-                }
+            shopCredibilityAva.setOnClickListener {
+                listener.gotoShopDetail(componentTracker)
+            }
 
-                ivBadge.setOnClickListener {
-                    listener.gotoShopDetail(componentTracker!!)
-                }
+            shopCredibilityName.setOnClickListener {
+                listener.gotoShopDetail(componentTracker)
+            }
 
-                hideShopLoading()
-                view.addOnImpressionListener(element.impressHolder) {
-                    listener.onImpressComponent(getComponentTrackData(element))
-                }
+            shopCredibilityBadge.setOnClickListener {
+                listener.gotoShopDetail(componentTracker)
+            }
+
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(componentTracker)
             }
         }
     }
 
     override fun bind(element: ProductShopCredibilityDataModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
-        if (element == null || payloads.isEmpty()) {
-            return
-        }
+        if (element == null || payloads.isEmpty()) return
         when (payloads[0] as Int) {
             PAYLOAD_TOOGLE_FAVORITE -> enableButton() //Will only invoke if fail follow shop
-            else -> {
-                renderFollow(element.isFavorite)
-            }
+            else -> renderFollow(element.isFavorite)
         }
     }
 
-    private fun setupFollow(isFavorite: Boolean, componentTrackDataModel: ComponentTrackDataModel) = with(binding) {
+    private fun setupFollow(
+        isFavorite: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
         if (listener.isOwner()) {
-            btnFollow.hide()
+            shopCredibilityButtonFollow.hide()
         } else {
-            btnFollow.show()
+            shopCredibilityButtonFollow.show()
         }
 
         renderFollow(isFavorite)
 
-        btnFollow.setOnClickListener {
-            btnFollow.isClickable = false
+        shopCredibilityButtonFollow.setOnClickListener {
+            shopCredibilityButtonFollow.isClickable = false
             listener.onShopInfoClicked(it.id, componentTrackDataModel)
         }
     }
 
-    private fun renderFollow(isFavorite: Boolean) = with(binding) {
+    private fun renderFollow(isFavorite: Boolean) = mainBinding?.apply {
         if (isFavorite) {
-            btnFollow.text = getString(R.string.label_favorited)
-            btnFollow.buttonType = UnifyButton.Type.ALTERNATE
+            shopCredibilityButtonFollow.text = getString(R.string.label_favorited)
+            shopCredibilityButtonFollow.buttonType = UnifyButton.Type.ALTERNATE
         } else {
-            btnFollow.text = getString(R.string.label_follow)
-            btnFollow.buttonType = UnifyButton.Type.MAIN
+            shopCredibilityButtonFollow.text = getString(R.string.label_follow)
+            shopCredibilityButtonFollow.buttonType = UnifyButton.Type.MAIN
         }
-        btnFollow.isClickable = true
+        shopCredibilityButtonFollow.isClickable = true
     }
 
-    private fun setupGoApotik(isGoApotik: Boolean) = with(binding) {
-        shopFeature.shouldShowWithAction(isGoApotik) {
-            shopFeature.text = view.context.getString(R.string.label_go_apotik)
+    private fun setupGoApotik(
+        isGoApotik: Boolean,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
+        shopCredibilityFeature.shouldShowWithAction(isGoApotik) {
+            shopCredibilityFeature.text = binding.root.context.getString(R.string.label_go_apotik)
         }
     }
 
-    private fun setupLastActive(shopLastActiveData: String) = with(binding) {
-        val context = view.context
-        shopLastActive.text = MethodChecker.fromHtml(shopLastActiveData)
+    private fun setupLastActive(
+        shopLastActiveData: String,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
+        val context = root.context
+        shopCredibilityLastActive.text = HtmlLinkHelper(context, shopLastActiveData).spannedString
         if (shopLastActiveData == context.getString(R.string.shop_online)) {
-            shopLastActive.setWeight(Typography.BOLD)
-            shopLastActive.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            shopCredibilityLastActive.setWeight(Typography.BOLD)
+            shopCredibilityLastActive.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+            )
         } else {
-            shopLastActive.setType(Typography.BODY_3)
-            shopLastActive.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            shopCredibilityLastActive.setType(Typography.BODY_3)
+            shopCredibilityLastActive.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                )
+            )
         }
     }
 
-    private fun setupInfoRegion(element: ProductShopCredibilityDataModel) = with(binding) {
-        val data = element.infoShopData
+    private fun setupInfoRegion(
+        element: ProductShopCredibilityDataModel,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
+        val infoShopData = element.infoShopData
 
-        if (data.getOrNull(0)?.value?.isEmpty() == true) {
-            shopInfoContainer1.hide()
+        val data1 = infoShopData.getOrNull(0)
+        val title1 = data1?.value
+        if (title1?.isEmpty() == true) {
+            shopCredibilityIcon1.hide()
+            shopCredibilityInfoTitle1.hide()
+            shopCredibilityInfoDesc1.hide()
         } else {
-            shopInfoContainer1.show()
-            shopInfoTitle1.text = data.getOrNull(0)?.value.orEmpty()
-            shopInfoDesc1.text = data.getOrNull(0)?.desc.orEmpty()
+            shopCredibilityInfoTitle1.show()
+            shopCredibilityInfoTitle1.text = title1.orEmpty()
 
-            if (data.getOrNull(0)?.iconIsNotEmpty() == true) {
-                shopInfoIc1.show()
-                shopInfoIc1.setImage(data.getOrNull(0)?.icon)
-            } else {
-                shopInfoIc1.hide()
-            }
+            shopCredibilityInfoDesc1.show()
+            shopCredibilityInfoDesc1.text = data1?.desc.orEmpty()
+
+            if (data1?.iconIsNotEmpty() == true) {
+                shopCredibilityIcon1.show()
+                shopCredibilityIcon1.setImage(data1.icon)
+            } else shopCredibilityIcon1.hide()
         }
 
-        if (data.getOrNull(1)?.value?.isEmpty() == true) {
-            shopInfoContainer2.hide()
+        val data2 = infoShopData.getOrNull(1)
+        val title2 = data2?.value
+        if (title2?.isEmpty() == true) {
+            shopCredibilityIcon2.hide()
+            shopCredibilityInfoTitle2.hide()
+            shopCredibilityInfoDesc2.hide()
         } else {
-            shopInfoContainer2.show()
-            shopInfoTitle2.text = data.getOrNull(1)?.value.orEmpty()
-            shopInfoDesc2.text = data.getOrNull(1)?.desc.orEmpty()
+            shopCredibilityInfoTitle2.show()
+            shopCredibilityInfoTitle2.text = title2
 
-            if (data.getOrNull(1)?.iconIsNotEmpty() == true) {
-                shopInfoIc2.show()
-                shopInfoIc2.setImage(data.getOrNull(1)?.icon)
-            } else {
-                shopInfoIc2.hide()
-            }
+            shopCredibilityInfoDesc2.show()
+            shopCredibilityInfoDesc2.text = data2?.desc.orEmpty()
+
+            if (data2?.iconIsNotEmpty() == true) {
+                shopCredibilityIcon2.show()
+                shopCredibilityIcon2.setImage(data2.icon)
+            } else shopCredibilityIcon2.hide()
         }
     }
 
-    private fun setupBadgeAndImage(avatar: String,
-                                   isOs: Boolean,
-                                   isPm: Boolean,
-                                   shopTierBadgeUrl: String) = with(binding) {
+    private fun setupBadgeAndImage(
+        element: ProductShopCredibilityDataModel,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
         if (isNewShopBadgeEnabled()) {
-            showNewBadge(shopTierBadgeUrl)
+            showNewBadge(element.shopTierBadgeUrl, binding)
         } else {
-            showOldBadge(isOs, isPm)
+            showOldBadge(element.isOs, element.isPm, binding)
         }
 
-        shopAva.loadImageCircle(avatar)
+        shopCredibilityAva.loadImageCircle(element.shopAva)
     }
 
     private fun isNewShopBadgeEnabled() = true
 
-    private fun showNewBadge(shopTierBadgeUrl: String) = with(binding) {
-        ivBadge.shouldShowWithAction(shopTierBadgeUrl.isNotEmpty()) {
-            ivBadge.scaleType = ImageView.ScaleType.FIT_XY
-            ivBadge.loadImage(shopTierBadgeUrl)
+    private fun showNewBadge(
+        shopTierBadgeUrl: String,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
+        shopCredibilityBadge.shouldShowWithAction(shopTierBadgeUrl.isNotEmpty()) {
+            shopCredibilityBadge.scaleType = ImageView.ScaleType.FIT_XY
+            shopCredibilityBadge.loadImage(shopTierBadgeUrl)
         }
     }
 
-    private fun showOldBadge(isOs: Boolean, isPm: Boolean) = with(binding) {
+    private fun showOldBadge(
+        isOs: Boolean,
+        isPm: Boolean,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
         val drawable = when {
-            isOs -> {
-                MethodChecker.getDrawable(view.context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
-            }
-            isPm -> {
-                MethodChecker.getDrawable(view.context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-            }
-            else -> {
-                null
-            }
+            isOs -> MethodChecker.getDrawable(
+                view.context,
+                com.tokopedia.gm.common.R.drawable.ic_official_store_product
+            )
+            isPm -> MethodChecker.getDrawable(
+                view.context,
+                com.tokopedia.gm.common.R.drawable.ic_power_merchant
+            )
+            else -> null
         }
-        ivBadge.shouldShowWithAction(drawable != null) {
-            ivBadge.loadImage(drawable)
+        shopCredibilityBadge.shouldShowWithAction(drawable != null) {
+            shopCredibilityBadge.loadImage(drawable)
         }
     }
 
-    private fun hideShopLoading() = with(binding) {
-        shopCredibilityContainer.show()
-        shopCredibilityShimmering.root.hide()
+    private fun enableButton() = mainBinding?.apply {
+        shopCredibilityButtonFollow.isClickable = true
     }
 
-    private fun showShopLoading() = with(binding) {
-        shopCredibilityContainer.hide()
-        shopCredibilityShimmering.root.show()
-    }
-
-    private fun enableButton() = with(binding) {
-        btnFollow.isClickable = true
-    }
-
-    private fun getComponentTrackData(element: ProductShopCredibilityDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "",
-            element?.name ?: "", adapterPosition + 1)
+    private fun getComponentTrackData(
+        element: ProductShopCredibilityDataModel?
+    ) = ComponentTrackDataModel(
+        element?.type ?: "",
+        element?.name ?: "",
+        adapterPosition + 1
+    )
 }

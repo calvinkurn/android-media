@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
  * Created by Ade Fulki on 21/04/20.
@@ -32,7 +33,7 @@ abstract class BaseOtpToolbarFragment : BaseOtpFragment() {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
                 elevation = 0f
-                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_N0)))
+                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, RUnify.color.Unify_Background)))
             }
         }
     }

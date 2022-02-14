@@ -20,6 +20,7 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadWishlistState
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory,
@@ -277,6 +278,20 @@ class NotificationAdapter constructor(
     private fun isNextItemDivider(position: Int): Boolean {
         val item = visitables.getOrNull(position + 1) ?: return false
         return item is BigDividerUiModel
+    }
+
+    fun updateFailedAddToWishlist(
+        notification: NotificationUiModel,
+        productData: ProductData,
+        position: Int
+    ) {
+        val itemMetaData = getUpToDateUiModelPosition(position, notification)
+        val itemPosition = itemMetaData.first
+        if (itemPosition != RecyclerView.NO_POSITION) {
+            productData.isWishlist = false
+            val payload = PayloadWishlistState(productData, notification)
+            notifyItemChanged(itemPosition, payload)
+        }
     }
 
 }

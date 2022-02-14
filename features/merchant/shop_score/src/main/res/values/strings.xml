@@ -294,10 +294,30 @@
     <string name="title_relief_parameter_for_new_seller_bottom_sheet">Keringanan parameter untukmu</string>
     <string name="desc_relief_parameter_for_new_seller_bottom_sheet">Selama 59 hari pertama berjualan, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.
     &lt;br /&gt;&lt;br /&gt;Tokomu akan dapat keringanan hingga: %s</string>
+    <string name="desc_relief_parameter_for_reactivated_seller">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari.</string>
+    <string name="desc_relief_parameter_for_reactivated_seller_bottom_sheet">Selama 59 hari, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.</string>
     <string name="title_oke_understand">Oke, Saya Mengerti</string>
     <string name="title_score_new_seller_label">Skor:</string>
     <string name="title_warning_new_seller_shop_score_pm_pro">Karena skormu di bawah 60, status Power Merchant PRO kamu nonaktif</string>
     <string name="title_warning_new_seller_shop_score_pm">Karena skormu di bawah 60, status Power Merchant kamu nonaktif</string>
     <string name="desc_warning_new_seller_shop_score_pm_pro">Tingkatkan kualitas toko untuk tetap jadi PM PRO, ya.</string>
     <string name="desc_warning_new_seller_shop_score_pm">Tingkatkan kualitas toko untuk tetap jadi PM, ya.</string>
+
+    <!-- Reactivated Seller -->
+    <string name="title_ticker_reactivated_seller">Halo Seller, selamat datang kembali!</string>
+    <string name="desc_ticker_reactivated_seller">Skor Performa Tokomu baru akan muncul setelah hari Senin, ya.</string>
+    <string name="title_reactivated_seller_after_comeback">Halo Seller, selamat datang kembali!</string>
+    <string name="desc_reactivated_seller_after_comeback">Sebagai bentuk dukungan buat kamu, Tokopedia memberikan kamu keringanan untuk penilaian 2 parameter skor selama 59 hari!</string>
+    <string name="title_reactivated_seller_level_0">Belum ada level &amp; skor untuk tokomu</string>
+    <string name="desc_reactivated_seller_level_0">Level dan skor Performa Toko akan ditampilkan di sini berdasarkan performa selama 90 hari terakhir. Kamu akan dapat skor setelah hari Senin, ya.</string>
+    <string name="desc_reactivated_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari.</string>
+
+    <string name="title_pm_or_pro_reactivated_seller_faq">Jika status Power Merchant atau Power Merchant PRO saya nonaktif, bagaimana mengaktifkan kembali status keanggotaan saya?</string>
+    <string name="desc_pm_or_pro_reactivated_seller_faq">Dengan meningkatkan skor Performa Tokomu min. 60, maka status Power Merchantmu akan kembali aktif. Pengecekan status keanggotaan akan dilakukan setiap Hari Senin di setiap minggunya, ya.</string>
+
+    <string name="title_time_adjustment_what_relief_for_reactivated_seller">Apa itu waktu penyesuaian (59 hari) dan keringanan apa yang saya dapatkan?</string>
+    <string name="desc_time_adjustment_what_relief_for_reactivated_seller">Selama 59 hari, Seller akan mendapatkan keringanan untuk penilaian 2 parameter skor, yaitu parameter “Jumlah Pembeli” dan “Membuka Tokopedia Seller selama 90 hari”. Untuk kedua parameter tersebut, Seller akan mendapatkan nilai keringanan berupa nilai tengah, di mana nilai tersebut tidak akan berubah selama 59 hari masa penyesuaian. Setelah 59 hari masa penyesuaian, nilai keringanan pada kedua parameter tersebut akan digantikan oleh nilai sebenarnya.</string>
+
+    <!-- Shop Penalty Tablet -->
+    <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
 </resources>

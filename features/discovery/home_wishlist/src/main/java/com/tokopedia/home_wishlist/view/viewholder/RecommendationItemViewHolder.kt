@@ -1,6 +1,7 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
@@ -21,12 +22,18 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
 
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener{
                 override fun onViewHint() {
-                    (listener as WishlistListener).onProductImpression(element, adapterPosition)
+                    // to prevent ArrayIndexOutOfBoundsException
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        (listener as WishlistListener).onProductImpression(element, adapterPosition)
+                    }
                 }
             })
 
             setOnClickListener {
-                (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
+                // to prevent ArrayIndexOutOfBoundsException
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
+                }
             }
         }
     }

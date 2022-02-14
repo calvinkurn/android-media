@@ -1,7 +1,7 @@
 package com.tokopedia.cart.bundle.view.subscriber
 
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import rx.Subscriber
 
 /**

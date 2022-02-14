@@ -5,6 +5,7 @@ class AddEditProductDetailConstants {
         const val MAX_PRODUCT_PHOTOS = 5
         const val MAX_PRODUCT_PHOTOS_OS = 7
         const val MAX_WHOLESALE_PRICES = 5
+        const val MAX_SUGGESTION_NAME = 5
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
         const val REQUEST_CODE_CATEGORY = 1

@@ -46,10 +46,6 @@
             android:name=".login.behaviour.activity.RegisterEmailActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id_ma" />
-
     </application>
 
 

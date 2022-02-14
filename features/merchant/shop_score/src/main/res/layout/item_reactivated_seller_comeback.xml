@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/containerReactivatedSeller"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imgReactivatedSellerComeback"
+            android:layout_width="@dimen/img_reactivated_comeback_width"
+            android:layout_height="88dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleReactivatedSeller"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="@string/title_reactivated_seller_after_comeback"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgReactivatedSellerComeback"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescReactivatedSeller"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="@string/desc_reactivated_seller_after_comeback"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleReactivatedSeller"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnShopPerformanceLearn"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/shop_performance_learn"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/icVideoPerformanceLearnReactivated"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescReactivatedSeller"
+            app:layout_constraintWidth_percent="0.5"
+            app:unifyButtonInvers="true"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icVideoPerformanceLearnReactivated"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="VIDEO"
+            app:layout_constraintBottom_toBottomOf="@id/btnShopPerformanceLearn"
+            app:layout_constraintStart_toEndOf="@id/btnShopPerformanceLearn"
+            app:layout_constraintTop_toTopOf="@id/btnShopPerformanceLearn" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvWatchVideoReactivated"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/title_tv_watch"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/btnShopPerformanceLearn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icVideoPerformanceLearnReactivated"
+            app:layout_constraintTop_toTopOf="@id/btnShopPerformanceLearn"
+            app:typographyType="heading_5" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/watchVideoGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="icVideoPerformanceLearnReactivated, tvWatchVideoReactivated" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

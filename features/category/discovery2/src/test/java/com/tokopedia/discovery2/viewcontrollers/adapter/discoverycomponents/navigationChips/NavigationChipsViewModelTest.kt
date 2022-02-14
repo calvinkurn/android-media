@@ -16,7 +16,9 @@ class NavigationChipsViewModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
-
+    private val viewModel: NavigationChipsViewModel by lazy {
+        spyk(NavigationChipsViewModel(application, componentsItem, 99))
+    }
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -44,5 +46,15 @@ class NavigationChipsViewModelTest {
         }
         viewModel = spyk(NavigationChipsViewModel(application, componentsItem, 99))
         assert(viewModel.getListDataLiveData().value?.size == 5)
+    }
+
+    @Test
+    fun `test for position passed to VM`(){
+        assert(viewModel.position == 99)
+    }
+
+    @Test
+    fun `test for component passed to VM`(){
+        assert(viewModel.components === componentsItem)
     }
 }

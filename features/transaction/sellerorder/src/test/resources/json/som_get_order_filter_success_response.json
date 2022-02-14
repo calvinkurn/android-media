@@ -48,11 +48,12 @@
         },
         {
           "order_status_id": [
-            400
+            400,
+            520
           ],
           "key": "confirm_shipping",
           "order_status": "Siap Dikirim",
-          "order_status_amount": 0,
+          "order_status_amount": 15,
           "is_checked": false,
           "child_status": []
         },
@@ -61,42 +62,23 @@
             450,
             500,
             501,
-            520,
             530,
             540,
             550,
-            600,
-            601
+            600
           ],
           "key": "in_shipping",
           "order_status": "Dalam Pengiriman",
-          "order_status_amount": 0,
+          "order_status_amount": 39243,
           "is_checked": false,
           "child_status": [
-            {
-              "id": [
-                450,
-                500,
-                501,
-                520,
-                530,
-                540,
-                550,
-                600,
-                601
-              ],
-              "key": "all_in_shipping_order",
-              "text": "Semua Dalam Pengiriman",
-              "amount": 0,
-              "is_checked": false
-            },
             {
               "id": [
                 450
               ],
               "key": "waiting_pickup",
               "text": "Menunggu Pick-Up",
-              "amount": 0,
+              "amount": 39213,
               "is_checked": false
             },
             {
@@ -105,7 +87,7 @@
               ],
               "key": "shipped",
               "text": "Sedang Dikirim",
-              "amount": 0,
+              "amount": 5,
               "is_checked": false
             },
             {
@@ -114,16 +96,7 @@
               ],
               "key": "waiting_awb_status",
               "text": "Menunggu Status Resi",
-              "amount": 0,
-              "is_checked": false
-            },
-            {
-              "id": [
-                520
-              ],
-              "key": "awb_invalid",
-              "text": "Resi Tidak Valid",
-              "amount": 0,
+              "amount": 1,
               "is_checked": false
             },
             {
@@ -132,7 +105,7 @@
               ],
               "key": "awb_changed",
               "text": "Resi Diubah",
-              "amount": 0,
+              "amount": 22,
               "is_checked": false
             },
             {
@@ -141,7 +114,7 @@
               ],
               "key": "ready_to_collect",
               "text": "Menunggu Pengambilan",
-              "amount": 0,
+              "amount": 1,
               "is_checked": false
             },
             {
@@ -149,8 +122,8 @@
                 550
               ],
               "key": "order_returned",
-              "text": "Pesanan Dikembalikan",
-              "amount": 0,
+              "text": "Produk Dikembalikan",
+              "amount": 1,
               "is_checked": false
             },
             {
@@ -161,17 +134,18 @@
               "text": "Pesanan Tiba",
               "amount": 0,
               "is_checked": false
-            },
-            {
-              "id": [
-                601
-              ],
-              "key": "complaint",
-              "text": "Pesanan Dikomplain",
-              "amount": 0,
-              "is_checked": false
             }
           ]
+        },
+        {
+          "order_status_id": [
+            601
+          ],
+          "key": "complaint",
+          "order_status": "Dikomplain",
+          "order_status_amount": 1,
+          "is_checked": false,
+          "child_status": []
         },
         {
           "order_status_id": [
@@ -199,37 +173,44 @@
             15
           ],
           "key": "order_canceled",
-          "order_status": "Pesanan Dibatalkan",
+          "order_status": "Dibatalkan",
           "order_status_amount": 0,
           "is_checked": false,
-          "child_status": []
+          "child_status": [
+            {
+              "id": [
+                15
+              ],
+              "key": "buyer_instant_cancel",
+              "text": "Dibatalkan Pembeli",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                10
+              ],
+              "key": "seller_reject",
+              "text": "Dibatalkan Penjual",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                0,
+                4,
+                6,
+                11
+              ],
+              "key": "system_reject",
+              "text": "Dibatalkan Sistem",
+              "amount": 0,
+              "is_checked": false
+            }
+          ]
         }
       ],
       "shipping_list": [
-        {
-          "shipping_id": 17,
-          "shipping_code": "pikliexp",
-          "shipping_name": "Lionel-Express Cargo",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": ""
-        },
-        {
-          "shipping_id": 8,
-          "shipping_code": "pandu",
-          "shipping_name": "Pandu",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": ""
-        },
-        {
-          "shipping_id": 9,
-          "shipping_code": "first",
-          "shipping_name": "First",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-first.png"
-        },
         {
           "shipping_id": 14,
           "shipping_code": "jnt",
@@ -237,6 +218,14 @@
           "shipping_desc": null,
           "status": 0,
           "img_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png"
+        },
+        {
+          "shipping_id": 25,
+          "shipping_code": "indopkt",
+          "shipping_name": "Indo Paket",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-indopaket.png"
         },
         {
           "shipping_id": 2,
@@ -247,12 +236,76 @@
           "img_logo": "https://ecs7.tokopedia.net/img/kurir-tiki.png"
         },
         {
+          "shipping_id": 3,
+          "shipping_code": "rpx",
+          "shipping_name": "RPX",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": ""
+        },
+        {
           "shipping_id": 4,
           "shipping_code": "pos",
           "shipping_name": "Pos Indonesia",
           "shipping_desc": null,
           "status": 0,
           "img_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png"
+        },
+        {
+          "shipping_id": 12,
+          "shipping_code": "ninja",
+          "shipping_name": "Ninja Xpress",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-ninja.png"
+        },
+        {
+          "shipping_id": 13,
+          "shipping_code": "grab",
+          "shipping_name": "GrabExpress",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png"
+        },
+        {
+          "shipping_id": 6,
+          "shipping_code": "wahana",
+          "shipping_name": "Wahana",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-wahana.png"
+        },
+        {
+          "shipping_id": 9,
+          "shipping_code": "first",
+          "shipping_name": "First",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-first.png"
+        },
+        {
+          "shipping_id": 17,
+          "shipping_code": "pikliexp",
+          "shipping_name": "Lionel-Express Cargo",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": ""
+        },
+        {
+          "shipping_id": 28,
+          "shipping_code": "paxel",
+          "shipping_name": "Paxel",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-paxel.png"
+        },
+        {
+          "shipping_id": 999,
+          "shipping_code": "custom",
+          "shipping_name": "Custom Logistik",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-custom.png"
         },
         {
           "shipping_id": 26,
@@ -263,12 +316,68 @@
           "img_logo": "https://ecs7.tokopedia.net/img/kurir-rekomendasi.png"
         },
         {
-          "shipping_id": 12,
-          "shipping_code": "ninja",
-          "shipping_name": "Ninja Xpress",
+          "shipping_id": 1,
+          "shipping_code": "jne",
+          "shipping_name": "JNE",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-ninja.png"
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png"
+        },
+        {
+          "shipping_id": 8,
+          "shipping_code": "pandu",
+          "shipping_name": "Pandu",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": ""
+        },
+        {
+          "shipping_id": 11,
+          "shipping_code": "sicepat",
+          "shipping_name": "SiCepat",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png"
+        },
+        {
+          "shipping_id": 15,
+          "shipping_code": "pikmex",
+          "shipping_name": "Mex Barlian",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": ""
+        },
+        {
+          "shipping_id": 23,
+          "shipping_code": "anteraja",
+          "shipping_name": "AnterAja",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png"
+        },
+        {
+          "shipping_id": 24,
+          "shipping_code": "lion",
+          "shipping_name": "Lion Parcel",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png"
+        },
+        {
+          "shipping_id": 7,
+          "shipping_code": "cahaya",
+          "shipping_name": "Cahaya",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": ""
+        },
+        {
+          "shipping_id": 10,
+          "shipping_code": "gojek",
+          "shipping_name": "GoSend",
+          "shipping_desc": null,
+          "status": 0,
+          "img_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png"
         },
         {
           "shipping_id": 16,
@@ -293,111 +402,10 @@
           "shipping_desc": null,
           "status": 0,
           "img_logo": ""
-        },
-        {
-          "shipping_id": 23,
-          "shipping_code": "anteraja",
-          "shipping_name": "AnterAja",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png"
-        },
-        {
-          "shipping_id": 1,
-          "shipping_code": "jne",
-          "shipping_name": "JNE",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png"
-        },
-        {
-          "shipping_id": 7,
-          "shipping_code": "cahaya",
-          "shipping_name": "Cahaya",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": ""
-        },
-        {
-          "shipping_id": 10,
-          "shipping_code": "gojek",
-          "shipping_name": "Gojek",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png"
-        },
-        {
-          "shipping_id": 24,
-          "shipping_code": "lion",
-          "shipping_name": "Lion Parcel",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png"
-        },
-        {
-          "shipping_id": 999,
-          "shipping_code": "custom",
-          "shipping_name": "Custom Logistik",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-custom.png"
-        },
-        {
-          "shipping_id": 13,
-          "shipping_code": "grab",
-          "shipping_name": "GrabExpress",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png"
-        },
-        {
-          "shipping_id": 15,
-          "shipping_code": "pikmex",
-          "shipping_name": "Mex Barlian",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": ""
-        },
-        {
-          "shipping_id": 25,
-          "shipping_code": "indopkt",
-          "shipping_name": "Indo Paket",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-indopaket.png"
-        },
-        {
-          "shipping_id": 3,
-          "shipping_code": "rpx",
-          "shipping_name": "RPX",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": ""
-        },
-        {
-          "shipping_id": 6,
-          "shipping_code": "wahana",
-          "shipping_name": "Wahana",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-wahana.png"
-        },
-        {
-          "shipping_id": 11,
-          "shipping_code": "sicepat",
-          "shipping_name": "SiCepat",
-          "shipping_desc": null,
-          "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png"
         }
       ]
     },
     "orderTypeList": [
-      {
-        "id": 1,
-        "key": "pre_order",
-        "name": "Pre Order"
-      },
       {
         "id": 2,
         "key": "same_day",
@@ -411,17 +419,27 @@
       {
         "id": 3,
         "key": "pickup_delivery",
-        "name": "Pickup Delivery"
+        "name": "Request Pickup"
       },
       {
-        "id": 4,
-        "key": "ppp",
-        "name": "Proteksi Produk"
+        "id": 1,
+        "key": "pre_order",
+        "name": "Pre Order"
+      },
+      {
+        "id": 10,
+        "key": "request_cancel",
+        "name": "Pengajuan Pembatalan"
       },
       {
         "id": 8,
         "key": "cod",
         "name": "Bayar di Tempat"
+      },
+      {
+        "id": 11,
+        "key": "tokocabang",
+        "name": "Tokocabang"
       }
     ]
   }

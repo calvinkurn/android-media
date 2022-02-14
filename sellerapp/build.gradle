@@ -242,6 +242,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.weaver)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.logisticorder)
@@ -329,7 +330,6 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-    implementation projectOrAar(rootProject.ext.features.moengageWrapper)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core

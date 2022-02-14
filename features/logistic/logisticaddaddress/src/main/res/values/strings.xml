@@ -154,6 +154,8 @@
     <string name="txt_message_ana_negative">Tidak ketemu? Isi alamat secara manual</string>
     <string name="txt_location_not_detected">Lokasi tidak terdeteksi</string>
     <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
+    <string name="txt_empty_state">Oops, alamatmu tidak ditemukan</string>
+    <string name="txt_empty_state_desc">Cek ulang alamatmu dan coba lagi, ya.</string>
 
     <!--PinpointNew Page-->
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
@@ -203,5 +205,4 @@
     <string name="field_nomor_hp">nomor hp</string>
 
     <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
-    <string name="tnc_description">Dengan klik \"%1$s\", kamu menyetujui Syarat &amp; Ketentuan.</string>
 </resources>

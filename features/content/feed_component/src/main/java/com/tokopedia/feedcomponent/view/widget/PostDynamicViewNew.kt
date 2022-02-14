@@ -1,10 +1,8 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.annotation.SuppressLint
-import android.animation.LayoutTransition
-import android.animation.ValueAnimator
 import android.content.Context
-import android.content.res.Resources
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
@@ -19,8 +17,9 @@ import android.util.AttributeSet
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -31,6 +30,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -44,6 +44,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -54,31 +55,26 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_image_new.view.*
+import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
-import android.graphics.Paint
-import android.widget.TextView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.util.util.*
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
-import java.lang.Exception
-import android.graphics.Rect
-import com.tokopedia.unifycomponents.toDp
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
+private const val TYPE_FEED_X_CARD_VOD: String = "FeedXCardPlay"
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
@@ -89,12 +85,15 @@ private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
+private const val TIME_THIRTY_SEC = 30000L
 private const val TIME_FOUR_SEC = 4000L
+private const val TIME_FIVE_SEC = 5000L
 private const val TIMER_TO_BE_SHOWN = 3000L
 private const val PRODUCT_DOT_TIMER = 4000L
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
+private const val HOUR_IN_HOUR = 3600
 private const val SPACE = 3
 private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
@@ -104,6 +103,12 @@ private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 private val handlerFeed = Handler(Looper.getMainLooper())
+private var secondCountDownTimer: CountDownTimer? = null
+private var addViewTimer: Timer? = null
+private var isPaused = false
+private const val FOLLOW_MARGIN = 6
+private const val MARGIN_ZERO = 0
+
 
 /**
  * LIHAT_PRODUK_EXPANDED_WIDTH, LIHAT_PRODUK_CONTRACTED_WIDTH Value is fixed width  for Lihat Produk (item_post_image_new ,id = tv_lihat_product)
@@ -149,6 +154,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var topAdsListener:TopAdsHeadlineListener? = null
     private var positionInFeed: Int = 0
     var isMute = true
+    var isVODViewFrozen = true
     private var videoPlayer: FeedExoPlayer? = null
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
@@ -215,7 +221,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.author.id,
             feedXCard.typename,
             feedXCard.followers.isFollowed,
-            feedXCard.media.firstOrNull()?.type ?: ""
+            feedXCard.media.firstOrNull()?.type ?: "",
+            feedXCard.playChannelID
         )
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
@@ -232,7 +239,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.followers.isFollowed,
                 feedXCard.author.id,
                 isVideo(feedXCard.media.firstOrNull()),
-                feedXCard.isTopAds
+                feedXCard.isTopAds,
+                feedXCard.playChannelID
             )
         }
     }
@@ -246,14 +254,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
     fun bindLike(feedXCard: FeedXCard) {
-        bindLike(
-            feedXCard.like,
-            feedXCard.id.toIntOrZero(),
-            feedXCard.typename,
-            feedXCard.followers.isFollowed,
-            feedXCard.author.id,
-            isVideo(feedXCard.media.firstOrNull())
-        )
+
+        if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
+            bindViews(feedXCard)
+        } else {
+            bindLike(
+                    feedXCard.like,
+                    feedXCard.id.toIntOrZero(),
+                    feedXCard.typename,
+                    feedXCard.followers.isFollowed,
+                    feedXCard.author.id,
+                    isVideo(feedXCard.media.firstOrNull())
+            )
+        }
     }
 
     fun bindFollow(feedXCard: FeedXCard) {
@@ -269,7 +282,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.isTopAds,
             feedXCard.adId,
             feedXCard.shopId,
-            feedXCard.cpmData
+            feedXCard.cpmData,
+            feedXCard.playChannelID.toIntOrZero()
         )
     }
 
@@ -285,7 +299,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         isTopads:Boolean,
         adId:String,
         shopId: String,
-        cpmData: CpmData
+        cpmData: CpmData,
+        channelId:Int
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -304,10 +319,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (isTopads){
             followCount.text = context.getString(R.string.feeds_ads_text)
         }
+
         followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
+        if (shopBadge.visibility == GONE) {
+            val layoutParams = (followCount?.layoutParams as? MarginLayoutParams)
+            layoutParams?.setMargins(FOLLOW_MARGIN, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
+            followCount?.layoutParams = layoutParams
+        }
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
@@ -342,7 +363,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onAvatarClick(
                     positionInFeed,
                     author.appLink,
-                    activityId,
+                    if (type == TYPE_FEED_X_CARD_VOD) channelId else activityId,
                     activityName,
                     followCta,
                     type,
@@ -395,12 +416,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
             }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            try {
+                spannableString.setSpan(
+                    cs,
+                    0,
+                    authorName.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } catch (e: Exception) {
+            }
+            shopName.text = spannableString
+
+        } else {
+            try {
+                spannableString.setSpan(
+                    cs,
+                    0,
+                    authorName.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } catch (e: Exception) {
+            }
+            shopName.text = spannableString
+
         }
-        try {
-            spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } catch (e: Exception) {
-        }
-        shopName.text = spannableString
+
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
 
@@ -411,7 +451,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             listener?.onAvatarClick(
                 positionInFeed,
                 author.appLink,
-                activityId,
+                if (type == TYPE_FEED_X_CARD_VOD) channelId else activityId,
                 activityName,
                 followCta,
                 type,
@@ -434,8 +474,49 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 authorType,
                 type,
                 isVideo,
-                caption)
+                caption,
+                channelId.toString())
         }
+    }
+    private fun bindViews(feedXCard: FeedXCard){
+
+        val view = feedXCard.views
+        if (feedXCard.like.isLiked) {
+            val colorGreen =
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
+        } else {
+            val colorGrey =
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
+        }
+        if (view.count != 0) {
+            likedText.show()
+
+            likedText.text =
+                    MethodChecker.fromHtml(
+                            context.getString(
+                                    R.string.feed_component_viewed_count_text,
+                                    view.count.productThousandFormatted(1)
+                            )
+                    )
+        } else {
+            likedText.hide()
+        }
+        likeButton.setOnClickListener {
+            listener?.onLikeClick(
+                    positionInFeed,
+                    feedXCard.id.toIntOrZero(),
+                    feedXCard.like.isLiked,
+                    feedXCard.typename,
+                    feedXCard.followers.isFollowed,
+                    shopId = feedXCard.author.id,
+                    isVideo = true,
+                    playChannelId = feedXCard.playChannelID
+
+            )
+        }
+
     }
 
     private fun bindLike(
@@ -531,7 +612,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onAvatarClick(
                     positionInFeed,
                     caption.author.appLink,
-                    caption.id.toIntOrZero(),
+                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID.toIntOrZero() else caption.id.toIntOrZero(),
                     "",
                     followCta,
                     caption.typename,
@@ -580,7 +661,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 captionText.setOnClickListener {
                     if (captionText.text.contains(context.getString(R.string.feed_component_read_more_button))) {
                         listener?.onReadMoreClicked(
-                            caption.id,
+                            if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
                             caption.author.id,
                             caption.typename,
                             caption.followers.isFollowed,
@@ -667,7 +748,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         authorId: String,
         type: String,
         isFollowed: Boolean,
-        mediaType: String
+        mediaType: String,
+        playChannelId: String
     ) {
 
         setCommentCount(comments)
@@ -701,13 +783,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             authId = authorId
         val isVideo = mediaType != TYPE_IMAGE
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId, isClickIcon = true)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId, isClickIcon = false)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId=playChannelId, isClickIcon = true)
         }
     }
 
@@ -723,7 +805,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
-        if (feedXCard.typename != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
+        if (feedXCard.typename != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.typename != TYPE_FEED_X_CARD_VOD) {
             val globalCardProductList = feedXCard.tags
             gridList.gone()
             carouselView.visible()
@@ -914,7 +996,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         if (tagProducts.isNotEmpty()) {
                                             if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH_INDP && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
-                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH_INDP) {
+                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
                                             } else if (productTagBubbleShowing){
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
@@ -980,7 +1062,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.typename,
                                         feedXCard.followers.isFollowed,
                                         false,
-                                        positionInFeed
+                                        positionInFeed,
+                                        feedXCard.author.name
                                     )
                                 }
                             }
@@ -1000,7 +1083,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             tagProducts,
                             feedXCard.author.id,
                             feedXCard.typename,
-                            feedXCard.followers.isFollowed
+                            feedXCard.followers.isFollowed,
+                            feedXCard.author.name
                         )?.let {
                             addItem(
                                 it
@@ -1034,9 +1118,69 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
             }
 
+        } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
+            setVODLayout(feedXCard)
         } else {
             setGridASGCLayout(feedXCard)
         }
+    }
+
+    private fun setVODLayout(feedXCard: FeedXCard){
+            val media = feedXCard.media
+            val postId = feedXCard.id.toIntOrZero()
+            val globalCardProductList = feedXCard.tags
+            gridList.gone()
+            carouselView.visible()
+            commentButton.visible()
+            carouselView.apply {
+                stage.removeAllViews()
+                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
+                if (media.size > 1) {
+                    pageControl.show()
+                    pageControl.setIndicator(media.size)
+                    pageControl.indicatorCurrentPosition = activeIndex
+                } else {
+                    pageControl.hide()
+                }
+                media.forEach { feedMedia ->
+                    val tags = feedMedia.tagging
+                    val tagProducts = mutableListOf<FeedXProduct>()
+                    tags.map {
+                        if (!ifProductAlreadyPresent(globalCardProductList[it.tagIndex],
+                                        tagProducts))
+                            tagProducts.add(globalCardProductList[it.tagIndex])
+                    }
+                    if (media.isNotEmpty()) {
+                        imagePostListener.userCarouselImpression(
+                                feedXCard.playChannelID,
+                                media[0],
+                                0,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.id,
+                                positionInFeed,
+                                feedXCard.cpmData,
+                                feedXCard.listProduct
+                        )
+                    }
+                    feedMedia.isImageImpressedFirst = true
+                        setVODView(
+                                feedXCard,
+                                feedMedia,
+                                tagProducts,
+                                feedXCard.author.id,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.name
+                        )?.let {
+                            addItem(
+                                    it
+                            )
+                        }
+                }
+            }
+
+
     }
 
     private fun setVideoCarouselView(
@@ -1045,14 +1189,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
         products: List<FeedXProduct>,
         id: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopName: String
     ): View? {
         val videoItem = getVideoItem()
         feedMedia.canPlay = false
         feedMedia.videoView = videoItem
         videoItem?.run {
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-            video_tag_text?.setOnClickListener {
+            video_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
                             postId.toIntOrZero(),
@@ -1062,15 +1207,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             type,
                             isFollowed,
                             true,
-                            positionInFeed
+                            positionInFeed,
+                            shopName = shopName
                     )
                 }
             }
 
+
             volumeIcon.setOnClickListener {
                 isMute = !isMute
                 if (isMute)
-                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
+                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed,false)
                 volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
@@ -1087,7 +1234,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedXCard: FeedXCard,
     ) {
         val videoItem = feedMedia.videoView
-        val tags =feedMedia.tagging
+        val tags = feedMedia.tagging
         val postProductList = feedXCard.tags
         val tagProducts = mutableListOf<FeedXProduct>()
         tags.map {
@@ -1095,17 +1242,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
             tagProducts.add(postProductList[it.tagIndex])
         }
         videoItem?.run {
-            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
-            layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-            findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(tagProducts.isNotEmpty())
+            val layoutLihatProdukParent = findViewById<Typography>(R.id.video_lihat_product)
+            if (tagProducts.isEmpty()) {
+                layoutLihatProdukParent.gone()
+            } else {
+                layoutLihatProdukParent.visible()
+                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+            }
 
 
             if (handlerAnim == null) {
                 handlerAnim = handlerFeed
             }
             handlerAnim?.postDelayed({
-                showViewWithSlideAnimation(layoutLihatProdukParent)
-                video_tag_text.visible()
+                if (tagProducts.isNotEmpty()) {
+                    showViewWithAnimation(layoutLihatProdukParent, context)
+                }
             }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
@@ -1113,19 +1265,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
-                    if (feedMedia.mediaUrl.isNotEmpty()) {
-                        val authorType = if (type != 1)
-                            authorId else ""
-                        videoListener?.onVideoPlayerClicked(
-                            positionInFeed,
-                            index,
-                            postId,
-                            feedMedia.appLink,
-                            authorId,
-                            authorType,
-                            feedXCard.followers.isFollowed
-                        )
-                    }
+                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false)
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
@@ -1152,6 +1292,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                             override fun onFinish() {
                                 timer_view.gone()
+                                volumeIcon?.gone()
                             }
                         }.start()
                     }
@@ -1168,6 +1309,276 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
+    private fun setVODView(
+            feedXCard: FeedXCard,
+            feedMedia: FeedXMedia,
+            products: List<FeedXProduct>,
+            id: String,
+            type: String,
+            isFollowed: Boolean,
+            shopName: String
+    ): View? {
+        val postId = feedXCard.id
+        val vodItem = getVODItem()
+        feedMedia.canPlay = false
+        feedMedia.videoView = vodItem
+
+        vodItem?.run {
+            vod_videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+            vod_lihat_product?.setOnClickListener {
+                listener?.let { listener ->
+                    listener.onTagClicked(
+                            feedXCard?.playChannelID.toInt(),
+                            products,
+                            listener,
+                            id,
+                            type,
+                            isFollowed,
+                            true,
+                            positionInFeed,
+                            playChannelId =   feedXCard.playChannelID,
+                            shopName = shopName
+                    )
+                }
+            }
+            ic_vod_play?.setOnClickListener {
+                playVOD(feedXCard =  feedXCard)
+            }
+            vod_full_screen_icon?.setOnClickListener {
+                isPaused = true
+                vod_lanjut_menonton_btn?.gone()
+                vod_frozen_view?.gone()
+                listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, 0L, shouldTrack = true, true)
+            }
+
+            vod_volumeIcon?.setOnClickListener {
+                setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
+            }
+        }
+        return vodItem
+    }
+
+    private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean) {
+        var countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
+            override fun onTick(millisUntilFinished: Long) {
+
+            }
+
+            override fun onFinish() {
+                volumeIcon?.gone()
+            }
+        }
+        isMute = !isMute
+        listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
+        if (!volumeIcon?.isVisible!!)
+            volumeIcon.visible()
+        volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+        toggleVolume(videoPlayer?.isMute() != true)
+        if (isVideoTap){
+            if (countDownTimer != null) {
+                countDownTimer.cancel()
+                countDownTimer.start()
+            } else {
+                countDownTimer.start()
+            }
+
+        }
+    }
+
+    private fun setVODControl(
+            feedMedia: FeedXMedia,
+            postId: String,
+            index: Int,
+            authorId: String,
+            type: Int,
+            feedXCard: FeedXCard,
+    ) {
+        val vodItem = feedMedia.videoView
+        val tags = feedMedia.tagging
+        val postProductList = feedXCard.tags
+        secondCountDownTimer = null
+        addViewTimer = Timer()
+        val tagProducts = mutableListOf<FeedXProduct>()
+        isVODViewFrozen = false
+        var count1 = 0
+        var shouldTrack = true
+        isPaused = false
+        vod_lanjut_menonton_btn?.gone()
+        vod_frozen_view?.gone()
+
+        tags.map {
+            if (!ifProductAlreadyPresent(postProductList[it.tagIndex], tagProducts))
+                tagProducts.add(postProductList[it.tagIndex])
+        }
+        vodItem?.run {
+            val layoutLihatProdukParent = findViewById<Typography>(R.id.vod_lihat_product)
+            if (tagProducts.isEmpty()) {
+                layoutLihatProdukParent.gone()
+            } else {
+                layoutLihatProdukParent.visible()
+                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+            }
+            vod_frozen_view?.gone()
+            vod_full_screen_icon?.visible()
+
+
+
+            if (handlerAnim == null) {
+                handlerAnim = Handler(Looper.getMainLooper())
+            }
+            handlerAnim?.postDelayed({
+                if (tagProducts.isNotEmpty()) {
+                    showViewWithAnimation(layoutLihatProdukParent, context)
+                }
+            }, TIME_SECOND)
+            productVideoJob?.cancel()
+            productVideoJob = scope.launch {
+                if (videoPlayer == null)
+                    videoPlayer = FeedExoPlayer(context)
+
+                vod_layout_video?.player = videoPlayer?.getExoPlayer()
+                vod_layout_video?.videoSurfaceView?.setOnClickListener {
+                    if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
+                        setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true)
+                    }
+                }
+                vod_full_screen_icon?.setOnClickListener {
+                    isPaused = true
+                    vod_lanjut_menonton_btn?.gone()
+                    vod_frozen_view?.gone()
+                    videoPlayer?.getExoPlayer()?.currentPosition?.let {
+                        it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
+                }
+                vod_lanjut_menonton_btn?.setOnClickListener {
+                    vod_lanjut_menonton_btn?.gone()
+                    vod_frozen_view?.gone()
+                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
+                }
+
+                videoPlayer?.start(feedMedia.mediaUrl, isMute)
+                vod_volumeIcon?.visible()
+                vod_volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                videoPlayer?.setVideoStateListener(object : VideoStateListener {
+                    override fun onInitialStateLoading() {
+                        showVODLoading()
+                        isPaused = false
+                        isVODViewFrozen = false
+                        layoutLihatProdukParent.visible()
+
+                    }
+
+                    override fun onVideoReadyToPlay() {
+                        hideVODLoading()
+                        vod_timer_view.visible()
+                        vod_volumeIcon?.visible()
+                        vod_full_screen_icon?.visible()
+                        vod_lanjut_menonton_btn?.gone()
+                        vod_frozen_view?.gone()
+
+                        if(!isPaused) {
+                            if (secondCountDownTimer != null) {
+                                secondCountDownTimer?.cancel()
+                                secondCountDownTimer?.start()
+                            } else {
+                                secondCountDownTimer = object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
+                                    override fun onTick(millisUntilFinished: Long) {
+
+                                    }
+
+                                    override fun onFinish() {
+                                        videoPlayer?.pause()
+                                        isPaused = true
+                                        var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
+                                        if (time < HOUR_IN_HOUR) {
+                                            vod_timer_view.text =
+                                                    String.format(
+                                                            "%02d:%02d",
+                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                            time % MINUTE_IN_HOUR)
+                                        } else {
+                                            vod_timer_view.text =
+                                                    String.format(
+                                                            "%02d:%02d:%02d",
+                                                            (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
+                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                            time % MINUTE_IN_HOUR)
+                                        }
+                                        vod_lanjut_menonton_btn?.visible()
+                                        vod_frozen_view?.visible()
+                                        vod_full_screen_icon?.gone()
+                                        vod_lihat_product?.gone()
+                                        isVODViewFrozen = true
+
+                                    }
+                                }.start()
+                            }
+                        }
+
+                        addViewTimer?.schedule(object : TimerTask() {
+                            override fun run() {
+                                if (!isPaused) {
+                                    val view = feedXCard.views
+                                    val count = view.count +1
+                                    if (view.count != 0) {
+
+                                        likedText.text =
+                                                MethodChecker.fromHtml(
+                                                        context.getString(
+                                                                R.string.feed_component_viewed_count_text,
+                                                                count.productThousandFormatted(1)
+                                                        )
+                                                )
+                                    }
+                                    listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, TIME_FIVE_SEC,true)
+                                    shouldTrack = false
+                                    isPaused = true
+                                }
+                            }
+                        }, TIME_FIVE_SEC)
+
+
+
+                       if(!isPaused) {
+                           vod_timer_view.visible()
+                           var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
+                           object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
+                               override fun onTick(millisUntilFinished: Long) {
+                                   time -= 1
+                                   if (time < HOUR_IN_HOUR) {
+                                       vod_timer_view.text =
+                                               String.format(
+                                                       "%02d:%02d",
+                                                       (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                       time % MINUTE_IN_HOUR)
+                                   } else {
+                                       vod_timer_view.text =
+                                               String.format(
+                                                       "%02d:%02d:%02d",
+                                                       (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
+                                                       (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                       time % MINUTE_IN_HOUR)
+                                   }
+                               }
+
+                               override fun onFinish() {
+                                   vod_timer_view.gone()
+                                   vod_volumeIcon.gone()
+                               }
+                           }.start()
+                       }
+                    }
+
+                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+                        feedMedia.canPlay = false
+                        listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND,false)
+
+                    }
+                })
+            }
+        }
+
+    }
+
 
     private fun hideVideoLoading() {
         loader?.gone()
@@ -1180,6 +1591,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
         loader?.animate()
         loader?.visible()
         ic_play?.visible()
+    }
+    private fun hideVODLoading() {
+        vod_loader?.gone()
+        ic_vod_play?.gone()
+        vod_timer_view?.visible()
+        vod_videoPreviewImage?.gone()
+    }
+
+    private fun showVODLoading() {
+        vod_loader?.animate()
+        vod_loader?.visible()
+        ic_vod_play?.visible()
     }
 
     private fun toggleVolume(isMute: Boolean) {
@@ -1260,7 +1683,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             getGridItemViewModel(products),
             SHOW_MORE,
             feedXCard.appLink,
-            products.size,
+            feedXCard.totalProducts,
             true,
             mutableListOf(),
             feedXCard.id.toInt(),
@@ -1353,6 +1776,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun detach(
         fromSlide: Boolean = false, model: Visitable<*>? = null
     ) {
+
         if (handlerAnim != null) {
             handlerAnim = null
         }
@@ -1371,6 +1795,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         if (videoPlayer != null) {
+            if (model is DynamicPostUiModel)
+
+            isPaused = true
+            if (secondCountDownTimer != null) {
+                secondCountDownTimer?.cancel()
+                secondCountDownTimer = null
+            }
+            if (addViewTimer != null) {
+                addViewTimer?.cancel()
+                addViewTimer = null
+            }
             videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
@@ -1398,6 +1833,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
         }
     }
+    fun playVOD(feedXCard: FeedXCard, position: Int = carouselView.activeIndex) {
+        if (videoPlayer == null)
+            feedXCard.media[position].canPlay = true
+        if (feedXCard.media[position].canPlay) {
+            setVODControl(
+                    feedXCard.media[position],
+                    feedXCard.id,
+                    position,
+                    feedXCard.author.id,
+                    feedXCard.author.type,
+                    feedXCard
+            )
+        }
+    }
+
 
     private fun isVideo(media: FeedXMedia?): Boolean {
         return media?.type != TYPE_IMAGE
@@ -1448,7 +1898,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             handlerHide?.postDelayed({
                 if (!shouldContinueToShowLihatProduct(layout) && tagProducts.isNotEmpty()) {
-
                     hideViewWithoutAnimation(layoutLihatProdukParent, context)
                 }
                 },TIME_FOUR_SEC)
@@ -1470,6 +1919,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        videoItem?.layoutParams = param
+        return videoItem
+    }
+    private fun getVODItem(): View? {
+        val videoItem = View.inflate(context, R.layout.item_post_long_video_vod, null)
+        val param = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
         )
         videoItem?.layoutParams = param
         return videoItem

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -14,8 +13,8 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_product_list_item.view.*
 
 class InitialStateProductLineViewHolder(
-        itemView: View,
-        private val clickListener: InitialStateItemClickListener
+    itemView: View,
+    private val clickListener: ProductLineListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: BaseItemInitialStateSearch) {

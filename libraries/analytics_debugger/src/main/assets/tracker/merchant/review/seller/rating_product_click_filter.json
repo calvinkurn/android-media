@@ -8,6 +8,7 @@
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
+      "theme": ".*",
       "screenName": "rating produk",
       "event": "openScreen",
       "userId": ".*",

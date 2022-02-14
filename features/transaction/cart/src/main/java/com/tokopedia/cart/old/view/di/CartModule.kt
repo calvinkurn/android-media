@@ -13,10 +13,10 @@ import com.tokopedia.cart.old.view.CartListPresenter
 import com.tokopedia.cart.old.view.ICartListPresenter
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
@@ -100,7 +100,7 @@ class CartModule {
                                   removeWishListUseCase: RemoveWishListUseCase,
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
-                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                  clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                   getRecentViewUseCase: GetRecommendationUseCase,
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
@@ -109,7 +109,7 @@ class CartModule {
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
-                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                   setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                   followShopUseCase: FollowShopUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {

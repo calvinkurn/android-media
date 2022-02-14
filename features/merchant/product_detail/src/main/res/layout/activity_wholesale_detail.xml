@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:orientation="vertical"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <include layout="@layout/partial_base_toolbar" />
 

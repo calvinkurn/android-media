@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_N50"
     android:padding="10dp">
 
     <LinearLayout
@@ -36,7 +37,8 @@
                 android:id="@+id/address_type_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_save_address_as_layout">
+                android:hint="@string/title_save_address_as_layout"
+                android:textColorHint="@color/Unify_N400_68" >
 
                 <EditText
                     android:id="@+id/address_type"
@@ -46,14 +48,16 @@
                     android:layout_marginBottom="5dp"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/receiver_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_receiver_name">
+                android:hint="@string/title_receiver_name"
+                android:textColorHint="@color/Unify_N400_68" >
 
                 <EditText
                     android:id="@+id/receiver_name"
@@ -62,7 +66,8 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -81,7 +86,8 @@
                 android:id="@+id/address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_address_add_address">
+                android:hint="@string/title_address_add_address"
+                android:textColorHint="@color/Unify_N400_68" >
 
                 <EditText
                     android:id="@+id/address"
@@ -92,7 +98,8 @@
                     android:maxLength="175"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -114,7 +121,8 @@
                 android:id="@+id/district_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/logistic_district_recommendation_label">
+                android:hint="@string/logistic_district_recommendation_label"
+                android:textColorHint="@color/Unify_N400_68">
 
                 <EditText
                     android:id="@+id/district"
@@ -123,14 +131,16 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/postal_code_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/logistic_zip_code_label">
+                android:hint="@string/logistic_zip_code_label"
+                android:textColorHint="@color/Unify_N400_68" >
 
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_postal_code"
@@ -247,7 +257,8 @@
                 android:id="@+id/post_code_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_post_code">
+                android:hint="@string/title_post_code"
+                android:textColorHint="@color/Unify_N400_68" >
 
                 <EditText
                     android:id="@+id/post_code"
@@ -255,7 +266,8 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -271,7 +283,8 @@
                 android:id="@+id/receiver_phone_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_receiver_phone_no">
+                android:hint="@string/title_receiver_phone_no"
+                android:textColorHint="@color/Unify_N400_68" >
 
                 <EditText
                     android:id="@+id/receiver_phone"
@@ -280,7 +293,8 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -333,7 +347,8 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/choose_location"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/Unify_N700" />
 
             </RelativeLayout>
 

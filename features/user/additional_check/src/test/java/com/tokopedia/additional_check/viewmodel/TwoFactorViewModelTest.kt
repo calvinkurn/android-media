@@ -9,12 +9,11 @@ import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.Assert.assertEquals
-import org.mockito.Mockito.*
 
 /**
  * Created by Yoris Prayogo on 14/07/20.
@@ -61,9 +60,12 @@ class TwoFactorViewModelTest {
         every { userSession.isLoggedIn } returns true
         every { pref.isNeedCheck() } returns true
 
-        viewModel.check({
-            assertEquals(it, result.twoFactorResult)
-        }, onError)
+        viewModel.check(onSuccess, onError)
+
+        verify {
+            pref.setInterval(interval)
+            onSuccess.invoke(result.twoFactorResult)
+        }
     }
 
     @Test
@@ -76,9 +78,11 @@ class TwoFactorViewModelTest {
         every { userSession.isLoggedIn } returns true
         every { pref.isNeedCheck() } returns true
 
-        viewModel.check(onSuccess, {
-            assertEquals(it, mockThrowable)
-        })
+        viewModel.check(onSuccess, onError)
+
+        verify {
+            onError.invoke(mockThrowable)
+        }
     }
 
 }

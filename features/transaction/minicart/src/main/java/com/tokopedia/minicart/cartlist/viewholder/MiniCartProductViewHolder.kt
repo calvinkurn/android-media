@@ -21,7 +21,9 @@ import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_NOTES
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SIMILARPRODUCT
 import com.tokopedia.minicart.databinding.ItemMiniCartProductBinding
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -243,10 +245,10 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     private fun renderProductNotesEditable(element: MiniCartProductUiModel) {
         with(viewBinding) {
             textFieldNotes.context?.let {
-                textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+                textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         KeyboardHandler.DropKeyboard(it, v)
-                        textFieldNotes.textFieldInput.clearFocus()
+                        textFieldNotes.editText.clearFocus()
                         if (element.productNotes.isNotBlank()) {
                             renderProductNotesFilled(element)
                         } else {
@@ -256,20 +258,19 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     } else false
                 }
             }
-            textFieldNotes.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            textFieldNotes.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldNotes.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
 
-            textFieldNotes.requestFocus()
             textNotes.gone()
             textFieldNotes.show()
             textNotesChange.gone()
             textNotesFilled.gone()
-            textNotesFilled.text = element.productNotes
+            textNotesFilled.text = Utils.getHtmlFormat(element.productNotes)
             textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.textFieldInput.setText(element.productNotes)
-            textFieldNotes.textFieldInput.setSelection(textFieldNotes.textFieldInput.length())
-            textFieldNotes.textFieldInput.addTextChangedListener(object : TextWatcher {
+            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.productNotes))
+            textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
+            textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
                 }
@@ -289,6 +290,13 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 }
             })
             adjustButtonDeleteConstraint(element)
+            textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    KeyboardHandler.DropKeyboard(v.context, v)
+                }
+            }
+            textFieldNotes.editText.requestFocus()
+            showSoftKeyboard(textFieldNotes.context, textFieldNotes.editText)
         }
     }
 
@@ -305,7 +313,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     private fun renderProductNotesFilled(element: MiniCartProductUiModel) {
         with(viewBinding) {
             textFieldNotes.gone()
-            textNotesFilled.text = element.productNotes
+            textNotesFilled.text = Utils.getHtmlFormat(element.productNotes)
             setProductNotesWidth()
             textNotesFilled.show()
             textNotesChange.show()

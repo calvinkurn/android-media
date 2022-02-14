@@ -3,67 +3,93 @@ package com.tokopedia.topupbills.utils
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso
+import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.AllOf
-import org.hamcrest.core.IsNot
 
 object CommonTelcoActions {
 
-    fun createOrderNumberWithType(
+    private fun createOrderNumberWithType(
         number: String,
-        type: TopupBillsSearchNumberFragment.InputNumberActionType
+        type: TopupBillsSearchNumberFragment.InputNumberActionType,
+        categoryId: String
     ): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsSeamlessFavNumberItem(clientNumber = number)
+        val savedNumber = if (type == TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE) {
+            TopupBillsSavedNumber(
+                clientName = "tokopedia",
+                clientNumber = number,
+                inputNumberActionTypeIndex = type.ordinal,
+                categoryId = categoryId,
+                productId = "81"
+            )
+        } else {
+            TopupBillsSavedNumber(
+                clientName = "tokopedia",
+                clientNumber = number,
+                inputNumberActionTypeIndex = type.ordinal
+            )
+        }
         val resultData = Intent()
         resultData.putExtra(
             TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER,
-            orderClientNumber
-        )
-        resultData.putExtra(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-            type.ordinal
+            savedNumber
         )
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
-    fun stubSearchNumber(
+    fun stubAccessingSavedNumber(
         number: String,
-        type: TopupBillsSearchNumberFragment.InputNumberActionType
+        type: TopupBillsSearchNumberFragment.InputNumberActionType,
+        categoryId: String
     ) {
-        Intents.intending(IntentMatchers.isInternal())
-            .respondWith(createOrderNumberWithType(number, type))
+        Intents.intending(
+            IntentMatchers.hasComponent(
+            ComponentNameMatchers.hasClassName(TopupBillsSavedNumberActivity::class.java.name)))
+            .respondWith(createOrderNumberWithType(number, type, categoryId))
     }
 
-    fun clientNumberWidget_clickTextField() {
+
+    fun clientNumberWidget_typeNumber(number: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
-            .check(matches(isDisplayed()))
-            .perform(click())
+            .perform(typeText(number))
     }
 
     fun clientNumberWidget_validateText(text: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
             .check(matches(ViewMatchers.withText(text)))
+    }
+
+    fun clientNumberWidget_validateErrorMessage(text: String) {
+        onView(withId(com.tokopedia.unifycomponents.R.id.textinput_helper_text))
+            .check(matches(ViewMatchers.withText(text)))
+    }
+
+    fun clientNumberWidget_clickFilterChip_withText(text: String) {
+        onView(ViewMatchers.withText(text)).perform(click())
     }
 
     fun kebabMenu_validateContents() {
@@ -77,7 +103,11 @@ object CommonTelcoActions {
     }
 
     fun clientNumberWidget_clickClearBtn() {
-        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
+        onView(withId(R.id.text_field_icon_close)).perform(click())
+    }
+
+    fun clientNumberWidget_clickContactBook() {
+        onView(withId(R.id.text_field_icon_1)).perform(click())
     }
 
     fun kebabMenu_click() {
@@ -89,6 +119,14 @@ object CommonTelcoActions {
             RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
                 0,
                 CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+            )
+        )
+    }
+    fun promoWidget_scrollToItem(viewInteraction: ViewInteraction, position: Int) {
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                position,
+                scrollTo()
             )
         )
     }
@@ -128,6 +166,11 @@ object CommonTelcoActions {
         )
     }
 
+    fun tabLayout_validateExist(text: String) {
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).check(
+            matches(isDisplayed()))
+    }
+
     fun tabLayout_clickTabWithText(text: String) {
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
             click()
@@ -153,5 +196,20 @@ object CommonTelcoActions {
 
     fun bottomSheet_close() {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
+    }
+
+    fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?> {
+        return object : TypeSafeMatcher<View?>() {
+            var currentIndex = 0
+            override fun describeTo(description: Description) {
+                description.appendText("with index: ")
+                description.appendValue(index)
+                matcher.describeTo(description)
+            }
+
+            override fun matchesSafely(view: View?): Boolean {
+                return matcher.matches(view) && currentIndex++ == index
+            }
+        }
     }
 }

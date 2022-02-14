@@ -1,10 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="explore">Browse</string>
-    <string name="beli">Beli</string>
-    <string name="bayar">Bayar</string>
-    <string name="pesan">Pesan</string>
-    <string name="ajukan">Ajukan</string>
-    <string name="jual">Jual</string>
     <string name="buka_toko">Buka Toko</string>
     <string name="manage_toko">Atur Toko</string>
     <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
@@ -16,7 +10,6 @@
     <string name="text_reload">Muat Ulang</string>
     <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
     <string name="format_btn_category_more">+%d Kategori Lainnya</string>
-    <string name="kategori_favorit">Kategori Favorit Anda</string>
 
     <!--tokocash cashback-->
     <string name="toko_cash_pending_title">Bonus Cashback</string>
@@ -24,46 +17,27 @@
     <string name="toko_cash_pending_close_button">Tutup</string>
     <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
     <string name="digital_widget_title">Produk Digital</string>
-    <string name="image_product_desc">Produk</string>
-    <string name="ubah">Ubah</string>
-    <string name="sprint_sale_expired_text">Promo Berakhir</string>
     <string name="official_store">Official Store</string>
-    <string name="gold_merchant">Gold Merchant</string>
     <string name="home_header_tokopoint_unable_to_load_label">Gagal Memuat</string>
     <string name="home_header_tokopoint_no_coupons">Cari Kupon</string>
     <string name="home_header_tokopoint_no_tokopoints">TokoPoints</string>
     <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
     <string name="home_header_tokopoint_bebasongkir">Bebas Ongkir</string>
-    <string name="home_header_tokopoint_coupon_count_text">%1$d Kupon</string>
     <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
     <string name="home_header_tokocash_refresh_label">Coba Lagi</string>
-    <string name="home_header_tokopoint_new_label">Baru</string>
-    <string name="cek_recomendasi">Cek Rekomendasi</string>
     <string name="hampir_habis">Hampir Habis</string>
     <string name="home_header_fintech_scan">Scan</string>
-    <string name="home_header_fintech_points">Points %1$s</string>
     <string name="home_header_fintech_points_new">%1$s Points</string>
     <string name="home_header_topup_ovo"><b>Top-up OVO</b></string>
     <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
-    <string name="sc_notif_title">Notifikasi tersimpan rapi</string>
     <string name="sc_notif_desc">Tak ada yang terlewat, semua notifikasi ada di sini. </string>
     
-    <string name="sc_wishlist_title">Cek Wishlist sangat mudah</string>
-    <string name="sc_wishlist_desc">Produk Wishlist tersimpan di sini. Siap dipindahkan ke keranjang belanja kapan pun.</string>
     <string name="home_feed_retry">Mohon maaf terjadi kendala, silakan coba lagi.</string>
     <string name="home_feed_retry_button">Coba Lagi</string>
 
-    <string name="ticker_details_text">Info Lengkap</string>
-    <string name="message_retry_general_bu_widget">Klik ikonnya yuk buat coba lagi</string>
-    <string name="konten_gagal_ditampilkan">Hiks, kontennya nggak mau muncul</string>
-    <string name="message_empty_business_widget">Oops, konten di sini belum siap</string>
-    <string name="message_business_widget_empty_2">Geser dulu ya buat lihat yang lain</string>
     <string name="widget_gagal_ditampilkan">Hiks, kontennya nggak mau muncul</string>
     <string name="broadcast_wallet">Broadcast Wallet</string>
-
-    <string name="discovery_home_title_geolocation_title_default">Lihat produk menarik di dekatmu</string>
-    <string name="discovery_home_title_geolocation_description_default">Mulai dengan <a href="/">aktifkan lokasi</a></string>
 
     <string name="discovery_home_snackbar_geolocation_granted_permission">Lokasi aktif. Untuk mengubah izin akses lokasi, buka Pengaturan -> Lokasi di HP-mu</string>
     <string name="discovery_home_snackbar_geolocation_declined_permission">Kamu bisa izinkan akses lokasi di Pengaturan -> Lokasi di HP-mu</string>
@@ -73,11 +47,7 @@
 
     <string name="error_no_decoder">This device does not provide a decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
     <string name="error_no_secure_decoder">This device does not provide a secure decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
-    <string name="error_querying_decoders">Unable to query device decoders</string>
-    <string name="error_instantiating_decoder">Unable to instantiate decoder <xliff:g id="decoder_name">%1$s</xliff:g></string>
     <string name="home_error_connection">Oops, internet terputus. Cek ulang koneksimu.</string>
-    <string name="home_transition_title">title_play</string>
-    <string name="home_transition_description">description_play</string>
     <string name="home_transition_root">root_play</string>
     <string name="home_transition_video">video_play</string>
 
@@ -86,24 +56,13 @@
     <string name="discovery_home_action_error"> coba lagi</string>
     <string name="home_recommendation_empty_title">Tidak ada hasil</string>
     <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
-    <string name="home_buy_again">Beli Langsung</string>
-
-    <string name="home_recharge_recommendation_button_label">Bayar Sekarang</string>
-    <string name="home_recharge_recommendation_title">Yuk, segara bayar tagihanmu!</string>
-
-    <string name="home_page_play_card_success_add_reminder">Berhasil pasang pengingat</string>
-    <string name="home_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
 
     <string name="go_to_wishlist" tools:ignore="ExtraTranslation">Lihat Wishlist</string>
 
     <string name="review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="review_oke">Oke</string>
 
-    <string name="content_desc_title">text title kategori</string>
-    <string name="content_desc_channel_title">text dynamic channel title</string>
     <string name="content_desc_see_all_button">text lihat semua</string>
-    <string name="content_desc_count_down">text dynamic channel count down</string>
-    <string name="content_desc_channel_subtitle">text dynamic channel subtitle</string>
 
     <string name="home_page_retry_dynamic_channel">Coba Lagi</string>
 
@@ -118,7 +77,6 @@
     <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
 
     <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
-    <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
 
     <string name="home_gopay_coachmark_title">Kamu bisa cek saldo GoPay, lho!</string>
     <string name="home_gopay_coachmark_description">Sambungkan GoPay biar transaksimu makin gampang, nanti saldonya muncul di sini.</string>
@@ -129,8 +87,11 @@
     <string name="home_gopay_new_active_cta_coachmark_title">TokoPoints kini jadi GoPay Coins ✨</string>
     <string name="home_gopay_new_active_cta_coachmark_description">Points-mu aman, kok. Sambungin akun Gojek &amp; Tokopedia buat pakai GoPay &amp; GoPay Coins!</string>
 
-    <string name="home_gopay_new_coachmark_title">Kamu bisa pakai GoPay &amp; GoPay Coins</string>
+    <string name="home_gopay_new_coachmark_title">Kamu bisa pakai GoPay  GoPay Coins</string>
     <string name="home_gopay_new_coachmark_description">Cek saldomu di sini! Kalau kamu punya TokoPoints, semuanya udah diubah ke GoPay Coins.</string>
+
+    <string name="home_tokonow_coachmark_title">Belanja kebutuhan harian, 2 jam tiba dan gratis ongkir 🚀</string>
+    <string name="home_tokonow_coachmark_description">Cek yang fresh &amp; berkualitas di Tokopedia NOW!</string>
 
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>
@@ -146,6 +107,16 @@
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
     <string name="content_desc_home_category_widget">Category widget</string>
+    <string name="content_desc_feed_banner">Feed Banner</string>
+    <string name="content_desc_close_review">Tutup Review</string>
+    <string name="content_desc_background_spotlight">Background spotlight</string>
+    <string name="content_desc_background_business">Background business</string>
+    <string name="content_desc_icon_business">Icon business</string>
+    <string name="content_desc_loading_icon_business">Loading icon business</string>
+    <string name="content_desc_thumbnail_image_play">Thumbnail image Play</string>
+    <string name="content_desc_image_on_boarding">Gambar on boarding</string>
+    <string name="content_desc_reload">Reload</string>
+    <string name="content_desc_image_home_error">Gambar error home</string>
 
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>

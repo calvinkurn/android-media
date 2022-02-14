@@ -1,4 +1,4 @@
-   package com.tokopedia.autocompletecomponent
+package com.tokopedia.autocompletecomponent
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
@@ -103,14 +103,14 @@ internal class AutocompleteInitialStateTrackingTest {
                 onView(withId(recyclerViewId)).perform(RecyclerViewActions.actionOnItemAtPosition<CuratedCampaignViewHolder>(i, click()))
             }
             is RecentViewViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerViewRecentView, 0)
             }
             is RecentSearchTitleViewHolder -> {
                 onView(withId(recyclerViewId)).perform(RecyclerViewActions.actionOnItemAtPosition<RecentSearchTitleViewHolder>(i,
                         CommonActions.clickChildViewWithId(R.id.actionDeleteButton)))
             }
             is RecentSearchViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerViewRecentSearch, 0)
             }
             is RecentSearchSeeMoreViewHolder -> {
                 onView(withId(recyclerViewId)).perform(RecyclerViewActions.actionOnItemAtPosition<RecentSearchSeeMoreViewHolder>(i,
@@ -121,17 +121,17 @@ internal class AutocompleteInitialStateTrackingTest {
                         CommonActions.clickChildViewWithId(R.id.actionRefreshButton)))
             }
             is PopularSearchViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerViewPopularSearch, 0)
             }
             is DynamicInitialStateTitleViewHolder -> {
                 onView(withId(recyclerViewId)).perform(RecyclerViewActions.actionOnItemAtPosition<DynamicInitialStateTitleViewHolder>(i,
                         CommonActions.clickChildViewWithId(R.id.initialStateDynamicButton)))
             }
             is DynamicInitialStateViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerViewDynamicInitialState, 0)
             }
             is InitialStateProductListViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerViewProductList, 0)
             }
         }
     }

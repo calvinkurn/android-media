@@ -4,7 +4,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="android:background">@color/Unify_N0</item>
+        <item name="android:background">@color/Unify_Background</item>
         <item name="android:paddingTop">@dimen/dp_16</item>
         <item name="android:paddingLeft">@dimen/dp_16</item>
         <item name="android:paddingRight">@dimen/dp_16</item>

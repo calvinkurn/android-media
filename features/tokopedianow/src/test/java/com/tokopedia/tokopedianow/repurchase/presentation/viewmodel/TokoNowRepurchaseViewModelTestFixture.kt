@@ -17,7 +17,12 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.*
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
@@ -145,15 +150,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         Assert.assertTrue(actualObject == null)
     }
 
-    protected fun verifyGetProductRecommendationWidgetLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
-        val actualResponse = viewModel.getLayout.value
-        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowRecommendationCarouselUiModel } as TokoNowRecommendationCarouselUiModel)
-        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowRecommendationCarouselUiModel } as TokoNowRecommendationCarouselUiModel)
-
-        Assert.assertEquals(expectedObject.pageName, actualObject.pageName)
-        Assert.assertEquals(expectedObject.carouselData, actualObject.carouselData)
-    }
-
     protected fun verifyGetCategoryGridLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
         val actualResponse = viewModel.getLayout.value
         val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
@@ -168,6 +164,11 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun verifyGetChooseAddress() {
         coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
+    }
+
+    protected fun verifyTrackOpeningScreen() {
+        val actualResponse = viewModel.openScreenTracker.value
+        Assert.assertEquals(REPURCHASE_TOKONOW, actualResponse)
     }
 
     protected fun verifyGetChooseAddressFail() {
@@ -253,26 +254,14 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun onGetMiniCart_thenReturn(response: MiniCartSimplifiedData) {
         coEvery {
-            getMiniCartUseCase.execute(any(), any())
-        } answers {
-            firstArg<(MiniCartSimplifiedData)-> Unit>().invoke(response)
-        }
-    }
-
-    protected fun onGetMiniCart_thenReturn(error: Throwable) {
-        coEvery {
-            getMiniCartUseCase.execute(any(), any())
-        } answers {
-            secondArg<(Throwable)-> Unit>().invoke(error)
-        }
+            getMiniCartUseCase.executeOnBackground()
+        } returns response
     }
 
     protected fun onGetMiniCart_throwException(error: Throwable) {
         coEvery {
-            getMiniCartUseCase.execute(any(), any())
-        } answers {
-            throw error
-        }
+            getMiniCartUseCase.executeOnBackground()
+        } throws error
     }
 
     protected fun onGetUserLoggedIn_thenReturn(isLoggedIn: Boolean) {
@@ -288,12 +277,12 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetMiniCartUseCaseCalled(){
-        coVerify { getMiniCartUseCase.execute(any(), any()) }
+        coVerify { getMiniCartUseCase.executeOnBackground() }
 
     }
 
     protected fun verifyGetMiniCartUseCaseNotCalled(){
-        coVerify(exactly = 0) { getMiniCartUseCase.execute(any(), any()) }
+        coVerify(exactly = 0) { getMiniCartUseCase.executeOnBackground() }
     }
 
     protected fun verifyAddToCartUseCaseCalled() {

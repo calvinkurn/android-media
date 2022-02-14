@@ -98,8 +98,7 @@ abstract class SomOrderBaseViewModel(
     fun validateOrders(orderIds: List<String>) {
         launchCatchError(block = {
             val params = SomValidateOrderRequest(orderIds)
-            val result = somValidateOrderUseCase.execute(params)
-            _validateOrderResult.postValue(Success(result))
+            _validateOrderResult.postValue(Success(somValidateOrderUseCase.execute(params)))
         }, onError = {
             _validateOrderResult.postValue(Fail(it))
         })

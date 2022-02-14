@@ -9,7 +9,7 @@
     android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginBottom="@dimen/spacing_lvl2"
     android:layout_marginEnd="@dimen/spacing_lvl5"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="horizontal"
     app:cardUseCompatPadding="true">
 

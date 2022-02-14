@@ -1,5 +1,6 @@
 <resources>
     <string name="title_som_list">Penjualan</string>
+    <string name="title_som_list_sa">Daftar Pesanan</string>
     <string name="title_som_detail">Detail Pesanan</string>
     <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
     <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
@@ -88,7 +89,7 @@
     <string name="buyer_no_resp_label">Jelaskan kendala yang kamu alami</string>
     <string name="buyer_no_resp_placeholder">Contoh: Pembeli tidak jawab</string>
     <string name="other_reason_resp_label">Alasan penolakan lainnya</string>
-    <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima...</string>
+    <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima…</string>
 
     <string name="tv_driver_name_example">Idwan Wangsa</string>
     <string name="tv_driver_phone_example">081234567890</string>
@@ -130,8 +131,7 @@
     <string name="booking_code_copied">Kode booking berhasil disalin</string>
 
     <string name="barcode_image_content_description">Barcode Image</string>
-    <string name="barcode_label_one">Kode booking pengiriman</string>
-    <string name="barcode_label_two">(tap untuk perbesar)</string>
+    <string name="barcode_label_one">Kode booking pengiriman &lt;a href=\"#\"&gt;(tap untuk perbesar)&lt;/a&gt;</string>
     <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
     <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
 
@@ -165,8 +165,8 @@
     <string name="label_receiver_name">Nama Penerima</string>
 
     <!--  instant cancel  -->
-    <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.</string>
-    <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.</string>
+    <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silakan coba lagi, ya.</string>
     <string name="som_buyer_cancellation_confirm_shipping_title">Kirim pesanan ini?</string>
     <string name="som_buyer_cancellation_confirm_shipping_description">Pastikan kamu sudah berdiskusi dengan pembeli. Pesanan yang diproses secara paksa berpotensi komplain.</string>
     <string name="som_buyer_cancellation_confirm_shipping_button">Kirim Pesanan</string>
@@ -229,19 +229,6 @@
     <string name="som_list_bulk_accept_order_product_amount">%1$s Barang</string>
     <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
     <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
-    <string name="som_list_bulk_accept_dialog_title_on_progress">%1$d pesanan sedang diterima</string>
-    <string name="som_list_bulk_accept_dialog_description_on_progress">Nggak pakai lama, Toped langsung terima pesanan kamu sekaligus.</string>
-    <string name="som_list_bulk_accept_dialog_title_success">Berhasil terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_success">Hore! semua pesanan kamu siap dikemas dan dikirim.</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_success">Mantap</string>
-    <string name="som_list_bulk_accept_dialog_description_partial_success_can_retry">Ada %1$d pesanan yang gagal diterima. Coba lagi, yuk!</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_partial_success_can_retry">Coba Lagi</string>
-    <string name="som_list_bulk_accept_dialog_secondary_button_partial_success_can_retry">Kembali</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
-    <string name="som_list_bulk_accept_dialog_title_failed">Gagal terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_failed">Hiks, semua pesanan kamu gagal diterima. Coba lagi, yuk!</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
-    <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
     <string name="som_list_coachmark_new_order_card_title">Cepat cek dan terima pesanan</string>
     <string name="som_list_coachmark_new_order_card_description">Sekarang kamu bisa cek info kurir dan kota tujuan. Klik tombol untuk langsung terima pesanan.</string>
     <string name="som_list_coachmark_sort_filter_title">Gampang cari pesanan dengan filter</string>
@@ -251,7 +238,7 @@
     <string name="som_list_coachmark_multi_select_title">Bisa atur pesanan sekaligus banyak</string>
     <string name="som_list_coachmark_multi_select_description">Klik tombol Pilih Sekaligus untuk terima pesanan, cetak label, atau request pick-up beberapa order.</string>
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
-    <string name="som_list_button_ok">Ok</string>
+    <string name="som_list_button_ok">OK</string>
     <string name="som_list_pre_order_flag">(PO)</string>
     <string name="som_list_bulk_print_dialog_title">Cetak %1$d label pengiriman</string>
     <string name="som_list_bulk_print_dialog_description">Pastikan HP kamu sudah terkoneksi ke printer dengan benar, ya.</string>
@@ -303,4 +290,56 @@
 
     <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
     <string name="som_total_price">Total Harga Paket</string>
+
+    <!--  Bulk Accept Order On Progress  -->
+    <string name="som_list_bulk_accept_dialog_title_on_progress">%1$d pesanan sedang diterima</string>
+    <string name="som_list_bulk_accept_dialog_description_on_progress">Nggak pakai lama, Toped langsung terima pesanan kamu sekaligus.</string>
+    <!--  Bulk Accept Order Success Accept All Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_success">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_success_accept_all_orders">Hore! semua pesanan kamu siap dikemas dan dikirim.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_success_accept_all_orders">Mantap</string>
+    <!--  Bulk Accept Order Failed Accept All Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_failed">Gagal terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_failed">Hiks, semua pesanan kamu gagal diterima. Coba lagi, yuk!</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
+    <!--  Bulk Accept Order Partial Success Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_partial_success">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_success">Ada %1$d pesanan yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_success">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_partial_success">Kembali</string>
+    <!--  Bulk Accept Order Partial Mixed Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_partial_mixed">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_mixed">Ada %1$d pesanan yang gagal diterima dan %2$d yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_mixed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_partial_mixed">Kembali</string>
+    <!--  Bulk Accept Order Complete Mixed Status Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_success_mixed">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_success_mixed">Ada %1$d pesanan yang gagal diterima, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_success_mixed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_success_mixed">Kembali</string>
+    <!--  Bulk Accept Order Partial Failed Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_partial_failed">Yaah, Gagal terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_failed">Ada %1$d pesanan yang gagal diterima dan %2$d yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_failed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_partial_failed">Kembali</string>
+    <!--  Bulk Accept Order Unprocessed  -->
+    <string name="som_list_bulk_accept_dialog_title_unprocessed">Yaah, Gagal terima pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_unprocessed">Ada %1$d pesanan yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_unprocessed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_unprocessed">Kembali</string>
+
+    <!--  Bottomsheet Order Extension Request  -->
+    <string name="bottomsheet_order_extension_request_title">Yakin mau perpanjang waktu proses pesanan ini?</string>
+    <string name="bottomsheet_order_extension_request_header">%1s &lt;b&gt;%2s&lt;/b&gt;</string>
+    <string name="bottomsheet_order_extension_request_footer">&lt;i&gt;*Pesanan batal otomatis jika pengajuan ditolak pembeli. Tokomu berpotensi kena penalti jika keseringan perpanjang. &lt;a href="tokopedia://webview?url=https://seller.tokopedia.com/edu/mekanisme-perpanjangan-waktu-pesanan/"&gt;Selengkapnya&lt;/a&gt;&lt;/i&gt;</string>
+    <string name="bottomsheet_order_extension_request_options_header">Pilih alasan perpanjangan</string>
+    <string name="bottomsheet_order_extension_request_button_text">Kirim Pengajuan</string>
+    <string name="bottomsheet_order_extension_request_other_options_text_area_label">Kamu wajib tulis alasan kamu disini</string>
+    <string name="bottomsheet_order_extension_request_other_options_text_area_message_illegal_characters">Hindari karakter spesial (@#$%^*).</string>
+    <string name="bottomsheet_order_extension_request_other_options_text_area_message_empty_reason">Isi alasan terlebih dulu, ya.</string>
+    <string name="bottomsheet_order_extension_request_other_options_text_area_message_insufficient_reason_length">Minimal 15 karakter</string>
+    <string name="bottomsheet_order_extension_request_comment_not_empty_regex">^\s*$</string>
+    <string name="bottomsheet_order_extension_request_comment_not_less_than_fifteen_characters_regex">^.{0,14}$</string>
+    <string name="bottomsheet_order_extension_request_comment_not_allowed_characters_regex">[^,.?!\n A-Za-z0-9]+</string>
 </resources>

@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
@@ -16,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.officialstore.R
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
 
 
@@ -46,48 +47,7 @@ class OfficialCategoriesTab(context: Context,
         clearOnTabSelectedListeners()
         viewPager.clearOnPageChangeListeners()
         setupWithViewPager(viewPager)
-
-        addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabReselected(tab: Tab) {
-                tab.customView?.apply {
-                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
-                    text_view_category_title?.apply {
-                        setTextColor(MethodChecker.getColor(
-                                context,
-                                R.color.Unify_P600
-                        ))
-                        setWeight(Typography.BOLD)
-                    }
-                }
-            }
-
-            override fun onTabUnselected(tab: Tab) {
-                tab.customView?.apply {
-                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
-                    text_view_category_title?.apply {
-                        setTextColor(MethodChecker.getColor(
-                                context,
-                                R.color.Unify_N700_96
-                        ))
-                        setWeight(Typography.REGULAR)
-                    }
-                }
-            }
-
-            override fun onTabSelected(tab: Tab) {
-                tab.customView?.apply {
-                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
-                    text_view_category_title?.apply {
-                        setTextColor(MethodChecker.getColor(
-                                context,
-                                R.color.Unify_P600
-                        ))
-                        setWeight(Typography.BOLD)
-                    }
-                }
-                expandAllTab()
-            }
-        })
+        setupListener()
 
         for (i in 0 until tabCount) {
             val tab = getTabAt(i)
@@ -197,16 +157,74 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
+    private fun setupListener() {
+
+        addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabReselected(tab: Tab) {
+                tab.customView?.apply {
+                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
+                        setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                R.color.Unify_P600
+                            )
+                        )
+                        setWeight(Typography.BOLD)
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: Tab) {
+                tab.customView?.apply {
+                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
+                    this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
+                        setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                R.color.Unify_N700_96
+                            )
+                        )
+                        setWeight(Typography.REGULAR)
+                    }
+                }
+            }
+
+            override fun onTabSelected(tab: Tab) {
+                tab.customView?.apply {
+                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
+                        setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                R.color.Unify_P600
+                            )
+                        )
+                        setWeight(Typography.BOLD)
+                    }
+                }
+                expandAllTab()
+            }
+        })
+    }
+
     private fun getTabView(context: Context, position: Int): View {
         val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
-        with(view){
+        with(view) {
+            val image_view_category_icon =
+                view?.findViewById<ImageView>(R.id.image_view_category_icon)
+            val text_view_category_title =
+                view?.findViewById<Typography>(R.id.text_view_category_title)
+            val tab_category_container =
+                view?.findViewById<FrameLayout>(R.id.tab_category_container)
+
             ImageHandler.loadImage(
-                    context,
-                    image_view_category_icon,
-                    categoriesItemTab[position].inactiveIconUrl,
-                    R.drawable.ic_loading_image
+                context,
+                image_view_category_icon,
+                categoriesItemTab[position].inactiveIconUrl,
+                R.drawable.ic_loading_image
             )
-            text_view_category_title.text = categoriesItemTab[position].title
+            text_view_category_title?.text = categoriesItemTab[position].title
             tab_category_container?.afterMeasured {
                 categoriesItemTab[position].currentWidth = width
                 categoriesItemTab[position].minWidth = width
@@ -215,7 +233,6 @@ class OfficialCategoriesTab(context: Context,
                 categoriesItemTab[position].currentHeight = height
                 categoriesItemTab[position].minHeight = height - 32.dp
                 categoriesItemTab[position].maxHeight = height
-
             }
         }
         return view

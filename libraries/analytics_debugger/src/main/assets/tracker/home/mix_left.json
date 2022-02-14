@@ -6,7 +6,7 @@
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
-      "item_list": ".*",
+      "item_list": "/ - p.* - .* - .* - carousel - .* - .* - .* - .*",
       "screenName": "/",
       "event": "select_content",
       "eventAction": "click on product dynamic channel left carousel",
@@ -30,7 +30,7 @@
     },
     {
       "eventCategory": "homepage",
-      "item_list": ".*",
+      "item_list": "/ - p.* - .* - .* - carousel - .* - .* - .* - .*",
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel left carousel",
       "sessionIris": ".*",

@@ -8,4 +8,14 @@ class ThickDividerUiModel: Visitable<BuyerOrderDetailTypeFactory> {
     override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ThickDividerUiModel) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }

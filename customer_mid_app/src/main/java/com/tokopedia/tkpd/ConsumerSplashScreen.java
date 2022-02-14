@@ -73,7 +73,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
-                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
+                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this, true);
     }
 
     private void initializationNewRelic() {

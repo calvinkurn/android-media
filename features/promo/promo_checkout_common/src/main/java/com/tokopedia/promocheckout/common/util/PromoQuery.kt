@@ -270,15 +270,4 @@ object PromoQuery {
             }
         }
     }"""
-
-    fun clearCacheAutoApplyStack()="""
-            mutation {
-                clearCacheAutoApplyStack(
-                        serviceID: "#serviceId",
-                promoCode: #promoCode,
-                isOCC: #isOCC) {
-                Success
-                ticker_message
-            }
-            }"""
 }

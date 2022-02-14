@@ -64,7 +64,7 @@ class AddBodViewModelTest {
 
         /* Then */
         verify {
-            bodGraphqlUseCase.setGraphqlQuery(any())
+            bodGraphqlUseCase.setGraphqlQuery(any<String>())
             bodGraphqlUseCase.setTypeClass(any())
             bodGraphqlUseCase.setRequestParams(mockParam)
             bodGraphqlUseCase.execute(any(), any())

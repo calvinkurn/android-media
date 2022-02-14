@@ -7,8 +7,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/containerSectionDetailPerformance"
     android:layout_marginStart="@dimen/spacing_lvl3"
-    android:layout_marginEnd="@dimen/spacing_lvl3"
-    >
+    android:layout_marginEnd="@dimen/spacing_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPerformanceDetailLabel"

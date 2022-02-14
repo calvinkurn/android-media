@@ -16,6 +16,7 @@ sealed class ShareModel {
     var shareOnlyLink: Boolean = false
     var savedImageFilePath: String = ""
     var subjectName: String = ""
+    var isAffiliate: Boolean = false
 
     data class CopyLink(
             override var socialMediaIcon: Drawable? = null,

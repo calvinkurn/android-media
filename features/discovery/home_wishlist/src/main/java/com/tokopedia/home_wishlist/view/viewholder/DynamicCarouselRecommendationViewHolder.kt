@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.view.viewholder
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
@@ -35,7 +36,10 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val wishlistDataModel = element.list.getOrNull(carouselProductCardPosition) ?: return
 
-                        (listener as WishlistListener).onProductClick(wishlistDataModel, adapterPosition, carouselProductCardPosition)
+                        // to prevent ArrayIndexOutOfBoundsException
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            (listener as WishlistListener).onProductClick(wishlistDataModel, adapterPosition, carouselProductCardPosition)
+                        }
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{

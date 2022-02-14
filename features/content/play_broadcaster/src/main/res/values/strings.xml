@@ -78,6 +78,7 @@
     <string name="play_camera_timer_0_label">0s</string>
     <string name="play_camera_timer_5_label">5s</string>
     <string name="play_camera_timer_10_label">10s</string>
+    <string name="play_camera_get_ready_label">Siap-siap, ya! Live akan segera dimulai~</string>
 
     <string name="play_label_save">Simpan</string>
 
@@ -195,4 +196,12 @@
     <string name="play_bro_tnc_benefit_2">Bisa berinteraksi langsung dengan calon pembeli</string>
     <string name="play_bro_tnc_benefit_3">Bantu meningkatkan penjualanmu</string>
     <string name="play_bro_tnc_ok">Oke, Mengerti</string>
+
+    <string name="play_cancel_live_stream">Batalkan</string>
+
+    <!--Pinned Message-->
+    <string name="play_bro_create_pinned_msg">Buat Pin Chat</string>
+    <string name="play_bro_pinned_msg_form_title">Pin Chat</string>
+    <string name="play_bro_pinned_msg_form_placeholder">Tulis Pin Chat</string>
+    <string name="play_bro_pinned_msg_form_instruction">Buat pin chat untuk kasih info penting ke penontonmu selama Live berlangsung.</string>
 </resources>

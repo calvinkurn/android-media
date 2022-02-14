@@ -2,10 +2,13 @@ package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
@@ -90,6 +93,27 @@ class AddEditProductShipmentViewModelTest {
         viewModel.saveProductDraft(productInputModel)
         coVerify { saveProductDraftUseCase.executeOnBackground() }
     }
+
+    @Test
+    fun `When save product error, should log error to crashlytics`() {
+        coEvery { saveProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        mockkStatic(FirebaseCrashlytics::class)
+
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
+        val productInputModel = ProductInputModel().apply {
+            productId = 220
+        }
+
+        viewModel.saveProductDraft(productInputModel)
+
+        coVerify { saveProductDraftUseCase.executeOnBackground() }
+
+        coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
+    }
+
 
     @Test
     fun `when all boolean variables should return true and object should return the same object`() {

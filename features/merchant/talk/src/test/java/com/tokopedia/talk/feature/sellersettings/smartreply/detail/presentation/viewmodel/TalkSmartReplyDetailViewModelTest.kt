@@ -119,11 +119,39 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
     }
 
     @Test
+    fun `when updateMessageChanged when message is same should set buttonState accordingly`() {
+        val originalMessage = "Ready gan"
+        val isReady = true
+        val newMessage = "Ready gan"
+        val expectedButtonState = TalkSmartReplyDetailButtonState(isReadyTextChanged = false)
+
+        viewModel.messageReady = originalMessage
+        viewModel.initMessages()
+        viewModel.updateMessageChanged(newMessage, isReady)
+
+        verifyButtonState(expectedButtonState)
+    }
+
+    @Test
     fun `when updateMessageChanged for not ready message should set buttonState accordingly`() {
         val originalMessageNotReady = "Lagi kosong gan"
         val isNotReady = false
         val newMessageNotReady = "Lagi kosong gan, entar kita update ya"
         val expectedButtonState = TalkSmartReplyDetailButtonState(isNotReadyTextChanged = true)
+
+        viewModel.messageNotReady = originalMessageNotReady
+        viewModel.initMessages()
+        viewModel.updateMessageChanged(newMessageNotReady, isNotReady)
+
+        verifyButtonState(expectedButtonState)
+    }
+
+    @Test
+    fun `when updateMessageChanged when message is same for not ready message should set buttonState accordingly`() {
+        val originalMessageNotReady = "Lagi kosong gan"
+        val isNotReady = false
+        val newMessageNotReady = "Lagi kosong gan"
+        val expectedButtonState = TalkSmartReplyDetailButtonState(isNotReadyTextChanged = false)
 
         viewModel.messageNotReady = originalMessageNotReady
         viewModel.initMessages()

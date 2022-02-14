@@ -82,6 +82,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
+                    String operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
                     try {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
@@ -100,7 +101,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                             }.getType()));
                         }
                         LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
+                        LoggingUtils.logGqlSuccessRate(operationName, "1");
                     } catch (JsonSyntaxException jse) {
+                        LoggingUtils.logGqlSuccessRate(operationName, "0");
                         jse.printStackTrace();
                         LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
                     } catch (Exception e) {
@@ -124,12 +127,14 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
     }
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        String operationName = "";
         try {
             List<GraphqlRequest> copyRequests = new ArrayList<>();
             copyRequests.addAll(requests);
 
             int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
+                operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
                 if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }
@@ -153,10 +158,11 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 mRefreshRequests.add(copyRequests.get(i));
                 requests.remove(copyRequests.get(i));
 
-                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
+                LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
+                LoggingUtils.logGqlSuccessRate(operationName, "1");
             }
-            LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
         } catch (JsonSyntaxException jse) {
+            LoggingUtils.logGqlSuccessRate(operationName, "0");
             LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
         } catch (Exception e) {
             e.printStackTrace();

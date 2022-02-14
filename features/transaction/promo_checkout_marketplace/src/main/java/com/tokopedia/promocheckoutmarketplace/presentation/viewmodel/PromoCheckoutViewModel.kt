@@ -27,7 +27,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC_MULTI
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -648,14 +648,12 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                                        bboPromoCodes: ArrayList<String>) {
         val invalidPromoCodes = ArrayList<String>()
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
-            promoGlobalCode?.let {
-                if (!selectedPromoList.contains(it)) {
-                    invalidPromoCodes.add(it)
-                }
+            if (!selectedPromoList.contains(promoGlobalCode)) {
+                invalidPromoCodes.add(promoGlobalCode)
             }
         }
         validateUsePromoRequest.orders.forEach { order ->
-            order?.codes?.forEach { promoCode ->
+            order.codes.forEach { promoCode ->
                 if (!selectedPromoList.contains(promoCode) && !bboPromoCodes.contains(promoCode)) {
                     invalidPromoCodes.add(promoCode)
                 }
@@ -666,7 +664,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 validateUsePromoRequest.codes.remove(invalidPromoCode)
             }
             validateUsePromoRequest.orders.forEach { order ->
-                if (order?.codes?.contains(invalidPromoCode) == true) {
+                if (order.codes.contains(invalidPromoCode)) {
                     order.codes.remove(invalidPromoCode)
                 }
             }
@@ -939,15 +937,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                                 bboPromoCodes: ArrayList<String>,
                                 toBeRemovedPromoCodes: ArrayList<String>) {
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
-            promoGlobalCode?.let {
-                if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
-                    toBeRemovedPromoCodes.add(it)
-                }
+            if (!bboPromoCodes.contains(promoGlobalCode) && !toBeRemovedPromoCodes.contains(promoGlobalCode)) {
+                toBeRemovedPromoCodes.add(promoGlobalCode)
             }
         }
 
         validateUsePromoRequest.orders.forEach { order ->
-            order?.codes?.forEach {
+            order.codes.forEach {
                 if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
                     toBeRemovedPromoCodes.add(it)
                 }
@@ -981,7 +977,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 }
 
                 validateUsePromoRequest.orders.forEach {
-                    if (it?.codes?.contains(promo) == true) {
+                    if (it.codes.contains(promo)) {
                         it.codes.remove(promo)
                     }
                 }

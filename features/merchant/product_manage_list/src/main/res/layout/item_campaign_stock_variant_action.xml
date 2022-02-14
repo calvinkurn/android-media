@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/layout_lvl1"
     android:paddingEnd="@dimen/product_manage_campaign_stock_accordion_padding"
     android:paddingRight="@dimen/product_manage_campaign_stock_accordion_padding"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography

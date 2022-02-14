@@ -3,16 +3,13 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -20,7 +17,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exProductId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exResultProduct
@@ -31,7 +27,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTes
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleInvoicePreview
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleProductPreview
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.successGetChatListGroupSticker
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.successGetOrderProgressResponse
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -42,8 +37,6 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import rx.Observable
-import rx.Subscriber
 
 class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
@@ -236,62 +229,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on success click banned product seamless`() {
-        // Given
-        val liteUrl = "https://tokopedia/lite/url"
-        val slot = slot<SeamlessLoginSubscriber>()
-        every {
-            seamlessLoginUsecase.generateSeamlessUrl(liteUrl, capture(slot))
-        } answers {
-            val subs = slot.captured
-            subs.onUrlGenerated(liteUrl)
-        }
-
-        // When
-        presenter.onClickBannedProduct(liteUrl)
-
-        // Then
-        verify(exactly = 1) {
-            view.redirectToBrowser(liteUrl)
-        }
-    }
-
-    @Test
-    fun `on error click banned product seamless`() {
-        // Given
-        val liteUrl = "https://tokopedia/lite/url"
-        val slot = slot<SeamlessLoginSubscriber>()
-        every {
-            seamlessLoginUsecase.generateSeamlessUrl(liteUrl, capture(slot))
-        } answers {
-            val subs = slot.captured
-            subs.onError(liteUrl)
-        }
-
-        // When
-        presenter.onClickBannedProduct(liteUrl)
-
-        // Then
-        verify(exactly = 1) {
-            view.redirectToBrowser(liteUrl)
-        }
-    }
-
-    @Test
-    fun `on loadChatRoomSettings`() {
-        // Given
-        val onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit = mockk(relaxed = true)
-
-        // When
-        presenter.loadChatRoomSettings(exMessageId, onSuccess)
-
-        // Then
-        verify(exactly = 1) {
-            getChatRoomSettingUseCase.execute(exMessageId, onSuccess)
-        }
-    }
-
-    @Test
     fun `on toggle add and remove WishList`() {
         // Given
         val wishlistActionListener: WishListActionListener = mockk(relaxed = true)
@@ -304,23 +241,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         verify(exactly = 1) {
             addWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
             removeWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
-        }
-    }
-
-    @Test
-    fun `on success get order progress`() {
-        // Given
-        every { orderProgressUseCase.getOrderProgress(any(), captureLambda(), any()) } answers {
-            val onSuccess = lambda<(OrderProgressResponse) -> Unit>()
-            onSuccess.invoke(successGetOrderProgressResponse)
-        }
-
-        // When
-        presenter.getOrderProgress(exMessageId)
-
-        // Then
-        verify(exactly = 1) {
-            view.renderOrderProgress(successGetOrderProgressResponse.chatOrderProgress)
         }
     }
 
@@ -550,12 +470,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         )
         val successFlow = flow { emit(expectedValue) }
         every {
-            chatSrwUseCase.getSrwList(exMessageId)
+            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
         } returns successFlow
 
         // When
         presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
+        presenter.getSmartReplyWidget(exMessageId, "1")
 
         // Then
         verify(exactly = 1) {
@@ -572,12 +492,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             throwable, null
         )
         every {
-            chatSrwUseCase.getSrwList(exMessageId)
+            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
         } throws throwable
 
         // When
         presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
+        presenter.getSmartReplyWidget(exMessageId, "1")
 
         // Then
         verify(exactly = 1) {

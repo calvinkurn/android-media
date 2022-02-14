@@ -7,11 +7,10 @@
     android:paddingBottom="8dp"
     tools:layout_height="wrap_content">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_bundling_separator_top"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 

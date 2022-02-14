@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tokopedia.additional_check"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.additional_check">
 
     <application
         android:allowBackup="true"
@@ -9,8 +9,8 @@
             android:launchMode="singleInstance"
             android:label="@string/two_factor_title"
             android:name=".view.activity.TwoFactorActivity"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -22,8 +22,6 @@
                     android:pathPattern="@string/two_factor_register"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
     </application>
 </manifest>
-

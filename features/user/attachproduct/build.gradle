@@ -1,28 +1,21 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply from: "../../../compile-unit-test.gradle"
-apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 
 android {
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
     buildFeatures {
         viewBinding true
+    }
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
 kapt {
     correctErrorTypes = true
     useBuildCache = true
-}
-
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
@@ -34,6 +27,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+
 }
 
 dependencies {
@@ -41,11 +35,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -53,6 +46,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -62,10 +56,22 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -73,13 +79,17 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.supportLibDependencies.swipeRefresh
-    implementation projectOrAar(rootProject.ext.libraries.utils)
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+
+
 
 }
 

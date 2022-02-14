@@ -742,7 +742,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             binding?.tvHotelNearbyLandmarkInfo?.text = dataList.information
 
             context?.let {
-                trackingHotelUtil.hotelDetailViewNearbyLandmarks(it, PDP_SCREEN_NAME, hotelId, roomPriceAmount)
+                trackingHotelUtil.hotelDetailViewNearbyLandmarks(it, PDP_SCREEN_NAME, hotelId, roomPriceAmount, hotelName)
             }
         }else{
             hideNearbyLandmarks()

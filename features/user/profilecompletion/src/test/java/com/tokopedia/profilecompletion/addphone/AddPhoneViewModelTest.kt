@@ -83,7 +83,7 @@ class AddPhoneViewModelTest {
         verify {
             addPhoneGraphQlUseCase.setTypeClass(any())
             addPhoneGraphQlUseCase.setRequestParams(mockParam)
-            addPhoneGraphQlUseCase.setGraphqlQuery(any())
+            addPhoneGraphQlUseCase.setGraphqlQuery(any<String>())
             addPhoneGraphQlUseCase.execute(any(), any())
         }
     }
@@ -162,7 +162,7 @@ class AddPhoneViewModelTest {
         verify {
             userValidateGraphQlUseCase.setTypeClass(any())
             userValidateGraphQlUseCase.setRequestParams(mockParam)
-            userValidateGraphQlUseCase.setGraphqlQuery(any())
+            userValidateGraphQlUseCase.setGraphqlQuery(any<String>())
             userValidateGraphQlUseCase.execute(any(), any())
         }
     }

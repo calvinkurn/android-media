@@ -93,6 +93,7 @@ class TableViewHolder(
                     setOnTableEmpty(element)
                 } else {
                     if (listener.getIsShouldRemoveWidget()) {
+                        itemView.toggleWidgetHeight(false)
                         listener.removeWidget(adapterPosition, element)
                     } else {
                         listener.onRemoveWidget(adapterPosition)

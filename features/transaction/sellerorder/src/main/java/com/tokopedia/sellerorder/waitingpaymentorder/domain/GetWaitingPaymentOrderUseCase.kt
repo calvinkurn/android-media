@@ -5,6 +5,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.mapper.WaitingPaymentOrderResultMapper
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderResponse
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import javax.inject.Inject
 
 /**
@@ -19,7 +21,9 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
         useCase.setGraphqlQuery(QUERY)
     }
 
-    suspend fun execute(param: WaitingPaymentOrderRequestParam): Map<String, Any> {
+    suspend fun execute(
+        param: WaitingPaymentOrderRequestParam
+    ): Pair<Paging, List<WaitingPaymentOrderUiModel>> {
         useCase.setTypeClass(WaitingPaymentOrderResponse.Data::class.java)
         useCase.setRequestParams(generateParam(param))
 

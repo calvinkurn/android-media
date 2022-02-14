@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.TextAreaUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:unify_text_field_counter="160"
+    app:unify_text_field_label_static="true"
+    app:unify_text_field_message="@string/bottomsheet_order_extension_request_other_options_text_area_message_illegal_characters"
+    app:unify_text_field_placeholder="@string/bottomsheet_order_extension_request_other_options_text_area_label" />

@@ -28,10 +28,10 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -62,7 +62,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val removeWishListUseCase: RemoveWishListUseCase,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                             private val userSessionInterface: UserSessionInterface,
-                                            private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                            private val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                             private val getRecentViewUseCase: GetRecommendationUseCase,
                                             private val getWishlistUseCase: GetWishlistUseCase,
                                             private val getRecommendationUseCase: GetRecommendationUseCase,
@@ -71,7 +71,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val seamlessLoginUsecase: SeamlessLoginUsecase,
                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
-                                            private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                            private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                             private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                             private val followShopUseCase: FollowShopUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
@@ -180,7 +180,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     private fun onSuccessGetCartList(cartData: CartData, initialLoad: Boolean) {
         view?.let {
             val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData
-            if (lastApplyData.codes.isNotEmpty() && lastApplyData.listVoucherOrders.isNotEmpty()) {
+            if (lastApplyData.codes.isNotEmpty() || lastApplyData.listVoucherOrders.isNotEmpty()) {
                 setLastApplyValid()
             }
             setValidateUseLastResponse(null)
@@ -968,7 +968,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setPosition(position.toString())
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1012,7 +1012,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setPosition(position.toString())
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1058,9 +1058,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 addProduct(enhancedECommerceProductCartMapData.getProduct())
             }
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
         }
-        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.checkoutMap
+        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.getCheckoutMap()
         return checkoutMapData
     }
 
@@ -1136,7 +1136,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setVariant("")
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1164,7 +1164,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1205,7 +1205,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         }
 
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1435,7 +1435,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+        requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
                         .subscribeOn(schedulers.io)
@@ -1461,7 +1461,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartAndValidateUseUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
                 requestParams.putString(UpdateCartAndValidateUseUseCase.PARAM_KEY_SOURCE, UpdateCartAndValidateUseUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
-                requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+                requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
                 lastValidateUseRequest = promoRequest
 
                 compositeSubscription.add(
@@ -1476,7 +1476,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>) {
         view?.showItemLoading()
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
+        clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                         .subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
@@ -1486,9 +1486,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun doClearAllPromo() {
         lastValidateUseRequest?.let {
             val codes = arrayListOf<String>()
-            it.codes.forEach { code -> code?.let { codes.add(code) } }
-            it.orders.forEach { order -> order?.codes?.let { code -> codes.addAll(code) } }
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
+            it.codes.forEach { code -> codes.add(code) }
+            it.orders.forEach { order -> codes.addAll(order.codes) }
+            clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
             compositeSubscription.add(
                     // Do nothing on subscribe
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()

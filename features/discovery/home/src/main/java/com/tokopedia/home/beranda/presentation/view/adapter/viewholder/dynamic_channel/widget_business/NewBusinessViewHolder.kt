@@ -203,7 +203,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         tabLayout.show()
         if(tabLayout.tabLayout.tabCount == 0) {
             tabList.forEach {
-                tabLayout.addNewTab(it.name)
+                tabLayout.addNewTab(it.name).text = it.name
             }
             tabLayout.tabLayout.addOnTabSelectedListener(tabChangeListener)
         }

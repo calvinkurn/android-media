@@ -19,7 +19,6 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
-import com.tokopedia.home_account.data.model.WalletappWalletEligibility
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
@@ -129,17 +128,6 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 }
             }
         })
-
-        viewModel.walletEligible.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetWalletEligible(it.data)
-                }
-                is Fail -> {
-                    onFailedGetWalletEligible()
-                }
-            }
-        })
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
@@ -148,11 +136,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfigVertical.forEach {
                 adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
-                if (it.id != AccountConstants.WALLET.GOPAY &&
-                    it.id != AccountConstants.WALLET.GOPAYLATER
-                ) {
-                    viewModel.getBalanceAndPoint(it.id)
-                }
+                viewModel.getBalanceAndPoint(it.id)
             }
         }
 
@@ -163,7 +147,10 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             }
         }
 
-        viewModel.getGopayWalletEligible()
+        if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse() ||
+                adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
+            adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
+        }
     }
 
     private fun onFailedGetCentralizedAssetConfig() {
@@ -183,30 +170,6 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         adapter?.changeItemToFailedById(walletId)
-    }
-
-    private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
-        val eligibility = walletappWalletEligibility.data
-        if (eligibility.isNotEmpty()) {
-            if (eligibility[0].isEligible) {
-                if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse()) {
-                    viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
-                    adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-                }
-                if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
-                    viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
-                    adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-                }
-            } else {
-                adapter?.removeById(AccountConstants.WALLET.GOPAY)
-                adapter?.removeById(AccountConstants.WALLET.GOPAYLATER)
-            }
-        }
-    }
-
-    private fun onFailedGetWalletEligible() {
-        adapter?.removeById(AccountConstants.WALLET.GOPAY)
-        adapter?.removeById(AccountConstants.WALLET.GOPAYLATER)
     }
 
     private fun setupAdapter() {

@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.registerinitial.viewmodel
 
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -154,6 +153,43 @@ class RegisterInitialViewModelTest {
     }
 
     @Test
+    fun `on Success Register Check has errors`() {
+        val testId = "123456"
+
+        val errors = arrayListOf("error 1")
+        /* When */
+        val responseData = RegisterCheckData(errors = errors)
+        val response = RegisterCheckPojo(data = responseData)
+
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+
+        viewModel.registerCheck(testId)
+
+        /* Then */
+        verify { registerCheckObserver.onChanged(any<Fail>()) }
+        assertThat((viewModel.registerCheckResponse.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
+    }
+
+    @Test
+    fun `on Success Register Check has errors but empty`() {
+        val testId = "123456"
+
+        val errors = arrayListOf("")
+        /* When */
+        val responseData = RegisterCheckData(errors = errors)
+        val response = RegisterCheckPojo(data = responseData)
+
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+
+        viewModel.registerCheck(testId)
+
+        /* Then */
+        verify { registerCheckObserver.onChanged(any<Fail>()) }
+        assertThat((viewModel.registerCheckResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
+    }
+
+
+    @Test
     fun `on Failed Register Check`() {
         val testId = "123456"
 
@@ -180,9 +216,25 @@ class RegisterInitialViewModelTest {
     }
 
     @Test
-    fun `on Error Register Request had errors`() {
+    fun `on Error Register Request has errors`() {
         /* When */
         val errors = arrayListOf(RegisterRequestErrorData(name = "errors", message = "error happen"))
+        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = errors)
+        val response = RegisterRequestPojo(data = responseData)
+
+        coEvery { registerRequestUseCase.executeOnBackground() } returns response
+
+        viewModel.registerRequest("", "", "", "")
+
+        /* Then */
+        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
+        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(com.tokopedia.network.exception.MessageErrorException::class.java))
+    }
+
+    @Test
+    fun `on Error Register Request has errors but empty`() {
+        /* When */
+        val errors = arrayListOf(RegisterRequestErrorData(name = "", message = ""))
         val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = errors)
         val response = RegisterRequestPojo(data = responseData)
 
@@ -194,6 +246,7 @@ class RegisterInitialViewModelTest {
 
         /* Then */
         assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
+        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
 
     @Test
@@ -268,8 +321,6 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Success Activate User`() {
-        val params = mapOf("email" to "asd")
-
         /* When */
         val responseData = ActivateUserData(isSuccess = 1, accessToken = "asd", refreshToken = "fffaa", tokenType = "Bearer")
         val response = ActivateUserPojo(data = responseData)
@@ -280,6 +331,38 @@ class RegisterInitialViewModelTest {
 
         /* Then */
         verify { activateUserObserver.onChanged(Success(responseData)) }
+    }
+
+    @Test
+    fun `on Success Activate User has errors`() {
+        /* When */
+        val msg = "message"
+        val responseData = ActivateUserData(isSuccess = 1, accessToken = "", refreshToken = "", tokenType = "", message = msg)
+        val response = ActivateUserPojo(data = responseData)
+
+        coEvery { activateUserUseCase.executeOnBackground() } returns response
+
+        viewModel.activateUser("", "")
+
+        /* Then */
+        verify { activateUserObserver.onChanged(any<Fail>()) }
+        assertEquals((viewModel.activateUserResponse.value as Fail).throwable.message, msg)
+        assertThat((viewModel.activateUserResponse.value as Fail).throwable, instanceOf(MessageErrorException::class.java))
+    }
+
+    @Test
+    fun `on Success Activate User has other errors`() {
+        /* When */
+        val responseData = ActivateUserData(isSuccess = 1, accessToken = "", refreshToken = "", tokenType = "", message = "")
+        val response = ActivateUserPojo(data = responseData)
+
+        coEvery { activateUserUseCase.executeOnBackground() } returns response
+
+        viewModel.activateUser("", "")
+
+        /* Then */
+        verify { activateUserObserver.onChanged(any<Fail>()) }
+        assertThat((viewModel.activateUserResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
 
     @Test
@@ -297,8 +380,6 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Message is not empty during Activate User`() {
-        val params = mapOf("email" to "asd")
-
         /* When */
         val responseData = ActivateUserData(message = "error happen!")
         val response = ActivateUserPojo(data = responseData)
@@ -355,6 +436,24 @@ class RegisterInitialViewModelTest {
         /* Then */
         verify {
             loginTokenGoogleObserver.onChanged(Success(responseToken))
+        }
+    }
+
+    @Test
+    fun `on Success Register Google Phone Go to activation`() {
+        /* When */
+        val exception = mockk<MessageErrorException>(relaxed = true)
+
+        every { userSession.loginMethod } returns "google"
+        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
+            secondArg<LoginTokenSubscriber>().onGoToActivationPage(exception)
+        }
+
+        viewModel.registerGoogle("", "")
+
+        /* Then */
+        verify {
+            goToActivationPageObserver.onChanged(exception)
         }
     }
 
@@ -546,7 +645,7 @@ class RegisterInitialViewModelTest {
         val responseToken = LoginTokenPojo(loginToken = loginToken)
 
         /* When */
-        every { userSession.loginMethod } returns "facebook"
+        every { userSession.loginMethod } returns "phone"
         every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
             secondArg<LoginTokenSubscriber>().onSuccessLoginToken(responseToken)
         }
@@ -564,7 +663,7 @@ class RegisterInitialViewModelTest {
         val validateToken = "asdf123"
 
         /* When */
-        every { userSession.loginMethod } returns "facebook"
+        every { userSession.loginMethod } returns "phone"
         every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
             secondArg<LoginTokenSubscriber>().onErrorLoginToken(throwable)
         }
@@ -640,6 +739,18 @@ class RegisterInitialViewModelTest {
         viewModel.checkHasOvoAccount(phone)
 
         verify { hasOvoObserver.onChanged(Success(response)) }
+    }
+
+    @Test
+    fun `ovo check errors`() {
+        val phone = "082242454511"
+
+        checkHasOvoUseCase.setParams(phone)
+        coEvery { checkHasOvoUseCase.executeOnBackground() } throws throwable
+
+        viewModel.checkHasOvoAccount(phone)
+
+        verify { hasOvoObserver.onChanged(Fail(throwable)) }
     }
 
     @Test

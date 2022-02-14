@@ -8,7 +8,8 @@
             android:name=".order.view.OrderSummaryPageActivity"
             android:label="@string/title_one_click_checkout"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -37,5 +38,4 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>
-
 </manifest>

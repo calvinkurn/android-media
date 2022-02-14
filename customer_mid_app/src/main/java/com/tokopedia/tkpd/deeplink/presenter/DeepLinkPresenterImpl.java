@@ -32,11 +32,9 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.customer_mid_app.R;
-import com.tokopedia.flight.orderlist.data.cloud.entity.Route;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
@@ -160,10 +158,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.HOT_LIST:
                     screenName = AppScreen.SCREEN_HOME_HOTLIST;
                     openHomepageHot(defaultBundle);
-                    break;
-                case DeepLinkChecker.FIND:
-                    screenName = AppScreen.SCREEN_FIND;
-                    DeepLinkChecker.openFind(uriData.toString(), context);
                     break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogDetail(linkSegment);

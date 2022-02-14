@@ -546,7 +546,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         if (tnc.isNotEmpty() && tnc != "<br>") {
             tvTnc?.text = context?.let {
                 HtmlUrlHelper(
-                    tnc.replace("(\r\n|\n)".toRegex(), "<br />"), it
+                    tnc, it
                 ).spannedString
             }
             tvTnc?.movementMethod = getMovementMethod()
@@ -558,7 +558,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         if (howToUse.isNotEmpty() && howToUse != "<br>") {
             tvHowToUse?.text = context?.let {
                 HtmlUrlHelper(
-                    howToUse.replace("(\r\n|\n)".toRegex(), "<br />"), it
+                    howToUse, it
                 ).spannedString
             }
             tvHowToUse?.movementMethod = getMovementMethod()

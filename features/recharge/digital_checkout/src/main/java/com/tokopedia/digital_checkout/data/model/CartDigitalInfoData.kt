@@ -33,11 +33,7 @@ data class CartDigitalInfoData(
 
         var isForceRenderCart: Boolean = false,
 
-        var crossSellingType: Int = 0,
-
-        var showSubscriptionsView: Boolean = false,
-
-        var crossSellingConfig: CrossSellingConfig = CrossSellingConfig(),
+        var isSubscribed: Boolean = false,
 
         var isSpecialProduct: Boolean = false
 ) : Parcelable {
@@ -54,23 +50,6 @@ data class CartDigitalInfoData(
             val title: String = "",
 
             val items: List<CartItemDigital> = listOf()
-    ) : Parcelable
-
-    @Parcelize
-    data class CrossSellingConfig(
-            var isSkipAble: Boolean = false,
-
-            var isChecked: Boolean = false,
-
-            var headerTitle: String = "",
-
-            var bodyTitle: String = "",
-
-            var bodyContentBefore: String = "",
-
-            var bodyContentAfter: String = "",
-
-            var checkoutButtonText: String = ""
     ) : Parcelable
 
     @Parcelize

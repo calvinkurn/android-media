@@ -41,6 +41,7 @@ https://phab.tokopedia.com/XXXXX
 - **/check review** - run auto mention code review system
 - **/check risk** - run risk analysis
 - **/check lint** - run linter checker
+- **/check macrobenchmark** - run macrobenchmark test
 - **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
@@ -72,4 +73,6 @@ https://phab.tokopedia.com/XXXXX
 - **approved for dark mode** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-dark-mode)*
 
+- **approved for rollence** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-risk-analysis)*
 

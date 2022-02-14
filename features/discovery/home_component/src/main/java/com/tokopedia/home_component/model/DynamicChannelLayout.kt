@@ -28,4 +28,7 @@ object DynamicChannelLayout {
     const val LAYOUT_MIX_TOP: String = "top_carousel"
     const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
     const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
+    const val LAYOUT_FEATURED_BRAND = "featured_brand"
+    const val LAYOUT_FEATURED_SHOP = "shop_widget"
+    const val LAYOUT_BEST_SELLING = "best_selling"
 }

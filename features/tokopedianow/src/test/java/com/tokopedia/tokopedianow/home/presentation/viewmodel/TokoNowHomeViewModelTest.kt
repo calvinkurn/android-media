@@ -16,6 +16,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -23,6 +24,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -41,6 +44,12 @@ import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 
 class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
+
+    @Test
+    fun `when tracking with setting screenName should give the same result`() {
+        viewModel.trackOpeningScreen(HOMEPAGE_TOKONOW)
+        verifyTrackOpeningScreen()
+    }
 
     @Test
     fun `when getting homeLayout should run and give the success result`() {
@@ -2324,14 +2333,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             UnknownHomeLayout,
             HomeLayoutItemState.NOT_LOADED
         )
-        val unknownTokoNowLayout = HomeLayoutItemUiModel(
-            UnknownTokoNowLayout,
-            HomeLayoutItemState.NOT_LOADED
-        )
 
         addHomeLayoutItem(unknownLayout)
         addHomeLayoutItem(unknownHomeLayout)
-        addHomeLayoutItem(unknownTokoNowLayout)
 
         getLayoutComponentData(warehouseId = "1")
 

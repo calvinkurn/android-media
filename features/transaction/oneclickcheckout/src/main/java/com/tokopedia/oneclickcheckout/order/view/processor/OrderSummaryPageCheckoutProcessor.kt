@@ -25,7 +25,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
         if (finalPromo != null) {
             val list: ArrayList<PromoRequest> = ArrayList()
             for (voucherOrder in finalPromo.promoUiModel.voucherOrderUiModels) {
-                if (orderCart.cartString == voucherOrder?.uniqueId && voucherOrder.messageUiModel.state != "red" &&
+                if (orderCart.cartString == voucherOrder.uniqueId && voucherOrder.messageUiModel.state != "red" &&
                         voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
                     list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
                 }

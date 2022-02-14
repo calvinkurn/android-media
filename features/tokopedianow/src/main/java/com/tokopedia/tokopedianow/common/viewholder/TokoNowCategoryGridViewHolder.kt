@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView

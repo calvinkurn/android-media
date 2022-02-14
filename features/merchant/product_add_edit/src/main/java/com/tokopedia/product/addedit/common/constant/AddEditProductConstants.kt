@@ -30,7 +30,8 @@ object AddEditProductConstants {
     const val PHOTO_TITLE_VALIDATION_SUCCESS = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_success.png"
     const val PHOTO_TITLE_VALIDATION_ERROR = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_error.png"
 
-    const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = 30 * 1024
+    const val MAX_PRODUCT_IMAGE_SIZE_IN_MB = 30
+    const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = MAX_PRODUCT_IMAGE_SIZE_IN_MB * 1024
 
     const val FIRST_CATEGORY_SELECTED = 0
 }

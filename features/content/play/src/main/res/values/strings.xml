@@ -23,10 +23,10 @@
     <string name="play_link_copied">Link berhasil disalin</string>
 
     <!--Floating Window / PiP-->
-    <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
-    <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>
+    <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
+    <string name="play_pip_permission_rationale_desc">Dengan aktifkan akses mode ini, kamu tetap bisa nonton sambil jelajahi aplikasi Tokopedia, lho.</string>
     <string name="play_pip_activate">Aktifkan</string>
-    <string name="play_pip_cancel">Abaikan</string>
+    <string name="play_pip_cancel">Batal</string>
 
     <!--mock-->
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
@@ -45,6 +45,9 @@
 
     <string name="play_action_ok">Oke</string>
     <string name="play_out_of_stock">Stok habis</string>
+
+    <!--Pinned Message-->
+    <string name="play_pinned_msg_applink_text">Ayo Lihat</string>
 
     <!--Engagement Tools-->
     <string name="play_interactive_prestart_timer_text">Dimulai dalam:</string>
@@ -67,14 +70,23 @@
 
     <string name="play_featured_product_check_product">Cek Barang</string>
 
+    <!--Upcoming page-->
     <string name="play_remind_me">Ingatkan Saya</string>
+    <string name="play_upcoming_refresh">Refresh</string>
     <string name="play_remind_me_success">Berhasil diingatkan</string>
     <string name="play_watch_now">Tonton Sekarang</string>
     <string name="play_will_start_on">Akan mulai dalam</string>
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
 
+    <!--Chromecast-->
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
     <string name="play_casting_chromecast">Casting to Chromecast</string>
     <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>
+
+    <string name="play_upcoming_channel_not_started">Live-nya belum mulai, nih. Silakan tunggu atau refresh halaman ini.</string>
+
+    <!--Pinned Product-->
+    <string name="play_zero">0</string>
+
 </resources>

@@ -12,16 +12,16 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.databinding.SearchResultProductBigGridCuratedInspirationCardLayoutBinding
+import com.tokopedia.search.databinding.SearchResultProductInspirationCardLayoutBinding
 import com.tokopedia.search.result.presentation.model.InspirationCardDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationCardOptionAdapter
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.*
-import kotlinx.android.synthetic.main.search_result_product_big_grid_inspiration_card_layout.view.*
-import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BigGridInspirationCardViewHolder(
         itemView: View,
@@ -35,6 +35,9 @@ class BigGridInspirationCardViewHolder(
         private const val SPAN_COUNT = 2
     }
 
+    private var inspirationCardBinding: SearchResultProductInspirationCardLayoutBinding? by viewBinding()
+    private var inspirationCardCuratedBinding: SearchResultProductBigGridCuratedInspirationCardLayoutBinding? by viewBinding()
+
     override fun bind(element: InspirationCardDataView) {
         val isCurated = element.type == SearchConstant.InspirationCard.TYPE_CURATED
         setBaseLayout(isCurated)
@@ -47,11 +50,11 @@ class BigGridInspirationCardViewHolder(
 
     private fun setBaseLayout(isCurated: Boolean) {
         if (isCurated) {
-            itemView.bigGridCardViewInspirationCard?.inspirationCard?.visibility = View.GONE
-            itemView.bigGridCardViewInspirationCard?.inspirationCardCurated?.visibility = View.VISIBLE
+            inspirationCardBinding?.root?.visibility = View.GONE
+            inspirationCardCuratedBinding?.root?.visibility = View.VISIBLE
         } else {
-            itemView.bigGridCardViewInspirationCard?.inspirationCard?.visibility = View.VISIBLE
-            itemView.bigGridCardViewInspirationCard?.inspirationCardCurated?.visibility = View.GONE
+            inspirationCardBinding?.root?.visibility = View.VISIBLE
+            inspirationCardCuratedBinding?.root?.visibility = View.GONE
         }
     }
 
@@ -66,26 +69,31 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindCuratedBackground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            itemView.inspirationCardCuratedBackground?.setBackgroundResource(R.drawable.search_background_layer_big_grid_curated_cards)
-            itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
-        }
-        else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
+            inspirationCardCuratedBinding?.inspirationCardCuratedBackground?.let {
+                it.setBackgroundResource(R.drawable.search_background_layer_big_grid_curated_cards)
+                it.visibility = View.VISIBLE
+            }
+        } else inspirationCardCuratedBinding?.inspirationCardCuratedBackground?.visibility = View.GONE
     }
 
     private fun bindCuratedIcon(element: InspirationCardOptionDataView) {
-        itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImageFitCenter(element.img)
+        inspirationCardCuratedBinding?.inspirationCardCuratedIcon?.let {
+            it.shouldShowWithAction(element.img.isNotEmpty()) {
+                it.loadImageFitCenter(element.img)
+            }
         }
     }
 
     private fun bindCuratedTitle(element: InspirationCardOptionDataView) {
-        itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedTitle?.shouldShowWithAction(element.text.isNotEmpty()) {
-            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedTitle?.text = element.text
+        inspirationCardCuratedBinding?.inspirationCardCuratedTitle?.let {
+            it.shouldShowWithAction(element.text.isNotEmpty()) {
+                it.text = element.text
+            }
         }
     }
 
     private fun bindCuratedListener(element: InspirationCardOptionDataView) {
-        itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedButton?.setOnClickListener {
+        inspirationCardCuratedBinding?.inspirationCardCuratedButton?.setOnClickListener {
             inspirationCardListener.onInspirationCardOptionClicked(element)
         }
     }
@@ -96,13 +104,15 @@ class BigGridInspirationCardViewHolder(
     }
 
     private fun bindTitle(element: InspirationCardDataView) {
-        itemView.bigGridCardViewInspirationCard?.inspirationCardTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
-            itemView.bigGridCardViewInspirationCard?.inspirationCardTitle?.text = element.title
+        inspirationCardBinding?.inspirationCardTitle?.let {
+            it.shouldShowWithAction(element.title.isNotEmpty()) {
+                it.text = element.title
+            }
         }
     }
 
     private fun bindContent(element: InspirationCardDataView) {
-        itemView.bigGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
+        inspirationCardBinding?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager(element)
             it.adapter = createAdapter(element.optionData)
             it.addItemDecorationIfNotExists(createItemDecoration(element))
@@ -112,9 +122,9 @@ class BigGridInspirationCardViewHolder(
     private fun createLayoutManager(element: InspirationCardDataView): RecyclerView.LayoutManager {
         return if (!element.isRelated()) {
             ChipsLayoutManager.newBuilder(itemView.context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
         } else {
             GridLayoutManager(itemView.context, SPAN_COUNT, GridLayoutManager.VERTICAL, false)
         }
@@ -137,8 +147,8 @@ class BigGridInspirationCardViewHolder(
     }
 
     private class RelatedBigGridItemDecoration(
-            private val horizontalSpacing: Int,
-    ): RecyclerView.ItemDecoration() {
+        private val horizontalSpacing: Int,
+    ) : RecyclerView.ItemDecoration() {
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             val childPosition = parent.getChildAdapterPosition(view)

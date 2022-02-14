@@ -101,25 +101,6 @@
           "message_success": ""
         },
         "default_promo": "voucher",
-        "cross_selling_type": 2,
-        "cross_selling_config": {
-          "can_be_skipped": true,
-          "is_checked": false,
-          "wording": {
-            "header_title": "Header title not subscribed",
-            "body_title": "Body Title not subscribed",
-            "body_content_before": "Body content before not subscribed",
-            "body_content_after": "Body content after subscribed",
-            "cta_button_text": "Bayar"
-          },
-          "wording_is_subscribed": {
-            "header_title": "",
-            "body_title": "",
-            "body_content_before": "",
-            "body_content_after": "",
-            "cta_button_text": "Bayar"
-          }
-        },
         "pop_up": {
           "title": "This is pop up",
           "content": "Please enter okay",
@@ -162,6 +143,25 @@
               "link_url": "",
               "icon_url": "https://ecs7.tokopedia.net/img/qfBCeS/2021/3/3/286b8ac3-3eec-4459-a464-3cf3eff8a8bd.png",
               "tooltip_text": "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)."
+            }
+          },
+          {
+            "id": 2,
+            "transaction_type": "Aktivasi Langganan",
+            "tier_id": 3,
+            "opt_in": false,
+            "check_box_disabled": false,
+            "allow_ovo_points": false,
+            "fintech_amount": 0,
+            "fintech_partner_amount": 0,
+            "info": {
+              "title": "Body Title not subscribed",
+              "subtitle": "Body content before not subscribed",
+              "checked_subtitle": "Body content after subscribed",
+              "link_text": "",
+              "link_url": "",
+              "icon_url": "",
+              "tooltip_text": ""
             }
           }
         ],

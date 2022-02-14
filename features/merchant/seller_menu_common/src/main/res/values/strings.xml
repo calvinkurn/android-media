@@ -14,7 +14,7 @@
     <string name="setting_menu_shop_profile">PROFIL TOKO</string>
     <string name="setting_menu_basic_info">Informasi Dasar</string>
     <string name="setting_menu_shop_notes">Catatan Toko</string>
-    <string name="setting_menu_shop_working_hours">Jam Buka Tutup Toko</string>
+    <string name="setting_menu_shop_working_hours">Jadwal Operasional Toko</string>
     <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
     <string name="setting_menu_add_and_shop_location">Lokasi Toko</string>
     <string name="setting_menu_set_shipment_method">Atur Layanan Pengiriman</string>

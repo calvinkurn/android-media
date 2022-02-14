@@ -71,6 +71,12 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("type")
         val type: String = "seller", // [tokopedia, buyer, seller]
 
+        @SerializedName("thumbnail_url")
+        val thumbnailUrl: String = "",
+
+        @SerializedName("badge_url")
+        val badgeUrl: String = "",
+
         @SerializedName("name")
         val name: String = "",
 

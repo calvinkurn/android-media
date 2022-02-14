@@ -14,7 +14,7 @@ import com.tokopedia.sellerorder.databinding.BottomsheetBuyerRequestCancelOrderB
 
 class SomOrderRequestCancelBottomSheet(
         context: Context
-) : SomBottomSheet<BottomsheetBuyerRequestCancelOrderBinding>(LAYOUT, true, true, false, context.getString(R.string.som_request_cancel_bottomsheet_title), context, true) {
+) : SomBottomSheet<BottomsheetBuyerRequestCancelOrderBinding>(LAYOUT, true, true, false, false, false, context.getString(R.string.som_request_cancel_bottomsheet_title), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_buyer_request_cancel_order

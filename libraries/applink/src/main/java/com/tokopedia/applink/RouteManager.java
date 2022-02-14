@@ -5,17 +5,18 @@ import static com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_SELLERAPP;
 import android.app.Activity;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,6 +57,11 @@ public class RouteManager {
 
     public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
     public static final String DEFAULT_VIEW = "android.intent.action.VIEW";
+
+    private static final String CLIPBOARD_LABEL = "Applink Copied";
+    private static final String SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name";
+    private static final String SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key";
+    private static final boolean SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false;
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
@@ -241,6 +247,22 @@ public class RouteManager {
     }
 
     /**
+     * show applink on toast and copy the link to clipboard.
+     * will do nothing if shared preferences value is false and not in debugging mode.
+     */
+    private static void showAndCopyApplink(Context context, String applink) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (context.getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, Context.MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE)) {
+                Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
+
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, applink);
+                clipboard.setPrimaryClip(clip);
+            }
+        }
+    }
+
+    /**
      * route to the activity corresponds to the given applink.
      * Will do nothing if applink is not supported.
      *
@@ -259,6 +281,9 @@ public class RouteManager {
         if (uriString.isEmpty()) {
             return false;
         }
+
+        showAndCopyApplink(context, uriString);
+
         ApplinkLogger.getInstance(context).startTrace(uriString);
         ApplinkLogger.getInstance(context).appendTrace("Start Routing...");
 
@@ -383,12 +408,15 @@ public class RouteManager {
         Intent intent = getIntentNoFallback(context, deeplink);
         // set fallback for implicit intent
 
+        showAndCopyApplink(context, deeplink);
+
         if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
             logErrorOpenDeeplink(context, deeplink);
             intent = getHomeIntent(context);
             intent.setData(Uri.parse(deeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         }
+
         return intent;
     }
 
@@ -420,6 +448,9 @@ public class RouteManager {
             return null;
         }
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
+
+        showAndCopyApplink(context, deeplink);
+
         ApplinkLogger.getInstance(context).startTrace(deeplink);
         ApplinkLogger.getInstance(context).appendTrace("Start getting intent...");
 

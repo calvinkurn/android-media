@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
@@ -28,6 +29,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
+@UiTest
 class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
@@ -213,26 +215,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsError()
-    }
-
-    @Test
-    fun load_srw_preview_from_error_state_if_buyer_attach_from_start_intent() {
-        // Given
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        chatSrwUseCase.isError = true
-        launchChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
-
-        // When
-        chatSrwUseCase.isError = false
-        chatSrwUseCase.response = chatSrwResponse
-        onView(withId(com.tokopedia.unifycomponents.R.id.refreshID))
-            .perform(click())
-
-        // Then
-        assertSrwPreviewContentIsVisible()
     }
 
     @Test
@@ -1250,10 +1232,91 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertComposedTextValue(typedMsg)
     }
 
+    @Test
+    fun should_re_render_SRW_preview_question_everytime_user_attach_new_preview_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(1)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
+        intendingAttachProduct(3)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(3)
+    }
+
+    @Test
+    fun should_re_render_SRW_preview_question_when_user_remove_one_of_the_preview_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(3)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
+        clickCloseAttachmentPreview(0)
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(3)
+    }
+
+    /**
+     * Simulate when messageId is empty
+     */
+    @Test
+    fun should_render_srw_question_when_product_coming_from_chat_entry_point_such_as_pdp() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity {
+            it.putExtra(ApplinkConst.Chat.MESSAGE_ID, "")
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(1)
+    }
+
+    @Test
+    fun should_show_template_chat_if_first_success_load_srw_then_fail_the_second_time() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(1)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.isError = true
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.
-
 
     private fun getAttachInvoiceResult(): Instrumentation.ActivityResult {
         val intent = Intent().apply {
@@ -1284,7 +1347,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
     }
 
-    // TODO: identify why not pointing to `Hari Ini`
     private fun today(): Long {
         val stringDate = SendableUiModel.generateStartTime()
         return RfcDateTimeParser.parseDateString(

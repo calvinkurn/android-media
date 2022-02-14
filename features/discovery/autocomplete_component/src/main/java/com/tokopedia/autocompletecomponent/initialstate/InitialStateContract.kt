@@ -5,18 +5,27 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
+import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface InitialStateContract {
     interface View : CustomerView {
         fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>)
 
-        fun onRecentViewImpressed(list: List<Any>)
+        fun onRecentViewImpressed(recentViewDataView: RecentViewDataView, list: List<Any>)
 
-        fun onRecentSearchImpressed(list: List<Any>)
+        fun onRecentSearchImpressed(
+            recentSearchList: List<BaseItemInitialStateSearch>,
+            list: List<Any>
+        )
 
-        fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel)
+        fun onPopularSearchImpressed(
+            popularSearchDataView: PopularSearchDataView,
+            model: DynamicInitialStateItemTrackingModel
+        )
 
         fun onSeeMoreRecentSearchImpressed(userId: String)
 
@@ -24,9 +33,9 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String, pageSource: String)
+        fun trackEventClickRecentSearch(item: BaseItemInitialStateSearch, label: String)
 
-        fun trackEventClickRecentShop(label: String, userId: String, pageSource: String)
+        fun trackEventClickRecentShop(item: BaseItemInitialStateSearch, label: String, userId: String)
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
@@ -34,15 +43,36 @@ interface InitialStateContract {
 
         fun dropKeyBoard()
 
-        fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
+        fun onDynamicSectionImpressed(
+            dynamicInitialStateSearchDataView: DynamicInitialStateSearchDataView,
+            model: DynamicInitialStateItemTrackingModel,
+        )
 
-        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String)
+        fun trackEventClickDynamicSectionItem(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            pageSource: String
+        )
 
         fun refreshViewWithPosition(position: Int)
 
-        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String)
+        fun trackEventClickCuratedCampaignCard(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            campaignCode: String
+        )
 
-        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String)
+        fun onCuratedCampaignCardImpressed(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            campaignCode: String
+        )
 
         fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
 
@@ -54,9 +84,15 @@ interface InitialStateContract {
 
         fun onRefreshTokoNowPopularSearch()
 
-        fun trackEventClickTokoNowDynamicSectionItem(label: String)
+        fun trackEventClickTokoNowDynamicSectionItem(label: String, item: BaseItemInitialStateSearch)
 
-        fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String)
+        fun trackEventClickChip(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            pageSource: String
+        )
     }
 
     interface Presenter : CustomerPresenter<View> {

@@ -1,14 +1,16 @@
 package com.tokopedia.autocompletecomponent.suggestion.singleline
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.TextAppearanceSpan
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -28,29 +30,36 @@ class SuggestionSingleLineViewHolder(
     }
 
     override fun bind(item: SuggestionSingleLineDataDataView) {
-        bindIconImage(item)
-        bindTextTitle(item)
-        bindShortcutButton(item)
-        bindListener(item)
+        bindIconImage(item.data)
+        bindTextTitle(item.data)
+        bindShortcutButton(item.data)
+        bindListener(item.data)
     }
 
-    private fun bindIconImage(item: SuggestionSingleLineDataDataView){
+    private fun bindIconImage(item: BaseSuggestionDataView){
         itemView.iconImage?.let {
             ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
         }
     }
 
-    private fun bindTextTitle(item: SuggestionSingleLineDataDataView){
+    private fun bindTextTitle(item: BaseSuggestionDataView){
         val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
         if (startIndex == -1) {
             itemView.singleLineTitle?.text = item.title
         } else {
             val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                    startIndex + item.searchTerm.length,
-                    item.title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            highlightedTitle.safeSetSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                startIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            highlightedTitle.safeSetSpan(
+                StyleSpan(Typeface.BOLD),
+                startIndex + item.searchTerm.length,
+                item.title.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             itemView.singleLineTitle?.text = highlightedTitle
         }
     }
@@ -61,13 +70,17 @@ class SuggestionSingleLineViewHolder(
         } else -1
     }
 
-    private fun bindShortcutButton(item: SuggestionSingleLineDataDataView){
+    private fun bindShortcutButton(item: BaseSuggestionDataView){
         itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(itemView.actionShortcutButton, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
+            ImageHandler.loadImage2(
+                itemView.actionShortcutButton,
+                item.shortcutImage,
+                R.drawable.autocomplete_ic_copy_to_search_bar
+            )
         }
     }
 
-    private fun bindListener(item: SuggestionSingleLineDataDataView){
+    private fun bindListener(item: BaseSuggestionDataView){
         itemView.autocompleteSingleLineItem?.setOnClickListener {
             listener.onItemClicked(item)
         }

@@ -81,6 +81,7 @@ open class DynamicPostViewHolder(v: View,
         const val PAYLOAD_FOLLOW = 15
         const val PAYLOAD_ANIMATE_FOOTER = 16
         const val PAYLOAD_PLAY_VIDEO = 17
+        const val PAYLOAD_PLAY_VOD = 18
 
         const val MAX_CHAR = 140
         const val CAPTION_END = 90
@@ -126,6 +127,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
             PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
+            PAYLOAD_PLAY_VOD -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
             else -> bind(element)
         }
     }
@@ -626,7 +628,8 @@ open class DynamicPostViewHolder(v: View,
             authorType: String,
             postType: String = "",
             isVideo: Boolean,
-            caption: String
+            caption: String,
+            playChannelId: String = ""
         )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
@@ -639,7 +642,8 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean = false,
             type: Boolean = false,
             shopId: String = "",
-            isVideo: Boolean = false
+            isVideo: Boolean = false,
+            playChannelId: String = ""
         )
 
         fun onCommentClick(
@@ -649,7 +653,9 @@ open class DynamicPostViewHolder(v: View,
             type: String,
             isFollowed: Boolean = false,
             isVideo: Boolean,
-            shopId: String = ""
+            shopId: String = "",
+            playChannelId: String = "",
+            isClickIcon:Boolean = true
         )
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
@@ -666,7 +672,8 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean = false,
             shopId: String = "",
             video: Boolean,
-            isTopads:Boolean = false
+            isTopads:Boolean = false,
+            playChannelId: String = ""
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
@@ -678,6 +685,21 @@ open class DynamicPostViewHolder(v: View,
             redirectUrl: String,
             postTagItem: FeedXProduct,
             itemPosition: Int
+        )
+        fun onFullScreenCLick(
+                feedXCard: FeedXCard,
+                positionInFeed: Int,
+                redirectUrl: String,
+                currentTime: Long,
+                shouldTrack: Boolean,
+                isFullScreenButton: Boolean
+        )
+        fun addVODView(
+                feedXCard: FeedXCard,
+                playChannelId: String,
+                rowNumber: Int,
+                time:Long,
+                hitTrackerApi:Boolean
         )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,
@@ -715,7 +737,9 @@ open class DynamicPostViewHolder(v: View,
                 type: String,
                 isFollowed: Boolean,
                 isVideo: Boolean = false,
-                positionInFeed: Int
+                positionInFeed: Int,
+                playChannelId: String = "",
+                shopName: String = ""
         )
 
         fun onReadMoreClicked(
@@ -732,7 +756,7 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = ""
         )
 
-        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean)
+        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean)
 
         fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
 

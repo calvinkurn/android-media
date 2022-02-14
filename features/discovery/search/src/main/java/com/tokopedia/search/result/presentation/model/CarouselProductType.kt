@@ -12,7 +12,10 @@ class BroadMatchProduct(
     }
 }
 
-class DynamicCarouselProduct(val type: String): CarouselProductType(false) {
+class DynamicCarouselProduct(
+    val type: String,
+    val inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+): CarouselProductType(false) {
     override fun getDataLayerList(isOrganicAds: Boolean): String {
         return "/search - carousel dynamic"
     }

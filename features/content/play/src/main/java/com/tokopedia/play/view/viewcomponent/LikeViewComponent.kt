@@ -19,12 +19,10 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class LikeViewComponent(
     container: ViewGroup,
-    @IdRes idRes: Int,
     private val listener: Listener
-) : ViewComponent(container, idRes) {
+) : ViewComponent(container, R.id.view_like) {
 
-    private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
-    private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
+    private val animationLike = rootView as LottieAnimationView
 
     private var mode: PlayLikeMode = PlayLikeMode.Unknown
 
@@ -71,10 +69,6 @@ class LikeViewComponent(
         }
     }
 
-    fun setTotalLikes(totalLikes: String) {
-        tvTotalLikes.text = totalLikes
-    }
-
     fun setIsLiked(isLiked: Boolean) {
         if (isLiked) {
             animationLike.setAnimation(R.raw.anim_spam_like)
@@ -113,10 +107,6 @@ class LikeViewComponent(
         animationLike.removeAllAnimatorListeners()
         animationLike.addAnimatorListener(reminderLikeAnimatorListener)
         animationLike.playAnimation()
-    }
-
-    fun getClickAreaView(): View {
-        return animationLike
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

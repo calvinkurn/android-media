@@ -50,12 +50,12 @@ class AddEditProductCategoryViewModelTest {
     fun `check whether get category lite tree is success`() {
         runBlocking {
             coEvery {
-                getCategoryLiteTreeUseCase.createObservable(any())
-            } returns Observable.just(CategoriesResponse())
+                getCategoryLiteTreeUseCase.getCategoryLiteData(any())
+            } returns CategoriesResponse()
 
             viewModel.getCategoryLiteTree()
 
-            coVerify { getCategoryLiteTreeUseCase.createObservable(any())}
+            coVerify { getCategoryLiteTreeUseCase.getCategoryLiteData(any())}
             Assert.assertTrue(viewModel.categoryLiteTree.value is Success)
         }
     }
@@ -64,12 +64,12 @@ class AddEditProductCategoryViewModelTest {
     fun `check whether get category lite tree is fail`() {
         runBlocking {
             coEvery {
-                getCategoryLiteTreeUseCase.createObservable(any())
+                getCategoryLiteTreeUseCase.getCategoryLiteData(any())
             } throws Throwable()
 
             viewModel.getCategoryLiteTree()
 
-            coVerify { getCategoryLiteTreeUseCase.createObservable(any())}
+            coVerify { getCategoryLiteTreeUseCase.getCategoryLiteData(any())}
             Assert.assertTrue(viewModel.categoryLiteTree.value is Fail)
         }
     }

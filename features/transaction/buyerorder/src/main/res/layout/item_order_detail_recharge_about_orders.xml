@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical"
+    android:padding="@dimen/unify_space_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_order_detail_about_orders_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:text="@string/recharge_order_detail_about_orders_title"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tg_recharge_order_detail_help_button_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_recharge_order_detail_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_recharge_order_detail_help_button"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/tg_recharge_order_detail_help_button_detail"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tg_recharge_order_detail_help_button_title"
+            app:srcCompat="@drawable/ic_icon_tokopedia_care" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_recharge_order_detail_help_button_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="@string/recharge_order_detail_help_center_title"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintLeft_toRightOf="@id/iv_recharge_order_detail_help_button"
+            app:layout_constraintRight_toLeftOf="@id/ic_recharge_order_detail_help_button_chevron"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_recharge_order_detail_help_button_detail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="@string/recharge_order_detail_mybills_detail"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tg_recharge_order_detail_help_button_title"
+            app:layout_constraintRight_toLeftOf="@id/ic_recharge_order_detail_help_button_chevron"
+            app:layout_constraintTop_toBottomOf="@id/tg_recharge_order_detail_help_button_title"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_recharge_order_detail_help_button_chevron"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/tg_recharge_order_detail_help_button_detail"
+            app:layout_constraintLeft_toRightOf="@id/tg_recharge_order_detail_help_button_title"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tg_recharge_order_detail_help_button_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

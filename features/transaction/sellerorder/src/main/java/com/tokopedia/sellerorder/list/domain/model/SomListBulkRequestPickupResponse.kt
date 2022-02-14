@@ -29,7 +29,7 @@ data class SomListBulkRequestPickupResponse(
                 val status: Int = 0,
                 @Expose
                 @SerializedName("total_on_process")
-                val totalOnProcess: Long = 0
+                val totalOnProcess: Int = 0
         ) {
             data class Error(
                     @Expose

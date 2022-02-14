@@ -5,6 +5,7 @@ import com.tokopedia.talk.common.data.TalkMutationData
 import com.tokopedia.talk.common.data.TalkMutationResponse
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
+import com.tokopedia.talk.feature.reporttalk.view.viewmodel.ReportTalkViewModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,7 +36,7 @@ class ReportTalkViewModelTest : ReportTalkViewModelTestFixture() {
 
         onTalkReportComment_thenReturn(expectedResponse)
 
-        viewModel.reportComment(anyString(), anyString(), anyInt())
+        viewModel.reportComment(anyString(), anyString(), ReportTalkViewModel.INDEX_OF_OTHER_REPORT)
 
         verifyTalkReportCommentUseCaseExecuted()
         verifyReportCommentErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportComment.messageError.firstOrNull())))
@@ -71,7 +72,7 @@ class ReportTalkViewModelTest : ReportTalkViewModelTestFixture() {
 
         onTalkReportTalk_thenReturn(expectedResponse)
 
-        viewModel.reportTalk(anyString(), anyString(), anyInt())
+        viewModel.reportTalk(anyString(), anyString(), ReportTalkViewModel.INDEX_OF_OTHER_REPORT)
 
         verifyTalkReportTalkUseCaseExecuted()
         verifyReportTalkErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportTalk.messageError.firstOrNull())))

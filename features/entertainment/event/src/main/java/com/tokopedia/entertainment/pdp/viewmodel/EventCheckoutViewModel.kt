@@ -50,7 +50,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = eventCheckoutInstantResponseMutable
 
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
-        launchCatchError(block =  {
+        launch {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             when (result) {
                 is Success -> {
@@ -60,8 +60,6 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                     isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
-        }){
-            isErrorMutable.value = EventPDPErrorEntity(true, it)
         }
     }
 

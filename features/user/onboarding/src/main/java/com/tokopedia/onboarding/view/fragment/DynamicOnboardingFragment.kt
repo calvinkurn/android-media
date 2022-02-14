@@ -76,7 +76,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 return executeViewCreateFlow()
             }
         }
-        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
+        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context, true)
     }
 
     override fun onBackPressed(): Boolean {

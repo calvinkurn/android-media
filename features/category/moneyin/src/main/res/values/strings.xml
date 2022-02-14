@@ -21,7 +21,6 @@
     <string name="money_in_alert_payment_canceled">Pembayaran dibatalkan</string>
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
     <string name="header_section_price">Anda dapat menjual HP Anda hingga harga</string>
-    <string name="tradein_not_elligible_price_high">Harga HP-mu lebih tinggi dari barang yang dibeli.</string>
     <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku, kami membutuhkan ijin untuk mengakses beberapa fungsi di telpon anda</string>
     <string name="money_in_request_permission">Mulai berikan ijin</string>
     <string name="not_elligible">Model HP-mu tidak sesuai syarat Tukar Tambah.</string>

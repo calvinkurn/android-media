@@ -132,7 +132,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
 
         val item = menu.findItem(R.id.menu_link_account_skip)
         val s = SpannableString("Lewatin Dulu")
-        s.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.unify_G500)), 0, s.length, 0)
+        s.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, s.length, 0)
         item.title = s
         return true
     }

@@ -1,20 +1,14 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 
-@Generated("com.robohorse.robopojogenerator")
 data class BenefitSummaryInfo(
-
 	@field:SerializedName("final_benefit_amount_str")
-	val finalBenefitAmountStr: String? = null,
-
+	val finalBenefitAmountStr: String = "",
 	@field:SerializedName("final_benefit_amount")
-	val finalBenefitAmount: Int? = null,
-
+	val finalBenefitAmount: Int = 0,
 	@field:SerializedName("final_benefit_text")
-	val finalBenefitText: String? = null,
-
+	val finalBenefitText: String = "",
 	@field:SerializedName("summaries")
-	val summaries: List<SummariesItem?>? = null
+	val summaries: List<SummariesItem> = emptyList()
 )

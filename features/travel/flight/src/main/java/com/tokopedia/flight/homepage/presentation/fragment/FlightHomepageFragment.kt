@@ -184,6 +184,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         binding?.flightHomepageSearchForm?.listener = this
+        binding?.flightHomepageSearchForm?.setDate(false)
 
         if (applinkErrorTextResource != -1) {
             showMessageErrorInSnackbar(applinkErrorTextResource)

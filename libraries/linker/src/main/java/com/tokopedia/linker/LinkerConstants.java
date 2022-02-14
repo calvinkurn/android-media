@@ -73,14 +73,18 @@ public interface LinkerConstants {
     String KEY_USERID = "userId";
     String KEY_OG_URL = "$og_url";
     String KEY_OG_TITLE = "$og_title";
+    String KEY_OG_TITLE_LABEL = "og_title";
     String KEY_OG_IMAGE_URL = "$og_image_url";
+    String KEY_OG_IMAGE_URL_LABEL = "og_image_url";
     String KEY_OG_DESC = "$og_description";
+    String KEY_OG_DESC_LABEL = "og_description";
     String KEY_GA_CLIENT_ID = "$google_analytics_client_id";
     String KEY_NEW_BUYER = "new_buyer";
     String KEY_MONTHLY_NEW_BUYER = "monthly_new_buyer";
     String KEY_GOOGLE_BUSINESS_VERTICAL = "google_business_vertical";
     String KEY_ITEM_ID = "item_id";
 
+    String LABEL_SHARING = "sharing";
     String EMAIL_LABLE = "email";
     String PHONE_LABLE = "phone";
     String USER_ID = "userId";
@@ -146,5 +150,7 @@ public interface LinkerConstants {
     String BRANCH_LINK_DOMAIN_2="tokopedia-alternate.app.link";
     String BRANCH_LINK_DOMAIN_3="tokopedia.app.link";
     String FIREBASE_KEY_FDL_ENABLE = "app_firebase_dynamic_link_activated";
+    String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
+    String IOS_BUNDLE_ID="com.tokopedia.Tokopedia";
 
 }

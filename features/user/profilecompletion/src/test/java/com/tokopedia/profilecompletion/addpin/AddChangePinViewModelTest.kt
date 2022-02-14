@@ -92,7 +92,7 @@ class AddChangePinViewModelTest {
         verify {
             addPinUseCase.setTypeClass(any())
             addPinUseCase.setRequestParams(mockParam)
-            addPinUseCase.setGraphqlQuery(any())
+            addPinUseCase.setGraphqlQuery(any<String>())
             addPinUseCase.execute(any(), any())
         }
     }
@@ -173,7 +173,7 @@ class AddChangePinViewModelTest {
         verify {
             checkPinUseCase.setTypeClass(any())
             checkPinUseCase.setRequestParams(mockParam)
-            checkPinUseCase.setGraphqlQuery(any())
+            checkPinUseCase.setGraphqlQuery(any<String>())
             checkPinUseCase.execute(any(), any())
         }
     }
@@ -248,7 +248,7 @@ class AddChangePinViewModelTest {
         verify {
             viewModel.loadingState.postValue(true)
             getStatusPinUseCase.setTypeClass(any())
-            getStatusPinUseCase.setGraphqlQuery(any())
+            getStatusPinUseCase.setGraphqlQuery(any<String>())
             getStatusPinUseCase.execute(any(), any())
         }
     }
@@ -309,7 +309,7 @@ class AddChangePinViewModelTest {
         verify {
             validatePinUseCase.setTypeClass(any())
             validatePinUseCase.setRequestParams(mockParam)
-            validatePinUseCase.setGraphqlQuery(any())
+            validatePinUseCase.setGraphqlQuery(any<String>())
             validatePinUseCase.execute(any(), any())
         }
     }
@@ -388,7 +388,7 @@ class AddChangePinViewModelTest {
         verify {
             skipOtpPinUseCase.setRequestParams(mockParam)
             skipOtpPinUseCase.setTypeClass(any())
-            skipOtpPinUseCase.setGraphqlQuery(any())
+            skipOtpPinUseCase.setGraphqlQuery(any<String>())
             skipOtpPinUseCase.execute(any(), any())
         }
     }

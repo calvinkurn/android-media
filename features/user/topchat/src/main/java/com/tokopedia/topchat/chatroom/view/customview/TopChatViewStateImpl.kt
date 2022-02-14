@@ -7,13 +7,11 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -23,6 +21,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
@@ -61,7 +60,7 @@ import com.tokopedia.unifyprinciples.Typography
 open class TopChatViewStateImpl constructor(
         @NonNull override val view: View,
         private val typingListener: TypingListener,
-        private val sendListener: SendButtonListener,
+        protected val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
         private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
@@ -254,6 +253,10 @@ open class TopChatViewStateImpl constructor(
         attachmentPreviewContainer.hide()
     }
 
+    override fun notifyPreviewRemoved(model: SendablePreview) {
+        fragmentView?.notifyPreviewRemoved(model)
+    }
+
     override fun onSetCustomMessage(customMessage: String) {
         if (customMessage.isNotEmpty()) {
             replyEditText.setText(customMessage)
@@ -311,7 +314,7 @@ open class TopChatViewStateImpl constructor(
     private fun bindBadge(chatRoom: ChatroomViewModel) {
         val badgeView = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.ivBadge)
         badgeView?.shouldShowWithAction(chatRoom.hasBadge()) {
-            ImageHandler.loadImageWithoutPlaceholder(badgeView, chatRoom.badgeUrl)
+            badgeView.loadImageWithoutPlaceholder(chatRoom.badgeUrl)
         }
     }
 
@@ -361,7 +364,7 @@ open class TopChatViewStateImpl constructor(
         }
     }
 
-    private fun showHeaderMenuBottomSheet(
+    protected open fun showHeaderMenuBottomSheet(
             chatroomViewModel: ChatroomViewModel,
             headerMenuListener: HeaderMenuListener
     ) {

@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
+import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
@@ -350,14 +351,14 @@ class TokoNowCategoryFragment:
         }
     }
 
-    private fun sendOpenScreenTracking(url: String) {
-        val uri = Uri.parse(url)
+    private fun sendOpenScreenTracking(model: CategoryTrackerModel) {
+        val uri = Uri.parse(model.url)
         val categorySlug = uri.lastPathSegment ?: return
 
-        CategoryTracking.sendOpenScreenTracking(categorySlug)
+        CategoryTracking.sendOpenScreenTracking(categorySlug, model.id, model.name, userSession.isLoggedIn)
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        CategoryTracking.sendOOCOpenScreenTracking()
+        CategoryTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

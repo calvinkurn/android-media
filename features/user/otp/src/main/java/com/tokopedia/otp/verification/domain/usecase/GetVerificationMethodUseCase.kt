@@ -1,11 +1,11 @@
 package com.tokopedia.otp.verification.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.query.OtpModeListQuery
@@ -26,12 +26,16 @@ open class GetVerificationMethodUseCase @Inject constructor(
             otpType: String,
             userId: String,
             msisdn: String = "",
-            email: String = ""
+            email: String = "",
+            timeUnix: String = "",
+            authenticity: String = ""
     ): Map<String, Any> = mapOf(
             PARAM_OTP_TYPE to otpType,
             PARAM_USERID to userId,
             PARAM_MSISDN to msisdn,
-            PARAM_EMAIL to email
+            PARAM_EMAIL to email,
+            PARAM_TIME_UNIX to timeUnix,
+            PARAM_AUTHENTICITY to authenticity
     )
 
     override suspend fun getData(parameter: Map<String, Any>): OtpModeListPojo = withContext(coroutineContext) {
@@ -50,5 +54,7 @@ open class GetVerificationMethodUseCase @Inject constructor(
         private const val PARAM_USERID = "userId"
         private const val PARAM_MSISDN = "msisdn"
         private const val PARAM_EMAIL = "email"
+        private const val PARAM_TIME_UNIX = "Timeunix"
+        private const val PARAM_AUTHENTICITY = "AuthenticitySignature"
     }
 }

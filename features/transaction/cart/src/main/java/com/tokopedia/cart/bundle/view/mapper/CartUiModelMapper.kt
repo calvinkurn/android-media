@@ -23,10 +23,6 @@ object CartUiModelMapper {
 
     private const val BUNDLE_NO_VARIANT_CONST = -1
 
-    fun mapSelectAllUiModel(): CartSelectAllHolderData {
-        return CartSelectAllHolderData(isCheked = false)
-    }
-
     fun mapTickerAnnouncementUiModel(ticker: Ticker): TickerAnnouncementHolderData {
         return TickerAnnouncementHolderData(id = ticker.id, message = ticker.message)
     }

@@ -89,8 +89,10 @@ data class ThanksPageData(
         @SerializedName("fee_details")
         val feeDetailList : ArrayList<FeeDetail>?,
         //created and used locally
-        var paymentMethodCount: Int
-) : Parcelable
+        var paymentMethodCount: Int,
+        // parse config flag json
+        var configFlagData: ConfigFlag? = null,
+        ) : Parcelable
 
 @Parcelize
 data class FeeDetail (
@@ -190,6 +192,8 @@ data class ShopOrder(
         val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("bundle_group_data")
+        val bundleGroupList: ArrayList<BundleGroupItem>,
         @SerializedName("shipping_amount")
         val shippingAmount: Float,
         @SerializedName("shipping_amount_str")
@@ -301,7 +305,9 @@ data class PurchaseItem(
         @SerializedName("is_bbi")
         val isBBIProduct: Boolean,
         @SerializedName("category_id")
-        val categoryId: String
+        val categoryId: String,
+        @SerializedName("bundle_group_id")
+        val bundleGroupId: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -321,7 +327,8 @@ data class PurchaseItem(
             parcel.readDouble(),
             parcel.readString() ?: "",
             parcel.readByte() == 1.toByte(),
-            parcel.readString() ?: ""
+            parcel.readString() ?: "",
+        parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -343,6 +350,7 @@ data class PurchaseItem(
         parcel.writeString(bebasOngkirDimension)
         parcel.writeByte(if (isBBIProduct) 1 else 0)
         parcel.writeString(categoryId)
+        parcel.writeString(bundleGroupId)
     }
 
     override fun describeContents(): Int {
@@ -355,6 +363,49 @@ data class PurchaseItem(
         }
 
         override fun newArray(size: Int): Array<PurchaseItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class BundleGroupItem(
+    @SerializedName("group_id")
+    val groupId: String,
+    @SerializedName("icon")
+    val bundleIcon: String,
+    @SerializedName("title")
+    val bundleTitle: String,
+    @SerializedName("total_price")
+    val totalPrice: Float,
+    @SerializedName("total_price_str")
+    val totalPriceStr: String
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readFloat(),
+        parcel.readString() ?: ""
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(groupId)
+        parcel.writeString(bundleIcon)
+        parcel.writeString(bundleTitle)
+        parcel.writeFloat(totalPrice)
+        parcel.writeString(totalPriceStr)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<BundleGroupItem> {
+        override fun createFromParcel(parcel: Parcel): BundleGroupItem {
+            return BundleGroupItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<BundleGroupItem?> {
             return arrayOfNulls(size)
         }
     }
@@ -416,10 +467,23 @@ data class ThanksCustomization(
         @SerializedName("custom_title_home_button")
         val customHomeButtonTitle: String?) : Parcelable
 
+@Parcelize
 data class ConfigFlag(
         @SerializedName("enable_thanks_widget")
-        val isThanksWidgetEnabled : Boolean
-)
+        val isThanksWidgetEnabled : Boolean,
+        @SerializedName("hide_search_bar")
+        val shouldHideSearchBar: Boolean?,
+        @SerializedName("hide_global_menu")
+        val shouldHideGlobalMenu: Boolean?,
+        @SerializedName("hide_home_button")
+        val shouldHideHomeButton: Boolean?,
+        @SerializedName("hide_feature_recom")
+        val shouldHideFeatureRecom: Boolean?,
+        @SerializedName("hide_pg_recom")
+        val shouldHideProductRecom: Boolean?,
+        @SerializedName("hide_dg_recom")
+        val shouldHideDigitalRecom: Boolean?
+): Parcelable
 
 data class Tickers(
         @SerializedName("tickers")

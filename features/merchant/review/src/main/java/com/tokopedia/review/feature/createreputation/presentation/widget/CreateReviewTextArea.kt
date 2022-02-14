@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaBinding
@@ -17,21 +18,36 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class CreateReviewTextArea : BaseCustomView {
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init()
     }
 
-    private val binding = WidgetCreateReviewTextAreaBinding.inflate(LayoutInflater.from(context), this, true)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        init()
+    }
+
+    private val binding =
+        WidgetCreateReviewTextAreaBinding.inflate(LayoutInflater.from(context), this, true)
 
     override fun clearFocus() {
         binding.createReviewEditText.clearFocus()
+    }
+
+    fun requestFocusForEditText() {
+        binding.createReviewEditText.apply {
+            requestFocus()
+            val imm: InputMethodManager? =
+                context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -50,7 +66,12 @@ class CreateReviewTextArea : BaseCustomView {
                 }
                 false
             })
-            setHintTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            setHintTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                )
+            )
         }
     }
 
@@ -60,7 +81,7 @@ class CreateReviewTextArea : BaseCustomView {
         }
         binding.createReviewEditText.apply {
             setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus) {
+                if (hasFocus) {
                     binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_selected)
                     textAreaListener.apply {
                         trackWhenHasFocus(binding.createReviewEditText.text.length)
@@ -72,7 +93,12 @@ class CreateReviewTextArea : BaseCustomView {
                 }
             }
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     // No Op
                 }
 
@@ -102,6 +128,10 @@ class CreateReviewTextArea : BaseCustomView {
 
     fun setPlaceHolder(text: String) {
         binding.createReviewEditText.hint = text
+    }
+
+    fun getPlaceHolder(): String {
+        return binding.createReviewEditText.hint.toString()
     }
 
     fun isEmpty(): Boolean {

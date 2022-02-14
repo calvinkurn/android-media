@@ -138,7 +138,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? =
         null
 
-    private val coachMark: CoachMark by lazy {
+    val coachMark: CoachMark by lazy {
         initCoachMark()
     }
 
@@ -188,7 +188,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         initTickerReviewReminder()
@@ -197,6 +197,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         initChipsSort(view)
         initChipsFilter(view)
         initEmptyState()
+        scrollRecyclerViewSendTracking()
         observeLiveData()
     }
 
@@ -336,6 +337,17 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.rvRatingProduct)
+    }
+
+    private fun scrollRecyclerViewSendTracking() {
+        binding?.rvRatingProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
+                }
+            }
+        })
     }
 
     private fun initSearchBar() {
@@ -496,7 +508,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun loadNextPage(page: Int) {
-        tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
             sortBy = sortBy.orEmpty(),
             filterBy = filterAllText.orEmpty(),

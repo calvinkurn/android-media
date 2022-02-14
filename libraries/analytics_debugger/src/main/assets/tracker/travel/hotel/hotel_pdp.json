@@ -44,7 +44,7 @@
       ]
     },
     {
-      "event": "promoView",
+      "event": "view_item",
       "eventCategory": "digital - native",
       "eventAction": "view nearby landmark",
       "eventLabel": "hotel - .+ - .+",
@@ -54,7 +54,15 @@
       "sessionIris": ".+",
       "userId": ".*",
       "businessUnit": "travel & entertainment",
-      "category": "hotel"
+      "category": "hotel",
+      "promotions": [
+        {
+          "creative_name": "Hotel Nearby Landmark",
+          "creative_slot": "",
+          "item_id": ".+",
+          "item_name": ".+"
+        }
+      ]
     },
     {
       "event": "clickHotel",

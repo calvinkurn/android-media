@@ -1,0 +1,74 @@
+[
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "title": "",
+        "mediaURL": "",
+        "appLink": "",
+        "webLink": "",
+        "textLink": "Lihat Semua",
+        "bannerAppLink": "",
+        "bannerWebLink": "",
+        "option1": "",
+        "option2": "",
+        "option3": "",
+        "tracking": [],
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
+          {
+            "id": 1,
+            "title": "dg_order_detail",
+            "mediaURL": "",
+            "mediaUrlType": "frame",
+            "subtitle": "",
+            "subtitleMode": "",
+            "label1": "",
+            "label1Mode": "",
+            "label2": "",
+            "label3": "",
+            "appLink": "",
+            "webLink": "",
+            "backgroundColor": "",
+            "trackingData": {
+              "productID": "",
+              "operatorID": "",
+              "businessUnit": "",
+              "categoryName": "",
+              "categoryID": "",
+              "itemType": "business push",
+              "itemLabel": "banner",
+              "__typename": "DigiPersoItemTrackingData"
+            }
+          },
+          {
+            "id": 2,
+            "title": "pg_top_ads",
+            "mediaURL": "",
+            "mediaUrlType": "frame",
+            "subtitle": "",
+            "subtitleMode": "",
+            "label1": "",
+            "label1Mode": "",
+            "label2": "",
+            "label3": "",
+            "appLink": "",
+            "webLink": "",
+            "backgroundColor": "",
+            "trackingData": {
+              "productID": "",
+              "operatorID": "",
+              "businessUnit": "",
+              "categoryName": "",
+              "categoryID": "",
+              "itemType": "business push",
+              "itemLabel": "banner",
+              "__typename": "DigiPersoItemTrackingData"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

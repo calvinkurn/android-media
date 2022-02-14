@@ -11,7 +11,7 @@
     android:paddingLeft="@dimen/spacing_lvl2"
     android:paddingEnd="@dimen/spacing_lvl2"
     android:paddingRight="@dimen/spacing_lvl2"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <androidx.cardview.widget.CardView
         android:layout_width="@dimen/layout_lvl6"

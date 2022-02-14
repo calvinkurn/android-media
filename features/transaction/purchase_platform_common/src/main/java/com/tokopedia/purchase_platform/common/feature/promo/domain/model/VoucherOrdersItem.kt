@@ -4,35 +4,35 @@ import com.google.gson.annotations.SerializedName
 
 data class VoucherOrdersItem(
         @SerializedName("cashback_wallet_amount")
-        val cashbackWalletAmount: Int? = null,
+        val cashbackWalletAmount: Int = 0,
 
         @SerializedName("code")
-        val code: String? = null,
+        val code: String = "",
 
         @SerializedName("unique_id")
-        val uniqueId: String? = null,
+        val uniqueId: String = "",
 
         @SerializedName("discount_amount")
-        val discountAmount: Int? = null,
+        val discountAmount: Int = 0,
 
         @SerializedName("title_description")
-        val titleDescription: String? = null,
+        val titleDescription: String = "",
 
         @SerializedName("is_po")
-        val isPo: Int? = null,
+        val isPo: Int = 0,
 
         @SerializedName("message")
-        val message: Message? = null,
+        val message: Message = Message(),
 
         @SerializedName("type")
-        val type: String? = null,
+        val type: String = "",
 
         @SerializedName("benefit_details")
-        val benefitDetails: List<BenefitDetailsItem?>? = null,
+        val benefitDetails: List<BenefitDetailsItem> = emptyList(),
 
         @SerializedName("success")
-        val success: Boolean? = null,
+        val success: Boolean = false,
 
         @SerializedName("invoice_description")
-        val invoiceDescription: String? = null
+        val invoiceDescription: String = ""
 )

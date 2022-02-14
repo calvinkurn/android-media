@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.HomeFeaturedShopBinding
 import com.tokopedia.home_component.decoration.CommonMarginStartDecoration
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -19,12 +20,13 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.home_featured_shop.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Lukas on 07/09/20.
@@ -34,6 +36,8 @@ class FeaturedShopViewHolder(
         private val listener: FeaturedShopListener,
         private val homeComponentListener: HomeComponentListener?
 ) : AbstractViewHolder<FeaturedShopDataModel>(itemView), CommonProductCardCarouselListener {
+
+    private var binding: HomeFeaturedShopBinding? by viewBinding()
 
     companion object {
         @LayoutRes
@@ -45,19 +49,19 @@ class FeaturedShopViewHolder(
 
     override fun bind(element: FeaturedShopDataModel) {
         invokeState(element.state,{
-            itemView.loading_view?.show()
+            binding?.loadingView?.root?.show()
         },{
             if(element.channelModel.channelGrids.size < SIZE_2){
-                itemView.content_container?.hide()
+                binding?.contentContainer?.hide()
             } else {
-                itemView.content_container?.show()
-                itemView.loading_view?.hide()
+                binding?.contentContainer?.show()
+                binding?.loadingView?.root?.hide()
                 setHeaderComponent(element)
                 setChannelDivider(element)
                 initView(element)
             }
         },{
-            itemView.content_container?.hide()
+            binding?.contentContainer?.hide()
         })
 
     }
@@ -73,17 +77,17 @@ class FeaturedShopViewHolder(
     private fun setChannelDivider(element: FeaturedShopDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
     private fun initItems(element: FeaturedShopDataModel)
     {
-        if (itemView.dc_banner_rv.itemDecorationCount == 0) {
-            itemView.dc_banner_rv.addItemDecoration(
+        if (binding?.dcBannerRv?.itemDecorationCount == 0) {
+            binding?.dcBannerRv?.addItemDecoration(
                     CommonMarginStartDecoration(
-                            marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_14)
+                            marginStart = 14f.toDpInt()
                     )
             )
         }
@@ -96,7 +100,7 @@ class FeaturedShopViewHolder(
         if(!this::adapter.isInitialized) {
             val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
             adapter = FeaturedShopAdapter(listData, typeFactoryImpl)
-            itemView.dc_banner_rv?.adapter = adapter
+            binding?.dcBannerRv?.adapter = adapter
         } else {
             adapter.clearAllElements()
             adapter.setElement(listData)
@@ -104,19 +108,19 @@ class FeaturedShopViewHolder(
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
-        var textColor = ContextCompat.getColor(itemView.context, R.color.Unify_N50)
+        var textColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         if (element.channelModel.channelBanner.textColor.isNotEmpty()) {
             try {
                 textColor = Color.parseColor(element.channelModel.channelBanner.textColor)
             } catch (e: IllegalArgumentException) {
             }
         }
-        itemView.featured_shop_background.setGradientBackground(element.channelModel.channelBanner.gradientColor)
-        itemView.featured_shop_background.setOnClickListener {
+        binding?.featuredShopBackground?.setGradientBackground(element.channelModel.channelBanner.gradientColor)
+        binding?.featuredShopBackground?.setOnClickListener {
             listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)
         }
-        itemView.banner_title?.text = element.channelModel.channelBanner.title
-        itemView.banner_description?.let {
+        binding?.bannerTitle?.text = element.channelModel.channelBanner.title
+        binding?.bannerDescription?.let {
             if (element.channelModel.channelBanner.description.isNotEmpty()) {
                 it.show()
                 it.text = element.channelModel.channelBanner.description
@@ -124,9 +128,9 @@ class FeaturedShopViewHolder(
                 it.gone()
             }
         }
-        itemView.banner_title?.setTextColor(textColor)
-        itemView.banner_description?.setTextColor(textColor)
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.bannerTitle?.setTextColor(textColor)
+        binding?.bannerDescription?.setTextColor(textColor)
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 listener.onSeeAllClicked(element.channelModel, adapterPosition)
             }

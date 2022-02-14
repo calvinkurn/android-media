@@ -23,7 +23,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.kol_comment_header;
+    public static final int LAYOUT = com.tokopedia.kol.R.layout.kol_comment_header;
 
     private final KolComment.View viewListener;
 

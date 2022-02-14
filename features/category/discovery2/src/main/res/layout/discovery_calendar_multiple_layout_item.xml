@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/calendar_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
+
+    <View
+        android:id="@+id/calendar_expired_alpha"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.5"
+        android:background="@color/discovery2_dms_clr_262626"
+        android:elevation="@dimen/dp_5"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/calendar_date_alpha"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.24"
+        android:background="@color/discovery2_dms_clr_262626"
+        app:layout_constraintBottom_toBottomOf="@id/calendar_date"
+        app:layout_constraintLeft_toLeftOf="@id/calendar_date"
+        app:layout_constraintRight_toRightOf="@id/calendar_date"
+        app:layout_constraintTop_toTopOf="@id/calendar_date" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/calendar_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Hari ini, 25 Jan" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/calendar_title_image"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_2"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="2:1"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendar_date" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/calendar_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        android:maxLength="25"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_title_image"
+        app:typographyWeight="bold"
+        tools:text="Title max 25 characters" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/calendar_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_4"
+        android:minHeight="@dimen/dp_36"
+        android:gravity="top|center_horizontal"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:maxLength="30"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="@string/discovery_calendar_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_title"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <View
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/calendar_desc"
+        app:layout_constraintBottom_toTopOf="@id/calendar_button_parent"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/calendar_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dp_4"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendar_desc" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/calendar_button_parent"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_24"
+        android:layout_margin="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_0"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/calendar_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            tools:text="Ingatkan" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/calendar_button_tick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            android:visibility="gone"
+            app:unifyButtonVariant="ghost"
+            tools:text="Ingatkan" />
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

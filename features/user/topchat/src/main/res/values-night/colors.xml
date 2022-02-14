@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="topchat_dms_send_button_gray_bg">#5D6775</color>
+    <color name="topchat_dms_icon_compose">#CBD4E1</color>
     <color name="topchat_dms_right_button_pressed">#209155</color>
+    <color name="topchat_dms_left_button_pressed">#292D34</color>
+    <color name="topchat_bg_dms_left_bubble">#363B45</color>
+    <color name="topchat_bg_dms_right_bubble">#2ABF70</color>
+    <color name="topchat_bg_dms_right_bubble_reply">#289D5F</color>
+    <color name="topchat_bg_dms_right_bubble_reply_text">#DCE4ED</color>
 </resources>

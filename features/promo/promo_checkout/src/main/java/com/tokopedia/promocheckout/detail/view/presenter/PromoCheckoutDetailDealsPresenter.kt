@@ -5,7 +5,6 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
@@ -19,7 +18,6 @@ import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
 class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                        private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                         private val dealsCheckRepository: PromoCheckoutDealsRepository,
                                         private val compositeSubscription: CompositeSubscription) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDealsContract.Presenter {
@@ -105,7 +103,6 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        clearCacheAutoApplyStackUseCase.unsubscribe()
         compositeSubscription.unsubscribe()
         super.detachView()
     }

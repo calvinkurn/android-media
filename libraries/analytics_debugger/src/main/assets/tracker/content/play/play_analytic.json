@@ -130,13 +130,6 @@
       "sessionIris": ".*"
     },
     {
-      "eventAction": "click cart icon",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*"
-    },
-    {
       "eventAction": "scroll merchant voucher",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
@@ -161,7 +154,7 @@
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
           "item_id": "\\d+",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "shop_type": ".*",
           "dimension39": "/groupchat - bottom sheet",
           "item_name": ".*",
@@ -199,7 +192,7 @@
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
           "item_id": "\\d+",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "shop_type": ".*",
           "dimension39": "/groupchat - bottom sheet",
           "item_name": ".*",
@@ -249,7 +242,7 @@
           "item_name": ".*",
           "item_brand": ".*",
           "item_category": ".*",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
           "index": "\\d+(.\\d+)?"
@@ -277,7 +270,7 @@
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
           "item_id": "\\d+",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "shop_type": ".*",
           "dimension39": "/groupchat - varian page",
           "item_name": ".*",
@@ -309,7 +302,7 @@
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
           "item_id": "\\d+",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "shop_type": ".*",
           "dimension39": "/groupchat - varian page",
           "item_name": ".*",
@@ -418,7 +411,7 @@
           "item_name": ".*",
           "item_brand": ".*",
           "item_category": ".*",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "item_variant": ".*",
           "index": "\\d+(.\\d+)?"
         }
@@ -439,7 +432,7 @@
           "item_name": ".*",
           "item_brand": ".*",
           "item_category": ".*",
-          "price": "\\d+.\\d+",
+          "price": "\\d+\\..*",
           "item_variant": ".*",
           "index": "\\d+(.\\d+)?"
         }

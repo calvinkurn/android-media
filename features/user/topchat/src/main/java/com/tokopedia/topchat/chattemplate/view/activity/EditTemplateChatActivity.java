@@ -29,7 +29,7 @@ public class EditTemplateChatActivity extends BaseSimpleActivity {
             String message = getIntent().getExtras().getString(InboxMessageConstant.PARAM_MESSAGE);
             setToolbarTitle(message == null);
         }
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background));
     }
 
     @Override

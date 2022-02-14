@@ -55,11 +55,9 @@ class PlayViewModelRobot(
         getChannelStatusUseCase: GetChannelStatusUseCase,
         getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
         getProductTagItemsUseCase: GetProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase: PlayChannelReminderUseCase,
         playSocketToModelMapper: PlaySocketToModelMapper,
         playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -68,7 +66,6 @@ class PlayViewModelRobot(
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         playChannelWebSocket: PlayChannelWebSocket,
-        playChannelSSE: PlayChannelSSE,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
         timerFactory: TimerFactory,
@@ -88,7 +85,6 @@ class PlayViewModelRobot(
         getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase,
         playSocketToModelMapper,
         playUiModelMapper,
         userSession,
@@ -97,7 +93,6 @@ class PlayViewModelRobot(
         playPreference,
         videoLatencyPerformanceMonitoring,
         playChannelWebSocket,
-        playChannelSSE,
         repo,
         playAnalytic,
         timerFactory,
@@ -124,10 +119,6 @@ class PlayViewModelRobot(
         coEvery { repo.getIsLiked(any(), any()) } returns response
     }
 
-    fun setMockCartCountResponse(response: Int) {
-        coEvery { getCartCountUseCase.executeOnBackground() } returns response
-    }
-
     fun setMockUserId(userId: String) {
         every { userSession.userId } returns userId
     }
@@ -149,10 +140,6 @@ class PlayViewModelRobot(
             }
             PiPState.Stop -> viewModel.stopPiP()
         }.exhaustive
-    }
-
-    fun updateCartCountFromNetwork() {
-        viewModel.updateBadgeCart()
     }
 
     fun showKeyboard(keyboardHeight: Int = 50) {
@@ -234,11 +221,9 @@ fun givenPlayViewModelRobot(
         getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
         getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
         getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-        getCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true),
         getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
-        playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
         playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
         playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
@@ -247,7 +232,6 @@ fun givenPlayViewModelRobot(
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
-        playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         timerFactory: TimerFactory = mockk(relaxed = true),
@@ -262,11 +246,9 @@ fun givenPlayViewModelRobot(
         getChannelStatusUseCase = getChannelStatusUseCase,
         getSocketCredentialUseCase = getSocketCredentialUseCase,
         getReportSummariesUseCase = getReportSummariesUseCase,
-        getCartCountUseCase = getCartCountUseCase,
         getProductTagItemsUseCase = getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase = playChannelReminderUseCase,
         playSocketToModelMapper = playSocketToModelMapper,
         playUiModelMapper = playUiModelMapper,
         userSession = userSession,
@@ -275,7 +257,6 @@ fun givenPlayViewModelRobot(
         playPreference = playPreference,
         videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
         playChannelWebSocket = playChannelWebSocket,
-        playChannelSSE = playChannelSSE,
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,

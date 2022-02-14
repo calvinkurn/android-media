@@ -4,8 +4,13 @@ import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -43,6 +48,7 @@ object VariantMapper {
         val productSizeVariant = variants?.get("size")?.get("value") ?: ""
         val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
         val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+        val isPreorder = productInfo?.data?.preOrder?.isPreOrderActive() == true
         val productPreview = ProductPreview(
             id = productId,
             imageUrl = productImageUrl,
@@ -60,7 +66,12 @@ object VariantMapper {
             priceBeforeInt = priceBeforeDouble,
             dropPercentage = dropPercentage,
             isActive = isActive,
-            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
+            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1,
+            isSupportVariant = productInfo?.data?.variant?.isVariant ?: false,
+            campaignId = productInfo?.data?.campaign?.campaignID.toLongOrZero(),
+            isPreorder = isPreorder,
+            priceInt = productInfo?.finalPrice?.toLong() ?: 0,
+            categoryId = productInfo?.basic?.category?.id.toLongOrZero()
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

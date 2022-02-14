@@ -3,11 +3,12 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.topchat.R
@@ -29,7 +30,9 @@ class ChatAdminNoAccessViewHolder(itemView: View,
 
     private fun bindGlobalError() {
         adminNoAccessGlobalError?.run {
-            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorIllustration.loadImage(AdminPermissionUrl.ERROR_ILLUSTRATION) {
+                setCacheStrategy(MediaCacheStrategy.DATA)
+            }
             val permissionGroup =
                     if (GlobalConfig.isSellerApp()) {
                         SellerHomePermissionGroup.CHAT

@@ -16,7 +16,7 @@ class AttachInvoiceModule {
 
     @AttachInvoiceScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @AttachInvoiceScope
     @Provides

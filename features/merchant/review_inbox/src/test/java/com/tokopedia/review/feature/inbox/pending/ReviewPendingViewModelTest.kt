@@ -11,6 +11,7 @@ import com.tokopedia.review.utils.verifyCoroutineFailEquals
 import com.tokopedia.review.utils.verifyCoroutineSuccessEquals
 import com.tokopedia.review.utils.verifyReviewErrorEquals
 import com.tokopedia.review.utils.verifyReviewSuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.Job
@@ -82,6 +83,23 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
     }
 
     @Test
+    fun `when getProductIncentiveOvo returns null should execute expected use case, and get expected data`() {
+        val response = null
+
+        onGetOvoIncentive_thenReturn(response)
+
+        runBlocking {
+            viewModel.getProductIncentiveOvo()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        }
+
+        val expectedResponse = null
+
+        verifyGetOvoIncentiveUseCaseExecuted()
+        viewModel.incentiveOvo.verifyValueEquals(expectedResponse)
+    }
+
+    @Test
     fun `when getProductIncentiveOvo fails should execute expected use case, and fail with expected exception`() {
         val exception = NetworkErrorException()
 
@@ -114,6 +132,17 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
     fun `when markAsSeen should execute expected usecase`() {
         val inboxReviewId = anyString()
 
+        onMarkAsSeenError_thenReturn(Exception())
+
+        viewModel.markAsSeen(inboxReviewId)
+
+        verifyMarkAsSeenUseCaseExecuted()
+    }
+
+    @Test
+    fun `when markAsSeen error should execute expected usecase and do nothing`() {
+        val inboxReviewId = anyString()
+
         viewModel.markAsSeen(inboxReviewId)
 
         verifyMarkAsSeenUseCaseExecuted()
@@ -139,12 +168,16 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
         coVerify { getProductIncentiveOvo.getIncentiveOvo() }
     }
 
-    private fun onGetOvoIncentive_thenReturn(response: ProductRevIncentiveOvoDomain) {
+    private fun onGetOvoIncentive_thenReturn(response: ProductRevIncentiveOvoDomain?) {
         coEvery { getProductIncentiveOvo.getIncentiveOvo() } returns response
     }
 
     private fun onGetOvoIncentiveFail_thenReturn(exception: Exception) {
         coEvery { getProductIncentiveOvo.getIncentiveOvo() } throws exception
+    }
+
+    private fun onMarkAsSeenError_thenReturn(exception: Exception) {
+        coEvery { markAsSeenUseCase.executeOnBackground() } throws exception
     }
 
     private fun onGetReview_thenReturn(response: ProductrevWaitForFeedbackResponseWrapper) {

@@ -61,7 +61,10 @@ data class ProductReview(
     var shopProductId: String = "",
     @SerializedName("stats")
     @Expose
-    var userReviewStats: List<UserReviewStats> = listOf()
+    var userReviewStats: List<UserReviewStats> = listOf(),
+    @SerializedName("badRatingReasonFmt")
+    @Expose
+    var badRatingReasonFmt: String = ""
 )
 
 data class ProductReviewResponse(

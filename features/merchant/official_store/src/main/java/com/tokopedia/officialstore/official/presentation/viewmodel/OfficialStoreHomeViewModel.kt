@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
@@ -204,11 +204,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreDynamicChannelResult.postValue(Success(result))
             result.forEach {
                 //call external api
-                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP) {
+                if (it.channel.layout == DynamicChannelLayout.LAYOUT_FEATURED_SHOP) {
                     getDisplayTopAdsHeader(FeaturedShopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
                 }
-                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_BEST_SELLING){
+                if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidegtData(it.channel.pageName,  it.channel.widgetParam)
                 }
             }

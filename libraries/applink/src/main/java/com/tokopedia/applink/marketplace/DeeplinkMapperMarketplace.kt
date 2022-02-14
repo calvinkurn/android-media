@@ -56,6 +56,10 @@ object DeeplinkMapperMarketplace {
         }
     }
 
+    fun getShopOperationalHourInternalAppLink(shopId: String):String {
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
+    }
+
     private fun isSpecialShop(shopId: String): Boolean {
         return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
     }

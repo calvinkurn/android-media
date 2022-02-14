@@ -18,6 +18,9 @@ data class RestrictionInfoResponse(
     companion object {
         const val SHOP_FOLLOWERS_TYPE = "shop_follower"
         const val SHOP_EXCLUSIVE_TYPE = "exclusive_discount"
+
+        const val CATEGORIES_KYC_STATUS_TYPE = "category_user_kyc_status"
+        const val CATEGORIES_AGE_TYPE = "category_user_kyc_age"
     }
 
     fun getReByProductId(productId: String): RestrictionData? {
@@ -39,8 +42,13 @@ data class RestrictionData(
         @Expose
         val action: List<RestrictionAction> = listOf()
 ) {
-    fun isNotEligibleExclusive():Boolean {
+    fun isNotEligibleExclusive(): Boolean {
         return restrictionExclusiveType() && !isEligible
+    }
+
+    fun restrictionCategoriesType(): Boolean {
+        return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.CATEGORIES_KYC_STATUS_TYPE ||
+                action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.CATEGORIES_AGE_TYPE
     }
 
     fun restrictionShopFollowersType(): Boolean {
@@ -71,5 +79,13 @@ data class RestrictionAction(
 
         @SerializedName("attributeName")
         @Expose
-        val attributeName: String = ""
+        val attributeName: String = "",
+
+        @SerializedName("buttonLink")
+        @Expose
+        val buttonLink: String = "",
+
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = ""
 )

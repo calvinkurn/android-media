@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.old.view.subscriber
 
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.checkout.old.view.ShipmentContract
 import com.tokopedia.checkout.old.view.ShipmentPresenter
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import rx.Subscriber
 
 

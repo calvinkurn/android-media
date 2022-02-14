@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.analytics.SnapshotAnalytics
@@ -55,6 +58,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private var responseSnapshot = GetOrderSnapshot()
     private var srlSnapshot: SwipeToRefresh? = null
     private var refreshHandler: RefreshHandler? = null
+    private var headerSnapshot: HeaderUnify? = null
 
     private val snapshotViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SnapshotViewModel::class.java]
@@ -87,6 +91,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
         rv = contentView.findViewById(R.id.rv_snapshot)
         srlSnapshot = contentView.findViewById(R.id.snapshot_swipe_to_refresh)
         btnSnapshotToPdp = contentView.findViewById(R.id.btn_snapshot_to_pdp)
+        headerSnapshot = contentView.findViewById(R.id.header_snapshot)
         return contentView
     }
 
@@ -147,6 +152,16 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
         rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = snapshotAdapter
+        }
+        headerSnapshot?.let { header ->
+            activity?.run {
+                if (this is AppCompatActivity) {
+                    supportActionBar?.hide()
+                    setSupportActionBar(header)
+                } else {
+                    header.gone()
+                }
+            }
         }
     }
 
