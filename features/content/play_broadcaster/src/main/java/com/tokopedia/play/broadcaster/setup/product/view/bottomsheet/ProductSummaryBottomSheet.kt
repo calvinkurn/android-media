@@ -11,6 +11,8 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -33,14 +35,11 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
     private val analytic: PlayBroadcastAnalytic,
-) : BottomSheetUnify(), ProductSummaryListViewComponent.Listener {
+) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
     private val container: ProductSetupFragment?
         get() = parentFragment as? ProductSetupFragment
-
-    private lateinit var viewModel: PlayBroProductSetupViewModel
 
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
@@ -53,13 +52,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     @ExperimentalStdlibApi
     override fun onProductDeleteClicked(product: ProductUiModel) {
         analytic.clickDeleteProductOnProductSetup(productId = product.id)
-        viewModel.submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            dialogCustomizer.customize(this)
-        }
+        viewModel.submitAction(PlayBroProductChooserAction.DeleteSelectedProduct(product))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +70,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupView()
         setupObserve()
 
-        viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary)
+        viewModel.submitAction(PlayBroProductChooserAction.LoadProductSummary)
     }
 
     override fun onDestroyView() {
@@ -158,7 +151,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is PlayBroProductSummaryUiEvent.GetDataError -> {
+                    is PlayBroProductChooserEvent.GetDataError -> {
                         view?.rootView?.showErrorToaster(
                             err = event.throwable,
                             actionLabel = getString(R.string.play_broadcast_try_again),
@@ -168,7 +161,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         productSummaryListView.setProductList(emptyList())
                         binding.ivLoading.visibility = View.GONE
                     }
-                    is PlayBroProductSummaryUiEvent.DeleteProductError -> {
+                    is PlayBroProductChooserEvent.DeleteProductError -> {
                         view?.rootView?.showErrorToaster(
                             err = event.throwable,
                             customErrMessage = getString(R.string.play_bro_product_summary_fail_to_delete_product),

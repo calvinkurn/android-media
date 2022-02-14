@@ -8,19 +8,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButtonViewComponent
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
@@ -30,6 +38,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -37,13 +46,12 @@ import javax.inject.Inject
  */
 class ProductChooserBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
-) : BottomSheetUnify(), ProductSortBottomSheet.Listener {
+) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private val container: ProductSetupFragment?
         get() = parentFragment as? ProductSetupFragment
-
-    private lateinit var viewModel: PlayBroProductSetupViewModel
 
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
     private val binding: BottomSheetPlayBroProductChooserBinding
@@ -61,6 +69,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
     private val etalaseChipsView by viewComponent {
         EtalaseChipsViewComponent(binding.chipsEtalase, eventBus)
+    }
+    private val searchBarView by viewComponent {
+        SearchBarViewComponent(binding.searchBar, eventBus)
+    }
+    private val saveButtonView by viewComponent {
+        SaveButtonViewComponent(binding.btnNext, eventBus)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -120,11 +134,6 @@ class ProductChooserBottomSheet @Inject constructor(
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
         }
-
-        binding.btnNext.setOnClickListener {
-            container?.openProductSummary()
-            dismiss()
-        }
     }
 
     private fun setupObserve() {
@@ -138,7 +147,9 @@ class ProductChooserBottomSheet @Inject constructor(
                 )
                 renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
+                renderSearchBar(state.campaignAndEtalase, prevState?.shopName, state.shopName)
                 renderBottomSheetTitle(state.selectedProductList)
+                renderSaveButton(state.saveState)
             }
         }
 
@@ -148,23 +159,43 @@ class ProductChooserBottomSheet @Inject constructor(
                     is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
                     is EtalaseChipsViewComponent.Event -> handleEtalaseChipsEvent(it)
                     is ProductListViewComponent.Event -> handleProductListEvent(it)
+                    is SearchBarViewComponent.Event -> handleSearchBarEvent(it)
+                    is SaveButtonViewComponent.Event -> handleSaveButtonEvent(it)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when (it) {
+                    PlayBroProductChooserEvent.SaveProductSuccess -> {
+                        container?.openProductSummary()
+                    }
+                    is PlayBroProductChooserEvent.ShowError -> {
+                        //TODO("Show Error")
+                    }
+                    else -> {}
                 }
             }
         }
     }
 
     private fun renderProductList(
-        prevProductList: List<ProductUiModel>?,
-        productList: List<ProductUiModel>,
+        prevProductListPaging: ProductListPaging?,
+        productListPaging: ProductListPaging,
         prevSelectedMap: EtalaseProductListMap?,
         selectedMap: EtalaseProductListMap,
     ) {
-        if (prevProductList == productList && prevSelectedMap == selectedMap) return
+        if (prevProductListPaging == productListPaging && prevSelectedMap == selectedMap) return
 
-        productListView.setProductList(
-            productList = productList,
-            selectedList = selectedMap.values.flatten(),
-        )
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
+            productListView.setProductList(
+                productList = productListPaging.productList,
+                selectedList = selectedMap.values.flatten(),
+                showLoading = productListPaging.resultState !is PageResultState.Success ||
+                        productListPaging.resultState.hasNextPage,
+            )
+        }
     }
 
     private fun renderSortChips(
@@ -202,6 +233,21 @@ class ProductChooserBottomSheet @Inject constructor(
         etalaseChipsView.setState(selectedTitle, model.selected != SelectedEtalaseModel.None)
     }
 
+    private fun renderSearchBar(
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
+        prevShopName: String?,
+        shopName: String,
+    ) {
+        if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) searchBarView.show()
+        else searchBarView.hide()
+
+        if (prevShopName != shopName) {
+            searchBarView.setPlaceholder(
+                getString(R.string.play_etalase_search_hint, shopName)
+            )
+        }
+    }
+
     private fun renderBottomSheetTitle(
         selectedProductList: EtalaseProductListMap,
     ) {
@@ -212,6 +258,12 @@ class ProductChooserBottomSheet @Inject constructor(
                 30
             )
         )
+    }
+
+    private fun renderSaveButton(
+        saveState: ProductSaveStateUiModel
+    ) {
+        saveButtonView.setState(isLoading = saveState.isLoading, isEnabled = saveState.canSave)
     }
 
     /**
@@ -242,6 +294,27 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
                 viewModel.submitAction(PlayBroProductChooserAction.SelectProduct(event.product))
+            }
+            is ProductListViewComponent.Event.OnLoadMore -> {
+                viewModel.submitAction(
+                    PlayBroProductChooserAction.LoadProductList(keyword = "")
+                )
+            }
+        }
+    }
+
+    private fun handleSearchBarEvent(event: SearchBarViewComponent.Event) {
+        when (event) {
+            is SearchBarViewComponent.Event.OnSearched -> {
+                viewModel.submitAction(PlayBroProductChooserAction.SearchProduct(event.keyword))
+            }
+        }
+    }
+
+    private fun handleSaveButtonEvent(event: SaveButtonViewComponent.Event) {
+        when (event) {
+            SaveButtonViewComponent.Event.OnClicked -> {
+                viewModel.submitAction(PlayBroProductChooserAction.SaveProducts)
             }
         }
     }

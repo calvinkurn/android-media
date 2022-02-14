@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -14,6 +15,8 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.type.StockAvailable
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -123,6 +126,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 true
             }
             else -> super.onBackPressed()
+        }
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductSetupFragment -> {
+                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
+                    override fun getProductList(): List<ProductUiModel> {
+                        //TODO("Revamp this")
+                        val productDataList = parentViewModel.productList
+                        return productDataList.map {
+                            ProductUiModel(
+                                id = it.id,
+                                name = it.name,
+                                imageUrl = it.imageUrl,
+                                stock = if (it.stock is StockAvailable) it.stock.stock else 0,
+                                price = it.price,
+                            )
+                        }
+                    }
+                })
+            }
         }
     }
 

@@ -30,9 +30,7 @@ import javax.inject.Inject
 class EtalaseListBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
-) : BottomSheetUnify() {
-
-    private lateinit var viewModel: PlayBroProductSetupViewModel
+) : BaseProductSetupBottomSheet() {
 
     private var _binding: BottomSheetPlayBroEtalaseListBinding? = null
     private val binding: BottomSheetPlayBroEtalaseListBinding

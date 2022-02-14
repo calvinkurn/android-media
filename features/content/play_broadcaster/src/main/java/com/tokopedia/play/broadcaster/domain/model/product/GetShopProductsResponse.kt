@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by kenny.hadisaputra on 28/01/22
  */
-@SuppressLint("Invalid Data Type")
+@SuppressLint("Invalid Data Type", "ResponseFieldAnnotation")
 data class GetShopProductsResponse(
     @SerializedName("GetShopProduct")
     val response: GetShopProduct = GetShopProduct(),
@@ -15,6 +15,9 @@ data class GetShopProductsResponse(
     data class GetShopProduct(
         @SerializedName("data")
         val data: List<Data> = emptyList(),
+
+        @SerializedName("links")
+        val links: Links = Links(),
     )
 
     data class Data(
@@ -56,5 +59,10 @@ data class GetShopProductsResponse(
     data class PrimaryImage(
         @SerializedName("thumbnail")
         val thumbnail: String = "",
+    )
+
+    data class Links(
+        @SerializedName("next")
+        val next: String = "",
     )
 }

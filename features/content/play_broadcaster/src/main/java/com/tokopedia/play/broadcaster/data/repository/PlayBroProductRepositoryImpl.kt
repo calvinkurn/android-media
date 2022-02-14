@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
@@ -13,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,6 +27,7 @@ import javax.inject.Inject
 class PlayBroProductRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCampaignListUseCase: GetCampaignListUseCase,
+    private val getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getShopProductsUseCase: GetShopProductsUseCase,
     private val addProductTagUseCase: AddProductTagUseCase,
@@ -53,7 +56,8 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         etalaseId: String,
         page: Int,
         keyword: String,
-    ): List<ProductUiModel> = withContext(dispatchers.io) {
+        sort: Int,
+    ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
 
         val response = getShopProductsUseCase.apply {
@@ -64,41 +68,35 @@ class PlayBroProductRepositoryImpl @Inject constructor(
                     perPage = PRODUCTS_IN_ETALASE_PER_PAGE,
                     etalaseId = etalaseId,
                     keyword = keyword,
-                    sort = 0,
+                    sort = sort,
                 )
             )
         }.executeOnBackground()
 
         return@withContext productMapper.mapProductsInEtalase(response)
-//
-//        return@withContext List(10) {
-//            if (it % 2 == 0) {
-//                ProductUiModel(
-//                    id = it.toString(),
-//                    name = "Test A",
-//                    imageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/12/29/3e1c930b-8f4d-429d-9e0c-8cc09b2a1dc2.png",
-//                    stock = 10,
-//                    price = OriginalPrice("Rp123.000", 123.0)
-//                )
-//            } else {
-//                ProductUiModel(
-//                    id = it.toString(),
-//                    name = "Test B",
-//                    imageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/1/4/8d05640e-c272-4835-b4cd-a75b7c5e98c3.png",
-//                    stock = 5,
-//                    price = DiscountedPrice(
-//                        "Rp456.000",
-//                        456.0,
-//                        30,
-//                        "Rp123.000",
-//                        123.0
-//                    )
-//                )
-//            }
-//        }
     }
 
-    override suspend fun addProductTag(channelId: String, productIds: List<String>) {
+    override suspend fun getProductsInCampaign(
+        campaignId: String,
+        page: Int,
+    ) = withContext(dispatchers.io) {
+        if (userSession.userId.isBlank()) error("User does not exist")
+
+        val response = getProductsInCampaignUseCase.apply {
+            setRequestParams(
+                GetProductsInCampaignUseCase.createParams(
+                    userId = userSession.userId,
+                    campaignId = campaignId,
+                    page = page,
+                    perPage = PRODUCTS_IN_CAMPAIGN_PER_PAGE,
+                )
+            )
+        }.executeOnBackground()
+
+        return@withContext productMapper.mapProductsInCampaign(response)
+    }
+
+    override suspend fun setProductTags(channelId: String, productIds: List<String>) {
         withContext(dispatchers.io) {
             addProductTagUseCase.apply {
                 params = AddProductTagUseCase.createParams(
@@ -121,5 +119,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 
     companion object {
         private const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
+        private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
     }
 }

@@ -21,11 +21,7 @@ class ProductListItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        val position = parent.getChildAdapterPosition(view)
-        if (position % 2 == 0) {
-            outRect.right = offset8
-        } else super.getItemOffsets(outRect, view, parent, state)
-
+        outRect.left = offset8
         outRect.bottom = offset8
     }
 }
