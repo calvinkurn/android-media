@@ -481,6 +481,13 @@
     <string name="mvc_product_variant">Varian produk</string>
     <string name="mvc_location">Lokasi</string>
 
+    <!-- more menu bottom sheet -->
+    <string name="coupon_toaster_cta_oke">Oke</string>
+    <string name="coupon_cancellation_success">Kupon dibatalkan</string>
+    <string name="coupon_cancellation_fail">Pembatalan kupon gagal</string>
+    <string name="coupon_discontinuance_success">Kupon dihentikan dan status menjadi berakhir</string>
+    <string name="coupon_discontinuance_fail">Penghentian kupon gagal</string>
+
     <!-- id tag -->
     <item name="product" type="id"/>
     <item name="product_variant" type="id"/>
