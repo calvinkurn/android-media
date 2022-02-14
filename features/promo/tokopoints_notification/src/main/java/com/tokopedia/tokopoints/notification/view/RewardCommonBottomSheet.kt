@@ -1,25 +1,26 @@
-package com.tokopedia.tokopoints.view.customview
+package com.tokopedia.tokopoints.notification.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.model.BottomSheetModel
+import com.example.tokopoints.notification.R
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.tokopoints.notification.model.BottomSheetModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class RewardCommonBottomSheet : BottomSheetUnify() {
 
-    private var image: DeferredImageView? = null
+    private var image: ImageUnify? = null
     private var textTitle: Typography? = null
     private var textDesc: Typography? = null
     private var button: UnifyButton? = null
 
   companion object{
-      fun newInstance(bundle: Bundle):RewardCommonBottomSheet{
+      fun newInstance(bundle: Bundle): RewardCommonBottomSheet {
           val rbs = RewardCommonBottomSheet()
           rbs.arguments = bundle
           return rbs
@@ -50,6 +51,6 @@ class RewardCommonBottomSheet : BottomSheetUnify() {
         textTitle?.text = bottomSheetModel.contentTitle
         textDesc?.text = bottomSheetModel.contentDescription
         button?.text = bottomSheetModel.buttonText
-        image?.loadRemoteImageDrawable(bottomSheetModel.remoteImage?.first?:"",bottomSheetModel.remoteImage?.second?:"")
+        image?.loadImage(bottomSheetModel.imageUrl?:"")
     }
 }

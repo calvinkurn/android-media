@@ -10,6 +10,9 @@ data class PopupNotification(
     @SerializedName("title")
     var title: String? = null,
 
+    @SerializedName("titleHeader")
+    var titleHeader: String? = null,
+
     @SerializedName("text")
     var text: String? = null,
 

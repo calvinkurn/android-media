@@ -4,17 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.tokopoints.notification.di.DaggerTokopointNotifComponent
+import com.tokopedia.tokopoints.notification.model.BottomSheetModel
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import timber.log.Timber
 
-class TokomemberActivity : BaseActivity()  {
+class TokopointNotifActivity : BaseActivity()  {
     private var isOnResume = false
     private var popupNotification: PopupNotification?=null
 
     companion object {
         const val KEY_POPUP = "key_popup"
         fun getIntent(context: Context, popupNotification: PopupNotification?): Intent {
-            val intent = Intent(context, TokomemberActivity::class.java)
+            val intent = Intent(context, TokopointNotifActivity::class.java)
             intent.putExtra(KEY_POPUP,popupNotification)
             return intent
         }
@@ -41,9 +42,17 @@ class TokomemberActivity : BaseActivity()  {
     }
 
     private fun showTmBottomSheetDetail() {
-        popupNotification= intent?.getParcelableExtra<PopupNotification>(KEY_POPUP)
-        val tokoPointsPopupNotificationBottomSheet=TokoPointsPopupNotificationBottomSheet()
-        tokoPointsPopupNotificationBottomSheet.setData(popupNotification)
+        popupNotification = intent?.getParcelableExtra(KEY_POPUP)
+        val bundle = Bundle()
+        bundle.putParcelable("bsm",mapDataToBottomsheet())
+        val tokoPointsPopupNotificationBottomSheet = RewardCommonBottomSheet.newInstance(bundle)
+
+        tokoPointsPopupNotificationBottomSheet.setOnDismissListener {
+            if (isOnResume) {
+                this.finish()
+            }
+        }
+
         tokoPointsPopupNotificationBottomSheet.show(supportFragmentManager, "BottomSheet Tag")
     }
 
@@ -68,7 +77,17 @@ class TokomemberActivity : BaseActivity()  {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+         this.finish()
     }
 
+    private fun mapDataToBottomsheet(): BottomSheetModel{
+        return BottomSheetModel(
+            bottomSheetTitle = popupNotification?.titleHeader ,
+            contentTitle = popupNotification?.title,
+            contentDescription = popupNotification?.text,
+            buttonText = popupNotification?.buttonText,
+            applink = popupNotification?.appLink?:"",
+            imageUrl = popupNotification?.imageURL
+        )
+    }
 }

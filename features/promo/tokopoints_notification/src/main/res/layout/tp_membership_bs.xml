@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bs_membership"
         android:layout_width="@dimen/dp_180"
         android:layout_height="@dimen/dp_180"
@@ -15,8 +15,6 @@
         android:layout_marginEnd="@dimen/spacing_lvl8"
         android:layout_marginStart="@dimen/spacing_lvl8"
         tools:src="@color/tkpd_dark_red"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/levelup_gold.png"
-        app:imageDpiSupportType="singleDpi"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/unify_space_16"/>
 

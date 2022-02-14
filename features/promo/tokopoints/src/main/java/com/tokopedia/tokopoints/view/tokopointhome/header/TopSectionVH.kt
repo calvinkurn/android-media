@@ -36,14 +36,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.notification.view.RewardCommonBottomSheet
 import com.tokopedia.tokopoints.view.customview.*
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOKOMEMBER
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
-import com.tokopedia.tokopoints.view.model.BottomSheetModel
+import com.tokopedia.tokopoints.notification.model.BottomSheetModel
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection

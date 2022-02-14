@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -32,7 +33,7 @@ import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.notification.view.TokomemberActivity
+import com.tokopedia.tokopoints.notification.view.TokopointNotifActivity
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT
@@ -69,9 +70,11 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Compa
 import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.RECOMM
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder>
 
@@ -151,27 +154,28 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun setLayoutParams(cardheight: Int) {
+        val imgEggView = view?.findViewById<AppCompatImageView>(R.id.img_egg)
+        val imgBgHeader = view?.findViewById<ImageView>(R.id.img_bg_header)
         val statusBarHeight = getStatusBarHeight(activity)
-        val layoutParams = tokoPointToolbar!!.layoutParams as FrameLayout.LayoutParams
+        val layoutParams = tokoPointToolbar?.layoutParams as FrameLayout.LayoutParams
         layoutParams.topMargin = statusBarHeight
-        tokoPointToolbar!!.layoutParams = layoutParams
-        val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams as? RelativeLayout.LayoutParams
+        tokoPointToolbar?.layoutParams = layoutParams
+        val imageEggLp = imgEggView?.layoutParams as? RelativeLayout.LayoutParams
         imageEggLp?.topMargin = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
-        view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams = imageEggLp
-        val imageBigLp = view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams as? RelativeLayout.LayoutParams
+        imgEggView?.layoutParams = imageEggLp
+        val imageBigLp = imgBgHeader?.layoutParams as? RelativeLayout.LayoutParams
         imageBigLp?.height = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
-        view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams = imageBigLp
+        imgBgHeader?.layoutParams = imageBigLp
     }
 
     private fun setStatusBarViewHeight() {
         if (activity != null) statusBarBgView?.layoutParams?.height = getStatusBarHeight(activity)
     }
 
+    @SuppressLint("DeprecatedMethod")
     private fun hideStatusBar() {
         coordinatorLayout?.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            coordinatorLayout?.requestApplyInsets()
-        }
+        coordinatorLayout?.requestApplyInsets()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = coordinatorLayout?.systemUiVisibility
             flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
@@ -179,19 +183,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 coordinatorLayout?.systemUiVisibility = flags
             }
             if (context != null) {
-                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
             }
         }
-        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
-        }
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-        if (Build.VERSION.SDK_INT >= 21) {
-            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            activity?.window?.statusBarColor = Color.TRANSPARENT
-        }
+        activity?.window?.decorView?.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        activity?.window?.statusBarColor = Color.TRANSPARENT
     }
 
     private fun handleAppBarOffsetChange(offset: Int) {
@@ -205,14 +206,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             offsetAlpha = 255f
         }
         var alpha = offsetAlpha / 255 - 1
-        if (alpha < 0) alpha = alpha * -1
+        if (alpha < 0) alpha *= -1
         statusBarBgView?.alpha = alpha
         if (alpha > 0.5) tokoPointToolbar?.switchToDarkMode() else tokoPointToolbar?.switchToTransparentMode()
         tokoPointToolbar?.applyAlphaToToolbarBackground(alpha)
     }
 
     private fun handleAppBarIconChange(verticalOffset: Int) {
-        val verticalOffset1 = Math.abs(verticalOffset)
+        val verticalOffset1 = abs(verticalOffset)
         if (verticalOffset1 >= (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height))) {
             tokoPointToolbar?.showToolbarIcon()
         } else
@@ -254,7 +255,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         it?.let {
             when (it) {
                 is Success -> {
-                    startActivity(Intent(TokomemberActivity.getIntent(activityContext, it.data)))
+                    requireActivity().apply {
+                        startActivityForResult(
+                            Intent(
+                                TokopointNotifActivity.getIntent(
+                                    this,
+                                    it.data
+                                )
+                            ), REQUEST_FROM_TP_NOTIFICATION
+                        )
+                    }
                 }
                 else -> {}
             }
@@ -267,6 +277,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             serverErrorView?.showErrorUi(hasInternet,error)
         }
     }
+
     private fun initViews(view: View) {
         listener = getRecommendationListener()
         coordinatorLayout = view.findViewById(R.id.container)
@@ -657,8 +668,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_ERROR = 2
         private const val SHOW_ERROR_TOOLBAR = 1
         const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
-        const val REQUEST_FROM_PDP = 138
+        const val REQUEST_FROM_TP_NOTIFICATION = 138
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
@@ -756,6 +766,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun questLogin(){
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            REQUEST_FROM_TP_NOTIFICATION -> {
+                view?.let { Toaster.build(it,"successs", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
+            }
+        }
     }
 
 }

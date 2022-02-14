@@ -1,6 +1,5 @@
-package com.tokopedia.tokopoints.view.model
+package com.tokopedia.tokopoints.notification.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
@@ -11,5 +10,6 @@ data class BottomSheetModel(
     var contentDescription: String? = "",
     var buttonText: String? = "",
     var remoteImage: Pair<String,String>? = null,
-    var imageUrl: String? = ""
+    var imageUrl: String? = "",
+    var applink:String = ""
 ) : Parcelable

@@ -12,24 +12,13 @@ const val POPUP_QUERY = """
     query TokopointsNotification(${'$'}type: String , ${'$'}apiVersion : String) {
   tokopoints {
     popupNotif(type: ${'$'}type , apiVersion : ${'$'}apiVersion) {
+      titleHeader
       title
       text
       imageURL
       buttonText
       buttonURL
       appLink
-      notes
-      sender
-      catalog {
-        title
-        subtitle
-        points
-        thumbnailURL
-        thumbnailURLMobile
-        imageURL
-        imageURLMobile
-        expired
-      }
     }
   }
 }

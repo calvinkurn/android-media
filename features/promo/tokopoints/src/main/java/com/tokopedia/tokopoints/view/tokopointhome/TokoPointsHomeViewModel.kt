@@ -1,7 +1,9 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.PopupNotifUsecase
@@ -40,6 +42,7 @@ class TokoPointsHomeViewModel @Inject constructor(
     val PAGE_NAME = "rewards_page"
     val PAGE_NUMBER = 1
     val recommIndex = 0
+    val TOKOPOINT_DRAWER = "drawer"
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -88,9 +91,40 @@ class TokoPointsHomeViewModel @Inject constructor(
 
     fun getPopNotifData(){
         launchCatchError(block = {
-            val response = popupNotifUsecase.getPopupNotif("main")
-            val data = response.getData<PopupNotification>(PopupNotification::class.java)
-            popUpNotifData.value = Success(data)
+            val response = popupNotifUsecase.getPopupNotif(TOKOPOINT_DRAWER)
+            val abc ="""
+                {
+    "tokopoints": {
+      "popupNotif": {
+        "titleHeader" :  "Selamat Anda Mendapat Kiriman Kupon",
+        "title": "Selamat Anda Mendapat Kiriman Kupon",
+        "text": "Selamat Anda Mendapat Kiriman Kupon",
+        "imageURL": "",
+        "buttonText": "Gunakan Kupon",
+        "buttonURL": "https://m.tokopedia.com/tokopoints/mobile",
+        "appLink": "/tokopoints/kupon-saya",
+        "notes": "haha hihi tes doang yaaaa",
+        "sender": "arifin buyer dua",
+        "catalog": {
+          "title": "Gratis Ongkir",
+          "subtitle": "Rp10.000",
+          "points": 3000,
+          "thumbnailURL": "https://ecs7.tokopedia.net/assets/images/tokopoints/banner/marketplace/2018/05/desktop/desktop-gratisongkir10rb-360x120.png",
+          "thumbnailURLMobile": "https://ecs7.tokopedia.net/assets/images/tokopoints/banner/marketplace/2018/05/lite/lite-gratis-ongkir-10rb-576x192.png",
+          "imageURL": "https://ecs7.tokopedia.net/assets/images/promo/tokopoints/catalog_detailbanner.png",
+          "imageURLMobile": "https://ecs7.tokopedia.net/assets/images/tokopoints/banner/marketplace/2018/05/lite/lite-gratis-ongkir-10rb-640x215.png",
+          "expired": "30 Hari"
+        }
+      }
+    }
+  }
+            """.trimIndent()
+
+            var data = response.getData<PopupNotification>(PopupNotification::class.java)
+
+            var gson = Gson()
+            var mMineUserEntity = CommonUtils.fromJson<PopupNotification>(abc,PopupNotification::class.java )
+            popUpNotifData.value = Success(mMineUserEntity)
         }){}
     }
 

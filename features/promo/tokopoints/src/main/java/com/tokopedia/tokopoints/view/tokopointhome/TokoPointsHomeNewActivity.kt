@@ -17,6 +17,7 @@ import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew.Companion.REQUEST_FROM_TP_NOTIFICATION
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -69,8 +70,12 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK ) {
             inflateFragment()
+        }
+        if (requestCode == REQUEST_FROM_TP_NOTIFICATION) {
+           // inflateFragment()
+            fragment?.onActivityResult(requestCode,requestCode,data)
         }
         else finish()
     }
