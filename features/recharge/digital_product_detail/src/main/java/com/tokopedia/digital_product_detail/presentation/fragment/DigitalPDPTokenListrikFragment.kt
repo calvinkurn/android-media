@@ -46,6 +46,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDP
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -69,6 +70,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.android.synthetic.main.fragment_digital_pdp_token_listrik.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,6 +94,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
+
+    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpTokenListrikBinding>()
 
@@ -130,6 +134,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
+        setupKeyboardWatcher()
         initClientNumberWidget()
         initEmptyState()
         observeData()
@@ -139,6 +144,19 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         onShowGreenBox()
     }
 
+    fun setupKeyboardWatcher() {
+        binding?.root?.let {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    binding?.rechargePdpTokenListrikClientNumberWidget?.setClearable()
+                }
+            })
+        }
+    }
 
     private fun getDataFromBundle(){
         arguments?.run {
@@ -860,6 +878,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 grantResults
             )
         }
+    }
+
+    override fun onDestroyView() {
+        binding?.root?.let {
+            keyboardWatcher.unlisten(it)
+        }
+        super.onDestroyView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

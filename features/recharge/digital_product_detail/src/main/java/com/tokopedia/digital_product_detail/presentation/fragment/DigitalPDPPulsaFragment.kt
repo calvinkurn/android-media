@@ -29,7 +29,6 @@ import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
@@ -53,6 +52,7 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -105,6 +105,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
+    private val keyboardWatcher = DigitalKeyboardWatcher()
+
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
@@ -144,6 +146,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
+        setupKeyboardWatcher()
         initClientNumberWidget()
         initEmptyState()
         setAnimationAppBarLayout()
@@ -151,6 +154,20 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         getCatalogMenuDetail()
         getPrefixOperatorData()
+    }
+
+    fun setupKeyboardWatcher() {
+        binding?.root?.let {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    binding?.rechargePdpPulsaClientNumberWidget?.setClearable()
+                }
+            })
+        }
     }
 
     private fun renderProduct() {
@@ -1003,6 +1020,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun onDestroyView() {
+        binding?.root?.let {
+            keyboardWatcher.unlisten(it)
+        }
+        super.onDestroyView()
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
