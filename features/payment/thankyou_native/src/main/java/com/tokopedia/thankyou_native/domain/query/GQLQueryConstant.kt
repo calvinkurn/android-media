@@ -16,5 +16,18 @@ const val GQL_GYRO_RECOMMENDATION = """query validateEngineRequest(${'$'}request
                               }
                             }"""
 
+const val GQL_GET_WALLET_BALANCE = """
+     query walletappGetBalance(${'$'}partnerCode: String!) {
+ 	 walletappGetBalance(partnerCode: ${'$'}partnerCode) {
+     code
+     balance {
+       wallet_code
+       amount
+       active
+     }
+   }
+ }
+ """
+
 
 
