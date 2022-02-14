@@ -24,6 +24,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     protected var currentCategoryName = ""
     protected var operatorData: TelcoCatalogPrefixSelect? = null
     protected var isSwitchChecked = false
+    protected var loyaltyStatus = ""
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_saved_number
@@ -55,6 +56,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
             this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
             this.isSwitchChecked = extras.getBoolean(EXTRA_IS_SWITCH_CHECKED, false)
+            this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_saved_number_title))
@@ -69,7 +71,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DualTabSavedNumberFragment
             .newInstance(clientNumberType, number, operatorData,
-                currentCategoryName, dgCategoryIds, isSwitchChecked)
+                currentCategoryName, dgCategoryIds, isSwitchChecked, loyaltyStatus)
     }
 
     override fun onBackPressed() {
@@ -84,7 +86,8 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             dgCategoryIds: ArrayList<String>,
             categoryName: String,
             operatorData: TelcoCatalogPrefixSelect,
-            isSwitchChecked: Boolean
+            isSwitchChecked: Boolean,
+            loyaltyStatus: String
         ): Intent {
             val intent = Intent(context, TopupBillsPersoSavedNumberActivity::class.java)
             val extras = Bundle()
@@ -92,6 +95,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
+            extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
             extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
             extras.putBoolean(EXTRA_IS_SWITCH_CHECKED, isSwitchChecked)
 
@@ -104,6 +108,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
         const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
         const val EXTRA_IS_SWITCH_CHECKED = "EXTRA_IS_SWITCH_CHECKED"
+        const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
 
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
     }

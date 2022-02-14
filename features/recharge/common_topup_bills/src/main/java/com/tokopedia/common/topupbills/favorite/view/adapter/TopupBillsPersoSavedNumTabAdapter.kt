@@ -13,7 +13,8 @@ class TopupBillsPersoSavedNumTabAdapter(
     private var number: String,
     private var dgCategoryIds: ArrayList<String>,
     private var currentCategoryName: String = "",
-    private var operatorData: TelcoCatalogPrefixSelect? = null
+    private var operatorData: TelcoCatalogPrefixSelect? = null,
+    private var loyaltyStatus: String = ""
 ): FragmentStateAdapter(fragment) {
     private var instance: HashMap<String, Fragment> = hashMapOf()
 
@@ -32,7 +33,8 @@ class TopupBillsPersoSavedNumTabAdapter(
                         number,
                         operatorData,
                         currentCategoryName,
-                        dgCategoryIds
+                        dgCategoryIds,
+                        loyaltyStatus
                     )
                 }
                 instance[position.toString()]!!

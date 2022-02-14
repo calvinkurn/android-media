@@ -576,7 +576,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoSavedNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
+                it,
+                clientNumber,
+                dgCategoryIds,
+                categoryName,
+                viewModel.operatorData,
+                isSwitchChecked,
+                loyaltyStatus
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER

@@ -109,6 +109,7 @@ class TopupBillsPersoFavoriteNumberFragment :
 
     private var currentCategoryName = ""
     private var number: String = ""
+    private var loyaltyStatus: String = ""
     private var isHideCoachmark = false
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
@@ -149,6 +150,7 @@ class TopupBillsPersoFavoriteNumberFragment :
                 arguments.getIntegerArrayList(ARG_PARAM_DG_CATEGORY_IDS)?.toList() ?: listOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
+            loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
 
         operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
@@ -571,12 +573,19 @@ class TopupBillsPersoFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventImpressionEditBottomSheet(
             currentCategoryName, operatorName, userSession.userId
         )
+        commonTopupBillsAnalytics.eventClickMenuFavoriteNumberModify(
+            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+        )
 
         val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
         bottomSheet.show(childFragmentManager, "")
     }
 
     override fun onDeleteContactClicked(favNumberItem: TopupBillsPersoFavNumberDataView) {
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
+        commonTopupBillsAnalytics.eventClickMenuFavoriteNumberDelete(
+            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+        )
         showDeleteConfirmationDialog(favNumberItem)
     }
 
@@ -652,6 +661,13 @@ class TopupBillsPersoFavoriteNumberFragment :
         activity?.finish()
     }
 
+    override fun onCloseClick(favNumberItem: TopupBillsPersoFavNumberDataView) {
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
+        commonTopupBillsAnalytics.eventClickMenuCancelFavoriteNumberModify(
+            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+        )
+    }
+
     override fun refreshFavoriteNumberPage() {
         getPersoFavoriteNumber()
     }
@@ -705,6 +721,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
+        const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
         const val COACH_MARK_START_DELAY: Long = 200
         const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
@@ -715,17 +732,15 @@ class TopupBillsPersoFavoriteNumberFragment :
         fun newInstance(
             clientNumberType: String, number: String,
             operatorData: TelcoCatalogPrefixSelect?,
-            categoryName: String, digitalCategoryIds: ArrayList<String>
+            categoryName: String, digitalCategoryIds: ArrayList<String>,
+            loyaltyStatus: String
         ): Fragment {
             val fragment = TopupBillsPersoFavoriteNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
-            bundle.putString(
-                ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(
-                    Locale.getDefault()
-                )
-            )
+            bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
+            bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
             fragment.arguments = bundle

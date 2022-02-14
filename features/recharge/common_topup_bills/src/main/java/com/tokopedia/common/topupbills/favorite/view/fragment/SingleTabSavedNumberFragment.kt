@@ -27,6 +27,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
     private lateinit var dgCategoryIds: ArrayList<String>
     private var currentCategoryName = ""
     private var number: String = ""
+    private var loyaltyStatus: String = ""
     private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
 
@@ -46,6 +47,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
+            loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
         operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
     }
@@ -85,7 +87,8 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             number,
             operatorData,
             currentCategoryName,
-            dgCategoryIds
+            dgCategoryIds,
+            loyaltyStatus
         )
         childFragmentManager
             .beginTransaction()
@@ -158,16 +161,16 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
         fun newInstance(
             clientNumberType: String, number: String,
             operatorData: TelcoCatalogPrefixSelect?,
-            categoryName: String, digitalCategoryIds: ArrayList<String>
+            categoryName: String, digitalCategoryIds: ArrayList<String>,
+            loyaltyStatus: String
         ): Fragment {
 
             val fragment = SingleTabSavedNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
-            bundle.putString(
-                ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(
-                    Locale.getDefault()))
+            bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
+            bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
             fragment.arguments = bundle
@@ -179,5 +182,6 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
+        const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
     }
 }
