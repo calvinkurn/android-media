@@ -63,7 +63,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setupDependencyInjection()
         setContentView(R.layout.activity_mvc_create_coupon)
         router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
-        println(productId)
+        println(productId) //TODO: Auto select product based on productId
         couponPreviewFragment.setCouponInformationData(populateDefaultCouponStartEndDate())
     }
 

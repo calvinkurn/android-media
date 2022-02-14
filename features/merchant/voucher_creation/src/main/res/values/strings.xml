@@ -457,7 +457,9 @@
     <string name="share_component_outgoing_text_description">Yuk, belanja dan pakai Voucher Tokonya sekarang!</string>
     <string name="placeholder_share_component_outgoing_title">Voucher Toko dari %s</string>
     <string name="error_message_quota_is_zero">Min. 1 Kupon</string>
+
     <!--create coupon-->
+    <string name="mvc_coupon_information_title">Informasi Kupon</string>
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
     <string name="mvc_create_coupon_date_desc"><b>Maks. 10 Kupon</b> per bulan</string>

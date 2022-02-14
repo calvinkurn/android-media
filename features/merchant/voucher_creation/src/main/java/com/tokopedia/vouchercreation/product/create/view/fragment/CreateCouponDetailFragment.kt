@@ -82,6 +82,7 @@ class CreateCouponDetailFragment(
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
 
+        setupToolbar()
         setupRecyclerViewTarget()
         setupDateInput()
         setupNextButton()
@@ -278,6 +279,14 @@ class CreateCouponDetailFragment(
         tfuCouponDateEnd?.setError(false)
         tfuCouponDateEnd?.setMessage("")
         tickerErrorCouponValidation?.gone()
+    }
+
+    private fun setupToolbar() {
+        val toolbar = binding?.toolbar
+        toolbar?.headerTitle = getString(R.string.mvc_coupon_information_title)
+        toolbar?.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     private fun RecyclerView.setRecyclerViewToVertical() {
