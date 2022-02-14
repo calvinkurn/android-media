@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'com.google.protobuf'
 
 buildscript {
     repositories {
@@ -10,6 +11,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
     }
 }
 
@@ -21,6 +23,25 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.javaxInject
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation "androidx.datastore:datastore:1.0.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.19.1"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.1"
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }
 
 project.ext {

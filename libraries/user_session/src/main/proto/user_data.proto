@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option java_package = "com.tokopedia.user.session";
+option java_multiple_files = true;
+
+message UserSessionProto {
+    string name = 1;
+    string accessToken = 2;
+    string refreshToken = 3;
+    string email = 4;
+    string uuid = 5;
+    string userId = 6;
+    string shopId = 7;
+    string shopName = 8;
+    bool isGoldMerchant = 9;
+    string tempLoginName = 10;
+    string tempUserId = 11;
+    bool isAffiliateStatus = 12;
+    string tempPhoneNumber = 13;
+    string tempLoginEmail = 14;
+    bool firstTimeUserOnboarding = 15;
+    bool firstTimeUser = 16;
+    bool isMSISDNVerified = 17;
+    bool hasPassword = 18;
+    string profilePicture = 19;
+    bool saldoWithdrawalWaring = 20;
+    bool saldoIntroPageStatus = 21;
+    string gcToken = 22;
+    string shopAvatar = 23;
+    bool isPowerMerchantIdle = 24;
+    string autofillUserData = 25;
+    string loginMethod = 26;
+    bool isShopOfficialStore = 27;
+    string deviceId = 28;
+    string fcmTimestamp = 29;
+    bool isShowOwner = 30;
+    bool isShopAdmin = 31;
+    bool isLocationAdmin = 32;
+    string isMultiLocationShop = 33;
+    string isLoggedIn = 34;
+    string phoneNumber = 35;
+}
