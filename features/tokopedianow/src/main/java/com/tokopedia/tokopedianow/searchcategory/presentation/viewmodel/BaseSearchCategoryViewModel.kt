@@ -1171,6 +1171,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onLocalizingAddressSelected() {
+        refreshMiniCart()
         onViewReloadPage()
     }
 
