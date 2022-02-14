@@ -2,8 +2,10 @@ package com.tokopedia.affiliate
 
 import android.os.Bundle
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.EVENT_PROMO_CLICK
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.ITEMS
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.PROMO_CLICK
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.SELECT_CONTENT
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -47,32 +49,27 @@ object AffiliateAnalytics {
         category: String,
         userId: String,
         productId: String,
-        shopId : String,
-        productImage: String,
         position: Int,
         itemName: String
     ){
-        val list = ArrayList<Map<String, Any>>()
-        val productMap = HashMap<String, Any>()
-        productMap[EventKeys.KEY_ITEM_ID] = productId
-        productMap[EventKeys.KEY_CREATIVE_NAME] = productImage
-        productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
-        productMap[EventKeys.KEY_ITEM_NAME] = itemName
-        list.add(productMap)
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                EVENT_PROMO_CLICK to mapOf(
-                        KEY_PROMOTIONS to list))
-        val map = HashMap<String,Any>()
-        map[EventKeys.KEY_EVENT] = PROMO_CLICK
-        map[EventKeys.KEY_EVENT_CATEGORY] = category
-        map[EventKeys.KEY_EVENT_ACTION] = action
-        map[EventKeys.KEY_EVENT_LABEL] = "$shopId - $productId"
-        map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
-        map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        map[EventKeys.KEY_ECOMMERCE] = eCommerce
-        map[EventKeys.KEY_USER_ID] = userId
+        val listBundle = Bundle().apply {
+            putString(EventKeys.KEY_ITEM_ID,productId)
+            putString(EventKeys.INDEX, (position).toString())
+            putString(EventKeys.KEY_ITEM_NAME,itemName)
+        }
+        val bundle = Bundle().apply {
+            putString(EventKeys.KEY_EVENT, event)
+            putString(EventKeys.KEY_EVENT_CATEGORY,category)
+            putString(EventKeys.KEY_EVENT_ACTION,action)
+            putString(EventKeys.KEY_EVENT_LABEL, productId)
+            putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+            putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+            putParcelableArrayList(ITEMS,arrayListOf(listBundle))
+            putString(EventKeys.KEY_USER_ID,userId)
+        }
 
-        getTracker().sendEnhanceEcommerceEvent(map)
+
+        getTracker().sendEnhanceEcommerceEvent(event,bundle)
     }
 
     fun sendIcomeTracker(
@@ -99,7 +96,7 @@ object AffiliateAnalytics {
         bundle.putString(EventKeys.KEY_USER_ID,userId)
         bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
 
-        getTracker().sendEnhanceEcommerceEvent(EventKeys.KEY_EVENT,bundle)
+        getTracker().sendEnhanceEcommerceEvent(event,bundle)
     }
 
     interface EventKeys {
@@ -126,6 +123,7 @@ object AffiliateAnalytics {
             const val KEY_CREATIVE_SLOT = "creative_slot"
             const val KEY_ITEM_ID = "item_id"
             const val KEY_ITEM_NAME = "item_name"
+            const val ITEMS = "items"
 
             const val KEY_PROMOTIONS = "promotions"
             const val SELECT_CONTENT = "select_content"
@@ -137,6 +135,8 @@ object AffiliateAnalytics {
             const val CLICK_REGISTER = "clickRegister"
             const val CLICK_PG = "clickPG"
             const val VIEW_ITEM = "view_item"
+            const val VIEW_ITEM_LIST = "view_item_list"
+            const val INDEX = "index"
         }
     }
 
@@ -203,6 +203,7 @@ object AffiliateAnalytics {
             const val CLICK_PERNAH_DIBELI_TAB = "click - pernah dibeli tab"
             const val CLICK_PERNAH_DILIHAT_TAB = "click - pernah dilihat tab"
             const val IMPRESSION_TRANSACTION_CARD = "impression - transaction card"
+            const val IMPRESSION_PRODUK_YANG_DIPROMOSIKAN = "impression - product - produk yang dipromosikan"
         }
     }
 

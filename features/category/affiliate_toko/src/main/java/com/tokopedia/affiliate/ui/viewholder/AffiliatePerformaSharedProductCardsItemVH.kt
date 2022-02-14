@@ -139,6 +139,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_inactive)
             }
             itemView.setOnClickListener {
+                sendSelectContentEvent(product)
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "",
@@ -146,5 +147,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 )
             }
         }
+    }
+
+    private fun sendSelectContentEvent(product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
+
     }
 }

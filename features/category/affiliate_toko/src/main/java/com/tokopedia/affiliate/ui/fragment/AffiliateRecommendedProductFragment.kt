@@ -277,17 +277,17 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
            itemName = AffiliateAnalytics.ItemKeys.AFFILIATE_PERNAH_DILIHAT
            actionName = AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_PERNAH_DILIHAT
         }
-        AffiliateAnalytics.trackEventImpression(
-            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
-            actionName,
-            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_PAGE,
-            userSessionInterface.userId,
-            productId,
-            shopId,
-            productImage,
-            position,
-            itemName
-        )
+//        AffiliateAnalytics.trackEventImpression(
+//            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+//            actionName,
+//            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_PAGE,
+//            userSessionInterface.userId,
+//            productId,
+//            shopId,
+//            productImage,
+//            position,
+//            itemName
+//        )
     }
 
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
