@@ -66,7 +66,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val maxProduct: Int
         get() = configStore.getMaxProduct()
 
-    private val _selectedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(
@@ -87,11 +86,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
 
     private val _campaignAndEtalase = combine(
-        _selectedEtalase,
         _loadParam,
         _campaignList,
         _etalaseList
-    ) { selectedEtalase, loadParam, campaignList, etalaseList ->
+    ) { loadParam, campaignList, etalaseList ->
         CampaignAndEtalaseUiModel(
             selected = loadParam.etalase,
             campaignList = campaignList,
