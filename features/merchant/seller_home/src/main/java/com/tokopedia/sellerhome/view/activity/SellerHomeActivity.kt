@@ -569,8 +569,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home,
-                R.raw.anim_bottom_nav_home_to_enabled,
+                R.raw.anim_bottom_nav_home_mosque,
+                R.raw.anim_bottom_nav_home_mosque_to_enabled,
                 R.drawable.ic_sah_bottom_nav_home_active,
                 R.drawable.ic_sah_bottom_nav_home_inactive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
