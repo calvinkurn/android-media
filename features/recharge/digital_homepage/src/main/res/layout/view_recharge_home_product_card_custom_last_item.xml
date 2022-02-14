@@ -1,68 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_recharge_custom_last_item"
+    android:id="@+id/card_recharge_custom_last_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/unify_space_16"
     android:layout_marginTop="@dimen/unify_space_8"
     android:layout_marginRight="@dimen/unify_space_16"
     android:layout_marginBottom="@dimen/unify_space_8"
-    android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12">
+    app:cardCornerRadius="@dimen/unify_space_16"
+    app:cardElevation="@dimen/layout_lvl0">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_custom_last_item_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_NN0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        tools:text="Spesial buat 08123456789, nih!" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_custom_last_item_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_NN0"
-        app:layout_constraintEnd_toEndOf="@id/tv_recharge_custom_last_item_title"
-        app:layout_constraintStart_toStartOf="@id/tv_recharge_custom_last_item_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_recharge_custom_last_item_title"
-        app:typographyType="body_3"
-        tools:text="Diskon sampai Rp15 ribu khusus transaksi pertama" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_recharge_custom_last_item"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_recharge_custom_last_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginBottom="@dimen/unify_space_4"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/unify_space_16"
-        android:paddingEnd="@dimen/unify_space_16"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/tv_recharge_custom_last_item_subtitle"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_digital_unify_card"
-        tools:orientation="horizontal" />
+        android:paddingTop="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_12"
+        tools:background="@color/Unify_NN900">
 
-    <include
-        android:id="@+id/view_recharge_home_product_cards_shimmering"
-        layout="@layout/view_recharge_home_product_cards_shimmering"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:visibility="gone"
-        tools:visibility="gone" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recharge_custom_last_item_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="Spesial buat 08123456789, nih!" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recharge_custom_last_item_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN0"
+            app:layout_constraintEnd_toEndOf="@id/tv_recharge_custom_last_item_title"
+            app:layout_constraintStart_toStartOf="@id/tv_recharge_custom_last_item_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_recharge_custom_last_item_title"
+            app:typographyType="body_3"
+            tools:text="Diskon sampai Rp15 ribu khusus transaksi pertama" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_recharge_custom_last_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/unify_space_16"
+            android:paddingEnd="@dimen/unify_space_16"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/tv_recharge_custom_last_item_subtitle"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_digital_unify_card"
+            tools:orientation="horizontal" />
+
+        <include
+            android:id="@+id/view_recharge_home_product_cards_shimmering"
+            layout="@layout/view_recharge_home_product_cards_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>
