@@ -592,7 +592,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     isApplyLogisticPromo = false)
 
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
-                // todo which promo is used for this?
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     newShipping = newShipping.copy(logisticPromoTickerMessage = logisticPromo.tickerAvailableFreeShippingCourierTitle, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)

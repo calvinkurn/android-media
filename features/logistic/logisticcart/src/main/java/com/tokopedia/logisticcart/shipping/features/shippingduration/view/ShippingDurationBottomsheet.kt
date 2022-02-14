@@ -209,9 +209,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
         shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList,
             promoViewModelList, isDisableOrderPrioritas, preOrderModel)
-//        todo showcase ?
-//        if (promoViewModelList?.etaData != null && promoViewModelList.etaData.textEta.isEmpty() && promoViewModelList.etaData.errorCode == 1) shippingDurationAdapter!!.initiateShowcase()
-        if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+       if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
 
         val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
