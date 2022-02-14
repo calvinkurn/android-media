@@ -20,6 +20,7 @@
         android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
         android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
         android:layout_marginTop="12dp"
+        android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsDash" />
 
@@ -58,7 +59,7 @@
         android:id="@+id/tvBomDetailAddonsToLabel"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:maxLines="1"
         android:text="@string/order_addons_to_label"
         android:textColor="@color/Unify_N700_68"

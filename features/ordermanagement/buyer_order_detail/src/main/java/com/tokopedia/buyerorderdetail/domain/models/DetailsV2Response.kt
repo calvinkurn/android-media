@@ -286,7 +286,7 @@ data class AddonInfo(
             val type: String = ""
         ) {
             data class Metadata(
-                @SerializedName("addon_note")
+                @SerializedName("add_on_note")
                 @Expose
                 val addonNote: AddonNote = AddonNote()
             ) {
