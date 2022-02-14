@@ -77,7 +77,9 @@ class PlaySearchBar : ConstraintLayout {
     }
 
     fun clear() {
-        etSearch.text.replace(0, etSearch.text.length, "")
+        clearFocus()
+        etSearch.removeTextChangedListener(getTextWatcher())
+        etSearch.setText("")
     }
 
     override fun onSaveInstanceState(): Parcelable {
@@ -225,6 +227,6 @@ class PlaySearchBar : ConstraintLayout {
         fun onCanceled(view: PlaySearchBar) {}
         fun onCleared(view: PlaySearchBar) {}
         fun onNewKeyword(view: PlaySearchBar, keyword: String)
-        fun onSearchButtonClicked(view: PlaySearchBar, keyword: String)
+        fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {}
     }
 }

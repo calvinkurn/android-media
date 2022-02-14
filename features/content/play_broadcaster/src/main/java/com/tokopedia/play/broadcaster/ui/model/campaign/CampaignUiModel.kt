@@ -11,4 +11,5 @@ data class CampaignUiModel(
     val endDateFmt: String,
     val status: CampaignStatusUiModel,
     val totalProduct: Int,
+    var isChecked: Boolean = false,
 )

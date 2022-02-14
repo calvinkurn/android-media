@@ -40,6 +40,12 @@ class ProductSetupFragment @Inject constructor(
         }
     }
 
+    fun removeFragment() {
+        parentFragmentManager.beginTransaction()
+            .remove(this)
+            .commit()
+    }
+
     fun openCampaignAndEtalaseList() {
         EtalaseListBottomSheet.getFragment(
             childFragmentManager,

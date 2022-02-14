@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
-import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -20,5 +19,7 @@ sealed class PlayBroProductChooserAction {
     ) : PlayBroProductChooserAction()
     data class SearchProduct(val keyword: String) : PlayBroProductChooserAction()
     object SaveProducts : PlayBroProductChooserAction()
-    object AddProduct : PlayBroProductChooserAction()
+    object CreateProduct : PlayBroProductChooserAction()
+    data class DeleteSelectedProduct(val product: ProductUiModel) : PlayBroProductChooserAction()
+    object LoadProductSummary : PlayBroProductChooserAction()
 }

@@ -54,6 +54,9 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
+    private val container: ProductSetupFragment?
+        get() = parentFragment as? ProductSetupFragment
+
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
     private val binding: BottomSheetPlayBroProductChooserBinding
         get() = _binding!!
@@ -156,6 +159,11 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
+        setCloseClickListener {
+            dismiss()
+            container?.removeFragment()
+        }
+
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
         }
@@ -207,8 +215,7 @@ class ProductChooserBottomSheet @Inject constructor(
             viewModel.uiEvent.collect {
                 when (it) {
                     PlayBroProductChooserEvent.SaveProductSuccess -> {
-                        (requireParentFragment() as ProductSetupFragment)
-                            .openProductSummary()
+                        container?.openProductSummary()
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
                         //TODO("Show Error")
@@ -216,6 +223,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.OpenShopPage -> {
                         RouteManager.route(context, ApplinkConst.SHOP, it.shopId)
                     }
+                    else -> {}
                 }
             }
         }
@@ -245,7 +253,7 @@ class ProductChooserBottomSheet @Inject constructor(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
         if (prevParam?.sort?.id != param.sort?.id) {
-            sortChipsView.setText(param.sort?.text.orEmpty())
+            sortChipsView.setText(param.sort?.text)
         }
 
         if (param.etalase !is SelectedEtalaseModel.Campaign) sortChipsView.show()
@@ -391,7 +399,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductErrorEvent(event: ProductErrorViewComponent.Event) {
         when (event) {
             ProductErrorViewComponent.Event.AddProductClicked -> {
-                viewModel.submitAction(PlayBroProductChooserAction.AddProduct)
+                viewModel.submitAction(PlayBroProductChooserAction.CreateProduct)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
@@ -10,6 +11,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
@@ -132,6 +134,67 @@ class PlayBroProductUiMapper @Inject constructor() {
                 }
             }
         )
+    }
+
+    fun mapProductTagSection(response: GetProductTagSummarySectionResponse): Pair<List<ProductTagSectionUiModel>, Int> {
+        var totalProductSize = 0
+        val productTagSectionList = response.section.map { section ->
+            totalProductSize += section.products.size
+
+            ProductTagSectionUiModel(
+                name = section.name,
+                campaignStatus = when(section.statusFmt) {
+                    "mendatang" -> CampaignStatus.Ready
+                    "berlangsung" -> CampaignStatus.Ongoing
+                    else -> CampaignStatus.Unknown
+                },
+                products = section.products.map { product ->
+                    ProductUiModel(
+                        id = product.productID,
+                        name = product.productName,
+                        imageUrl = product.imageURL,
+                        stock = product.quantity,
+                        price = if(product.discount == "0") {
+                            OriginalPrice(product.priceFmt, product.price.toDouble())
+                        }
+                        else DiscountedPrice(
+                            originalPrice = product.originalPriceFmt,
+                            originalPriceNumber = product.originalPrice.toDouble(),
+                            discountPercent = product.discount.toInt(),
+                            discountedPrice = product.priceFmt,
+                            discountedPriceNumber = product.price.toDouble(),
+                        )
+                    )
+                }
+            )
+        }
+
+        return Pair(productTagSectionList, totalProductSize)
+    }
+
+    @ExperimentalStdlibApi
+    /** TODO: gonna remove this annotation */
+    fun mapProductTagSection(): Pair<List<ProductTagSectionUiModel>, Int> {
+        val productTagSectionList = buildList<ProductTagSectionUiModel> {
+            for(i in 1..3) {
+                add(ProductTagSectionUiModel(
+                    name = "Sale $i",
+                    campaignStatus = when(i) {
+                        1 -> CampaignStatus.Ongoing
+                        2 -> CampaignStatus.Unknown
+                        else -> CampaignStatus.Ready
+                    },
+                    products = buildList {
+                        add(ProductUiModel(
+                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
+                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
+                        ))
+                    }
+                ))
+            }
+        }
+
+        return Pair(productTagSectionList, 3)
     }
 
     private fun Long.forceToUTCWithoutTimezone(): Date {

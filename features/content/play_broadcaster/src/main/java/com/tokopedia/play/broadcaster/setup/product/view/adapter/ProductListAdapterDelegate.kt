@@ -1,12 +1,9 @@
 package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
-import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
@@ -34,13 +31,8 @@ internal class ProductListAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): ProductListViewHolder.Product {
-            return ProductListViewHolder.Product(
-                ItemProductListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-                onSelected,
+            return ProductListViewHolder.Product.create(
+                parent, onSelected
             )
         }
     }
@@ -60,13 +52,7 @@ internal class ProductListAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): ProductListViewHolder.Loading {
-            return ProductListViewHolder.Loading(
-                ItemLoadingBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-            )
+            return ProductListViewHolder.Loading.create(parent)
         }
     }
 }
