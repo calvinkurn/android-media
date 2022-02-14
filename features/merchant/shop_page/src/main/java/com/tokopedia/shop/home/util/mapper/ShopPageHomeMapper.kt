@@ -4,12 +4,17 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
@@ -19,7 +24,6 @@ import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
-import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -223,6 +227,7 @@ object ShopPageHomeMapper {
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
+            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse)
             else -> {
                 null
             }
@@ -251,6 +256,52 @@ object ShopPageHomeMapper {
             header = mapToHeaderModel(widgetResponse.header),
             showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name, widgetResponse.header)
     )
+
+    private fun mapToProductBundleListUiModel(
+            widgetResponse: ShopLayoutWidget.Widget
+    ) = ShopHomeProductBundleListUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = mapToHeaderModel(widgetResponse.header),
+            productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name)
+    )
+
+    private fun mapToProductBundleListItemUiModel(
+            widgetData: List<ShopLayoutWidget.Widget.Data>,
+            widgetName: String,
+    ): List<ShopHomeProductBundleItemUiModel> {
+        return widgetData.map {
+            ShopHomeProductBundleItemUiModel().apply {
+                bundleGroupId = it.bundleGroupId
+                bundleType = widgetName
+                bundleName = it.bundleName
+                bundleDetails = it.bundleDetails.map { bundleDetail ->
+                    ShopHomeProductBundleDetailUiModel().apply {
+                        bundleId = bundleDetail.bundleId
+                        originalPrice = bundleDetail.originalPrice
+                        displayPrice = bundleDetail.displayPrice
+                        discountPercentage = bundleDetail.discountPercentage
+                        isPreOrder = bundleDetail.isPO
+                        isProductsHaveVariant = bundleDetail.isProductsHaveVariant
+                        preOrderInfo = bundleDetail.preorderInfo
+                        savingAmountWording = bundleDetail.savingAmountWording
+                        minOrder = bundleDetail.minOrder
+                        minOrderWording = bundleDetail.minOrderWording
+                    }
+                }
+                bundleProducts = it.bundleProducts.map { bundleProduct ->
+                    ShopHomeBundleProductUiModel().apply {
+                        productId = bundleProduct.productId
+                        productName = bundleProduct.productName
+                        productImageUrl = bundleProduct.productImageUrl
+                        productAppLink = bundleProduct.productAppLink
+                    }
+                }
+            }
+        }
+    }
 
     private fun mapToNewProductLaunchCampaignUiModel(
             widgetResponse: ShopLayoutWidget.Widget,

@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -32,9 +33,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -89,6 +90,10 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -148,7 +153,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         PlayWidgetListener,
         ShopHomeShowcaseListWidgetListener,
         InterfaceShopPageClickScrollToTop,
-        ShopHomePlayWidgetListener {
+        ShopHomePlayWidgetListener,
+        MultipleProductBundleClickListener,
+        SingleProductBundleClickListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -265,7 +272,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 playWidgetCoordinator = playWidgetCoordinator,
                 isShowTripleDot = !_isMyShop,
                 shopHomeShowcaseListWidgetListener = this,
-                this
+                this,
+                multipleProductBundleClickListener = this,
+                singleProductBundleClickListener = this
         )
     }
 
@@ -1298,6 +1307,68 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
                 0
         )
+    }
+
+    override fun onMultipleBundleProductClicked(productId: String) {
+        goToPDP(productId)
+    }
+
+    override fun onSingleBundleProductClicked(productId: String) {
+        goToPDP(productId)
+    }
+
+    override fun addMultipleBundleToCart(selectedMultipleBundle: ShopHomeProductBundleDetailUiModel, productDetails: List<ShopHomeBundleProductUiModel>) {
+        if (selectedMultipleBundle.isProductsHaveVariant) {
+            // go to bundling selection page
+            Toast.makeText(context, "Goto BSP", Toast.LENGTH_SHORT).show()
+        } else {
+            // atc bundle directly from shop page home
+            viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedMultipleBundle.bundleId.toString(),
+                    productDetails = productDetails,
+                    onFinishAddToCart = { handleOnFinishAtcBundle(it) },
+                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                    bundleQuantity = selectedMultipleBundle.minOrder
+            )
+        }
+    }
+
+    override fun addSingleBundleToCart(selectedBundle: ShopHomeProductBundleDetailUiModel, bundleProducts: ShopHomeBundleProductUiModel) {
+        if (selectedBundle.isProductsHaveVariant) {
+            // go to bundling selection page
+            Toast.makeText(context, "Goto BSP", Toast.LENGTH_SHORT).show()
+        } else {
+            // atc bundle directly from shop page home
+            viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    userId = userId,
+                    bundleId = selectedBundle.bundleId.toString(),
+                    productDetails = listOf(bundleProducts),
+                    onFinishAddToCart = { handleOnFinishAtcBundle(it) },
+                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                    bundleQuantity = selectedBundle.minOrder
+            )
+        }
+    }
+
+    private fun handleOnFinishAtcBundle(atcBundleModel: AddToCartBundleModel) {
+        atcBundleModel.validateResponse(
+                onSuccess = {
+                    showToastSuccess(atcBundleModel.addToCartBundleDataModel.message.firstOrNull().orEmpty())
+                },
+                onFailedWithMessages = {
+                    showErrorToast(it.firstOrNull().orEmpty())
+                },
+                onFailedWithException = {
+                    showErrorToast(it.message.orEmpty())
+                }
+        )
+    }
+
+    private fun handleOnErrorAtcBundle(throwable: Throwable) {
+        showErrorToast(throwable.message.orEmpty())
     }
 
     override fun onShowcaseListWidgetImpression(model: ShopHomeShowcaseListSliderUiModel, position: Int) {
