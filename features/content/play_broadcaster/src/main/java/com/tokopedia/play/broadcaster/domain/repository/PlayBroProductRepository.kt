@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
@@ -18,4 +19,10 @@ interface PlayBroProductRepository {
         page: Int,
         keyword: String,
     ): List<ProductUiModel>
+
+    suspend fun addProductTag(channelId: String, productIds: List<String>)
+
+    suspend fun getProductTagSummarySection(
+        channelID: Long,
+    ): Pair<List<ProductTagSectionUiModel>, Int>
 }

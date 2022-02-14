@@ -63,7 +63,7 @@ class PlayBroSetupMenuAnalyticImpl @Inject constructor(
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to "clickPG",
+                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
                 KEY_EVENT_ACTION to eventAction,
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_LABEL to eventLabel,

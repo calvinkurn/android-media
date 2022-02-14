@@ -8,4 +8,5 @@ data class EtalaseUiModel(
     val imageUrl: String,
     val title: String,
     val totalProduct: Int,
+    var isChecked: Boolean = false,
 )

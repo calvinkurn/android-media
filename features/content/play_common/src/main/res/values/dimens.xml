@@ -40,4 +40,8 @@
     <dimen name="play_product_tag_stock_radius">4dp</dimen>
     <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_tag_text_height_placeholder">16dp</dimen>
+
+    <!-- Product Summary -->
+    <dimen name="play_product_tag_summary_height_placeholder">16dp</dimen>
+    <dimen name="play_product_tag_summary_card_height_placeholder">104dp</dimen>
 </resources>

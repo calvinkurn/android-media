@@ -4,23 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.model.*
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -28,8 +26,16 @@ import javax.inject.Inject
  */
 class PlayBroProductSetupViewModel @Inject constructor(
     private val repo: PlayBroadcastRepository,
+    private val hydraConfigStore: HydraConfigStore,
+    private val setupDataStore: PlayBroadcastSetupDataStore,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
+
+    val channelId: String
+        get() = hydraConfigStore.getChannelId()
+
+    val maxProduct: Int
+        get() = hydraConfigStore.getMaxProduct()
 
     private val _selectedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
@@ -41,11 +47,25 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
     private val _sort = MutableStateFlow<SortUiModel?>(null)
 
+    private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
+
     private val _campaignAndEtalase = combine(
         _selectedEtalase,
         _campaignList,
         _etalaseList
     ) { selectedEtalase, campaignList, etalaseList ->
+        if(selectedEtalase !is SelectedEtalaseModel.None) {
+            /** TODO: TechDebt - isChecked should be val, then find a good way to update this checked status */
+            campaignList.forEach {
+                it.isChecked = selectedEtalase is SelectedEtalaseModel.Campaign && selectedEtalase.campaign == it
+            }
+
+            etalaseList.forEach {
+                it.isChecked = selectedEtalase is SelectedEtalaseModel.Etalase && selectedEtalase.etalase == it
+            }
+        }
+
         CampaignAndEtalaseUiModel(
             selected = selectedEtalase,
             campaignList = campaignList,
@@ -59,6 +79,11 @@ class PlayBroProductSetupViewModel @Inject constructor(
     ) { productInEtalase, focusedEtalase ->
         productInEtalase[focusedEtalase]?.productMap?.values?.flatten().orEmpty()
     }
+
+    private val _uiEvent = MutableSharedFlow<PlayBroProductSummaryUiEvent>(extraBufferCapacity = 50)
+
+    val uiEvent: Flow<PlayBroProductSummaryUiEvent>
+        get() = _uiEvent
 
     val uiState = combine(
         _campaignAndEtalase,
@@ -77,6 +102,16 @@ class PlayBroProductSetupViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         PlayBroProductChooserUiState.Empty,
     )
+
+    val summaryUiState = combine(
+        _productTagSectionList,
+        _productTagSummary,
+    ) { productTagSectionList, productTagSummary ->
+        PlayBroProductSummaryUiState(
+            productTagSectionList = productTagSectionList,
+            productTagSummary = productTagSummary
+        )
+    }
 
     init {
         getCampaignList()
@@ -117,6 +152,14 @@ class PlayBroProductSetupViewModel @Inject constructor(
             is PlayBroProductChooserAction.SelectEtalase -> handleSelectEtalase(action.etalase)
             is PlayBroProductChooserAction.SelectCampaign -> handleSelectCampaign(action.campaign)
             is PlayBroProductChooserAction.SelectProduct -> handleSelectProduct(action.product)
+        }
+    }
+
+    @ExperimentalStdlibApi
+    fun submitAction(action: PlayBroProductSummaryAction) {
+        when(action) {
+            is PlayBroProductSummaryAction.LoadProductSummary -> handleLoadProductSummary()
+            is PlayBroProductSummaryAction.DeleteProduct -> handleDeleteProduct(action.product)
         }
     }
 
@@ -194,6 +237,66 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 it + mapOf(theEtalase to newSelectedProducts)
             }
         }
+    }
+
+    /** Product Summary */
+
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
+    private fun handleLoadProductSummary() {
+        /** TODO: change dispatchers.io -> dispatchers.main instead later */
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
+
+            getProductTagSummary()
+        }) {
+            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
+            _uiEvent.emit(
+                PlayBroProductSummaryUiEvent.GetDataError(it) {
+                    submitAction(PlayBroProductSummaryAction.LoadProductSummary)
+                }
+            )
+        }
+    }
+
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
+    private fun handleDeleteProduct(product: ProductUiModel) {
+        /** TODO: change dispatchers.io -> dispatchers.main instead later */
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            _productTagSummary.value = ProductTagSummaryUiModel.Loading
+
+            val productSectionList = _productTagSectionList.value
+            /** TODO: gonna delete this later */
+            delay(1000)
+
+            throw Exception("Error")
+            /** TODO: gonna uncomment this later */
+//                val productIds = productSectionList.sections.flatMap { section ->
+//                    section.products.filter { it.id != product.id }.map { it.id }
+//                }
+//                repo.addProductTag(channelId, productIds)
+
+            getProductTagSummary()
+        }) {
+            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
+            _uiEvent.emit(
+                PlayBroProductSummaryUiEvent.DeleteProductError(it) {
+                    submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
+                }
+            )
+        }
+    }
+
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
+    private suspend fun getProductTagSummary() {
+        /** TODO: gonna remove this delay */
+//        delay(1000)
+        val (response, productCount) = repo.getProductTagSummarySection(channelId.toLong())
+
+        _productTagSectionList.value = response
+        _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
     }
 
 

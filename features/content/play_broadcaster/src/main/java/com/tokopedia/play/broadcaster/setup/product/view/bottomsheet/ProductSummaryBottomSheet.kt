@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +8,23 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiEvent
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.util.extension.withCache
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -19,13 +33,34 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify() {
+    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val analytic: PlayBroadcastAnalytic,
+) : BottomSheetUnify(), ProductSummaryListViewComponent.Listener {
+
+    private val container: ProductSetupFragment?
+        get() = parentFragment as? ProductSetupFragment
 
     private lateinit var viewModel: PlayBroProductSetupViewModel
 
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
         get() = _binding!!
+
+    private val productSummaryListView by viewComponent {
+        ProductSummaryListViewComponent(binding.rvProductSummaries, this)
+    }
+
+    @ExperimentalStdlibApi
+    override fun onProductDeleteClicked(product: ProductUiModel) {
+        analytic.clickDeleteProductOnProductSetup(productId = product.id)
+        viewModel.submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            dialogCustomizer.customize(this)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +69,15 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupBottomSheet()
     }
 
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
         setupObserve()
+
+        viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary)
     }
 
     override fun onDestroyView() {
@@ -54,6 +93,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         _binding = BottomSheetPlayBroProductSummaryBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
+        clearContentPadding = true
         setChild(binding.root)
     }
 
@@ -61,13 +101,100 @@ class ProductSummaryBottomSheet @Inject constructor(
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
         }
+        setTitle(getString(R.string.play_bro_product_summary_title))
+        setAction(getString(R.string.play_bro_product_add_more)) {
+            analytic.clickAddMoreProductOnProductSetup()
+            handleAddMoreProduct()
+        }
+        setCloseClickListener {
+            dismiss()
+            container?.removeFragment()
+        }
+
+        binding.btnDone.setOnClickListener {
+            analytic.clickDoneOnProductSetup()
+            dismiss()
+            container?.removeFragment()
+        }
     }
 
+    @ExperimentalStdlibApi
+    /** TODO: gonna remove this annotation later */
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+            viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
+                when(state.productTagSummary) {
+                    is ProductTagSummaryUiModel.Loading -> {
+                        binding.ivLoading.visibility = View.VISIBLE
+                        binding.globalError.visibility = View.GONE
+//                        binding.flBtnDoneContainer.visibility = View.GONE
+                    }
+                    is ProductTagSummaryUiModel.LoadingWithPlaceholder -> {
+                        binding.ivLoading.visibility = View.GONE
+                        binding.globalError.visibility = View.GONE
+//                        binding.flBtnDoneContainer.visibility = View.GONE
+
+                        productSummaryListView.setLoading()
+                    }
+                    is ProductTagSummaryUiModel.Success -> {
+                        setTitle(state.productTagSummary.productCount)
+                        binding.ivLoading.visibility = View.GONE
+                        binding.globalError.visibility = View.GONE
+                        binding.flBtnDoneContainer.visibility = View.VISIBLE
+
+                        productSummaryListView.setProductList(state.productTagSectionList)
+
+                        if(state.productTagSectionList.isEmpty()) {
+                            binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
+                            binding.globalError.visibility = View.VISIBLE
+                            binding.flBtnDoneContainer.visibility = View.GONE
+                        }
+                    }
+                    else -> {}
+                }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is PlayBroProductSummaryUiEvent.GetDataError -> {
+                        view?.rootView?.showErrorToaster(
+                            err = event.throwable,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = { event.action?.invoke() },
+                        )
+
+                        productSummaryListView.setProductList(emptyList())
+                        binding.ivLoading.visibility = View.GONE
+                    }
+                    is PlayBroProductSummaryUiEvent.DeleteProductError -> {
+                        view?.rootView?.showErrorToaster(
+                            err = event.throwable,
+                            customErrMessage = getString(R.string.play_bro_product_summary_fail_to_delete_product),
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = { event.action?.invoke() },
+                        )
+
+                        binding.ivLoading.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setTitle(productCount: Int?) {
+        if(productCount != null) {
+            setTitle(getString(R.string.play_bro_product_summary_title_with_count, productCount, viewModel.maxProduct))
+        }
+        else {
+            setTitle(getString(R.string.play_bro_product_summary_title))
+        }
+    }
+
+    private fun handleAddMoreProduct() {
+        container?.openProductChooser()
+        dismiss()
     }
 
     companion object {
