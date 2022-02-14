@@ -11,19 +11,16 @@ import com.tokopedia.home_component.databinding.GlobalDcMerchantVoucherBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class MerchantVoucherViewHolder(
     itemView: View
@@ -53,14 +50,13 @@ class MerchantVoucherViewHolder(
 //        mappingHeader(channel)
 //        mappingCtaButton(channel.channelBanner.cta)
 //        mappingItem(channel, visitables)
-
     }
 
     private fun mappingVisitablesFromChannel(channel: ChannelModel): MutableList<Visitable<*>> {
         val visitables: MutableList<Visitable<*>> = mutableListOf()
-//        val channelProductData = convertDataToProductData(channel)
-//        setRecyclerViewAndCardHeight(channelProductData)
-//        visitables.addAll(channelProductData)
+        val channelMerchantVoucherData = convertDataToMerchantVoucherData(channel)
+        setRecyclerViewAndCardHeight()
+        visitables.addAll(channelMerchantVoucherData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
                 visitables.add(
@@ -72,6 +68,14 @@ class MerchantVoucherViewHolder(
             }
         }
         return visitables
+    }
+
+    private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
+        val list :MutableList<CarouselMerchantVoucherDataModel> = mutableListOf()
+        for (element in channel.channelGrids) {
+            list.add(CarouselMerchantVoucherDataModel())
+        }
+        return list
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
@@ -94,10 +98,10 @@ class MerchantVoucherViewHolder(
         })
     }
 
-    private fun setRecyclerViewAndCardHeight(productDataList: List<CarouselProductCardDataModel>) {
+    private fun setRecyclerViewAndCardHeight() {
         launch {
             try {
-                binding?.recycleList?.setHeightBasedOnProductCardMaxHeight()
+                binding?.recycleList?.setHeightBasedMerchantVoucherCardHeight()
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -105,9 +109,7 @@ class MerchantVoucherViewHolder(
         }
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight() {
-//        val productCardHeight = getProductCardMaxHeight(productCardModelList)
-
+    private fun RecyclerView.setHeightBasedMerchantVoucherCardHeight() {
         val carouselLayoutParams = this.layoutParams
         carouselLayoutParams?.height = this.resources.getDimensionPixelOffset(com.tokopedia.home_component.R.dimen.home_merchant_voucher_height)
         this.layoutParams = carouselLayoutParams
