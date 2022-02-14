@@ -20,5 +20,6 @@
     <string name="add_on_label_note_empty">Tulis pesan di kartu ucapan</string>
     <string name="add_on_label_header_product_from_toko_cabang">Eksklusif dari Tokocabang</string>
     <string name="add_on_label_header_product">Disediakan oleh %s</string>
+    <string name="add_on_label_other_product">+%d Barang Lainnya</string>
 
 </resources>

@@ -5,12 +5,12 @@ import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapter
 
 data class ProductUiModel(
         var isTokoCabang: Boolean = false,
-        var shopBadgeUrl: String = "",
         var shopName: String = "",
         var mainProductImageUrl: String = "",
         var mainProductName: String = "",
         var mainProductPrice: Long = 0,
-        var otherProductCount: Int = 0
+        var otherProductCount: Int = 0,
+        var promoMessage: String = ""
 ) : Visitable<AddOnListAdapterTypeFactory> {
 
     override fun type(typeFactory: AddOnListAdapterTypeFactory): Int {

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.addongifting.addonbottomsheet.view.AddOnBottomSheet
 import com.tokopedia.addongifting.addonunavailablebottomsheet.AddOnUnavailableBottomSheet
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 
 class AddOnActivity : BaseSimpleActivity() {
 

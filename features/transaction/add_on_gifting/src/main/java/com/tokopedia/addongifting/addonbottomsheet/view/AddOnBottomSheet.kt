@@ -10,17 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
-import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapter
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.addonbottomsheet.view.di.AddOnComponent
@@ -29,21 +27,25 @@ import com.tokopedia.addongifting.addonbottomsheet.view.mapper.AddOnResultMapper
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addongallery.AddOnGalleryActivity
+import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+
 
 class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
@@ -131,6 +133,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun initializeData(addOnProductData: AddOnProductData) {
+        // Todo : remove mock data before merge to release
         val mockAddOnResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_response)
         val mockAddOnSavedStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_saved_state_response)
         showLoading()
@@ -139,45 +142,45 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun initializeObserver(viewBinding: LayoutAddOnBottomSheetBinding) {
         observeGlobalEvent(viewBinding)
-        observeProductData()
-        observeAddOnData()
         observeFragmentData(viewBinding)
     }
 
     private fun observeGlobalEvent(viewBinding: LayoutAddOnBottomSheetBinding) {
-        viewModel.globalEvent.observe(this, {
-            when (it.state) {
-                GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
-                    hideLoading()
-                    renderLayoutNormal(viewBinding)
-                }
-                GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
-                    hideLoading()
-                    renderLayoutError(viewBinding, it.throwable)
-                }
-                GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
-                    showCloseConfirmationDialog()
-                }
-                GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON -> {
-                    setResultOnSaveAddOn(it)
-                    dismiss()
-                }
-                GlobalEvent.STATE_FAILED_SAVE_ADD_ON -> {
-                    viewBinding.totalAmount.amountCtaView.isLoading = false
-                    Toaster.build(viewBinding.bottomsheetContainer,
-                            getString(R.string.add_on_toaster_message_failed_save_add_on),
-                            Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                            .show()
-                }
-                GlobalEvent.STATE_DISMISS_BOTTOM_SHEET -> {
-                    dismiss()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when (it.state) {
+                    UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
+                        hideLoading()
+                        renderLayoutNormal(viewBinding)
+                    }
+                    UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
+                        hideLoading()
+                        renderLayoutError(viewBinding, it.throwable)
+                    }
+                    UiEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
+                        showCloseConfirmationDialog()
+                    }
+                    UiEvent.STATE_SUCCESS_SAVE_ADD_ON -> {
+                        setResultOnSaveAddOn(it)
+                        dismiss()
+                    }
+                    UiEvent.STATE_FAILED_SAVE_ADD_ON -> {
+                        viewBinding.totalAmount.amountCtaView.isLoading = false
+                        Toaster.build(viewBinding.bottomsheetContainer,
+                                getString(R.string.add_on_toaster_message_failed_save_add_on),
+                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                                .show()
+                    }
+                    UiEvent.STATE_DISMISS_BOTTOM_SHEET -> {
+                        dismiss()
+                    }
                 }
             }
-        })
+        }
     }
 
-    private fun setResultOnSaveAddOn(globalEvent: GlobalEvent) {
-        val data = globalEvent.data
+    private fun setResultOnSaveAddOn(uiEvent: UiEvent) {
+        val data = uiEvent.data
         if (data != null && data is SaveAddOnStateResponse) {
             val resultData = AddOnResultMapper.mapResult(data)
             val result = Intent().apply {
@@ -187,49 +190,38 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         }
     }
 
-    private fun observeProductData() {
-        viewModel.productUiModel.observe(this, {
-            hideLoading()
-            addOrModify(it)
-        })
-    }
-
-    private fun observeAddOnData() {
-        viewModel.addOnUiModel.observe(this, {
-            hideLoading()
-            addOrModify(it)
-        })
-    }
-
     private fun observeFragmentData(viewBinding: LayoutAddOnBottomSheetBinding) {
-        viewModel.fragmentUiModel.observe(this, {
-            renderTotalAmount(viewBinding, it)
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.fragmentUiModel.collectLatest {
+                if (it.hasLoadedData) {
+                    hideLoading()
+                    adapter?.updateList(it.recyclerViewItems)
+                    renderTotalAmount(viewBinding, it)
+                }
+            }
+        }
     }
 
     private fun renderTotalAmount(viewBinding: LayoutAddOnBottomSheetBinding, fragmentUiModel: FragmentUiModel) {
         with(viewBinding.totalAmount) {
             setLabelTitle(context.getString(R.string.add_on_label_total_amount))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.addOnTotalPrice, false).removeDecimalSuffix())
-            if (fragmentUiModel.addOnTotalQuantity > 0) {
-                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.addOnTotalQuantity))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.totalAmount.addOnTotalPrice, false).removeDecimalSuffix())
+            if (fragmentUiModel.totalAmount.addOnTotalQuantity > 0) {
+                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.totalAmount.addOnTotalQuantity))
             } else {
                 setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }
             amountCtaView.show()
             amountCtaView.setOnClickListener {
-                val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
-                viewBinding.totalAmount.amountCtaView.isLoading = true
-                viewModel.saveAddOnState(mockSaveAddOnStateResponse)
+                if (viewModel.hasChangedState()) {
+                    // Todo : remove mock data before merge to release
+                    val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
+                    viewBinding.totalAmount.amountCtaView.isLoading = true
+                    viewModel.saveAddOnState(addOnProductData, mockSaveAddOnStateResponse)
+                } else {
+                    dismiss()
+                }
             }
-        }
-    }
-
-    private fun addOrModify(it: Visitable<*>) {
-        if (adapter?.data?.contains(it) == true) {
-            adapter?.modifyData(adapter?.data?.indexOf(it) ?: RecyclerView.NO_POSITION)
-        } else {
-            adapter?.addVisitable(it)
         }
     }
 
@@ -248,7 +240,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutAddOnBottomSheetBinding) {
         measureRecyclerViewPaddingDebounceJob?.cancel()
-        measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
+        measureRecyclerViewPaddingDebounceJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             delay(DELAY_ADJUST_RECYCLER_VIEW_MARGIN)
             adjustRecyclerViewPadding(viewBinding)
         }

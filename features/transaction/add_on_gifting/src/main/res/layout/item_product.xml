@@ -6,11 +6,12 @@
     android:paddingBottom="16dp"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_shop_badge"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_shop"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginStart="16dp"
+        app:icon_name="SHOP"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/label_header_message" />
 
@@ -22,8 +23,30 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/image_shop_badge"
+        app:layout_constraintStart_toEndOf="@+id/icon_shop"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Disediakan oleh Tokopedia" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_promo"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:icon_name="PROMO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/icon_shop" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_promo_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_shop"
+        app:layout_constraintTop_toTopOf="@+id/icon_promo"
         app:typographyType="body_3"
         tools:text="Disediakan oleh Tokopedia" />
 
@@ -34,7 +57,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_header_message" />
+        app:layout_constraintTop_toBottomOf="@+id/label_promo_info" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_product_name"

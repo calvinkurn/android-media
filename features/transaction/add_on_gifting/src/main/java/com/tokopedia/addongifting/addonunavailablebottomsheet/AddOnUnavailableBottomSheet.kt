@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.LayoutAddOnUnavailableBottomSheetBinding
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify() {

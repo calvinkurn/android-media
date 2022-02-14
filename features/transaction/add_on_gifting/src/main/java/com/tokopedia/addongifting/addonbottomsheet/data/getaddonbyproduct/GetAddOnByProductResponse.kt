@@ -10,8 +10,6 @@ data class GetAddOnByProductResponse(
 data class DataResponse(
         @SerializedName("error")
         val error: ErrorResponse = ErrorResponse(),
-        @SerializedName("StaticInfo")
-        val staticInfo: StaticInfoResponse = StaticInfoResponse(),
         @SerializedName("AddOnByProductResponse")
         val addOnByProducts: List<AddOnByProductResponse> = emptyList()
 )
@@ -23,11 +21,6 @@ data class ErrorResponse(
         val reason: List<String> = emptyList(),
         @SerializedName("errorCode")
         val errorCode: String = ""
-)
-
-data class StaticInfoResponse(
-        @SerializedName("InfoURL")
-        val infoUrl: String = ""
 )
 
 data class AddOnByProductResponse(
@@ -51,11 +44,7 @@ data class AddOnResponse(
         @SerializedName("Pictures")
         val pictures: List<PictureResponse> = emptyList(),
         @SerializedName("Inventory")
-        val inventory: InventoryResponse = InventoryResponse(),
-        @SerializedName("Warehouse")
-        val warehouse: WarehouseResponse = WarehouseResponse(),
-        @SerializedName("Shop")
-        val shop: ShopResponse = ShopResponse()
+        val inventory: InventoryResponse = InventoryResponse()
 )
 
 data class BasicInfoResponse(
@@ -111,20 +100,4 @@ data class InventoryResponse(
         val stock: Int = 0,
         @SerializedName("UnlimitedStock")
         val isUnlimitedStock: Boolean = true
-)
-
-data class WarehouseResponse(
-        @SerializedName("WarehouseName")
-        val warehouseName: String = "",
-        @SerializedName("CityName")
-        val cityName: String = ""
-)
-
-data class ShopResponse(
-        @SerializedName("Name")
-        val name: String = "",
-        @SerializedName("ShopTier")
-        val shopTier: Int = 0,
-        @SerializedName("ShopType")
-        val shopType: Int = 0
 )

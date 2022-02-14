@@ -5,8 +5,8 @@ import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.AddOn
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnData
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.roundToLong
 
@@ -16,12 +16,12 @@ object AddOnUiModelMapper {
         val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         return ProductUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
-            shopBadgeUrl = addOnProductData.availableBottomSheetData.shopBadgeUrl
-            shopName = addOnByProduct?.addOns?.firstOrNull()?.shop?.name ?: ""
+            shopName = addOnProductData.availableBottomSheetData.shopName
             mainProductImageUrl = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productImageUrl ?: ""
             mainProductName = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productName ?: ""
             mainProductPrice = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productPrice ?: 0
             otherProductCount = addOnProductData.availableBottomSheetData.products.size - 1
+            promoMessage = addOnByProduct?.couponText ?: ""
         }
     }
 
@@ -31,9 +31,11 @@ object AddOnUiModelMapper {
         return AddOnUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
             productCount = addOnProductData.availableBottomSheetData.products.size
+            addOnId = addOn?.basicInfo?.id ?: ""
             addOnName = addOn?.basicInfo?.name ?: ""
             addOnDescription = ""
             addOnPrice = addOn?.inventory?.price?.roundToLong() ?: 0
+            addOnQty = 1
             addOnSquareImageUrl = addOn?.pictures?.firstOrNull()?.url100 ?: ""
             val imageUrls = mutableListOf<String>()
             addOn?.pictures?.forEach {
@@ -44,7 +46,8 @@ object AddOnUiModelMapper {
                 // Get saved state from API
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                         ?: "", addOnSavedStateResponse)
-                isAddOnSelected = addonSavedStateData != null
+                initialSelectedState = addonSavedStateData != null
+                isAddOnSelected = initialSelectedState
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
                 addOnNoteTo = initialAddOnNoteTo
                 initialAddOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
@@ -55,7 +58,8 @@ object AddOnUiModelMapper {
                 // Get saved state from previous page (Checkout / OSP)
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                         ?: "", addOnProductData.availableBottomSheetData.addOnSavedStates)
-                isAddOnSelected = addonSavedStateData != null
+                initialSelectedState = addonSavedStateData != null
+                isAddOnSelected = initialSelectedState
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
                 addOnNoteTo = initialAddOnNoteTo
                 initialAddOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
@@ -71,7 +75,7 @@ object AddOnUiModelMapper {
 
     private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResponse: GetAddOnSavedStateResponse): AddOnDataResponse? {
         if (addOnId.isNotBlankOrZero()) {
-            addOnSavedStateResponse.addOns.forEach {
+            addOnSavedStateResponse.getAddOns.data.addOns.forEach {
                 it.addOnData.forEach {
                     if (it.addOnId == addOnId) {
                         return it

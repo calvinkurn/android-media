@@ -94,7 +94,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -530,8 +530,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.goToCourierPageButton?.setOnClickListener {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             val addOnProductData = AddOnProductData().apply {
-                bottomSheetType = AddOnProductData.ADD_ON_UNAVAILABLE_BOTTOM_SHEET
+                bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
                 bottomSheetTitle = "Judul Bottom Sheet"
+                source = AddOnProductData.SOURCE_NORMAL_CHECKOUT
 
                 unavailableBottomSheetData = UnavailableBottomSheetData().apply {
                     description = "This is description for unavailable add on bottom sheet"
@@ -550,6 +551,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                 availableBottomSheetData = AvailableBottomSheetData().apply {
                     val product1 = Product().apply {
+                        cartId = "123"
                         productId = "10001"
                         productName = "Product 1"
                         productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
@@ -557,6 +559,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 1
                     }
                     val product2 = Product().apply {
+                        cartId = "456"
                         productId = "10002"
                         productName = "Product 2"
                         productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
@@ -564,6 +567,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 2
                     }
                     val product3 = Product().apply {
+                        cartId = "789"
                         productId = "10003"
                         productName = "Product 3"
                         productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
@@ -571,8 +575,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 3
                     }
                     products = listOf(product1, product2, product3)
-                    isTokoCabang = false
-                    shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
+                    isTokoCabang = true
+                    cartString = "123-456-789"
+                    warehouseId = "111222"
+                    shopName = "Tokoku"
                     addOnFooterMessages = listOf(
                             "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
                             "{{qty}} barang hanya dapat 1 kartu ucapan",
