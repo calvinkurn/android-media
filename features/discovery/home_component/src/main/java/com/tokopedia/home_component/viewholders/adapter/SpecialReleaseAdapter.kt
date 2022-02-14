@@ -12,7 +12,6 @@ class SpecialReleaseAdapter(items: List<Visitable<*>>,
                             typeFactory: CommonCarouselProductCardTypeFactory)
     : BaseAdapter<CommonCarouselProductCardTypeFactory>(typeFactory, items){
 
-
     override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()

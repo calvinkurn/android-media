@@ -147,6 +147,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_WIDGET -> {
                     createCampaignWidget(channel, position, isCache)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING -> {
+                    createCampaignFeaturingWidget(channel, position, isCache)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
                     createDynamicChannel(
@@ -344,6 +347,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
+    private fun createCampaignFeaturingWidget(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+        isCache: Boolean
+    ) {
+        visitableList.add(
+            mappingCampaignFeaturingComponent(
+                channel, isCache, verticalPosition
+            )
+        )
+    }
+
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
@@ -524,6 +539,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         verticalPosition: Int
     ): Visitable<*> {
         return CampaignWidgetDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingCampaignFeaturingComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return SpecialReleaseDataModel(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
                 channel,
                 verticalPosition

@@ -279,6 +279,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CampaignWidgetViewHolder.LAYOUT
     }
 
+    override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
+        return SpecialReleaseViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -448,6 +452,11 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 homeComponentListener,
                 campaignWidgetComponentListener,
                 parentRecycledViewPool
+            )
+            SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
+                view,
+                homeComponentListener,
+                null
             )
             else -> viewHolder = super.createViewHolder(view, type)
 

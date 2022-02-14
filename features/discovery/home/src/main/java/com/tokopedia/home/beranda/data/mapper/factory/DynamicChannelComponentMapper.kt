@@ -60,7 +60,8 @@ object DynamicChannelComponentMapper {
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
                         createdTimeMillis = channel.timestamp,
                         isAutoRefreshAfterExpired = channel.isAutoRefreshAfterExpired,
-                        dividerType = channel.dividerType
+                        dividerType = channel.dividerType,
+                        campaignType = channel.campaignType
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
                         galaxyAttribution = channel.galaxyAttribution,
@@ -98,7 +99,11 @@ object DynamicChannelComponentMapper {
                             freeOngkirImageUrl = it.freeOngkir.imageUrl,
                             shop =  ChannelShop(
                                     id = it.shop.shopId,
-                                    shopLocation = it.shop.city
+                                    shopLocation = it.shop.city,
+                                    shopName = it.shop.name,
+                                    shopProfileUrl = it.shop.imageUrl,
+                                    shopUrl = it.shop.url,
+                                    shopApplink = it.shop.applink
                             ),
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
@@ -126,7 +131,8 @@ object DynamicChannelComponentMapper {
                                         title = badge.title,
                                         imageUrl = badge.imageUrl
                                 )
-                            }
+                            },
+                            expiredTime = it.expiredTime
                     )
                 }
         )

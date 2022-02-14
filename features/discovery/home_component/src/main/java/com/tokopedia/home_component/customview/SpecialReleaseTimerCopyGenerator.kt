@@ -15,7 +15,9 @@ object SpecialReleaseTimerCopyGenerator {
     private const val SEGERA_BERAKHIR = "Segera Berakhir"
 
     fun getCopy(currentTimeDate: Date, expiredTimeDate: Date, offset: Long = 0L): String {
-        val currentTime = currentTimeDate.time
+        val currentTime = currentTimeDate.time.apply {
+            this + offset
+        }
         val expiredTime = expiredTimeDate.time
 
         val diff = expiredTime - currentTime

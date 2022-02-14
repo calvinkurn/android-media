@@ -33,4 +33,7 @@
     <string name="content_desc_category_icon">category icon</string>
 
     <string name="content_desc_shimmering_image">shimmering image</string>
+
+    <string name="special_release_item_tag_special_release">Rilisan Spesial mulai</string>
+    <string name="special_release_item_tag_fs_toko">Flash Sale s.d.</string>
 </resources>

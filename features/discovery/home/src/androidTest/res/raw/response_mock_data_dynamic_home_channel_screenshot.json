@@ -3494,6 +3494,217 @@
                             "#FFFFFF"
                         ]
                     }
+                },
+                {
+                    "id": 121752,
+                    "name": "Android Test - Campaign featuring",
+                    "layout": "campaign_featuring",
+                    "campaignType": 1,
+                    "header": {
+                        "id": 121995,
+                        "name": "Campaign Featuring Test Header",
+                        "subtitle": "haiya",
+                        "backColor": "",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon",
+                        "applink": "tokopedia://discovery/kejar-diskon"
+                    },
+                    "banner": {
+                        "back_color": "",
+                        "gradient_color": [
+                            "#00afd8"
+                        ]
+                    },
+                    "grids": [
+                        {
+                            "id": 433192,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp500"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 433193,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "Rilisan Spesial mulai",
+                                "value": "Rp5 rb"
+                            },
+                            "label": "",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 433194,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp50 rb"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 433195,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp500rb"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 433196,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp5 jt"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 433197,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp50 jt"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 433199,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp1 M"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            }
+                        },
+                        {
+                            "id": 433198,
+                            "name": "",
+                            "expiredTime": "2022-02-15T17:00:00+07:00",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "benefit": {
+                                "type": "",
+                                "value": "Rp500 jt"
+                            },
+                            "label": "Rilisan Spesial mulai",
+                            "shop": {
+                                "shopID": 6550307,
+                                "name": "Shop Test",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                                "url": "https://staging.tokopedia.com/christin-os-1",
+                                "applink": "tokopedia://shop/6550307"
+                            },
+                            "badges": [
+                                {
+                                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ]
+                        }
+                    ],
+                    "viewAllCard": {
+                        "id": 14931,
+                        "contentType": "default",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "https://images.tokopedia.net/img/",
+                        "gradientColor": [
+                            "#2b9531"
+                        ]
+                    }
                 }
             ]
         }

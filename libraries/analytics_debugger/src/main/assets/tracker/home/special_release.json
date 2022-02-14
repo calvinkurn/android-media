@@ -1,0 +1,54 @@
+{
+  "readme": "Impression, item click special release widget",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [{
+        "creative_name": ".* - .* - .*",
+        "creative_slot": ".*",
+        "item_id": ".*_.*_.*_.*",
+        "item_name": "/ - p.* - dynamic channel feature campaign - banner - .*",
+        "creative_url": ".*"
+      }],
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on banner dynamic channel feature campaign",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [{
+        "creative_name": ".* - .* - .*",
+        "creative_slot": ".*",
+        "item_id": ".*_.*_.*_.*",
+        "item_name": "/ - p.* - dynamic channel feature campaign - banner - .*",
+        "creative_url": ".*"
+      }],
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "click on banner dynamic channel feature campaign",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*",
+      "campaignCode": ".*",
+      "channelId": ".*"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "clickHomepage",
+      "eventAction": "click view all on dynamic channel feature campaign",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*",
+      "channelId": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/",
+      "userId": ".*"
+    }
+  ]
+}
