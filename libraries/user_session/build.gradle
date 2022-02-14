@@ -13,6 +13,12 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        buildConfig true
+    }
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.javaxInject
 }

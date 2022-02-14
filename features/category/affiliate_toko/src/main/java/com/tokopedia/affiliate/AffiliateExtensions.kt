@@ -18,7 +18,6 @@ fun AffiliateTermsAndConditionFragment.createListForTermsAndCondition(context : 
         itemList.add(AffiliateTermsAndConditionModel(AffiliateTermsAndConditionData(context.getString(R.string.affiliate_onboarding_terms_2))))
         itemList.add(AffiliateTermsAndConditionModel(AffiliateTermsAndConditionData(context.getString(R.string.affiliate_onboarding_terms_3))))
         itemList.add(AffiliateTermsAndConditionModel(AffiliateTermsAndConditionData(context.getString(R.string.affiliate_onboarding_terms_4))))
-        itemList.add(AffiliateTermsAndConditionModel(AffiliateTermsAndConditionData(context.getString(R.string.affiliate_onboarding_terms_5))))
     }
     return itemList
 }

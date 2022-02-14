@@ -39,6 +39,9 @@ android {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
     }
+    buildFeatures {
+        buildConfig true
+    }
 
 
     testOptions {
@@ -101,7 +104,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
