@@ -325,24 +325,28 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun setSelectedTenure() {
 
-        gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData->
-            for (i in 0 until checkoutData.tenureDetail.size) {
-                if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
-                    selectedTenurePosition = i
-                    break
+        gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
+            if (checkoutData.tenureDetail.isNotEmpty()) {
+                for (i in 0 until checkoutData.tenureDetail.size) {
+                    if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
+                        selectedTenurePosition = i
+                        break
+                    }
+                }
+
+                checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
+                DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
+                    installmentModel = it
+                }
+                DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).tenure?.let {
+                    paymentDuration.text = it
+                }
+                DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).priceText?.let {
+                    amountToPay.text = it
                 }
             }
-            checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
-            DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
-                installmentModel = it
-            }
-            DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).tenure?.let {
-                paymentDuration.text = it
-            }
-            DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).priceText?.let {
-                amountToPay.text = it
-            }
         }
+
 
     }
 
