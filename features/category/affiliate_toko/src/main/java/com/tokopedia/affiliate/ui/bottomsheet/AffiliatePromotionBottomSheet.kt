@@ -219,55 +219,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
     private fun setObservers(contentView: View) {
         affiliatePromotionBSViewModel.generateLinkData().observe(this, {
-            var eventCategory = AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP_B_S
-            if(originScreen == ORIGIN_HOME){
-                eventCategory = AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S
-            }
-            else if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA || originScreen == ORIGIN_TERAKHIR_DILIHAT){
-                eventCategory = AffiliateAnalytics.CategoryKeys.PROMOSIKAN_BOTTOM_SHEET
-            }
             it?.let { data ->
-                if(originScreen == ORIGIN_HOME || originScreen == ORIGIN_PROMOSIKAN) {
-                    AffiliateAnalytics.sendEvent(
-                        AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK,
-                        eventCategory,
-                        "$productId-${data.linkID}-$currentServiceFormat",
-                        userSessionInterface.userId
-                    )
-                }
-                else if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA || originScreen == ORIGIN_TERAKHIR_DILIHAT){
-                   val eventAction = if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA){
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
-                   } else {
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
-                   }
-                   AffiliateAnalytics.sendEvent(
-                        AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                        eventAction,
-                        eventCategory,
-                        "$productId-${data.linkID}-$currentServiceFormat",
-                        userSessionInterface.userId
-                   )
-                }
+                sendClickPGevent(data.linkID,currentServiceFormat,AffiliateAnalytics.LabelKeys.SUCCESS)
                 val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, data.url?.shortURL))
                 Toaster.build(contentView.rootView, getString(R.string.affiliate_link_generated_succesfully, currentName),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             } ?: kotlin.run {
-                if(originScreen == ORIGIN_HOME){
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_LINK_GEN_ERROR,
-                            eventCategory,
-                            "$productId-$currentServiceFormat",userSessionInterface.userId)
-                }else if(originScreen == ORIGIN_PROMOSIKAN) {
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_LINK_GEN_ERROR,
-                            eventCategory,
-                            "$productId-$currentServiceFormat",userSessionInterface.userId)
-                }
+                sendClickPGevent("",currentServiceFormat,AffiliateAnalytics.LabelKeys.FAIL)
             }
         })
 
@@ -279,10 +238,26 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
         affiliatePromotionBSViewModel.getErrorMessage().observe(this, { error ->
             if (error != null) {
+                sendClickPGevent("",currentServiceFormat,AffiliateAnalytics.LabelKeys.FAIL)
                 Toaster.build(contentView.rootView, error,
                         Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         })
+    }
+
+    private fun sendClickPGevent(linkID: String?, currentServiceFormat: String, status: String) {
+        var eventAction = ""
+        var eventCategory = ""
+
+        var eventLabel = ""
+        if(status == AffiliateAnalytics.LabelKeys.SUCCESS ) eventLabel = "$productId - $linkID - $currentServiceFormat - $status" else "$productId - $currentServiceFormat - $status"
+        when(originScreen){
+            ORIGIN_HOME ->{
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+            }
+        }
+        AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.CLICK_PG,eventAction,eventCategory,eventLabel,userSessionInterface.userId)
     }
 
     private fun loading(stop: Boolean) {

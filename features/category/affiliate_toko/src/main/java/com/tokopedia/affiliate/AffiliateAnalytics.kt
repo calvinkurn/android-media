@@ -1,11 +1,9 @@
 package com.tokopedia.affiliate
 
 import android.os.Bundle
-import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.EVENT_PROMO_CLICK
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.ITEMS
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.ITEM_LIST
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.KEY_PROMOTIONS
-import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.PROMO_CLICK
-import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.SELECT_CONTENT
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -48,9 +46,11 @@ object AffiliateAnalytics {
         action: String,
         category: String,
         userId: String,
-        productId: String,
+        productId: String?,
         position: Int,
-        itemName: String
+        itemName: String?,
+        label: String?,
+        itemList: String = ""
     ){
         val listBundle = Bundle().apply {
             putString(EventKeys.KEY_ITEM_ID,productId)
@@ -61,11 +61,14 @@ object AffiliateAnalytics {
             putString(EventKeys.KEY_EVENT, event)
             putString(EventKeys.KEY_EVENT_CATEGORY,category)
             putString(EventKeys.KEY_EVENT_ACTION,action)
-            putString(EventKeys.KEY_EVENT_LABEL, productId)
+            putString(EventKeys.KEY_EVENT_LABEL, label)
             putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
             putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
             putParcelableArrayList(ITEMS,arrayListOf(listBundle))
             putString(EventKeys.KEY_USER_ID,userId)
+            if(itemList.isNotEmpty()){
+                putString(ITEM_LIST,itemList)
+            }
         }
 
 
@@ -136,6 +139,7 @@ object AffiliateAnalytics {
             const val CLICK_PG = "clickPG"
             const val VIEW_ITEM = "view_item"
             const val VIEW_ITEM_LIST = "view_item_list"
+            const val ITEM_LIST = "item_list"
             const val INDEX = "index"
         }
     }
@@ -204,6 +208,8 @@ object AffiliateAnalytics {
             const val CLICK_PERNAH_DILIHAT_TAB = "click - pernah dilihat tab"
             const val IMPRESSION_TRANSACTION_CARD = "impression - transaction card"
             const val IMPRESSION_PRODUK_YANG_DIPROMOSIKAN = "impression - product - produk yang dipromosikan"
+            const val CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN = "click - product - produk yang dipromosikan"
+            const val CLICK_SALIN_LINK_DIPROMOSIKA = "click - salin link - produk yang dipromosikan"
         }
     }
 
@@ -224,6 +230,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
             const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
             const val AFFILIATE_TRANSACTION_PAGE = "/affiliate pendapatan page - transaction history"
+            const val AFFILAITE_HOME_SELECT_CONTENT = "/affiliate home page - produk yang dipromosikan"
         }
     }
 
@@ -235,6 +242,10 @@ object AffiliateAnalytics {
             const val NON_LOGIN = "non login"
             const val DEPOSIT = "deposit"
             const val WITHDRAWAL = "withdrawal"
+            const val ACTIVE = "active"
+            const val INACTIVE = "inactive"
+            const val SUCCESS = "success"
+            const val FAIL = "fail"
         }
     }
 

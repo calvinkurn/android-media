@@ -226,7 +226,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 itemName = it
             }
             AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
-                userSessionInterface.userId,itemID,listSize-2,itemName)
+                userSessionInterface.userId,itemID,listSize-2,itemName,itemID)
         }
     }
 
