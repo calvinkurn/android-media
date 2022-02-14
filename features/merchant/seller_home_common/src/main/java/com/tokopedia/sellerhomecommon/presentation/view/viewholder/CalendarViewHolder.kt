@@ -38,11 +38,7 @@ class CalendarViewHolder(
     private val errorStateBinding by lazy { binding.shcCalendarWidgetErrorState }
     private val emptyStateBinding by lazy { binding.shcCalendarWidgetEmptyState }
 
-    private val pagerAdapter by lazy {
-        CalendarEventPagerAdapter {
-
-        }
-    }
+    private val pagerAdapter by lazy { CalendarEventPagerAdapter() }
     private val layoutManager by lazy {
         return@lazy object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
             override fun canScrollVertically(): Boolean = false

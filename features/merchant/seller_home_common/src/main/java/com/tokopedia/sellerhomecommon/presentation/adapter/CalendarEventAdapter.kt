@@ -20,9 +20,7 @@ import java.util.*
  * Created by @ilhamsuaib on 09/02/22.
  */
 
-class CalendarEventAdapter(
-    private val onItemClick: (CalendarEventUiModel) -> Unit
-) : RecyclerView.Adapter<CalendarEventAdapter.ViewHolder>() {
+class CalendarEventAdapter : RecyclerView.Adapter<CalendarEventAdapter.ViewHolder>() {
 
     companion object {
         private const val ONE = 1
