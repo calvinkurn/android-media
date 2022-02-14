@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
@@ -72,14 +73,29 @@ class CalendarViewHolder(
             rvShcCalendar.visible()
 
             showEvents(element)
+
+            val isEmpty = element.data?.eventGroups.isNullOrEmpty()
+            if (isEmpty) {
+                showEmptyState()
+            }
+        }
+    }
+
+    private fun showEmptyState() {
+        binding.rvShcCalendar.gone()
+        with(emptyStateBinding) {
+            commonWidgetErrorState.visible()
+            imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+            tvShcErrorMessage.text = root.context.getString(R.string.shc_calendar_empty_state)
         }
     }
 
     private fun showErrorState(element: CalendarWidgetUiModel) {
         errorStateBinding.run {
+            viewShcCommonLayout.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
             viewShcCalendarError.visible()
             btnShcCalendarReload.setOnClickListener {
-
+                listener.reloadCalendarWidget(element)
             }
         }
         emptyStateBinding.commonWidgetErrorState.gone()
@@ -159,5 +175,7 @@ class CalendarViewHolder(
 
     interface Listener : BaseViewHolderListener {
         fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {}
+
+        fun reloadCalendarWidget(element: CalendarWidgetUiModel) {}
     }
 }

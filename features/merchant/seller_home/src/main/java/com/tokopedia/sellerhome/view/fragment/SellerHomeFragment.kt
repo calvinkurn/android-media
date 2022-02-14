@@ -683,6 +683,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showCalendarDateFilter(element)
     }
 
+    override fun reloadCalendarWidget(element: CalendarWidgetUiModel) {
+        val widgets = adapter.data.map {
+            return@map if (it.dataKey == element.dataKey) {
+                it.copyWidget().apply {
+                    data = null
+                }
+            } else {
+                it
+            }
+        }
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
+        getWidgetsData(widgets)
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

@@ -50,4 +50,5 @@
     <string name="shc_month">Bulan</string>
     <string name="shc_change_date_range">Ubah Rentang Waktu</string>
     <string name="shc_calendar_date_range">(%1$s - %2$s)</string>
+    <string name="shc_calendar_empty_state">Temukan event menarik di minggu-minggu selanjutnya, ya!</string>
 </resources>
