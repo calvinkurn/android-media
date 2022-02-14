@@ -8,7 +8,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnDataItem

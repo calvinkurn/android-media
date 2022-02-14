@@ -1,20 +1,20 @@
-package com.tokopedia.checkout.data.model.response.shipmentaddressform
+package com.tokopedia.purchase_platform.common.feature.gifting.data.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AddOnsResponse(
 
-	@SerializedName("add_on_button")
+		@SerializedName("add_on_button")
 	val addOnButton: AddOnButton = AddOnButton(),
 
-	@SerializedName("add_on_bottomsheet")
+		@SerializedName("add_on_bottomsheet")
 	val addOnBottomsheet: AddOnBottomsheet = AddOnBottomsheet(),
 
-	@SerializedName("add_on_data")
+		@SerializedName("add_on_data")
 	val addOnData: List<AddOnDataItem> = emptyList(),
 
-	@SerializedName("status")
+		@SerializedName("status")
 	val status: Int = 0
 ) {
 	data class AddOnButton(

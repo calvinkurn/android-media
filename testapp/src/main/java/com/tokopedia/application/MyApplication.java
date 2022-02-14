@@ -42,6 +42,7 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -73,6 +74,8 @@ public class MyApplication extends BaseMainApplication
         setVersionCode();
         initFileDirConfig();
 
+        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
+        TokopediaUrl.Companion.deleteInstance();
         TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;

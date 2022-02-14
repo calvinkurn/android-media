@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 
 data class GroupShop(
         @SerializedName("add_ons")
