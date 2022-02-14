@@ -91,7 +91,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         this.removeBackgroundUseCase = removeBackgroundUseCase;
     }
 
-    public ImageEditPreviewPresenter() {
+    public void subscribe() {
         brightnessSubject = PublishSubject.create();
         Subscription brightnessSubscription = brightnessSubject
                 .debounce(0, TimeUnit.MILLISECONDS)
@@ -452,10 +452,12 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     }
 
     public void getDebounceBrightnessMatrix(float brightnessValue) {
+        if (brightnessSubject == null) return;
         brightnessSubject.onNext(brightnessValue);
     }
 
     public void getDebounceContrastMatrix(float contrastValue) {
+        if (contrastSubject == null) return;
         contrastSubject.onNext(contrastValue);
     }
 
