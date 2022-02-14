@@ -4,23 +4,25 @@ import com.google.gson.Gson
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class PlayAnalyticsTracker @Inject constructor(
-    private val trackingQueue: TrackingQueue,
     private val irisSession: IrisSession,
     private val userSession: UserSessionInterface
 ) {
 
     //1
-    fun clickOnVideoTabOnFeedPage() {
+    fun clickOnVideoTabOnFeedPage(position: Int) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_FEED_TAB,
             EventCategory.CONTENT_FEED_TIMELINE,
-            EventLabel.UPDATE_EXPLORE_VIDEO
+            when (position) {
+                0 -> EventLabel.UPDATE
+                1 -> EventLabel.EXPLORE
+                else -> EventLabel.VIDEO
+            }
         )
     }
 
@@ -90,7 +92,7 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //7
-    fun clickOnLihatSemuaOnLagiLiveCarousel() {
+    fun clickOnSeeAllOnLagiLiveCarousel() {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_LIHAT_SEMUA_LAGI_LIVE,
@@ -255,32 +257,32 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //20
-    fun visitVideoTabPageOnFeed(isLoggedInStatus: Boolean, screenName: String) {
+    fun visitVideoTabPageOnFeed(screenName: String) {
         createAnalyticsData(
             EventName.OPEN_SCREEN,
-            null, null, null, isLoggedInStatus = isLoggedInStatus,
+            null, null, null, isLoggedInStatus = userSession.isLoggedIn,
             screenName = screenName
         )
     }
 
     //21
-    fun visitUpdateTabPageOnFeed(isLoggedInStatus: Boolean, screenName: String) {
+    fun visitUpdateTabPageOnFeed(screenName: String) {
         createAnalyticsData(
             EventName.OPEN_SCREEN,
-            null, null, null, isLoggedInStatus = isLoggedInStatus, screenName = screenName
+            null, null, null, isLoggedInStatus = userSession.isLoggedIn, screenName = screenName
         )
     }
 
     //22
-    fun visitExploreTabPageOnFeed(isLoggedInStatus: Boolean, screenName: String) {
+    fun visitExploreTabPageOnFeed(screenName: String) {
         createAnalyticsData(
             EventName.OPEN_SCREEN,
-            null, null, null, isLoggedInStatus = isLoggedInStatus, screenName = screenName
+            null, null, null, isLoggedInStatus = userSession.isLoggedIn, screenName = screenName
         )
     }
 
     //23
-    fun impressContentHighlightCard(channelId: String, shopId: String,promotions: List<Any>){
+    fun impressOnContentHighlightCard(channelId: String, shopId: String, promotions: List<Any>) {
         createAnalyticsData(
             EventName.VIEW_ITEM,
             EventAction.IMPRESSION_CONTENT_HIGHLIGHT_CARDS,
@@ -291,7 +293,11 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //24
-    fun clickOnRemindMeButtonOnPlayCardsWithinChip(channelId: String, shopId: String,promotions: List<Any>) {
+    fun clickOnRemindMeButtonOnPlayCardsWithinChip(
+        channelId: String,
+        shopId: String,
+        promotions: List<Any>
+    ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_REMIND,
@@ -313,7 +319,11 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //26
-    fun clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(channelId: String, shopId: String,promotions: List<Any>) {
+    fun clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(
+        channelId: String,
+        shopId: String,
+        promotions: List<Any>
+    ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_REMIND_UPCOMING,
@@ -324,7 +334,11 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //27
-    fun clickOnUnRemindMeButtonOnPlayCardInUpcomingCarousel(channelId: String, shopId: String,promotions: List<Any>) {
+    fun clickOnUnRemindMeButtonOnPlayCardInUpcomingCarousel(
+        channelId: String,
+        shopId: String,
+        promotions: List<Any>
+    ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_UNREMIND_UPCOMING,
@@ -440,7 +454,9 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     private object EventLabel {
-        const val UPDATE_EXPLORE_VIDEO = "{update/explore/video}"
+        const val UPDATE = "update"
+        const val EXPLORE = "explore"
+        const val VIDEO = "video"
         fun liveVodUpcoming(channelId: String, shopId: String) =
             "{${channelId}} - {${shopId}} - {live/vod/upcoming}"
 

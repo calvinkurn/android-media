@@ -17,11 +17,11 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.analytics.PlayWidgetAnalyticsListenerImp
+import com.tokopedia.feedcomponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
-import com.tokopedia.play.widget.sample.analytic.PlayWidgetFeedSampleAnalytic
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.sample.data.ContentSlotResponseDummy
 import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
@@ -70,7 +70,11 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var analyticListener: PlayAnalyticsTracker
 
+    @Inject
+    lateinit var playWidgetAnalyticsListenerImp : PlayWidgetAnalyticsListenerImp
 
     override fun getScreenName(): String {
         return "VideoTabFragment"
@@ -78,11 +82,11 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     override fun initInjector() {
         DaggerVideoTabComponent.builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .build()
-                .inject(this)
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +97,7 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun initVar() {
         playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
             setListener(this@VideoTabFragment)
-            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(PlayWidgetFeedSampleAnalytic()))
+            setAnalyticListener(playWidgetAnalyticsListenerImp)
         }
     }
 
@@ -124,6 +128,7 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        analyticListener.visitVideoTabPageOnFeed(screenName)
         playFeedVideoTabViewModel.getPlayData()
         setupView(view)
     }
