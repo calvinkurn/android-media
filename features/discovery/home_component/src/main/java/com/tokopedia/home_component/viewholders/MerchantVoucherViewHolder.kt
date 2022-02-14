@@ -2,19 +2,33 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMerchantVoucherBinding
-import com.tokopedia.home_component.databinding.GlobalDcMixTopBinding
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class MerchantVoucherViewHolder(
     itemView: View
-) : AbstractViewHolder<MerchantVoucherDataModel>(itemView) {
+) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener,
+    CoroutineScope {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
 
     companion object {
@@ -26,6 +40,38 @@ class MerchantVoucherViewHolder(
 
     override fun bind(element: MerchantVoucherDataModel) {
         setHeaderComponent(element = element)
+        setChannelDivider(element)
+        mappingView(element.channelModel)
+    }
+
+    private fun mappingView(channel: ChannelModel) {
+        val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
+//        recyclerView.setHasFixedSize(true)
+//
+//        valuateRecyclerViewDecoration()
+//
+//        mappingHeader(channel)
+//        mappingCtaButton(channel.channelBanner.cta)
+//        mappingItem(channel, visitables)
+
+    }
+
+    private fun mappingVisitablesFromChannel(channel: ChannelModel): MutableList<Visitable<*>> {
+        val visitables: MutableList<Visitable<*>> = mutableListOf()
+//        val channelProductData = convertDataToProductData(channel)
+//        setRecyclerViewAndCardHeight(channelProductData)
+//        visitables.addAll(channelProductData)
+        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
+            if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
+                visitables.add(
+                    CarouselMerchantVoucherDataModel()
+                )
+            }
+            else {
+                visitables.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+            }
+        }
+        return visitables
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
@@ -47,4 +93,52 @@ class MerchantVoucherViewHolder(
             }
         })
     }
+
+    private fun setRecyclerViewAndCardHeight(productDataList: List<CarouselProductCardDataModel>) {
+        launch {
+            try {
+                binding?.recycleList?.setHeightBasedOnProductCardMaxHeight()
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight() {
+//        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = this.resources.getDimensionPixelOffset(com.tokopedia.home_component.R.dimen.home_merchant_voucher_height)
+        this.layoutParams = carouselLayoutParams
+    }
+
+    override fun onProductCardImpressed(
+        channel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onProductCardClicked(
+        channel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        applink: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
+        TODO("Not yet implemented")
+    }
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
 }
