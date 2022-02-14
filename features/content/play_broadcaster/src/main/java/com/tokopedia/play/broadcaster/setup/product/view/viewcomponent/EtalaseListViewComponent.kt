@@ -3,7 +3,9 @@ package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
+import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -34,19 +36,18 @@ internal class EtalaseListViewComponent(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun setCampaignAndEtalaseList(
-        campaignList: List<CampaignUiModel>,
-        etalaseList: List<EtalaseUiModel>,
-    ) {
+    fun setCampaignAndEtalaseList(model: CampaignAndEtalaseUiModel) {
         val combinedEtalaseList = buildList {
-            if (campaignList.isNotEmpty()) {
-                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
-                addAll(campaignList.map(EtalaseListAdapter.Model::Campaign))
-            }
+            model.run {
+                if (campaignList.isNotEmpty()) {
+                    add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
+                    addAll(campaignList.map { EtalaseListAdapter.Model.Campaign(it, selected) })
+                }
 
-            if (etalaseList.isNotEmpty()) {
-                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
-                addAll(etalaseList.map(EtalaseListAdapter.Model::Etalase))
+                if (etalaseList.isNotEmpty()) {
+                    add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
+                    addAll(etalaseList.map { EtalaseListAdapter.Model.Etalase(it, selected) })
+                }
             }
         }
 

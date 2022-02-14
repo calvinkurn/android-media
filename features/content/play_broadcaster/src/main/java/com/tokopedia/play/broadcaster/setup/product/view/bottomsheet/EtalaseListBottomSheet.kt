@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
@@ -128,10 +129,7 @@ class EtalaseListBottomSheet @Inject constructor(
         if (prevModel?.campaignList == model.campaignList &&
             prevModel.etalaseList == model.etalaseList) return
 
-        etalaseListView.setCampaignAndEtalaseList(
-            campaignList = model.campaignList,
-            etalaseList = model.etalaseList
-        )
+        etalaseListView.setCampaignAndEtalaseList(model)
     }
 
     /**

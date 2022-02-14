@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -39,7 +40,7 @@ internal class EtalaseListAdapter(
 
     sealed class Model {
         data class Header(val text: String) : Model()
-        data class Campaign(val campaignUiModel: CampaignUiModel) : Model()
-        data class Etalase(val etalaseUiModel: EtalaseUiModel) : Model()
+        data class Campaign(val campaignUiModel: CampaignUiModel, val selectedEtalaseModel: SelectedEtalaseModel) : Model()
+        data class Etalase(val etalaseUiModel: EtalaseUiModel, val selectedEtalaseModel: SelectedEtalaseModel) : Model()
     }
 }
