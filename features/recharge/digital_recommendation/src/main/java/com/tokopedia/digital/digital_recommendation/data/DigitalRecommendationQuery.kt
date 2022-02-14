@@ -32,6 +32,7 @@ class DigitalRecommendationQuery {
                   mediaURL
                   mediaUrlType
                   mediaURLTitle
+                  iconURL
                   subtitle
                   subtitleMode
                   label1
