@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -33,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
@@ -92,6 +92,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewM
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
@@ -1328,7 +1329,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun addMultipleBundleToCart(selectedMultipleBundle: ShopHomeProductBundleDetailUiModel, productDetails: List<ShopHomeBundleProductUiModel>) {
         if (selectedMultipleBundle.isProductsHaveVariant) {
             // go to bundling selection page
-            Toast.makeText(context, "Goto BSP", Toast.LENGTH_SHORT).show()
+            goToBundlingSelectionPage(selectedMultipleBundle.bundleId.toString())
         } else {
             // atc bundle directly from shop page home
             viewModel?.addBundleToCart(
@@ -1346,7 +1347,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun addSingleBundleToCart(selectedBundle: ShopHomeProductBundleDetailUiModel, bundleProducts: ShopHomeBundleProductUiModel) {
         if (selectedBundle.isProductsHaveVariant) {
             // go to bundling selection page
-            Toast.makeText(context, "Goto BSP", Toast.LENGTH_SHORT).show()
+            goToBundlingSelectionPage(selectedBundle.bundleId.toString())
         } else {
             // atc bundle directly from shop page home
             viewModel?.addBundleToCart(
@@ -1377,6 +1378,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun handleOnErrorAtcBundle(throwable: Throwable) {
         showErrorToast(throwable.message.orEmpty())
+    }
+
+    private fun goToBundlingSelectionPage(bundleId: String) {
+        val bundlingSelectionPageAppLink = UriUtil.buildUri(
+                ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE,
+                ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID
+        )
+        val bundleAppLinkWithParams = Uri.parse(bundlingSelectionPageAppLink).buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_SHOP_PAGE)
+                .build()
+                .toString()
+        context?.let {
+            val bspIntent = RouteManager.getIntent(it, bundleAppLinkWithParams)
+            startActivity(bspIntent)
+        }
     }
 
     override fun onShowcaseListWidgetImpression(model: ShopHomeShowcaseListSliderUiModel, position: Int) {
