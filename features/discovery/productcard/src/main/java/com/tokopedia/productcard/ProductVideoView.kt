@@ -42,12 +42,14 @@ class ProductVideoView(
         surfaceView = TextureView(context)
         surfaceView?.id = R.id.product_video_texture
         val params = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         surfaceView?.layoutParams = params
         contentFrame?.addView(surfaceView, 0)
     }
 
-    private fun applyCrop(textureView: TextureView, width: Float, height: Float){
+    private fun adjustToVideoAspectRatio(textureView: TextureView, width: Float, height: Float){
         val viewWidth = this.width.toFloat()
         val viewHeight = this.height.toFloat()
         val videoWidth = width
@@ -55,19 +57,31 @@ class ProductVideoView(
         val pivotX: Float
         val pivotY: Float
 
-        val scaleFactor = if (videoHeight > videoWidth){
-            // Portrait
-            val previewRatio = videoHeight / videoWidth
-            val viewFinderRatio = viewWidth / viewHeight
-            val scaling = viewFinderRatio * previewRatio
-            pivotX = 0f
-            pivotY = viewHeight * 0.12f
-            PointF(1f, scaling)
-        } else {
-            // Landscape
-            pivotX = 0f
-            pivotY = 0f
-            PointF(1f, 1f)
+        val scaleFactor = when {
+            videoHeight > videoWidth -> {
+                // Portrait
+                val previewRatio = videoWidth / videoHeight
+                val viewFinderRatio = viewWidth / viewHeight
+                val scaling = viewFinderRatio * previewRatio
+                pivotX = viewWidth * 0.5f
+                pivotY = 0f
+                PointF(scaling, 1f)
+            }
+            videoWidth > videoHeight -> {
+                // Landscape
+                val previewRatio = videoHeight / videoWidth
+                val viewFinderRatio = viewWidth / viewHeight
+                val scaling = viewFinderRatio * previewRatio
+                pivotX = 0f
+                pivotY = viewHeight * 0.5f
+                PointF(1f, scaling)
+            }
+            else -> {
+                // 1:1
+                pivotX = 0f
+                pivotY = 0f
+                PointF(1f, 1f)
+            }
         }
 
         val matrix = Matrix()
@@ -75,16 +89,6 @@ class ProductVideoView(
         textureView.setTransform(matrix)
         contentFrame?.setAspectRatio(viewWidth / viewHeight)
     }
-
-    fun applyZoom(){
-        contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-    }
-
-    fun resetZoom(){
-        contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-    }
-
-    fun getSurfaceView() = surfaceView
 
     fun setPlayer(player: Player?){
         if (this.player != null) {
@@ -104,12 +108,14 @@ class ProductVideoView(
         }
     }
 
-    inner class ComponentListener : VideoListener {
+    internal inner class ComponentListener : VideoListener {
         // VideoListener implementation
         override fun onVideoSizeChanged(
-            width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
+            width: Int, height: Int,
+            unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float
+        ) {
             surfaceView?.let{ surfaceView ->
-                applyCrop(surfaceView, width.toFloat(), height.toFloat())
+                adjustToVideoAspectRatio(surfaceView, width.toFloat(), height.toFloat())
             }
         }
     }
