@@ -14,4 +14,11 @@ sealed class PlayBroProductChooserAction {
     data class SelectCampaign(val campaign: CampaignUiModel) : PlayBroProductChooserAction()
     data class SelectEtalase(val etalase: EtalaseUiModel) : PlayBroProductChooserAction()
     data class SelectProduct(val product: ProductUiModel) : PlayBroProductChooserAction()
+    data class LoadProductList(
+        val keyword: String,
+    ) : PlayBroProductChooserAction()
+    data class SearchProduct(val keyword: String) : PlayBroProductChooserAction()
+    object SaveProducts : PlayBroProductChooserAction()
+    data class DeleteSelectedProduct(val product: ProductUiModel) : PlayBroProductChooserAction()
+    object LoadProductSummary : PlayBroProductChooserAction()
 }

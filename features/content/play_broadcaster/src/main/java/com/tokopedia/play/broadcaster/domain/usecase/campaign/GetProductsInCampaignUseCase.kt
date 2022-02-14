@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
@@ -36,14 +37,23 @@ class GetProductsInCampaignUseCase @Inject constructor(
 
         private const val PARAM_USER_ID = "userId"
         private const val PARAM_CAMPAIGN_ID = "campaignId"
+        private const val PARAM_PAGE = "page"
+        private const val PARAM_PER_PAGE = "perPage"
 
         const val QUERY_NAME = "GetCampaignProductUseCaseQuery"
         const val QUERY = """
-            query GetCampaignProduct(${"$${PARAM_CAMPAIGN_ID}"}: Int, ${"$${PARAM_USER_ID}"}: Int!) {
+            query GetCampaignProduct(
+                ${"$${PARAM_CAMPAIGN_ID}"}: Int, 
+                ${"$${PARAM_USER_ID}"}: Int!,
+                ${"$${PARAM_PAGE}"}: Int,
+                ${"$${PARAM_PER_PAGE}"}: Int
+            ) {
               getCampaignProduct(params: {
                 UserID: ${"$${PARAM_USER_ID}"},
                 Source: "broadcaster",
-                CampaignID: ${"$${PARAM_CAMPAIGN_ID}"}
+                CampaignID: ${"$${PARAM_CAMPAIGN_ID}"},
+                Page: ${"$${PARAM_PAGE}"},
+                ResultPerPage: ${"$${PARAM_PER_PAGE}"}
               }) {
                 Products {
                   ID
@@ -145,11 +155,15 @@ class GetProductsInCampaignUseCase @Inject constructor(
 
         fun createParams(
             userId: String,
-            campaignId: String
-        ): Map<Any, Any> {
+            campaignId: String,
+            page: Int,
+            perPage: Int,
+        ): Map<String, Any> {
             return mapOf(
-                PARAM_USER_ID to userId.toIntOrZero(),
-                PARAM_CAMPAIGN_ID to campaignId.toIntOrZero()
+                PARAM_USER_ID to userId.toLongOrZero(),
+                PARAM_CAMPAIGN_ID to campaignId.toLongOrZero(),
+                PARAM_PAGE to page,
+                PARAM_PER_PAGE to perPage,
             )
         }
     }

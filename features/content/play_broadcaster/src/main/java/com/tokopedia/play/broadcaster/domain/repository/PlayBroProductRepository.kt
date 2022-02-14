@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.domain.repository
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
 /**
@@ -18,9 +19,15 @@ interface PlayBroProductRepository {
         etalaseId: String,
         page: Int,
         keyword: String,
-    ): List<ProductUiModel>
+        sort: Int,
+    ): PagedDataUiModel<ProductUiModel>
 
-    suspend fun addProductTag(channelId: String, productIds: List<String>)
+    suspend fun getProductsInCampaign(
+        campaignId: String,
+        page: Int,
+    ): PagedDataUiModel<ProductUiModel>
+
+    suspend fun setProductTags(channelId: String, productIds: List<String>)
 
     suspend fun getProductTagSummarySection(
         channelID: Long,

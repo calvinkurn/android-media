@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,90 +19,53 @@ import com.tokopedia.play_common.view.loadImage
  */
 internal class ProductListAdapter(
     onSelected: (ProductUiModel) -> Unit,
+    private val onLoading: () -> Unit,
 ) : BaseDiffUtilAdapter<ProductListAdapter.Model>() {
 
     init {
-        delegatesManager.addDelegate(Delegate(onSelected))
+        delegatesManager
+            .addDelegate(ProductListAdapterDelegate.Product(onSelected))
+            .addDelegate(ProductListAdapterDelegate.Loading())
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        if (position == (itemCount - 1)) onLoading()
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
-        return oldItem.product.id == newItem.product.id
+        return if (oldItem is Model.Product && newItem is Model.Product) {
+            oldItem.product.id == newItem.product.id
+        } else if (oldItem is Model.Loading && newItem is Model.Loading) false
+        else oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
         return oldItem == newItem
     }
 
-    private class Delegate(
-        private val onSelected: (ProductUiModel) -> Unit,
-    ) : TypedAdapterDelegate<Model, Model, ViewHolder>(R.layout.view_empty) {
-
-        override fun onBindViewHolder(item: Model, holder: ViewHolder) {
-            holder.bind(item)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ViewHolder {
-            return ViewHolder(
-                ItemProductListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-                onSelected,
-            )
-        }
+    override fun getChangePayload(oldItem: Model, newItem: Model): Bundle? {
+        return if (oldItem is Model.Product && newItem is Model.Product) {
+            Bundle().apply {
+                putBoolean(IS_PRODUCT_CHECKED_PAYLOAD, newItem.isSelected)
+            }
+        } else null
     }
 
-    private class ViewHolder(
-        private val binding: ItemProductListBinding,
-        private val onSelected: (ProductUiModel) -> Unit,
-    ) : RecyclerView.ViewHolder(binding.root) {
+    sealed class Model {
+        data class Product(
+            val product: ProductUiModel,
+            val isSelected: Boolean,
+        ) : Model()
 
-        init {
-            itemView.setOnClickListener {
-                binding.checkboxProduct.isChecked = !binding.checkboxProduct.isChecked
-            }
-        }
-
-        fun bind(item: Model) {
-            binding.imgProduct.loadImage(item.product.imageUrl)
-            binding.tvName.text = item.product.name
-            binding.tvStock.text = itemView.context.getString(
-                R.string.play_bro_product_chooser_stock, item.product.stock
-            )
-
-            setCheckboxManually(item)
-
-            when(item.product.price) {
-                is OriginalPrice -> {
-                    binding.tvPrice.text = item.product.price.price
-                    binding.llDiscount.visibility = View.GONE
-                }
-                is DiscountedPrice -> {
-                    binding.tvPrice.text = item.product.price.originalPrice
-                    binding.labelDiscountPercentage.text = itemView.context.getString(
-                        R.string.play_bro_product_discount_template,
-                        item.product.price.discountPercent
-                    )
-                    binding.tvDiscountPrice.text = item.product.price.discountedPrice
-                    binding.llDiscount.visibility = View.VISIBLE
-                }
-                else -> {
-                    binding.tvPrice.text = ""
-                    binding.llDiscount.visibility = View.GONE
-                }
-            }
-        }
-
-        private fun setCheckboxManually(item: Model) {
-            binding.checkboxProduct.setOnCheckedChangeListener(null)
-            binding.checkboxProduct.isChecked = item.isSelected
-            binding.checkboxProduct.setOnCheckedChangeListener { _, _ -> onSelected(item.product) }
-        }
+        object Loading : Model()
     }
 
-    data class Model(
-        val product: ProductUiModel,
-        val isSelected: Boolean,
-    )
+    companion object {
+        internal const val IS_PRODUCT_CHECKED_PAYLOAD = "is_product_checked"
+    }
 }

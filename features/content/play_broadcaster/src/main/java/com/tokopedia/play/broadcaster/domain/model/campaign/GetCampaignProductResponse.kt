@@ -1,10 +1,12 @@
 package com.tokopedia.play.broadcaster.domain.model.campaign
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
  * Created by meyta.taliti on 25/01/22.
  */
+@SuppressLint("ResponseFieldAnnotation")
 data class GetCampaignProductResponse(
     @SerializedName("getCampaignProduct")
     val getCampaignProduct: GetCampaignProduct = GetCampaignProduct()
