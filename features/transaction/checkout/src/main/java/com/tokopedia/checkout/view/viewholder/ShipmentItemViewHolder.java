@@ -1120,8 +1120,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             int statusAddOn = addOnsDataModel.getStatus();
             if (statusAddOn == 0) {
                 llGiftingAddOnOrderLevel.setVisibility(View.GONE);
-                // buttonGiftingAddonOrderLevel.setVisibility(View.GONE);
-                // buttonGiftingAddonOrderLevel.hideButton();
             } else {
                 if (statusAddOn == 1) {
                     buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.ACTIVE);
@@ -1129,9 +1127,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.INACTIVE);
                 }
 
-                // buttonGiftingAddonOrderLevel.showButton();
                 llGiftingAddOnOrderLevel.setVisibility(View.VISIBLE);
-                // buttonGiftingAddonOrderLevel.setVisibility(View.VISIBLE);
                 buttonGiftingAddonOrderLevel.setTitle(addOnButtonModel.getTitle());
                 buttonGiftingAddonOrderLevel.setDesc(addOnButtonModel.getDescription());
                 buttonGiftingAddonOrderLevel.setUrlLeftIcon(addOnButtonModel.getLeftIconUrl());
