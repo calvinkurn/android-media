@@ -53,7 +53,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDesc
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
-import com.tokopedia.digital_product_detail.presentation.utils.KeyboardWatcher
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -113,7 +113,7 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
-    private val keyboardWatcher = KeyboardWatcher()
+    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -166,7 +166,7 @@ class DigitalPDPDataPlanFragment :
 
     fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : KeyboardWatcher.Listener {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
                 override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                     // do nothing
                 }

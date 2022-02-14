@@ -3,16 +3,12 @@ package com.tokopedia.digital_product_detail.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -50,7 +46,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDP
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
-import com.tokopedia.digital_product_detail.presentation.utils.KeyboardWatcher
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -99,7 +95,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
-    private val keyboardWatcher = KeyboardWatcher()
+    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpTokenListrikBinding>()
 
@@ -150,7 +146,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : KeyboardWatcher.Listener {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
                 override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                     // do nothing
                 }

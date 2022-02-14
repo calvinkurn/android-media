@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import java.lang.ref.WeakReference
 
-class KeyboardWatcher(private val threshold: Int = 100) {
+class DigitalKeyboardWatcher(private val threshold: Int = 100) {
 
     private var isKeyboardOpened: Boolean = false
 

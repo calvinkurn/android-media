@@ -29,7 +29,6 @@ import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
@@ -53,7 +52,7 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
-import com.tokopedia.digital_product_detail.presentation.utils.KeyboardWatcher
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -106,7 +105,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
-    private val keyboardWatcher = KeyboardWatcher()
+    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -159,7 +158,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : KeyboardWatcher.Listener {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
                 override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                     // do nothing
                 }
