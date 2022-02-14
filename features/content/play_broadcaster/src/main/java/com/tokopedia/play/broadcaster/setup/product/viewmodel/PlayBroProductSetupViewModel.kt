@@ -83,6 +83,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayBroProductChooserEvent>(extraBufferCapacity = 5)
 
     private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _productCount = MutableStateFlow<Int?>(null)
     private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
 
     private val _campaignAndEtalase = combine(
@@ -123,10 +124,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val summaryUiState = combine(
         _productTagSectionList,
+        _productCount,
         _productTagSummary,
-    ) { productTagSectionList, productTagSummary ->
+    ) { productTagSectionList, productCount, productTagSummary ->
         PlayBroProductSummaryUiState(
             productTagSectionList = productTagSectionList,
+            productCount = productCount,
             productTagSummary = productTagSummary
         )
     }
@@ -317,7 +320,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleDeleteProduct(product: ProductUiModel) {
-        /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
@@ -343,7 +345,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         val (response, productCount) = repo.getProductTagSummarySection(channelId.toInt())
 
         _productTagSectionList.value = response
-        _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
+        _productCount.value = productCount
+        _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 
     private fun handleSearchProduct(keyword: String) {
