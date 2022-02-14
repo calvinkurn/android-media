@@ -49,7 +49,7 @@ class ProductVideoView(
         contentFrame?.addView(surfaceView, 0)
     }
 
-    private fun adjustToVideoAspectRatio(textureView: TextureView, width: Float, height: Float){
+    private fun adjustVideoToFitToWidth(textureView: TextureView, width: Float, height: Float){
         val viewWidth = this.width.toFloat()
         val viewHeight = this.height.toFloat()
         val videoWidth = width
@@ -60,12 +60,12 @@ class ProductVideoView(
         val scaleFactor = when {
             videoHeight > videoWidth -> {
                 // Portrait
-                val previewRatio = videoWidth / videoHeight
+                val previewRatio = videoHeight / videoWidth
                 val viewFinderRatio = viewWidth / viewHeight
                 val scaling = viewFinderRatio * previewRatio
-                pivotX = viewWidth * 0.5f
-                pivotY = 0f
-                PointF(scaling, 1f)
+                pivotX = 0f
+                pivotY = viewHeight * 0.12f
+                PointF(1f, scaling)
             }
             videoWidth > videoHeight -> {
                 // Landscape
@@ -115,7 +115,7 @@ class ProductVideoView(
             unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float
         ) {
             surfaceView?.let{ surfaceView ->
-                adjustToVideoAspectRatio(surfaceView, width.toFloat(), height.toFloat())
+                adjustVideoToFitToWidth(surfaceView, width.toFloat(), height.toFloat())
             }
         }
     }
