@@ -12,7 +12,6 @@ import com.tokopedia.vouchercreation.common.NonNullLiveData
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.CouponImageWithShop
 import com.tokopedia.vouchercreation.product.share.domain.usecase.GenerateImageWithStatisticsFacadeUseCase

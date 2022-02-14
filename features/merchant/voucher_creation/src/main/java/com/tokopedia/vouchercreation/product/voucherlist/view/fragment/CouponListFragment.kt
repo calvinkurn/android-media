@@ -254,7 +254,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-
     private fun onFilterSelected(
         selectedType: CouponFilterBottomSheet.FilterType,
         selectedTarget: CouponFilterBottomSheet.FilterTarget
@@ -520,20 +519,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         filterType.type = ChipsUnify.TYPE_SELECTED
         filterType.refChipUnify.show()
         view?.post { filterType.refChipUnify.displayRemoveIcon() }
-    }
-
-    private fun showSuccessUpdateToaster() {
-        view?.run {
-            Toaster.build(
-                view = this,
-                text = context?.getString(R.string.mvc_success_update_toaster).toBlankOrString(),
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_NORMAL,
-                actionText = context?.getString(R.string.mvc_oke).toBlankOrString()
-            ) {
-                /* do nothing */
-            }.show()
-        }
     }
 
     private fun clickMoreMenuItem(menu: MoreMenuUiModel, coupon: VoucherUiModel) {
