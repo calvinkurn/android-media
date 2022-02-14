@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.R as materialR
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -92,16 +95,16 @@ class ProductChooserBottomSheet @Inject constructor(
             ).apply {
                 setTitle(it.getString(R.string.play_bro_product_chooser_exit_dialog_title))
                 setDescription(it.getString(R.string.play_bro_product_chooser_exit_dialog_desc))
-                setPrimaryCTAText(it.getString(R.string.play_yes))
-                setSecondaryCTAText(it.getString(R.string.play_batal))
+                setPrimaryCTAText(it.getString(R.string.play_batal))
+                setSecondaryCTAText(it.getString(R.string.play_broadcast_exit))
 
                 setPrimaryCTAClickListener {
                     this@apply.dismiss()
-                    this@ProductChooserBottomSheet.dismiss()
                 }
 
                 setSecondaryCTAClickListener {
                     this@apply.dismiss()
+                    this@ProductChooserBottomSheet.dismiss()
                 }
             }
         },
@@ -111,7 +114,11 @@ class ProductChooserBottomSheet @Inject constructor(
     )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
+        return object : BottomSheetDialog(requireContext(), theme) {
+            override fun cancel() {
+                exitConfirmationDialog.show()
+            }
+        }.apply {
             dialogCustomizer.customize(this)
         }
     }
@@ -159,11 +166,6 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
-        setCloseClickListener {
-            dismiss()
-            container?.removeFragment()
-        }
-
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
         }

@@ -43,15 +43,13 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             setRequestParams(GetCampaignListUseCase.createParams(shopId = userSession.shopId))
         }.executeOnBackground()
 
-//        return@withContext productMapper.mapCampaignList(response)
-        return@withContext emptyList()
+        return@withContext productMapper.mapCampaignList(response)
     }
 
     override suspend fun getEtalaseList(): List<EtalaseUiModel> = withContext(dispatchers.io) {
         val response = getSelfEtalaseListUseCase.executeOnBackground()
 
-//        return@withContext productMapper.mapEtalaseList(response)
-        return@withContext emptyList()
+        return@withContext productMapper.mapEtalaseList(response)
     }
 
     override suspend fun getProductsInEtalase(
@@ -75,8 +73,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
 
-//        return@withContext productMapper.mapProductsInEtalase(response)
-        return@withContext PagedDataUiModel(emptyList(), false)
+        return@withContext productMapper.mapProductsInEtalase(response)
     }
 
     override suspend fun getProductsInCampaign(
@@ -96,8 +93,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
 
-//        return@withContext productMapper.mapProductsInCampaign(response)
-        return@withContext PagedDataUiModel(emptyList(), false)
+        return@withContext productMapper.mapProductsInCampaign(response)
     }
 
     override suspend fun setProductTags(channelId: String, productIds: List<String>) {
