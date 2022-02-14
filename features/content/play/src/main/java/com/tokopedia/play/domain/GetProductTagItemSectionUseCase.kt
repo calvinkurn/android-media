@@ -18,7 +18,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
 ) : GraphqlUseCase<ProductSection.Response>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(GetProductTagItemSectionUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(GetProductTagItemSectionUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ProductSection.Response::class.java)
     }
@@ -44,45 +44,40 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                   endTime
                   serverTime
                   products{
-                    ID
-                    Name
-                    ImageUrl
-                    ShopID
-                    OriginalPrice
-                    OriginalPriceFormatted
-                    Discount
-                    Price
-                    PriceFormatted
-                    Quantity
-                    QuantityRender {
-                      show
-                      copy
-                      color
-                    }
-                    IsVariant
-                    IsAvailable
-                    Order
-                    AppLink
-                    WebLink
-                    MinQuantity
-                    IsFreeShipping
+                    id: ID
+                    name: Name
+                    image_url: ImageUrl
+                    shop_id: ShopID
+                    original_price: OriginalPrice
+                    original_price_formatted: OriginalPriceFormatted
+                    discount: Discount
+                    price: Price
+                    price_formatted: PriceFormatted
+                    quantity: Quantity
+                    is_variant: IsVariant 
+                    is_available: IsAvailable
+                    order: Order
+                    app_link: AppLink 
+                    web_link: WebLink
+                    min_quantity: MinQuantity
+                    is_free_shipping: IsFreeShipping
                   }
                 }
                 vouchers{
-                  ID
-                  Name
-                  ShopID
-                  Title
-                  Subtitle
-                  VoucherType
-                  VoucherImage
-                  VoucherImageSquare
-                  VoucherQuota
-                  VoucherFinishTime
-                  VoucherCode
-                  IsHighlighted
-                  IsVoucherCopyable
-                  IsPrivate
+                  voucher_id: ID
+                  voucher_name: Name 
+                  shop_id: ShopID
+                  title: Title
+                  subtitle: Subtitle
+                  voucher_type: VoucherType
+                  voucher_image: VoucherImage
+                  voucher_image_square: VoucherImageSquare
+                  voucher_quota: VoucherQuota
+                  voucher_finish_time: VoucherFinishTime
+                  voucher_code: VoucherCode
+                  is_highlighted: IsHighlighted
+                  is_copyable: IsVoucherCopyable
+                  is_private: IsPrivate
                 }
                 config { 
                     peek_product_count
