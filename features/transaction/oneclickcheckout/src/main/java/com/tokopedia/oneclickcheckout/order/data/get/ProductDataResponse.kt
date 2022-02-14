@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import java.util.*
 
@@ -77,7 +78,9 @@ class ProductDataResponse(
         @SerializedName("product_alert_message")
         val productAlertMessage: String = "",
         @SerializedName("product_information")
-        val productInformation: List<String> = emptyList()
+        val productInformation: List<String> = emptyList(),
+        @SerializedName("add_ons")
+        val addOns: List<AddOnsResponse> = emptyList()
 )
 
 class ProductImage(
