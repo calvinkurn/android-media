@@ -259,7 +259,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     isFeaturedShopAllowed = true
                 }
                 if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
-                    fetchRecomWidegtData(it.channel.pageName,  it.channel.widgetParam)
+                    fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
                 }
             }
         }){
@@ -267,7 +267,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchRecomWidegtData(pageName: String, widgetParam: String) {
+    private suspend fun fetchRecomWidgetData(pageName: String, widgetParam: String, channelId: String) {
         try {
             val data = getRecommendationUseCaseCoroutine.getData(
                 GetRecommendationRequestParam(
@@ -275,7 +275,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     queryParam = widgetParam
                 )
             )
-            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
+            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first().copy(channelId = channelId))
             _recomWidget.value = Success(bestSellerDataModel)
         } catch (t: Throwable) {
             Fail(t)
@@ -344,16 +344,23 @@ class OfficialStoreHomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block={
             getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
             val data = getDisplayHeadlineAds.executeOnBackground()
-            if(data.isEmpty()){
-                _featuredShopRemove.value = featuredShopDataModel
+            if (data.isEmpty()) {
+                _featuredShopResult.value = Success(
+                    featuredShopDataModel.copy(
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page
+                    )
+                )
                 isFeaturedShopAllowed = false
             } else {
-                _featuredShopResult.value = Success(featuredShopDataModel.copy(
+                _featuredShopResult.value = Success(
+                    featuredShopDataModel.copy(
                         channelModel = featuredShopDataModel.channelModel.copy(
-                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
                         ),
                         state = FeaturedShopDataModel.STATE_READY,
-                        page = featuredShopDataModel.page)
+                        page = featuredShopDataModel.page
+                    )
                 )
             }
         }){

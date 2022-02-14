@@ -267,7 +267,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun setShopAdsProduct(cpmModel: CpmModel, shopAdsProductView: ShopAdsWithOneProductView) {
         shopAdsProductView.setShopProductModel(
                 ShopProductModel(
-                        title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_and_5_title),
+                        title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_5_title),
                         items = getShopProductItem(cpmModel)
                 ), object : ShopAdsProductListener{
             override fun onItemImpressed(position: Int) {
@@ -321,36 +321,61 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
         topAdsCarousel?.setTopAdsCarouselModel(
-                TopAdsCarouselModel(
-                        title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_and_5_title),
-                        items = getTopAdsItem(cpmModel)
-                ), object : TopAdsCarouselListener {
-            override fun onItemImpressed(position: Int) {
-                val cpmData = cpmModel?.data?.getOrNull(position)
-                impressionCount = position + 1
-                impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
-                topAdsUrlHitter.hitImpressionUrl(
+            TopAdsCarouselModel(
+                title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_title),
+                items = getTopAdsItem(cpmModel)
+            ), object : TopAdsCarouselListener {
+                override fun onItemImpressed(position: Int) {
+                    val cpmData = cpmModel?.data?.getOrNull(position)
+                    impressionCount = position + 1
+                    impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
+                    topAdsUrlHitter.hitImpressionUrl(
                         className,
                         cpmData?.cpm?.cpmImage?.fullUrl,
                         cpmData?.cpm?.cpmShop?.id,
                         cpmData?.cpm?.uri,
                         cpmData?.cpm?.cpmImage?.fullEcs
-                )
-            }
+                    )
+                }
 
-            override fun onItemClicked(position: Int) {
-                val cpmData = cpmModel?.data?.getOrNull(position)
-                topAdsBannerClickListener?.onBannerAdsClicked(position, cpmData?.applinks, cpmData)
-                topAdsUrlHitter.hitClickUrl(
+                override fun onItemClicked(position: Int) {
+                    val cpmData = cpmModel?.data?.getOrNull(position)
+                    topAdsBannerClickListener?.onBannerAdsClicked(
+                        position,
+                        cpmData?.applinks,
+                        cpmData
+                    )
+                    topAdsUrlHitter.hitClickUrl(
                         className,
                         cpmData?.adClickUrl,
                         cpmData?.cpm?.cpmShop?.id,
                         cpmData?.cpm?.uri,
                         cpmData?.cpm?.cpmImage?.fullEcs
-                )
-            }
+                    )
+                }
 
-        }
+                override fun onProductItemClicked(productIndex: Int, shopIndex: Int) {
+                    val cpmData = cpmModel?.data?.getOrNull(shopIndex) ?: return
+                    val cpmDataProducts = cpmData.cpm?.cpmShop?.products
+
+                    if (!cpmDataProducts.isNullOrEmpty()) {
+                        val product = cpmDataProducts[productIndex]
+                        topAdsBannerClickListener?.onBannerAdsClicked(
+                            productIndex,
+                            product.applinks,
+                            cpmData
+                        )
+                        topAdsUrlHitter.hitClickUrl(
+                            className,
+                            product.imageProduct.imageClickUrl,
+                            product.id,
+                            product.uri,
+                            product.imageProduct.imageUrl
+                        )
+                    }
+
+                }
+            }
         )
     }
 
