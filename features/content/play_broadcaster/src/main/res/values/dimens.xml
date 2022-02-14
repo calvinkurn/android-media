@@ -110,4 +110,5 @@
 
     <!--Product Chooser-->
     <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>
+    <dimen name="play_bro_product_summary_btn_container_elevation">10dp</dimen>
 </resources>

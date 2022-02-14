@@ -7,10 +7,12 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -29,6 +31,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getShopProductsUseCase: GetShopProductsUseCase,
     private val addProductTagUseCase: AddProductTagUseCase,
+    private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
 ) : PlayBroProductRepository {
@@ -93,18 +96,25 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         return@withContext productMapper.mapProductsInCampaign(response)
     }
 
-    override suspend fun saveProducts(
-        channelId: String,
-        products: List<ProductUiModel>
-    ) = withContext(dispatchers.io) {
-        addProductTagUseCase.apply {
-            params = AddProductTagUseCase.createParams(
-                channelId = channelId,
-                productIds = products.map(ProductUiModel::id)
-            )
-        }.executeOnBackground()
+    override suspend fun addProductTag(channelId: String, productIds: List<String>) {
+        withContext(dispatchers.io) {
+            addProductTagUseCase.apply {
+                params = AddProductTagUseCase.createParams(
+                    channelId = channelId,
+                    productIds = productIds
+                )
+            }.executeOnBackground()
+        }
+    }
 
-        return@withContext
+    @ExperimentalStdlibApi
+    /** TODO: gonna remove the annotation later */
+    override suspend fun getProductTagSummarySection(channelID: Long) = withContext(dispatchers.io) {
+//        val response = getProductTagSummarySectionUseCase.executeOnBackground()
+//
+//        return@withContext productMapper.mapProductTagSection(response)
+
+        return@withContext productMapper.mapProductTagSection()
     }
 
     companion object {

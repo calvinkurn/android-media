@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:layout_marginBottom="@dimen/spacing_lvl3"
-    >
-    
+    android:layout_marginBottom="@dimen/spacing_lvl3">
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_etalase"
         android:layout_width="@dimen/play_bro_etalase_list_body_image_size"
         android:layout_height="@dimen/play_bro_etalase_list_body_image_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_etalase_title"
@@ -31,8 +28,7 @@
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="Diskon 50%"
-        />
+        tools:text="Diskon 50%" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_status"
@@ -40,8 +36,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_etalase"
-        tools:labelTitle="Mendatang"
-        />
+        tools:labelTitle="Mendatang" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_product"
@@ -56,8 +51,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_etalase_title"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
-        tools:text="10 Produk"
-        />
+        tools:text="10 Produk" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_date_desc"
@@ -72,7 +66,19 @@
         app:layout_constraintTop_toBottomOf="@id/tv_total_product"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
-        tools:text="17 Jan 2022, 08:30 WIB) s.d. 18 Jan 2022, 22:30 WIB)"
-        />
-    
+        tools:text="17 Jan 2022, 08:30 WIB) s.d. 18 Jan 2022, 22:30 WIB)" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_etalase_checked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_name="CHECK"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_status"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

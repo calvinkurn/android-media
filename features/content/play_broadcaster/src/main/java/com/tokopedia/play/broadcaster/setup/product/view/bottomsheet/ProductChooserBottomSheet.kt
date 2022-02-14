@@ -50,6 +50,9 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
+    private val container: ProductSetupFragment?
+        get() = parentFragment as? ProductSetupFragment
+
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
     private val binding: BottomSheetPlayBroProductChooserBinding
         get() = _binding!!
@@ -123,6 +126,11 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
+        setCloseClickListener {
+            dismiss()
+            container?.removeFragment()
+        }
+
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
         }
