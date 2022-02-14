@@ -39,7 +39,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
         private val coverImageUtil: PlayCoverImageUtil,
         private val coverImageTransformer: ImageTransformer
-) : BaseViewModel(dispatcher.main) {
+) : ViewModel() {
 
     private val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -100,7 +100,7 @@ class PlayCoverSetupViewModel @Inject constructor(
 
     fun uploadCover() {
         _observableUploadCoverEvent.value = NetworkResult.Loading
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             uploadImageAndUpdateCoverState()
 
             val result = setupDataStore.uploadSelectedCover(channelId)
