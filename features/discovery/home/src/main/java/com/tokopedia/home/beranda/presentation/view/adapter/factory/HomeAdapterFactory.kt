@@ -279,6 +279,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CampaignWidgetViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -449,6 +453,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 campaignWidgetComponentListener,
                 parentRecycledViewPool
             )
+            MerchantVoucherViewHolder.LAYOUT -> viewHolder = MerchantVoucherViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }
