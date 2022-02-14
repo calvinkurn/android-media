@@ -84,6 +84,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         const val ORIGIN_PORTFOLIO = 3
         const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
         const val ORIGIN_TERAKHIR_DILIHAT = 5
+        const val ORIGIN_HOME_GENERATED = 6
 
         fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,
                         idArray : ArrayList<Int>?,
@@ -252,8 +253,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         var eventLabel = ""
         if(status == AffiliateAnalytics.LabelKeys.SUCCESS ) eventLabel = "$productId - $linkID - $currentServiceFormat - $status" else "$productId - $currentServiceFormat - $status"
         when(originScreen){
-            ORIGIN_HOME ->{
+            ORIGIN_HOME -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+            }
+            ORIGIN_HOME_GENERATED -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
             }
         }

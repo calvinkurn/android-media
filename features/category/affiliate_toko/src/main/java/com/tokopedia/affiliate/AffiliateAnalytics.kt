@@ -158,6 +158,8 @@ object AffiliateAnalytics {
             const val AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL= "affiliate registration page - promotion channel input"
             const val AFFILIATE_REG_T_ANC_C = "affiliate registration page - terms and condition"
             const val AFFILIATE_HOME_PAGE = "affiliate home page"
+            const val AFFILIATE_HOME_PAGE_LINK_HISTORY = "affiliate home page - generated link history"
+            const val AFFILIATE_HOME_PAGE_GENERATED_LINK_HIST = "affiliate home page - generated link history"
             const val AFFILIATE_HOME_PAGE_FILTER = "affiliate home page - filter date"
             const val AFFILIATE_HOME_PAGE_BOTTOM_SHEET = "affiliate home page - bottom sheet"
             const val AFFILIATE_PROMOSIKAN_PAGE = "affiliate promosikan page"
@@ -209,7 +211,9 @@ object AffiliateAnalytics {
             const val IMPRESSION_TRANSACTION_CARD = "impression - transaction card"
             const val IMPRESSION_PRODUK_YANG_DIPROMOSIKAN = "impression - product - produk yang dipromosikan"
             const val CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN = "click - product - produk yang dipromosikan"
-            const val CLICK_SALIN_LINK_DIPROMOSIKA = "click - salin link - produk yang dipromosikan"
+            const val IMPRESSION_DAFTAR_LINK_PRODUK = "impression - product - daftar link produk"
+            const val CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK = "click - salin link - daftar link produk"
+            const val CLICK_PRODUCT_DAFTAR_LINK_PRODUK = "click - product - daftar link produk"
         }
     }
 
@@ -231,6 +235,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
             const val AFFILIATE_TRANSACTION_PAGE = "/affiliate pendapatan page - transaction history"
             const val AFFILAITE_HOME_SELECT_CONTENT = "/affiliate home page - produk yang dipromosikan"
+            const val AFFILIATE_DAFTAR_LINK_PRODUK = "/affiliate home page - daftar link produk"
         }
     }
 
