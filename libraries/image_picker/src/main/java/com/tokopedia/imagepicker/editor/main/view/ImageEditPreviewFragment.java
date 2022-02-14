@@ -32,6 +32,7 @@ import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,6 +89,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         void onEditDoNothing();
 
         void onSuccessSaveEditImage(String path);
+
+        void onSuccessSaveWatermarkImage();
 
         void onErrorSaveEditImage(Throwable throwable);
 
@@ -397,6 +400,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onSuccessSaveWatermarkImage(String filePath) {
         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+        onImageEditPreviewFragmentListener.onSuccessSaveWatermarkImage();
         if (listOutputWatermark != null)
         for(Bitmap bitmap: listOutputWatermark) {
             if (!bitmap.isRecycled()) {
@@ -408,7 +412,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     @Override
     public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
-        listOutputWatermark = bitmap;
+        listOutputWatermark = bitmap.clone();
+        Arrays.fill(bitmap, null);
         gestureCropImageView.setImageBitmap(listOutputWatermark[0]);
         onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(listOutputWatermark);
     }

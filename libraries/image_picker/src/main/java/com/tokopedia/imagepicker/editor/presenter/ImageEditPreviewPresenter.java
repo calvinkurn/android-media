@@ -305,12 +305,11 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         );
         Subscription subscription = Observable.just(watermarkLogo).flatMap((Func1<Bitmap, Observable<Bitmap[]>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap
-            Bitmap[] watermark = WatermarkBuilder
+
+            return Observable.just(WatermarkBuilder
                     .create(getView().getContext(), mainBitmap)
                     .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
-                    .getOutputImages();
-
-            return Observable.just(watermark);
+                    .getOutputImages());
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmaps -> {
