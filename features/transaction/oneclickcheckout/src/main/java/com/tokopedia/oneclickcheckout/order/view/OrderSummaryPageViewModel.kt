@@ -559,7 +559,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            globalEvent.value = OccGlobalEvent.Loading
+//            globalEvent.value = OccGlobalEvent.Loading
 //            try {
 //                val metadata = JsonParser().parse(param.profile.metadata)
 //                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)

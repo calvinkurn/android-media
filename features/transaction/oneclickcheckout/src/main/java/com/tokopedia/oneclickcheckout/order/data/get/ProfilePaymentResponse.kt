@@ -142,7 +142,7 @@ class WalletAdditionalData(
         val topUp: WalletData = WalletData(),
         @SerializedName("phone_number_registered")
         val phoneNumberRegistered: WalletData = WalletData(),
-        @SerializedName("gocicil")
+        @SerializedName("go_cicil")
         val goCicilData: GoCicilData = GoCicilData(),
         @SerializedName("error_toaster")
         val errorToaster: String = "",
@@ -187,4 +187,10 @@ class GoCicilData(
         val errorMessageTopLimit: String = "",
         @SerializedName("error_message_bottom_limit")
         val errorMessageBottomLimit: String = "",
+        @SerializedName("error_message_unavailable_tenures")
+        val errorMessageUnavailableTenures: String = "",
+        @SerializedName("payment_signature")
+        val paymentSignature: String = "",
+        @SerializedName("selected_tenure")
+        val selectedTenure: Int = 0,
 )

@@ -216,6 +216,8 @@ data class OrderPaymentGoCicilData(
     val errorMessageTopLimit: String = "over top limit",
     val errorMessageBottomLimit: String = "below bottom limit",
     val errorMessageUnavailableTenures: String = "unavailable tenures",
+    val paymentSignature: String = "",
+    val selectedTenure: Int = 0,
 ) {
     val hasValidTerm: Boolean
         get() = selectedTerm != null && selectedTerm.isActive && availableTerms.isNotEmpty()

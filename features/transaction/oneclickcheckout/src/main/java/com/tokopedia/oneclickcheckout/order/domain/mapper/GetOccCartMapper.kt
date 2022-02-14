@@ -360,7 +360,8 @@ class GetOccCartMapper @Inject constructor() {
                 callbackUrl = callbackUrl,
                 activation = mapPaymentWalletActionData(walletAdditionalData.activation),
                 topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
-                phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered)
+                phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered),
+                goCicilData = mapPaymentGoCicilData(walletAdditionalData.goCicilData),
         )
     }
 
@@ -384,6 +385,17 @@ class GetOccCartMapper @Inject constructor() {
                 isHideDigital = walletData.isHideDigital,
                 headerTitle = walletData.headerTitle,
                 urlLink = walletData.urlLink
+        )
+    }
+
+    private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {
+        return OrderPaymentGoCicilData(
+                errorMessageInvalidTenure = goCicilData.errorMessageInvalidTenure,
+                errorMessageBottomLimit = goCicilData.errorMessageBottomLimit,
+                errorMessageTopLimit = goCicilData.errorMessageTopLimit,
+                errorMessageUnavailableTenures = goCicilData.errorMessageUnavailableTenures,
+                paymentSignature = goCicilData.paymentSignature,
+                selectedTenure = goCicilData.selectedTenure,
         )
     }
 
