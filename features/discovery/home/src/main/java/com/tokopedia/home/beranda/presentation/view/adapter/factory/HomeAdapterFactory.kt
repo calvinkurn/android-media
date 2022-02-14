@@ -65,7 +65,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener,
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
-                         private val questWidgetCallbacks: QuestWidgetCallbacks
+                         private val questWidgetCallbacks: QuestWidgetCallbacks,
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -456,7 +457,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
                 view,
                 homeComponentListener,
-                null
+                specialReleaseComponentListener
             )
             else -> viewHolder = super.createViewHolder(view, type)
 

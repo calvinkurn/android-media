@@ -46,7 +46,7 @@ class SpecialReleaseViewHolder(
         setChannelDivider(element = element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
-
+                specialReleaseComponentListener?.onSpecialReleaseChannelImpressed(element.channelModel, adapterPosition)
             }
         }
     }
@@ -94,7 +94,7 @@ class SpecialReleaseViewHolder(
     private fun setHeaderComponent(element: SpecialReleaseDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-
+                specialReleaseComponentListener?.onSpecialReleaseItemSeeAllClicked(element.channelModel, link)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
@@ -108,7 +108,11 @@ class SpecialReleaseViewHolder(
         channelGrid: ChannelGrid,
         position: Int
     ) {
-
+        specialReleaseComponentListener?.onSpecialReleaseItemImpressed(
+            grid = channelGrid,
+            channelModel = channel,
+            position = position
+        )
     }
 
     override fun onProductCardClicked(
@@ -117,14 +121,13 @@ class SpecialReleaseViewHolder(
         position: Int,
         applink: String
     ) {
-
+        specialReleaseComponentListener?.onSpecialReleaseItemClicked(
+            grid = channelGrid,
+            channelModel = channel,
+            position = position
+        )
     }
 
-    override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-
-    }
-
-    override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-
-    }
+    override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {}
+    override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {}
 }

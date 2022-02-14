@@ -1526,7 +1526,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
-            this
+            this,
+            SpecialReleaseComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

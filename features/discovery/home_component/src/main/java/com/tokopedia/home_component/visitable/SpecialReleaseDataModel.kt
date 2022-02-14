@@ -13,9 +13,7 @@ data class SpecialReleaseDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is SpecialReleaseDataModel) {
-            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
-        } else false
+        return false
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

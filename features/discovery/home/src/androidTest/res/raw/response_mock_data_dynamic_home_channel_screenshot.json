@@ -3499,6 +3499,8 @@
                     "id": 121752,
                     "name": "Android Test - Campaign featuring",
                     "layout": "campaign_featuring",
+                    "perso_type": 4,
+                    "categoryID": "{}",
                     "campaignType": 1,
                     "header": {
                         "id": 121995,
@@ -3536,7 +3538,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433193,
@@ -3559,7 +3562,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433194,
@@ -3582,7 +3586,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433195,
@@ -3605,7 +3610,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433196,
@@ -3628,7 +3634,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433197,
@@ -3651,7 +3658,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433199,
@@ -3669,7 +3677,8 @@
                                 "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
                                 "url": "https://staging.tokopedia.com/christin-os-1",
                                 "applink": "tokopedia://shop/6550307"
-                            }
+                            },
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         },
                         {
                             "id": 433198,
@@ -3692,7 +3701,8 @@
                                 {
                                     "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                                 }
-                            ]
+                            ],
+                            "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20"
                         }
                     ],
                     "viewAllCard": {

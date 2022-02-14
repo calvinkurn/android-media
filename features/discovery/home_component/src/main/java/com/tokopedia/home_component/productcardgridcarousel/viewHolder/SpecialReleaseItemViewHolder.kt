@@ -6,6 +6,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseItemBinding
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -16,26 +17,46 @@ class SpecialReleaseItemViewHolder(
     private val view: View,
     private val channels: ChannelModel
 ) : AbstractViewHolder<CarouselSpecialReleaseDataModel>(view) {
-
+    companion object {
+        val LAYOUT = R.layout.home_component_special_release_item
+    }
     private var binding: HomeComponentSpecialReleaseItemBinding? by viewBinding()
 
     override fun bind(element: CarouselSpecialReleaseDataModel?) {
-        binding?.specialReleasePrice?.text = element?.grid?.benefit?.value
-        binding?.specialReleaseShopName?.text = element?.grid?.shop?.shopName
-        binding?.specialReleaseTag?.text = element?.grid?.label
+        if (element != null) {
+            view.addOnImpressionListener(element) {
+                element.listener.onProductCardImpressed(
+                    channel = channels,
+                    channelGrid = element.grid,
+                    position = adapterPosition
+                )
+            }
 
-        binding?.specialReleaseTimer?.setTimer(channels.channelConfig.serverTimeOffset, element?.grid?.expiredTime?:"")
+            binding?.specialReleasePrice?.text = element.grid.benefit.value
+            binding?.specialReleaseShopName?.text = element.grid.shop.shopName
+            binding?.specialReleaseTag?.text = element.grid.label
 
-        binding?.specialReleaseShopImage?.loadImage(
-            url = element?.grid?.shop?.shopProfileUrl
-        )
+            binding?.specialReleaseTimer?.setTimer(
+                channels.channelConfig.serverTimeOffset,
+                element.grid.expiredTime ?: ""
+            )
 
-        binding?.specialReleaseBrandCard?.loadImage(
-            url = element?.grid?.imageUrl
-        )
-    }
+            binding?.specialReleaseShopImage?.loadImage(
+                url = element.grid.shop.shopProfileUrl
+            )
 
-    companion object {
-        val LAYOUT = R.layout.home_component_special_release_item
+            binding?.specialReleaseBrandCard?.loadImage(
+                url = element.grid.imageUrl
+            )
+
+            binding?.root?.setOnClickListener {
+                element.listener.onProductCardClicked(
+                    channel = channels,
+                    channelGrid = element.grid,
+                    position = adapterPosition,
+                    applink = element.grid.shop.shopApplink
+                )
+            }
+        }
     }
 }

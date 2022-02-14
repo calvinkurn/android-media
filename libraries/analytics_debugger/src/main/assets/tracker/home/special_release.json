@@ -30,7 +30,7 @@
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
-      "event": "view_item",
+      "event": "select_content",
       "userId": ".*",
       "eventAction": "click on banner dynamic channel feature campaign",
       "sessionIris": ".*",
@@ -46,9 +46,7 @@
       "eventLabel": ".* - .*",
       "channelId": ".*",
       "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "screenName": "/",
-      "userId": ".*"
+      "currentSite": "tokopediamarketplace"
     }
   ]
 }

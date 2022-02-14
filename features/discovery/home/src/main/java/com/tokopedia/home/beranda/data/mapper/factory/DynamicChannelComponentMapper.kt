@@ -60,8 +60,7 @@ object DynamicChannelComponentMapper {
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
                         createdTimeMillis = channel.timestamp,
                         isAutoRefreshAfterExpired = channel.isAutoRefreshAfterExpired,
-                        dividerType = channel.dividerType,
-                        campaignType = channel.campaignType
+                        dividerType = channel.dividerType
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
                         galaxyAttribution = channel.galaxyAttribution,
@@ -72,7 +71,8 @@ object DynamicChannelComponentMapper {
                         persoType = channel.persoType,
                         campaignCode = channel.campaignCode,
                         homeAttribution = channel.homeAttribution,
-                        promoName = channel.promoName
+                        promoName = channel.promoName,
+                        campaignType = channel.campaignType
                 ),
                 channelGrids = channel.grids.map {
                     ChannelGrid(
