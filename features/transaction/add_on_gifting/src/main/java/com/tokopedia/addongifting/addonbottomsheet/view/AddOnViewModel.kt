@@ -257,8 +257,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     fun updateFragmentUiModel(addOnUiModel: AddOnUiModel) {
         _totalAmountUiModel.value = TotalAmountUiModel().apply {
             if (addOnUiModel.isAddOnSelected) {
-                addOnTotalPrice = addOnUiModel.addOnPrice
-                addOnTotalQuantity = 1
+                addOnTotalPrice = addOnUiModel.addOnQty * addOnUiModel.addOnPrice
+                addOnTotalQuantity = addOnUiModel.addOnQty
             } else {
                 addOnTotalPrice = 0
                 addOnTotalQuantity = 0

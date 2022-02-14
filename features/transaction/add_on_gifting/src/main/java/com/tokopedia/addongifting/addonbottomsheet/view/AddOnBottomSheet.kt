@@ -207,7 +207,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             setLabelTitle(context.getString(R.string.add_on_label_total_amount))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.totalAmount.addOnTotalPrice, false).removeDecimalSuffix())
             if (fragmentUiModel.totalAmount.addOnTotalQuantity > 0) {
-                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.totalAmount.addOnTotalQuantity))
+                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save_with_quantity), fragmentUiModel.totalAmount.addOnTotalQuantity))
             } else {
                 setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }

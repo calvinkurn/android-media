@@ -8,6 +8,7 @@ data class ProductUiModel(
         var shopName: String = "",
         var mainProductImageUrl: String = "",
         var mainProductName: String = "",
+        var mainProductQuantity: Int = 0,
         var mainProductPrice: Long = 0,
         var otherProductCount: Int = 0,
         var promoMessage: String = ""
