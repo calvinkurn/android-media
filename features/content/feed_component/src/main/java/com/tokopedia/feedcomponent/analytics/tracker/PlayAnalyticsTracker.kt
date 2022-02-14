@@ -27,12 +27,16 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //2
-    fun impressOnContentHighlightWidgetInVideoTab(channelId: String, shopId: String) {
+    fun impressOnContentHighlightWidgetInVideoTab(
+        channelId: String,
+        shopId: String,
+        channelType: String
+    ) {
         createAnalyticsData(
             EventName.VIEW_HOMEPAGE_IRIS,
             EventAction.IMPRESSION_CONTENT_HIGHLIGHT_WIDGET,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcoming(channelId, shopId)
+            EventLabel.liveVodUpcoming(channelId, shopId, channelType)
         )
     }
 
@@ -40,13 +44,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnContentHighlightCardsInVideoTab(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.SELECT_CONTENT,
             EventAction.CLICK_CONTENT_HIGHLIGHT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcoming(channelId, shopId),
+            EventLabel.liveVodUpcoming(channelId, shopId, channelType),
             promotions
         )
     }
@@ -65,28 +69,28 @@ class PlayAnalyticsTracker @Inject constructor(
     fun impressOnLagiLiveCarouselContentCards(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.VIEW_ITEM,
             EventAction.IMPRESSION_CONTENT_CARDS_LAGI_LIVE,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcoming(channelId, shopId)
+            EventLabel.liveVodUpcoming(channelId, shopId, channelType),
+            promotions
         )
-        promotions
     }
 
     //6
     fun clickOnLagiLiveCarouselContentCards(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.SELECT_CONTENT,
             EventAction.CLICK_CONTENT_CARDS_LAGI_LIVE,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcoming(channelId, shopId),
+            EventLabel.liveVodUpcoming(channelId, shopId, channelType),
             promotions
         )
     }
@@ -105,13 +109,17 @@ class PlayAnalyticsTracker @Inject constructor(
     fun impressOnContentCardsInContentListPageForLagiLive(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.VIEW_ITEM,
             EventAction.IMPRESSION_CONTENT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO_CONTENT_LIST_PAGE,
-            EventLabel.liveVodUpcomingFilterCategoryEntryPointCarousel(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategoryEntryPointCarousel(
+                channelId,
+                shopId,
+                channelType
+            ),
             promotions
         )
     }
@@ -120,13 +128,17 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnContentCardsInContentListPageForLagiLive(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.SELECT_CONTENT,
             EventAction.CLICK_CONTENT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO_CONTENT_LIST_PAGE,
-            EventLabel.liveVodUpcomingFilterCategoryEntryPointCarousel(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategoryEntryPointCarousel(
+                channelId,
+                shopId,
+                channelType
+            ),
             promotions
         )
     }
@@ -135,13 +147,17 @@ class PlayAnalyticsTracker @Inject constructor(
     fun impressOnFilterChipsInContentListPageForLagiLive(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.VIEW_HOMEPAGE_IRIS,
             EventAction.IMPRESSION_FILTER_CHIPS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO_CONTENT_LIST_PAGE,
-            EventLabel.liveVodUpcomingFilterCategoryEntryPointCarousel(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategoryEntryPointCarousel(
+                channelId,
+                shopId,
+                channelType
+            ),
             promotions
         )
     }
@@ -180,13 +196,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun impressOnContentCardsInVideoTabBelowTheChips(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.VIEW_ITEM,
             EventAction.IMPRESSION_CONTENT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -195,13 +211,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnContentCardsInVideoTabBelowTheChips(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.SELECT_CONTENT,
             EventAction.CLICK_CONTENT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -220,13 +236,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun impressOnUpcomingCarouselContentCards(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.VIEW_ITEM,
             EventAction.IMPRESSION_CONTENT_CARDS_UPCOMING,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -235,13 +251,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnUpcomingCarouselContentCards(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.SELECT_CONTENT,
             EventAction.CLICK_CONTENT_CARDS_UPCOMING,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -282,12 +298,17 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //23
-    fun impressOnContentHighlightCard(channelId: String, shopId: String, promotions: List<Any>) {
+    fun impressOnContentHighlightCard(
+        channelId: String,
+        shopId: String,
+        promotions: List<Any>,
+        channelType: String
+    ) {
         createAnalyticsData(
             EventName.VIEW_ITEM,
             EventAction.IMPRESSION_CONTENT_HIGHLIGHT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcoming(channelId, shopId),
+            EventLabel.liveVodUpcoming(channelId, shopId, channelType),
             promotions
         )
     }
@@ -296,24 +317,29 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnRemindMeButtonOnPlayCardsWithinChip(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_REMIND,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
 
     //25
-    fun clickOnUnRemindMeButtonOnPlayCardsWithinChip(channelId: String, shopId: String,promotions: List<Any>) {
+    fun clickOnUnRemindMeButtonOnPlayCardsWithinChip(
+        channelId: String,
+        shopId: String,
+        promotions: List<Any>,
+        channelType: String
+    ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_UNREMIND,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -322,13 +348,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_REMIND_UPCOMING,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -337,13 +363,13 @@ class PlayAnalyticsTracker @Inject constructor(
     fun clickOnUnRemindMeButtonOnPlayCardInUpcomingCarousel(
         channelId: String,
         shopId: String,
-        promotions: List<Any>
+        promotions: List<Any>, channelType: String
     ) {
         createAnalyticsData(
             EventName.CLICK_HOMEPAGE,
             EventAction.CLICK_UNREMIND_UPCOMING,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId),
+            EventLabel.liveVodUpcomingFilterCategory(channelId, shopId, channelType),
             promotions
         )
     }
@@ -357,8 +383,8 @@ class PlayAnalyticsTracker @Inject constructor(
         list: List<Any>? = null,
         isLoggedInStatus: Boolean? = null,
         screenName: String? = null
-    ): Map<String, Any?> {
-        return mutableMapOf<String, Any?>(
+    ) {
+        val map = mutableMapOf<String, Any?>(
             TrackAppUtils.EVENT to eventName,
             TrackAppUtils.EVENT_ACTION to eventAction,
             TrackAppUtils.EVENT_CATEGORY to eventCategory,
@@ -371,6 +397,8 @@ class PlayAnalyticsTracker @Inject constructor(
             PlayTrackerConst.IS_LOGGED_IN to isLoggedInStatus,
             PlayTrackerConst.SCREEN_NAME to screenName
         )
+
+        trackGeneralEvent(map)
     }
 
     private fun getPromotions(list: List<Any>? = null): String? {
@@ -378,11 +406,9 @@ class PlayAnalyticsTracker @Inject constructor(
         return Gson().toJson(list)
     }
 
-    private fun trackGeneralEvent(
-        eventName: String, eventCategory: String, eventAction: String, eventLabel: String,
-    ) {
+    private fun trackGeneralEvent(params: Map<String, Any?>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            createAnalyticsData(eventName, eventCategory, eventAction, eventLabel)
+            params
         )
     }
 
@@ -457,14 +483,18 @@ class PlayAnalyticsTracker @Inject constructor(
         const val UPDATE = "update"
         const val EXPLORE = "explore"
         const val VIDEO = "video"
-        fun liveVodUpcoming(channelId: String, shopId: String) =
-            "{${channelId}} - {${shopId}} - {live/vod/upcoming}"
+        fun liveVodUpcoming(channelId: String, shopId: String, type: String) =
+            "{${channelId}} - {${shopId}} - {${type}}"
 
-        fun liveVodUpcomingFilterCategory(channelId: String, shopId: String) =
-            "{${channelId}} - {${shopId}} - {live/vod/upcoming} - {filter category}"
+        fun liveVodUpcomingFilterCategory(channelId: String, shopId: String, type: String) =
+            "{${channelId}} - {${shopId}} - {${type}} - {filter category}"
 
-        fun liveVodUpcomingFilterCategoryEntryPointCarousel(channelId: String, shopId: String) =
-            "{${channelId}} - {${shopId}} - {live/vod/upcoming} - {filter category} - {entry point carousel widget}"
+        fun liveVodUpcomingFilterCategoryEntryPointCarousel(
+            channelId: String,
+            shopId: String,
+            type: String
+        ) =
+            "{${channelId}} - {${shopId}} - {${type}} - {filter category} - {entry point carousel widget}"
 
         const val FILTER_CATEGORY_ENTRY_POINT_CAROUSEL_WIDGET =
             "{filter category} - {entry point carousel widget}"

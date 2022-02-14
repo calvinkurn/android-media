@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.analytics
 
-import android.content.Context
 import com.tokopedia.feedcomponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
@@ -27,7 +26,8 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
         tracker.clickOnContentHighlightCardsInVideoTab(
             item.channelId,
             shopId,
-            listOf(item.promoType)
+            listOf(item.promoType),
+            item.channelType.toString().lowercase()
         )
     }
 
@@ -38,8 +38,11 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
         isAutoPlay: Boolean
     ) {
         super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
-        tracker.impressOnContentHighlightWidgetInVideoTab(item.channelId, shopId)
-        tracker.impressOnContentHighlightWidgetInVideoTab(item.channelId, shopId)
+        tracker.impressOnContentHighlightWidgetInVideoTab(
+            item.channelId,
+            shopId,
+            item.channelType.toString().lowercase()
+        )
     }
 
     override fun onClickChannelCard(
@@ -53,13 +56,15 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
             tracker.clickOnContentCardsInContentListPageForLagiLive(
                 item.channelId,
                 shopId,
-                listOf(item.promoType)
+                listOf(item.promoType),
+                item.channelType.toString().lowercase()
             )
         }
         tracker.clickOnContentCardsInVideoTabBelowTheChips(
             item.channelId,
             shopId,
-            listOf(item.promoType)
+            listOf(item.promoType),
+            item.channelType.toString().lowercase()
         )
     }
 
@@ -74,13 +79,15 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
             tracker.impressOnContentCardsInContentListPageForLagiLive(
                 item.channelId,
                 shopId,
-                listOf(item.promoType)
+                listOf(item.promoType),
+                item.channelType.toString().lowercase()
             )
         }
         tracker.impressOnContentCardsInVideoTabBelowTheChips(
             item.channelId,
             shopId,
-            listOf(item.promoType)
+            listOf(item.promoType),
+            item.channelType.toString().lowercase()
         )
     }
 
@@ -91,12 +98,16 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
         isAutoPlay: Boolean
     ) {
         super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
-        tracker.clickOnLagiLiveCarouselContentCards(item.channelId, shopId, listOf(item.promoType))
+        tracker.clickOnLagiLiveCarouselContentCards(
+            item.channelId, shopId, listOf(item.promoType),
+            item.channelType.toString().lowercase()
+        )
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             tracker.clickOnUpcomingCarouselContentCards(
                 item.channelId,
                 shopId,
-                listOf(item.promoType)
+                listOf(item.promoType),
+                item.channelType.toString().lowercase()
             )
         }
     }
@@ -111,13 +122,15 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
         tracker.impressOnLagiLiveCarouselContentCards(
             item.channelId,
             shopId,
-            listOf(item.promoType)
+            listOf(item.promoType),
+            item.channelType.toString().lowercase()
         )
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             tracker.impressOnUpcomingCarouselContentCards(
                 item.channelId,
                 shopId,
-                listOf(item.promoType)
+                listOf(item.promoType),
+                item.channelType.toString().lowercase()
             )
         }
     }
@@ -133,13 +146,15 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
             tracker.clickOnRemindMeButtonOnPlayCardsWithinChip(
                 item.channelId,
                 shopId,
-                listOf(item.promoType)
+                listOf(item.promoType),
+                item.channelType.toString().lowercase()
             )
         } else {
             tracker.clickOnUnRemindMeButtonOnPlayCardsWithinChip(
                 item.channelId,
                 shopId,
-                listOf(item.promoType)
+                listOf(item.promoType),
+                item.channelType.toString().lowercase()
             )
         }
 
@@ -148,13 +163,15 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
                 tracker.clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(
                     item.channelId,
                     shopId,
-                    listOf(item.promoType)
+                    listOf(item.promoType),
+                    item.channelType.toString().lowercase()
                 )
             } else {
                 tracker.clickOnUnRemindMeButtonOnPlayCardInUpcomingCarousel(
                     item.channelId,
                     shopId,
-                    listOf(item.promoType)
+                    listOf(item.promoType),
+                    item.channelType.toString().lowercase()
                 )
             }
         }
@@ -162,7 +179,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(private val tracker: Pl
 
     override fun onClickViewAll(view: PlayWidgetMediumView) {
         super.onClickViewAll(view)
-        //TODO check this
-        tracker.clickOnLagiLiveCarouselContentCards("","", listOf())
+        tracker.clickOnSeeAllOnLagiLiveCarousel()
     }
 }
