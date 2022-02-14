@@ -30,7 +30,7 @@ import java.util.Date
  */
 class ProductSectionViewHolder(
     itemView: View, private val listener: Listener
-) : BaseViewHolder(itemView) {
+) : BaseViewHolder(itemView), ProductLineViewHolder.Listener {
 
     private val tvSectionTitle: TextView = itemView.findViewById(R.id.tv_header_title)
     private val ivBg: ImageView = itemView.findViewById(R.id.iv_bg)
@@ -38,28 +38,18 @@ class ProductSectionViewHolder(
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
 
-    private var timerTime = ""
+    private lateinit var adapter: ProductLineAdapter
 
-    private val adapter: ProductLineAdapter =
-        ProductLineAdapter(object : ProductLineViewHolder.Listener {
-            override fun onBuyProduct(product: PlayProductUiModel.Product) {
-                listener.onBuyProduct(product)
-            }
-            override fun onAtcProduct(product: PlayProductUiModel.Product) {
-                listener.onATCProduct(product)
-            }
-            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                listener.onClickProductCard(product, position)
-            }
-        })
+    private var timerTime = ""
 
     init {
         rvProducts.layoutManager = LinearLayoutManager(itemView.context)
-        rvProducts.adapter = adapter
     }
 
     fun bind(item: PlayProductSectionUiModel.ProductSection) {
-        tvSectionTitle.shouldShowWithAction(item.title.isNotEmpty()){
+        setupAdapter(item.type)
+
+        tvSectionTitle.shouldShowWithAction(item.title.isNotEmpty()) {
             tvSectionTitle.text = item.title
         }
         tvTimerInfo.text = item.timerInfo
@@ -83,8 +73,13 @@ class ProductSectionViewHolder(
             }
         }
         setupBackground(item.background)
-        adapter.setItemsAndAnimateChanges(itemList = item.productList)
+        if(::adapter.isInitialized) adapter.setItemsAndAnimateChanges(itemList = item.productList)
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
+    }
+
+    private fun setupAdapter(type: ProductSectionType) {
+        adapter = ProductLineAdapter(this, type)
+        rvProducts.adapter = adapter
     }
 
     private fun setupBackground(background: Section.Background) {
@@ -96,28 +91,32 @@ class ProductSectionViewHolder(
                 }
                 val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
                 itemView.background = gradient
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
         } else {
             ivBg.loadImage(background.imageUrl)
         }
     }
 
-    private fun setupTimer(item : PlayProductSectionUiModel.ProductSection) {
-        timerTime = if(item.type == ProductSectionType.Active) item.endTime else item.startTime
+    private fun setupTimer(item: PlayProductSectionUiModel.ProductSection) {
+        timerTime = if (item.type == ProductSectionType.Active) item.endTime else item.startTime
 
         val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val convertedTimerTime = timerTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
         val dt = DateUtil.getCurrentCalendar().apply {
-                val diff = convertedTimerTime.time - getTimeDiff(serverTime = convertedServerTime, currentTime = time).time
-                add(Calendar.MILLISECOND, diff.toInt())
-            }
-            timerSection.pause()
-            timerSection.targetDate = dt
-            timerSection.onFinish = {
-                listener.onTimerExpired(product = item)
-            }
-            timerSection.resume()
+            val diff = convertedTimerTime.time - getTimeDiff(
+                serverTime = convertedServerTime,
+                currentTime = time
+            ).time
+            add(Calendar.MILLISECOND, diff.toInt())
+        }
+        timerSection.pause()
+        timerSection.targetDate = dt
+        timerSection.onFinish = {
+            listener.onTimerExpired(product = item)
+        }
+        timerSection.resume()
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
@@ -126,10 +125,6 @@ class ProductSectionViewHolder(
                 adapter.itemCount != productSize
     }
 
-    /***
-     * If server time ahead of device time, return device time.
-     * If device time ahead of server time, add the diff to current time.
-     */
     private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
         val diff = serverTime.time - currentTime.time
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
@@ -138,6 +133,21 @@ class ProductSectionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_play_product_section_header
+    }
+
+    override fun onBuyProduct(product: PlayProductUiModel.Product) {
+        listener.onBuyProduct(product)
+    }
+
+    override fun onAtcProduct(product: PlayProductUiModel.Product) {
+        listener.onATCProduct(product)
+    }
+
+    override fun onClickProductCard(
+        product: PlayProductUiModel.Product,
+        position: Int
+    ) {
+        listener.onClickProductCard(product, position)
     }
 
     interface Listener {

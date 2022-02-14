@@ -13,7 +13,6 @@ class ProductSectionAdapter(
 ) : BaseDiffUtilAdapter<PlayProductSectionUiModel>() {
 
     init {
-        //TODO() = shimmering
         delegatesManager.addDelegate(ProductSectionAdapterDelegate(listener))
     }
 
