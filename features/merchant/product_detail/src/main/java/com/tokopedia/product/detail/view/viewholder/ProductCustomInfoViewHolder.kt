@@ -37,7 +37,16 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
         renderSeparator(element.separator)
         renderTitle(element.title, element.icon)
         renderDescription(element.description)
+        renderLabel(element.getLabelTypeByColor(), element.labelValue)
         setupApplink(element.applink, element.title, getComponentTrackData(element))
+    }
+
+    private fun renderLabel(labelColor: Int, labelValue: String) {
+        binding.labelCustomInfo.run {
+            setLabel(labelValue)
+            setLabelType(labelColor)
+            showWithCondition(labelValue.isNotEmpty())
+        }
     }
 
     private fun renderSeparator(separator: String) = with(binding) {

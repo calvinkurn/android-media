@@ -1,9 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
-import android.app.Application
 import android.util.SparseIntArray
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
@@ -22,8 +20,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface DynamicProductDetailListener {
-    fun getApplicationContext(): Application?
-    fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
@@ -165,7 +161,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductDetailInfoViewHolder
      */
-    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
+                                    componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductReportViewHolder

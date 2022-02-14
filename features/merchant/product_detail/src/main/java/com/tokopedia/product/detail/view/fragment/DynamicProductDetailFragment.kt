@@ -92,6 +92,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
+import com.tokopedia.product.info.util.ProductDetailInfoHelper
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantConstant
@@ -171,7 +172,6 @@ import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
-import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -728,32 +728,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
+                                             componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
-            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            val productDetailSheet = ProductDetailInfoBottomSheet()
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
+            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(
                     viewModel.getDynamicProductInfoP1,
-                    viewModel.variantData?.sizeChart ?: "",
-                    dataContent, shouldRefreshProductInfoBottomSheet
+                    componentTrackDataModel
             )
-            cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
 
-            productDetailSheet.arguments = Bundle().apply {
-                putString(ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY, cacheManager.id)
-            }
+            ProductDetailInfoHelper.showBottomSheetInfo(
+                    fragmentActivity = it,
+                    daggerComponent = productDaggerComponent,
+                    listener = this,
+                    p1Data = viewModel.getDynamicProductInfoP1,
+                    sizeChartImageUrl = viewModel.variantData?.sizeChart,
+                    detailInfoContent = dataContent,
+                    forceRefresh = shouldRefreshProductInfoBottomSheet,
+            )
             shouldRefreshProductInfoBottomSheet = false
-            productDetailSheet.show(it.supportFragmentManager, productDaggerComponent, this)
         }
-    }
-
-    override fun getApplicationContext(): Application? {
-        return activity?.application
-    }
-
-    override fun getLifecycleFragment(): Lifecycle {
-        return lifecycle
     }
 
     /**

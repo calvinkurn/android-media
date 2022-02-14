@@ -56,21 +56,19 @@ data class BasicInfo(
         @SerializedName("isTokoNow")
         val isTokoNow: Boolean = false,
         @SerializedName("totalStockFmt")
-        val totalStockFmt: String = ""
+        val totalStockFmt: String = "",
+        @SerializedName("isGiftable")
+        val isGiftable: Boolean = false
 ) {
+    fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull()
+            ?: DEFAULT_PRICE_MINIMUM_SHIPPING
 
-    companion object {
-        const val KG = "kilogram"
-        const val KILO = 1000
-    }
-
-    fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull() ?: DEFAULT_PRICE_MINIMUM_SHIPPING
-    fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
     fun getProductId(): Long = productID.toLongOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
     }
+
     fun isWarehouse(): Boolean {
         return status == ProductStatusTypeDef.WAREHOUSE
     }
