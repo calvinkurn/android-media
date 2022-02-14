@@ -9,7 +9,6 @@ import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.recom.isYouTube
 
 /**
  * Created by jegul on 04/08/20
@@ -33,8 +32,7 @@ class PortraitDynamicLayoutManager(
     }
 
     override fun onVideoPlayerChanged(videoPlayer: PlayVideoPlayerUiModel, channelType: PlayChannelType) {
-        val bottomMargin = if (videoPlayer.isYouTube && channelType.isVod) 0 else offset12
-        changePinnedBottomMarginGone(bottomMargin)
+        changePinnedBottomMarginGone(offset12)
     }
 
     private fun changeImmersiveBoxViewConstraint(videoOrientation: VideoOrientation) {
