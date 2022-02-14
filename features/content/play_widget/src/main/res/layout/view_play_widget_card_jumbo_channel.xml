@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl1"
@@ -18,7 +18,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/play_widget_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:minHeight="@dimen/play_widget_card_jumbo_height"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
