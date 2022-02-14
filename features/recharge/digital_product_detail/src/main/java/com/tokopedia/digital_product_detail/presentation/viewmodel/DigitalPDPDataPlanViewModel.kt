@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -22,6 +22,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -113,7 +114,9 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 isFilterRefreshed
             )
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
-            setFilterDataParam(denomFull.filterTagComponents)
+            if (isFilterRefreshed) {
+                setFilterDataParam(denomFull.filterTagComponents)
+            }
         }) {
             if (it !is CancellationException)
                 _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
@@ -187,6 +190,19 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             productId = denomData.id
             utmCampaign = denomData.categoryId
             isSpecialProduct = denomData.isSpecialPromo
+            idemPotencyKey = idemPotencyKeyActive
+        }
+    }
+
+    fun updateCheckoutPassData(recom: RecommendationCardWidgetModel, idemPotencyKeyActive: String) {
+        digitalCheckoutPassData.apply {
+            categoryId = recom.categoryId
+            clientNumber = recom.clientNumber
+            isPromo = DigitalPDPPulsaViewModel.CHECKOUT_NO_PROMO
+            operatorId = recom.operatorId
+            productId = recom.productId
+            utmCampaign = recom.categoryId
+            isSpecialProduct = false
             idemPotencyKey = idemPotencyKeyActive
         }
     }

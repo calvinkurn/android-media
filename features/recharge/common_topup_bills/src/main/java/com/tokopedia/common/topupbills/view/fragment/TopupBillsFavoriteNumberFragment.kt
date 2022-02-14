@@ -27,11 +27,11 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperato
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
@@ -39,7 +39,6 @@ import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottom
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.*
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView
@@ -74,8 +73,7 @@ class TopupBillsFavoriteNumberFragment:
     FavoriteNumberMenuListener,
     FavoriteNumberEmptyStateListener,
     FavoriteNumberModifyListener,
-    FavoriteNumberErrorStateListener,
-    TopupBillsFavoriteNumberActivity.OnSearchBarListener
+    FavoriteNumberErrorStateListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -108,8 +106,6 @@ class TopupBillsFavoriteNumberFragment:
     private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var clientNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
-
-    private var emptyResultListener: TopupBillsFavoriteNumberActivity.OnEmptyResultListener? = null
 
     override fun initInjector() {
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
@@ -150,9 +146,6 @@ class TopupBillsFavoriteNumberFragment:
         setupArguments(arguments)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
         isHideCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
-        if (activity is TopupBillsFavoriteNumberActivity) {
-            (activity as TopupBillsFavoriteNumberActivity).searchBarListener = this
-        }
     }
 
     fun initView() {
@@ -326,11 +319,7 @@ class TopupBillsFavoriteNumberFragment:
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
-            if (isVisible) {
-                savedNumberViewModel.setClueVisibility(true)
-                // additional, will be improved later
-                emptyResultListener?.setClueVisibility(true)
-            }
+            if (isVisible) savedNumberViewModel.setClueVisibility(true)
         } else {
             if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -339,11 +328,7 @@ class TopupBillsFavoriteNumberFragment:
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
             }
-            if (isVisible) {
-                savedNumberViewModel.setClueVisibility(false)
-                // additional, will be improved later
-                emptyResultListener?.setClueVisibility(false)
-            }
+            if (isVisible) savedNumberViewModel.setClueVisibility(false)
         }
     }
 
@@ -620,10 +605,6 @@ class TopupBillsFavoriteNumberFragment:
         getSeamlessFavoriteNumber()
     }
 
-    override fun setSearchKeyword(keyword: String) {
-        filterData(keyword)
-    }
-
     enum class FavoriteNumberActionType {
         UPDATE, DELETE, UNDO_DELETE
     }
@@ -667,10 +648,6 @@ class TopupBillsFavoriteNumberFragment:
         }?.operator?.attributes?.name ?: ""
     }
 
-    fun setOnEmptyResultListener(listener: TopupBillsFavoriteNumberActivity.OnEmptyResultListener?) {
-        emptyResultListener = listener
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -704,12 +681,9 @@ class TopupBillsFavoriteNumberFragment:
 
         fun newInstance(clientNumberType: String, number: String,
                         operatorData: TelcoCatalogPrefixSelect?,
-                        categoryName: String, digitalCategoryIds: ArrayList<String>,
-                        emptyResultListener: TopupBillsFavoriteNumberActivity.OnEmptyResultListener? = null
+                        categoryName: String, digitalCategoryIds: ArrayList<String>
         ): Fragment {
-            val fragment = TopupBillsFavoriteNumberFragment().apply {
-                setOnEmptyResultListener(emptyResultListener)
-            }
+            val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)

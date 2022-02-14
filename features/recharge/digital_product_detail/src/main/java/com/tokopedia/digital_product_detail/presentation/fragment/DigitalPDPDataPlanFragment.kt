@@ -21,15 +21,16 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
+import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -52,6 +53,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDesc
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -70,7 +72,6 @@ import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
-import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget.InputNumberActionType
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -112,6 +113,8 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
+    private val keyboardWatcher = DigitalKeyboardWatcher()
+
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
@@ -151,6 +154,7 @@ class DigitalPDPDataPlanFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
+        setupKeyboardWatcher()
         initClientNumberWidget()
         initEmptyState()
         setAnimationAppBarLayout()
@@ -158,6 +162,20 @@ class DigitalPDPDataPlanFragment :
 
         getCatalogMenuDetail()
         getPrefixOperatorData()
+    }
+
+    fun setupKeyboardWatcher() {
+        binding?.root?.let {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.setClearable()
+                }
+            })
+        }
     }
 
     private fun getDataFromBundle() {
@@ -198,8 +216,8 @@ class DigitalPDPDataPlanFragment :
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         selectedOperator.operator.attributes.name
                     )
-
-                    if (operator.id != selectedOperator.operator.id || selectedClientNumber
+                    val isOperatorChanged = operator.id != selectedOperator.operator.id
+                    if (isOperatorChanged || selectedClientNumber
                             .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
                         operator = selectedOperator.operator
@@ -207,7 +225,8 @@ class DigitalPDPDataPlanFragment :
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
-                        getCatalogProductInputMultiTab(selectedOperator.key, selectedClientNumber)
+                        getCatalogProductInputMultiTab(selectedOperator.key, isOperatorChanged,
+                            selectedClientNumber)
                     } else {
                         onHideBuyWidget()
                     }
@@ -327,9 +346,10 @@ class DigitalPDPDataPlanFragment :
 
     private fun getCatalogProductInputMultiTab(
         selectedOperatorKey: String,
+        isOperatorChanged: Boolean,
         clientNumber: String
     ) {
-        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber, isOperatorChanged)
     }
 
     private fun getCatalogMenuDetail() {
@@ -798,8 +818,8 @@ class DigitalPDPDataPlanFragment :
         isSwitchChecked: Boolean = false
     ) {
         context?.let {
-            val intent = TopupBillsSavedNumberActivity.createInstance(
-                it, clientNumber, mutableListOf(), dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
+            val intent = TopupBillsPersoSavedNumberActivity.createInstance(
+                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -832,6 +852,11 @@ class DigitalPDPDataPlanFragment :
             DigitalSubscriptionParams(),
             userSession.userId
         )
+    }
+
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     /**
@@ -973,8 +998,7 @@ class DigitalPDPDataPlanFragment :
         if (userSession.isLoggedIn) {
             addToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
@@ -1005,8 +1029,16 @@ class DigitalPDPDataPlanFragment :
             recommendation,
             position
         )
-        context?.let {
-            RouteManager.route(it, recommendation.appUrl)
+
+        viewModel.updateCheckoutPassData(
+            recommendation,
+            userSession.userId.generateRechargeCheckoutToken()
+        )
+
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
         }
     }
 
@@ -1152,7 +1184,7 @@ class DigitalPDPDataPlanFragment :
             if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
 
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,

@@ -23,11 +23,13 @@ import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -45,6 +47,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDP
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -68,6 +71,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.android.synthetic.main.fragment_digital_pdp_token_listrik.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,6 +96,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
+    private val keyboardWatcher = DigitalKeyboardWatcher()
+
     private var binding by autoClearedNullable<FragmentDigitalPdpTokenListrikBinding>()
 
     private var loyaltyStatus = ""
@@ -102,7 +108,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
     private lateinit var localCacheHandler: LocalCacheHandler
     private var actionTypeTrackingJob: Job? = null
-    private var inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.MANUAL
+    private var inputNumberActionType = InputNumberActionType.MANUAL
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -129,6 +135,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
+        setupKeyboardWatcher()
         initClientNumberWidget()
         initEmptyState()
         observeData()
@@ -138,6 +145,19 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         onShowGreenBox()
     }
 
+    fun setupKeyboardWatcher() {
+        binding?.root?.let {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    binding?.rechargePdpTokenListrikClientNumberWidget?.setClearable()
+                }
+            })
+        }
+    }
 
     private fun getDataFromBundle(){
         arguments?.run {
@@ -489,21 +509,21 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY)
             when (inputNumberActionType) {
-                RechargeClientNumberWidget.InputNumberActionType.MANUAL -> {
+                InputNumberActionType.MANUAL -> {
                     digitalPDPTelcoAnalytics.eventInputNumberManual(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
-                RechargeClientNumberWidget.InputNumberActionType.CONTACT -> {
+                InputNumberActionType.CONTACT -> {
                     digitalPDPTelcoAnalytics.eventInputNumberContact(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
-                RechargeClientNumberWidget.InputNumberActionType.FAVORITE -> {
+                InputNumberActionType.FAVORITE -> {
                     digitalPDPTelcoAnalytics.eventInputNumberFavorite(
                         categoryName,
                         operatorName,
@@ -565,6 +585,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         )
     }
 
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+    }
+
     private fun handleCallbackSavedNumber(
         clientName: String,
         clientNumber: String,
@@ -573,7 +598,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         inputNumberActionTypeIndex: Int
     ) {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
-            inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.values()[inputNumberActionTypeIndex]
+            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         }
 
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
@@ -639,7 +664,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 autoCompleteListener = object :
                     RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                        inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.AUTOCOMPLETE
+                        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
                         if (isFavoriteContact) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -676,7 +701,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     }
 
                     override fun onClickFilterChip(isLabeled: Boolean) {
-                        inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.CHIP
+                        inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
                             onHideBuyWidget()
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
@@ -716,8 +741,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         categoryName: String
     ) {
         context?.let {
-            val intent = TopupBillsFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName
+            val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
+                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -784,8 +809,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         if (userSession.isLoggedIn){
             addToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
@@ -816,8 +840,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             recommendation,
             position
         )
-        context?.let {
-            RouteManager.route(it, recommendation.appUrl)
+
+        viewModel.updateCheckoutPassData(
+            recommendation,
+            userSession.userId.generateRechargeCheckoutToken()
+        )
+
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
         }
     }
 
@@ -849,13 +881,20 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun onDestroyView() {
+        binding?.root?.let {
+            keyboardWatcher.unlisten(it)
+        }
+        super.onDestroyView()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
 
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,

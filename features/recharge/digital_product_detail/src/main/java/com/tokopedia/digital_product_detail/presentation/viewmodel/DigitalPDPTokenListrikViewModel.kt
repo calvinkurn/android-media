@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -21,6 +21,7 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -156,6 +157,19 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
             productId = denomData.id
             utmCampaign = denomData.categoryId
             isSpecialProduct = denomData.isSpecialPromo
+            idemPotencyKey = idemPotencyKeyActive
+        }
+    }
+
+    fun updateCheckoutPassData(recom: RecommendationCardWidgetModel, idemPotencyKeyActive: String) {
+        digitalCheckoutPassData.apply {
+            categoryId = recom.categoryId
+            clientNumber = recom.clientNumber
+            isPromo = DigitalPDPPulsaViewModel.CHECKOUT_NO_PROMO
+            operatorId = recom.operatorId
+            productId = recom.productId
+            utmCampaign = recom.categoryId
+            isSpecialProduct = false
             idemPotencyKey = idemPotencyKeyActive
         }
     }

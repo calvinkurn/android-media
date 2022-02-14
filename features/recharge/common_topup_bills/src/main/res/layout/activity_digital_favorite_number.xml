@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container_digital_search_number"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <com.tokopedia.header.HeaderUnify android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -17,39 +15,12 @@
         app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifycomponents.SearchBarUnify
-        android:id="@+id/common_topup_bills_favorite_number_searchbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        app:search_bar_placeholder="@string/common_topup_fav_number_searchbar_placeholder"
-        app:search_bar_clearable="true"
-        app:search_bar_show_icon="false"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/common_topup_bills_favorite_number_clue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/common_topup_fav_number_clue"
-        android:layout_margin="@dimen/spacing_lvl4"
-        app:typographyType="heading_4"
-        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_favorite_number_searchbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
 
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/digital_search_number_toolbar_seperator_top_margin"
-        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_favorite_number_clue"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/digital_search_number_toolbar_seperator_top_margin" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
