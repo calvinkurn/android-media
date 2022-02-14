@@ -20,13 +20,13 @@ class DigitalRecommendationMapper {
                 val discountLabel = when{
                     it.cashback.isNotEmpty() -> it.cashback
                     it.specialDiscount.isNotEmpty() -> it.specialDiscount
-                    else -> it.label3
+                    else -> it.discount
                 }
 
                 val discountType = when{
                     it.cashback.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_CASHBACK
                     it.specialDiscount.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SPECIAL
-                    it.label3.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SLASH
+                    it.discount.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SLASH
                     else -> ""
                 }
 
