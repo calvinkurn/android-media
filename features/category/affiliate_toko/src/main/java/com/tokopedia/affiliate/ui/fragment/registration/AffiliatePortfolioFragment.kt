@@ -39,6 +39,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -57,7 +58,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
 
-    private lateinit var affiliateNavigationInterface: AffiliateActivityInterface
+    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     override fun getViewModelType(): Class<AffiliatePortfolioViewModel> {
         return AffiliatePortfolioViewModel::class.java
@@ -84,10 +85,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? AffiliateActivityInterface)?.let {
+            affiliateNavigationInterface = it
+        }
         afterViewCreated()
     }
 
     private fun afterViewCreated() {
+        initButton()
         setUpNavBar()
         view?.findViewById<RecyclerView>(R.id.social_link_rv)?.run {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -95,6 +100,34 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             adapter = affiliateAdapter
         }
         affiliatePortfolioViewModel.createDefaultListForSm()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        val loginText = if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            "${AffiliateAnalytics.ScreenKeys.AFFILIATE_PORTFOLIO_NAME}$loginText",
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
+    }
+
+    private fun initButton() {
+        view?.findViewById<UnifyButton>(R.id.next_button)?.setOnClickListener {
+            nextButtonClicked()
+            sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SELANJUTNYA)
+        }
+    }
+
+    private fun sendButtonClick(eventAction: String) {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL,
+            if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN,
+            userSessionInterface.userId
+        )
     }
 
     private fun setUpNavBar() {
@@ -107,7 +140,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         view?.findViewById<HeaderUnify>(R.id.affiliate_portfolio_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface.handleBackButton()
+                affiliateNavigationInterface?.handleBackButton(false)
             }
         }
     }
@@ -121,9 +154,16 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             index->
             affiliateAdapter.notifyItemChanged(index)
         })
+        affiliatePortfolioViewModel.isError().observe(this ,{ isError ->
+                view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
+                    isEnabled = !isError
+                }
+        })
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
+        view?.findViewById<RecyclerView>(R.id.social_link_rv)?.adapter = null
+        view?.findViewById<RecyclerView>(R.id.social_link_rv)?.adapter = affiliateAdapter
         affiliateAdapter.clearAllElements()
         affiliateAdapter.addMoreData(data)
     }
@@ -138,10 +178,8 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             .build()
 
     companion object {
-        fun getFragmentInstance(affiliateActivityInterface: AffiliateActivityInterface): Fragment {
-            return AffiliatePortfolioFragment().apply {
-                affiliateNavigationInterface = affiliateActivityInterface
-            }
+        fun getFragmentInstance(): Fragment {
+            return AffiliatePortfolioFragment()
         }
     }
 
@@ -179,15 +217,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
             if(portfolioDataItemText?.isNotBlank() == true){
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
+                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
             }else {
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
+                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
             }
         }
         updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
-        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_portfolio_confirm_btn), UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
-        affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
+         affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
     }
 
     override fun addSocialMediaButtonClicked() {
@@ -198,10 +235,11 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                 this, affiliatePortfolioViewModel.getCurrentSocialIds(),
                 "", "", "", "",
                 "", AffiliatePromotionBottomSheet.ORIGIN_PORTFOLIO).show(childFragmentManager, "")
+        sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_TAMBAH_SOCIAL_MEDIA)
 
     }
 
-    override fun nextButtonClicked() {
+    private fun nextButtonClicked() {
         if(affiliatePortfolioViewModel.checkDataForAtLeastOne()){
             val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
@@ -212,21 +250,12 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                     }
                 }
             }
-            sendTracker()
-            affiliateNavigationInterface.navigateToTermsFragment(arrayListOfChannels)
+            affiliateNavigationInterface?.navigateToTermsFragment(arrayListOfChannels)
         }else {
             view?.let { view ->
                 Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_please_fill_one_social_media),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
-    }
-
-    private fun sendTracker() {
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
-                AffiliateAnalytics.ActionKeys.CLICK_SELANJUTNYA,
-                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                "", userSessionInterface.userId)
     }
 }

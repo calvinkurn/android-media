@@ -1,11 +1,14 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -16,12 +19,16 @@ import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetLoadingBindi
 import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetSuccessBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMissionItemDecoration
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MilestoneViewHolder(
     itemView: View,
@@ -31,11 +38,17 @@ class MilestoneViewHolder(
     companion object {
         val RES_LAYOUT = R.layout.shc_milestone_widget
 
-        private const val MARGIN_IN_DP = 12
+        private const val MARGIN_IN_DP = 8
         private const val PROGRESS_BAR_MIN_VALUE = 0
         private const val PROGRESS_BAR_MAX_VALUE = 100
         private const val FIRST_INDEX = 0
         private const val LAST_ONE = 1
+        private const val ONE_CONST = 1L
+        private const val FOUR_CONST = 4L
+        private const val NINE_CONST = 9L
+        private const val ANIMATION_PROGRESS_DURATION = 300L
+        private const val ANIMATION_SCALE_0 = 0f
+        private const val ANIMATION_SCALE_1 = 1f
     }
 
     private val binding by lazy { ShcMilestoneWidgetBinding.bind(itemView) }
@@ -70,34 +83,183 @@ class MilestoneViewHolder(
             containerShcMilestoneSuccess.visible()
             tvTitleMilestoneWidget.text = data.title
             tvDescMilestoneWidget.text = data.subTitle
-            tvProgressTitleMilestoneWidget.text = data.milestoneProgress.description
             setTagNotification(element.tag)
 
             val milestoneValueFmt = data.milestoneProgress.percentageFormatted.parseAsHtml()
             tvProgressValueMilestoneWidget.text = milestoneValueFmt
 
             iconShcToggleMission.setOnClickListener {
-                if (rvShcMissionMilestone.isVisible) {
-                    rvShcMissionMilestone.gone()
-                    iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
-                } else {
-                    rvShcMissionMilestone.visible()
-                    iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
-                }
-                if (!element.isAlreadyMinimized) {
-                    element.isAlreadyMinimized = true
-                    listener.sendMilestoneWidgetMinimizeClickEvent()
-                }
+                setOnToggleMissionClicked(element)
             }
 
             showMilestoneBackground(data.backgroundImageUrl)
             setupMilestoneProgress(data.milestoneProgress)
             setupTooltip(tvTitleMilestoneWidget, element)
-            setupSeeMoreCta(element)
+            btnShcCloseMission.setOnClickListener {
+                setOnCloseWidgetClicked(element)
+            }
+            showCloseWidgetButton(element)
 
-            root.addOnImpressionListener(element.impressHolder) {
+            itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
                 setupMilestoneList(element)
+                setupCountDownTimer(element)
+            }
+        }
+    }
+
+    private fun setOnCloseWidgetClicked(element: MilestoneWidgetUiModel) {
+        element.data?.milestoneMissions?.let { missions ->
+            val finishMissionCard = missions.firstOrNull { it is MilestoneFinishMissionUiModel }
+            finishMissionCard?.let {
+                val position = missions.indexOf(it)
+                listener.onMilestoneMissionActionClickedListener(element, it, position)
+            }
+        }
+    }
+
+    private fun setOnToggleMissionClicked(element: MilestoneWidgetUiModel) {
+        with(successStateBinding) {
+            if (rvShcMissionMilestone.isVisible) {
+                rvShcMissionMilestone.gone()
+                tvShcMilestoneCta.gone()
+                showProgressWithAnimation()
+                iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
+                showCloseWidgetButton(element)
+            } else {
+                rvShcMissionMilestone.visible()
+                setupSeeMoreCta(element)
+                hideProgressWithAnimation()
+                iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
+                btnShcCloseMission.gone()
+            }
+            if (!element.isAlreadyMinimized) {
+                element.isAlreadyMinimized = true
+                listener.sendMilestoneWidgetMinimizeClickEvent()
+            }
+        }
+    }
+
+    private fun showCloseWidgetButton(element: MilestoneWidgetUiModel) {
+        with(successStateBinding) {
+            val isAllMissionFinished = element.data?.milestoneMissions
+                ?.any { it is MilestoneFinishMissionUiModel }
+                .orFalse()
+            btnShcCloseMission.isVisible = isAllMissionFinished
+        }
+    }
+
+    private fun hideProgressWithAnimation() {
+        with(successStateBinding) {
+            val animation = ScaleAnimation(
+                ANIMATION_SCALE_1, ANIMATION_SCALE_0,
+                ANIMATION_SCALE_1, ANIMATION_SCALE_1,
+                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_0,
+                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_1
+            ).apply {
+                fillAfter = true
+                duration = ANIMATION_PROGRESS_DURATION
+            }
+
+            root.post {
+                progressBarShcMilestone.invisible()
+                progressBarShcMilestone.startAnimation(animation)
+                tvProgressValueMilestoneWidget.animate()
+                    .x(guidelineShcMilestoneStart.x)
+                    .setDuration(ANIMATION_PROGRESS_DURATION)
+                    .start()
+            }
+        }
+    }
+
+    private fun showProgressWithAnimation() {
+        with(successStateBinding) {
+            val animation = ScaleAnimation(
+                ANIMATION_SCALE_0, ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1, ANIMATION_SCALE_1,
+                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_0,
+                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_1
+            ).apply {
+                fillAfter = true
+                duration = ANIMATION_PROGRESS_DURATION
+            }
+
+            root.post {
+                progressBarShcMilestone.visible()
+                progressBarShcMilestone.startAnimation(animation)
+                tvProgressValueMilestoneWidget.animate()
+                    .x(viewShcProgressBarEnd.x)
+                    .setDuration(ANIMATION_PROGRESS_DURATION)
+                    .start()
+            }
+        }
+    }
+
+    private fun setupCountDownTimer(element: MilestoneWidgetUiModel) {
+        val data = element.data ?: return
+        with(successStateBinding) {
+            val now = Date().time
+            val diffMillis = data.deadlineMillis.minus(now)
+            val nineDaysMillis = TimeUnit.DAYS.toMillis(NINE_CONST)
+            val fourDaysMillis = TimeUnit.DAYS.toMillis(FOUR_CONST)
+            val oneDaysMillis = TimeUnit.DAYS.toMillis(ONE_CONST)
+
+            when {
+                diffMillis < oneDaysMillis -> setupCountDownTimer(data.deadlineMillis)
+                diffMillis in oneDaysMillis until fourDaysMillis -> showTimerLastFourDays(data.deadlineMillis)
+                diffMillis in (fourDaysMillis.plus(LAST_ONE)) until nineDaysMillis -> {
+                    showTimerLastNineDays(data.deadlineMillis)
+                }
+                diffMillis > nineDaysMillis -> showTimerMoreThanNineDays(data.deadlineMillis)
+            }
+        }
+    }
+
+    private fun showTimerMoreThanNineDays(deadlineMillis: Long) {
+        with(successStateBinding) {
+            val timerBackground =
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_T100)
+            timerShcMilestone.setBackgroundColor(timerBackground)
+            timerShcMilestone.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+            timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
+            timerShcMilestone.targetDate = Calendar.getInstance().apply {
+                time = Date(deadlineMillis)
+            }
+        }
+    }
+
+    private fun showTimerLastNineDays(deadlineMillis: Long) {
+        with(successStateBinding) {
+            val timerBackground =
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+            timerShcMilestone.setBackgroundColor(timerBackground)
+            timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
+            timerShcMilestone.targetDate = Calendar.getInstance().apply {
+                time = Date(deadlineMillis)
+            }
+        }
+    }
+
+    private fun showTimerLastFourDays(deadlineMillis: Long) {
+        with(successStateBinding) {
+            val timerBackground =
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+            timerShcMilestone.setBackgroundColor(timerBackground)
+            timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
+            timerShcMilestone.targetDate = Calendar.getInstance().apply {
+                time = Date(deadlineMillis)
+            }
+        }
+    }
+
+    private fun setupCountDownTimer(deadlineMillis: Long) {
+        with(successStateBinding) {
+            val timerBackground =
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+            timerShcMilestone.setBackgroundColor(timerBackground)
+            timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_HOUR
+            timerShcMilestone.targetDate = Calendar.getInstance().apply {
+                time = Date(deadlineMillis)
             }
         }
     }
@@ -124,16 +286,16 @@ class MilestoneViewHolder(
 
     private fun setupSeeMoreCta(element: MilestoneWidgetUiModel) {
         with(successStateBinding) {
-            val applink = element.getSeeMoreCtaApplink()
+            val appLink = element.getSeeMoreCtaApplink()
             val ctaText = element.getSeeMoreCtaText()
 
-            val isCtaVisible = applink.isNotBlank() && ctaText.isNotBlank()
+            val isCtaVisible = appLink.isNotBlank() && ctaText.isNotBlank()
             tvShcMilestoneCta.isVisible = isCtaVisible
 
             if (isCtaVisible) {
                 tvShcMilestoneCta.text = ctaText
                 tvShcMilestoneCta.setOnClickListener {
-                    RouteManager.route(itemView.context, applink)
+                    RouteManager.route(itemView.context, appLink)
                     listener.sendMilestoneWidgetCtaClickEvent()
                 }
                 val iconColor = root.context.getResColor(

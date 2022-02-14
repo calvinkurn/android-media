@@ -74,6 +74,7 @@
     <string name="affiliate_add_social_media">Pilih sosial media </string>
     <string name="affiliate_pilih_minimal_1_sosial_media">Pilih minimal 1 sosial media.</string>
     <string name="affiliate_tambah_sosial_media">Tambah Sosial Media</string>
+    <string name="affiliate_selanjutnya">Selanjutnya</string>
     <string name="affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu">Daftar sekarang dengan akun Tokopedia kamu</string>
     <string name="affiliate_belum_punya_akun_tokopedia"><![CDATA[Belum punya akun Tokopedia?\u0020]]></string>
     <string name="affiliate_daftar">Daftar</string>
@@ -105,8 +106,8 @@
     <string name="affiliate_transaction_history">Riwayat Transaksi</string>
     <string name="affiliate_zero_amount">Rp 0</string>
     <string name="affiliate_komisi_produk">Komisi Produk Affiliate</string>
-    <string name="affiliate_empty_transaction">Tidak ada transaksi pada rentang waktu ini</string>
-    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya. Mungkin kamu akan menemukan transaksi.</string>
+    <string name="affiliate_empty_transaction">Yaah, belum ada transaksi pada rentang tanggal ini </string>
+    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya, ya. Mungkin kamu akan menemukan transaksi.</string>
     <string name="affiliate_choose_date">Pilih Tanggal</string>
     <string name="affiliate_transaksi_selesai">Transaksi selesai</string>
     <string name="affiliate_rincian_komisi">Rincian Komisi</string>
@@ -124,4 +125,10 @@
     <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
     <string name="affiliate_please_fill_one_social_media">Silakan isi minimal 1 media sosial.</string>
     <string name="affiliate_retry_message">Silakan coba lagi nanti</string>
+    <string name="affiliate_coacher_title1">Bagi inspirasi, raih komisi 💰</string>
+    <string name="affiliate_coacher_title2">Temukan produk yang bisa dipromosikan</string>
+    <string name="affiliate_coacher_title3">Sudah punya link produknya? Tempel di sini</string>
+    <string name="affiliate_coacher_desc1">Promosikan link produk pilihanmu di sosmed. Jika ada yang beli, kamu bisa cek komisimu di sini!</string>
+    <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
+    <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
 </resources>

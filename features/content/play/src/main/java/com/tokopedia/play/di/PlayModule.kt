@@ -18,6 +18,8 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.PlayCastHelper
+import com.tokopedia.play.util.share.PlayShareExperience
+import com.tokopedia.play.util.share.PlayShareExperienceImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
@@ -174,4 +176,12 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
         PlayChannelSSEImpl(userSession, dispatchers, mContext)
+
+    /**
+     * Sharing Experience
+     */
+    @PlayScope
+    @Provides
+    fun providePlayShareExperience(@ApplicationContext context: Context): PlayShareExperience =
+        PlayShareExperienceImpl(context)
 }
