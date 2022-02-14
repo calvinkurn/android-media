@@ -264,7 +264,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun setClearable() {
-        binding.clientNumberWidgetInputField.run {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
             isClearableState = true
             if (!isLoading) {
                 clearFocus()

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.recharge_component.widget.RechargeTextFieldImeBack
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/client_number_widget_input_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

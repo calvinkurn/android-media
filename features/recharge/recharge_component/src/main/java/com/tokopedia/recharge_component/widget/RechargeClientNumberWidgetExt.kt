@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.toPx
 
 
@@ -20,7 +21,7 @@ const val SORT_FILTER_LIMIT = 3
 const val AUTOCOMPLETE_THRESHOLD = 1
 const val AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET = 10
 
-fun RechargeTextFieldImeBack.clearErrorField() {
+fun TextFieldUnify2.clearErrorField() {
     with(this) {
         if (isInputError) {
             setMessage("")
@@ -29,7 +30,7 @@ fun RechargeTextFieldImeBack.clearErrorField() {
     }
 }
 
-fun RechargeTextFieldImeBack.onClickClearIconUnify(textFieldStaticLabel: String,
+fun TextFieldUnify2.onClickClearIconUnify(textFieldStaticLabel: String,
                                               onClickClearIcon: () -> Unit){
         editText.setText("")
         isInputError = false

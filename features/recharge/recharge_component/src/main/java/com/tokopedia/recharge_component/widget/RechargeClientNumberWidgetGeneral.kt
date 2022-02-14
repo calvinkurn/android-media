@@ -11,11 +11,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
@@ -81,19 +81,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
     private fun initAutoComplete() {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-            keyImeChangeListener = object : RechargeTextFieldImeBack.KeyImeChange {
-                override fun onPreKeyIme(event: KeyEvent) {
-                    if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                        if(isLoading){
-                            isClearableState = true
-                        } else {
-                            clearFocus()
-                            hideIndicatorIcon()
-                            showClearIcon()
-                        }
-                    }
-                }
-            }
             editText.run {
                 threshold = AUTOCOMPLETE_THRESHOLD
                 dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
@@ -220,7 +207,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
     fun setAutoCompleteList(suggestions: List<TopupBillsPersoFavNumberItem>) {
         autoCompleteAdapter?.updateItems(
-            CommonTopupBillsDataMapper
+            FavoriteNumberDataMapper
                 .mapPersoFavNumberItemToContactDataView(suggestions).toMutableList())
     }
 
