@@ -13,18 +13,22 @@ class ProductItemVariantViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnVariantItemClickListener {
-        fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: VariantUiModel)
+        fun onVariantCheckBoxClicked(isSelected: Boolean, variantIndex: Int)
     }
+
+    var variantIndex: Int = 0
 
     init {
         binding.cbuVariantItem.setOnCheckedChangeListener { _, isChecked ->
             val productVariant = binding.root.getTag(R.id.product_variant) as VariantUiModel
-            variantItemClickListener.onVariantCheckBoxClicked(isChecked, productVariant)
+            variantItemClickListener.onVariantCheckBoxClicked(isChecked, variantIndex)
         }
     }
 
-    fun bindData(productVariant: VariantUiModel) {
+    fun bindData(productVariant: VariantUiModel, variantIndex: Int) {
+        this.variantIndex = variantIndex
         binding.root.setTag(R.id.product_variant, productVariant)
+        binding.cbuVariantItem.isChecked = productVariant.isSelected
         binding.tpgVariantName.text = productVariant.variantName
         binding.tpgSku.text = productVariant.sku
         binding.tpgProductPrice.text = productVariant.priceTxt

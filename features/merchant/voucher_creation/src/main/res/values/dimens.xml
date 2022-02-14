@@ -60,6 +60,7 @@
     <dimen name="mvc_dimen_1dp">1dp</dimen>
     <dimen name="mvc_dimen_2dp">2dp</dimen>
     <dimen name="mvc_dimen_3dp">3dp</dimen>
+    <dimen name="mvc_dimen_5dp">5dp</dimen>
     <dimen name="mvc_dimen_6dp">6dp</dimen>
     <dimen name="mvc_dimen_10dp">10dp</dimen>
     <dimen name="mvc_dimen_11dp">11dp</dimen>

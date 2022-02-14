@@ -32,7 +32,6 @@ class AddProductViewModel @Inject constructor(
 
     companion object {
         const val SELLER_LOCATION_ID = 340735
-        const val TARGET_ALL_USER = 0
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
         const val BENEFIT_TYPE_PERCENT = "percent"
@@ -43,7 +42,9 @@ class AddProductViewModel @Inject constructor(
     private var productUiModels: List<ProductUiModel> = listOf()
 
     // VOUCHER VALIDATION PROPERTIES
+    private var maxProductLimit = 0
     private var couponSettings: CouponSettings? = null
+    private var selectedProductIds = ArrayList<String>()
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
@@ -53,7 +54,7 @@ class AddProductViewModel @Inject constructor(
     private var selectedSort: GoodsSortInput? = null
 
     // PRODUCT SELECTIONS
-    private var selectedProducts: MutableList<ProductUiModel> = mutableListOf()
+    var isSelectAllMode = true
 
     // ADAPTER
     private var adapterPosition: Int? = null
@@ -69,6 +70,8 @@ class AddProductViewModel @Inject constructor(
     val getProductListMetaDataResult: LiveData<Result<ProductListMetaResponse>> get() = getProductListMetaDataResultLiveData
     private val validateVoucherResultLiveData = MutableLiveData<Result<VoucherValidationPartialResponse>>()
     val validateVoucherResult: LiveData<Result<VoucherValidationPartialResponse>> get() = validateVoucherResultLiveData
+
+    val selectedProductListLiveData = MutableLiveData<List<ProductUiModel>>(listOf())
 
     fun getProductList(
             keyword: String? = null,
@@ -179,18 +182,6 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun mapVariantDataToVariantUiModel(variantData: Variant, productUiModel: ProductUiModel): List<VariantUiModel> {
-        return variantData.products.map { productVariant ->
-            VariantUiModel(
-                    variantId = productVariant.id,
-                    variantName = getVariantName(productVariant.combination, variantData.selections),
-                    sku = productUiModel.sku,
-                    price = productUiModel.price,
-                    soldNStock = productUiModel.soldNStock
-            )
-        }
-    }
-
     fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>): List<WarehouseLocationSelection> {
         return warehouses.map { warehouse ->
             WarehouseLocationSelection(
@@ -277,6 +268,14 @@ class AddProductViewModel @Inject constructor(
         return productUiModels
     }
 
+    fun setSetSelectedProducts(productList: List<ProductUiModel>) {
+        this.selectedProductListLiveData.value = productList
+    }
+
+    fun getSelectedProducts(): List<ProductUiModel> {
+        return selectedProductListLiveData.value?: listOf()
+    }
+
     // SORT AND FILTER
     fun setSearchKeyword(keyword: String) {
         this.searchKeyWord = keyword
@@ -324,12 +323,24 @@ class AddProductViewModel @Inject constructor(
         return selectedSort
     }
 
+    fun setMaxProductLimit(maxProductLimit: Int) {
+        this.maxProductLimit = maxProductLimit
+    }
+
     fun setCouponSettings(couponSettings: CouponSettings?) {
         this.couponSettings = couponSettings
     }
 
     fun getCouponSettings(): CouponSettings? {
         return couponSettings
+    }
+
+    fun setSelectedProductIds(selectedProductIds: ArrayList<String>) {
+        this.selectedProductIds = selectedProductIds
+    }
+
+    fun getSelectedProductIds(): List<String> {
+        return selectedProductIds.toList()
     }
 
     fun getIdsFromProductList(productList: List<ProductUiModel>): List<String> {
@@ -371,25 +382,31 @@ class AddProductViewModel @Inject constructor(
         return couponSettings.minimumPurchase
     }
 
-    // PRODUCT SELECTIONS
-    fun addSelectedProduct(product: ProductUiModel) {
-        selectedProducts.add(product)
+    fun isMaxProductLimitReached(selectedProductsSize: Int): Boolean {
+        return selectedProductsSize > maxProductLimit
     }
 
-    fun removeSelectedProduct(product: ProductUiModel) {
-        selectedProducts.removeFirst { it.id == product.id }
+    fun excludeSelectedProducts(productList: List<ProductUiModel>,
+                                selectedProductIds: List<String>): List<ProductUiModel> {
+        return productList.filter { productUiModel ->
+            productUiModel.id !in selectedProductIds
+        }
     }
 
-    fun setSelectedProduct(selectedProducts: List<ProductUiModel>) {
-        this.selectedProducts = selectedProducts.toMutableList()
-    }
-
-    // ADAPTER POSITION
-    fun setClickedAdapterPosition(adapterPosition: Int) {
-        this.adapterPosition = adapterPosition
-    }
-
-    fun getClickedAdapterPosition(): Int? {
-        return adapterPosition
-    }
+//    // PRODUCT SELECTIONS
+//    fun addSelectedProduct(product: ProductUiModel) {
+//        val selectedProducts = selectedProductsLiveData.value
+//        selectedProducts?.add(product)
+//        selectedProductsLiveData.value = selectedProducts
+//    }
+//
+//    fun removeSelectedProduct(product: ProductUiModel) {
+//        val selectedProducts = selectedProductsLiveData.value
+//        selectedProducts?.removeFirst { it.id == product.id }
+//        selectedProductsLiveData.value = selectedProducts
+//    }
+//
+//    fun setSelectedProduct(selectedProducts: List<ProductUiModel>) {
+//        selectedProductsLiveData.value = selectedProducts.toMutableList()
+//    }
 }

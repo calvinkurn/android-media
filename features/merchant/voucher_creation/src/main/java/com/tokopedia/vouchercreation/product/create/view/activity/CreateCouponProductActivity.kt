@@ -16,20 +16,23 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class CreateCouponProductActivity : AppCompatActivity() {
 
     companion object {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
-        const val BUNDLE_KEY_TARGET_BUYER = "targetBuyer"
+        const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
+        const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
         const val BUNDLE_KEY_COUPON = "coupon"
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         const val REQUEST_CODE_CREATE_COUPON = 100
-        const val TARGET_ALL_USER = 0
-        private const val REQUEST_CODE_ADD_PRODUCT = 101
+        const val REQUEST_CODE_ADD_PRODUCT = 101
         private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
@@ -87,30 +90,14 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun navigateToProductListPage(coupon: Coupon) {
         val couponSettings = coupon.settings
-
-        val targetBuyer = 0 //0 for all user
-        val benefitType = when {
-            couponSettings.type == CouponType.FREE_SHIPPING -> "idr"
-            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "idr"
-            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percent"
-            else -> "idr"
-        }
-
-        val couponType = when (couponSettings.type) {
-            CouponType.NONE -> EMPTY_STRING
-            CouponType.CASHBACK -> "cashback"
-            CouponType.FREE_SHIPPING -> "shipping"
-        }
-
-        val benefitIdr = couponSettings.discountAmount
-        val benefitMax = couponSettings.maxDiscount
-        val benefitPercent = couponSettings.discountPercentage
-        val minPurchase = couponSettings.minimumPurchase
-
+        val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val addProductIntent = Intent(this, ProductListActivity::class.java).apply {
             putExtras(Bundle().apply {
-                putInt(BUNDLE_KEY_TARGET_BUYER, TARGET_ALL_USER)
+                putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProductIds = ArrayList<String>()
+                selectedProductIds.addAll(couponPreviewFragment.getSelectedProductIds())
+                putStringArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
             })
         }
         startActivityForResult(addProductIntent, REQUEST_CODE_ADD_PRODUCT)
@@ -138,39 +125,10 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
         fragment.setOnCouponSaved {
             //couponSettingFragment.setCouponSettings(couponSettings)
-
-            //Stub the products data for testing purpose
-            couponPreviewFragment.setCouponProductsData(buildDummyProducts())
             router.popFragment(supportFragmentManager)
             couponPreviewFragment.setCouponSettingsData(it)
         }
         return fragment
-    }
-
-    private fun buildDummyProducts() : List<CouponProduct> {
-        return listOf(
-            CouponProduct(
-                "2147956088",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                19
-            ),
-            CouponProduct(
-                "15455652",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                1000
-            ),
-            CouponProduct(
-                "15429644",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                2100
-            ),
-            CouponProduct(
-                "15409031",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                31000
-            )
-        )
-
     }
 
     private fun redirectPage(coupon: Coupon) {
@@ -224,4 +182,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
         return calendar.time
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
+            if(resultCode == Activity.RESULT_OK){
+                val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                couponPreviewFragment.setSelectedProducts(selectedProducts)
+            }
+        }
+    }
 }
