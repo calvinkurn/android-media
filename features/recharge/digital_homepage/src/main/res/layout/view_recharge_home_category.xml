@@ -10,11 +10,26 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_recharge_home_category_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ic_recharge_home_category_chevron"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_recharge_home_category_chevron"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_color_light_disabled="@color/Unify_NN900"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_disabled="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_enable_state="true"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@id/tv_recharge_home_category_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_recharge_home_category_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_recharge_home_category"

@@ -28,8 +28,9 @@ object RechargeHomepageSectionMapper {
     private const val LEGO_BANNER_SIZE_3 = 3
 
     fun updateSectionsData(
-            oldData: List<RechargeHomepageSections.Section>,
-            newData: RechargeHomepageSections): List<RechargeHomepageSections.Section> {
+        oldData: List<RechargeHomepageSections.Section>,
+        newData: RechargeHomepageSections
+    ): List<RechargeHomepageSections.Section> {
         // Remove empty sections
         var sections = oldData.toMutableList()
         val updatedSections = newData.sections.filter { it.items.isNotEmpty() }
@@ -67,18 +68,32 @@ object RechargeHomepageSectionMapper {
 
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
         val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
-        for (section in sections){
-            sectionsList.add(RechargeHomepageSections.Section(section.id, template = section.template))
-            if(section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER ||
+        for (section in sections) {
+            sectionsList.add(
+                RechargeHomepageSections.Section(
+                    section.id,
+                    template = section.template
+                )
+            )
+            if (section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER ||
                 section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY
-            ){
-                sectionsList.add(RechargeHomepageSections.Section(RechargeHomepageViewModel.ID_TICKER, template = RechargeHomepageViewModel.SECTION_TICKER))
+            ) {
+                sectionsList.add(
+                    RechargeHomepageSections.Section(
+                        RechargeHomepageViewModel.ID_TICKER,
+                        template = RechargeHomepageViewModel.SECTION_TICKER
+                    )
+                )
             }
         }
         return sectionsList
     }
 
-    fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>, tickerList: RechargeTickerHomepageModel): List<Visitable<*>> {
+    fun mapHomepageSections(
+        sections: List<RechargeHomepageSections.Section>,
+        tickerList: RechargeTickerHomepageModel,
+        platformId: Int
+    ): List<Visitable<*>> {
         return sections.mapNotNull {
             val id = it.id
             with(RechargeHomepageViewModel.Companion) {
@@ -89,15 +104,22 @@ object RechargeHomepageSectionMapper {
                     SECTION_URGENCY_WIDGET -> {
                         // Check if it is initial sections or not
                         if (it.title.isEmpty() && it.items.isEmpty()) {
-                            ReminderWidgetModel(id=id, data = ReminderWidget(id), source = ReminderEnum.RECHARGE)
+                            ReminderWidgetModel(
+                                id = id,
+                                data = ReminderWidget(id),
+                                source = ReminderEnum.RECHARGE
+                            )
                         } else {
                             getReminderWidgetModel(it)
                         }
                     }
                     SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
-                    SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
+                    SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it, platformId)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
-                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
+                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(
+                        it,
+                        mapSectionToChannel(it)
+                    )
                     SECTION_COUNTDOWN_SINGLE_BANNER -> {
                         /**
                          * Count down widget is always from cloud because
@@ -131,16 +153,20 @@ object RechargeHomepageSectionMapper {
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
                     SECTION_MINI_CAROUSELL -> RechargeHomepageCarousellModel(it)
                     SECTION_TICKER -> {
-                        if(!tickerList.rechargeTickers.isEmpty()){
+                        if (!tickerList.rechargeTickers.isEmpty()) {
                             tickerList
                         } else null
                     }
                     SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
                     SECTION_PRODUCT_CARD_DGU -> RechargeProductCardUnifyModel(it)
                     SECTION_3_ICONS -> RechargeHomepageThreeIconsModel(it)
-                    SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomepageProductCardCustomBannerV2Model(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomepageProductCardCustomBannerV2Model(
+                        it
+                    )
                     SECTION_RECOMMENDATION_BANNER -> RechargeHomepageRecommendationBannerModel(it)
-                    SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM -> RechargeHomepageProductCardCustomLastItemModel(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM -> RechargeHomepageProductCardCustomLastItemModel(
+                        it
+                    )
                     else -> null
                 }
             }
@@ -149,9 +175,12 @@ object RechargeHomepageSectionMapper {
 
     private fun getReminderWidgetModel(section: RechargeHomepageSections.Section): ReminderWidgetModel? {
         section.items.firstOrNull()?.run {
-            return ReminderWidgetModel(id = section.id,
-                    data = ReminderWidget(section.id,
-                    listOf(ReminderData(
+            return ReminderWidgetModel(
+                id = section.id,
+                data = ReminderWidget(
+                    section.id,
+                    listOf(
+                        ReminderData(
                             applink,
                             id = section.id,
                             iconURL = mediaUrl,
@@ -169,8 +198,10 @@ object RechargeHomepageSectionMapper {
                                 "DANGER" -> ReminderState.ATTENTION
                                 else -> ReminderState.NEUTRAL
                             }
-                    ))
-            ), source = ReminderEnum.RECHARGE)
+                        )
+                    )
+                ), source = ReminderEnum.RECHARGE
+            )
         }
         return null
     }
@@ -182,18 +213,22 @@ object RechargeHomepageSectionMapper {
             section.items.size >= LEGO_BANNER_SIZE_6 -> LEGO_BANNER_SIZE_6 to DynamicChannelLayout.LAYOUT_6_IMAGE
             else -> LEGO_BANNER_SIZE_3 to DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE
         }
-        return DynamicLegoBannerDataModel(ChannelModel(
+        return DynamicLegoBannerDataModel(
+            ChannelModel(
                 section.id,
                 section.id,
                 channelConfig = ChannelConfig(layoutConfig),
                 channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle),
                 channelGrids = section.items.take(imageCount).map { item ->
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
-                }))
+                })
+        )
     }
 
-    fun setDynamicHeaderViewChannel(headerView: DynamicChannelHeaderView, channelModel: ChannelModel?,
-                                    listener: HeaderListener? = null) {
+    fun setDynamicHeaderViewChannel(
+        headerView: DynamicChannelHeaderView, channelModel: ChannelModel?,
+        listener: HeaderListener? = null
+    ) {
         val headerListener = listener ?: object : HeaderListener {
             override fun onSeeAllClick(link: String) { /* do nothing */
             }
@@ -220,10 +255,15 @@ object RechargeHomepageSectionMapper {
             val sectionId = section.id.toString()
             val serverDateMillisecond = getServerTime(serverDate).time
 
-            return ChannelModel(sectionId, sectionId,
-                    channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate),
-                    channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond),
-                            enableTimeDiffMoreThan24h = true)
+            return ChannelModel(
+                sectionId, sectionId,
+                channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate),
+                channelConfig = ChannelConfig(
+                    serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(
+                        serverDateMillisecond
+                    ),
+                    enableTimeDiffMoreThan24h = true
+                )
             )
         }
         return null
@@ -232,50 +272,55 @@ object RechargeHomepageSectionMapper {
     fun mapItemsToSearchCategoryModels(sections: RechargeHomepageSections): List<DigitalHomePageSearchCategoryModel> {
         val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
         sections.sections.forEach {
-            searchCategoryModels.addAll(it.items.map{ item ->
+            searchCategoryModels.addAll(it.items.map { item ->
                 DigitalHomePageSearchCategoryModel(
-                        item.id,
-                        item.title,
-                        item.title,
-                        item.applink,
-                        item.mediaUrl
+                    item.id,
+                    item.title,
+                    item.title,
+                    item.applink,
+                    item.mediaUrl
                 )
             })
         }
         return searchCategoryModels
     }
 
-    fun mapRechargeTickertoTickerData(list: List<RechargeTicker>): List<TickerData>{
+    fun mapRechargeTickertoTickerData(list: List<RechargeTicker>): List<TickerData> {
         return list.map {
             TickerData(
-                    it.name,
-                    it.content,
-                    when(it.type){
-                        TickerRechargeEnum.INFO.type -> Ticker.TYPE_INFORMATION
-                        TickerRechargeEnum.SUCCESS.type -> Ticker.TYPE_ANNOUNCEMENT
-                        TickerRechargeEnum.DANGER.type -> Ticker.TYPE_ERROR
-                        TickerRechargeEnum.WARNING.type -> Ticker.TYPE_WARNING
-                        else -> Ticker.TYPE_INFORMATION
-                    },
-                    true
+                it.name,
+                it.content,
+                when (it.type) {
+                    TickerRechargeEnum.INFO.type -> Ticker.TYPE_INFORMATION
+                    TickerRechargeEnum.SUCCESS.type -> Ticker.TYPE_ANNOUNCEMENT
+                    TickerRechargeEnum.DANGER.type -> Ticker.TYPE_ERROR
+                    TickerRechargeEnum.WARNING.type -> Ticker.TYPE_WARNING
+                    else -> Ticker.TYPE_INFORMATION
+                },
+                true
             )
         }
     }
 
-    fun mapSearchAutoCompletetoSearch(autoComplete: DigitalHomePageSearchAutoComplete, searchQuery:String): List<DigitalHomePageSearchCategoryModel> {
+    fun mapSearchAutoCompletetoSearch(
+        autoComplete: DigitalHomePageSearchAutoComplete,
+        searchQuery: String
+    ): List<DigitalHomePageSearchCategoryModel> {
         val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
-        autoComplete.digiPersoSearchSuggestion.data.items.map{ item ->
-           searchCategoryModels.add(DigitalHomePageSearchCategoryModel(
-                   id = "",
-                   label = item.title,
-                   subtitle = item.subtitle,
-                   applink = item.applink,
-                   icon =  item.imageUrl,
-                   searchQuery = searchQuery,
-                   typeLayout = getLayoutType(item.template),
-                   trackerUser = autoComplete.digiPersoSearchSuggestion.data.tracking,
-                   trackerItem = item.tracking
-           ))
+        autoComplete.digiPersoSearchSuggestion.data.items.map { item ->
+            searchCategoryModels.add(
+                DigitalHomePageSearchCategoryModel(
+                    id = "",
+                    label = item.title,
+                    subtitle = item.subtitle,
+                    applink = item.applink,
+                    icon = item.imageUrl,
+                    searchQuery = searchQuery,
+                    typeLayout = getLayoutType(item.template),
+                    trackerUser = autoComplete.digiPersoSearchSuggestion.data.tracking,
+                    trackerItem = item.tracking
+                )
+            )
         }
         return searchCategoryModels
     }
@@ -292,12 +337,17 @@ object RechargeHomepageSectionMapper {
         return resultString
     }
 
-    private fun spannableBoldString(label:String, searchQuery: String): SpannableStringBuilder {
+    private fun spannableBoldString(label: String, searchQuery: String): SpannableStringBuilder {
         val spannableString = SpannableStringBuilder(label.plus(" "))
         val searchQueryIndexes = label.indexesOf(searchQuery, ignoreCase = true)
-        for (searchQueryIndex in searchQueryIndexes){
+        for (searchQueryIndex in searchQueryIndexes) {
             if (searchQueryIndex > -1) {
-                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex, searchQueryIndex + searchQuery.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    searchQueryIndex,
+                    searchQueryIndex + searchQuery.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
         return spannableString
@@ -308,7 +358,8 @@ object RechargeHomepageSectionMapper {
             if (dueDate.isNotEmpty()) {
                 val serverDateMillisecond = getServerTime(serverDate).time
                 val expiredTime = DateHelper.getExpiredTime(dueDate)
-                val serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond)
+                val serverTimeOffset =
+                    ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond)
                 return isExpired(serverTimeOffset, expiredTime)
             }
         }
@@ -319,8 +370,8 @@ object RechargeHomepageSectionMapper {
         return DateHelper.getExpiredTime(serverTimeString)
     }
 
-    private fun getLayoutType(template:String): Int {
-        return when(template){
+    private fun getLayoutType(template: String): Int {
+        return when (template) {
             DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutType
             DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutType
             DigitalHomepageSearchEnumLayoutType.HEADER.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.HEADER.layoutType
@@ -330,11 +381,14 @@ object RechargeHomepageSectionMapper {
     }
 
     fun String?.indexesOf(substr: String, ignoreCase: Boolean = true): List<Int> {
-        tailrec fun String.collectIndexesOf(offset: Int = 0, indexes: List<Int> = emptyList()): List<Int> =
-                when (val index = indexOf(substr, offset, ignoreCase)) {
-                    -1 -> indexes
-                    else -> collectIndexesOf(index + substr.length, indexes + index)
-                }
+        tailrec fun String.collectIndexesOf(
+            offset: Int = 0,
+            indexes: List<Int> = emptyList()
+        ): List<Int> =
+            when (val index = indexOf(substr, offset, ignoreCase)) {
+                -1 -> indexes
+                else -> collectIndexesOf(index + substr.length, indexes + index)
+            }
 
         return when (this) {
             null -> emptyList()

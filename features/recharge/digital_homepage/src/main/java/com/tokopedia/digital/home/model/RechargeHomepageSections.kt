@@ -265,7 +265,10 @@ data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.S
 
 }
 
-data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.Section) :
+data class RechargeHomepageCategoryModel(
+    val section: RechargeHomepageSections.Section,
+    val platformId: Int
+) :
     RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -279,6 +282,12 @@ data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.S
         return if (b is RechargeHomepageCategoryModel) {
             section == b.section
         } else false
+    }
+
+    fun shouldShowChevron(): Boolean = (platformId == ALL_CATEGORY_PLATFORM_ID)
+
+    companion object {
+        private const val ALL_CATEGORY_PLATFORM_ID = 52
     }
 
 }
