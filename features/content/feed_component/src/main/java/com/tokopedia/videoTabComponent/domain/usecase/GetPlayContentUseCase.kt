@@ -5,7 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
+import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
 import javax.inject.Inject
 
 const val GQL_QUERY : String = """
@@ -126,27 +127,31 @@ private const val GROUP_VALUE = "feeds_channels"
 
 @GqlQuery("GetPlayContentUseCaseQuery", GQL_QUERY)
 class GetPlayContentUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<PlayGetContentSlotResponse>(graphqlRepository) {
+    : GraphqlUseCase<ContentSlotResponse>(graphqlRepository) {
 
     init {
-        setTypeClass(PlayGetContentSlotResponse::class.java)
+        setTypeClass(ContentSlotResponse::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         setGraphqlQuery(GetPlayContentUseCaseQuery.GQL_QUERY)
     }
+
     fun setParams(cursor: String, limit: Int) {
         val queryMap = mutableMapOf(
                 CURSOR to cursor,
-                LIMIT to limit,
-                GROUP to GROUP_VALUE
+                SOURCE_TYPE to "",
+                GROUP to GROUP_VALUE,
+                SOURCE_ID to ""
         )
         val map = mutableMapOf("req" to queryMap)
         setRequestParams(map)
     }
 
     suspend fun execute(cursor: String = "", limit: Int = 5):
-            PlayGetContentSlotResponse {
+            ContentSlotResponse {
         this.setParams(cursor, limit)
-        return executeOnBackground()
-//        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor)
+        val data =  executeOnBackground()
+        FeedPlayVideoTabMapper.map(data.playGetContentSlot, cursor)
+        return data
+//        return FeedPlayVideoTabMapper.map(data.playGetContentSlot, cursor)
     }
 }

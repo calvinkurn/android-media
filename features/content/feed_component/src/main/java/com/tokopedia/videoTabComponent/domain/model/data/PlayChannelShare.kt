@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.sample.data
+package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.google.gson.annotations.SerializedName
 
@@ -10,9 +10,9 @@ data class PlayChannelShare(
         @SerializedName("use_short_url")
         var use_short_url: Boolean = false,
         @SerializedName("meta_title")
-        var meta_title: Boolean = false,
+        var meta_title: String = "",
         @SerializedName("meta_description")
-        var meta_description: Boolean = false,
+        var meta_description: String = "",
         @SerializedName("is_show_button")
         var is_show_button: Boolean = false,
 

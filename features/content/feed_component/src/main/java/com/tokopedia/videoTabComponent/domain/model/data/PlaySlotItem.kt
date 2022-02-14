@@ -1,7 +1,9 @@
-package com.tokopedia.play.widget.sample.data
+package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.google.gson.annotations.SerializedName
-
+import com.tokopedia.play.widget.sample.data.PlayPartner
+import com.tokopedia.play.widget.sample.data.PlayPinnedMessage
+import com.tokopedia.play.widget.sample.data.PlayPinnedVoucher
 
 
 //pinned_product: [PlayPinnedProduct]

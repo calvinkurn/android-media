@@ -38,7 +38,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
 
     fun getDynamicTabs() {
         launchCatchError(block = {
-            val feedTabs: FeedTabs = useCase.executeOnBackground().feedTabs
+            var feedTabs: FeedTabs = useCase.executeOnBackground().feedTabs
             if (feedTabs.feedData.isNotEmpty()) {
                 tabResp.value = Success(feedTabs)
             } else {

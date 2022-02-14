@@ -1,6 +1,7 @@
-package com.tokopedia.play.widget.sample.data
+package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotItems
 
 data class PlaySlot(
         @SerializedName("id")
@@ -10,11 +11,11 @@ data class PlaySlot(
         @SerializedName("type")
         var type: String = "",
         @SerializedName("items")
-        var mods: List<PlaySlotItems> = emptyList(),
+        var items: List<PlaySlotItems> = emptyList(),
         @SerializedName("lihat_semua")
-        var lihat_semua: PlayLihatSemua = PlayLihatSemua(),
+        val lihat_semua: PlayLihatSemua,
         @SerializedName("inplace_pager")
-        var inplace_pager: PlaySlotParams = PlaySlotParams(),
+        val inplace_pager: PlaySlotParams,
         @SerializedName("hash")
         var hash: String = "",
         @SerializedName(" is_autoplay")
