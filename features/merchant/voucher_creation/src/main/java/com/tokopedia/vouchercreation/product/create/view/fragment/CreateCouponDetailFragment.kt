@@ -82,6 +82,7 @@ class CreateCouponDetailFragment(
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
 
+        setupToolbar()
         setupRecyclerViewTarget()
         setupDateInput()
         setupNextButton()
@@ -148,12 +149,15 @@ class CreateCouponDetailFragment(
                         else -> {
                             val isCouponNameError = validationResult.couponNameError.isNotBlank()
                             val isCouponCodeError = validationResult.codeError.isNotBlank()
+                            val couponName = tfuFillCouponName?.textFieldInput?.text.toString()
+                            val couponCode = tfuFillCouponCode?.textFieldInput?.text.toString()
                             tfuFillCouponName?.setError(isCouponNameError)
                             tfuFillCouponName?.setMessage(validationResult.couponNameError)
                             tfuFillCouponCode?.setError(isCouponCodeError)
                             tfuFillCouponCode?.setMessage(validationResult.codeError)
                             tickerErrorCouponValidation?.isVisible =
-                                isCouponCodeError || isCouponNameError
+                                (isCouponCodeError && viewModel.validateMinCharCouponCode(couponCode)) ||
+                                (isCouponNameError && viewModel.validateMinCharCouponName(couponName))
                         }
                     }
                 }
@@ -275,6 +279,14 @@ class CreateCouponDetailFragment(
         tfuCouponDateEnd?.setError(false)
         tfuCouponDateEnd?.setMessage("")
         tickerErrorCouponValidation?.gone()
+    }
+
+    private fun setupToolbar() {
+        val toolbar = binding?.toolbar
+        toolbar?.headerTitle = getString(R.string.mvc_coupon_information_title)
+        toolbar?.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     private fun RecyclerView.setRecyclerViewToVertical() {
