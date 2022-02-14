@@ -14,7 +14,7 @@ class PdpSimulationAnalytics @Inject constructor(
         get() = TrackApp.getInstance().gtm
 
     fun sendPayLaterSimulationEvent(event: PayLaterAnalyticsBase) {
-        when(event) {
+        when (event) {
             is PayLaterCtaClick -> sendClickCtaEvent(event)
             is PayLaterBottomSheetImpression -> sendBottomSheetImpressionEvent(event)
             is PayLaterProductImpressionEvent -> sendPayLaterProductImpressionTracking(event)
@@ -25,13 +25,31 @@ class PdpSimulationAnalytics @Inject constructor(
     fun sendGoPayBottomSheetEvent(event: PdpSimulationEvent) {
         when (event) {
             is PdpSimulationEvent.PayLater.GopayBottomSheetButtonClick ->
-                sendGopayClick(event.emiAmount, event.partnerName, event.productId, event.tenure, event.url)
+                sendGopayClick(
+                    event.emiAmount,
+                    event.partnerName,
+                    event.productId,
+                    event.tenure,
+                    event.url
+                )
             is PdpSimulationEvent.PayLater.GopayBottomSheetImpression ->
-                sendGopayImpression(event.emiAmount, event.partnerName, event.productId, event.tenure)
+                sendGopayImpression(
+                    event.emiAmount,
+                    event.partnerName,
+                    event.productId,
+                    event.tenure
+                )
+            else -> {}
         }
     }
 
-    private fun sendGopayClick(emiAmount: String, partnerName: String, productId: String, tenure: String, url: String) {
+    private fun sendGopayClick(
+        emiAmount: String,
+        partnerName: String,
+        productId: String,
+        tenure: String,
+        url: String
+    ) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
             EVENT_CATEGORY_FIN_TECH,
@@ -59,8 +77,10 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
-        val label = computeLabel(event.productId, event.userStatus,
-            event.tenureOption.toString())
+        val label = computeLabel(
+            event.productId, event.userStatus,
+            event.tenureOption.toString()
+        )
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
             EVENT_CATEGORY_FIN_TECH,
@@ -71,8 +91,16 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendClickCtaEvent(event: PayLaterCtaClick) {
-        val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
-            event.emiAmount, event.limit, event.redirectLink, event.payLaterPartnerName, event.ctaWording)
+        val label = computeLabel(
+            event.productId,
+            event.userStatus,
+            event.tenureOption.toString(),
+            event.emiAmount,
+            event.limit,
+            event.redirectLink,
+            event.payLaterPartnerName,
+            event.ctaWording
+        )
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
             EVENT_CATEGORY_FIN_TECH,
@@ -83,8 +111,10 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendBottomSheetImpressionEvent(event: PayLaterBottomSheetImpression) {
-        val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
-            event.emiAmount, event.limit, event.redirectLink, event.payLaterPartnerName)
+        val label = computeLabel(
+            event.productId, event.userStatus, event.tenureOption.toString(),
+            event.emiAmount, event.limit, event.redirectLink, event.payLaterPartnerName
+        )
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
             EVENT_CATEGORY_FIN_TECH,
@@ -95,8 +125,10 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendPayLaterProductImpressionTracking(event: PayLaterProductImpressionEvent) {
-        val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
-            event.emiAmount, event.payLaterPartnerName)
+        val label = computeLabel(
+            event.productId, event.userStatus, event.tenureOption.toString(),
+            event.emiAmount, event.payLaterPartnerName
+        )
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
             EVENT_CATEGORY_FIN_TECH,
@@ -113,13 +145,157 @@ class PdpSimulationAnalytics @Inject constructor(
         analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun computeLabel(vararg args: String) = args.filter { it.isNotEmpty() }.joinToString(" - ")
+    private fun computeLabel(vararg args: String) =
+        args.filter { it.isNotEmpty() }.joinToString(" - ")
+
+    fun sendOccEvent(pdpSimulationEvent: PdpSimulationEvent) {
+        when (pdpSimulationEvent) {
+
+            is PdpSimulationEvent.OccImpressionEvent -> {
+                sendOccImpressionEvent(
+                    pdpSimulationEvent.emiAmount,
+                    pdpSimulationEvent.limit,
+                    pdpSimulationEvent.partnerName,
+                    pdpSimulationEvent.quantity,
+                    pdpSimulationEvent.tenure,
+                    pdpSimulationEvent.variant,
+                    pdpSimulationEvent.userStatus
+                )
+            }
+            is PdpSimulationEvent.ChangePartnerImperssion -> sendOccChangePartnerImpressionEvent(
+                pdpSimulationEvent.userStatus,
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.variant
+            )
+            is PdpSimulationEvent.ClickChangePartnerEvent -> sendOccChangePartnerCLickEvent(
+                pdpSimulationEvent.userStatus,
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.variant
+            )
+            is PdpSimulationEvent.OccChangeVariantClicked -> sendOccChangeVariantImpression(
+                pdpSimulationEvent.emiAmount,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.tenure,
+                pdpSimulationEvent.variant,
+                pdpSimulationEvent.userStatus
+            )
+            is PdpSimulationEvent.OccChangeVariantListener ->
+            is PdpSimulationEvent.OccProceedToCheckout -> sendToCheckoutPageClickImpression(
+                pdpSimulationEvent.emiAmount,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.tenure,
+                pdpSimulationEvent.variant,
+                pdpSimulationEvent.userStatus
+            )
+            else -> {}
+        }
+    }
+
+    private fun sendOccChangePartnerCLickEvent(
+        userStatus: String,
+        partnerName: String,
+        quantity: String,
+        limit: String,
+        variant: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            OCC_CHANGE_PARTNER_CLICK_ACTION,
+            OCC_EVENT_CATEGORY,
+            " $userStatus -$partnerName  - $quantity - $limit- $variant"
+
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendOccChangePartnerImpressionEvent(
+        userStatus: String,
+        partnerName: String,
+        quantity: String,
+        limit: String,
+        variant: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            OCC_CHANGE_PARTNER_IMPRESSION_ACTION,
+            OCC_EVENT_CATEGORY,
+            " $userStatus -$partnerName  - $quantity - $limit- $variant"
+
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendToCheckoutPageClickImpression(
+        emiAmount: String,
+        limit: String,
+        partnerName: String,
+        quantity: String,
+        tenure: String,
+        variant: String,
+        userStatus: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            OCC_PROCEED_TO_CHECKOUT_ACTION,
+            OCC_EVENT_CATEGORY,
+            " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
+
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendOccChangeVariantImpression(
+        emiAmount: String,
+        limit: String,
+        partnerName: String,
+        quantity: String,
+        tenure: String,
+        variant: String,
+        userStatus: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            OCC_CHANGE_VARIANT_ACTION,
+            OCC_EVENT_CATEGORY,
+            " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
+
+        )
+        sendGeneralEvent(map)
+
+    }
+
+    private fun sendOccImpressionEvent(
+        emiAmount: String,
+        limit: String,
+        partnerName: String,
+        quantity: String,
+        tenure: String,
+        variant: String,
+        userStatus: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            OCC_EVENT_ACTION,
+            OCC_EVENT_CATEGORY,
+            " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
+
+        )
+        sendGeneralEvent(map)
+    }
 
     companion object {
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
-        const val BUSINESS_UNIT_FINTECH = "Fintech"
+        const val BUSINESS_UNIT_FINTECH = "FintechPayLater"
         const val CURRENT_SITE_FINTECH = "tokopediafintech"
         const val EVENT_NAME_FIN_TECH = "clickFintechMicrosite"
         const val EVENT_PDP = "pdp"
@@ -127,6 +303,7 @@ class PdpSimulationAnalytics @Inject constructor(
 
         const val EVENT_NAME_FIN_TECH_IMPRESSION = "viewFintechMicrosite"
         const val IRIS_EVENT_NAME_FIN_TECH_V3 = "viewFintechIris"
+        const val CLICK_EVENT_NAME_FIN_TECH_V3 = "clickFintech"
         const val EVENT_CATEGORY_FIN_TECH = "fin - info page"
 
         const val CLICK_CTA_HOW_TO_USE = "sim bnpl - cari tahu lebih lanjut click"
@@ -139,6 +316,16 @@ class PdpSimulationAnalytics @Inject constructor(
 
         const val EVENT_IMPRESSION_GOPAY_BOTTOMSHEET = "sim vcc - impression sambungin akun"
         const val EVENT_CLICK_GOPAY_BOTTOMSHEET = "sim vcc - click sambungin akun"
+
+        const val OCC_EVENT_ACTION = "pre occ bnpl - activated buyer pre occ page impression"
+        const val OCC_CHANGE_VARIANT_ACTION = "pre occ bnpl - activated buyer variant cta click"
+        const val OCC_PROCEED_TO_CHECKOUT_ACTION =
+            "pre occ bnpl - activated buyer click CTA beli langsung"
+        const val OCC_CHANGE_PARTNER_IMPRESSION_ACTION =
+            "pre occ bnpl - bottom sheet partner click"
+        const val OCC_CHANGE_PARTNER_CLICK_ACTION =
+            "pre occ bnpl - click partner option CTA"
+        const val OCC_EVENT_CATEGORY = "fin - pre occ page"
     }
 
 }

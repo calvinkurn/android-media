@@ -106,7 +106,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun sendEvent(event: PdpSimulationEvent) {
         activity?.let {
-            (it as PdpSimulationCallback).sendGoPayAnalytics(event)
+            (it as PdpSimulationCallback).sendOtherAnalytics(event)
         }
     }
 

@@ -174,6 +174,8 @@ const val GQL_PAYLATER_ACTIVATION = """
       disable
       reason_long
       reason_short
+      user_state
+      user_balance_amt
       detail {
         tenure
         chip_title

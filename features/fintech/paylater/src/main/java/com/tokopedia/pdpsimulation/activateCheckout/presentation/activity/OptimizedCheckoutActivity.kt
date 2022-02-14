@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.listner.GatewaySelectActivityListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.ActivationCheckoutFragment
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
@@ -25,7 +26,7 @@ import javax.inject.Inject
 
 
 class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
-    GatewaySelectActivityListner {
+    GatewaySelectActivityListner, PdpSimulationCallback {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
@@ -111,14 +112,18 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun getComponent() = pdpSimulationComponent
-//    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-//    }
-//    override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
-//        pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
-//    }
-
     override fun setGatewayValue(gatewaySelected: Int) {
         activationCheckoutFragment.updateSelectedTenure(gatewaySelected)
+    }
+
+    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
+    }
+
+    override fun sendOtherAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
+        pdpSimulationAnalytics.get().sendOccEvent(pdpSimulationEvent)
+    }
+
+    override fun sendAnalytics(pdpSimulationEvent: PayLaterAnalyticsBase) {
     }
 
 

@@ -11,14 +11,18 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.listner.GatewaySelectActivityListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.GatewayListAdapter
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
 class SelectGateWayBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.activation_gateway_brand
-    private  var listOfGateway: List<CheckoutData> = ArrayList()
-    private  var gatewayListAdapter: GatewayListAdapter? = null
+    private var listOfGateway: List<CheckoutData> = ArrayList()
+    private var gatewayListAdapter: GatewayListAdapter? = null
+
+    private var quantitySelected = 0;
+    private var variantSelected = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +40,12 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
     private fun getArgumentData() {
         arguments?.let {
+            quantitySelected = it.getInt(CURRENT_QUANTITY, 0)
+            variantSelected = it.getString(CURRENT_VARINT, "")
             val gatewayList: PaylaterGetOptimizedModel? = it.getParcelable(GATEWAY_LIST)
-            val selectedId= it.getString(SELECTED_GATEWAY)?:""
-            gatewayList?.checkoutData?.let { listOfGateway->
-                 setRecyclerData(listOfGateway,selectedId)
+            val selectedId = it.getString(SELECTED_GATEWAY) ?: ""
+            gatewayList?.checkoutData?.let { listOfGateway ->
+                setRecyclerData(listOfGateway, selectedId)
             }
         } ?: dismiss()
     }
@@ -53,6 +59,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                 break
             }
         }
+        sendAnalyticsImpression(gatewayList)
         listOfGateway = gatewayList
           gatewayListAdapter =
             context?.let { context->
@@ -61,15 +68,18 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                         gatewayId: Int,
                         newPosition: Int
                     ) {
-                        activity?.let { fragmentActivity->
-                            (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(gatewayId)
+                        activity?.let { fragmentActivity ->
+                            (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(
+                                gatewayId
+                            )
                         }
-                       for(i in 0 until listOfGateway.size)
-                       {
-                           listOfGateway[i].selectedGateway = i == newPosition
-                       }
-                            gatewayListAdapter?.updateList(listOfGateway)
-
+                        for (i in listOfGateway.indices) {
+                            listOfGateway[i].selectedGateway = i == newPosition
+                        }
+                        if (listOfGateway.size > newPosition) {
+                            sendClickAnalytics(listOfGateway[newPosition])
+                        }
+                        gatewayListAdapter?.updateList(listOfGateway)
 
                     }
 
@@ -83,6 +93,32 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         }
 
 
+    }
+
+    private fun sendClickAnalytics(checkoutData: CheckoutData) {
+        activity?.let {
+            checkoutData.userAmount?.let { limit ->
+                PdpSimulationEvent.ClickChangePartnerEvent(
+                    checkoutData.gateway_name,
+                    limit, quantitySelected.toString(), variantSelected
+                )
+            }
+        }
+    }
+
+    private fun sendAnalyticsImpression(gatewayList: List<CheckoutData>) {
+        for (i in gatewayList.indices) {
+            activity?.let {
+                gatewayList[i].userAmount?.let { limit ->
+                    gatewayList[i].userState?.let { userState ->
+                        PdpSimulationEvent.ChangePartnerImperssion(
+                            gatewayList[i].gateway_name,
+                            limit, quantitySelected.toString(), variantSelected, userState
+                        )
+                    }
+                }
+            }
+        }
     }
 
 
@@ -108,11 +144,13 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         private const val TAG = "SelectGatewayBottomsheet"
         const val GATEWAY_LIST = "gateway_list"
         const val SELECTED_GATEWAY = "selected_gateway"
+        const val CURRENT_VARINT = "selected_variant"
+        const val CURRENT_QUANTITY = "selected_quantity"
 
         fun show(
             bundle: Bundle,
             childFragmentManager: FragmentManager
-        ):SelectGateWayBottomSheet  {
+        ): SelectGateWayBottomSheet {
             val actionStepsBottomSheet = SelectGateWayBottomSheet()
             actionStepsBottomSheet.arguments = bundle
             actionStepsBottomSheet.show(childFragmentManager, TAG)
