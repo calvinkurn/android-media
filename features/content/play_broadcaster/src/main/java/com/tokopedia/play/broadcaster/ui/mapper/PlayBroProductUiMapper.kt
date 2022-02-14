@@ -75,8 +75,11 @@ class PlayBroProductUiMapper @Inject constructor() {
         }
     }
 
-    fun mapProductTagSection(response: GetProductTagSummarySectionResponse): List<ProductTagSectionUiModel> {
-        return response.section.map { section ->
+    fun mapProductTagSection(response: GetProductTagSummarySectionResponse): Pair<List<ProductTagSectionUiModel>, Int> {
+        var totalProductSize = 0
+        val productTagSectionList = response.section.map { section ->
+            totalProductSize += section.products.size
+
             ProductTagSectionUiModel(
                 name = section.name,
                 campaignStatus = when(section.statusFmt) {
@@ -104,12 +107,14 @@ class PlayBroProductUiMapper @Inject constructor() {
                 }
             )
         }
+
+        return Pair(productTagSectionList, totalProductSize)
     }
 
     @ExperimentalStdlibApi
     /** TODO: gonna remove this annotation */
-    fun mapProductTagSection(): List<ProductTagSectionUiModel> {
-        return buildList<ProductTagSectionUiModel> {
+    fun mapProductTagSection(): Pair<List<ProductTagSectionUiModel>, Int> {
+        val productTagSectionList = buildList<ProductTagSectionUiModel> {
             for(i in 1..3) {
                 add(ProductTagSectionUiModel(
                     name = "Sale $i",
@@ -127,6 +132,8 @@ class PlayBroProductUiMapper @Inject constructor() {
                 ))
             }
         }
+
+        return Pair(productTagSectionList, 3)
     }
 
     private fun Long.forceToUTCWithoutTimezone(): Date {

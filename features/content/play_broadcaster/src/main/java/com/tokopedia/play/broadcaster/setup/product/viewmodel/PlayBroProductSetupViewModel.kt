@@ -292,12 +292,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private suspend fun getProductTagSummary() {
         /** TODO: gonna remove this delay */
 //        delay(1000)
-        val response = repo.getProductTagSummarySection(channelId.toLong())
-
-        var productCount = 0
-        response.forEach {
-            productCount += it.products.size
-        }
+        val (response, productCount) = repo.getProductTagSummarySection(channelId.toLong())
 
         _productTagSectionList.value = response
         _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
