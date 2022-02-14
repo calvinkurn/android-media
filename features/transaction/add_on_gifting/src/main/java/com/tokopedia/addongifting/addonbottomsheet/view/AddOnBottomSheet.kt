@@ -336,6 +336,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         val addOnImages = arrayListOf<String>()
         addOnImages.addAll(addOnUiModel.addOnAllImageUrls)
         intent.putStringArrayListExtra(AddOnConstant.EXTRA_ADD_ON_IMAGES, addOnImages)
+        intent.putExtra(AddOnConstant.EXTRA_ADD_ON_NAME, addOnUiModel.addOnName)
+        intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRICE, addOnUiModel.addOnPrice)
         startActivity(intent)
     }
 }
