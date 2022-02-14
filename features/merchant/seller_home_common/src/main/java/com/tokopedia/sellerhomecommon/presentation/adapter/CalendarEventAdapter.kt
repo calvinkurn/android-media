@@ -107,7 +107,6 @@ class CalendarEventAdapter(
 
                 if (isSingleDayEvent) return
 
-                imgShcEventItemDash.loadImage(R.drawable.ic_shc_vertical_dash_line)
                 tvShcCalendarEndDate.text = DateTimeUtil.format(
                     item.endDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD
                 )

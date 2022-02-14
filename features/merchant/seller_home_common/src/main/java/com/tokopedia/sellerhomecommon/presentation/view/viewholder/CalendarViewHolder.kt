@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -53,6 +54,9 @@ class CalendarViewHolder(
         observeState(element)
         setShadowBackground()
         showTag(element)
+        binding.root.addOnImpressionListener(element.impressHolder) {
+            listener.sendCalendarImpressionEvent(element)
+        }
     }
 
     private fun showTag(element: CalendarWidgetUiModel) {
@@ -182,6 +186,7 @@ class CalendarViewHolder(
                 .forEach {
                     it.setOnClickListener {
                         listener.showCalendarWidgetDateFilter(element)
+                        listener.sendCalendarFilterClickEvent(element)
                     }
                 }
         }
