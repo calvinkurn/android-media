@@ -61,13 +61,7 @@ data class ChannelDetailsWithRecomResponse(
         val share: Share = Share(),
 
         @SerializedName("air_time")
-        val airTime: String = "",
-
-        @SerializedName("has_follow_button")
-        val hasFollowButton: Boolean = false,
-
-        @SerializedName("empty_bottom_sheet")
-        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
+        val airTime: String = ""
     )
 
     data class Partner(
@@ -177,6 +171,12 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("multiple_like")
         val multipleLikeConfig: List<MultipleLikeConfig> = emptyList(),
+
+        @SerializedName("has_follow_button")
+        val hasFollowButton: Boolean = false,
+
+        @SerializedName("empty_bottom_sheet")
+        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
     )
 
     data class FreezeData(

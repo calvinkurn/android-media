@@ -46,7 +46,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
                 ),
-                partnerInfo = mapPartnerInfo(it.partner, it.hasFollowButton),
+                partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                 channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner),
