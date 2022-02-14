@@ -851,13 +851,13 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }
 
             init(listener)
-            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL)
+            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.VOUCHER_PRODUCT_THUMBNAIL_ICON_IMAGE_URL)
             setOgImageUrl(imageUrl)
             setUtmCampaignData(
-                pageName = ShareComponentConstant.PAGE_NAME,
+                pageName = ShareComponentConstant.VOUCHER_PRODUCT_PAGE_NAME,
                 userId = userSession.userId,
                 pageId = couponId.toString(),
-                feature = ShareComponentConstant.SHARE
+                feature = ShareComponentConstant.VOUCHER_PRODUCT_FEATURE
             )
         }
     }

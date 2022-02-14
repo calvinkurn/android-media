@@ -26,9 +26,9 @@ class NetworkModule {
     @VoucherCreationScope
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val baseUrl = if (TokopediaUrl.getInstance().TYPE == Env.LIVE) {
-            "https://imagenerator.tokopedia.net/"
+            "https://imagenerator.tokopedia.com/"
         } else {
-            "https://imagenerator-staging.tokopedia.net/"
+            "https://imagenerator-staging.tokopedia.com/"
         }
 
         return Retrofit.Builder()

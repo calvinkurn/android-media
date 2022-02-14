@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.UpdateQuotaUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -36,8 +37,9 @@ class UpdateCouponQuotaViewModel @Inject constructor(
 
 
     sealed class QuotaState {
+        object QuotaIsZero : QuotaState()
         data class BelowMinQuota(val minQuota: Int) : QuotaState()
-        data class ExceedMaxAllowedQuota(val maxQuota : Int) : QuotaState()
+        data class ExceedMaxAllowedQuota(val maxQuota: Int) : QuotaState()
         data class Valid(val newQuota: Int) : QuotaState()
     }
 
@@ -56,7 +58,11 @@ class UpdateCouponQuotaViewModel @Inject constructor(
     }
 
 
-    fun validateInput(newQuota : Int, minQuota : Int) {
+    fun validateInput(newQuota: Int, minQuota: Int) {
+        if (newQuota == NumberConstant.ZERO) {
+            _validInput.value = QuotaState.QuotaIsZero
+            return
+        }
         if (newQuota < minQuota) {
             _validInput.value = QuotaState.BelowMinQuota(minQuota)
             return
@@ -71,7 +77,7 @@ class UpdateCouponQuotaViewModel @Inject constructor(
     }
 
 
-    fun calculateMaxExpenseEstimation(maxDiscountAmount : Int, quota : Int) {
+    fun calculateMaxExpenseEstimation(maxDiscountAmount: Int, quota: Int) {
         _maxExpenseEstimation.value = (maxDiscountAmount * quota).toLong()
     }
 
