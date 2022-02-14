@@ -342,7 +342,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private suspend fun getProductTagSummary() {
-        val (response, productCount) = repo.getProductTagSummarySection(channelId.toInt())
+        val (response, productCount) = repo.getProductTagSummarySection(channelId.toLong())
 
         _productTagSectionList.value = response
         _productCount.value = productCount

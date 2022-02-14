@@ -30,6 +30,6 @@ interface PlayBroProductRepository {
     suspend fun setProductTags(channelId: String, productIds: List<String>)
 
     suspend fun getProductTagSummarySection(
-        channelID: Int,
+        channelID: Long,
     ): Pair<List<ProductTagSectionUiModel>, Int>
 }
