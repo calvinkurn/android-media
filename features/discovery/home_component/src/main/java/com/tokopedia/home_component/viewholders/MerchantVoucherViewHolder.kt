@@ -43,7 +43,7 @@ class MerchantVoucherViewHolder(
 
     private fun mappingView(channel: ChannelModel) {
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
-//        recyclerView.setHasFixedSize(true)
+        binding?.recycleList?.setHasFixedSize(true)
 //
 //        valuateRecyclerViewDecoration()
 //
