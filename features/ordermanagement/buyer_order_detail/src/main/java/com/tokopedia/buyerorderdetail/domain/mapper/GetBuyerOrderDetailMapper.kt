@@ -80,19 +80,17 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             addonsLogoUrl = details.addonIcon,
             totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
             addonsItemList = addonSummary?.addons?.map {
-                val message = it.metadata?.addonNote?.notes.orEmpty()
+                val addonNote = it.metadata?.addonNote
                 AddonsListUiModel.AddonItemUiModel(
                     priceText = it.priceStr,
                     addOnsName = it.name,
                     addonsId = it.id,
                     quantity = it.quantity,
                     addOnsThumbnailUrl = it.imageUrl,
-                    isCustomNote = it.metadata?.addonNote?.isCustomNote.orFalse(),
-                    toStr = it.metadata?.addonNote?.to.orEmpty(),
-                    fromStr = it.metadata?.addonNote?.from.orEmpty(),
-                    message = StringBuilder(message).append(message).append(message).append(message)
-                        .append(message).append(message).append(message).append(message)
-                        .append(message).toString()
+                    isCustomNote = addonNote?.isCustomNote.orFalse(),
+                    toStr = addonNote?.to.orEmpty(),
+                    fromStr = addonNote?.from.orEmpty(),
+                    message = addonNote?.notes.orEmpty()
                 )
             }.orEmpty()
         )
