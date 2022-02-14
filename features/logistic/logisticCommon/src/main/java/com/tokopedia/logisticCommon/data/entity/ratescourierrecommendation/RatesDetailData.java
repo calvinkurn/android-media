@@ -35,7 +35,7 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("promo_stacking")
     @Expose
     private PromoStacking promoStacking;
-    @SerializedName("list_promo_stacking")
+    @SerializedName("promo_stackings")
     @Expose
     private List<PromoStacking> listPromoStacking;
     @SerializedName("pre_order")

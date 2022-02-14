@@ -181,7 +181,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           bottom_sheet_description
         }
       }
-      list_promo_stacking {
+      promo_stackings {
         is_promo
         promo_code
         title
