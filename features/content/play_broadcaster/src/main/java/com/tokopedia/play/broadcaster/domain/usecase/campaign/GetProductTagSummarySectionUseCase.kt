@@ -40,7 +40,7 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
                 broadcasterGetProductTagSection(req: {
                     channelID: ${"$${PARAM_CHANNEL_ID}"}
                 }) {
-                    section {
+                    sections {
                         name,
                         statusFmt,
                         products {
