@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,14 +149,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         try {
             gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
-                    sendAnalyticEvent(
-                        PdpSimulationEvent.OccProceedToCheckout(
-                            checkoutData.gateway_name, quantity.toString(),
-                            checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                            checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                            limit, variantName
+                    checkoutData.userState?.let { userStatus ->
+                        sendAnalyticEvent(
+                            PdpSimulationEvent.OccProceedToCheckout(
+                                checkoutData.gateway_name, quantity.toString(),
+                                checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                                limit, variantName,userStatus
+                            )
                         )
-                    )
+                    }
                 }
 
             }
@@ -285,14 +288,18 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         try {
             gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
-                    sendAnalyticEvent(
-                        PdpSimulationEvent.OccImpressionEvent(
-                            checkoutData.gateway_name, quantity.toString(),
-                            checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                            checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                            limit, variantName
-                        )
-                    )
+                    checkoutData.userState?.let {userStatus ->
+                        if(!isDisabled) {
+                            sendAnalyticEvent(
+                                PdpSimulationEvent.OccImpressionEvent(
+                                    checkoutData.gateway_name, quantity.toString(),
+                                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                                    limit, variantName, userStatus
+                                )
+                            )
+                        }
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -602,14 +609,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         try {
             gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
-                    sendAnalyticEvent(
-                        PdpSimulationEvent.OccChangeVariantClicked(
+                    checkoutData.userState?.let { userState->
+                        sendAnalyticEvent(PdpSimulationEvent.OccChangeVariantClicked(
                             checkoutData.gateway_name, quantity.toString(),
                             checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
                             checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                            limit, variantName, checkoutData.userState
-                        )
-                    )
+                            limit, variantName, userState
+                        ))
+                    }
                 }
 
             }
@@ -622,6 +629,18 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun quantityTextWatcher() {
+        detailHeader.quantityEditor.editText.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if(keyCode == KeyEvent.KEYCODE_ENTER)
+                {
+                    detailHeader.quantityEditor.editText.clearFocus()
+                    return true
+                }
+
+                return false
+            }
+
+        })
         detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
