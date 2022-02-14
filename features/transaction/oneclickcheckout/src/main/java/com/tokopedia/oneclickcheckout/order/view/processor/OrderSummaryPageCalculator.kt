@@ -242,7 +242,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalItemPriceAndShippingFee = cost.totalItemPriceAndShippingFee,
                     totalAdditionalFee = cost.totalAdditionalFee,
                     totalDiscounts = cost.totalDiscounts,
-                    isNewBottomSheet = payment.walletData.isGoCicil
             )
             return@withContext orderCost to payment
         }
@@ -321,7 +320,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalPriceWithoutDiscountsAndPaymentFees = subtotalWithoutDiscountsAndPaymentFee,
                     totalItemPriceAndShippingFee = totalProductPrice + totalShippingPrice,
                     totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice,
-                    totalDiscounts = totalDiscounts
+                    totalDiscounts = totalDiscounts,
             )
             return@withContext orderCost to updatedProductIndex
         }

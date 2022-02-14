@@ -390,10 +390,10 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {
         return OrderPaymentGoCicilData(
-                errorMessageInvalidTenure = goCicilData.errorMessageInvalidTenure,
-                errorMessageBottomLimit = goCicilData.errorMessageBottomLimit,
-                errorMessageTopLimit = goCicilData.errorMessageTopLimit,
-                errorMessageUnavailableTenures = goCicilData.errorMessageUnavailableTenures,
+                errorMessageInvalidTenure = "goCicilData.errorMessageInvalidTenure",
+                errorMessageBottomLimit = "goCicilData.errorMessageBottomLimit",
+                errorMessageTopLimit = "goCicilData.errorMessageTopLimit",
+                errorMessageUnavailableTenures = "goCicilData.errorMessageUnavailableTenures",
                 paymentSignature = goCicilData.paymentSignature,
                 selectedTenure = goCicilData.selectedTenure,
         )

@@ -396,14 +396,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 header_title
                 url_link
             }
-            go_cicil {
-                error_message_invalid_tenure
-                error_message_top_limit
-                error_message_bottom_limit
-                error_message_unavailable_tenures
-                payment_signature
-                selected_tenure
-            }
           }
         }
         shipment {

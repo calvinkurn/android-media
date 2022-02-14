@@ -19,9 +19,6 @@ data class OrderCost(
         val totalItemPriceAndShippingFee: Double = 0.0,
         val totalAdditionalFee: Double = 0.0,
         val totalDiscounts: Int = 0,
-
-        // Flag
-        val isNewBottomSheet: Boolean = false,
 )
 
 data class OrderCostCashbackData(

@@ -68,7 +68,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderCostSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -1489,11 +1488,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
                 orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
-                if (orderCost.isNewBottomSheet) {
-                    OrderCostSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
-                } else {
-                    OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
-                }
+                OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
             }
 
             override fun onPayClicked() {

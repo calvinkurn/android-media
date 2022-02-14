@@ -71,7 +71,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
             j = launch {
                 val result = paymentProcessor.getGopayAdminFee(0)
                 if (result != null) {
-//                listener.onSelectInstallment(result.first, result.second)
+                    listener.onSelectInstallment(result.first, result.second)
                     setupInstallments(fragment, walletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second))
                 } else {
                     dismiss()
@@ -88,50 +88,45 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         val inflater = LayoutInflater.from(fragment.context)
         val installmentDetails = goCicilData.availableTerms
         val selectedTerm = goCicilData.selectedTerm?.installmentTerm ?: -1
-        val a by lazy { MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50) }
         for (installment in installmentDetails) {
             val viewInstallmentDetailItem = ItemGocicilInstallmentDetailBinding.inflate(inflater)
             if (!installment.isActive) {
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER
-                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = true
-                viewInstallmentDetailItem.rbInstallmentDetail.skipAnimation()
+                viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
+                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = false
+                viewInstallmentDetailItem.tvInstallmentDetailName.setTextColor(
+                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                )
+                viewInstallmentDetailItem.tvInstallmentDetailDescription.setTextColor(
+                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                )
             } else if (installment.isActive && selectedTerm == installment.installmentTerm) {
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                viewInstallmentDetailItem.cardItemInstallmentDetail.setCardBackgroundColor(a)
+                viewInstallmentDetailItem.cardItemInstallmentDetail.setCardBackgroundColor(
+                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                )
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = true
-                viewInstallmentDetailItem.rbInstallmentDetail.skipAnimation()
+                viewInstallmentDetailItem.cardItemInstallmentDetail.setOnClickListener {
+                    listener.onSelectInstallment(installment, installmentDetails)
+                    dismiss()
+                }
+                viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
+                    listener.onSelectInstallment(installment, installmentDetails)
+                    dismiss()
+                }
             } else {
-                viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                viewInstallmentDetailItem.cardItemInstallmentDetail.setCardBackgroundColor(a)
-                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = true
+                viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER
+                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = false
                 viewInstallmentDetailItem.rbInstallmentDetail.skipAnimation()
+                viewInstallmentDetailItem.cardItemInstallmentDetail.setOnClickListener {
+                    listener.onSelectInstallment(installment, installmentDetails)
+                    dismiss()
+                }
+                viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
+                    listener.onSelectInstallment(installment, installmentDetails)
+                    dismiss()
+                }
             }
-//            if (installment.term > 0) {
-//                viewInstallmentDetailItem.tvInstallmentDetailName.text = "${installment.term}x Cicilan 0%"
-//                viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
-//            } else {
-//                viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
-//                viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
-//            }
-//            if (installment.isActive) {
-//                viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
-//                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
-//                viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
-//                    listener.onSelectInstallment(installment, creditCard.availableTerms)
-//                    dismiss()
-//                }
-//                viewInstallmentDetailItem.root.alpha = ENABLE_ALPHA
-//            } else {
-//                if (installment.description.isNotEmpty()) {
-//                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = installment.description
-//                } else {
-//                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(
-//                        R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
-//                }
-//                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
-//                viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
-//                viewInstallmentDetailItem.root.alpha = DISABLE_ALPHA
-//            }
             binding?.mainContent?.addView(viewInstallmentDetailItem.root)
         }
         val installmentMessageDetail = installmentDetails.firstOrNull { it.isActive && it.firstDueMessage.isNotBlank() && it.firstInstallmentDate.isNotBlank() }
