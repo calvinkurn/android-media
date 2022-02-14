@@ -19,10 +19,6 @@ class SearchBarViewComponent(
                 eventBus.emit(Event.OnSearched(keyword))
             }
 
-            override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-
-            }
-
             override fun onCleared(view: PlaySearchBar) {
                 eventBus.emit(Event.OnSearched(""))
             }

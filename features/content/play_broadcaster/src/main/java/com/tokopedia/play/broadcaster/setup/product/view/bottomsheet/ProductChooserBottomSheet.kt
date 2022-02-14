@@ -196,7 +196,7 @@ class ProductChooserBottomSheet @Inject constructor(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
         if (prevSort?.id != sort?.id) {
-            sortChipsView.setText(sort?.text.orEmpty())
+            sortChipsView.setText(sort?.text)
         }
 
         if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) sortChipsView.show()

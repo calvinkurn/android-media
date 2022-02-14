@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.play.broadcaster.R
@@ -63,6 +65,21 @@ internal class ProductListViewHolder private constructor() {
             binding.checkboxProduct.isChecked = item.isSelected
             binding.checkboxProduct.setOnCheckedChangeListener { _, _ -> onSelected(item.product) }
         }
+
+        companion object {
+
+            fun create(
+                parent: ViewGroup,
+                onSelected: (ProductUiModel) -> Unit
+            ) = Product(
+                binding = ItemProductListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+                onSelected = onSelected,
+            )
+        }
     }
 
     internal class Loading(
@@ -74,6 +91,17 @@ internal class ProductListViewHolder private constructor() {
             if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
                 layoutParams.isFullSpan = true
             }
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = Loading(
+                ItemLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
         }
     }
 }
