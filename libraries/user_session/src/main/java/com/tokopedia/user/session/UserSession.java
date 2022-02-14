@@ -1,5 +1,54 @@
 package com.tokopedia.user.session;
 
+import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
+import static com.tokopedia.user.session.Constants.ADVERTISINGID;
+import static com.tokopedia.user.session.Constants.ANDROID_ID;
+import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
+import static com.tokopedia.user.session.Constants.EMAIL;
+import static com.tokopedia.user.session.Constants.FULL_NAME;
+import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_ID_TIMESTAMP;
+import static com.tokopedia.user.session.Constants.GCM_STORAGE;
+import static com.tokopedia.user.session.Constants.GC_TOKEN;
+import static com.tokopedia.user.session.Constants.GTM_LOGIN_ID;
+import static com.tokopedia.user.session.Constants.HAS_PASSWORD;
+import static com.tokopedia.user.session.Constants.HAS_SHOWN_SALDO_INTRO_PAGE;
+import static com.tokopedia.user.session.Constants.HAS_SHOWN_SALDO_WARNING;
+import static com.tokopedia.user.session.Constants.IS_AFFILIATE;
+import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER;
+import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER_NEW_ONBOARDING;
+import static com.tokopedia.user.session.Constants.IS_GOLD_MERCHANT;
+import static com.tokopedia.user.session.Constants.IS_LOCATION_ADMIN;
+import static com.tokopedia.user.session.Constants.IS_LOGIN;
+import static com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED;
+import static com.tokopedia.user.session.Constants.IS_MULTI_LOCATION_SHOP;
+import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
+import static com.tokopedia.user.session.Constants.IS_SHOP_ADMIN;
+import static com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE;
+import static com.tokopedia.user.session.Constants.IS_SHOP_OWNER;
+import static com.tokopedia.user.session.Constants.KEY_ADVERTISINGID;
+import static com.tokopedia.user.session.Constants.KEY_ANDROID_ID;
+import static com.tokopedia.user.session.Constants.LOGIN_ID;
+import static com.tokopedia.user.session.Constants.LOGIN_METHOD;
+import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
+import static com.tokopedia.user.session.Constants.LOGIN_UUID_KEY;
+import static com.tokopedia.user.session.Constants.PHONE_NUMBER;
+import static com.tokopedia.user.session.Constants.PROFILE_PICTURE;
+import static com.tokopedia.user.session.Constants.REFRESH_TOKEN;
+import static com.tokopedia.user.session.Constants.REFRESH_TOKEN_KEY;
+import static com.tokopedia.user.session.Constants.SHOP_AVATAR;
+import static com.tokopedia.user.session.Constants.SHOP_ID;
+import static com.tokopedia.user.session.Constants.SHOP_NAME;
+import static com.tokopedia.user.session.Constants.TEMP_EMAIL;
+import static com.tokopedia.user.session.Constants.TEMP_NAME;
+import static com.tokopedia.user.session.Constants.TEMP_PHONE_NUMBER;
+import static com.tokopedia.user.session.Constants.TEMP_USER_ID;
+import static com.tokopedia.user.session.Constants.TOKEN_TYPE;
+import static com.tokopedia.user.session.Constants.TWITTER_ACCESS_TOKEN;
+import static com.tokopedia.user.session.Constants.TWITTER_ACCESS_TOKEN_SECRET;
+import static com.tokopedia.user.session.Constants.TWITTER_SHOULD_POST;
+import static com.tokopedia.user.session.Constants.UUID_KEY;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
@@ -9,11 +58,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.MessageDigest;
-import java.lang.Exception;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.user.session.Constants.*;
 
 /**
  * @author by milhamj on 04/04/18.
@@ -67,7 +113,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
             return androidId;
         } else {
             String android_id = md5(
-                    Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.getString(getContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID)
             );
             if (!TextUtils.isEmpty(android_id)) {
@@ -98,9 +144,9 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     }
 
     public boolean isLoggedIn() {
-        String u_id = getAndTrimOldString(LOGIN_SESSION, LOGIN_ID, null);
+        String u_id = getAndTrimOldString(LOGIN_SESSION, LOGIN_ID, "");
         boolean isLogin = getAndTrimOldBoolean(LOGIN_SESSION, IS_LOGIN, false);
-        return isLogin && u_id != null;
+        return isLogin && u_id != null && !u_id.isEmpty();
     }
 
     public boolean isShopOfficialStore() {
@@ -200,7 +246,6 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Override
     public void setTempPhoneNumber(String userPhone) {
         setString(LOGIN_SESSION, TEMP_PHONE_NUMBER, userPhone);
-
     }
 
     public boolean isMsisdnVerified() {
@@ -487,7 +532,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
      * SETTER METHOD
      */
     public void setUUID(String uuid) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_UUID_KEY, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getContext().getSharedPreferences(LOGIN_UUID_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
 
         String prevUUID = sharedPrefs.getString(UUID_KEY, "");

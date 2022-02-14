@@ -1,5 +1,7 @@
 package com.tokopedia.user.session.datastore
 
+import kotlinx.coroutines.flow.Flow
+
 interface UserSessionDataStore {
     
     companion object {
@@ -9,68 +11,68 @@ interface UserSessionDataStore {
 	const val LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock"
     }
 
-    fun getAccessToken(): String
+    fun getAccessToken(): Flow<String>
 
-    fun getTokenType(): String
+    fun getTokenType(): Flow<String>
 
-    fun getRefreshToken(): String
+    fun getRefreshToken(): Flow<String>
 
-    fun getUserId(): String
+    fun getUserId(): Flow<String>
 
-    fun isLoggedIn(): Boolean
+    fun isLoggedIn(): Flow<Boolean>
 
-    fun getShopId(): String
+    fun getShopId(): Flow<String>
 
-    fun getName(): String
+    fun getName(): Flow<String>
 
-    fun getProfilePicture(): String
+    fun getProfilePicture(): Flow<String>
 
-    fun getTemporaryUserId(): String
+    fun getTemporaryUserId(): Flow<String>
 
-    fun getDeviceId(): String
+    fun getDeviceId(): Flow<String>
 
-    fun getTempEmail(): String
+    fun getTempEmail(): Flow<String>
 
-    fun getTempPhoneNumber(): String
+    fun getTempPhoneNumber(): Flow<String>
 
-    fun isMsisdnVerified(): Boolean
+    suspend fun isMsisdnVerified(): Flow<Boolean>
 
-    fun hasShownSaldoWithdrawalWarning(): Boolean
+    suspend fun hasShownSaldoWithdrawalWarning(): Flow<Boolean>
 
-    fun getPhoneNumber(): String
+    fun getPhoneNumber(): Flow<String>
 
-    fun getEmail(): String
+    fun getEmail(): Flow<String>
 
-    fun getRefreshTokenIV(): String
+    fun getRefreshTokenIV(): Flow<String>
 
-    fun isFirstTimeUser(): Boolean
+    suspend fun isFirstTimeUser(): Flow<Boolean>
 
-    fun isGoldMerchant(): Boolean
+    suspend fun isGoldMerchant(): Flow<Boolean>
 
-    fun getShopName(): String
+    fun getShopName(): Flow<String>
 
-    fun hasShop(): Boolean
+    suspend fun hasShop(): Flow<Boolean>
 
-    fun hasPassword(): Boolean
+    suspend fun hasPassword(): Flow<Boolean>
 
-    fun getGCToken(): String
+    fun getGCToken(): Flow<String>
 
-    fun getShopAvatar(): String
+    fun getShopAvatar(): Flow<String>
 
-    fun isPowerMerchantIdle(): Boolean
+    suspend fun isPowerMerchantIdle(): Flow<Boolean>
 
-    fun getAutofillUserData(): String
+    fun getAutofillUserData(): Flow<String>
 
-    fun getTwitterAccessToken(): String
+    fun getTwitterAccessToken(): Flow<String>
 
-    fun getTwitterAccessTokenSecret(): String
+    fun getTwitterAccessTokenSecret(): Flow<String>
 
-    fun getTwitterShouldPost(): Boolean
+    fun getTwitterShouldPost(): Flow<Boolean>
 
     /**
      * @return method name from this class
      */
-    fun getLoginMethod(): String
+    fun getLoginMethod(): Flow<String>
 
     /**
      * SETTER METHOD
@@ -105,9 +107,13 @@ interface UserSessionDataStore {
 
     suspend fun setToken(accessToken: String, tokenType: String)
 
-    fun clearToken()
+    suspend fun setTokenType(tokenType: String)
 
-    fun logoutSession()
+    suspend fun setAccessToken(accessToken: String)
+
+    suspend fun clearToken()
+
+    suspend fun logoutSession()
 
     suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean)
 
@@ -118,15 +124,15 @@ interface UserSessionDataStore {
     suspend fun setRefreshToken(refreshToken: String)
 
     suspend fun setLoginSession(
-	isLogin: Boolean,
-	userId: String,
-	fullName: String,
-	shopId: String,
-	isMsisdnVerified: Boolean,
-	shopName: String,
-	email: String,
-	shopIsGold: Boolean,
-	phoneNumber: String
+        isLogin: Boolean,
+        userId: String,
+        fullName: String,
+        shopId: String,
+        isMsisdnVerified: Boolean,
+        shopName: String,
+        email: String,
+        shopIsGold: Boolean,
+        phoneNumber: String
     )
 
     suspend fun setIsMSISDNVerified(isMsisdnVerified: Boolean)
@@ -147,6 +153,10 @@ interface UserSessionDataStore {
 
     suspend fun setTwitterAccessTokenAndSecret(accessToken: String, accessTokenSecret: String)
 
+    suspend fun setTwitterAccessToken(accessToken: String)
+
+    suspend fun setTwitterSecret(secret: String)
+
     suspend fun setTwitterShouldPost(shouldPost: Boolean)
 
     suspend fun setAutofillUserData(autofillUserData: String)
@@ -155,37 +165,37 @@ interface UserSessionDataStore {
 
     suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean)
 
-    fun isShopOfficialStore(): Boolean
+    suspend fun isShopOfficialStore(): Flow<Boolean>
 
     suspend fun setDeviceId(deviceId: String)
 
     suspend fun setFcmTimestamp()
 
-    fun getFcmTimestamp(): Long
+    fun getFcmTimestamp(): Flow<Long>
 
-    fun getGTMLoginID(): String
+    fun getGTMLoginID(): Flow<String>
 
-    fun getAndroidId(): String
+    fun getAndroidId(): Flow<String>
 
-    fun getAdsId(): String
+    fun getAdsId(): Flow<String>
 
-    fun isAffiliate(): Boolean
+    suspend fun isAffiliate(): Flow<Boolean>
 
-    fun hasShownSaldoIntroScreen(): Boolean
+    suspend fun hasShownSaldoIntroScreen(): Flow<Boolean>
 
-    fun isShopOwner(): Boolean
+    suspend fun isShopOwner(): Flow<Boolean>
 
     suspend fun setIsShopOwner(isShopOwner: Boolean)
 
-    fun isShopAdmin(): Boolean
+    suspend fun isShopAdmin(): Flow<Boolean>
 
     suspend fun setIsShopAdmin(isShopAdmin: Boolean)
 
-    fun isLocationAdmin(): Boolean
+    suspend fun isLocationAdmin(): Flow<Boolean>
 
     suspend fun setIsLocationAdmin(isLocationAdmin: Boolean)
 
-    fun isMultiLocationShop(): Boolean
+    suspend fun isMultiLocationShop(): Flow<Boolean>
 
     suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
 

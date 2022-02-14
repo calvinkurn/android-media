@@ -1,223 +1,244 @@
-package com.tokopedia.user.session;
+package com.tokopedia.user.session
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Pair;
+import android.content.Context
+import android.util.Pair
+import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl
+import com.tokopedia.user.session.datastore.UserSessionKeyMapper
+import com.tokopedia.user.session.util.EncoderDecoder
 
-import com.tokopedia.user.session.util.EncoderDecoder;
+open class MigratedUserSession(var context: Context) {
 
-public class MigratedUserSession {
-    public static final String suffix = "_v2";
-    protected Context context;
+    private val userSessionDataStore: UserSessionDataStore = UserSessionDataStoreImpl(context)
 
-    public MigratedUserSession(Context context) {
-        this.context = context.getApplicationContext();
+    protected fun getLong(prefName: String?, keyName: String?, defValue: Long): Long {
+	val newPrefName = String.format("%s%s", prefName, suffix)
+	val newKeyName = String.format("%s%s", keyName, suffix)
+
+	// look up from cache
+	val key = Pair(newPrefName, newKeyName)
+	if (UserSessionMap.map.containsKey(key)) {
+	    try {
+		val value = UserSessionMap.map[key]
+		return if (value == null) {
+		    defValue
+		} else {
+		    value as Long
+		}
+	    } catch (ignored: Exception) {
+	    }
+	}
+	val oldValue = internalGetLong(prefName, keyName, defValue)
+	if (oldValue != defValue) {
+	    internalCleanKey(prefName, keyName)
+	    internalSetLong(newPrefName, newKeyName, oldValue)
+	    UserSessionMap.map[key] = oldValue
+	    return oldValue
+	}
+	val sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
+	val value = sharedPrefs.getLong(newKeyName, defValue)
+	UserSessionMap.map[key] = value
+	return value
     }
 
-
-    protected long getLong(String prefName, String keyName, long defValue) {
-        String newPrefName = String.format("%s%s", prefName, suffix);
-        String newKeyName = String.format("%s%s", keyName, suffix);
-
-        // look up from cache
-        Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
-        if (UserSessionMap.map.containsKey(key)) {
-            try {
-                Object value = UserSessionMap.map.get(key);
-                if (value == null) {
-                    return defValue;
-                } else {
-                    return (long) value;
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-        long oldValue = internalGetLong(prefName, keyName, defValue);
-
-        if (oldValue != defValue) {
-            internalCleanKey(prefName, keyName);
-            internalSetLong(newPrefName, newKeyName, oldValue);
-            UserSessionMap.map.put(key, oldValue);
-            return oldValue;
-        }
-
-        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
-        long value = sharedPrefs.getLong(newKeyName, defValue);
-        UserSessionMap.map.put(key, value);
-        return value;
+    private fun internalGetLong(prefName: String?, keyName: String?, defValue: Long): Long {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	return sharedPrefs.getLong(keyName, defValue)
     }
 
-    private long internalGetLong(String prefName, String keyName, long defValue) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getLong(keyName, defValue);
+    private fun internalSetLong(prefName: String, keyName: String, value: Long) {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs.edit()
+	editor.putLong(keyName, value)
+	editor.apply()
     }
 
-    private void internalSetLong(String prefName, String keyName, long value) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putLong(keyName, value);
-        editor.apply();
+    fun convertToNewKey(prefName: String?, keyName: String?): Pair<String, String> {
+	return Pair(String.format("%s%s", prefName, suffix), String.format("%s%s", keyName, suffix))
     }
 
-    Pair<String, String> convertToNewKey(String prefName, String keyName){
-        return new Pair<>(String.format("%s%s", prefName, suffix), String.format("%s%s", keyName, suffix));
+    protected fun setLong(prefName: String, keyName: String, value: Long) {
+	var prefName = prefName
+	var keyName = keyName
+	val newKeys = convertToNewKey(prefName, keyName)
+	prefName = newKeys.first
+	keyName = newKeys.second
+	UserSessionMap.map[Pair(prefName, keyName)] = value
+	internalSetLong(prefName, keyName, value)
     }
 
-    protected void setLong(String prefName, String keyName, long value) {
-        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
-        prefName = newKeys.first;
-        keyName = newKeys.second;
-        UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
-        internalSetLong(prefName, keyName, value);
+    protected fun cleanKey(prefName: String?, keyName: String?) {
+	var prefName = prefName
+	var keyName = keyName
+	val newKeys = convertToNewKey(prefName, keyName)
+	prefName = newKeys.first
+	keyName = newKeys.second
+	UserSessionMap.map.remove(Pair(prefName, keyName))
+	internalCleanKey(prefName, keyName)
     }
 
-    protected void cleanKey(String prefName, String keyName) {
-        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
-        prefName = newKeys.first;
-        keyName = newKeys.second;
-        UserSessionMap.map.remove(new Pair<>(prefName, keyName));
-        internalCleanKey(prefName, keyName);
+    private fun internalCleanKey(prefName: String?, keyName: String?) {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs.edit()
+	editor.remove(keyName).apply()
     }
 
-    private void internalCleanKey(String prefName, String keyName) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.remove(keyName).apply();
+    protected fun nullString(prefName: String?, keyName: String?) {
+//	var prefName = prefName
+//	var keyName = keyName
+//	val newKeys = convertToNewKey(prefName, keyName)
+//	prefName = newKeys.first
+//	keyName = newKeys.second
+//	UserSessionMap.map[Pair(prefName, keyName)] = null
+//	internalSetString(prefName, keyName, null)
     }
 
-    protected void nullString(String prefName, String keyName) {
-        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
-        prefName = newKeys.first;
-        keyName = newKeys.second;
-        UserSessionMap.map.put(new Pair<>(prefName, keyName), null);
-        internalSetString(prefName, keyName, null);
+    private fun internalGetString(prefName: String?, keyName: String?, defValue: String): String? {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	return sharedPrefs.getString(keyName, defValue)
     }
 
-    private String internalGetString(String prefName, String keyName, String defValue) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
+    protected fun setString(prefName: String?, keyName: String?, value: String?) {
+	var prefName = prefName
+	var keyName = keyName
+	var value = value
+	val newKeys = convertToNewKey(prefName, keyName)
+	prefName = newKeys.first
+	keyName = newKeys.second
+	UserSessionMap.map[Pair(prefName, keyName)] = value
+	value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV) // encrypt string here
+	internalSetString(prefName, keyName, value)
     }
 
-    protected void setString(String prefName, String keyName, String value) {
-        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
-        prefName = newKeys.first;
-        keyName = newKeys.second;
-        UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
-        value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV);// encrypt string here
-        internalSetString(prefName, keyName, value);
+    private fun internalSetString(prefName: String?, keyName: String, value: String) {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs.edit()
+	editor.putString(keyName, value)
+	editor.apply()
+	UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
     }
 
-    private void internalSetString(String prefName, String keyName, String value) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(keyName, value);
-        editor.apply();
+    protected fun getAndTrimOldString(
+	prefName: String?,
+	keyName: String?,
+	defValue: String
+    ): String? {
+	val newPrefName = String.format("%s%s", prefName, suffix)
+	val newKeyName = String.format("%s%s", keyName, suffix)
+	val debug = ""
+	var isGettingFromMap = false
+	val key = Pair(newPrefName, newKeyName)
+	if (UserSessionMap.map.containsKey(key)) {
+	    try {
+		val value = UserSessionMap.map[key]
+		return if (value == null) {
+		    isGettingFromMap = true
+		    defValue
+		} else {
+		    isGettingFromMap = true
+		    value as String?
+		}
+	    } catch (ignored: Exception) {
+	    }
+	}
+	return try {
+	    val oldValue = internalGetString(prefName, keyName, defValue)
+	    if (oldValue != null && oldValue != defValue) {
+		internalCleanKey(prefName, keyName)
+		internalSetString(
+		    newPrefName,
+		    newKeyName,
+		    EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV)
+		)
+		UserSessionMap.map[key] = oldValue
+		return oldValue
+	    }
+	    val sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
+	    var value = sharedPrefs.getString(newKeyName, defValue)
+	    if (value != null) {
+		if (value == defValue) { // if value same with def value\
+		    value
+		} else {
+		    value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV) // decrypt here
+		    if (value.isEmpty()) {
+			defValue
+		    } else {
+			UserSessionMap.map[key] = value
+			value
+		    }
+		}
+	    } else {
+		defValue
+	    }
+	} catch (e: Exception) {
+	    defValue
+	}
     }
 
-    protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
-        String newPrefName = String.format("%s%s", prefName, suffix);
-        String newKeyName = String.format("%s%s", keyName, suffix);
-        String debug = "";
-        boolean isGettingFromMap = false;
-
-        Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
-        if (UserSessionMap.map.containsKey(key)) {
-            try {
-                Object value = UserSessionMap.map.get(key);
-                if (value == null) {
-                    isGettingFromMap = true;
-                    return defValue;
-                } else {
-                    isGettingFromMap = true;
-                    return (String) value;
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-        try {
-            String oldValue = internalGetString(prefName, keyName, defValue);
-
-            if (oldValue != null && !oldValue.equals(defValue)) {
-                internalCleanKey(prefName, keyName);
-                internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
-                UserSessionMap.map.put(key, oldValue);
-                return oldValue;
-            }
-
-            SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
-            String value = sharedPrefs.getString(newKeyName, defValue);
-
-            if (value != null) {
-                if (value.equals(defValue)) {// if value same with def value\
-                    return value;
-                } else {
-                    value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
-                    if(value.isEmpty()) {
-                        return defValue;
-                    } else {
-                        UserSessionMap.map.put(key, value);
-                        return value;
-                    }
-                }
-            } else {
-                return defValue;
-            }
-        } catch (Exception e) {
-            return defValue;
-        }
+    private fun internalGetBoolean(
+	prefName: String?,
+	keyName: String?,
+	defValue: Boolean
+    ): Boolean {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	return sharedPrefs.getBoolean(keyName, defValue)
     }
 
-    private boolean internalGetBoolean(String prefName, String keyName, boolean defValue) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean(keyName, defValue);
+    private fun internalSetBoolean(prefName: String, keyName: String, value: Boolean) {
+	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs.edit()
+	editor.putBoolean(keyName, value)
+	editor.apply()
+	UserSessionKeyMapper.mapUserSessionKeyBoolean(keyName, userSessionDataStore, value)
     }
 
-    private void internalSetBoolean(String prefName, String keyName, boolean value) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putBoolean(keyName, value);
-        editor.apply();
+    protected fun setBoolean(prefName: String?, keyName: String?, value: Boolean) {
+	var prefName = prefName
+	var keyName = keyName
+	val newKeys = convertToNewKey(prefName, keyName)
+	prefName = newKeys.first
+	keyName = newKeys.second
+	UserSessionMap.map[Pair(prefName, keyName)] = value
+	internalSetBoolean(prefName, keyName, value)
     }
 
-    protected void setBoolean(String prefName, String keyName, boolean value) {
-        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
-        prefName = newKeys.first;
-        keyName = newKeys.second;
-        UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
-        internalSetBoolean(prefName, keyName, value);
+    protected fun getAndTrimOldBoolean(
+	prefName: String?,
+	keyName: String?,
+	defValue: Boolean
+    ): Boolean {
+	val newPrefName = String.format("%s%s", prefName, suffix)
+	val newKeyName = String.format("%s%s", keyName, suffix)
+	val key = Pair(newPrefName, newKeyName)
+	if (UserSessionMap.map.containsKey(key)) {
+	    try {
+		val value = UserSessionMap.map[key]
+		return if (value == null) {
+		    defValue
+		} else {
+		    value as Boolean
+		}
+	    } catch (ignored: Exception) {
+	    }
+	}
+	val oldValue = internalGetBoolean(prefName, keyName, defValue)
+	if (oldValue != defValue) {
+	    internalCleanKey(prefName, keyName)
+	    internalSetBoolean(newPrefName, newKeyName, oldValue)
+	    UserSessionMap.map[key] = oldValue
+	    return oldValue
+	}
+	val sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
+	val value = sharedPrefs.getBoolean(newKeyName, defValue)
+	UserSessionMap.map[key] = value
+	return value
     }
 
-    protected boolean getAndTrimOldBoolean(String prefName, String keyName, boolean defValue) {
-        String newPrefName = String.format("%s%s", prefName, suffix);
-        String newKeyName = String.format("%s%s", keyName, suffix);
+    companion object {
+	const val suffix = "_v2"
+    }
 
-        Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
-        if (UserSessionMap.map.containsKey(key)) {
-            try {
-                Object value = UserSessionMap.map.get(key);
-                if (value == null) {
-                    return defValue;
-                } else {
-                    return (boolean) value;
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-        boolean oldValue = internalGetBoolean(prefName, keyName, defValue);
-
-        if (oldValue != defValue) {
-            internalCleanKey(prefName, keyName);
-            internalSetBoolean(newPrefName, newKeyName, oldValue);
-            UserSessionMap.map.put(key, oldValue);
-            return oldValue;
-        }
-
-        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
-        boolean value = sharedPrefs.getBoolean(newKeyName, defValue);
-        UserSessionMap.map.put(key, value);
-        return value;
+    init {
+	context = context.applicationContext
     }
 }

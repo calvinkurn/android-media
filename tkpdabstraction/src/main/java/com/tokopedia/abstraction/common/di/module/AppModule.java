@@ -13,6 +13,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
+import com.tokopedia.user.session.datastore.UserSessionDataStore;
+import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -69,5 +71,10 @@ public class AppModule {
     @Provides
     public GraphqlUseCaseInterface provideGraphqlUsecase() {
         return new GraphqlUseCase();
+    }
+
+    @Provides
+    public UserSessionDataStore provideUserSessionDataStore(@ApplicationContext Context context) {
+        return new UserSessionDataStoreImpl(context);
     }
 }

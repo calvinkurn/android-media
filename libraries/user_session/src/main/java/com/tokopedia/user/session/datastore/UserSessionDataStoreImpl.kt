@@ -7,64 +7,21 @@ import com.tokopedia.user.session.UserSessionProto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
-class UserSessionDataStoreImpl(val userSessionStore: DataStore<UserSessionProto>) :
+class UserSessionDataStoreImpl (val context: Context):
     UserSessionDataStore {
-
-    private val USER_PREFERENCES_NAME = "user_session"
-    private val DATA_STORE_FILE_NAME = "user_session.pb"
-    private val SORT_ORDER_KEY = "sort_order"
-
+    
     private val Context.userSessionStore: DataStore<UserSessionProto> by dataStore(
         fileName = DATA_STORE_FILE_NAME,
-        serializer = UserSessionSerializer
+        serializer = UserSessionSerializer()
     )
 
-    suspend fun saveAccessToken(token: String) {
-//        userSessionStore.updateData { preferences ->
-//            val pref = preferences.toBuilder()
-//            pref.accessToken = accessToken
-//            pref.build()
-//        }
-        userSessionSetter {
-            accessToken = token
-        }
-    }
-
-    suspend fun saveRefreshToken(token: String) {
-        userSessionSetter {
-            refreshToken = token
-        }
-    }
-
-    suspend fun storeData(userData: UserData) {
-        userSessionStore.updateData { preferences ->
-            val pref = preferences.toBuilder()
-            pref.accessToken = userData.accessToken
-            pref.name = userData.name
-            pref.phoneNumber = userData.phoneNumber
-            pref.refreshToken = userData.refreshToken
-            pref.email = userData.email
-            pref.build()
-        }
-    }
-
-
-    fun getUserSession(): Flow<UserData> {
-        return userSessionStore.data.map { proto ->
-            UserData(
-                name = proto.name,
-                email = proto.email,
-                phoneNumber = proto.phoneNumber,
-                accessToken = proto.accessToken,
-                refreshToken = proto.refreshToken
-            )
-        }
+    fun getUserSessionFlow(): Flow<UserSessionProto> {
+        return context.userSessionStore.data
     }
 
     suspend fun getUserSessionSuspend(): UserData {
-        val proto = userSessionStore.data.first()
+        val proto = context.userSessionStore.data.first()
         return UserData(
             name = proto.name,
             email = proto.email,
@@ -74,220 +31,275 @@ class UserSessionDataStoreImpl(val userSessionStore: DataStore<UserSessionProto>
         )
     }
 
-    fun getAccessToken(): Flow<String> {
-        return userSessionStore.data.map {
-            it.accessToken
+    private suspend fun userSessionSetter(func: UserSessionProto.Builder.() -> Unit) {
+        context.userSessionStore.updateData { preferences ->
+            preferences.toBuilder()
+                .also { func(it) }
+                .build()
         }
     }
 
-    fun Flow<UserSessionProto>.toBlocking(): UserData {
-        return runBlocking {
-            this@toBlocking.first().mapToUserData()
+    override fun getAccessToken(): Flow<String> {
+        return getUserSessionFlow().map { it.accessToken }
+    }
+
+    override fun getTokenType(): Flow<String> {
+        return getUserSessionFlow().map { it.tokenType }
+    }
+
+    override fun getRefreshToken(): Flow<String> {
+        return getUserSessionFlow().map { it.refreshToken }
+    }
+
+    override fun getUserId(): Flow<String> {
+        return getUserSessionFlow().map { it.userId }
+    }
+
+    override fun isLoggedIn(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isLoggedIn }
+    }
+
+    override fun getShopId(): Flow<String> {
+        return getUserSessionFlow().map { it.shopId }
+    }
+
+    override fun getName(): Flow<String> {
+        return getUserSessionFlow().map { it.name }
+    }
+
+    override fun getProfilePicture(): Flow<String> {
+        return getUserSessionFlow().map { it.profilePicture }
+    }
+
+    override fun getTemporaryUserId(): Flow<String> {
+        return getUserSessionFlow().map { it.tempUserId }
+    }
+
+    override fun getDeviceId(): Flow<String> {
+        return getUserSessionFlow().map { it.deviceId }
+    }
+
+    override fun getTempEmail(): Flow<String> {
+        return getUserSessionFlow().map { it.tempLoginEmail }
+    }
+
+    override fun getTempPhoneNumber(): Flow<String> {
+        return getUserSessionFlow().map { it.tempPhoneNumber }
+    }
+
+    override suspend fun isMsisdnVerified(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isMSISDNVerified }
+    }
+
+    override suspend fun hasShownSaldoWithdrawalWarning(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.saldoWithdrawalWaring }
+    }
+
+    override fun getPhoneNumber(): Flow<String> {
+        return getUserSessionFlow().map { it.phoneNumber }
+    }
+
+    override fun getEmail(): Flow<String> {
+        return getUserSessionFlow().map { it.email }
+    }
+
+    override fun getRefreshTokenIV(): Flow<String> {
+        TODO("Refresh Token IV")
+    }
+
+    override suspend fun isFirstTimeUser(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.firstTimeUser }
+    }
+
+    override suspend fun isGoldMerchant(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isGoldMerchant }
+    }
+
+    override fun getShopName(): Flow<String> {
+        return getUserSessionFlow().map { it.shopName }
+    }
+
+    override suspend fun hasShop(): Flow<Boolean> {
+        return getUserSessionFlow().map {
+            it.shopId.isNotEmpty() && it.shopId != "0"
         }
     }
 
-    override fun getAccessToken(): String {
-	    return userSessionStore.data.toBlocking().accessToken
+    override suspend fun hasPassword(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.hasPassword }
     }
 
-    override fun getTokenType(): String {
-        TODO("Not yet implemented")
+    override fun getGCToken(): Flow<String> {
+        return getUserSessionFlow().map { it.gcToken }
     }
 
-    override fun getRefreshToken(): String {
-        TODO("Not yet implemented")
+    override fun getShopAvatar(): Flow<String> {
+        return getUserSessionFlow().map { it.shopAvatar }
     }
 
-    override fun getUserId(): String {
-        TODO("Not yet implemented")
+    override suspend fun isPowerMerchantIdle(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isPowerMerchantIdle }
     }
 
-    override fun isLoggedIn(): Boolean {
-        TODO("Not yet implemented")
+    override fun getAutofillUserData(): Flow<String> {
+        return getUserSessionFlow().map { it.autofillUserData }
     }
 
-    override fun getShopId(): String {
-        TODO("Not yet implemented")
+    override fun getTwitterAccessToken(): Flow<String> {
+        TODO("Twitter access token")
     }
 
-    override fun getName(): String {
-        TODO("Not yet implemented")
+    override fun getTwitterAccessTokenSecret(): Flow<String> {
+        return getUserSessionFlow().map { it.twitterAccessTokenSecret }
     }
 
-    override fun getProfilePicture(): String {
-        TODO("Not yet implemented")
+    override fun getTwitterShouldPost(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.twitterShouldPost }
     }
 
-    override fun getTemporaryUserId(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDeviceId(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getTempEmail(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getTempPhoneNumber(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun isMsisdnVerified(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun hasShownSaldoWithdrawalWarning(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getPhoneNumber(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getEmail(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRefreshTokenIV(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun isFirstTimeUser(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun isGoldMerchant(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getShopName(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun hasShop(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun hasPassword(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getGCToken(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getShopAvatar(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun isPowerMerchantIdle(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAutofillUserData(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getTwitterAccessToken(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getTwitterAccessTokenSecret(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getTwitterShouldPost(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getLoginMethod(): String {
-        TODO("Not yet implemented")
+    override fun getLoginMethod(): Flow<String> {
+        return getUserSessionFlow().map { it.loginMethod }
     }
 
     override suspend fun setUUID(uuid: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setUuid(uuid)
+        }
     }
 
     override suspend fun setIsLogin(isLogin: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            isLoggedIn = isLogin
+        }
     }
 
     override suspend fun setUserId(userId: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setUserId(userId)
+        }
     }
 
     override suspend fun setName(fullName: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            name = fullName
+        }
     }
 
     override suspend fun setEmail(email: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setEmail(email)
+        }
     }
 
     override suspend fun setPhoneNumber(phoneNumber: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setPhoneNumber(phoneNumber)
+        }
     }
 
     override suspend fun setShopId(shopId: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setShopId(shopId)
+        }
     }
 
     override suspend fun setShopName(shopName: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setShopName(shopName)
+        }
     }
 
     override suspend fun setIsGoldMerchant(isGoldMerchant: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setIsGoldMerchant(isGoldMerchant)
+        }
     }
 
     override suspend fun setTempLoginName(fullName: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            tempLoginName = fullName
+        }
     }
 
     override suspend fun setTempUserId(userId: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            tempUserId = userId
+        }
     }
 
     override suspend fun setIsAffiliateStatus(isAffiliate: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            isAffiliateStatus = isAffiliate
+        }
     }
 
     override suspend fun setTempPhoneNumber(userPhone: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            tempPhoneNumber = userPhone
+        }
     }
 
     override suspend fun setTempLoginEmail(email: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            tempLoginEmail = email
+        }
     }
 
     override suspend fun setToken(accessToken: String, tokenType: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setAccessToken(accessToken)
+            setTokenType(tokenType)
+        }
+    }
+
+    override suspend fun setTokenType(tokenType: String) {
+        userSessionSetter {
+            setTokenType(tokenType)
+        }
+    }
+
+    override suspend fun setAccessToken(accessToken: String) {
+        userSessionSetter {
+            setAccessToken(accessToken)
+        }
     }
 
     override suspend fun setToken(accessToken: String, tokenType: String, refreshToken: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setAccessToken(accessToken)
+            setTokenType(tokenType)
+            setRefreshToken(refreshToken)
+        }
     }
 
-    override fun clearToken() {
-        TODO("Not yet implemented")
+    override suspend fun clearToken() {
+        userSessionSetter {
+            clearAccessToken()
+            clearTokenType()
+            clearRefreshToken()
+        }
     }
 
-    override fun logoutSession() {
+    override suspend fun logoutSession() {
         TODO("Not yet implemented")
     }
 
     override suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            firstTimeUserOnboarding = isFirstTime
+        }
     }
 
     override suspend fun setFirstTimeUser(isFirstTime: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            firstTimeUser = isFirstTime
+        }
     }
 
     override suspend fun setRefreshToken(refreshToken: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setRefreshToken(refreshToken)
+        }
     }
 
     override suspend fun setLoginSession(
@@ -301,137 +313,195 @@ class UserSessionDataStoreImpl(val userSessionStore: DataStore<UserSessionProto>
         shopIsGold: Boolean,
         phoneNumber: String
     ) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            isLoggedIn = isLogin
+            setUserId(userId)
+            name = fullName
+            setShopId(shopId)
+            isMSISDNVerified = isMsisdnVerified
+            setShopName(shopName)
+            setEmail(email)
+            isGoldMerchant = shopIsGold
+            setPhoneNumber(phoneNumber)
+        }
     }
 
     override suspend fun setIsMSISDNVerified(isMsisdnVerified: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            isMSISDNVerified = isMsisdnVerified
+        }
     }
 
     override suspend fun setHasPassword(hasPassword: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setHasPassword(hasPassword)
+        }
     }
 
     override suspend fun setProfilePicture(profilePicture: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setProfilePicture(profilePicture)
+        }
     }
 
     override suspend fun setSaldoWithdrawalWaring(value: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            saldoWithdrawalWaring = value
+        }
     }
 
     override suspend fun setSaldoIntroPageStatus(value: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            saldoIntroPageStatus = value
+        }
     }
 
     override suspend fun setGCToken(gcToken: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setGcToken(gcToken)
+        }
     }
 
     override suspend fun setShopAvatar(shopAvatar: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setShopAvatar(shopAvatar)
+        }
     }
 
     override suspend fun setIsPowerMerchantIdle(powerMerchantIdle: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            isPowerMerchantIdle = powerMerchantIdle
+        }
     }
 
     override suspend fun setTwitterAccessTokenAndSecret(
         accessToken: String,
         accessTokenSecret: String
     ) {
-        TODO("Not yet implemented")
+        setTwitterAccessToken(accessToken)
+        setTwitterAccessToken(accessTokenSecret)
+    }
+
+    override suspend fun setTwitterAccessToken(accessToken: String) {
+        userSessionSetter {
+            twitterAccessToken = accessToken
+        }
+    }
+
+    override suspend fun setTwitterSecret(secret: String) {
+        userSessionSetter {
+            twitterAccessTokenSecret = secret
+        }
     }
 
     override suspend fun setTwitterShouldPost(shouldPost: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            twitterShouldPost = shouldPost
+        }
     }
 
     override suspend fun setAutofillUserData(autofillUserData: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setAutofillUserData(autofillUserData)
+        }
     }
 
     override suspend fun setLoginMethod(loginMethod: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setLoginMethod(loginMethod)
+        }
     }
 
     override suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setIsShopOfficialStore(isShopOfficialStore)
+        }
     }
 
-    override fun isShopOfficialStore(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isShopOfficialStore(): Flow<Boolean> {
+         TODO()
     }
 
     override suspend fun setDeviceId(deviceId: String) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setDeviceId(deviceId)
+        }
     }
 
     override suspend fun setFcmTimestamp() {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            fcmTimestamp = System.currentTimeMillis().toString()
+        }
     }
 
-    override fun getFcmTimestamp(): Long {
-        TODO("Not yet implemented")
+    override fun getFcmTimestamp(): Flow<Long> {
+        return getUserSessionFlow().map { it.fcmTimestamp.toLong() }
     }
 
-    override fun getGTMLoginID(): String {
-        TODO("Not yet implemented")
+    override fun getGTMLoginID(): Flow<String> {
+        return getUserSessionFlow().map { it.userId }
     }
 
-    override fun getAndroidId(): String {
-        TODO("Not yet implemented")
+    override fun getAndroidId(): Flow<String> {
+        TODO("android id")
     }
 
-    override fun getAdsId(): String {
-        TODO("Not yet implemented")
+    override fun getAdsId(): Flow<String> {
+        TODO("ads Id")
     }
 
-    override fun isAffiliate(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isAffiliate(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isAffiliateStatus }
     }
 
-    override fun hasShownSaldoIntroScreen(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun hasShownSaldoIntroScreen(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.saldoIntroPageStatus }
     }
 
-    override fun isShopOwner(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isShopOwner(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isShopOwner }
     }
 
     override suspend fun setIsShopOwner(isShopOwner: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            TODO("shop owner")
+//            setIsShopOwner(isShopOwner)
+        }
     }
 
-    override fun isShopAdmin(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isShopAdmin(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isShopAdmin }
     }
 
     override suspend fun setIsShopAdmin(isShopAdmin: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setIsShopAdmin(isShopAdmin)
+        }
     }
 
-    override fun isLocationAdmin(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isLocationAdmin(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isLocationAdmin }
     }
 
     override suspend fun setIsLocationAdmin(isLocationAdmin: Boolean) {
-        TODO("Not yet implemented")
+        userSessionSetter {
+            setIsLocationAdmin(isLocationAdmin)
+        }
     }
 
-    override fun isMultiLocationShop(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isMultiLocationShop(): Flow<Boolean> {
+        return getUserSessionFlow().map { it.isMultiLocationShop }
     }
 
     override suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    private suspend fun userSessionSetter(func: UserSessionProto.Builder.() -> Unit) {
-        userSessionStore.updateData { preferences ->
-            preferences.toBuilder()
-                .also { func(it) }
-                .build()
+        userSessionSetter {
+            setIsMultiLocationShop(isMultiLocationShop)
         }
+    }
+    
+    companion object {
+        const val USER_PREFERENCES_NAME = "user_session"
+        const val DATA_STORE_FILE_NAME = "user_session.pb"
+        const val SORT_ORDER_KEY = "sort_order"
     }
 }

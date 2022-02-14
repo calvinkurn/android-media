@@ -33,10 +33,14 @@ message UserSessionProto {
     bool isShopOfficialStore = 27;
     string deviceId = 28;
     string fcmTimestamp = 29;
-    bool isShowOwner = 30;
+    bool isShopOwner = 30;
     bool isShopAdmin = 31;
     bool isLocationAdmin = 32;
-    string isMultiLocationShop = 33;
-    string isLoggedIn = 34;
+    bool isMultiLocationShop = 33;
+    bool isLoggedIn = 34;
     string phoneNumber = 35;
+    string tokenType = 36;
+    string twitterAccessTokenSecret = 37;
+    bool twitterShouldPost = 38;
+    string twitterAccessToken = 39;
 }

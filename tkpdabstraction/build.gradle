@@ -54,6 +54,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation "androidx.datastore:datastore:1.0.0"
 }
 
 apply from: '../publish_local.gradle'
