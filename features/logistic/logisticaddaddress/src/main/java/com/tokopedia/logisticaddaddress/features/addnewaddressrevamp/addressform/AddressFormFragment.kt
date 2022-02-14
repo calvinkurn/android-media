@@ -514,7 +514,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp()
+        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint)
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
     }
@@ -882,6 +882,17 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.zipCodes = districtAddress.zipCodes
         saveDataModel?.postalCode = postalCode
         currentPostalCode = postalCode
+
+        // reset lat long
+        currentLat = 0.0
+        currentLong = 0.0
+        saveDataModel?.latitude = "0.0"
+        saveDataModel?.longitude = "0.0"
+        this.isPinpoint = false
+        binding?.run {
+            cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+            cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+        }
 
         if (isPinpoint) goToPinpointPage()
     }

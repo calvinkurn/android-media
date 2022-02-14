@@ -64,9 +64,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation (rootProject.ext.miscDependencies.viewPager2)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
