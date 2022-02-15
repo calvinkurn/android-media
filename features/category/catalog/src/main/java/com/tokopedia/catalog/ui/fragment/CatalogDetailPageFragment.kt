@@ -546,10 +546,16 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?) {
-        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
+            "catalog page: $catalogId | catalog comparison: ${comparisonCatalog?.id ?: ""}",userSession.userId,catalogId)
+
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
             catalogBrand, catalogDepartmentId, recommendedCatalogId,
             CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
-        catalogAllReviewBottomSheet.show(childFragmentManager, "")
+        catalogComparisonBottomSheet.show(childFragmentManager, "")
     }
 
     override fun changeComparison(comparedCatalogId: String) {

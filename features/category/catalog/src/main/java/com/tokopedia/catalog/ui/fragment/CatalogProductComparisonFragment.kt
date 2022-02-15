@@ -18,6 +18,7 @@ import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.catalog.adapter.decorators.CatalogItemOffSetDecoration
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
@@ -30,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -50,6 +52,8 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     @Inject
     lateinit var catalogProductComparisonViewModel: CatalogProductComparisonViewModel
+
+    private var userSession: UserSession? = null
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var recyclerView : RecyclerView? = null
@@ -75,6 +79,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated(view)
+        activity?.let { userSession = UserSession(it) }
     }
 
     private fun afterViewCreated(view: View) {
@@ -112,7 +117,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun setUpSearchView(view : View){
-        CatalogUtil.setSearchListener(context,view, ::onSearchKeywordEntered , ::onClearSearch)
+        CatalogUtil.setSearchListener(context,view, ::onSearchKeywordEntered , ::onClearSearch, ::onTapSearchBar)
     }
 
     private fun setUpEmptyState(view : View){
@@ -251,6 +256,15 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         view?.findViewById<GlobalError>(R.id.global_error)?.hide()
     }
 
+    private fun onTapSearchBar() {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId", userSession?.userId ?: "",catalogId)
+
+    }
+
     override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelFactoryProvider
     }
@@ -299,6 +313,12 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     override fun changeComparison(comparedCatalogId: String) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
+            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",userSession?.userId ?: "",catalogId)
+
         dismissBottomSheet()
         (parentFragment as? CatalogComponentBottomSheet)?.changeComparison(comparedCatalogId)
     }

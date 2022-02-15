@@ -66,7 +66,7 @@ object CatalogUtil {
     }
 
     fun setSearchListener(context: Context?, view: View, onSearchKeywordEntered: () -> Unit,
-                                  onClearSearch : () -> Unit) {
+                                  onClearSearch : () -> Unit, onTapSearchBar : () -> Unit) {
         val searchbar = view.findViewById<SearchBarUnify>(R.id.catalog_product_search)
         searchbar.searchBarContainer.background = MethodChecker.getDrawable(context,
             com.tokopedia.catalog.R.drawable.catalog_search_bar_background)
@@ -83,9 +83,15 @@ object CatalogUtil {
                 return false
             }
         })
+
+        searchTextField?.setOnFocusChangeListener { _, hasFocus ->
+            if(hasFocus)
+                onTapSearchBar.invoke()
+        }
+
         searchClearButton?.setOnClickListener {
             searchTextField?.text?.clear()
-            onClearSearch()
+            onClearSearch.invoke()
             dismissKeyboard(context, view)
         }
     }
