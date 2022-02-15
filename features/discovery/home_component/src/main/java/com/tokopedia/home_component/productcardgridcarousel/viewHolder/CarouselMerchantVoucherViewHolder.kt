@@ -41,5 +41,8 @@ class CarouselMerchantVoucherViewHolder (
         binding?.containerShop?.setOnClickListener {
             merchantVoucherComponentListener.onShopClicked(element.shopAppLink)
         }
+        binding?.containerProduct?.setOnClickListener {
+            merchantVoucherComponentListener.onProductClicked(element.productAppLink)
+        }
     }
 }

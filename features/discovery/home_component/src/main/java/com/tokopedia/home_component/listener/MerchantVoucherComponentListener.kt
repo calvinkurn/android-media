@@ -8,7 +8,7 @@ import com.tokopedia.home_component.model.ChannelModel
 interface MerchantVoucherComponentListener  {
     fun onShopClicked(shopAppLink: String)
     fun onMerchantImpressed(channel: ChannelModel, parentPos: Int)
-    fun onProductClicked(channel: ChannelModel, parentPos: Int)
+    fun onProductClicked(productAppLink: String)
     //for see more card click
     fun onSeeMoreCardClicked(channel: ChannelModel, appLink: String)
 }

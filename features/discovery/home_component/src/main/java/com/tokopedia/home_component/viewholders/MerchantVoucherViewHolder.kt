@@ -100,7 +100,8 @@ class MerchantVoucherViewHolder(
                     totalOtherCoupon = element.label,
                     iconBadge = if (element.badges.isNotEmpty()) element.badges[0].imageUrl else "",
                     imageProduct = element.imageUrl,
-                    shopAppLink = element.shop.shopAppLink
+                    shopAppLink = element.shop.shopAppLink,
+                    productAppLink = element.applink
                 )
             )
         }
