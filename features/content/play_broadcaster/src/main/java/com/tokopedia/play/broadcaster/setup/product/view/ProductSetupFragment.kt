@@ -22,6 +22,19 @@ class ProductSetupFragment @Inject constructor(
 
     private lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val productChooserListener = object : ProductChooserBottomSheet.Listener {
+        override fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet) {
+            if (childFragmentManager.fragments.isEmpty()) {
+                //CLOSE BOTTOMSHEET
+            }
+        }
+
+        override fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet) {
+            bottomSheet.dismiss()
+            openProductSummary()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,11 +45,7 @@ class ProductSetupFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductChooserBottomSheet -> childFragment.setOnDismissListener {
-                childFragmentManager.beginTransaction()
-                    .remove(childFragment)
-                    .commit()
-            }
+            is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
         }
     }
 

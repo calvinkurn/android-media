@@ -103,7 +103,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
                 setSecondaryCTAClickListener {
                     this@apply.dismiss()
-                    this@ProductChooserBottomSheet.dismiss()
+                    mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
                 }
             }
         },
@@ -111,6 +111,8 @@ class ProductChooserBottomSheet @Inject constructor(
             onDestroy { it.dismiss() }
         }
     )
+
+    private var mListener: Listener? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -154,6 +156,10 @@ class ProductChooserBottomSheet @Inject constructor(
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun setupBottomSheet() {
@@ -220,8 +226,7 @@ class ProductChooserBottomSheet @Inject constructor(
             viewModel.uiEvent.collect {
                 when (it) {
                     PlayBroProductChooserEvent.SaveProductSuccess -> {
-                        dismiss()
-                        container?.openProductSummary()
+                        mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
                         //TODO("Show Error")
@@ -452,5 +457,10 @@ class ProductChooserBottomSheet @Inject constructor(
                 ) as ProductChooserBottomSheet
             }
         }
+    }
+
+    interface Listener {
+        fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet)
+        fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet)
     }
 }
