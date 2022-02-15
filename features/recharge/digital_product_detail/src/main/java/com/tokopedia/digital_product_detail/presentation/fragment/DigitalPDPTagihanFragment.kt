@@ -188,7 +188,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart()
+                    navigateToCart(it.data)
                 }
                 is RechargeNetworkResult.Fail -> {
                     onLoadingBuyWidget(false)
@@ -415,10 +415,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun navigateToCart() {
+    private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
-            viewModel.updateCategoryCheckoutPassData(categoryId.toString())
+            viewModel.updateCategoryCheckoutPassData(categoryId)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL)
         }
