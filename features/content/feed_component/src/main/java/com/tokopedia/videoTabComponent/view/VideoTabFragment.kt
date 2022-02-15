@@ -26,15 +26,18 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import javax.inject.Inject
 
-class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener {
+class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
+    PlaySlotTabCallback {
 
     private val rvWidget by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample_feed) }
 
@@ -150,7 +153,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun setupView(view: View) {
-        adapter = VideoTabAdapter(playWidgetCoordinator, playWidgetAnalyticsListenerImp)
+        adapter = VideoTabAdapter(playWidgetCoordinator, this)
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             rvWidget?.addOnScrollListener(it)
@@ -268,6 +271,16 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     override fun onResume() {
 //        playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
+    }
+
+    //click listener for tab menu slot
+    override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item) {
+        playWidgetAnalyticsListenerImp.filterCategory = item.label
+        analyticListener.clickOnFilterChipsInVideoTab(item.label)
+    }
+
+    override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
+        analyticListener.impressOnFilterChipsInVideoTab(item.label)
     }
 
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {

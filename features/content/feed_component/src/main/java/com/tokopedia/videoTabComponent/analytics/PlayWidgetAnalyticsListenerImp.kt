@@ -15,19 +15,10 @@ import javax.inject.Inject
 
 class PlayWidgetAnalyticsListenerImp @Inject constructor(
     private val tracker: PlayAnalyticsTracker
-) : PlayWidgetAnalyticListener, PlaySlotTabCallback {
+) : PlayWidgetAnalyticListener {
 
     var filterCategory: String = ""
     val shopId = ""
-
-    override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item) {
-        filterCategory = item.label
-        tracker.clickOnFilterChipsInVideoTab(item.label)
-    }
-
-    override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
-        tracker.impressOnFilterChipsInVideoTab(item.label)
-    }
 
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,
