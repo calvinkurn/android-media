@@ -1228,7 +1228,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
-                    AddOnBottomSheetParamMapper.generateParam(addOn, AddOnWordingData(), product, shop, viewModel.orderCart)
+                    AddOnBottomSheetParamMapper.generateParam(addOn, product, shop, viewModel.orderCart)
             )
             startActivityForResult(intent, REQUEST_CODE_ADD_ON)
         }

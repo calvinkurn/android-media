@@ -9,7 +9,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 object AddOnBottomSheetParamMapper {
 
     fun generateParam(addOn: AddOnsDataModel,
-                      addOnWordingData: AddOnWordingData,
                       orderProduct: OrderProduct,
                       orderShop: OrderShop,
                       orderCart: OrderCart): AddOnProductData {
@@ -29,7 +28,7 @@ object AddOnBottomSheetParamMapper {
                 cartString = orderCart.cartString
                 warehouseId = orderShop.warehouseId.toString()
                 shopName = orderShop.shopName
-                addOnInfoWording = addOnWordingData
+                addOnInfoWording = orderCart.addOnWordingData
                 addOnSavedStates = addOn.addOnsDataItemModelList.map {
                     AddOnData().apply {
                         addOnId = it.addOnId.toString()

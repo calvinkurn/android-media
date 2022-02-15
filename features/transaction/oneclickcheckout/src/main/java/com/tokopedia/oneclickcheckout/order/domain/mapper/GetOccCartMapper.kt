@@ -7,9 +7,11 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
@@ -34,6 +36,7 @@ class GetOccCartMapper @Inject constructor() {
             products = productList
             shop.firstProductErrorIndex = firstProductErrorIndex
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
+            addOnWordingData = mapAddOnWording(data.addOnWording)
         }
         return OrderData(
                 ticker = mapTicker(data.tickers),
@@ -505,6 +508,14 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapButton(button: Button): ButtonData {
         return ButtonData(
                 text = button.text
+        )
+    }
+
+    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+        return AddOnWordingData(
+                packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
+                onlyGreetingCard = addOnWording.onlyGreetingCard,
+                invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
         )
     }
 }
