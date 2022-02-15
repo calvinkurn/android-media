@@ -1,12 +1,13 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -113,6 +114,7 @@ class GetOccCartMapper @Inject constructor() {
             maximumWeight = shop.maximumShippingWeight
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
+            addOns = mapAddOns(groupShop.addOns.firstOrNull())
         }
     }
 
@@ -429,5 +431,59 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
+    }
+
+    private fun mapAddOns(addOnsResponse: AddOnsResponse?): AddOnsDataModel {
+        return if (addOnsResponse != null) {
+            AddOnsDataModel(
+                    status = addOnsResponse.status,
+                    addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
+                    addOnsButtonModel = mapAddOnButton(addOnsResponse.addOnButton),
+                    addOnsBottomSheetModel = mapAddOnBottomSheet(addOnsResponse.addOnBottomsheet),
+            )
+        } else {
+            AddOnsDataModel(status = 0)
+        }
+    }
+
+    private fun mapAddOnDataItem(addOnDataItem: AddOnsResponse.AddOnDataItem): AddOnDataItemModel {
+        return AddOnDataItemModel(
+                addOnPrice = addOnDataItem.addOnPrice,
+                addOnId = addOnDataItem.addOnId,
+                addOnQty = addOnDataItem.addOnQty,
+//                addOnMetadata =
+        )
+    }
+
+    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
+        return AddOnButtonModel(
+                leftIconUrl = addOnButton.leftIconUrl,
+                rightIconUrl = addOnButton.rightIconUrl,
+                description = addOnButton.description,
+                action = addOnButton.action,
+                title = addOnButton.title
+        )
+    }
+
+    private fun mapAddOnBottomSheet(addOnBottomSheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
+        return AddOnBottomSheetModel(
+                headerTitle = addOnBottomSheet.headerTitle,
+                description = addOnBottomSheet.description,
+                ticker = mapAddOnTicker(addOnBottomSheet.ticker),
+                products = addOnBottomSheet.products.map { mapAddOnProduct(it) }
+        )
+    }
+
+    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
+        return AddOnTickerModel(
+                text = ticker.text
+        )
+    }
+
+    private fun mapAddOnProduct(product: AddOnsResponse.AddOnBottomsheet.ProductsItem): AddOnProductItemModel {
+        return AddOnProductItemModel(
+                productName = product.productName,
+                productImageUrl = product.productImageUrl
+        )
     }
 }

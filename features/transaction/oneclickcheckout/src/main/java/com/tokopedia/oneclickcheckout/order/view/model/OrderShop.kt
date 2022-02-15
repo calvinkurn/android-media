@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
@@ -35,6 +36,7 @@ data class OrderShop(
         var maximumWeightWording: String = "",
         var overweight: Double = 0.0,
         var boMetadata: BoMetadata = BoMetadata(),
+        var addOns: AddOnsDataModel = AddOnsDataModel(),
 
         // Analytics
         var hasTriggerViewOverweightTicker: Boolean = false,
