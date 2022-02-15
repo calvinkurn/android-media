@@ -39,4 +39,6 @@ data class ProgressInfoList(
     @SerializedName("nextTierIconImageURL")
     val nextTierIconImageURL: String? = "",
 
+    var isNextTier:Boolean = false
+
 )

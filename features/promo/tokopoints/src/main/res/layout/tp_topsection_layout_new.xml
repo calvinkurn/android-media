@@ -31,9 +31,9 @@
         android:id="@+id/text_membership_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_alignBottom="@id/img_egg"
         android:layout_alignTop="@id/img_egg"
+        android:layout_alignBottom="@id/img_egg"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_toEndOf="@id/img_egg"
         android:ellipsize="end"
         android:maxLines="1"
@@ -79,7 +79,7 @@
         android:text="Lagi" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_transaksi_value"
+        android:id="@+id/text_current_tier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_egg"
@@ -88,7 +88,7 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_G300_32"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Gold" />
@@ -98,31 +98,31 @@
         android:layout_width="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:layout_marginEnd="@dimen/unify_space_4"
         android:layout_below="@id/digitContainer"
         android:layout_alignStart="@id/text_transaksi_desc"
-        android:layout_alignEnd="@id/text_transaksi_value"
+        android:layout_alignEnd="@id/text_current_tier"
         android:layout_height="wrap_content">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/tier_icon_progressbar"
-            android:layout_gravity="center_vertical|end"
-            android:layout_width="@dimen/tp_dp_20"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginRight="-2dp"
-            android:elevation="@dimen/unify_space_2"
-            android:layout_height="@dimen/tp_dp_20" />
 
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/progressbar_membership"
             android:layout_width="match_parent"
             android:layout_height="@dimen/tp_dp_30"
+            android:layout_marginEnd="@dimen/dp_4"
             android:clipToPadding="false"
             android:clipChildren="false"
             android:layout_gravity="center_vertical"
             app:unify_progress_bar_color_type="color_green"
             app:unify_progress_bar_from_color="@color/green_50"
             app:unify_progress_bar_height="10" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tier_icon_progressbar"
+            android:layout_gravity="center_vertical|end"
+            android:layout_width="@dimen/tp_dp_20"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:elevation="@dimen/unify_space_2"
+            android:layout_height="@dimen/tp_dp_20" />
+
 
     </FrameLayout>
 

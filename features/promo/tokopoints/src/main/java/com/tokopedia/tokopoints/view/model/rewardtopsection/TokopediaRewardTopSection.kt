@@ -23,7 +23,7 @@ data class TokopediaRewardTopSection(
         val introductionText: String? = null,
 
         @SerializedName("backgroundImageURLMobileV2")
-        val backgroundImageURLMobileV2: String? = null,
+        var backgroundImageURLMobileV2: String? = null,
 
         @SerializedName("title")
         val title: String? = null,

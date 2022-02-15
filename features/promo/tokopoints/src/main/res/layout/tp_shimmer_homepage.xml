@@ -18,8 +18,7 @@
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="@id/box_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/box_1"
-        app:srcCompat="@drawable/ic_tp_arrow_back" />
+        app:layout_constraintTop_toTopOf="@id/box_1" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/box_1"

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.tokopoints.notification.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.tokopoints.notification.model.BottomSheetModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -52,5 +53,10 @@ class RewardCommonBottomSheet : BottomSheetUnify() {
         textDesc?.text = bottomSheetModel.contentDescription
         button?.text = bottomSheetModel.buttonText
         image?.loadImage(bottomSheetModel.imageUrl?:"")
+
+        button?.setOnClickListener {
+            RouteManager.route(this.context, bottomSheetModel.applink)
+            this.dismiss()
+        }
     }
 }

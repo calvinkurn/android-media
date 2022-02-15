@@ -1,13 +1,11 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.PopupNotifUsecase
-import com.tokopedia.tokopoints.notification.model.PopupNotification
+import com.tokopedia.tokopoints.notification.model.TokoPointDetailEntity
 import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
@@ -35,7 +33,7 @@ class TokoPointsHomeViewModel @Inject constructor(
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
-    val popUpNotifData = MutableLiveData<Resources<PopupNotification>>()
+    var defferedPopUpNotifData : Deferred<TokoPointDetailEntity>? = null
     var deferredSavingData: Deferred<UserSavingResponse>? = null
     var defferedRecomData: Deferred<RewardsRecommendation>? = null
     var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
@@ -60,6 +58,7 @@ class TokoPointsHomeViewModel @Inject constructor(
                 deferredSavingData = getUserSavingData()
             }
             defferedRewardTickerResponse = getStatusMatchingData()
+            defferedPopUpNotifData = getPopNotifData()
             defferedRecomData = getRecommendationData()
             if (data != null && dataSection != null && dataSection.sectionContent != null &&
                 data.tokopediaRewardTopSection != null
@@ -68,7 +67,8 @@ class TokoPointsHomeViewModel @Inject constructor(
                     TokopointSuccess(
                         TopSectionResponse(
                             data.tokopediaRewardTopSection,
-                            deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await()
+                            deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await(),
+                            defferedPopUpNotifData?.await()
                         ), dataSection.sectionContent.sectionContent, defferedRecomData?.await()
                     )
                 )
@@ -89,43 +89,15 @@ class TokoPointsHomeViewModel @Inject constructor(
         }
     }
 
-    fun getPopNotifData(){
-        launchCatchError(block = {
-            val response = popupNotifUsecase.getPopupNotif(TOKOPOINT_DRAWER)
-            val abc ="""
-                {
-    "tokopoints": {
-      "popupNotif": {
-        "titleHeader" :  "Selamat Anda Mendapat Kiriman Kupon",
-        "title": "Selamat Anda Mendapat Kiriman Kupon",
-        "text": "Selamat Anda Mendapat Kiriman Kupon",
-        "imageURL": "",
-        "buttonText": "Gunakan Kupon",
-        "buttonURL": "https://m.tokopedia.com/tokopoints/mobile",
-        "appLink": "/tokopoints/kupon-saya",
-        "notes": "haha hihi tes doang yaaaa",
-        "sender": "arifin buyer dua",
-        "catalog": {
-          "title": "Gratis Ongkir",
-          "subtitle": "Rp10.000",
-          "points": 3000,
-          "thumbnailURL": "https://ecs7.tokopedia.net/assets/images/tokopoints/banner/marketplace/2018/05/desktop/desktop-gratisongkir10rb-360x120.png",
-          "thumbnailURLMobile": "https://ecs7.tokopedia.net/assets/images/tokopoints/banner/marketplace/2018/05/lite/lite-gratis-ongkir-10rb-576x192.png",
-          "imageURL": "https://ecs7.tokopedia.net/assets/images/promo/tokopoints/catalog_detailbanner.png",
-          "imageURLMobile": "https://ecs7.tokopedia.net/assets/images/tokopoints/banner/marketplace/2018/05/lite/lite-gratis-ongkir-10rb-640x215.png",
-          "expired": "30 Hari"
+    fun getPopNotifData(): Deferred<TokoPointDetailEntity>{
+        var tokopointDetailEntity  = TokoPointDetailEntity()
+        return async(Dispatchers.IO) {
+            try {
+                val  response = popupNotifUsecase.getPopupNotif(TOKOPOINT_DRAWER)
+                tokopointDetailEntity= response.getData(TokoPointDetailEntity::class.java)
+            }catch (e: Exception){}
+            tokopointDetailEntity
         }
-      }
-    }
-  }
-            """.trimIndent()
-
-            var data = response.getData<PopupNotification>(PopupNotification::class.java)
-
-            var gson = Gson()
-            var mMineUserEntity = CommonUtils.fromJson<PopupNotification>(abc,PopupNotification::class.java )
-            popUpNotifData.value = Success(mMineUserEntity)
-        }){}
     }
 
     private suspend fun getRecommendationData(): Deferred<RewardsRecommendation> {

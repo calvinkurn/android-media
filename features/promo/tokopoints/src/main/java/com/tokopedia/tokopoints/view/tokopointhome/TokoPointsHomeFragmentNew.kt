@@ -33,6 +33,7 @@ import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.notification.view.TokopointNotifActivity
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
@@ -65,9 +66,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinde
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topquest.SectionTopQuestViewBinder
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.COUPON
 import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.QUEST
-import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.RECOMM
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -82,7 +81,8 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
  * Dynamic layout params are applied via
  * function setLayoutParams() because configuration in statusBarHeight
  * */
-class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener, QuestWidgetCallbacks {
+class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener, QuestWidgetCallbacks,
+    TopSectionVH.RefreshOnTierUpgrade {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
 
@@ -150,7 +150,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private fun initObserver() {
         addTokopointDetailObserver()
         addRewardIntroObserver()
-        addPopNotifObserver()
     }
 
     private fun setLayoutParams(cardheight: Int) {
@@ -244,27 +243,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList,it.data.recomData )
-                }
-                else -> {}
-            }
-        }
-    })
-
-    private fun addPopNotifObserver() = mPresenter.popUpNotifData.observe(viewLifecycleOwner,{
-        it?.let {
-            when (it) {
-                is Success -> {
-                    requireActivity().apply {
-                        startActivityForResult(
-                            Intent(
-                                TokopointNotifActivity.getIntent(
-                                    this,
-                                    it.data
-                                )
-                            ), REQUEST_FROM_TP_NOTIFICATION
-                        )
-                    }
+                    renderRewardUi(
+                        it.data.topSectionResponse,
+                        it.data.sectionList,
+                        it.data.recomData
+                    )
                 }
                 else -> {}
             }
@@ -348,8 +331,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun renderRewardUi(topSectionData: TopSectionResponse?, sections: List<SectionContent>, recommList : RewardsRecommendation?) {
 
-        if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
-                topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
+        if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() || sections.isEmpty()) {
             onError(SHOW_ERROR_TOOLBAR, true)
             return
         }
@@ -357,7 +339,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
 
         if (adapter == null) {
-            val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList, childFragmentManager)
+            val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList)
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
                     CommonConstant.SectionLayoutType.TOPHEADER,
@@ -768,11 +750,24 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     }
 
+    override fun refreshReward(popupNotification: PopupNotification?) {
+        requireActivity().apply {
+            startActivityForResult(
+                Intent(
+                    TokopointNotifActivity.getIntent(
+                        this,
+                        popupNotification
+                    )
+                ), REQUEST_FROM_TP_NOTIFICATION
+            )
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
             REQUEST_FROM_TP_NOTIFICATION -> {
-                view?.let { Toaster.build(it,"successs", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }
+                RouteManager.route(this.context,"tokopedia://rewards")
             }
         }
     }
