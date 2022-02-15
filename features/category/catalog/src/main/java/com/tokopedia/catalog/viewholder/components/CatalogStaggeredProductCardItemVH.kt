@@ -23,14 +23,14 @@ class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListene
     }
 
     override fun bind(element: CatalogStaggeredProductModel?) {
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.first_catalog_product_brand).displayTextOrHide(element?.comparisonItem?.brand ?: "")
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.first_catalog_product_name).displayTextOrHide(element?.comparisonItem?.name ?: "")
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.first_catalog_product_price).
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide(element?.comparisonItem?.brand ?: "")
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(element?.comparisonItem?.name ?: "")
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).
         displayTextOrHide("${element?.comparisonItem?.marketPrice?.firstOrNull()?.minFmt} - ${element?.comparisonItem?.marketPrice?.firstOrNull()?.maxFmt}")
         element?.comparisonItem?.catalogImage?.firstOrNull()?.let { image ->
-            itemView.findViewById<ImageUnify>(R.id.first_catalog_image).loadImageWithoutPlaceholder(image.imageUrl ?: "")
+            itemView.findViewById<ImageUnify>(R.id.catalog_comparison_image).loadImageWithoutPlaceholder(image.imageUrl ?: "")
         }
-        itemView.findViewById<UnifyButton>(R.id.catalog_bandingkan_button)?.apply {
+        itemView.findViewById<UnifyButton>(R.id.catalog_comparison_bandingkan_button)?.apply {
             show()
             if(element?.comparisonItem?.isActive == false){
                 isEnabled = false

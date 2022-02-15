@@ -22,7 +22,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private var dataList = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
     var masterDataList = ArrayList<BaseCatalogDataModel>()
     private var hasMoreItems = MutableLiveData<Boolean>()
-    private var errorMessage = MutableLiveData<String>()
+    private var error = MutableLiveData<Throwable>()
 
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : String, name : String) {
@@ -49,7 +49,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
             }
         }, onError = {
             it.printStackTrace()
-            errorMessage.value = it.localizedMessage
+            error.value = it
         })
     }
 
@@ -88,7 +88,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
 
 
     fun getShimmerData(): LiveData<ArrayList<BaseCatalogDataModel>> = shimmerData
-    fun getErrorMessage(): LiveData<String> = errorMessage
+    fun getError(): LiveData<Throwable> = error
     fun getHasMoreItems(): LiveData<Boolean> = hasMoreItems
     fun getDataItems() : LiveData<ArrayList<BaseCatalogDataModel>> = dataList
 

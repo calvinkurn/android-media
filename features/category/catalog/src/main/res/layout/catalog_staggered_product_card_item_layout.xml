@@ -8,7 +8,7 @@
 
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/base_catalog_card"
+        android:id="@+id/catalog_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:card_type="border"
@@ -21,15 +21,15 @@
             android:paddingBottom="@dimen/spacing_lvl3">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/first_catalog_image"
+                android:id="@+id/catalog_comparison_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_160"
                 tools:ignore="ContentDescription"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/first_catalog_product_brand"
+                android:id="@+id/catalog_comparison_product_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
@@ -40,7 +40,7 @@
                 tools:text="Apple" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/first_catalog_product_name"
+                android:id="@+id/catalog_comparison_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
@@ -50,7 +50,7 @@
                 tools:text="iPhone 12 - 64GB" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/first_catalog_product_price"
+                android:id="@+id/catalog_comparison_product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
@@ -61,7 +61,7 @@
                 tools:text="Rp15.500.000 - Rp16.150.000" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/catalog_bandingkan_button"
+                android:id="@+id/catalog_comparison_bandingkan_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_marginStart="@dimen/unify_space_8"

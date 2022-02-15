@@ -30,6 +30,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
+import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductComparisonViewModel>() , CatalogDetailListener{
@@ -178,10 +181,8 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun observeErrorMessage() {
-        catalogProductComparisonViewModel.getErrorMessage().observe(this, { errorMessage ->
-            recyclerView?.hide()
-            showErrorGroup()
-            showEmptyState()
+        catalogProductComparisonViewModel.getError().observe(this, { errorMessage ->
+            showError(errorMessage)
         })
     }
 
@@ -216,17 +217,31 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private fun onEmptyData(){
         showErrorGroup()
-        showEmptyState()
+        view?.let { setUpEmptyState(it) }
         recyclerView?.hide()
-    }
-
-    private fun showEmptyState(){
-        view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.show()
     }
 
     private fun showErrorGroup(){
         view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.show()
         view?.findViewById<GlobalError>(R.id.global_error)?.show()
+    }
+
+    private fun showError(e : Throwable){
+        recyclerView?.hide()
+        view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.hide()
+        view?.findViewById<GlobalError>(R.id.global_error)?.apply {
+            show()
+            if (e is UnknownHostException
+                || e is SocketTimeoutException
+            ) {
+                setType(GlobalError.NO_CONNECTION)
+            } else {
+                setType(GlobalError.SERVER_ERROR)
+            }
+            errorAction.setOnClickListener {
+                makeApiCall(PAGE_FIRST)
+            }
+        }
     }
 
     private fun hideErrorGroup() {
