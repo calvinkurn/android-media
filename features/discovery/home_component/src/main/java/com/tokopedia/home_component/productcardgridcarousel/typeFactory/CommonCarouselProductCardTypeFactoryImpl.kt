@@ -64,7 +64,7 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
                 CarouselCampaignCardViewHolder(parent, channels)
             }
             CarouselMerchantVoucherViewHolder.LAYOUT -> {
-                CarouselMerchantVoucherViewHolder(parent, channels)
+                CarouselMerchantVoucherViewHolder(parent)
             }
             else -> {
                 super.createViewHolder(parent, type)

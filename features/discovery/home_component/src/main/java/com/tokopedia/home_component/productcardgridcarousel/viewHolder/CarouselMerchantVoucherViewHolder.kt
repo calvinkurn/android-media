@@ -17,8 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 class CarouselMerchantVoucherViewHolder (
-    view: View,
-    private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+    view: View
 ): AbstractViewHolder<CarouselMerchantVoucherDataModel>(view) {
 
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
@@ -39,10 +38,10 @@ class CarouselMerchantVoucherViewHolder (
         binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
-            merchantVoucherComponentListener.onShopClicked(element.shopAppLink)
+            element.merchantVoucherComponentListener.onShopClicked(element.shopAppLink)
         }
         binding?.containerProduct?.setOnClickListener {
-            merchantVoucherComponentListener.onProductClicked(element.productAppLink)
+            element.merchantVoucherComponentListener.onProductClicked(element.productAppLink)
         }
     }
 }

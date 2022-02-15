@@ -454,7 +454,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 campaignWidgetComponentListener,
                 parentRecycledViewPool
             )
-            MerchantVoucherViewHolder.LAYOUT -> viewHolder = MerchantVoucherViewHolder(view)
+            MerchantVoucherViewHolder.LAYOUT -> viewHolder =
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

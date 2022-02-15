@@ -11,6 +11,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMerchantVoucherBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
+import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
@@ -30,7 +31,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class MerchantVoucherViewHolder(
-    itemView: View
+    itemView: View,
+    private val merchantVoucherComponentListener: MerchantVoucherComponentListener
 ) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener,
     CoroutineScope {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
@@ -40,8 +42,6 @@ class MerchantVoucherViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_merchant_voucher
-        val RECYCLER_VIEW_ID = R.id.recycleList
-        private const val FPM_MIX_LEFT = "home_merchant_voucher"
     }
 
     override fun bind(element: MerchantVoucherDataModel) {
@@ -101,7 +101,8 @@ class MerchantVoucherViewHolder(
                     iconBadge = if (element.badges.isNotEmpty()) element.badges[0].imageUrl else "",
                     imageProduct = element.imageUrl,
                     shopAppLink = element.shop.shopAppLink,
-                    productAppLink = element.applink
+                    productAppLink = element.applink,
+                    merchantVoucherComponentListener = merchantVoucherComponentListener
                 )
             )
         }
