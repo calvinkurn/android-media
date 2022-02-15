@@ -4,9 +4,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class AnalyticsMapParserTest {
+class AnalyticsParserTest {
 
-    private val uut = AnalyticsMapParser()
+    private val uut = AnalyticsParser()
 
     @Test
     fun `given double when parsed should return json primitive`() {

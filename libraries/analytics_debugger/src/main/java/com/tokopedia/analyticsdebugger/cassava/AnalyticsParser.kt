@@ -9,7 +9,7 @@ import java.math.BigDecimal
 import java.net.URLDecoder
 import javax.inject.Inject
 
-class AnalyticsMapParser @Inject constructor() {
+class AnalyticsParser @Inject constructor() {
 
     private val gson: Gson = GsonBuilder()
         .disableHtmlEscaping()

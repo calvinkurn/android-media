@@ -2,7 +2,7 @@ package com.tokopedia.cassavatest
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
@@ -28,7 +28,7 @@ class CassavaTestRule(
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
     private val daoSource = GtmLogDBSource(context)
-    private val analyticsParser = AnalyticsMapParser()
+    private val analyticsParser = AnalyticsParser()
     private val engine = ValidatorEngine(daoSource, analyticsParser)
 
     override fun apply(base: Statement?, description: Description?): Statement {

@@ -1,7 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
-import android.net.NetworkRequest
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -12,7 +11,7 @@ import javax.inject.Inject
 
 class ValidatorEngine @Inject constructor(
     private val dao: GtmLogDBSource,
-    private val analyticsParser: AnalyticsMapParser
+    private val analyticsParser: AnalyticsParser
 ) {
 
     enum class Mode {

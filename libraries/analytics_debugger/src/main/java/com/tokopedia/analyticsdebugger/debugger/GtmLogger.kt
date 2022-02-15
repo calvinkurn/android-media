@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.debugger
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticsdebugger.AnalyticsSource
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 
 class GtmLogger private constructor(
     private val context: Context,
-    private val mapParser: AnalyticsMapParser,
+    private val parser: AnalyticsParser,
     private val dbSource: GtmRepo,
     private val pref: CassavaSharedPreference,
 ) : AnalyticsLogger, CoroutineScope {
@@ -31,10 +31,10 @@ class GtmLogger private constructor(
 
     override fun save(data: Map<String, Any>, name: String?, @AnalyticsSource source: String) {
         launch {
-            val nameNotNull = name ?: mapParser.inferName(data, source)
+            val nameNotNull = name ?: parser.inferName(data, source)
             val logData = AnalyticsLogData(
                 name = nameNotNull,
-                data = mapParser.parse(data),
+                data = parser.parse(data),
                 source = source
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
@@ -69,7 +69,7 @@ class GtmLogger private constructor(
                     val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
                     instance = GtmLogger(
                         context,
-                        AnalyticsMapParser(),
+                        AnalyticsParser(),
                         GtmRepo(dao),
                         CassavaSharedPreference(context)
                     )
