@@ -9,7 +9,6 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
-import com.tokopedia.purchase_platform.common.constant.OccConstant
 import javax.inject.Inject
 
 open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
@@ -22,7 +21,7 @@ open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSu
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_GATEWAY_CODE),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_TENURE_TYPE),
-            intent?.getStringExtra(OccConstant.SOURCE)
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE)
         )
     }
 

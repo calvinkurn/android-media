@@ -87,9 +87,6 @@ import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDeta
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_FINTECH
-import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
-import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -1529,6 +1526,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
         private const val SOURCE_OTHERS = "others"
+        private const val SOURCE_PDP = "pdp"
+        private const val SOURCE_MINICART = "minicart"
+        private const val SOURCE_FINTECH = "fintech"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
