@@ -16,9 +16,9 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -229,13 +229,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     val userId: String
         get() = viewModel?.userId.orEmpty()
     private var recyclerViewTopPadding = 0
-    private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? =
-        null
+    private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
-    private var shopProductFilterParameter: ShopProductFilterParameter? =
-        ShopProductFilterParameter()
+    private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
 
@@ -254,8 +252,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private val shopHomeAdapterTypeFactory by lazy {
         val userSession = UserSession(context)
         val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
-        val _isMyShop =
-            ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
         ShopHomeAdapterTypeFactory(
             listener = this,
             onMerchantVoucherListWidgetListener = this,
@@ -438,9 +435,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         stopMonitoringPltRenderPage()
                         stopMonitoringPerformance()
                         view?.let { view ->
-                            getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(
-                                this
-                            )
+                            getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                         }
                     }
                 })
@@ -460,14 +455,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
-        shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!shopHomeAdapter.isLoading) {
-                    gridType = it
-                    changeProductListGridView(it)
-                }
-            })
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
+            if (!shopHomeAdapter.isLoading) {
+                gridType = it
+                changeProductListGridView(it)
+            }
+        })
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -479,14 +472,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
-        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!shopHomeAdapter.isLoading && getSelectedFragment() != this) {
-                    shopProductFilterParameter = it
-                    changeSortData(sortId)
-                }
-            })
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
+            if (!shopHomeAdapter.isLoading && getSelectedFragment() != this) {
+                shopProductFilterParameter = it
+                changeSortData(sortId)
+            }
+        })
     }
 
     private fun getSelectedFragment(): Fragment? {
@@ -544,9 +535,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.bottomSheetFilterLiveData?.removeObservers(this)
         viewModel?.shopProductFilterCountLiveData?.removeObservers(this)
         viewModel?.flush()
-        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(
-            this
-        )
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
@@ -620,8 +609,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (productListData.isNotEmpty())
                         addProductListHeader()
                     updateProductListData(hasNextPage, productListData, totalProductOnShop)
-                    productListName =
-                        productListData.joinToString(",") { product -> product.name.orEmpty() }
+                    productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
                 is Fail -> {
                     val throwable = it.throwable
@@ -2769,14 +2757,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 ShopUtil.getActualPositionFromIndex(position)
             )
             shopPageHomeTracking.impressionCampaignNplWidget(
-                it.statusCampaign,
-                shopId,
-                ShopUtil.getActualPositionFromIndex(position),
-                isSeeCampaign,
-                selectedBanner?.imageId.toString(),
-                selectedBanner?.imageUrl ?: "",
-                customDimensionShopPage,
-                isOwner
+                    it.statusCampaign,
+                    shopId,
+                    ShopUtil.getActualPositionFromIndex(position),
+                    isSeeCampaign,
+                    selectedBanner?.imageId.orEmpty(),
+                    selectedBanner?.imageUrl ?: "",
+                    customDimensionShopPage,
+                    isOwner
             )
         }
     }
