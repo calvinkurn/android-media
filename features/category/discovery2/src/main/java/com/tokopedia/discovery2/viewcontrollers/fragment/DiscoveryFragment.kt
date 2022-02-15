@@ -425,10 +425,10 @@ class DiscoveryFragment :
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
+                            hideGlobalError()
                             scrollToPinnedComponent(listComponent)
                         }
                     }
-                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
@@ -869,7 +869,7 @@ class DiscoveryFragment :
                 globalError.setType(GlobalError.NO_CONNECTION)
             }
             is IllegalStateException -> {
-                globalError.setType(GlobalError.PAGE_FULL)
+                globalError.setType(GlobalError.PAGE_NOT_FOUND)
             }
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
