@@ -10,6 +10,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -69,6 +70,12 @@ class RechargeHomepageCategoryViewHolder(
             icRechargeHomeCategoryChevron.setOnClickListener {
                 isExpanded = !isExpanded
                 setAdapterItems(element.section.items)
+
+                if (isExpanded) {
+                    icRechargeHomeCategoryChevron.setImage(IconUnify.CHEVRON_UP)
+                } else {
+                    icRechargeHomeCategoryChevron.setImage(IconUnify.CHEVRON_DOWN)
+                }
             }
         }
     }

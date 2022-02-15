@@ -26,7 +26,7 @@
         app:icon_color_night_disabled="@color/Unify_NN900"
         app:icon_color_night_enable="@color/Unify_NN900"
         app:icon_enable_state="true"
-        app:icon_name="CHEVRON_DOWN"
+        app:icon_name="CHEVRON_UP"
         app:layout_constraintBottom_toBottomOf="@id/tv_recharge_home_category_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_recharge_home_category_title" />
