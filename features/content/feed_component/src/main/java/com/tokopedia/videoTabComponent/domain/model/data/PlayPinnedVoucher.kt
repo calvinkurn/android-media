@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.sample.data
+package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.google.gson.annotations.SerializedName
 

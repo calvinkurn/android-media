@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
 import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedWidgetViewHolder
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetLargeUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
+import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 
 /**
  * Created by meyta.taliti on 29/01/22.
@@ -17,7 +17,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
 class PlayWidgetViewAdapterDelegate private constructor() {
 
     internal class Jumbo(
-        private val coordinator: PlayWidgetCoordinator
+        private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Jumbo>(
             R.layout.item_play_widget_jumbo
@@ -39,7 +39,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
     }
 
     internal class Large(
-        private val coordinator: PlayWidgetCoordinator
+        private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Large>(
             R.layout.item_play_widget_large
@@ -60,7 +60,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
     }
 
     internal class Medium(
-        private val coordinator: PlayWidgetCoordinator
+        private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetMediumUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Medium>(
             R.layout.item_play_widget_medium

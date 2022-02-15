@@ -8,7 +8,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.view.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import javax.inject.Inject
 
 //slot click and impression

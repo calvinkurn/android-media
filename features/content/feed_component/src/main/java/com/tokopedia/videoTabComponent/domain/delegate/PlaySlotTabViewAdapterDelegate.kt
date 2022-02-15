@@ -4,10 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedSlotTabViewHolder
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.view.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 
 /**
  * Created by meyta.taliti on 01/02/22.

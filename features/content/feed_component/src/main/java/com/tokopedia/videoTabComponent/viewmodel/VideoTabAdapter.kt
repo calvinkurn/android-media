@@ -2,17 +2,17 @@ package com.tokopedia.videoTabComponent.viewmodel
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
-import com.tokopedia.videoTabComponent.view.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
+import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 
 /**
  * Created by meyta.taliti on 28/01/22.
  */
 class VideoTabAdapter(
-    coordinator: PlayWidgetCoordinator,
+    coordinator: PlayWidgetCoordinatorVideoTab,
     listener: PlaySlotTabCallback
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 

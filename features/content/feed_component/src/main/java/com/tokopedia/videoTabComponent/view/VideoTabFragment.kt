@@ -19,7 +19,6 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -30,6 +29,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModelProvider.get(PlayFeedVideoTabViewModel::class.java)
     }
-    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     companion object {
@@ -89,7 +89,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun initVar() {
-        playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+        playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@VideoTabFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
         }

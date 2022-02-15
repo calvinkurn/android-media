@@ -4,6 +4,10 @@ import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.videoTabComponent.domain.model.data.*
+import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 
 private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
 private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"

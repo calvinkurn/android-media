@@ -3,7 +3,7 @@ package com.tokopedia.play.widget.ui.model
 /**
  * Created by meyta.taliti on 31/01/22.
  */
-open class PlayFeedUiModel
+sealed class PlayFeedUiModel
 
 data class PlayWidgetJumboUiModel(
     val model: PlayWidgetUiModel

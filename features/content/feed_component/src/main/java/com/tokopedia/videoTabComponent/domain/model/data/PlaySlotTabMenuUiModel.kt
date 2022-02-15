@@ -1,7 +1,25 @@
 package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.tokopedia.play.widget.analytic.ImpressionableModel
-import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+
+open class PlayFeedUiModel
+
+data class PlayWidgetJumboUiModel(
+    val model: PlayWidgetUiModel
+): PlayFeedUiModel()
+
+data class PlayWidgetLargeUiModel(
+    val model: PlayWidgetUiModel
+): PlayFeedUiModel()
+
+data class PlayWidgetMediumUiModel(
+    val model: PlayWidgetUiModel
+): PlayFeedUiModel()
+
+data class PlayWidgetSlotTabUiModel(
+    val labels: List<Pair<String, Boolean>>
+): PlayFeedUiModel()
 
 data class PlaySlotTabMenuUiModel(val items: List<Item>) : PlayFeedUiModel() {
     data class Item(

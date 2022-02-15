@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.view.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 
 /**
  * Created by meyta.taliti on 01/02/22.

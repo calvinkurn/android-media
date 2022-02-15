@@ -1,4 +1,4 @@
-package com.tokopedia.videoTabComponent.view
+package com.tokopedia.videoTabComponent.callback
 
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 
