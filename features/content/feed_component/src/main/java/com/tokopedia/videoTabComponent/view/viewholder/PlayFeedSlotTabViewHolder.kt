@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
@@ -17,11 +18,11 @@ import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 class PlayFeedSlotTabViewHolder private constructor() {
 
     internal class SlotTab private constructor(
-        itemView: View, tabClickListener: PlaySlotTabCallback
-    ) : RecyclerView.ViewHolder(itemView) {
+        itemView: View, private val tabClickListener: PlaySlotTabCallback
+    ) : RecyclerView.ViewHolder(itemView),PlaySlotTabCallback {
 
         private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_labels)
-        private val adapter = SlotTabViewAdapter(tabClickListener)
+        private val adapter = SlotTabViewAdapter(this)
 
         fun bind(item: PlaySlotTabMenuUiModel) {
             rvSlotTab.adapter = adapter
@@ -79,7 +80,7 @@ class PlayFeedSlotTabViewHolder private constructor() {
                     slot.isSelected = true
                     unSelect()
                     updateChipView(chip, slot.isSelected)
-                    listener?.clickTabMenu(slot)
+                    listener?.clickTabMenu(slot,adapterPosition)
                 }
             }
 
@@ -88,6 +89,14 @@ class PlayFeedSlotTabViewHolder private constructor() {
                     ChipsUnify.TYPE_SELECTED
                 } else ChipsUnify.TYPE_NORMAL
             }
+        }
+
+        override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
+            tabClickListener.clickTabMenu(item)
+            (rvSlotTab.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position,10)
+        }
+        override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
+            tabClickListener.impressTabMenu(item)
         }
 
         companion object {
