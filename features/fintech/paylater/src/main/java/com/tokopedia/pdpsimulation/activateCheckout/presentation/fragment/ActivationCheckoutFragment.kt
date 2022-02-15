@@ -397,9 +397,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun setSelectedTenure() {
 
+
         gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
             if (checkoutData.tenureDetail.isNotEmpty()) {
+
+                checkoutData.tenureDetail.map {
+                    it.isSelectedTenure = false
+                }
+
                 for (i in 0 until checkoutData.tenureDetail.size) {
+                    checkoutData.tenureDetail[i].isSelectedTenure = false
                     if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
                         selectedTenurePosition = i
                         break
@@ -729,8 +736,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         listOfTenureDetail[selectedTenurePosition].isSelectedTenure = false
         listOfTenureDetail[newPositionToSelect].isSelectedTenure = true
-        activationTenureAdapter.updateList(listOfTenureDetail)
         selectedTenurePosition = newPositionToSelect
+        activationTenureAdapter.updateList(listOfTenureDetail)
+
     }
 
 
