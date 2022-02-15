@@ -167,13 +167,15 @@ class ShopHomeViewModel @Inject constructor(
         get() = userSession.userId
 
     fun getShopPageHomeWidgetLayoutData(
-            shopId: String
+            shopId: String,
+            extParam: String,
     ) {
         launchCatchError(block = {
             val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
                 gqlShopPageGetHomeType.isFromCacheFirst = false
                 gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
-                        shopId.toIntOrZero()
+                        shopId.toIntOrZero(),
+                        extParam
                 )
                 gqlShopPageGetHomeType.executeOnBackground()
             }

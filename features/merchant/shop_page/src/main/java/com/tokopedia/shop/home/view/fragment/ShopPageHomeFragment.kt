@@ -32,7 +32,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -164,6 +164,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
+        private const val QUERY_PARAM_EXT_PARAM = "extParam"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
@@ -215,6 +216,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     lateinit var dispatcher: CoroutineDispatchers
 
     private var viewModel: ShopHomeViewModel? = null
+    private var extParam: String = ""
     private var shopId: String = ""
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
@@ -222,6 +224,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopAttribution: String = ""
     private var shopRef: String = ""
     private var productListName: String = ""
+    private var decodeExtParam: String = ""
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
@@ -302,6 +305,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setDataFromAppLinkQueryParam()
         if (isShopHomeTabSelected())
             startMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_PREPARE)
         getIntentData()
@@ -548,6 +552,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeLayoutUiModel?.let{
             shopHomeAdapter.hideLoading()
             setShopHomeWidgetLayoutData(it)
+        }
+    }
+
+    private fun setDataFromAppLinkQueryParam() {
+        activity?.intent?.data?.run {
+            val uri = toString()
+            val params = UriUtil.uriQueryParamsToMap(uri)
+            if (params.isNotEmpty()) {
+                extParam = params[QUERY_PARAM_EXT_PARAM].orEmpty().encodeToUtf8()
+            }
         }
     }
 
@@ -2626,7 +2640,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId)
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
     }
 
@@ -2636,7 +2650,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId)
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
     }
 

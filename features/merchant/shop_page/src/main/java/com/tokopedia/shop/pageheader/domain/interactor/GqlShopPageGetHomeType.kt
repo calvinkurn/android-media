@@ -16,15 +16,18 @@ class GqlShopPageGetHomeType @Inject constructor(
 
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
+        private const val PARAM_EXT_PARAM = "extParam"
         @JvmStatic
-        fun createParams(shopId: Int): RequestParams = RequestParams.create().apply {
+        fun createParams(shopId: Int, extParam: String): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
+            putObject(PARAM_EXT_PARAM, extParam)
         }
 
         const val QUERY = """
-            query shopPageGetHomeType(${'$'}shopID: Int!){
+            query shopPageGetHomeType(${'$'}shopID: Int!, ${'$'}extParam: String!){
               shopPageGetHomeType(
-                shopID: ${'$'}shopID
+                shopID: ${'$'}shopID,
+                extParam: ${'$'}extParam
               ){
                 shopHomeType
                 shopHomeTabIcon
