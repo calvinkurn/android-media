@@ -249,19 +249,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
             }
         }
-
-//        coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
-//            when(it) {
-//                is NetworkResult.Success -> {
-//                    viewLifecycleOwner.lifecycleScope.launch {
-//                        parentViewModel.getChannelDetail()
-//                    }
-//                }
-//                is NetworkResult.Fail -> {
-//                    showErrorToaster(it.error)
-//                }
-//            }
-//        }
     }
 
     private fun observeCreateLiveStream() {

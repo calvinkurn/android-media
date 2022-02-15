@@ -534,13 +534,6 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun onUploadSuccess() {
         val selectedCover = viewModel.selectedCover ?: return
         mListener?.onCoverSetupFinished(selectedCover)
-//        scope.launch {
-//            val error = mListener?.onCoverSetupFinished(viewModel.setupDataStore)
-//            error?.let {
-//                yield()
-//                onUploadFailed(it)
-//            }
-//        }
     }
 
     private fun onUploadFailed(e: Throwable) {
