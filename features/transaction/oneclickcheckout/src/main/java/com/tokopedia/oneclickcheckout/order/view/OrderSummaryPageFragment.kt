@@ -81,6 +81,7 @@ import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICA
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -701,6 +702,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
                 }
+                is OccGlobalEvent.PopUp -> {
+                    showPopUpDialog(it.popUp)
+                }
             }
         }
     }
@@ -1158,6 +1162,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.globalEvent.value = OccGlobalEvent.Normal
                     Toaster.build(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
+            }
+        }
+    }
+
+    private fun showPopUpDialog(popUpData: PopUpData) {
+        activity?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(popUpData.title)
+                setDescription(popUpData.description)
+                setPrimaryCTAText(popUpData.button.text)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setOnDismissListener {
+                    refresh()
+                }
+                show()
             }
         }
     }

@@ -8,6 +8,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -43,7 +47,9 @@ class GetOccCartMapper @Inject constructor() {
                 popUpMessage = data.popUpMessage,
                 maxQty = data.maxQty,
                 totalProductPrice = data.totalProductPrice,
-                profileCode = data.paymentAdditionalData.profileCode)
+                profileCode = data.paymentAdditionalData.profileCode,
+                popUp = mapPopUp(data.popUp)
+        )
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -485,6 +491,20 @@ class GetOccCartMapper @Inject constructor() {
         return AddOnProductItemModel(
                 productName = product.productName,
                 productImageUrl = product.productImageUrl
+        )
+    }
+
+    private fun mapPopUp(popUp: PopUp): PopUpData {
+        return PopUpData(
+                title = popUp.title,
+                description = popUp.description,
+                button = mapButton(popUp.button)
+        )
+    }
+
+    private fun mapButton(button: Button): ButtonData {
+        return ButtonData(
+                text = button.text
         )
     }
 }

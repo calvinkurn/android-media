@@ -8,4 +8,10 @@ data class PopUpData(
         var button: ButtonData = ButtonData(),
         var description: String = "",
         var title: String = ""
-) : Parcelable
+) : Parcelable {
+
+    fun isNeedToShowPopUp(): Boolean {
+        return title.isNotBlank() && description.isNotBlank()
+    }
+
+}
