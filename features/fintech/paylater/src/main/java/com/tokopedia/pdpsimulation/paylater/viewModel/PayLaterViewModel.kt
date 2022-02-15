@@ -34,8 +34,16 @@ class PayLaterViewModel @Inject constructor(
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
+    // tenure to be auto-selected by default coming from applink
     var defaultTenure = 0
+
+    // index of selected tenure/simulation in list
+    // if failure -> 0
+    // if tenure found -> then intended simulation
+    // if tenure not found -> then last simulation
     var defaultSelectedSimulation: Int = 0
+
+    // (K,V) -> Tenure -> Index of Simulation Item for corresponding tenure
     var tenureMap: Map<Int?, Int?> = mapOf()
 
     private var idlingResourceProvider =

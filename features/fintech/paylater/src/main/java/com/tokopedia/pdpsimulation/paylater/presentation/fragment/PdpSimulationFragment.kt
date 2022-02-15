@@ -130,6 +130,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         rvPayLaterOption.adapter = simulationAdapter
         rvPayLaterOption.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvPayLaterOption.setHasFixedSize(true)
+        rvPayLaterSimulation.setHasFixedSize(true)
         simulationAdapter.showLoadingInAdapter()
     }
 
