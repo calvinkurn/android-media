@@ -15,7 +15,8 @@ sealed class PlayProductSectionUiModel {
         val startTime: String,
         val endTime: String,
         val timerInfo: String,
-        val background: Section.Background
+        val background: Section.Background,
+        val hasReminder: Boolean
     ): PlayProductSectionUiModel()
 
     object Shimmer: PlayProductSectionUiModel()

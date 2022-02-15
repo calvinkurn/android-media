@@ -1,11 +1,28 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.play.data.PostUpcomingCampaign
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 09/02/22
  */
-class PostUpcomingCampaignReminderUseCase {
+@GqlQuery(PostUpcomingCampaignReminderUseCase.QUERY_NAME, PostUpcomingCampaignReminderUseCase.QUERY)
+class PostUpcomingCampaignReminderUseCase@Inject constructor(
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<PostUpcomingCampaign>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(PostUpcomingCampaignReminderUseCaseQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(PostUpcomingCampaign::class.java)
+    }
+
     companion object {
         private const val CAMPAIGN_ID = "campaign_id"
         private const val ACTION_PARAM = "action"

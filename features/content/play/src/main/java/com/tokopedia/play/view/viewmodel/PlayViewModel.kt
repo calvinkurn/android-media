@@ -1001,6 +1001,9 @@ class PlayViewModel @AssistedInject constructor(
             val tagItem = repo.getTagItem(channelId)
             _tagItems.value = tagItem
 
+            //TODO () = check reminder
+            tagItem.section.sections.filter { it.hasReminder }
+
             sendProductTrackerToBro(
                 productList = tagItem.product.productList
             )

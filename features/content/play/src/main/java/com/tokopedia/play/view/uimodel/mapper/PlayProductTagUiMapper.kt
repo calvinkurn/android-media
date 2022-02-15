@@ -34,7 +34,8 @@ class PlayProductTagUiMapper @Inject constructor() {
             startTime = input.timerStartTime,
             endTime = input.timerEndTime,
             timerInfo = input.countdown.countdownInfo,
-            background = input.background
+            background = input.background,
+            hasReminder = input.sourceId != "0"
         )
     }
 
