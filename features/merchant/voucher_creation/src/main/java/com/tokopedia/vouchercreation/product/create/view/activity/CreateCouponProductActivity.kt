@@ -124,7 +124,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
         fragment.setOnCouponSaved {
-            //couponSettingFragment.setCouponSettings(couponSettings)
             router.popFragment(supportFragmentManager)
             couponPreviewFragment.setCouponSettingsData(it)
         }
