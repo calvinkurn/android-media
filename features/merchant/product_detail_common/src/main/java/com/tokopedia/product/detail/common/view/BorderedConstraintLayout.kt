@@ -10,6 +10,13 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.detail.common.R
 
+/*
+    +-----------------------------------+
+    |                                   |
+    |      Your Custom layout Here      |
+    |                                   |
+    +-----------------------------------+
+ */
 class BorderedConstraintLayout : ConstraintLayout {
     constructor(context: Context) : super(context) {
         setup(context, null)
