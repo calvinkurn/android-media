@@ -13,24 +13,14 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterDetailViewHolder
 
-class PayLaterSimulationAdapter(val adapterFactory: PayLaterAdapterFactoryImpl) :
+class PayLaterSimulationAdapter(private val adapterFactory: PayLaterAdapterFactoryImpl) :
     BaseListAdapter<BasePayLaterWidgetUiModel, PayLaterAdapterFactoryImpl>(adapterFactory) {
 
     private val impressionMap = hashSetOf<Int>()
 
-    private fun showEmptyState() {
-        //addElement(EmptyModel())
-        //notifyItemChanged(0)
-    }
-
     fun showLoadingInAdapter() {
         removeErrorNetwork()
         showLoading()
-    }
-
-    fun showInitialLoadingFailed(throwable: Throwable) {
-        //setErrorNetworkModel(TransactionErrorModel(throwable))
-        //showErrorNetwork()
     }
 
     fun addAllElements(element: List<Visitable<*>>) {
@@ -40,7 +30,6 @@ class PayLaterSimulationAdapter(val adapterFactory: PayLaterAdapterFactoryImpl) 
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(element)
-        //if (element.isEmpty()) showEmptyState()
         diffResult.dispatchUpdatesTo(this)
     }
 
