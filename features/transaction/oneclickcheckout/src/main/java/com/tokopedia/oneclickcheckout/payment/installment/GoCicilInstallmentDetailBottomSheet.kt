@@ -15,8 +15,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -90,6 +92,21 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         val selectedTerm = goCicilData.selectedTerm?.installmentTerm ?: -1
         for (installment in installmentDetails) {
             val viewInstallmentDetailItem = ItemGocicilInstallmentDetailBinding.inflate(inflater)
+            viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
+                    R.string.occ_lbl_gocicil_installment_title,
+                    installment.installmentTerm,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
+            )
+            if (installment.description.isNotEmpty()) {
+                viewInstallmentDetailItem.tvInstallmentDetailDescription.text = installment.description
+            } else {
+                viewInstallmentDetailItem.tvInstallmentDetailDescription.gone()
+            }
+            if (installment.hasPromoLabel) {
+                viewInstallmentDetailItem.tvInstallmentDetailLabel.text = installment.labelMessage
+            } else {
+                viewInstallmentDetailItem.labelInstallmentDetail.gone()
+            }
             if (!installment.isActive) {
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
@@ -133,7 +150,11 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         if (installmentMessageDetail == null) {
             binding?.tvInstallmentMessage?.gone()
         } else {
-            binding?.tvInstallmentMessage?.text = "${installmentMessageDetail.firstDueMessage} (${installmentMessageDetail.firstInstallmentDate})"
+            binding?.tvInstallmentMessage?.text = binding?.root?.context?.getString(
+                    R.string.occ_lbl_gocicil_installment_bottom_sheet_message,
+                    installmentMessageDetail.firstDueMessage,
+                    installmentMessageDetail.firstInstallmentDate
+            )
             binding?.tvInstallmentMessage?.visible()
         }
     }
