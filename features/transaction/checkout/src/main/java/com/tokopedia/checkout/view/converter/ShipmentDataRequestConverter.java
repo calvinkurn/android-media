@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.converter;
 
+import com.google.gson.Gson;
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -232,14 +233,15 @@ public class ShipmentDataRequestConverter {
     }
 
     private ArrayList<AddOnGiftingRequest> convertGiftingAddOnModelRequest(AddOnsDataModel addOnsDataModel) {
+        Gson gson = new Gson();
         ArrayList<AddOnGiftingRequest> listAddOnProductRequest = new ArrayList<>();
         if (addOnsDataModel.getStatus() == 1) {
             for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
                 AddOnGiftingRequest addOnGiftingRequest = new AddOnGiftingRequest();
-                addOnGiftingRequest.setItemId(String.valueOf(addOnDataItemModel.getAddOnId()));
+                addOnGiftingRequest.setItemId(addOnDataItemModel.getAddOnId());
                 addOnGiftingRequest.setItemType("add_ons");
                 addOnGiftingRequest.setItemQty((int) addOnDataItemModel.getAddOnQty());
-                addOnGiftingRequest.setItemMetadata(addOnDataItemModel.getAddOnMetadata());
+                addOnGiftingRequest.setItemMetadata(gson.toJson(addOnDataItemModel.getAddOnMetadata()));
                 listAddOnProductRequest.add(addOnGiftingRequest);
             }
         }

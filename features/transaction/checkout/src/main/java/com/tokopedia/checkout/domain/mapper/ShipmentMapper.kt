@@ -398,11 +398,24 @@ class ShipmentMapper @Inject constructor() {
             listAddOnDataItem.add(AddOnDataItem().apply {
                 addOnPrice = item.addOnPrice
                 addOnId = item.addOnId
-                addOnMetadata = item.addOnMetadata
+                addOnMetadata = mapAddOnMetadata(item.addOnMetadata)
                 addOnQty = item.addOnQty
             })
         }
         return listAddOnDataItem
+    }
+
+    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItem {
+        return AddOnMetadataItem(mapAddOnNote(addOnMetadata.addOnNote))
+    }
+
+    private fun mapAddOnNote(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItem {
+        return AddOnNoteItem().apply {
+            isCustomNote = addOnNote.isCustomNote
+            to = addOnNote.to
+            from = addOnNote.from
+            notes = addOnNote.notes
+        }
     }
 
     private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButton {

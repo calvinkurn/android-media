@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnDataItem;
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnNoteItem;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnProductsItem;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddOns;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -21,6 +22,8 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticcart.shipping.model.AddOnBottomSheetModel;
 import com.tokopedia.logisticcart.shipping.model.AddOnButtonModel;
 import com.tokopedia.logisticcart.shipping.model.AddOnDataItemModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnMetadataItemModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnNoteItemModel;
 import com.tokopedia.logisticcart.shipping.model.AddOnProductItemModel;
 import com.tokopedia.logisticcart.shipping.model.AddOnTickerModel;
 import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
@@ -314,7 +317,17 @@ public class ShipmentDataConverter {
             addOnDataItemModel.setAddOnId(addOnDataItem.getAddOnId());
             addOnDataItemModel.setAddOnQty(addOnDataItem.getAddOnQty());
             addOnDataItemModel.setAddOnPrice(addOnDataItem.getAddOnPrice());
-            addOnDataItemModel.setAddOnMetadata(addOnDataItem.getAddOnMetadata());
+
+            AddOnNoteItemModel addOnNoteItemModel = new AddOnNoteItemModel();
+            AddOnNoteItem addOnNoteItem = addOnDataItem.getAddOnMetadata().getAddOnNoteItem();
+            addOnNoteItemModel.setCustomNote(addOnNoteItem.isCustomNote());
+            addOnNoteItemModel.setFrom(addOnNoteItem.getFrom());
+            addOnNoteItemModel.setTo(addOnNoteItem.getTo());
+            addOnNoteItemModel.setNotes(addOnNoteItem.getNotes());
+
+            AddOnMetadataItemModel addOnMetadataItemModel = new AddOnMetadataItemModel();
+            addOnMetadataItemModel.setAddOnNoteItemModel(addOnNoteItemModel);
+            addOnDataItemModel.setAddOnMetadata(addOnMetadataItemModel);
             addOnDataItemModels.add(addOnDataItemModel);
         }
         addOnsDataModel.setAddOnsDataItemModelList(addOnDataItemModels);
