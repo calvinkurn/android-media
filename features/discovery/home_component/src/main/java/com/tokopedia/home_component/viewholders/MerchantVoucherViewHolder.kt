@@ -95,7 +95,16 @@ class MerchantVoucherViewHolder(
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
         val list :MutableList<CarouselMerchantVoucherDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
-            list.add(CarouselMerchantVoucherDataModel())
+            list.add(
+                CarouselMerchantVoucherDataModel(
+                    shopName = element.shop.shopName,
+                    benefit = element.name,
+                    benefitPrice = element.benefit.value,
+                    totalOtherCoupon = element.label,
+                    iconBadge = if (element.badges.isNotEmpty()) element.badges[0].imageUrl else "",
+                    imageProduct = element.imageUrl
+                )
+            )
         }
         return list
     }

@@ -8,6 +8,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
+import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -25,17 +26,18 @@ class CarouselMerchantVoucherViewHolder (
     }
 
     override fun bind(element: CarouselMerchantVoucherDataModel) {
-//        setLayout(element)
+        binding?.imageBackground
+        setLayout(element)
 //        setListener(element)
     }
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
-//        setImageShop(element.grid.imageUrl)
-//        setTopAds(element.grid.isTopads)
-//        setShopLogo(element.grid.shop.shopProfileUrl)
-//        setShopBadge(element.grid.shop.shopBadgeUrl)
-//        setShopName(element.grid.shop.shopName)
-//        setContextualInfo(channels.contextualInfo, element)
+        binding?.shopName?.text = element.shopName
+        binding?.titleBenefit?.text = element.benefit
+        binding?.benefitPrice?.text = element.benefitPrice
+        binding?.totalOtherCoupon?.text = element.totalOtherCoupon
+        binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
+        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
     }
 
 //    private fun setListener(element: CarouselFeaturedShopCardDataModel){

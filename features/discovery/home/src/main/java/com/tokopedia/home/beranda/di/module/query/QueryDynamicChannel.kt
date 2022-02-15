@@ -80,6 +80,7 @@ internal object QueryDynamicChannel {
             "              shop{\n" +
             "                shopID\n" +
             "                city\n" +
+            "                name\n" +
             "               }\n" +
             "              labelGroup {\n" +
             "                title\n" +

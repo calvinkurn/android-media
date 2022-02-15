@@ -6,7 +6,14 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 /**
  * Created by dhaba
  */
-class CarouselMerchantVoucherDataModel : Visitable<CommonCarouselProductCardTypeFactory> {
+data class CarouselMerchantVoucherDataModel(
+    val shopName: String,
+    val benefit: String,
+    val benefitPrice: String,
+    val totalOtherCoupon: String,
+    val iconBadge : String,
+    val imageProduct: String
+) : Visitable<CommonCarouselProductCardTypeFactory> {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)
     }

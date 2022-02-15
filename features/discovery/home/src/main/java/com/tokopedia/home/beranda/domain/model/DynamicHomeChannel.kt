@@ -562,6 +562,9 @@ data class DynamicHomeChannel(
         val shopId: String = "",
         @Expose
         @SerializedName("city")
-        val city: String = ""
+        val city: String = "",
+        @Expose
+        @SerializedName("name")
+        val name: String = ""
     )
 }
