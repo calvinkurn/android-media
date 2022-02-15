@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.IntDef
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
@@ -19,12 +20,16 @@ class ProductVideoView(
 ) : FrameLayout(context, attrs, defStyleAttr)  {
     companion object{
         private val playerLayoutId = R.layout.product_video_view
+
+        private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.12f
+        private const val PIVOT_MULTIPLIER_FIT_CENTER = 0.5f
     }
     private val componentListener: ComponentListener
     private var contentFrame: AspectRatioFrameLayout? = null
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+    private var scaleType = ScaleType.TYPE_CENTER_CROP
 
     constructor(context: Context) : this(context, null, 0)
 
@@ -34,6 +39,8 @@ class ProductVideoView(
         LayoutInflater.from(context).inflate(playerLayoutId, this)
         componentListener = ComponentListener()
         descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+
+        applyStyledAttributes(context, attrs, defStyleAttr)
 
         // Content frame.
         contentFrame = findViewById(R.id.exo_content_frame)
@@ -49,21 +56,61 @@ class ProductVideoView(
         contentFrame?.addView(surfaceView, 0)
     }
 
-    private fun adjustVideoToFitCenter(textureView: TextureView, width: Float, height: Float){
+    fun setScaleType(@ScaleType scaleType: Int) {
+        this.scaleType = scaleType
+    }
+
+    @ScaleType
+    fun getScaleType() : Int {
+        return this.scaleType
+    }
+
+    private fun applyStyledAttributes(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
+    ) {
+        context.theme
+            .obtainStyledAttributes(attrs, R.styleable.ProductVideoView, defStyleAttr, 0)
+            .apply {
+                try {
+                    scaleType = getInteger(
+                        R.styleable.ProductVideoView_scaleType,
+                        ScaleType.TYPE_CENTER_CROP
+                    )
+                } finally {
+                    recycle()
+                }
+            }
+    }
+
+    private fun adjustVideoScale(textureView: TextureView, videoWidth: Float, videoHeight: Float){
         val viewWidth = this.width.toFloat()
         val viewHeight = this.height.toFloat()
-        val videoWidth = width
-        val videoHeight = height
+
+        val matrix = when(scaleType){
+            ScaleType.TYPE_FIT_CENTER -> getFitCenterMatrix(viewWidth, viewHeight, videoWidth, videoHeight)
+            else -> getCenterCropMatrix(viewWidth, viewHeight, videoWidth, videoHeight)
+        }
+        textureView.setTransform(matrix)
+        contentFrame?.setAspectRatio(viewWidth / viewHeight)
+    }
+
+    private fun getFitCenterMatrix(
+        viewWidth: Float,
+        viewHeight: Float,
+        videoWidth: Float,
+        videoHeight: Float
+    ) : Matrix {
         val pivotX: Float
         val pivotY: Float
-
         val scaleFactor = when {
             videoHeight > videoWidth -> {
                 // Portrait
                 val previewRatio = videoWidth / videoHeight
                 val viewFinderRatio = viewWidth / viewHeight
                 val scaling = viewFinderRatio * previewRatio
-                pivotX = viewWidth * 0.5f
+                pivotX = viewWidth * PIVOT_MULTIPLIER_FIT_CENTER
                 pivotY = 0f
                 PointF(scaling, 1f)
             }
@@ -73,7 +120,7 @@ class ProductVideoView(
                 val viewFinderRatio = viewWidth / viewHeight
                 val scaling = viewFinderRatio * previewRatio
                 pivotX = 0f
-                pivotY = viewHeight * 0.5f
+                pivotY = viewHeight * PIVOT_MULTIPLIER_FIT_CENTER
                 PointF(1f, scaling)
             }
             else -> {
@@ -84,10 +131,56 @@ class ProductVideoView(
             }
         }
 
-        val matrix = Matrix()
-        matrix.preScale(scaleFactor.x, scaleFactor.y, pivotX, pivotY)
-        textureView.setTransform(matrix)
-        contentFrame?.setAspectRatio(viewWidth / viewHeight)
+        return getPreScaleMatrix(scaleFactor, pivotX, pivotY)
+    }
+
+    private fun getCenterCropMatrix(
+        viewWidth: Float,
+        viewHeight: Float,
+        videoWidth: Float,
+        videoHeight: Float
+    ) : Matrix {
+        val pivotX: Float
+        val pivotY: Float
+
+        val scaleFactor = when {
+            videoHeight > videoWidth -> {
+                // Portrait
+                val previewRatio = videoHeight / videoWidth
+                val viewFinderRatio = viewWidth / viewHeight
+                val scaling = viewFinderRatio * previewRatio
+                pivotX = 0f
+                pivotY = viewHeight * PIVOT_MULTIPLIER_CENTER_CROP
+                PointF(1f, scaling)
+            }
+            videoWidth > videoHeight -> {
+                // Landscape
+                val previewRatio = videoWidth / videoHeight
+                val viewFinderRatio = viewWidth / viewHeight
+                val scaling = viewFinderRatio * previewRatio
+                pivotX = viewWidth * PIVOT_MULTIPLIER_CENTER_CROP
+                pivotY = 0f
+                PointF(scaling, 1f)
+            }
+            else -> {
+                // 1:1
+                pivotX = 0f
+                pivotY = 0f
+                PointF(1f, 1f)
+            }
+        }
+
+        return getPreScaleMatrix(scaleFactor, pivotX, pivotY)
+    }
+
+    private fun getPreScaleMatrix(
+        scaleFactor: PointF,
+        pivotX: Float,
+        pivotY: Float
+    ) :Matrix {
+        return Matrix().apply {
+            preScale(scaleFactor.x, scaleFactor.y, pivotX, pivotY)
+        }
     }
 
     fun setPlayer(player: Player?){
@@ -115,8 +208,16 @@ class ProductVideoView(
             unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float
         ) {
             surfaceView?.let{ surfaceView ->
-                adjustVideoToFitCenter(surfaceView, width.toFloat(), height.toFloat())
+                adjustVideoScale(surfaceView, width.toFloat(), height.toFloat())
             }
+        }
+    }
+
+    @IntDef(ScaleType.TYPE_CENTER_CROP, ScaleType.TYPE_FIT_CENTER)
+    annotation class ScaleType {
+        companion object {
+            const val TYPE_CENTER_CROP = 0
+            const val TYPE_FIT_CENTER = 1
         }
     }
 }
