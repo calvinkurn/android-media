@@ -192,12 +192,15 @@ class ShipmentViewHolder(
         }
     }
 
-    private fun loadErrorState() = with(viewError.pdpShipmentLocalLoad) {
-        progressState = false
-        refreshBtn?.setOnClickListener {
-            if (!progressState) {
-                progressState = true
-                listener.refreshPage()
+    private fun loadErrorState() = with(viewError) {
+        root.show()
+        pdpShipmentLocalLoad.apply {
+            progressState = false
+            refreshBtn?.setOnClickListener {
+                if (!progressState) {
+                    progressState = true
+                    listener.refreshPage()
+                }
             }
         }
     }
@@ -213,8 +216,8 @@ class ShipmentViewHolder(
      * which means the view is not mandatory.
      */
     private fun initialState() {
-        if (!viewMainDelegate.isInitialized()) return
         with(viewMain) {
+            root.show()
             pdpShipmentIcon.hide()
             pdpShipmentSubtitle.hide()
             pdpShipmentGroupTc.hide()
