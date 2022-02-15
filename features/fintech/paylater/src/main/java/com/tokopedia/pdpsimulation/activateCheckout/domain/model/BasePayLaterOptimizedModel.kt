@@ -39,6 +39,7 @@ data class CheckoutData(
 data class TenureDetail(
     var isSelectedTenure: Boolean = false,
     @SerializedName("tenure") val tenure: Int,
+    @SerializedName("label") val lable:String?,
     @SerializedName("chip_title") val chip_title: String,
     @SerializedName("monthly_installment") val monthly_installment: String,
     @SerializedName("description") val description: String,
