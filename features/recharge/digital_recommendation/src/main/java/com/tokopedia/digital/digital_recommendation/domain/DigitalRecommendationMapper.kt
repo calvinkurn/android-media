@@ -6,6 +6,7 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
 import com.tokopedia.recharge_component.digital_card.presentation.model.*
 import com.tokopedia.unifycomponents.Label
+import java.util.*
 
 /**
  * @author by furqan on 20/09/2021
@@ -58,11 +59,11 @@ class DigitalRecommendationMapper {
                     ),
                     title = if (it.trackingData.itemLabel.isNotEmpty()) {
                         when (it.trackingData.itemLabel) {
-                            TYPE_PRODUCT_RECOMMENDATION -> it.title
-                            TYPE_CATEGORY -> it.trackingData.categoryName
-                            else -> it.title
-                        }
-                    } else it.title,
+                                                TYPE_PRODUCT_RECOMMENDATION -> it.title
+                                                TYPE_CATEGORY -> it.trackingData.categoryName
+                                                else -> it.title
+                                            }.uppercase(Locale.getDefault())
+                    } else it.title.uppercase(Locale.getDefault()),
                     rating = DigitalCardRatingModel(
                         ratingType = it.ratingType,
                         rating = it.rating,
