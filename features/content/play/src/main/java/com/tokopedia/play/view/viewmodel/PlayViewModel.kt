@@ -234,9 +234,9 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _titleUiState = _tagItems.map {
+    private val _titleUiState = _channelDetail.map {
         PlayTitleUiState(
-            title = it.bottomSheetTitle
+            title = it.channelInfo.title
         )
     }.flowOn(dispatchers.computation)
 
@@ -1464,20 +1464,13 @@ class PlayViewModel @AssistedInject constructor(
                     channelStateProcessor.setIsFreeze(result.isFreeze)
                 }
             }
-            is ProductTag -> {
-                val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
+            is ProductSection ->{
+                val mappedData = playSocketToModelMapper.mapProductSection(result)
                 _tagItems.update {
                     it.copy(
-                        product = it.product.copy(
-                            productList = mappedProductTags,
-                            canShow = shouldShow
-                        ),
+                        section = mappedData
                     )
                 }
-
-                sendProductTrackerToBro(
-                    productList = mappedProductTags
-                )
             }
             is MerchantVoucher -> {
                 val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)

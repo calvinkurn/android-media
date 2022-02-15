@@ -17,8 +17,7 @@ sealed class PlayProductUiModel {
             val price: ProductPrice,
             val minQty: Int,
             val isFreeShipping: Boolean,
-            val applink: String?,
-            val sectionType: ProductSectionType?
+            val applink: String?
     ) : PlayProductUiModel() {
         companion object {
             val Empty: Product
@@ -32,8 +31,7 @@ sealed class PlayProductUiModel {
                     price = OriginalPrice("", 0.0),
                     minQty = 0,
                     isFreeShipping = false,
-                    applink = null,
-                    sectionType = null
+                    applink = null
                 )
         }
     }

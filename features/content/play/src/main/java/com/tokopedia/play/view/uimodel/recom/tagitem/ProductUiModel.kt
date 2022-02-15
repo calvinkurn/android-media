@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.play.data.Config
 import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -43,12 +44,14 @@ data class VariantUiModel(
 }
 
 data class SectionUiModel(
-    val sections : List<PlayProductSectionUiModel.ProductSection>
+    val sections : List<PlayProductSectionUiModel.ProductSection>,
+    val config: Config
 ){
     companion object{
         val Empty: SectionUiModel
             get() = SectionUiModel(
-                sections = emptyList()
+                sections = emptyList(),
+                config = Config()
             )
     }
 }
