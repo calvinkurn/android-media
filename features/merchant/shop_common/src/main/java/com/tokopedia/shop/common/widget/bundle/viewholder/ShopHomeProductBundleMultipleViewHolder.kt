@@ -63,14 +63,19 @@ class ShopHomeProductBundleMultipleViewHolder(
 
         // bundle products list
         initBundleProductsRecyclerView(spanSize = bundle.bundleProducts.size)
-        (rvBundleProducts?.adapter as ShopHomeProductBundleMultipleAdapter).updateDataSet(bundle.bundleProducts)
+        (rvBundleProducts?.adapter as ShopHomeProductBundleMultipleAdapter).updateDataSet(
+                newList = bundle.bundleProducts,
+                bundleDetail = multipleBundleItem,
+                bundleParent = bundle
+        )
 
         // bind listeners
         buttonAtc?.setOnClickListener {
             // add to cart bundle
             multipleProductBundleClickListener.addMultipleBundleToCart(
                     multipleBundleItem,
-                    bundle.bundleProducts
+                    bundle.bundleProducts,
+                    bundle.bundleName
             )
         }
     }

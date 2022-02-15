@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductMultipleBinding
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -33,21 +34,37 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         }
     }
 
-    fun bind(bundleProductItem: ShopHomeBundleProductUiModel) {
+    fun bind(
+            bundleProductItem: ShopHomeBundleProductUiModel,
+            bundleDetail: ShopHomeProductBundleDetailUiModel,
+            bundleParent: ShopHomeProductBundleItemUiModel,
+            bundlePosition: Int
+    ) {
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
 
         itemView.setOnClickListener {
-            itemListener.onMultipleBundleProductClicked(bundleProductItem.productId.toString())
+            itemListener.onMultipleBundleProductClicked(
+                    bundleProductItem,
+                    bundleDetail,
+                    bundleParent.bundleName,
+                    bundlePosition
+            )
         }
     }
 
 }
 
 interface MultipleProductBundleClickListener {
-    fun onMultipleBundleProductClicked(productId: String)
+    fun onMultipleBundleProductClicked(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    )
     fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            productDetails: List<ShopHomeBundleProductUiModel>
+            productDetails: List<ShopHomeBundleProductUiModel>,
+            bundleName: String,
     )
 }

@@ -80,11 +80,21 @@ class ShopHomeProductBundleSingleViewHolder(
         // single bundle product detail
         imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
         imageBundleProduct?.setOnClickListener {
-            singleProductBundleClickListener.onSingleBundleProductClicked(singleBundleProduct.productId.toString())
+            singleProductBundleClickListener.onSingleBundleProductClicked(
+                    singleBundleProduct,
+                    selectedSingleBundle,
+                    bundle.bundleName,
+                    bundle.bundleProducts.indexOf(singleBundleProduct)
+            )
         }
         typographyBundleProductName?.text = singleBundleProduct.productName
         typographyBundleProductName?.setOnClickListener {
-            singleProductBundleClickListener.onSingleBundleProductClicked(singleBundleProduct.productId.toString())
+            singleProductBundleClickListener.onSingleBundleProductClicked(
+                    singleBundleProduct,
+                    selectedSingleBundle,
+                    bundle.bundleName,
+                    bundle.bundleProducts.indexOf(singleBundleProduct)
+            )
         }
 
         // bundle variant package list
@@ -92,7 +102,11 @@ class ShopHomeProductBundleSingleViewHolder(
 
         // bind listeners
         buttonAtc?.setOnClickListener {
-            singleProductBundleClickListener.addSingleBundleToCart(selectedSingleBundle, singleBundleProduct)
+            singleProductBundleClickListener.addSingleBundleToCart(
+                    selectedSingleBundle,
+                    singleBundleProduct,
+                    bundle.bundleName,
+            )
         }
     }
 
@@ -121,6 +135,15 @@ class ShopHomeProductBundleSingleViewHolder(
 }
 
 interface SingleProductBundleClickListener {
-    fun onSingleBundleProductClicked(productId: String)
-    fun addSingleBundleToCart(selectedBundle: ShopHomeProductBundleDetailUiModel, bundleProducts: ShopHomeBundleProductUiModel)
+    fun onSingleBundleProductClicked(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    )
+    fun addSingleBundleToCart(
+            selectedBundle: ShopHomeProductBundleDetailUiModel,
+            bundleProducts: ShopHomeBundleProductUiModel,
+            bundleName: String,
+    )
 }

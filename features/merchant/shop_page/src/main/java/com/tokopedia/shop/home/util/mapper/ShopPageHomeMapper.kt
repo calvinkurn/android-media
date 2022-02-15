@@ -282,6 +282,7 @@ object ShopPageHomeMapper {
                         bundleId = bundleDetail.bundleId
                         originalPrice = bundleDetail.originalPrice
                         displayPrice = bundleDetail.displayPrice
+                        displayPriceRaw = bundleDetail.displayPriceRaw
                         discountPercentage = bundleDetail.discountPercentage
                         isPreOrder = bundleDetail.isPO
                         isProductsHaveVariant = bundleDetail.isProductsHaveVariant

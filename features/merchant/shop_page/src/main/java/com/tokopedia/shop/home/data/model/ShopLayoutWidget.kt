@@ -154,6 +154,8 @@ data class ShopLayoutWidget(
                     val originalPrice: String = "0",
                     @SerializedName("displayPrice")
                     val displayPrice: String = "0",
+                    @SerializedName("displayPriceRaw")
+                    val displayPriceRaw: Long = 0,
                     @SerializedName("discountPercentage")
                     val discountPercentage: Int = 0,
                     @SerializedName("isPO")

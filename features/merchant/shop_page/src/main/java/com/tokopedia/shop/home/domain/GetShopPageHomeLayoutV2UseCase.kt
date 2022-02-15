@@ -61,6 +61,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         bundleID
                         originalPrice
                         displayPrice
+                        displayPriceRaw
                         discountPercentage
                         isPO
                         isProductsHaveVariant
