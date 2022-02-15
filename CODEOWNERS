@@ -226,6 +226,7 @@
 /features/communication/inbox/                          @tokopedia/android-minionkevin-dev
 /features/communication/inbox_common/                   @tokopedia/android-minionkevin-dev
 /features/communication/notifcenter/                    @tokopedia/android-minionkevin-dev
+/features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionsolo-dev
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
