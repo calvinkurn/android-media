@@ -31,9 +31,7 @@
         android:layout_height="wrap_content"
         app:card_type="border"
         android:layout_marginTop="4dp"
-
-
-        android:layout_below="@id/tvRecommendationTitle"
+        android:layout_below="@id/tenureRecommendation"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
