@@ -17,8 +17,6 @@ interface PlayBroadcastSetupComponent {
 
     fun inject(bottomSheet: PlayBroadcastSetupBottomSheet)
 
-    fun inject(emptyFragment: CoverEditFragment)
-
     fun inject(bottomSheet: SetupBroadcastScheduleBottomSheet)
 
     @Component.Builder

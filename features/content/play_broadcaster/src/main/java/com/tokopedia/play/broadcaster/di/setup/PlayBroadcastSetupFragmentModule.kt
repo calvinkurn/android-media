@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.edit.CoverCropEditBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import dagger.Binds
@@ -35,12 +34,4 @@ abstract class PlayBroadcastSetupFragmentModule {
     @IntoMap
     @FragmentKey(PlayGalleryImagePickerBottomSheet::class)
     abstract fun getGalleryImagePickerBottomSheet(fragment: PlayGalleryImagePickerBottomSheet): Fragment
-
-    /**
-     * Edit Container
-     */
-    @Binds
-    @IntoMap
-    @FragmentKey(CoverCropEditBottomSheet::class)
-    abstract fun getCoverCropEditBottomSheet(fragment: CoverCropEditBottomSheet): Fragment
 }
