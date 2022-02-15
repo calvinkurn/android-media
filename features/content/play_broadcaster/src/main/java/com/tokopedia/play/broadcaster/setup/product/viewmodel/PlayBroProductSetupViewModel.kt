@@ -337,7 +337,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             val productSectionList = _productTagSectionList.value
 
             val productIds = productSectionList.flatMap { section ->
-                section.products.filter { it.id != product.id }.map { it.id }
+                section.products.mapNotNull { if (it.id != product.id) it.id else null }
             }
             repo.setProductTags(channelId, productIds)
 
