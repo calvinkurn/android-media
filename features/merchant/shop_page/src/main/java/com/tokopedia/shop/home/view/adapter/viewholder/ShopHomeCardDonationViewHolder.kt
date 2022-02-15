@@ -10,6 +10,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
@@ -57,7 +58,15 @@ class ShopHomeCardDonationViewHolder(
             TextUtils.concat(element.header.title, " ", ctaDescription)
 
         itemView.setOnClickListener {
-            listener.onCardDonationClick(element.header.ctaLink)
+            listener.onCardDonationClick(element)
+        }
+
+        setWidgetImpressionListener(element)
+    }
+
+    private fun setWidgetImpressionListener(element: ShopHomeCardDonationUiModel) {
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressCardDonation(element, adapterPosition)
         }
     }
 

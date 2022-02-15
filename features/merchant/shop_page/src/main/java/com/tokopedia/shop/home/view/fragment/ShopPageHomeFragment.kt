@@ -165,6 +165,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
+        private const val REQUEST_CODE_DONATION_DETAIL = 123
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
@@ -1363,6 +1364,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     lastEvent.first,
                     lastEvent.second
                 )
+            }
+            REQUEST_CODE_DONATION_DETAIL -> {
+                shopPageHomeTracking.actionPressBackDonation(isOwner, shopId)
             }
             else -> {
             }
@@ -3255,10 +3259,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onCardDonationClick(applink: String) {
+    override fun onCardDonationClick(model: ShopHomeCardDonationUiModel) {
         context?.let {
-            RouteManager.route(it, applink)
+            shopPageHomeTracking.actionClickCardDonationWidget(isOwner, shopId)
+            startActivityForResult(RouteManager.getIntent(it, model.header.ctaLink), REQUEST_CODE_DONATION_DETAIL)
         }
+    }
+
+    override fun onImpressCardDonation(model: ShopHomeCardDonationUiModel, position: Int) {
+        shopPageHomeTracking.impressionCardDonationWidget(isOwner, shopId)
     }
 
     //endregion

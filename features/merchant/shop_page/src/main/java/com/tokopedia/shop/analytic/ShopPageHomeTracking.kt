@@ -30,6 +30,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_CLICK_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_HOME_TAB_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_BACK_BUTTON
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DIGITAL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DONATION_BY_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_RECOMMENDATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REMINDER_FLASH_SALE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET
@@ -106,8 +109,10 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_DONATION_BY_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_DONATION_BY_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -126,6 +131,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPA
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VERTICAL_POSITION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_COUPON_TOKO_MEMBER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_DIGITAL_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_BUY_AGAIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_CAROUSELL
@@ -1977,6 +1983,51 @@ class ShopPageHomeTracking(
                 BUSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun impressionCardDonationWidget(
+        isOwner: Boolean,
+        shopId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            EVENT to VIEW_DIGITAL_IRIS,
+            EVENT_ACTION to IMPRESSION_DONATION_BY_SELLER,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to shopId,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun actionClickCardDonationWidget(
+        isOwner: Boolean,
+        shopId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            EVENT to CLICK_DIGITAL,
+            EVENT_ACTION to CLICK_DONATION_BY_SELLER,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to shopId,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun actionPressBackDonation(
+        isOwner: Boolean,
+        shopId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            EVENT to CLICK_DIGITAL,
+            EVENT_ACTION to CLICK_BACK_BUTTON,
+            EVENT_CATEGORY to SHOP_PAGE_DONATION_BY_SELLER,
+            EVENT_LABEL to shopId,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
