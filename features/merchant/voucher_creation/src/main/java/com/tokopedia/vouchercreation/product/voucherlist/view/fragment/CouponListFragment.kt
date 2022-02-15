@@ -16,7 +16,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.datepicker.toZeroIfNull
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.header.HeaderUnify
@@ -57,7 +56,6 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
-import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
@@ -138,9 +136,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private val loadingList: View? by lazy { view?.findViewById(R.id.loadingList) }
     private val emptyStateList: View? by lazy { view?.findViewById(R.id.emptyStateList) }
 
-    private val filterStatus by lazy { SortFilterItem("Status Aktif") }
-    private val filterType by lazy { SortFilterItem("Gratis Ongkir") }
-    private val filterTarget by lazy { SortFilterItem("Publik") }
+    private val filterStatus by lazy { SortFilterItem(getString(R.string.mvc_coupon_status_active)) }
+    private val filterType by lazy { SortFilterItem(getString(R.string.mvc_free_shipping)) }
+    private val filterTarget by lazy { SortFilterItem(getString(R.string.mvc_public)) }
 
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Long) -> Unit = {}
@@ -235,9 +233,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun showEmptyDataGlobalError() {
         swipeToRefresh?.isEnabled = false // need to disable, to enable Coba Lagi button listener
         globalError?.apply {
-            errorTitle.text = "Nggak ada Kupon aktif"
-            errorDescription.text = "Yuk, gunakan Kupon Produk untuk meningkatkan peluang penjualan tokomu."
-            errorAction.text = "Buat Kupon Produk"
+            errorTitle.text = context.getString(R.string.mvc_coupon_empty_title)
+            errorDescription.text = context.getString(R.string.mvc_coupon_empty_description)
+            errorAction.text = context.getString(R.string.mvc_coupon_create_action)
             setActionClickListener {
                 onCreateCouponMenuSelected.invoke()
             }
