@@ -39,7 +39,7 @@ open class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<Shop
                 putString(ShopScoreDeepLinkMapper.COACH_MARK_PARAM, coachMarkParam)
             }
         }
-        ShopPerformancePageFragment.newInstance(bundle)
+        return ShopPerformancePageFragment.newInstance(bundle)
     }
 
     override fun getComponent(): ShopPerformanceComponent {
