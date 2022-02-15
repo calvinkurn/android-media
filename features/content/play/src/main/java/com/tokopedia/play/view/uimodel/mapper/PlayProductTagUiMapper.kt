@@ -60,7 +60,8 @@ class PlayProductTagUiMapper @Inject constructor() {
                 stock = if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
-                applink = input.appLink
+                applink = input.appLink,
+                sectionType = sectionType
         )
     }
 }

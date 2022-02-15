@@ -31,9 +31,8 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
     private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
     private val llPrice: LinearLayout = itemView.findViewById(R.id.layout_product_button)
 
-    fun bind(item: PlayProductUiModel.Product, type: ProductSectionType) {
+    override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
-        setupViewBasedOnType(type)
         when (item.stock) {
             OutOfStock -> {
                 shadowOutOfStock.show()
@@ -60,19 +59,17 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             }
         }
 
+        when(item.sectionType){
+            ProductSectionType.Upcoming -> llPrice.hide()
+            else -> llPrice.show()
+        }
+
         btnProductBuy.setOnClickListener {
             listener.onBuyProduct(item)
         }
 
         btnProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
-        }
-    }
-
-    private fun setupViewBasedOnType(type: ProductSectionType){
-        when(type){
-            ProductSectionType.Upcoming -> llPrice.hide()
-            else -> llPrice.show()
         }
     }
 
