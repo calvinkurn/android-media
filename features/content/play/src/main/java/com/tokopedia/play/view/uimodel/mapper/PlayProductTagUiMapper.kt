@@ -39,7 +39,7 @@ class PlayProductTagUiMapper @Inject constructor() {
     }
 
 
-    fun mapProductTag(input: Product, sectionType: ProductSectionType? = null): PlayProductUiModel.Product {
+    fun mapProductTag(input: Product, sectionType: ProductSectionType = ProductSectionType.Other): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
                 id = input.id,
                 shopId = input.shopId,
@@ -57,11 +57,11 @@ class PlayProductTagUiMapper @Inject constructor() {
                             priceNumber = input.originalPrice)
                 },
                 isVariantAvailable = input.isVariant,
-                stock = if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
+                stock = if(sectionType == ProductSectionType.Other) ComingSoon else
+                    if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
-                applink = input.appLink,
-                sectionType = sectionType
+                applink = input.appLink
         )
     }
 }
