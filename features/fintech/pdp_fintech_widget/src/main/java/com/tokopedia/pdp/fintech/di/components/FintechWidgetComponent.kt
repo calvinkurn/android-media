@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.pdp.fintech.di.module.FintechViewModelModule
 import com.tokopedia.pdp.fintech.di.module.FintechWidgetModule
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget
+import com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity
 import com.tokopedia.pdpsimulation.common.di.scope.FintechWidgetScope
 import dagger.Component
 
@@ -18,5 +19,6 @@ import dagger.Component
 interface FintechWidgetComponent {
 
     fun inject(pdpFintechWidget: PdpFintechWidget)
+    fun inject(activationBottomSheetActivity: ActivationBottomSheetActivity){}
 
 }

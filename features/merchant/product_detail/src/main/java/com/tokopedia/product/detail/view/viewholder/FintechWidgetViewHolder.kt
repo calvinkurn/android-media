@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget
 import com.tokopedia.product.detail.R
@@ -45,11 +44,5 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
     }
-
-
-    override fun fintechRedirection(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-        listener.fintechRedirection(fintechRedirectionWidgetDataClass)
-    }
-
 
 }

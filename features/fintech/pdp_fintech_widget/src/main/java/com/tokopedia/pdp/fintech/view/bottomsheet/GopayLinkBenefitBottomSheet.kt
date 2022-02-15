@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet
+package com.tokopedia.pdp.fintech.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +11,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdp.fintech.domain.datamodel.ActivationBottomSheetDescriptions
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.pdp.fintech.view.adapter.GopayLinkBenefitAdapter
+import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -40,7 +40,7 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
     private lateinit var supervisedIcon: ImageUnify
     private var webUrl:String? = null
     private var arrayOfFeatures:ArrayList<ActivationBottomSheetDescriptions> = ArrayList()
-    private  lateinit var gopayLinkBenefitAdapter:GopayLinkBenefitAdapter
+    private  lateinit var gopayLinkBenefitAdapter: GopayLinkBenefitAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,44 +70,44 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
         recyclerBenifits.layoutManager = LinearLayoutManager(context)
         setListener()
         setData()
-        sendImpressionAnalytics()
+     //   sendImpressionAnalytics()
     }
 
-    private fun sendImpressionAnalytics() {
-         activationBottomSheetDetail?.userStatus?.let { userStatus ->
-            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
-                activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
-                    ContentWidgetTracking.fintechActivationBottomSheetImpression(
-                        userStatus, gatewayCode,userSession.userId,
-                        ctaWording
-                    )
-                }
-            }
-         }
-    }
+//    private fun sendImpressionAnalytics() {
+//         activationBottomSheetDetail?.userStatus?.let { userStatus ->
+//            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
+//                activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
+//                    ContentWidgetTracking.fintechActivationBottomSheetImpression(
+//                        userStatus, gatewayCode,userSession.userId,
+//                        ctaWording
+//                    )
+//                }
+//            }
+//         }
+//    }
 
     private fun setListener() {
         proceedButton.setOnClickListener {
-            sendCLickAnalytic()
+          //  sendCLickAnalytic()
            openRouteView(webUrl)
         }
     }
 
-    private fun sendCLickAnalytic() {
-        activationBottomSheetDetail?.userStatus?.let { userStatus ->
-            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
-                webUrl?.let { redirectionUrl->
-                    activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
-                        ContentWidgetTracking.fintechActivationClickBottomSheet(userStatus,gatewayCode,userSession.userId,
-                            redirectionUrl,
-                            ctaWording
-                        )
-                    }
-                }
-            }
-        }
-
-    }
+//    private fun sendCLickAnalytic() {
+//        activationBottomSheetDetail?.userStatus?.let { userStatus ->
+//            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
+//                webUrl?.let { redirectionUrl->
+//                    activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
+//                        ContentWidgetTracking.fintechActivationClickBottomSheet(userStatus,gatewayCode,userSession.userId,
+//                            redirectionUrl,
+//                            ctaWording
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 
     private fun openRouteView(androidUrl: String?) {
 
@@ -177,11 +177,12 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
         }
     }
 
-    fun showBottomSheet(supportFragmentManager: FragmentManager,bundle: Bundle)
+    fun showBottomSheet(supportFragmentManager: FragmentManager,bundle: Bundle):GopayLinkBenefitBottomSheet
     {
         val gopayLinkBenefitBottomSheet = GopayLinkBenefitBottomSheet()
         gopayLinkBenefitBottomSheet.arguments = bundle
         gopayLinkBenefitBottomSheet.show(supportFragmentManager,"GopayLinkBenefitBottomSheet")
+        return gopayLinkBenefitBottomSheet
 
 
     }

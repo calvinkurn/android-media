@@ -30,7 +30,6 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -151,9 +150,9 @@ import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilC
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
-import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitBottomSheet
-import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
-import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
+import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet
+import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
+import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -204,7 +203,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -771,43 +769,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return  viewLifecycleOwner
     }
 
-
-    override fun fintechRedirection(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-        fintechRedirectionWidgetDataClass.redirectionUrl?.let {
-            val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
-                    "?productID=${this.productId}" +
-                    "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                    "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
-                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
-                    "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
-
-            if (fintechRedirectionWidgetDataClass.cta == 2 &&
-                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false) {
-                openWebViewUrl(url = rediretionLink, false)
-            } else if (fintechRedirectionWidgetDataClass.cta == 2 &&
-                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true) {
-
-                val bundle = Bundle()
-                bundle.putParcelable(ACTIVATION_BOTTOMSHEET_DETAIl, fintechRedirectionWidgetDataClass)
-                bundle.putString(ACTIVATION_WEBVIEW_LINK,rediretionLink)
-
-
-                activity?.let {
-                    GopayLinkBenefitBottomSheet().showBottomSheet(
-                        it.supportFragmentManager,
-                        bundle
-                    )
-                }
-            }
-
-        else {
-
-            val intent = RouteManager.getIntent(requireContext(), rediretionLink)
-            startActivity(intent)
-
-        }
-    }
-}
     /**
      * ImpressionComponent
      */
@@ -1652,7 +1613,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         productId?.let { productId ->
-            pdpUiUpdater?.updateFintechData(productId,null,null)
+            pdpUiUpdater?.updateFintechDataWithProductId(productId)
         }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)

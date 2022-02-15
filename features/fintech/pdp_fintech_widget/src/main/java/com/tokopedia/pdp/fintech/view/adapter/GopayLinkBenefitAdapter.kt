@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet
+package com.tokopedia.pdp.fintech.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdp.fintech.domain.datamodel.ActivationBottomSheetDescriptions
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitAdapter.*
+import com.tokopedia.pdp.fintech.view.adapter.GopayLinkBenefitAdapter.*
+import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode

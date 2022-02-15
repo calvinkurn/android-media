@@ -6,5 +6,4 @@ interface ProductUpdateListner {
 
     fun removeWidget()
     fun showWidget()
-    fun fintechRedirection(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass)
 }

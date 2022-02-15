@@ -325,14 +325,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     idToPriceUrlMap = productIdToPriceURLMap
                 }
             }
-        }?: kotlin.run {
-            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
-            {
-                fintechWidgetMap?.run {
-                    productId = selectedProductId
-                }
-            }
+        }
+    }
 
+    fun updateFintechDataWithProductId(selectedProductId: String)
+    {
+        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+        {
+            fintechWidgetMap?.run {
+                productId = selectedProductId
+            }
         }
     }
 

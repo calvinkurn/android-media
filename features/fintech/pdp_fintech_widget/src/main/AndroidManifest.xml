@@ -3,6 +3,23 @@
     package="com.tokopedia.pdp_fintech">
 
     <application>
+
+        <activity android:name="com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_add_bank"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
