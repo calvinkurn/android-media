@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -34,7 +33,6 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var timerLogo: ImageUnify = itemView.findViewById(R.id.timer_logo)
     private var timerTextView: Typography = itemView.findViewById(R.id.tv_timer)
     private var shopCardDataItem: DataItem? = null
-    private var componentPosition: Int? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mShopCardItemViewModel = discoveryBaseViewModel as ShopCardItemViewModel
@@ -58,13 +56,6 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
             })
-            mShopCardItemViewModel.getComponentPosition().observe(lifecycle, { position ->
-                componentPosition = position
-            })
-
-            mShopCardItemViewModel.getComponentPosition().observe(lifecycle, {
-                componentPosition = it
-            })
             mShopCardItemViewModel.getSyncPageLiveData().observe(lifecycle, {
                 if (it) (fragment as DiscoveryFragment).reSync()
             })
@@ -75,8 +66,6 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             mShopCardItemViewModel.getComponentLiveData().removeObservers(it)
-            mShopCardItemViewModel.getComponentPosition().removeObservers(it)
-            mShopCardItemViewModel.getComponentPosition().removeObservers(it)
             mShopCardItemViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
@@ -90,17 +79,17 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 shopNameTextView.show()
                 shopNameTextView.text = dataItem.shopName
             } else {
-                shopNameTextView.hide()
+                shopNameTextView.invisible()
             }
             if (!dataItem.benefitTitle.isNullOrEmpty()) {
                 headerTitleTextView.show()
                 headerTitleTextView.text = dataItem.benefitTitle
             } else {
-                headerTitleTextView.hide()
+                headerTitleTextView.invisible()
             }
             if (dataItem.showBenefitCurrency == true) {
                 benefitSymbol.show()
-                benefitSymbol.text = dataItem.benefitSymbol
+                benefitSymbol.text = "Rp"
             } else {
                 benefitSymbol.hide()
             }
@@ -113,14 +102,11 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
             benefitSymbolImage.loadImage(dataItem.benefitSymbolImageUrl)
             if (dataItem.showTimer == true) {
                 timerLogo.show()
-            }else{
-                timerLogo.invisible()
-            }
-            if (!dataItem.timeDescription.isNullOrEmpty()) {
                 timerTextView.show()
                 timerTextView.text = dataItem.timeDescription
             } else {
                 timerTextView.invisible()
+                timerLogo.invisible()
             }
         } catch (exception: Exception) {
             parentCardView.hide()
@@ -142,5 +128,11 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
 //                .trackProductCardClick(mShopCardItemViewModel.components,
 //                        mShopCardItemViewModel.isUserLoggedIn())
 //    }
+
+//    override fun onViewAttachedToWindow() {
+//        super.onViewAttachedToWindow()
+//        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(mShopCardItemViewModel.components, mShopCardItemViewModel.getUserId())
+//    }
+
 
 }

@@ -5,8 +5,6 @@
     android:id="@+id/parentLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="2dp"
-    android:layout_marginEnd="2dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
@@ -17,7 +15,6 @@
         android:id="@+id/constraint_parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
         tools:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -47,7 +44,6 @@
             android:id="@+id/shop_logo"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="8dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -74,10 +70,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
@@ -96,10 +90,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
@@ -119,6 +111,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginTop="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_header_title">
@@ -143,8 +136,8 @@
                 android:id="@+id/benefit_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
@@ -152,7 +145,7 @@
                 app:layout_goneMarginTop="4dp"
                 app:typographyType="heading_2"
                 app:typographyWeight="bold"
-                tools:text="900" />
+                tools:text="90034" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/benefit_symbol_image"
@@ -174,9 +167,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

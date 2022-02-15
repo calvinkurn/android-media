@@ -39,7 +39,7 @@ class CarouselErrorLoadViewModel(val application: Application,
     fun loadData() {
         showLoader.value = true
         launchCatchError(block = {
-            getComponent(components.parentComponentId, components.pageEndPoint)?.let {
+            components?.let {
                 syncData.value = when (components.parentComponentName) {
                     ComponentNames.ShopCardView.componentName ->
                         shopCardUseCase.getShopCardPaginatedData(components.parentComponentId, components.pageEndPoint)

@@ -24,7 +24,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import java.lang.Exception
 
-class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private var constraint: ConstraintLayout = itemView.findViewById(R.id.parent_container)
     private var mBgImage: ImageUnify = itemView.findViewById(R.id.bg_image)
     private var mShopCardRecyclerView: RecyclerView = itemView.findViewById(R.id.shop_card_rv)
@@ -49,7 +49,6 @@ class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
         if (mShopCardViewModel.shouldShowShimmer()) {
             addShimmer()
         }
-        addDefaultItemDecorator()
         handleShopCardPagination()
     }
 
@@ -75,26 +74,8 @@ class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
             })
 
             mShopCardViewModel.hideShimmer().observe(it, { shouldShowErrorState ->
-                if(shouldShowErrorState) hideShimmer()
+                if (shouldShowErrorState) hideShimmer()
             })
-        }
-    }
-
-    private fun setHolderBackgroundData(item: ComponentsItem?) {
-        try {
-            if(item?.properties?.backgroundImageUrl.isNullOrEmpty()){
-                mBgImage.hide()
-            }else {
-                mBgImage.show()
-                mBgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
-            }
-            if(!item?.properties?.backgroundColor.isNullOrEmpty()) {
-                constraint.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
-            }else{
-                constraint.setBackgroundColor(MethodChecker.getColor(itemView.context,R.color.discovery2_dms_shop_card_bg))
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -102,6 +83,28 @@ class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             mShopCardViewModel.getShopCardItemsListData().removeObservers(it)
+            mShopCardViewModel.getShopCardBackgroundData().removeObservers(it)
+            mShopCardViewModel.getShopLoadState().removeObservers(it)
+            mShopCardViewModel.hideShimmer().removeObservers(it)
+            mShopCardViewModel.syncData.removeObservers(it)
+        }
+    }
+
+    private fun setHolderBackgroundData(item: ComponentsItem?) {
+        try {
+            if (item?.properties?.backgroundImageUrl.isNullOrEmpty()) {
+                mBgImage.hide()
+            } else {
+                mBgImage.show()
+                mBgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
+            }
+            if (!item?.properties?.backgroundColor.isNullOrEmpty()) {
+                constraint.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
+            } else {
+                constraint.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -147,12 +150,6 @@ class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
         mShopCardViewModel.fetchShopCardData()
     }
 
-    private fun addDefaultItemDecorator() {
-        if (mShopCardRecyclerView.itemDecorationCount > 0)
-            mShopCardRecyclerView.removeItemDecorationAt(0)
-//        mBannerCarouselRecyclerView.addItemDecoration(bannerRecyclerViewDecorator)
-    }
-
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
         list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
@@ -167,6 +164,4 @@ class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
     private fun hideShimmer() {
         mDiscoveryRecycleAdapter.setDataList(arrayListOf())
     }
-
-
 }

@@ -13,22 +13,18 @@ import kotlin.coroutines.CoroutineContext
 class ShopCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         components.shouldRefreshComponent = null
-        componentPosition.value = position
         componentData.value = components
     }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    fun getComponentPosition() = componentPosition
-
-    fun isUserLoggedIn(): Boolean {
-        return UserSession(application).isLoggedIn
+    fun getUserId(): String {
+        return UserSession(application).userId
     }
 
     fun getComponentLiveData() = componentData
