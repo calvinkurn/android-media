@@ -5,8 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import javax.inject.Inject
 
 const val GQL_QUERY : String = """
@@ -135,23 +135,20 @@ class GetPlayContentUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         setGraphqlQuery(GetPlayContentUseCaseQuery.GQL_QUERY)
     }
 
-    fun setParams(cursor: String, limit: Int) {
+    fun setParams(videoPageParams: VideoPageParams) {
         val queryMap = mutableMapOf(
-                CURSOR to cursor,
-                SOURCE_TYPE to "",
-                GROUP to GROUP_VALUE,
-                SOURCE_ID to ""
+                CURSOR to videoPageParams.cursor,
+                SOURCE_TYPE to videoPageParams.sourceType,
+                GROUP to videoPageParams.group,
+                SOURCE_ID to videoPageParams.sourceId
         )
         val map = mutableMapOf("req" to queryMap)
         setRequestParams(map)
     }
 
-    suspend fun execute(cursor: String = "", limit: Int = 5):
+    suspend fun execute(videoPageParams: VideoPageParams):
             ContentSlotResponse {
-        this.setParams(cursor, limit)
-        val data =  executeOnBackground()
-        FeedPlayVideoTabMapper.map(data.playGetContentSlot, cursor)
-        return data
-//        return FeedPlayVideoTabMapper.map(data.playGetContentSlot, cursor)
+        this.setParams(videoPageParams)
+        return executeOnBackground()
     }
 }

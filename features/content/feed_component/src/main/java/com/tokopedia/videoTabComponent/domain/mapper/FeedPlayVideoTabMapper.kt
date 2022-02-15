@@ -1,6 +1,6 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
-import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -16,8 +16,14 @@ private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
 private const val LIVE = "live"
 
 object FeedPlayVideoTabMapper {
+    fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse) : List<PlaySlot>{
+        return  playGetContentSlotResponse.data.filter {
+            it.type == FEED_TYPE_TAB_MENU
+        }
+
+    }
     fun map(
-            playGetContentSlotResponse: PlayGetContentSlotResponse, cursor: String
+            playGetContentSlotResponse: PlayGetContentSlotResponse
     ): List<PlayFeedUiModel> {
 
         val list = mutableListOf<PlayFeedUiModel>()
@@ -34,7 +40,7 @@ object FeedPlayVideoTabMapper {
                 }
                 FEED_TYPE_CHANNEL_BLOCK -> {
                     list.add(
-                        PlayWidgetMediumUiModel(
+                            PlayWidgetLargeUiModel(
                             getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.items), meta)
                         )
                     )

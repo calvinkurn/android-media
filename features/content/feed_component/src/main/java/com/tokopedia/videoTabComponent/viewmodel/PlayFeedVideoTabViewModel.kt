@@ -8,7 +8,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,7 +21,17 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         private val getPlayContentUseCase: GetPlayContentUseCase
 ): BaseViewModel(baseDispatcher.main){
 
-    private var currentCursor = ""
+    companion object {
+        private const val DEFAULT_GROUP_VALUE = "feeds_channels"
+    }
+
+
+     var currentCursor = ""
+
+    private var currentSourceType = ""
+    private var currentSourceId = ""
+    private var currentGroup = DEFAULT_GROUP_VALUE
+    val getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     val getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
 
 
@@ -28,17 +40,34 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             val results = withContext(baseDispatcher.io) {
                 getPlayDataResult()
             }
-            getPlayDataRsp.value = Success(results)
+            val tabData = FeedPlayVideoTabMapper.getTabData(results.playGetContentSlot)
+            if (tabData.isNotEmpty()){
+                tabData.first().let {
+                    val tabList = it.items
+                    if (tabList.isNotEmpty()){
+                        tabList.let {
+                            val firstListItem = tabList.first()
+                            currentSourceId = firstListItem.source_id
+                            currentGroup = firstListItem.group
+                            currentSourceType = firstListItem.source_type
+                        }
+                    }
+                }
+            }
+            getPlayData()
+            getPlayInitialDataRsp.value = Success(results)
 
         }) {
-            getPlayDataRsp.value = Fail(it)
+            getPlayInitialDataRsp.value = Fail(it)
         }
     }
-    fun getPlayData(){
+
+     fun getPlayData(){
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 getPlayDataResult()
             }
+            currentCursor = results.playGetContentSlot.meta.next_cursor
             getPlayDataRsp.value = Success(results)
 
         }) {
@@ -49,7 +78,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
 
     private suspend fun getPlayDataResult(): ContentSlotResponse {
         try {
-            return getPlayContentUseCase.execute(cursor = currentCursor)
+            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentCursor, sourceId = currentSourceId, sourceType = currentSourceType, group = currentGroup))
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e

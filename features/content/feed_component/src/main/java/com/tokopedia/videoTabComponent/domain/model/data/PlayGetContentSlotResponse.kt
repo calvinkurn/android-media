@@ -1,8 +1,6 @@
-package com.tokopedia.play.widget.sample.data
+package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.videoTabComponent.domain.model.data.PlayPagingProperties
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
 
 data class ContentSlotResponseDummy(
         val data : Data

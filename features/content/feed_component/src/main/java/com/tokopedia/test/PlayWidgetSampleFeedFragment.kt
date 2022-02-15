@@ -15,7 +15,6 @@ import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticLi
 import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetFeedSampleAnalytic
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -24,6 +23,7 @@ import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
+import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 
 /**
  * Created by meyta.taliti on 28/01/22.
@@ -72,7 +72,7 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
 
         rvWidget?.adapter = adapter
 
-        val data = FeedPlayVideoTabMapper.map(Gson().fromJson(dummyJson, PlayGetContentSlotResponse::class.java), "")
+        val data = FeedPlayVideoTabMapper.map(Gson().fromJson(dummyJson, PlayGetContentSlotResponse::class.java))
         adapter.setItemsAndAnimateChanges(data)
     }
 

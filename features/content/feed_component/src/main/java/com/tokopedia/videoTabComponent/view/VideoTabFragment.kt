@@ -13,43 +13,40 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetFeedSampleAnalytic
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.sample.data.ContentSlotResponseDummy
-import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
-import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.test.dummyJson
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
+import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import javax.inject.Inject
 
 class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener {
 
     private val rvWidget by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample_feed) }
 
-    private lateinit var adapter: PlayWidgetSampleFeedAdapter
+    private lateinit var adapter: VideoTabAdapter
     private val playFeedVideoTabViewModel: PlayFeedVideoTabViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModelProvider.get(PlayFeedVideoTabViewModel::class.java)
     }
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
 
     companion object {
@@ -108,11 +105,22 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         playFeedVideoTabViewModel.run {
+            getPlayInitialDataRsp.observe(lifecycleOwner, Observer {
+//                hideAdapterLoading()
+                when (it) {
+                    is Success -> onSuccessPlayTabData(it.data.playGetContentSlot,it.data.playGetContentSlot.meta.next_cursor)
+                    is Fail -> {
+                        //TODO implement error case
+//                        fetchFirstPage()
+                    }
+                }
+            })
             getPlayDataRsp.observe(lifecycleOwner, Observer {
 //                hideAdapterLoading()
                 when (it) {
                     is Success -> onSuccessPlayTabData(it.data.playGetContentSlot,it.data.playGetContentSlot.meta.next_cursor)
                     is Fail -> {
+                        //TODO implement error case
 //                        fetchFirstPage()
                     }
                 }
@@ -124,93 +132,34 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playFeedVideoTabViewModel.getPlayData()
+        playFeedVideoTabViewModel.getInitialPlayData()
         setupView(view)
+        playWidgetCoordinator.onResume()
     }
 
     private fun setupView(view: View) {
-        adapter = PlayWidgetSampleFeedAdapter(
+        adapter = VideoTabAdapter(
                 coordinator = playWidgetCoordinator
         )
+        endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
+        endlessRecyclerViewScrollListener?.let {
+            rvWidget?.addOnScrollListener(it)
+            it.resetState()
+        }
 
-        rvWidget?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    onWidgetCardsScrollChanged(recyclerView)
-                }
-            }
-        })
-
-
-//        adapter.setItemsAndAnimateChanges(
-//                FeedPlayVideoTabMapper.map(
-//                        Gson().fromJson(dummyJson, ContentSlotResponseDummy::class.java).data.playGetContentSlot,
-//                        ""
-//                )
-//        )
         rvWidget?.adapter = adapter
 
     }
-    private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String){
-//        adapter.setItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse, ""))
-        adapter.setItemsAndAnimateChanges(
-                FeedPlayVideoTabMapper.map(
-                        Gson().fromJson(dummyJson, ContentSlotResponseDummy::class.java).data.playGetContentSlot,
-                        ""
-                )
-        )
-    }
 
-    private fun getSampleWidgets(): List<PlayFeedUiModel> {
-        return listOf(
-                PlayWidgetJumboUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget(
-                                items = listOf(
-                                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod)
-                                )
-                        )
-                ),
-                PlayWidgetMediumUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget()
-                ),
-                PlayWidgetSlotTabUiModel(
-                        listOf(
-                                Pair("Market Museum", true),
-                                Pair("WIB", false),
-                                Pair("Cantik Fest", false),
-                                Pair("Untukmu", false),
-                                Pair("Lagi Live", false),
-                                Pair("Akan Datang", false),
-                                Pair("Terbaru", false),
-                        )
-                ),
-                PlayWidgetLargeUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget()
-                ),
-                PlayWidgetSlotTabUiModel(
-                        listOf(
-                                Pair("Market Museum", true),
-                                Pair("WIB", false),
-                                Pair("Cantik Fest", false),
-                                Pair("Untukmu", false),
-                                Pair("Lagi Live", false),
-                                Pair("Akan Datang", false),
-                                Pair("Terbaru", false),
-                        )
-                ),
-                PlayWidgetMediumUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget(
-                                title = "",
-                                isActionVisible = false
-                        )
-                ),
-                PlayWidgetLargeUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget()
-                ),
-        )
+    private fun onSuccessInitialPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String){
+        adapter.setItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse))
+
+    }
+    private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String){
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
+        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse))
+
     }
 
     override fun onToggleReminderClicked(
@@ -292,17 +241,24 @@ class VideoTabFragment:  PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         playWidgetOnVisibilityChanged(
-                isUserVisibleHint = isVisibleToUser
+                isUserVisibleHint = true
         )
     }
 
     override fun onPause() {
-        playWidgetOnVisibilityChanged(isViewResumed = false)
+//        playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
     }
 
     override fun onResume() {
-        playWidgetOnVisibilityChanged(isViewResumed = true)
+//        playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
+    }
+    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {
+        return object : EndlessRecyclerViewScrollListener(rvWidget?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+               playFeedVideoTabViewModel.getPlayData()
+            }
+        }
     }
 }
