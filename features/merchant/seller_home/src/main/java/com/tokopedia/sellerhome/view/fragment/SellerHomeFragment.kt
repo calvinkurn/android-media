@@ -753,8 +753,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setRecyclerViewLayoutAnimation()
-
-        setViewBackground()
     }
 
     /**
@@ -1404,16 +1402,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     userSession.deviceId.orEmpty()
                 )
             }
-        }
-    }
-
-    private fun setViewBackground() = binding?.run {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        when {
-            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
         }
     }
 
