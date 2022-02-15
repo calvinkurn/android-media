@@ -18,6 +18,8 @@ import com.tokopedia.affiliate.usecase.*
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -74,7 +76,6 @@ class AffiliateHomeViewModel @Inject constructor(
                 totalItemsCount.value = 0
                 performanceList =
                     affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
-                dataPlatformShimmerVisibility.value = false
             } else {
                 shimmerVisibility.value = true
             }
@@ -83,6 +84,7 @@ class AffiliateHomeViewModel @Inject constructor(
                 lastID
             ).getAffiliatePerformanceList?.data?.data.let {
                 lastID = it?.lastID ?: "0"
+                if(page == PAGE_ZERO) dataPlatformShimmerVisibility.value = false
                 convertDataToVisitables(it, performanceList, page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
@@ -160,7 +162,17 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
-    private var selectedDateMessage = ""
+    private var selectedDateMessage = getSelectedDateMessage()
+
+    private fun getSelectedDateMessage(): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE,-1)
+        val lastDay = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(calendar.time)
+        calendar.add(Calendar.DATE,-29)
+        val finalDay = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(calendar.time)
+        return "$finalDay - $lastDay"
+    }
+
     private var selectedDateValue = "30"
     fun getSelectedDate(): String {
         return selectedDateRange

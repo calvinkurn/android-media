@@ -6,24 +6,36 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/date_picker_loader"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_15"
         app:corners="16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="wrap_content"/>
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_30"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:alpha="0.8"
+        android:id="@+id/date_picker_text_loader"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_15"
+        app:corners="16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/date_picker_loader"
+        app:layout_constraintTop_toBottomOf="@+id/date_picker_loader" />
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
         android:id="@+id/title_adp"
         android:layout_width="@dimen/dp_140"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_24"
         app:corners="16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_picker_loader"/>
+        app:layout_constraintTop_toBottomOf="@+id/date_picker_text_loader"/>
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintTop_toBottomOf="@+id/title_adp"
         android:layout_marginStart="@dimen/dp_10"
         android:id="@+id/card1"
@@ -56,7 +68,7 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_10"
         app:layout_constraintStart_toEndOf="@id/card1"
         android:id="@+id/card2"

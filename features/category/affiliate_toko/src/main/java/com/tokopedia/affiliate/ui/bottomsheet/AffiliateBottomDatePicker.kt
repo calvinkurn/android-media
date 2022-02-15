@@ -29,7 +29,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     private var contentView: View? = null
 
     private var rangeSelected = TODAY
-    private lateinit var rangeChangeInterface: AffiliateDatePickerRangeChangeInterface
+    private var rangeChangeInterface: AffiliateDatePickerRangeChangeInterface? = null
     private var identifier = IDENTIFIER_HOME
 
 
@@ -44,17 +44,22 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         const val THIRTY_DAYS = "30 Hari Terakhir"
         const val IDENTIFIER_HOME = "home_fragment"
         const val IDENTIFIER_WITHDRAWAL = "income_fragment"
-        fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL,): AffiliateBottomDatePicker {
+        const val IDENTIFIER = "indentifier"
+        fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL): AffiliateBottomDatePicker {
             return AffiliateBottomDatePicker().apply {
+                arguments = Bundle().apply {
+                    putString(IDENTIFIER,identify)
+                }
                 rangeSelected = selected
                 rangeChangeInterface = onRangeChangeInterface
-                identifier = identify
             }
         }
     }
     private var dateRV: RecyclerView? = null
     private var tickerCv: CardView? = null
     private fun init() {
+        setBundleData()
+        rangeChangeInterface = (parentFragment as? AffiliateDatePickerRangeChangeInterface)
         showCloseIcon = true
         showKnob = false
         contentView = View.inflate(context,
@@ -66,6 +71,12 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         setData()
         initClickListener(contentView)
         setChild(contentView)
+    }
+
+    private fun setBundleData() {
+        arguments?.let {
+            identifier = it.getString(IDENTIFIER, IDENTIFIER_WITHDRAWAL)
+        }
     }
 
     private fun setTicker() {
@@ -82,7 +93,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         contentView?.findViewById<UnifyButton>(R.id.cnf_btn)?.setOnClickListener {
             itemList.forEach { visitable ->
                 if((visitable as AffiliateDateRangePickerModel).dateRange.isSelected){
-                    rangeChangeInterface.rangeChanged((visitable as AffiliateDateRangePickerModel).dateRange)
+                    rangeChangeInterface?.rangeChanged((visitable as AffiliateDateRangePickerModel).dateRange)
                     dismiss()
                 }
             }
@@ -103,30 +114,38 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
     private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
     private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0",getMessage(TODAY))))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1",getMessage(YESTERDAY))))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7",getMessage(SEVEN_DAYS))))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30",getMessage(THIRTY_DAYS))))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0",getMessage(TODAY),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1",getMessage(YESTERDAY),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7",getMessage(SEVEN_DAYS),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30",getMessage(THIRTY_DAYS),identifier == IDENTIFIER_HOME)))
     }
 
     private fun getMessage(dayRange: String): String {
         val calendar = Calendar.getInstance()
         when(dayRange){
             TODAY -> {
-                calendar.set(Calendar.HOUR,-2)
-                return SimpleDateFormat("HH",Locale.ENGLISH).format(calendar.time)
+                calendar.add(Calendar.HOUR,-2)
+                val date = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
+                val time = SimpleDateFormat("HH:00",Locale.ENGLISH).format(calendar.time)
+                return "$date - ${getString(R.string.terkhir_text)} $time"
             }
             YESTERDAY -> {
                 calendar.add(Calendar.DATE,-1)
-                return SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(calendar.time)
+                return SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
             }
             SEVEN_DAYS -> {
-                calendar.add(Calendar.DATE,-7)
-                return SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(calendar.time)
+                calendar.add(Calendar.DATE,-1)
+                val lastDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
+                calendar.add(Calendar.DATE,-6)
+                val finalDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
+                return "$finalDay - $lastDay"
             }
             THIRTY_DAYS -> {
-                calendar.add(Calendar.DATE,-30)
-                return SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(calendar.time)
+                calendar.add(Calendar.DATE,-1)
+                val lastDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
+                calendar.add(Calendar.DATE,-29)
+                val finalDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
+                return "$finalDay - $lastDay"
             }
         }
         return ""
