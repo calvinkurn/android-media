@@ -16,6 +16,7 @@ import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,6 +41,9 @@ class CentralizedPromoViewModel @Inject constructor(
     companion object {
         private const val UNAVAILABLE_PROMO_TYPE = 0
         private const val BROADCAST_CHAT_PROMO_TYPE = 2
+
+        private const val MVC_PRODUCT_ROLLENCE_KEY = "MVProductEntryPoint"
+        private const val MVC_PRODUCT_VARIANT_ON = "ON"
     }
 
     val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =
@@ -100,6 +104,9 @@ class CentralizedPromoViewModel @Inject constructor(
                     true
                 )
             }
+            val isProductCouponEnabledDeffered = async {
+                getIsProductCouponEnabled()
+            }
 
             val isNonTopAdsUserDeferred = async {
                 checkNonTopAdsUserUseCase.execute(userSession.shopId)
@@ -119,6 +126,7 @@ class CentralizedPromoViewModel @Inject constructor(
             val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
             val isVoucherCashbackFirstTime = isVoucherCashbackFirstTimeDeferred.await()
             val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
+            val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
@@ -128,7 +136,8 @@ class CentralizedPromoViewModel @Inject constructor(
                     isVoucherCashbackEligible,
                     isTopAdsOnBoardingEnable,
                     isVoucherCashbackFirstTime,
-                    isProductCouponFirstTime
+                    isProductCouponFirstTime,
+                    isProductCouponEnabled
                 )
             )
         } catch (t: Throwable) {
@@ -147,4 +156,16 @@ class CentralizedPromoViewModel @Inject constructor(
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         CentralizedPromoTracking.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
+
+    private fun getIsProductCouponEnabled(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                MVC_PRODUCT_ROLLENCE_KEY,
+                ""
+            ) == MVC_PRODUCT_VARIANT_ON
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
 }
