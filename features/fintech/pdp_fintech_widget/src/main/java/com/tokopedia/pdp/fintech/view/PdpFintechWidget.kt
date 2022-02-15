@@ -1,6 +1,7 @@
 package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
+import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
@@ -113,14 +115,25 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
             override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand:
             String,widgetBottomsheet: WidgetBottomsheet,gateWayID:Int,userStatus:String) {
+//                customRouter( FintechRedirectionWidgetDataClass(
+//                    cta =  cta,
+//                    redirectionUrl =  url,
+//                    tenure= tenure,
+//                    gatewayId= gateWayID,
+//                    productUrl =  idToPriceUrlMap[productID]?.url,
+//                    gatewayCode =  gatewayBrand,
+//                    widgetBottomSheet = widgetBottomsheet,
+//                    userStatus =  userStatus
+//                ))
+
                 instanceProductUpdateListner.fintechRedirection(
                     FintechRedirectionWidgetDataClass(
-                       cta =  cta,
-                       redirectionUrl =  url,
-                       tenure= tenure,
+                        cta =  cta,
+                        redirectionUrl =  url,
+                        tenure= tenure,
                         gatewayId= gateWayID,
-                       productUrl =  idToPriceUrlMap[productID]?.url,
-                       gatewayCode =  gatewayBrand,
+                        productUrl =  idToPriceUrlMap[productID]?.url,
+                        gatewayCode =  gatewayBrand,
                         widgetBottomSheet = widgetBottomsheet,
                         userStatus =  userStatus
                     )
@@ -141,6 +154,43 @@ class PdpFintechWidget @JvmOverloads constructor(
         })
         recyclerView.adapter = fintechWidgetAdapter
     }
+
+//    private fun customRouter(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
+//        fintechRedirectionWidgetDataClass.redirectionUrl?.let {
+//            val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
+//                    "?productID=${this.productId}" +
+//                    "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
+//                    "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
+//                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
+//                    "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
+//
+//            if (fintechRedirectionWidgetDataClass.cta == 2 &&
+//                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false) {
+//                openWebViewUrl(url = rediretionLink, false)
+//            } else if (fintechRedirectionWidgetDataClass.cta == 2 &&
+//                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true) {
+//
+//                val bundle = Bundle()
+//                bundle.putParcelable(ACTIVATION_BOTTOMSHEET_DETAIl, fintechRedirectionWidgetDataClass)
+//                bundle.putString(ACTIVATION_WEBVIEW_LINK,rediretionLink)
+//
+//
+//                activity?.let {
+//                    GopayLinkBenefitBottomSheet().showBottomSheet(
+//                        it.supportFragmentManager,
+//                        bundle
+//                    )
+//                }
+//            }
+//
+//            else {
+//
+//                val intent = RouteManager.getIntent(requireContext(), rediretionLink)
+//                startActivity(intent)
+//
+//            }
+//        }
+//    }
 
     private fun initView() {
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)

@@ -15,10 +15,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/Unify_N0"
-        android:paddingBottom="6dp"
-        android:paddingRight="@dimen/unify_space_8"
-        android:paddingLeft="@dimen/unify_space_8"
-        android:background="@drawable/bg_occ_tenure_lable"
+        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/unify_space_4"
+        android:elevation="1dp"
+        android:paddingRight="@dimen/unify_space_4"
+        android:paddingLeft="@dimen/unify_space_4"
+        android:background="@drawable/bg_occ_tenure_recommended"
+        tools:text="sfgvdfgs dfvsdf sdfavsdv"
         />
 
 
@@ -27,9 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:card_type="border"
-        app:layout_goneMarginTop="0dp"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginLeft="2dp"
+        android:layout_marginTop="4dp"
+
 
         android:layout_below="@id/tvRecommendationTitle"
         app:layout_constraintLeft_toLeftOf="parent"
