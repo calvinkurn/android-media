@@ -17,30 +17,19 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener
-) : AbstractViewHolder<ProductItemDataView>(itemView), ExoPlayerListener, ProductVideoPlayer, CoroutineScope {
+) : AbstractViewHolder<ProductItemDataView>(itemView), ExoPlayerListener, ProductVideoPlayer {
 
     abstract val productCardView: IProductCardView?
     protected var helper: ProductCardViewHelper? = null
 
     protected var productCardModel: ProductCardModel? = null
-
-    private val masterJob = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.IO
 
     private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
 
@@ -136,7 +125,6 @@ abstract class ProductItemViewHolder(
 
     private fun onViewDetach(){
         helper?.onViewDetach()
-        masterJob.cancelChildren()
     }
 
     override fun onPlayerIdle() {
@@ -145,38 +133,28 @@ abstract class ProductItemViewHolder(
     }
 
     override fun onPlayerBuffering() {
-        launch {
-            videoPlayerStateFlow?.emit(VideoPlayerState.Buffering)
-        }
+        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Buffering)
     }
 
     override fun onPlayerPlaying() {
         val productCardView = this.productCardView ?: return
         productCardView.getProductVideoView()?.show()
-        launch {
-            videoPlayerStateFlow?.emit(VideoPlayerState.Playing)
-        }
+        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Playing)
     }
 
     override fun onPlayerPaused() {
         val productCardView = this.productCardView ?: return
         productCardView.getProductVideoView()?.hide()
-        launch {
-            videoPlayerStateFlow?.emit(VideoPlayerState.Paused)
-        }
+        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Paused)
     }
 
     override fun onPlayerEnded() {
         val productCardView = this.productCardView ?: return
         productCardView.getProductVideoView()?.hide()
-        launch {
-            videoPlayerStateFlow?.emit(VideoPlayerState.Ended)
-        }
+        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Ended)
     }
 
     override fun onPlayerError(errorString: String?) {
-        launch {
-            videoPlayerStateFlow?.emit(VideoPlayerState.Error(errorString ?: ""))
-        }
+        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Error(errorString ?: ""))
     }
 }
