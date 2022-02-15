@@ -59,10 +59,12 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/play_dp_12"
         app:layout_constraintBottom_toTopOf="@id/fl_next_btn_container"
-        app:layout_constraintEnd_toEndOf="@id/search_bar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_chips"
+        tools:listitem="@layout/item_product_list"
         />
 
     <com.tokopedia.globalerror.GlobalError

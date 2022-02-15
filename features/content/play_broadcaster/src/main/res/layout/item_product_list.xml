@@ -5,12 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="@dimen/play_product_preview_radius"
     >
 
-    <com.tokopedia.play_common.view.RoundedConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:rcl_cornerRadius="@dimen/play_product_preview_radius"
         >
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -120,6 +121,6 @@
 
         </LinearLayout>
 
-    </com.tokopedia.play_common.view.RoundedConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
