@@ -15,7 +15,9 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.productcard.ProductVideoView
@@ -36,6 +38,7 @@ class ProductCardViewHelper(
         get() = contextReference.get()
 
     var isAutoPlay = true
+    var shouldCache = true
 
     private var videoPlayer: ExoPlayer? = null
     private var mExoPlayerListener: ExoPlayerListener? = null
@@ -193,16 +196,28 @@ class ProductCardViewHelper(
         uri: Uri,
         duration: Long = DEFAULT_CLIP_DURATION
     ): MediaSource {
-        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+        val dataSourceFactory = getDataSourceFactory(context)
         val mediaSourceFactory = when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory)
+            C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
+            C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
+            C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         val mediaSource = mediaSourceFactory.createMediaSource(uri)
         return ClippingMediaSource(mediaSource, duration)
+    }
+
+    private fun getDataSourceFactory(context: Context) : DataSource.Factory{
+        val defaultDataSourceFactory = DefaultDataSourceFactory(
+            context,
+            Util.getUserAgent(context, "Tokopedia Android")
+        )
+        return if(shouldCache) {
+            CacheDataSourceFactory(ProductVideoCache.getInstance(context), defaultDataSourceFactory)
+        } else {
+            defaultDataSourceFactory
+        }
     }
 
     private fun resumePlayer() {
