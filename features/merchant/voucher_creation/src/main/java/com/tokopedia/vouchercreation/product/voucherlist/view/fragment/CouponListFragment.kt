@@ -835,7 +835,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             setUtmCampaignData(
                 pageName = ShareComponentConstant.VOUCHER_PRODUCT_PAGE_NAME,
                 userId = userSession.userId,
-                pageId = couponId.toString(),
+                pageIdConstituents = listOf(userSession.shopId, couponId.toString()),
                 feature = ShareComponentConstant.VOUCHER_PRODUCT_FEATURE
             )
         }
