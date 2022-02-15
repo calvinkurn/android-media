@@ -78,7 +78,7 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.DateFilterBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -189,7 +189,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private var dateFilterBottomSheet: DateFilterBottomSheet? = null
+    private var dateFilterBottomSheet: CalendarWidgetDateFilterBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
@@ -678,7 +678,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
         if (dateFilterBottomSheet == null) {
-            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(requireContext())
+            dateFilterBottomSheet = CalendarWidgetDateFilterBottomSheet.newInstance(requireContext())
         }
         showCalendarDateFilter(element)
     }

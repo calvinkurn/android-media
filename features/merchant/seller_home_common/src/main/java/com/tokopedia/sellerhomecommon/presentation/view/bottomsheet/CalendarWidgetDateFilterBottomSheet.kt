@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetSelectDateRangeBinding
@@ -23,7 +25,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
  * Created by @ilhamsuaib on 09/02/22.
  */
 
-class DateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelectDateRangeBinding>(),
+class CalendarWidgetDateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelectDateRangeBinding>(),
     DateFilterListener {
 
     companion object {
@@ -32,10 +34,10 @@ class DateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelectDateRangeBindi
 
         fun newInstance(
             context: Context
-        ): DateFilterBottomSheet {
+        ): CalendarWidgetDateFilterBottomSheet {
             val dateFilters = DateFilterUtil.FilterList
                 .getCalendarPickerFilterList(context)
-            return DateFilterBottomSheet().apply {
+            return CalendarWidgetDateFilterBottomSheet().apply {
                 clearContentPadding = true
                 arguments = Bundle().apply {
                     putParcelableArrayList(KEY_DATE_FILTERS, ArrayList(dateFilters))
@@ -99,19 +101,19 @@ class DateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelectDateRangeBindi
     }
 
     override fun dismissDateFilterBottomSheet() {
-        dismiss()
+        view?.gone()
     }
 
     override fun showDateFilterBottomSheet() {
-        show()
+        view?.visible()
     }
 
-    fun setFragmentManager(fm: FragmentManager): DateFilterBottomSheet {
+    fun setFragmentManager(fm: FragmentManager): CalendarWidgetDateFilterBottomSheet {
         this.fm = fm
         return this
     }
 
-    fun setOnApplyChanges(callback: (DateFilterItem) -> Unit): DateFilterBottomSheet {
+    fun setOnApplyChanges(callback: (DateFilterItem) -> Unit): CalendarWidgetDateFilterBottomSheet {
         this.applyChangesCallback = callback
         return this
     }

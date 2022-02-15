@@ -314,7 +314,12 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
         val currentDate = Date()
         val canSelectOnGoingWeek = selected.time in firstDayMillis..currentDate.time
 
-        return if (canSelectOnGoingWeek) {
+        val isTodayIsMaxDate = DateTimeUtil.format(
+            currentDate.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        ) == DateTimeUtil.format(maxDate.time, DateTimeUtil.FORMAT_DD_MM_YYYY)
+
+        return if (canSelectOnGoingWeek && isTodayIsMaxDate) {
             Pair(firstDayOfOnGoingWeek.time, currentDate)
         } else {
             null
