@@ -38,7 +38,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.authentication)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

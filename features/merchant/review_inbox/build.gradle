@@ -87,7 +87,7 @@ dependencies {
     }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.authentication)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)

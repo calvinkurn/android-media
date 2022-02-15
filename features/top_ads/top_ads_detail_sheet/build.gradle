@@ -28,7 +28,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.authentication)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

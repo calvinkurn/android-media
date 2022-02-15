@@ -58,7 +58,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.authentication)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
