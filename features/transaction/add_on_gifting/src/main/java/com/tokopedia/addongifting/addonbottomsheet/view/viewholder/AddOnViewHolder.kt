@@ -112,8 +112,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     element.addOnNoteTo = s.toString()
-                    textFieldAddOnTo.isInputError = false
-                    textFieldAddOnTo.setMessage("")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -138,8 +136,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     element.addOnNoteFrom = s.toString()
-                    textFieldAddOnFrom.isInputError = false
-                    textFieldAddOnFrom.setMessage("")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -155,7 +151,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 textFieldAddOnNote.editText.isEnabled = true
                 textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
             } else {
-                textFieldAddOnNote.editText.isEnabled = true
+                textFieldAddOnNote.editText.isEnabled = false
                 textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_pre_defined_note))
             }
 
@@ -178,8 +174,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    textFieldAddOnNote.isInputError = false
-                    textFieldAddOnNote.setMessage("")
                     element.addOnNote = s.toString()
                     if (textFieldAddOnNote.editText.text.isNotEmpty()) {
                         textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
