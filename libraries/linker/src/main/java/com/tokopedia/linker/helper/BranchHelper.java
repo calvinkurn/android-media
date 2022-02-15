@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;

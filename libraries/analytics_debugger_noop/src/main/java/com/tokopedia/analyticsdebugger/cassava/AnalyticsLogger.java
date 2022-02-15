@@ -1,6 +1,6 @@
-package com.tokopedia.analyticsdebugger.debugger;
+package com.tokopedia.analyticsdebugger.cassava;
 
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 
 import java.util.Map;
 

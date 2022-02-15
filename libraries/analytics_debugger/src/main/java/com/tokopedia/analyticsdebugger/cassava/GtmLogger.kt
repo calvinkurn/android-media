@@ -1,9 +1,7 @@
-package com.tokopedia.analyticsdebugger.debugger
+package com.tokopedia.analyticsdebugger.cassava
 
 import android.content.Context
 import android.text.TextUtils
-import com.tokopedia.analyticsdebugger.AnalyticsSource
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo

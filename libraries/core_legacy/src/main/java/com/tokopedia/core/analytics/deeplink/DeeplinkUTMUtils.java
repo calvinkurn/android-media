@@ -7,8 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;

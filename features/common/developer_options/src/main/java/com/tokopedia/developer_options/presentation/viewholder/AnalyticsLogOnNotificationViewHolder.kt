@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.AnalyticsLogOnNotificationUiModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify

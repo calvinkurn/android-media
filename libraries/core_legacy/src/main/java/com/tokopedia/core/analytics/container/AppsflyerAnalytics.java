@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;

@@ -2,7 +2,6 @@ package com.tokopedia.analyticsdebugger.cassava
 
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.analyticsdebugger.AnalyticsSource
 import com.tokopedia.analyticsdebugger.cassava.validator.core.JsonMap
 import java.lang.reflect.Type
 import java.math.BigDecimal
