@@ -16,6 +16,8 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -141,6 +143,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {
+                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
+                    override fun onCoverChanged(cover: PlayCoverUiModel) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetCover(cover)
+                        )
+                    }
+                })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
                         return parentViewModel.productSectionList.flatMap { it.products }
@@ -233,6 +242,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         croppedCover.coverImage.toString().contains("http")) {
                         binding.viewPreparationMenu.isSetCoverChecked(true)
                         binding.formCover.setCover(croppedCover.coverImage.toString())
+                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()){
+                        binding.viewPreparationMenu.isSetCoverChecked(true)
+                        binding.formCover.setCover(croppedCover.localImage.toString())
                     }
                 }
             }

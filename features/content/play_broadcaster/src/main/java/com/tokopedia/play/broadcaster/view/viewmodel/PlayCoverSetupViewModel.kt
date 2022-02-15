@@ -96,6 +96,9 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
     val maxTitleChars: Int
         get() = hydraConfigStore.getMaxTitleChars()
 
+    val selectedCover: PlayCoverUiModel?
+        get() = setupDataStore.getSelectedCover()
+
     fun isValidCoverTitle(coverTitle: String): Boolean {
         return coverTitle.isNotBlank() && coverTitle.length <= maxTitleChars
     }

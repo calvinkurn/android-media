@@ -28,6 +28,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
@@ -531,8 +532,10 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun onUploadSuccess() {
+        val selectedCover = viewModel.selectedCover ?: return
+        mListener?.onCoverSetupFinished(selectedCover)
 //        scope.launch {
-//            val error = mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
+//            val error = mListener?.onCoverSetupFinished(viewModel.setupDataStore)
 //            error?.let {
 //                yield()
 //                onUploadFailed(it)
@@ -660,7 +663,7 @@ class PlayCoverSetupFragment @Inject constructor(
          * @return true means cancel has been handled by the listener
          */
         fun onCancelCropping(coverSource: CoverSource): Boolean = false
-        suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable?
+        fun onCoverSetupFinished(cover: PlayCoverUiModel)
     }
 
     interface DataSource {

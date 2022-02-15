@@ -306,6 +306,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
             is PlayBroadcastAction.SetPinnedMessage -> handleSetPinnedMessage(event.message)
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
+            is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
         }
     }
 
@@ -877,6 +878,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
         _pinnedMessage.setValue {
             copy(editStatus = PinnedMessageEditStatus.Nothing)
         }
+    }
+
+    private fun handleSetCover(cover: PlayCoverUiModel) {
+        getCurrentSetupDataStore().setFullCover(cover)
     }
 
     /**

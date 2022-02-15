@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFr
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
@@ -68,7 +69,7 @@ class PlayBroadcastSetupBottomSheet :
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    private var mListener: SetupResultListener? = null
+    private var mListener: Listener? = null
     private var mDataSource: DataSource? = null
 
     private val currentFragment: Fragment?
@@ -92,7 +93,6 @@ class PlayBroadcastSetupBottomSheet :
                     childFragmentManager.popBackStack()
                 } else {
                     cancel()
-                    mListener?.onSetupCanceled()
                 }
             }
         }.apply {
@@ -129,9 +129,9 @@ class PlayBroadcastSetupBottomSheet :
         dialog?.onBackPressed()
     }
 
-    override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        dialog?.onBackPressed()
-        return null
+    override fun onCoverSetupFinished(cover: PlayCoverUiModel) {
+        mListener?.onCoverChanged(cover)
+        dismiss()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -157,7 +157,7 @@ class PlayBroadcastSetupBottomSheet :
         mDataSource = dataSource
     }
 
-    fun setListener(listener: SetupResultListener) {
+    fun setListener(listener: Listener?) {
         mListener = listener
     }
 
@@ -223,5 +223,9 @@ class PlayBroadcastSetupBottomSheet :
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+    }
+
+    interface Listener {
+        fun onCoverChanged(cover: PlayCoverUiModel)
     }
 }

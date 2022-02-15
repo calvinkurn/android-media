@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -99,13 +100,13 @@ class CoverCropEditBottomSheet @Inject constructor(
         val fragmentFactory = childFragmentManager.fragmentFactory
         val fragmentInstance = fragmentFactory.instantiate(requireContext().classLoader, PlayCoverSetupFragment::class.java.name) as PlayCoverSetupFragment
         fragmentInstance.setListener(object : PlayCoverSetupFragment.Listener {
-            override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-                val error = mListener?.onSetupCompletedWithData(this@CoverCropEditBottomSheet, dataStore)
-                return if (error == null) {
-                    dismiss()
-                    null
-                }
-                else error
+            override fun onCoverSetupFinished(cover: PlayCoverUiModel) {
+//                val error = mListener?.onSetupCompletedWithData(this@CoverCropEditBottomSheet, dataStore)
+//                return if (error == null) {
+//                    dismiss()
+//                    null
+//                }
+//                else error
             }
 
             override fun onCancelCropping(coverSource: CoverSource): Boolean {
