@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
@@ -258,6 +259,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         ?: 0, false
                 ).removeDecimalSuffix()
             )
+            tvShippingCourier.setWeight(Typography.BOLD)
             tvShippingDuration.gone()
             btnChangeDuration.gone()
             tvShippingCourierNotes.gone()
