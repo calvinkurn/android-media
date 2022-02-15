@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.LifecycleObserver
 
 interface BaseUiComponent : LifecycleObserver {
+    fun release()
     fun componentView(): View
     fun resources(): Resources
     fun show()

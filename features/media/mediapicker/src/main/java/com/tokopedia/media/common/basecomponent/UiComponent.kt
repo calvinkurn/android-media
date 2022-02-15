@@ -13,8 +13,6 @@ abstract class UiComponent constructor(
     @IdRes private val componentId: Int,
 ) : BaseUiComponent {
 
-    abstract fun release()
-
     protected val context: Context by lazy {
         container.context
     }

@@ -12,13 +12,3 @@ fun <Ui: BaseUiComponent> LifecycleOwner.uiComponent(
         componentCreation = componentCreation,
     )
 }
-
-fun <Ui: BaseUiComponent> LifecycleOwner.uiEagerComponent(
-    componentCreation: (ViewGroup) -> Ui
-): UiComponentDelegate<Ui> {
-    return UiComponentDelegate(
-        lifecycleOwner = this,
-        eagerComponent = true,
-        componentCreation = componentCreation,
-    )
-}

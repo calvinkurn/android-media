@@ -13,11 +13,11 @@ class UiComponentLifecycleObserver(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroyed() {
+        release()
+
         owner.safeLifecycleOwner()
             .lifecycle
             .removeObserver(this)
-
-        release()
     }
 
 }

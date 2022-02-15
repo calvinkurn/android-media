@@ -45,10 +45,12 @@ class UiComponentDelegate<Ui: BaseUiComponent>(
             }
         }
 
-        return safeLifecycleOwner.createUiComponent(
+        uiComponent = safeLifecycleOwner.createUiComponent(
             componentCreation,
             owner.rootCurrentView()
         )
+
+        return uiComponent as Ui
     }
 
     private fun buildUiComponentLifecycleObserver(
@@ -65,6 +67,7 @@ class UiComponentDelegate<Ui: BaseUiComponent>(
     )
 
     private fun release() = synchronized(this) {
+        uiComponent?.release()
         uiComponent = null
     }
 
