@@ -108,7 +108,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     val inventoryError = InventoryErrorMapper.mapToInventoryError(result, bundleId, longSelectedProductIds)
                     val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock variant is 0
                     if (bundleInfo.isNotEmpty()) {
-                        inventoryError.type = InventoryErrorType.BUNDLE_EMPTY
                         val productBundleFragment = when {
                             inventoryError.type == InventoryErrorType.BUNDLE_EMPTY -> {
                                 entryPointFragment.showEmpty()
