@@ -109,7 +109,10 @@ class MerchantVoucherViewHolder(
                     bannerId = channel.channelBanner.id,
                     positionWidget = positionWidget,
                     headerName = channel.channelHeader.name,
-                    userId = merchantVoucherComponentListener.getUserId()
+                    userId = merchantVoucherComponentListener.getUserId(),
+                    couponCode = "",
+                    couponType = element.name,
+                    creativeName = ""
                 )
             )
         }

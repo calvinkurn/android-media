@@ -8,6 +8,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
@@ -54,7 +55,22 @@ class CarouselMerchantVoucherViewHolder (
             )
         }
         binding?.containerProduct?.setOnClickListener {
-            element.merchantVoucherComponentListener.onProductClicked(element.productAppLink)
+            val horizontalPosition = "${adapterPosition + 1}"
+            element.merchantVoucherComponentListener.onVoucherDetailClicked(
+                MerchantVoucherDetailClicked(
+                    productAppLink = element.productAppLink,
+                    shopId = element.shopId,
+                    shopName = element.shopName,
+                    horizontalCardPosition = horizontalPosition,
+                    bannerId = element.bannerId,
+                    positionWidget = element.positionWidget,
+                    headerName = element.headerName,
+                    userId = element.userId,
+                    couponCode = element.couponCode,
+                    couponType = element.couponType,
+                    creativeName = element.creativeName
+                )
+            )
         }
         binding?.containerImageProduct?.setOnClickListener {  }
     }

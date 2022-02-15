@@ -67,7 +67,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val legoSixAutoListener: Lego6AutoBannerListener,
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
-                         private val cmHomeWidgetCallback: CMHomeWidgetCallback
+                         private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener
 ) :
         BaseAdapterTypeFactory(),
