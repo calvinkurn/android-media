@@ -16,15 +16,14 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val SHOP_DETAIL = "shop detail"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
-            const val MERCHANT_VOUCHER_DETAIL = "merchant_voucher_multiple"
-            const val ITEM_NAME_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_DETAIL - banner - %s"
-            const val VOUCHER_DETAIL = "voucher detail"
+            const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
+            const val ITEM_NAME_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
             const val CREATIVE_NAME_VOUCHER_DETAIL_FORMAT = "voucher detail - %s - %s - %s"
-            const val ITEM_NAME_VOUCHER_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_DETAIL - banner - %s"
+            const val ITEM_NAME_VOUCHER_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
         }
     }
 
-    fun getShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked): Bundle {
+    fun getShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -46,10 +45,10 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         promotion.putString(Promotion.ITEM_NAME, CustomAction.ITEM_NAME_FORMAT.format(merchantVoucherShopClicked.positionWidget, merchantVoucherShopClicked.headerName))
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, merchantVoucherShopClicked.userId)
-        return bundle
+        return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 
-    fun getClickVoucher(merchantVoucherDetailClicked: MerchantVoucherDetailClicked) : Bundle {
+    fun getClickVoucherDetail(merchantVoucherDetailClicked: MerchantVoucherDetailClicked): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -87,6 +86,6 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, merchantVoucherDetailClicked.userId)
-        return bundle
+        return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 }

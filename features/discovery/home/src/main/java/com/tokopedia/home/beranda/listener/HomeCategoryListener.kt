@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.listener
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -135,4 +136,6 @@ interface HomeCategoryListener {
     fun onTokonowViewCaptured(view: View?, parentPosition: Int)
 
     fun dismissTokonowCoachmark(parentPosition: Int)
+
+    fun sendTrackingBundle(eventName: String, bundle: Bundle)
 }

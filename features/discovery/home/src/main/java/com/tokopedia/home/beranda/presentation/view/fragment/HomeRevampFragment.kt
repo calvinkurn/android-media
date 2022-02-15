@@ -2781,4 +2781,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun updateQuestWidget(position: Int) {
         this.questWidgetPosition = position
     }
+
+    override fun sendTrackingBundle(eventName: String, bundle: Bundle) {
+         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
+    }
 }
