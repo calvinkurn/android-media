@@ -38,7 +38,7 @@
         android:layout_gravity="bottom"
         android:visibility="gone"
         app:backgroundColorPlaceHolder="@color/Unify_N0"
-        app:canReorder="true"
+        app:canReorder="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:placeholder="@drawable/picker_ic_placeholder_media_preview"
