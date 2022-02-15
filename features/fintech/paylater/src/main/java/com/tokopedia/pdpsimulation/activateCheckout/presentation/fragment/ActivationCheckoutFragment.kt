@@ -414,7 +414,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 }
 
                 if(selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty())
+                {
                     checkoutData.tenureDetail[0].isSelectedTenure = true
+                    selectedTenurePosition = 0
+                }
                 else
                     checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
 
