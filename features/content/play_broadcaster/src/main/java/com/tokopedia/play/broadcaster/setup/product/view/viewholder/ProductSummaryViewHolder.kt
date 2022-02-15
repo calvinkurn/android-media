@@ -79,11 +79,23 @@ internal class ProductSummaryViewHolder private constructor() {
 
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
-            binding.tvProductSummaryStock.text = itemView.context.getString(
-                R.string.play_bro_product_chooser_stock,
-                item.product.stock
-            )
             binding.tvProductSummaryName.text = item.product.name
+
+            if(item.product.stock > 0) {
+                binding.tvProductSummaryStock.apply {
+                    text = itemView.context.getString(
+                        R.string.play_bro_product_chooser_stock,
+                        item.product.stock
+                    )
+                    visibility = View.VISIBLE
+                }
+                binding.groupEmptyStock.visibility = View.GONE
+            }
+            else {
+                binding.tvProductSummaryStock.visibility = View.GONE
+                binding.groupEmptyStock.visibility = View.VISIBLE
+            }
+
 
             when(item.product.price) {
                 is OriginalPrice -> {

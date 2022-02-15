@@ -245,4 +245,5 @@
     <string name="play_bro_product_summary_empty_description">Tambahkan produk ke tokomu untuk dijual selama live berlangsung.</string>
     <string name="play_bro_product_summary_empty_action_text">Tambah Produk</string>
     <string name="play_bro_product_summary_fail_to_delete_product">Produk gagal dihapus</string>
+
 </resources>
