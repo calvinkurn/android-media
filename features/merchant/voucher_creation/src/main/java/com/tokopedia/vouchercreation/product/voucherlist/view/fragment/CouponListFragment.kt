@@ -210,10 +210,13 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     override fun onDataEmpty() {
-        if (viewModel.couponSearchKeyword.orEmpty().isEmpty()) {
-            showEmptyDataGlobalError()
-        } else {
+        if (viewModel.couponSearchKeyword.orEmpty().isNotEmpty() ||
+            viewModel.selectedFilterType.value != CouponFilterBottomSheet.FilterType.NOT_SELECTED ||
+            viewModel.selectedFilterTarget.value != CouponFilterBottomSheet.FilterTarget.NOT_SELECTED
+        ) {
             emptyStateList?.show()
+        } else {
+            showEmptyDataGlobalError()
         }
     }
 
