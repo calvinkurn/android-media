@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -54,11 +55,11 @@ class SellerOnboardingActivity : BaseActivity() {
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(0),
-            SobSliderMessageUiModel(0),
-            SobSliderManageUiModel(0),
-            SobSliderPromoUiModel(0),
-            SobSliderStatisticsUiModel(0)
+            SobSliderHomeUiModel(Int.ZERO),
+            SobSliderMessageUiModel(Int.ZERO),
+            SobSliderManageUiModel(Int.ZERO),
+            SobSliderPromoUiModel(Int.ZERO),
+            SobSliderStatisticsUiModel(Int.ZERO)
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
