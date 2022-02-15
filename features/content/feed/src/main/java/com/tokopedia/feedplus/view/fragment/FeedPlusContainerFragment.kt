@@ -154,7 +154,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
-    private var useNewInbox = false
     private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
@@ -195,7 +194,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
         initNavRevampAbTest()
-        initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
@@ -206,18 +204,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         showOldToolbar = false
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && !showOldToolbar
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun initToolbar() {
@@ -267,9 +255,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                 .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
-        if (!useNewInbox) {
-            icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-        }
+        icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
         icons.apply {
             addIcon(IconList.ID_CART) {}
         }
@@ -363,9 +349,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             setInboxNumber(inboxCount)
         }
         (feedToolbar as? NavToolbar)?.run {
-            if (!useNewInbox) {
-                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            }
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }

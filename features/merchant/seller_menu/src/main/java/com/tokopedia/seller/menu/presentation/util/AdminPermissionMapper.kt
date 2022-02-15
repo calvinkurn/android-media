@@ -2,15 +2,12 @@ package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
@@ -126,20 +123,8 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
             SellerMigrationActivity.createIntent(context, featureName, SCREEN_NAME, appLinks)
 
     private fun getReputationIntent(context: Context): Intent {
-        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-        val useNewNav = true
-        return if (useNewInbox && useNewNav) {
-            RouteManager.getIntent(context,
-                    Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
-                        appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
-                        appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_SELLER)
-                    }.build().toString())
-        } else {
-            RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
                 putExtra(GO_TO_BUYER_REVIEW, true)
-            }
         }
     }
 

@@ -49,17 +49,6 @@ class HomeAndNavigationRevampSwitcherViewHolder(
                 RemoteConfigInstance.getInstance().abTestPlatform.setString(RollenceKey.BALANCE_EXP, RollenceKey.BALANCE_VARIANT_NEW)
                 Toast.makeText(this, "balance widget: Revamped", Toast.LENGTH_SHORT).show()
             }
-
-            btnOldInbox.setOnClickListener {
-                RemoteConfigInstance.getInstance().abTestPlatform.setString(RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX)
-                Toast.makeText(this, "Inbox: Old", Toast.LENGTH_SHORT).show()
-            }
-
-            btnNewInbox.setOnClickListener {
-                RemoteConfigInstance.getInstance().abTestPlatform.setString(RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_NEW_INBOX)
-                Toast.makeText(this, "Inbox: New", Toast.LENGTH_SHORT).show()
-            }
-
         }
     }
 }

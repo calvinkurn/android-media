@@ -17,7 +17,6 @@ object HomeMockValueHelper {
     const val MOCK_RECOMMENDATION_TAB_COUNT = 1
 
     fun setupAbTestRemoteConfig(
-        inboxRollence: Boolean = true,
         navigationRollence: Boolean = true,
         balanceWidgetRollence: Boolean = true,
         homeRollence: Boolean = true,
@@ -25,12 +24,6 @@ object HomeMockValueHelper {
         paymentAbcRollence: Boolean = true,
         navigationNewRollence: Boolean = true
         ) {
-        if (inboxRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.KEY_AB_INBOX_REVAMP,
-                RollenceKey.VARIANT_NEW_INBOX
-            )
-        }
         if (balanceWidgetRollence) {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.BALANCE_EXP,

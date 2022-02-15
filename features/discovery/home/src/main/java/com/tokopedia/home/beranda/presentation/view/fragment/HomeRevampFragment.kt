@@ -352,7 +352,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var gopayCoachmarkIsShowing = false
     private var tokopointsCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
-    private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
@@ -534,7 +533,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
-        initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
 
         //show nav toolbar
@@ -568,9 +566,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val icons = IconBuilder(
                     IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
             ).addIcon(getInboxIcon()) {}
-            if (!useNewInbox) {
-                icons.addIcon(IconList.ID_NOTIFICATION) {}
-            }
+            icons.addIcon(IconList.ID_NOTIFICATION) {}
             icons.apply {
                 addIcon(IconList.ID_CART) {}
                 addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -593,18 +589,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return view
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = getAbTestPlatform().getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
@@ -1155,9 +1141,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             /*
              * set notification gimmick
              */
-            if (!useNewInbox) {
-                navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
-            }
+            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
         refreshLayout.setOnRefreshListener(this)
     }

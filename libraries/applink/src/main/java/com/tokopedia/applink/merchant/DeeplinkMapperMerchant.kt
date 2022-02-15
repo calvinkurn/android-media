@@ -9,9 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -64,14 +61,7 @@ object DeeplinkMapperMerchant {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
-            return if (goToInboxUnified()) {
-                Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
-                    appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
-                    appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
-                }.build().toString()
-            } else {
-                return ApplinkConstInternalMarketplace.INBOX_REPUTATION
-            }
+            return ApplinkConstInternalMarketplace.INBOX_REPUTATION
         }
         return deeplink
     }
@@ -335,17 +325,5 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
-    }
-
-    fun goToInboxUnified(): Boolean {
-        if (GlobalConfig.isSellerApp()) return false
-        return try {
-            val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ) == RollenceKey.VARIANT_NEW_INBOX
-            useNewInbox
-        } catch (e: Exception) {
-            false
-        }
     }
 }

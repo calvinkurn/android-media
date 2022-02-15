@@ -1,8 +1,6 @@
 package com.tokopedia.review.feature.inbox.container
 
 import android.accounts.NetworkErrorException
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCounterResponseWrapper
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
@@ -64,7 +62,6 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
         val response = ProductrevReviewTabCounterResponseWrapper(ProductrevReviewTabCount(count = count))
 
         onGetTabCounter_thenReturn(response)
-        onCheckIsInboxUnified_returnsFalse()
         onHasShop_returnTrue()
 
         viewModel.getTabCounter()
@@ -81,7 +78,6 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
         val response = ProductrevReviewTabCounterResponseWrapper(ProductrevReviewTabCount(count = count))
 
         onGetTabCounter_thenReturn(response)
-        onCheckIsInboxUnified_returnsFalse()
         onHasShop_returnFalse()
 
         viewModel.getTabCounter()
@@ -93,66 +89,15 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
     }
 
     @Test
-    fun `when isInboxUnified returns true and isShopOwner returns true should add tab without counter and seller tab`() {
-        val count = 10
-        val response = ProductrevReviewTabCounterResponseWrapper(ProductrevReviewTabCount(count = count))
-
-        onGetTabCounter_thenReturn(response)
-        onCheckIsInboxUnified_returnsTrue()
-        onHasShop_returnTrue()
-
-        viewModel.getTabCounter()
-
-        val expectedResponse = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory, ReviewInboxTabs.ReviewInboxSeller)
-
-        verifyGetTabCounterUseCaseExecuted()
-        verifyTabCountersEquals(expectedResponse)
-    }
-
-    @Test
-    fun `when isInboxUnified returns true and isShopOwner returns false should add tab without counter but not seller tab`() {
-        val count = 10
-        val response = ProductrevReviewTabCounterResponseWrapper(ProductrevReviewTabCount(count = count))
-
-        onGetTabCounter_thenReturn(response)
-        onCheckIsInboxUnified_returnsTrue()
-        onHasShop_returnFalse()
-
-        viewModel.getTabCounter()
-
-        val expectedResponse = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory, ReviewInboxTabs.ReviewInboxSeller)
-
-        verifyGetTabCounterUseCaseExecuted()
-        verifyTabCountersEquals(expectedResponse)
-    }
-
-    @Test
     fun `when isInboxUnified returns false and isShopOwner returns true but network fails should add tab without counter and seller tab`() {
         val exception = NetworkErrorException()
 
         onGetTabCounterFail_thenReturn(exception)
-        onCheckIsInboxUnified_returnsFalse()
         onHasShop_returnTrue()
 
         viewModel.getTabCounter()
 
         val expectedResponse = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory, ReviewInboxTabs.ReviewInboxSeller)
-
-        verifyGetTabCounterUseCaseExecuted()
-        verifyTabCountersEquals(expectedResponse)
-    }
-
-    @Test
-    fun `when isInboxUnified returns true and isShopOwner returns false  but network fails should add tab with counter but not seller tab`() {
-        val exception = NetworkErrorException()
-
-        onGetTabCounterFail_thenReturn(exception)
-        onHasShop_returnFalse()
-        onCheckIsInboxUnified_returnsTrue()
-
-        viewModel.getTabCounter()
-
-        val expectedResponse = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory)
 
         verifyGetTabCounterUseCaseExecuted()
         verifyTabCountersEquals(expectedResponse)
@@ -180,22 +125,6 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
 
     private fun onHasShop_returnTrue() {
         every { userSession.hasShop() } returns true
-    }
-
-    private fun onCheckIsInboxUnified_returnsFalse() {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            )
-        } returns RollenceKey.VARIANT_OLD_INBOX
-    }
-
-    private fun onCheckIsInboxUnified_returnsTrue() {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            )
-        } returns RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun verifyTabCountersEquals(tabs: List<ReviewInboxTabs>) {

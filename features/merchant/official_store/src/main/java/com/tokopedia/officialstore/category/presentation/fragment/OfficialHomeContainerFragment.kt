@@ -44,8 +44,6 @@ import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -87,7 +85,6 @@ class OfficialHomeContainerFragment
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
-    private var useNewInbox = false
     private var chooseAddressView: OSChooseAddressWidgetView? = null
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
@@ -140,7 +137,6 @@ class OfficialHomeContainerFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        initInboxAbTest()
         init(view)
         observeOfficialCategoriesData()
         fetchOSCategory()
@@ -183,9 +179,7 @@ class OfficialHomeContainerFragment
     // from: GlobalNav, to show notification maintoolbar
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         mainToolbar?.run {
-            if (!useNewInbox) {
-                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            }
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -358,18 +352,8 @@ class OfficialHomeContainerFragment
         return tabItemDataList
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun init(view: View) {
@@ -444,9 +428,7 @@ class OfficialHomeContainerFragment
             mainToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             statusBar?.visibility = View.GONE
         }
-        if (!useNewInbox) {
-            icons.addIcon(IconList.ID_NOTIFICATION) {}
-        }
+        icons.addIcon(IconList.ID_NOTIFICATION) {}
         icons.apply {
             addIcon(IconList.ID_CART) {}
             addIcon(IconList.ID_NAV_GLOBAL) {}

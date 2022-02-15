@@ -56,7 +56,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -128,7 +127,6 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
 
     private var additionalParamRequest: WishlistAdditionalParamRequest? = null
-    private var useNewInbox = false
     private var launchSourceWishlist: String = ""
     private var scrollAfterSubmit = false
 
@@ -159,14 +157,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initInboxAbTest()
         return inflater.inflate(R.layout.fragment_new_home_wishlist, container, false)
-    }
-
-    private fun initInboxAbTest() {
-        useNewInbox = getAbTestPlatform().getString(
-            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
