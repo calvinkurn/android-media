@@ -29,9 +29,10 @@ class SpecialReleaseTimerView: FrameLayout {
     }
 
     fun setTimer(serverTimeOffset: Long = 0L, expiredTime: String) {
-        if (expiredTime.isNotEmpty()) {
+        val expiredTimeDate = DateHelper.getExpiredTime(expiredTime)
+        if (expiredTime.isNotEmpty() && !DateHelper.isExpired(serverTimeOffset, expiredTimeDate)) {
             timerText?.text = SpecialReleaseTimerCopyGenerator.getCopy(
-                expiredTimeDate = DateHelper.getExpiredTime(expiredTime),
+                expiredTimeDate = expiredTimeDate,
                 currentTimeDate = Date(),
                 offset = serverTimeOffset
             )
