@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.basecomponent.uiEagerComponent
+import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.media.common.component.NavToolbarComponent
 import com.tokopedia.media.common.component.ToolbarTheme
 import com.tokopedia.media.common.uimodel.AlbumUiModel
@@ -39,7 +39,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         AlbumAdapter(listener = onAlbumClickListener)
     }
 
-    private val navToolbar by uiEagerComponent {
+    private val navToolbar by uiComponent {
         NavToolbarComponent(
             listener = this,
             parent = it
