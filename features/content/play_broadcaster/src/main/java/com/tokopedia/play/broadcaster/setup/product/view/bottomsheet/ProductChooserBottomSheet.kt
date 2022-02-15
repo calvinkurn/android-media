@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
@@ -188,10 +189,14 @@ class ProductChooserBottomSheet @Inject constructor(
                     state.loadParam,
                     state.focusedProductList,
                     state.campaignAndEtalase,
-                    prevState?.shopName,
-                    state.shopName
+                    prevState?.config,
+                    state.config
                 )
-                renderBottomSheetTitle(state.selectedProductSectionList)
+                renderBottomSheetTitle(
+                    prevState?.selectedProductSectionList,
+                    state.selectedProductSectionList,
+                    state.config
+                )
                 renderSaveButton(state.saveState)
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
                 renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
@@ -288,28 +293,32 @@ class ProductChooserBottomSheet @Inject constructor(
         param: ProductListPaging.Param,
         productList: ProductListPaging,
         campaignAndEtalase: CampaignAndEtalaseUiModel,
-        prevShopName: String?,
-        shopName: String,
+        prevConfig: ProductSetupConfig?,
+        config: ProductSetupConfig,
     ) {
         if (param.etalase is SelectedEtalaseModel.Campaign ||
             hasNoProducts(campaignAndEtalase, productList)) searchBarView.hide()
         else searchBarView.show()
 
-        if (prevShopName != shopName) {
+        if (prevConfig?.shopName != config.shopName) {
             searchBarView.setPlaceholder(
-                getString(R.string.play_etalase_search_hint, shopName)
+                getString(R.string.play_etalase_search_hint, config.shopName)
             )
         }
     }
 
     private fun renderBottomSheetTitle(
-        selectedProductSections: List<ProductTagSectionUiModel>,
+        prevSelectedProducts: List<ProductTagSectionUiModel>?,
+        selectedProducts: List<ProductTagSectionUiModel>,
+        config: ProductSetupConfig,
     ) {
+        if (prevSelectedProducts == selectedProducts) return
+
         setTitle(
             getString(
                 R.string.play_bro_selected_product_title,
-                selectedProductSections.sumOf { it.products.size },
-                30
+                selectedProducts.sumOf { it.products.size },
+                config.maxProduct,
             )
         )
     }

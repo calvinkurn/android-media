@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
  */
 data class PlayBroProductSummaryUiState(
     val productTagSectionList: List<ProductTagSectionUiModel>,
+    val productCount: Int,
     val productTagSummary: ProductTagSummaryUiModel,
 )
 
@@ -14,5 +15,5 @@ sealed class ProductTagSummaryUiModel {
     object Unknown: ProductTagSummaryUiModel()
     object Loading: ProductTagSummaryUiModel()
     object LoadingWithPlaceholder: ProductTagSummaryUiModel()
-    data class Success(val productCount: Int): ProductTagSummaryUiModel()
+    object Success: ProductTagSummaryUiModel()
 }

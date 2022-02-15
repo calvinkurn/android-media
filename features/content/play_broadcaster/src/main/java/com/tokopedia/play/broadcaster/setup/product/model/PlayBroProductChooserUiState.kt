@@ -14,8 +14,8 @@ data class PlayBroProductChooserUiState(
     val focusedProductList: ProductListPaging,
     val selectedProductSectionList: List<ProductTagSectionUiModel>,
     val loadParam: ProductListPaging.Param,
-    val shopName: String,
     val saveState: ProductSaveStateUiModel,
+    val config: ProductSetupConfig,
 ) {
 
     companion object {
@@ -25,8 +25,8 @@ data class PlayBroProductChooserUiState(
                 focusedProductList = ProductListPaging.Empty,
                 selectedProductSectionList = emptyList(),
                 loadParam = ProductListPaging.Param.Empty,
-                shopName = "",
                 saveState = ProductSaveStateUiModel.Empty,
+                config = ProductSetupConfig.Empty,
             )
     }
 }
@@ -56,6 +56,19 @@ data class ProductSaveStateUiModel(
             get() = ProductSaveStateUiModel(
                 isLoading = false,
                 canSave = false,
+            )
+    }
+}
+
+data class ProductSetupConfig(
+    val shopName: String,
+    val maxProduct: Int,
+) {
+    companion object {
+        val Empty: ProductSetupConfig
+            get() = ProductSetupConfig(
+                shopName = "",
+                maxProduct = 0,
             )
     }
 }

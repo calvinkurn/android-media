@@ -116,9 +116,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-//    val observableProductList = getCurrentSetupDataStore().getObservableSelectedProducts()
-//            .map { dataList -> dataList.map { ProductContentUiModel.createFromData(it) } }
-//            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableTitle: LiveData<PlayTitleUiModel.HasTitle> = getCurrentSetupDataStore().getObservableTitle()
                 .filterIsInstance<PlayTitleUiModel.HasTitle>()

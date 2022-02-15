@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserE
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
@@ -25,13 +26,13 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,7 +43,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -52,7 +52,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
-    private val setupDataStore: PlayBroadcastSetupDataStore,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
@@ -76,6 +75,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
+    private val _config = MutableStateFlow(
+        ProductSetupConfig(shopName = userSession.shopName, maxProduct = configStore.getMaxProduct())
+    )
 
     private val searchQuery = MutableStateFlow("")
 
@@ -92,14 +94,16 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         _selectedProductSectionList,
         _loadParam,
         _saveState,
-    ) { campaignAndEtalase, focusedProductList, selectedProductSectionList, loadParam, saveState ->
+        _config,
+    ) { campaignAndEtalase, focusedProductList, selectedProductSectionList, loadParam, saveState,
+        config ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductSectionList = selectedProductSectionList,
             loadParam = loadParam,
-            shopName = userSession.shopName,
             saveState = saveState,
+            config = config,
         )
     }.stateIn(
         viewModelScope,
@@ -113,6 +117,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     ) { productTagSectionList, productTagSummary ->
         PlayBroProductSummaryUiState(
             productTagSectionList = productTagSectionList,
+            productCount = productTagSectionList.sumOf { it.products.size },
             productTagSummary = productTagSummary
         )
     }
@@ -311,11 +316,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
-
-    /** TODO: gonna delete this later */
-    @OptIn(ExperimentalStdlibApi::class)
     private fun handleLoadProductSummary() {
-        /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
 
@@ -330,23 +331,16 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    /** TODO: gonna delete this later */
-    @OptIn(ExperimentalStdlibApi::class)
     private fun handleDeleteProduct(product: ProductUiModel) {
-        /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
             val productSectionList = _productTagSectionList.value
-            /** TODO: gonna delete this later */
-            delay(1000)
 
-            throw Exception("Error")
-            /** TODO: gonna uncomment this later */
-//                val productIds = productSectionList.sections.flatMap { section ->
-//                    section.products.filter { it.id != product.id }.map { it.id }
-//                }
-//                repo.addProductTag(channelId, productIds)
+            val productIds = productSectionList.flatMap { section ->
+                section.products.mapNotNull { if (it.id != product.id) it.id else null }
+            }
+            repo.setProductTags(channelId, productIds)
 
             getProductTagSummary()
         }) {
@@ -359,18 +353,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    /** TODO: gonna delete this later */
-    @ExperimentalStdlibApi
-    private suspend fun getProductTagSummary() = withContext(dispatchers.io) {
-        /** TODO: gonna remove this delay */
+    private suspend fun getProductTagSummary() {
+        val response = repo.getProductTagSummarySection(channelId)
 
-//        delay(1000)
-        val productSectionList = repo.getProductTagSummarySection(channelId)
-
-        _productTagSectionList.value = productSectionList
-        _productTagSummary.value = ProductTagSummaryUiModel.Success(
-            productSectionList.sumOf { it.products.size }
-        )
+        _productTagSectionList.value = response
+        _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 
     private fun handleSearchProduct(keyword: String) {

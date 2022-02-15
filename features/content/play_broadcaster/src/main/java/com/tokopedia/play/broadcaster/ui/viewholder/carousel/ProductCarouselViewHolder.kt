@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.ui.viewholder.carousel
 
 import android.content.Context
 import android.graphics.Paint
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -67,9 +69,34 @@ internal class ProductCarouselViewHolder private constructor() {
                 }
             }
         }
+
+        companion object {
+            fun create(parent: ViewGroup): Product {
+                return Product(
+                    ItemPlayBroProductCarouselBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
+                )
+            }
+        }
     }
 
     class Loading(
         binding: ItemPlayBroPlaceholderCarouselBinding
-    ) : RecyclerView.ViewHolder(binding.root)
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun create(parent: ViewGroup): Loading {
+                return Loading(
+                    ItemPlayBroPlaceholderCarouselBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
+                )
+            }
+        }
+    }
 }
