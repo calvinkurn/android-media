@@ -17,6 +17,12 @@ data class AddOnsResponse(
 		@SerializedName("status")
 	val status: Int = 0
 ) {
+	companion object {
+		const val STATUS_HIDE_ADD_ON_BUTTON = 0
+		const val STATUS_SHOW_ENABLED_ADD_ON_BUTTON = 1
+		const val STATUS_SHOW_DISABLED_ADD_ON_BUTTON = 2
+	}
+
 	data class AddOnButton(
 
 			@SerializedName("left_icon_url")

@@ -48,6 +48,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingC
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -66,6 +67,7 @@ import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
 import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnBottomSheetParamMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
@@ -1200,6 +1202,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
+
+        override fun onClickAddOnButton(addOn: AddOnsDataModel) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, AddOnBottomSheetParamMapper.generateParam())
+            startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+        }
     }
 
     private fun getOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
@@ -1462,6 +1470,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_LINK_ACCOUNT = 22
         const val REQUEST_CODE_WALLET_ACTIVATION = 23
+
+        const val REQUEST_CODE_ADD_ON = 24
 
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"

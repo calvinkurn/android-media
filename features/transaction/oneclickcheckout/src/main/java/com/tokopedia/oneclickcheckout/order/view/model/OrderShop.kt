@@ -36,7 +36,7 @@ data class OrderShop(
         var maximumWeightWording: String = "",
         var overweight: Double = 0.0,
         var boMetadata: BoMetadata = BoMetadata(),
-        var addOns: AddOnsDataModel = AddOnsDataModel(),
+        var addOn: AddOnsDataModel = AddOnsDataModel(),
 
         // Analytics
         var hasTriggerViewOverweightTicker: Boolean = false,
