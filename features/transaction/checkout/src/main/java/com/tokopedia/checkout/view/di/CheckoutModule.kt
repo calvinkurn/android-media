@@ -16,6 +16,7 @@ import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
@@ -54,6 +55,12 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideICheckoutMapper(gson: Gson): CheckoutMapper {
         return CheckoutMapper(gson)
+    }
+
+    @Provides
+    @CheckoutScope
+    fun provideShipmentDataRequestConverter(gson: Gson): ShipmentDataRequestConverter {
+        return ShipmentDataRequestConverter(gson)
     }
 
     @Provides
