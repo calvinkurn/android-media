@@ -53,6 +53,7 @@ class ThematicWidgetViewHolder (
     private var layoutManager: LinearLayoutManager? = null
     private var dynamicHeaderCustomView: DynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
+    private var isFirstAttached: Boolean = true
 
     private val adapter by lazy {
         ProductCardAdapter(
@@ -98,7 +99,6 @@ class ThematicWidgetViewHolder (
             startBackGroundColor = element.firstBackgroundColor,
             endBackGroundColor = element.secondBackgroundColor
         )
-        listener.onThematicWidgetImpressListener(element, adapterPosition)
     }
 
     override fun onSeeAllClick(appLink: String) {
@@ -115,19 +115,27 @@ class ThematicWidgetViewHolder (
     }
 
     private fun submitList(element: ThematicWidgetUiModel) {
-        val productList : List<ProductCardUiModel>
+        val products : List<ProductCardUiModel>
         val newList = mutableListOf<Visitable<*>>()
         newList.add(ProductCardSpaceUiModel())
         if (element.header.totalProduct <= MAX_TOTAL_PRODUCT) {
-            productList = element.productList
-            newList.addAll(productList)
+            products = element.productList
+            newList.addAll(products)
         } else {
-            productList = element.productList.take(MAX_TOTAL_PRODUCT)
-            newList.addAll(productList)
+            products = element.productList.take(MAX_TOTAL_PRODUCT)
+            newList.addAll(products)
             newList.add(ProductCardSeeAllUiModel(element.header.ctaTextLink))
         }
         adapter.submitList(newList)
-        listener.onProductCardThematicWidgetImpressListener(productList, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+        trackForTheFirstTimeViewHolderAttached(element, products)
+    }
+
+    private fun trackForTheFirstTimeViewHolderAttached(element: ThematicWidgetUiModel, products: List<ProductCardUiModel>) {
+        if (isFirstAttached) {
+            listener.onThematicWidgetImpressListener(element, adapterPosition)
+            listener.onProductCardThematicWidgetImpressListener(products, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+            isFirstAttached = false
+        }
     }
 
     private fun calculateParallaxImage(dx: Int) {
