@@ -40,7 +40,7 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
     }
 
     override fun type(dataModel: CarouselMerchantVoucherDataModel): Int {
-        return super.type(dataModel)
+        return CarouselMerchantVoucherViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -62,6 +62,9 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
             }
             CarouselCampaignCardViewHolder.LAYOUT -> {
                 CarouselCampaignCardViewHolder(parent, channels)
+            }
+            CarouselMerchantVoucherViewHolder.LAYOUT -> {
+                CarouselMerchantVoucherViewHolder(parent, channels)
             }
             else -> {
                 super.createViewHolder(parent, type)
