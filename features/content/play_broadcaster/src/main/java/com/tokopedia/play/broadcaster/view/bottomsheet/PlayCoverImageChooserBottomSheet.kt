@@ -177,8 +177,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
      * Observe
      */
     private fun observeSelectedProduct() {
-        //TODO("Change with new logic, for now, just displaying Camera first")
-        pdpCoverAdapter.setItemsAndAnimateChanges(listOf(CarouselCoverUiModel.Camera))
+        //TODO("Change with new logic")
     }
 
     interface Listener {
