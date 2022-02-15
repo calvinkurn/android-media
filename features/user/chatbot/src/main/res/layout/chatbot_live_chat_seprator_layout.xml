@@ -19,6 +19,7 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:gravity="center"
+        android:textColor="@color/chatbot_live_chat_divider"
         android:background="@drawable/chat_bot_chat_divider_background"
         tools:text="Kamu bisa tutup halaman ini  cek balasan Tim CS dalam [SLA] lewat Pesan Bantuan di Inbox. [Timestamp]"
         app:layout_constraintStart_toStartOf="parent"
