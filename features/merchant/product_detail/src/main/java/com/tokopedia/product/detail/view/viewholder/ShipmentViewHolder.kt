@@ -128,8 +128,10 @@ class ShipmentViewHolder(
         pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
             setImageUrl(freeOngkirImageUrl)
         }
-        if (element.isFullfillment) pdpShipmentGroupTc.show()
-        else {
+        if (element.isFullfillment) {
+            pdpShipmentGroupTc.show()
+            pdpShipmentTcIcon.setImageUrl(element.tokoCabangIconUrl)
+        } else {
             val subtitle = rates.shippingCtxDesc
             pdpShipmentSubtitle.showIfWithBlock(subtitle.isNotEmpty()) {
                 text = subtitle.renderHtmlBold(context)
