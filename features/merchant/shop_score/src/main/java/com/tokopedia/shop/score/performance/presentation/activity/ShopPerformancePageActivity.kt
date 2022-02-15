@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.score.common.plt.ShopScorePerformanceMonitoringListener
 import com.tokopedia.shop.score.common.plt.ShopScorePltConstants
@@ -29,7 +31,16 @@ open class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<Shop
         }
     }
 
-    override fun getNewFragment(): Fragment = ShopPerformancePageFragment.newInstance()
+    override fun getNewFragment(): Fragment {
+        val bundle = intent.data?.let {
+            Bundle().apply {
+                val params = UriUtil.uriQueryParamsToMap(it)
+                val coachMarkParam = params[ShopScoreDeepLinkMapper.COACH_MARK_PARAM].orEmpty()
+                putString(ShopScoreDeepLinkMapper.COACH_MARK_PARAM, coachMarkParam)
+            }
+        }
+        ShopPerformancePageFragment.newInstance(bundle)
+    }
 
     override fun getComponent(): ShopPerformanceComponent {
         return DaggerShopPerformanceComponent
