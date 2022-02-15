@@ -18,10 +18,8 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -50,7 +48,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
@@ -62,7 +59,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
-import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -260,9 +256,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var videoTrackerData: Pair<Long, Long>? = null
 
-    var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var tradeInParams: TradeInParams = TradeInParams()
     var variantData: ProductVariant? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
@@ -521,9 +515,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
                 parentProductId = it.layoutData.parentProductId
 
-                //Create tradein params
-                assignTradeinParams()
-
                 //Remove any unused component based on P1 / PdpLayout
                 removeDynamicComponent(it.listOfLayout)
 
@@ -624,8 +615,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
             p2DataDeffered.await().let {
                 _p2Data.postValue(it)
-                updateTradeinParams(it.validateTradeIn)
             }
+
             p2LoginDeferred?.let {
                 _p2Login.postValue(it.await())
             }
@@ -1074,34 +1065,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         recomItem.onFailedUpdateCart()
         _atcRecomTokonow.value = throwable.asFail()
         _atcRecomTokonowResetCard.value = recomItem
-    }
-
-    private fun assignTradeinParams() {
-        getDynamicProductInfoP1?.let {
-            tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
-            tradeInParams.deviceId = deviceId
-            tradeInParams.userId = userId.toIntOrZero()
-            tradeInParams.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeInParams.productId = it.basic.productID
-            tradeInParams.shopId = it.basic.getShopId()
-            tradeInParams.productName = it.getProductName
-            tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
-            tradeInParams.isOnCampaign = it.data.campaign.isActive
-            tradeInParams.weight = it.basic.weight
-            if (it.data.getImagePath().isNotEmpty()) {
-                tradeInParams.productImage = it.data.getImagePath()[0]
-            } else {
-                tradeInParams.productImage = it.data.getFirstProductImage()
-            }
-        }
-    }
-
-    private fun updateTradeinParams(validateTradeIn: ValidateTradeIn) {
-        tradeInParams.isEligible = if (validateTradeIn.isEligible) 1 else 0
-        tradeInParams.usedPrice = validateTradeIn.usedPrice.toIntOrZero()
-        tradeInParams.remainingPrice = validateTradeIn.remainingPrice.toIntOrZero()
-        tradeInParams.isUseKyc = if (validateTradeIn.useKyc) 1 else 0
-        tradeInParams.widgetString = validateTradeIn.widgetString
     }
 
     private fun getProductInfoP2OtherAsync(productId: String, shopId: Int): Deferred<ProductInfoP2Other> {
