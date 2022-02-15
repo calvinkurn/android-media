@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
@@ -20,6 +21,8 @@ import com.tokopedia.tradein.model.PromoTradeInModel
 import com.tokopedia.tradein.viewmodel.TradeInPromoDetailPageVM
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class TradeInPromoDetailPageFragment : BaseViewModelFragment<TradeInPromoDetailPageVM>() {
@@ -38,12 +41,13 @@ class TradeInPromoDetailPageFragment : BaseViewModelFragment<TradeInPromoDetailP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getPromo()
+        addObservers()
+    }
+
+    private fun getPromo() {
         arguments?.getString(EXTRA_CODE)?.let {
             viewModel.getPromo(it)
-        }
-        addObservers()
-        view.apply {
-
         }
     }
 
@@ -57,10 +61,30 @@ class TradeInPromoDetailPageFragment : BaseViewModelFragment<TradeInPromoDetailP
             else
                 view?.findViewById<RelativeLayout>(R.id.progress_bar_layout)?.hide()
         })
+        viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
+            view?.findViewById<GlobalError>(R.id.promo_global_error)?.run {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        setType(GlobalError.NO_CONNECTION)
+                    }
+                    is IllegalStateException -> {
+                        setType(GlobalError.PAGE_FULL)
+                    }
+                    else -> {
+                        setType(GlobalError.SERVER_ERROR)
+                    }
+                }
+                show()
+                setActionClickListener {
+                    hide()
+                    getPromo()
+                }
+            }
+        })
     }
 
     private fun setUpView(tradeInPromoDetail: PromoTradeInModel.TradeInPromoDetail) {
-        tradeInPromoDetail?.let {
+        tradeInPromoDetail.let {
             view?.apply {
                 findViewById<ImageUnify>(R.id.image_promo).setImageUrl(it.imageURL)
                 findViewById<Typography>(R.id.promo_title).text = it.title

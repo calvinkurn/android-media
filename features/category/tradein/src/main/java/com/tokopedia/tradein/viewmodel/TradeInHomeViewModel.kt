@@ -81,7 +81,7 @@ class TradeInHomeViewModel @Inject constructor(
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
                 result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
-                errorMessage.setValue(response.deviceDiagInputRepsponse.message)
+//                errorMessage.setValue(response.deviceDiagInputRepsponse.message)
             }
             homeResultData.value = result
         }
