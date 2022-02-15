@@ -14,7 +14,7 @@ class CatalogStaggeredShimmerModel(val name : String = "", val type : String = "
     }
 
     override fun equalsWith(newData: BaseCatalogDataModel): Boolean {
-        return false
+        return newData == this
     }
 
     override fun getChangePayload(newData: BaseCatalogDataModel): Bundle? {

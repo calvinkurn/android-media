@@ -26,16 +26,21 @@ class CatalogProductComparisonViewModel @Inject constructor(
 
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : String, name : String) {
-        addShimmer()
+        addShimmer(name.isNotBlank())
         launchCatchError(block = {
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page,name)
             removeShimmer()
             when(result){
                 is Success -> {
-                    addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
-                    dataList.value = masterDataList
-                    hasMoreItems.value = true
+                    if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
+                        dataList.value = masterDataList
+                        hasMoreItems.value = false
+                    }else {
+                        addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
+                        dataList.value = masterDataList
+                        hasMoreItems.value = true
+                    }
                 }
 
                 is Fail -> {
@@ -63,10 +68,13 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private val shimmerItemCount = 4
     private val shimmerList = arrayListOf<BaseCatalogDataModel>()
 
-    private fun addShimmer() {
+    private fun addShimmer(isFromSearch : Boolean) {
         if(shimmerList.size == 0){
             for (i in 1..shimmerItemCount) {
                 shimmerList.add(CatalogStaggeredShimmerModel())
+            }
+            if(isFromSearch){
+                masterDataList.clear()
             }
             masterDataList.addAll(shimmerList)
             shimmerData.value = masterDataList

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -23,26 +22,25 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheetListener
+import com.tokopedia.catalog.model.util.CatalogUtil
+import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogProductComparisonViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
+import com.tokopedia.unifycomponents.SearchBarUnify
 import javax.inject.Inject
 
 class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductComparisonViewModel>() , CatalogDetailListener{
 
-    private var currentPageNumber : Int = 1
-    private var listSize = 0
+    private var currentPageNumber = PAGE_FIRST
     private var catalogId = ""
     private var catalogName = ""
     private var brand  = ""
     private var categoryId = ""
-    private var recommendedCatalogId: String = ""
-    private var catalogDetailListener : CatalogDetailListener? = null
-    private var catalogBottomSheetListener : CatalogComponentBottomSheetListener? = null
+    private var searchKeyword = ""
+    private var recommendedCatalogId = ""
 
     @Inject
     lateinit var viewModelFactoryProvider : ViewModelProvider.Factory
@@ -51,15 +49,12 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     lateinit var catalogProductComparisonViewModel: CatalogProductComparisonViewModel
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-
     private var recyclerView : RecyclerView? = null
 
     private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
-
     private val catalogDetailAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(
-            CatalogDetailDiffUtil()
-        )
+            CatalogDetailDiffUtil())
             .build()
         CatalogDetailAdapter(requireActivity(),this,catalogId,asyncDifferConfig, catalogAdapterFactory
         )
@@ -81,11 +76,9 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private fun afterViewCreated(view: View) {
         extractArguments()
-        setUpRecyclerView(view)
-        setUpEmptyState()
-        catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
-            catalogId,brand,
-            categoryId,LIMIT,PAGE_FIRST.toString(),"")
+        setUpViews(view)
+        setUpEmptyState(view)
+        makeApiCall(PAGE_FIRST)
     }
 
     private fun extractArguments() {
@@ -96,7 +89,12 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         recommendedCatalogId = requireArguments().getString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, "")
     }
 
-    private fun setUpRecyclerView(view : View){
+    private fun setUpViews(view : View){
+        setUpRecyclerView(view)
+        setUpSearchView(view)
+    }
+
+    private fun setUpRecyclerView(view : View) {
         val staggeredLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         view.findViewById<RecyclerView>(R.id.catalog_staggered_recycler_view)?.let { rV ->
             recyclerView = rV
@@ -110,54 +108,65 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(hasNextPage)
-                    catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
-                        catalogId,brand,
-                        categoryId,LIMIT,page.toString(),"")
+    private fun setUpSearchView(view : View){
+        CatalogUtil.setSearchListener(context,view, ::onSearchKeywordEntered , ::onClearSearch)
+    }
+
+    private fun setUpEmptyState(view : View){
+        view.findViewById<GlobalError>(R.id.global_error)?.run {
+            errorIllustration.hide()
+            errorSecondaryAction.gone()
+            setButtonFull(true)
+            errorTitle.text = getString(R.string.catalog_no_products_title)
+            errorDescription.text = getString(R.string.catalog_search_product_zero_count_text)
+            errorAction.hide()
+            errorAction.setOnClickListener {
+                makeApiCall(PAGE_FIRST)
             }
         }
     }
 
-    private fun setUpEmptyState(){
-        view?.findViewById<GlobalError>(R.id.global_error)?.run {
-            errorIllustration.hide()
-            errorSecondaryAction.gone()
-            setButtonFull(true)
-            errorTitle.text = ""
-            errorDescription.text = ""
-            errorAction.text = ""
-            errorAction.setOnClickListener {
+    private fun makeApiCall(page : Int) {
+        catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
+            catalogId,brand,
+            categoryId,LIMIT,page.toString(),searchKeyword)
+    }
 
+    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if(hasNextPage)
+                    makeApiCall(page)
             }
         }
     }
 
     private fun setObservers() {
+        observeShimmerData()
+        observerDataItems()
+        observerHasMoreItems()
+        observeErrorMessage()
+    }
+
+    private fun observeShimmerData() {
         catalogProductComparisonViewModel.getShimmerData().observe(this, { shimmerData ->
             recyclerView?.show()
             catalogDetailAdapter.submitList(shimmerData)
             catalogDetailAdapter.notifyDataSetChanged()
         })
+    }
 
+    private fun observerDataItems() {
         catalogProductComparisonViewModel.getDataItems().observe(this ,{ dataList ->
             if (dataList.isNotEmpty()) {
-                listSize += dataList.size
-                hideErrorGroup()
-                recyclerView?.show()
-                catalogDetailAdapter.submitList(dataList)
-                catalogDetailAdapter.notifyDataSetChanged()
-                loadMoreTriggerListener?.updateStateAfterGetData()
-                currentPageNumber++
+               onFetchData(dataList)
             } else {
-                showErrorGroup()
-                showEmptyState()
-                recyclerView?.hide()
+                onEmptyData()
             }
         })
+    }
 
+    private fun observerHasMoreItems() {
         catalogProductComparisonViewModel.getHasMoreItems().observe(this, { hasMoreItems ->
             if(hasMoreItems) {
                 currentPageNumber ++
@@ -166,11 +175,49 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             else loadMoreTriggerListener?.setHasNextPage(false)
         })
 
+    }
+
+    private fun observeErrorMessage() {
         catalogProductComparisonViewModel.getErrorMessage().observe(this, { errorMessage ->
             recyclerView?.hide()
             showErrorGroup()
             showEmptyState()
         })
+    }
+
+    private fun onFetchData(dataList : ArrayList<BaseCatalogDataModel>){
+        hideErrorGroup()
+        recyclerView?.show()
+        catalogDetailAdapter.submitList(dataList)
+        catalogDetailAdapter.notifyDataSetChanged()
+        loadMoreTriggerListener?.updateStateAfterGetData()
+        currentPageNumber++
+    }
+
+    private fun onSearchKeywordEntered(){
+        resetPage()
+        val searchText = view?.findViewById<SearchBarUnify>(R.id.catalog_product_search)?.searchBarTextField?.text.toString()
+        if(searchText.isNotBlank()){
+            searchKeyword = searchText
+            makeApiCall(PAGE_FIRST)
+        }
+    }
+
+    private fun onClearSearch() {
+        resetPage()
+        searchKeyword = ""
+        makeApiCall(PAGE_FIRST)
+    }
+
+    private fun resetPage(){
+        currentPageNumber = PAGE_FIRST
+        loadMoreTriggerListener?.resetState()
+    }
+
+    private fun onEmptyData(){
+        showErrorGroup()
+        showEmptyState()
+        recyclerView?.hide()
     }
 
     private fun showEmptyState(){
@@ -220,9 +267,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         private const val PAGE_FIRST = 1
 
         fun newInstance(catalogName : String, catalogId: String, brand: String, categoryId : String,
-                        recommendedCatalogId : String,
-                        catalogListener: CatalogDetailListener? ,
-                        catalogComponentBottomSheetListener: CatalogComponentBottomSheetListener?):
+                        recommendedCatalogId : String):
                 CatalogProductComparisonFragment {
             return CatalogProductComparisonFragment().apply {
                 val bundle = Bundle()
@@ -232,29 +277,16 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
                 bundle.putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
                 bundle.putString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, recommendedCatalogId)
                 arguments = bundle
-                catalogDetailListener = catalogListener
-                catalogBottomSheetListener = catalogComponentBottomSheetListener
             }
         }
     }
 
     override fun changeComparison(comparedCatalogId: String) {
         dismissBottomSheet()
-        catalogDetailListener?.changeComparison(comparedCatalogId)
+        (parentFragment as? CatalogComponentBottomSheet)?.changeComparison(comparedCatalogId)
     }
 
     private fun dismissBottomSheet () {
-        catalogBottomSheetListener?.dismissCatalogComponentBottomSheet()
+        (parentFragment as? CatalogComponentBottomSheet)?.dismissCatalogComponentBottomSheet()
     }
-
-    override val childsFragmentManager: FragmentManager?
-        get() = childFragmentManager
-
-
-    override val windowHeight: Int
-        get() = if (activity != null) {
-            catalog_layout.height
-        } else {
-            0
-        }
 }

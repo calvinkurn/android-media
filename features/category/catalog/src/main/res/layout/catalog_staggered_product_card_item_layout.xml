@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_160"
                 tools:ignore="ContentDescription"
+                android:scaleType="centerCrop"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <com.tokopedia.unifyprinciples.Typography

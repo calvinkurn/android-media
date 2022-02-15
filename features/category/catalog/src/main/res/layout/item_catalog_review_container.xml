@@ -105,7 +105,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl3"
         tools:listitem="@layout/item_catalog_review"
-        tools:itemCount="3"
+        tools:itemCount="1"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />

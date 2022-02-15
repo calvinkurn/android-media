@@ -5,8 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/catalog_product_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:search_bar_show_icon="false"
+        app:search_bar_placeholder="@string/catalog_search_product_hint"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toTopOf="@id/catalog_staggered_recycler_view"
+        />
 
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/catalog_staggered_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:itemCount="4"
+        tools:listitem="@layout/catalog_staggered_product_card_item_layout"
+        tools:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/catalog_product_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/unify_space_40"
+        tools:visibility="visible"
+        android:visibility="visible"
+        />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/catalog_no_product_view"
@@ -16,10 +43,10 @@
         android:gravity="center"
         android:paddingTop="@dimen/dp_40"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/catalog_product_search"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
         app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
@@ -30,20 +57,5 @@
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/catalog_no_product_view"
         tools:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/catalog_staggered_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="4"
-        tools:listitem="@layout/catalog_staggered_product_card_item_layout"
-        tools:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        android:visibility="visible"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

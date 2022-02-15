@@ -5,10 +5,11 @@ import android.view.View
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.ui.fragment.CatalogAllReviewFragment
+import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomSheetListener {
+class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
 
     private var catalogId: String = ""
     private var recommendedCatalogId: String = ""
@@ -57,7 +58,7 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
                 ORIGIN_ULTIMATE_VERSION -> {
                     childFragmentManager.beginTransaction().replace(R.id.frame_content,
                         CatalogProductComparisonFragment.newInstance(catalogName, catalogId, brand,
-                            categoryId, recommendedCatalogId ,catalogDetailListener ,this)).commit()
+                            categoryId, recommendedCatalogId)).commit()
                 }
             }
         }
@@ -70,8 +71,12 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
         }
     }
 
-    override fun dismissCatalogComponentBottomSheet() {
+    fun dismissCatalogComponentBottomSheet() {
         this.dismiss()
+    }
+
+    override fun changeComparison(comparedCatalogId: String) {
+        (parentFragment as? CatalogDetailPageFragment)?.changeComparison(comparedCatalogId)
     }
 
     companion object {
@@ -101,9 +106,4 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
             }
         }
     }
-}
-
-interface CatalogComponentBottomSheetListener {
-
-    fun dismissCatalogComponentBottomSheet(){}
 }

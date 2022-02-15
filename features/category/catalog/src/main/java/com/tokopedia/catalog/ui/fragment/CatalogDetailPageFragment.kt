@@ -614,14 +614,15 @@ class CatalogDetailPageFragment : Fragment(),
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    override val childsFragmentManager: FragmentManager?
-        get() = childFragmentManager
+    override fun getChildsFragmentManager(): FragmentManager? {
+        return childFragmentManager
+    }
 
-
-    override val windowHeight: Int
-        get() = if (activity != null) {
+    override fun getWindowHeight(): Int {
+        return if (activity != null) {
             catalog_layout.height
         } else {
             0
         }
+    }
 }

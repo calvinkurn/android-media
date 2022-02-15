@@ -54,8 +54,10 @@ interface CatalogDetailListener {
     fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
                              isFromBottomSheet : Boolean = true){}
 
-    val childsFragmentManager: FragmentManager?
+    fun getChildsFragmentManager() : FragmentManager? {
+        return null
+    }
 
-    val windowHeight: Int
+    fun getWindowHeight() : Int { return 0 }
 
 }

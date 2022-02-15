@@ -18,9 +18,9 @@ class CatalogProductsContainerViewHolder(view: View,
     }
 
     override fun bind(element: CatalogProductsContainerDataModel) {
-        if(catalogDetailListener.childsFragmentManager != null){
+        if(catalogDetailListener.getChildsFragmentManager() != null){
             catalogPageAdapter = CatalogPagerAdapter(
-                element,catalogDetailListener.childsFragmentManager!!)
+                element,catalogDetailListener.getChildsFragmentManager()!!)
             viewPager?.adapter = catalogPageAdapter
         }
     }

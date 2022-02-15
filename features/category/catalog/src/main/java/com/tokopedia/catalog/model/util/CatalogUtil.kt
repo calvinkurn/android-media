@@ -2,7 +2,14 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.unifycomponents.SearchBarUnify
 
 object CatalogUtil {
 
@@ -54,5 +61,34 @@ object CatalogUtil {
         }else {
             ""
         }
+    }
+
+    fun setSearchListener(context: Context?, view: View, onSearchKeywordEntered: () -> Unit,
+                                  onClearSearch : () -> Unit) {
+        val searchbar = view.findViewById<SearchBarUnify>(R.id.catalog_product_search)
+        val searchTextField = searchbar?.searchBarTextField
+        val searchClearButton = searchbar?.searchBarIcon
+        searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    onSearchKeywordEntered.invoke()
+                    dismissKeyboard(context, view)
+                    return true
+                }
+                return false
+            }
+        })
+        searchClearButton?.setOnClickListener {
+            searchTextField?.text?.clear()
+            onClearSearch()
+            dismissKeyboard(context, view)
+        }
+    }
+
+    fun dismissKeyboard(context: Context?, view: View?) {
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        if (inputMethodManager?.isAcceptingText == true)
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
