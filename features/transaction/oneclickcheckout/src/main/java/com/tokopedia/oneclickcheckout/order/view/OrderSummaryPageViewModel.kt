@@ -111,7 +111,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return profile.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
     }
 
-    fun getOccCart(isFullRefresh: Boolean, source: String, uiMessage: OccUIMessage? = null,
+    fun getOccCart(source: String, uiMessage: OccUIMessage? = null,
                    gatewayCode: String = "", tenor: Int = 0) {
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
@@ -129,9 +129,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 OccState.Failed(Failure(result.throwable))
             }
-            if (isFullRefresh) {
-                orderShipment.value = OrderShipment()
-            }
+            orderShipment.value = OrderShipment()
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null

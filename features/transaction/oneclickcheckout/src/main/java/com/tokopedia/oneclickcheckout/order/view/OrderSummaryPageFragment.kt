@@ -605,7 +605,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         }
                         source = SOURCE_OTHERS
                         shouldShowToaster = false
-                        refresh(isFullRefresh = it.isFullRefresh, uiMessage = it.uiMessage)
+                        refresh(uiMessage = it.uiMessage)
                     }
                 }
                 is OccGlobalEvent.Error -> {
@@ -1008,14 +1008,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         viewModel.atcOcc(productIds)
     }
 
-    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true, uiMessage: OccUIMessage? = null) {
-        if (shouldHideAll) {
-            binding.rvOrderSummaryPage.gone()
-            binding.layoutNoAddress.root.animateGone()
-            binding.globalError.animateGone()
-            binding.loaderContent.animateShow()
-        }
-        viewModel.getOccCart(isFullRefresh, source, uiMessage, gatewayCode, tenor)
+    private fun refresh(uiMessage: OccUIMessage? = null) {
+        binding.rvOrderSummaryPage.gone()
+        binding.layoutNoAddress.root.animateGone()
+        binding.globalError.animateGone()
+        binding.loaderContent.animateShow()
+        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor)
     }
 
     private fun setSourceFromPDP() {
