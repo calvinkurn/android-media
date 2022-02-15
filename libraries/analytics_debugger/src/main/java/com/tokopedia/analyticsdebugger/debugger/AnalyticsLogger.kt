@@ -4,10 +4,14 @@ import com.tokopedia.analyticsdebugger.AnalyticsSource
 
 interface AnalyticsLogger {
 
-    fun save(name: String, data: Map<String, Any>, @AnalyticsSource source:String)
-
-    fun saveError(errorData: String)
+    fun save(
+        data: Map<String, Any>,
+        name: String? = null,
+        @AnalyticsSource source: String = AnalyticsSource.OTHER
+    )
 
     fun enableNotification(status: Boolean)
+
+    fun isNotificationEnabled(): Boolean
 
 }

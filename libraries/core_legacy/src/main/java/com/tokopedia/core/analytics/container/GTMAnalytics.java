@@ -45,6 +45,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -282,7 +283,8 @@ public class GTMAnalytics extends ContextAnalytics {
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 stacktrace.append(String.format("%s\n", ste.toString()));
             }
-            GtmLogger.getInstance(context).saveError(stacktrace.toString());
+            Map<String, String> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
+            GtmLogger.getInstance(context).save(logMap, null, AnalyticsSource.ERROR);
             if (!TextUtils.isEmpty(e.getMessage())) {
                 Map<String, String> map = new HashMap<>();
                 map.put("msg", e.getMessage());
@@ -891,8 +893,9 @@ public class GTMAnalytics extends ContextAnalytics {
         // fix Caused by java.lang.NoSuchMethodError
         try {
             String name = eventName == null ? (String) values.get("event") : eventName;
-            if (isGtmV5) name += " (v5)";
-            GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
+//            if (isGtmV5) name += " (v5)";
+            String source = (isGtmV5) ? AnalyticsSource.GTM : AnalyticsSource.LEGACY_GTM;
+            GtmLogger.getInstance(context).save(values, name, source);
             logEventSize(eventName, values);
             logEventForVerification(eventName, values);
             if (tetraDebugger != null) {

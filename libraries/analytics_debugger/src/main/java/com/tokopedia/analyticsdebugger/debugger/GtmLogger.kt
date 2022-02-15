@@ -29,15 +29,18 @@ class GtmLogger private constructor(
             Timber.e(t, "gtm_logger")
         }
 
-    override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source: String) {
+    override fun save(data: Map<String, Any>, name: String?, @AnalyticsSource source: String) {
         launch {
+            val nameNotNull = name ?: mapParser.inferName(data, source)
             val logData = AnalyticsLogData(
-                name = name,
+                name = nameNotNull,
                 data = mapParser.parse(data),
                 source = source
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
                 dbSource.insert(logData)
+            } else {
+                Timber.w("analytics data was not logged because of empty name")
             }
 
             if (pref.isNotifEnabled()) {
@@ -45,24 +48,14 @@ class GtmLogger private constructor(
             }
         }
 
-    }
-
-    override fun saveError(errorData: String) {
-        launch {
-            val logData = AnalyticsLogData(
-                name = "ERROR GTM V5",
-                data = errorData,
-                source = AnalyticsSource.ERROR
-            )
-            dbSource.insert(logData)
-            if (pref.isNotifEnabled()) {
-                NotificationHelper.show(context, logData)
-            }
-        }
     }
 
     override fun enableNotification(status: Boolean) {
         pref.setNotifEnabled(status)
+    }
+
+    override fun isNotificationEnabled(): Boolean {
+        return pref.isNotifEnabled()
     }
 
     companion object {
@@ -92,19 +85,19 @@ class GtmLogger private constructor(
             return object : AnalyticsLogger {
 
                 override fun save(
-                    name: String,
                     data: Map<String, Any>,
+                    name: String?,
                     @AnalyticsSource source: String
                 ) {
 
                 }
 
-                override fun saveError(errorData: String) {
+                override fun enableNotification(status: Boolean) {
 
                 }
 
-                override fun enableNotification(status: Boolean) {
-
+                override fun isNotificationEnabled(): Boolean {
+                    return false
                 }
             }
         }

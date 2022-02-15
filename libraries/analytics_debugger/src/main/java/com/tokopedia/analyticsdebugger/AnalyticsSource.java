@@ -10,13 +10,17 @@ import static com.tokopedia.analyticsdebugger.AnalyticsSource.GTM;
 import static com.tokopedia.analyticsdebugger.AnalyticsSource.ALL;
 import static com.tokopedia.analyticsdebugger.AnalyticsSource.APPS_FLYER;
 import static com.tokopedia.analyticsdebugger.AnalyticsSource.BRANCH_IO;
+import static com.tokopedia.analyticsdebugger.AnalyticsSource.LEGACY_GTM;
+import static com.tokopedia.analyticsdebugger.AnalyticsSource.OTHER;
 
 @Retention(RetentionPolicy.SOURCE)
-@StringDef({GTM, BRANCH_IO, APPS_FLYER, ERROR, ALL})
+@StringDef({GTM, LEGACY_GTM, BRANCH_IO, APPS_FLYER, ERROR, OTHER, ALL})
 public @interface AnalyticsSource {
     String GTM = "gtm";
+    String LEGACY_GTM = "legacy_gtm";
     String BRANCH_IO = "branch_io";
     String APPS_FLYER = "apps_flyer";
     String ERROR = "error";
+    String OTHER = "other";
     String ALL = "";
 }

@@ -152,7 +152,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         }
 
         try {
-            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         } catch (Exception e) {
             Timber.e(e);
         }

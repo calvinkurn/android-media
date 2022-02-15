@@ -244,7 +244,7 @@ public class DeeplinkUTMUtils {
                 map.put("referrer", referrerUri.toString());
                 map.put("referrer_host", referrerUri.getHost());
             }
-            GtmLogger.getInstance(activity).save("campaignTrack (not sent, Detail only)", map, AnalyticsSource.GTM);
+            GtmLogger.getInstance(activity).save(map, "campaignTrack (not sent, Detail only)", AnalyticsSource.OTHER);
         }
         return campaign;
     }

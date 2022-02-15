@@ -236,7 +236,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
 
         @Override
@@ -246,7 +246,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
     }
 
