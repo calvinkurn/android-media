@@ -99,7 +99,6 @@ internal class ProductSummaryViewHolder private constructor() {
                 binding.ivProductSummaryCover.visibility = View.VISIBLE
             }
 
-
             when(item.product.price) {
                 is OriginalPrice -> {
                     binding.tvProductSummaryPrice.text = item.product.price.price
