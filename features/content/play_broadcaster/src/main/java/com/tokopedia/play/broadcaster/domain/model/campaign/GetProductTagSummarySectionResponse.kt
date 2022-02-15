@@ -6,9 +6,15 @@ import com.google.gson.annotations.SerializedName
  * Created By : Jonathan Darwin on February 08, 2022
  */
 data class GetProductTagSummarySectionResponse(
-    @SerializedName("sections")
-    val section: List<ProductTagSection> = emptyList()
+    @SerializedName("broadcasterGetProductTagSection")
+    val broadcasterGetProductTagSection: GetProductTagSection = GetProductTagSection()
 ) {
+
+    data class GetProductTagSection(
+        @SerializedName("sections")
+        val sections: List<ProductTagSection> = emptyList()
+    )
+
     data class ProductTagSection(
         @SerializedName("name")
         val name: String = "",

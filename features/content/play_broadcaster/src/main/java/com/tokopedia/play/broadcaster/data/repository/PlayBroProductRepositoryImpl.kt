@@ -107,14 +107,12 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
     }
 
-    @ExperimentalStdlibApi
-    /** TODO: gonna remove the annotation later */
-    override suspend fun getProductTagSummarySection(channelID: Long) = withContext(dispatchers.io) {
-//        val response = getProductTagSummarySectionUseCase.executeOnBackground()
-//
-//        return@withContext productMapper.mapProductTagSection(response)
+    override suspend fun getProductTagSummarySection(channelID: String) = withContext(dispatchers.io) {
+        val response = getProductTagSummarySectionUseCase.apply {
+            setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
+        }.executeOnBackground()
 
-        return@withContext productMapper.mapProductTagSection()
+        return@withContext productMapper.mapProductTagSection(response)
     }
 
     companion object {

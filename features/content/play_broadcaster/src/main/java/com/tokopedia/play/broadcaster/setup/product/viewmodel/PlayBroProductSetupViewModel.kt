@@ -66,7 +66,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val maxProduct: Int
         get() = configStore.getMaxProduct()
 
-    private val _selectedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(
@@ -84,22 +83,22 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayBroProductChooserEvent>(extraBufferCapacity = 5)
 
     private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _productCount = MutableStateFlow<Int?>(null)
     private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
 
     private val _campaignAndEtalase = combine(
-        _selectedEtalase,
         _loadParam,
         _campaignList,
         _etalaseList
-    ) { selectedEtalase, loadParam, campaignList, etalaseList ->
-        if(selectedEtalase !is SelectedEtalaseModel.None) {
+    ) { loadParam, campaignList, etalaseList ->
+        if(loadParam.etalase !is SelectedEtalaseModel.None) {
             /** TODO: TechDebt - isChecked should be val, then find a good way to update this checked status */
             campaignList.forEach {
-                it.isChecked = selectedEtalase is SelectedEtalaseModel.Campaign && selectedEtalase.campaign == it
+                it.isChecked = loadParam.etalase is SelectedEtalaseModel.Campaign && loadParam.etalase.campaign == it
             }
 
             etalaseList.forEach {
-                it.isChecked = selectedEtalase is SelectedEtalaseModel.Etalase && selectedEtalase.etalase == it
+                it.isChecked = loadParam.etalase is SelectedEtalaseModel.Etalase && loadParam.etalase.etalase == it
             }
         }
 
@@ -136,10 +135,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val summaryUiState = combine(
         _productTagSectionList,
+        _productCount,
         _productTagSummary,
-    ) { productTagSectionList, productTagSummary ->
+    ) { productTagSectionList, productCount, productTagSummary ->
         PlayBroProductSummaryUiState(
             productTagSectionList = productTagSectionList,
+            productCount = productCount,
             productTagSummary = productTagSummary
         )
     }
@@ -314,11 +315,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
-
-    /** TODO: gonna delete this later */
-    @OptIn(ExperimentalStdlibApi::class)
     private fun handleLoadProductSummary() {
-        /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
 
@@ -333,23 +330,16 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    /** TODO: gonna delete this later */
-    @OptIn(ExperimentalStdlibApi::class)
     private fun handleDeleteProduct(product: ProductUiModel) {
-        /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
             val productSectionList = _productTagSectionList.value
-            /** TODO: gonna delete this later */
-            delay(1000)
 
-            throw Exception("Error")
-            /** TODO: gonna uncomment this later */
-//                val productIds = productSectionList.sections.flatMap { section ->
-//                    section.products.filter { it.id != product.id }.map { it.id }
-//                }
-//                repo.addProductTag(channelId, productIds)
+            val productIds = productSectionList.flatMap { section ->
+                section.products.mapNotNull { if (it.id != product.id) it.id else null }
+            }
+            repo.setProductTags(channelId, productIds)
 
             getProductTagSummary()
         }) {
@@ -362,15 +352,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    /** TODO: gonna delete this later */
-    @ExperimentalStdlibApi
     private suspend fun getProductTagSummary() {
-        /** TODO: gonna remove this delay */
-//        delay(1000)
-        val (response, productCount) = repo.getProductTagSummarySection(channelId.toLong())
+        val (response, productCount) = repo.getProductTagSummarySection(channelId)
 
         _productTagSectionList.value = response
-        _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
+        _productCount.value = productCount
+        _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 
     private fun handleSearchProduct(keyword: String) {
