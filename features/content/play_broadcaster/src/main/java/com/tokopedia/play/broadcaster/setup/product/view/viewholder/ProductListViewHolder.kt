@@ -23,18 +23,12 @@ internal class ProductListViewHolder private constructor() {
     internal class Product(
         private val binding: ItemProductListBinding,
         private val onSelected: (ProductUiModel) -> Unit,
-    ) : BaseViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             itemView.setOnClickListener {
                 binding.checkboxProduct.isChecked = !binding.checkboxProduct.isChecked
             }
-        }
-
-        override fun onViewRecycled() {
-            super.onViewRecycled()
-            binding.checkboxProduct.setOnCheckedChangeListener(null)
-            binding.checkboxProduct.isChecked = false
         }
 
         fun bind(item: ProductListAdapter.Model.Product) {
