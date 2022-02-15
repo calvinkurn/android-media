@@ -30,10 +30,11 @@ import javax.inject.Inject;
  */
 
 public class ShipmentDataRequestConverter {
+    private Gson _gson;
 
     @Inject
-    public ShipmentDataRequestConverter() {
-
+    public ShipmentDataRequestConverter(Gson gson) {
+        this._gson = gson;
     }
 
     public ShipmentAdapter.RequestData generateRequestData(List<ShipmentCartItemModel> shipmentCartItemModels,
@@ -233,7 +234,6 @@ public class ShipmentDataRequestConverter {
     }
 
     private ArrayList<AddOnGiftingRequest> convertGiftingAddOnModelRequest(AddOnsDataModel addOnsDataModel) {
-        Gson gson = new Gson();
         ArrayList<AddOnGiftingRequest> listAddOnProductRequest = new ArrayList<>();
         if (addOnsDataModel.getStatus() == 1) {
             for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
@@ -241,7 +241,7 @@ public class ShipmentDataRequestConverter {
                 addOnGiftingRequest.setItemId(addOnDataItemModel.getAddOnId());
                 addOnGiftingRequest.setItemType("add_ons");
                 addOnGiftingRequest.setItemQty((int) addOnDataItemModel.getAddOnQty());
-                addOnGiftingRequest.setItemMetadata(gson.toJson(addOnDataItemModel.getAddOnMetadata()));
+                addOnGiftingRequest.setItemMetadata(_gson.toJson(addOnDataItemModel.getAddOnMetadata()));
                 listAddOnProductRequest.add(addOnGiftingRequest);
             }
         }
