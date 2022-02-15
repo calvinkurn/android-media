@@ -1,5 +1,6 @@
 package com.tokopedia.product_ar.tracker
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product_ar.model.ArMetaData
 import com.tokopedia.product_ar.model.ProductAr
@@ -10,7 +11,7 @@ object ProductArTracker {
     private const val SCREEN_NAME_AR = "ProductAR"
 
     private const val EVENT_AR = "clickProductAR"
-    private const val EVENT_ATC = "add_to_cart"
+    private const val EVENT_ATC = "addToCart"
     private const val CATEGORY_AR = "product augmented reality"
     private const val ACTION_CLICK_VARIANT_AR = "click - select variant on product augmented reality"
     private const val ACTION_CLICK_GALLERY_AR = "click - open image from gallery"
@@ -109,32 +110,34 @@ object ProductArTracker {
         val categoryNameLvl2 = arMetaData.categoryDetail.getOrNull(1)?.name ?: ""
         val categoryNameLvl3 = arMetaData.categoryDetail.getOrNull(3)?.name ?: ""
         val itemCategory = "$categoryNameLvl1 / $categoryNameLvl2 / $categoryNameLvl3 /  ${arMetaData.categoryID}"
-        val mapEvent = mapOf(
-                "event" to EVENT_ATC,
-                "eventAction" to ACTION_CLICK_ATC_AR,
-                "eventCategory" to CATEGORY_AR,
-                "eventLabel" to "",
-                "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
-                "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
-                "productId" to productId,
-                "userId" to userId,
-                "items" to listOf(mapOf(
-                        "category_id" to arMetaData.categoryID,
-                        "dimension45" to cartId,
-                        "item_brand" to arMetaData.shopName,
-                        "item_category" to itemCategory,
-                        "item_id" to productId,
-                        "item_name" to productName,
-                        "item_variant" to productId,
-                        "price" to price,
-                        "quantity" to stock,
-                        "shop_id" to shopId,
-                        "shop_name" to arMetaData.shopName,
-                        "shop_type" to arMetaData.shopType
-                )
-                )
-        )
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                "event", EVENT_ATC,
+                "eventAction", ACTION_CLICK_ATC_AR,
+                "eventCategory", CATEGORY_AR,
+                "eventLabel", "",
+                "businessUnit", ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                "currentSite", ProductTrackingConstant.Tracking.CURRENT_SITE,
+                "productId", productId,
+                "userId", userId,
+                ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
+                ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
+                DataLayer.mapOf(
+                        "category_id", arMetaData.categoryID,
+                        "dimension45", cartId,
+                        "brand", arMetaData.shopName,
+                        "category", itemCategory,
+                        "id", productId,
+                        "name", productName,
+                        "item_variant", productId,
+                        "price", price,
+                        "quantity", stock,
+                        "shop_id", shopId,
+                        "shop_name", arMetaData.shopName,
+                        "shop_type", arMetaData.shopType
+                ))))))
     }
 
     fun interactionTimeTrack(productId: String, accessTime: Long, variantSize: Int, variantTried: Int) {
