@@ -140,7 +140,7 @@ class PlayBroProductUiMapper @Inject constructor() {
     fun mapProductTagSection(
         response: GetProductTagSummarySectionResponse
     ): List<ProductTagSectionUiModel> {
-        return response.section.map {
+        return response.broadcasterGetProductTagSection.sections.map {
             ProductTagSectionUiModel(
                 name = it.name,
                 campaignStatus = mapCampaignStatusFromType(it.statusFmt),

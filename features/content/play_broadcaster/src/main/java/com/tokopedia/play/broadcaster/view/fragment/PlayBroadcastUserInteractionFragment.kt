@@ -317,7 +317,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
-        observeProductTag()
     }
 
     override fun onPause() {
@@ -701,12 +700,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun observeProductTag() {
-//        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
-//            productTagView.setProducts(it)
-//        }
     }
     //endregion
 

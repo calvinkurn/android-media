@@ -136,7 +136,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        //TODO("Revamp this")
+                        //TODO("Use uiState directly when uiState already return StateFlow")
                         return parentViewModel.productSectionList
                     }
                 })

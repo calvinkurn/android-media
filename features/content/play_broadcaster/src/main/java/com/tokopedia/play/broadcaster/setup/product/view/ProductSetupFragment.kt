@@ -33,8 +33,8 @@ class ProductSetupFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ProductChooserBottomSheet -> childFragment.setOnDismissListener {
-                parentFragmentManager.beginTransaction()
-                    .remove(this)
+                childFragmentManager.beginTransaction()
+                    .remove(childFragment)
                     .commit()
             }
         }

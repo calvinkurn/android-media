@@ -29,13 +29,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): ProductCarouselViewHolder.Product {
-            return ProductCarouselViewHolder.Product(
-                ItemPlayBroProductCarouselBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                )
-            )
+            return ProductCarouselViewHolder.Product.create(parent)
         }
     }
 
@@ -50,13 +44,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): ProductCarouselViewHolder.Loading {
-            return ProductCarouselViewHolder.Loading(
-                ItemPlayBroPlaceholderCarouselBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                )
-            )
+            return ProductCarouselViewHolder.Loading.create(parent)
         }
     }
 }
