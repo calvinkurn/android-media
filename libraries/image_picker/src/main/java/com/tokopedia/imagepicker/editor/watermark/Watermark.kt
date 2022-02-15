@@ -226,7 +226,6 @@ data class Watermark(
 
         watermarkBitmap?.recycle()
         scaledWatermarkBitmap?.recycle()
-//        canvasBitmap?.recycle()
 
         return outputImage!!
     }

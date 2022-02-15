@@ -335,26 +335,30 @@ object BitmapHelper {
      * otherwise, the scaling will be 0.15 from the mainBitmap
      */
     fun Bitmap.downscaleToAllowedDimension(type: Int): Bitmap? {
-        val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
-            1.0f
-        } else {
-            2.0f
+        try {
+            val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
+                1.0f
+            } else {
+                2.0f
+            }
+
+            val inWidth = this.width
+            val inHeight = this.height
+            val newHeight = inHeight * scaleValue
+
+            val ratio = inHeight.toFloat() / inWidth
+            val newWidth = newHeight / ratio
+
+            val scaleWidth = newWidth / inWidth
+            val scaleHeight = newHeight / inHeight
+
+            val matrix = Matrix()
+            matrix.postScale(scaleWidth, scaleHeight)
+
+            return Bitmap.createBitmap(this, 0, 0, inWidth, inHeight, matrix, false)
+        } catch (e: Throwable) {
+            return this
         }
-
-        val inWidth = this.width
-        val inHeight = this.height
-        val newHeight = inHeight * scaleValue
-
-        val ratio = inHeight.toFloat() / inWidth
-        val newWidth = newHeight / ratio
-
-        val scaleWidth = newWidth / inWidth
-        val scaleHeight = newHeight / inHeight
-
-        val matrix = Matrix()
-        matrix.postScale(scaleWidth, scaleHeight)
-
-        return Bitmap.createBitmap(this, 0, 0, inWidth, inHeight, matrix, false)
     }
 
     private fun Bitmap.scaleByDividedOfThreesHold(textLength: Int): Float {
