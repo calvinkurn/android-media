@@ -74,7 +74,11 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
-            tvBomDetailAddonsName.text = item.addOnsName
+            tvBomDetailAddonsName.text = root.context.getString(
+                R.string.order_addons_type_and_name,
+                item.type,
+                item.addOnsName
+            )
             ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
             tvBomDetailAddonsPriceQuantity.text =
                 root.context.getString(

@@ -66,9 +66,9 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ) {
         addThickDividerSection()
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
-        addAddonsListSection(productListUiModel.addonsListUiModel)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
+        addAddonsListSection(productListUiModel.addonsListUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupShipmentInfoSection(

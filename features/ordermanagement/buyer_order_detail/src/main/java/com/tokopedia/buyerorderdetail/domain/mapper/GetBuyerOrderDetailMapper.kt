@@ -83,6 +83,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 AddonsListUiModel.AddonItemUiModel(
                     priceText = it.priceStr,
                     addOnsName = it.name,
+                    type = it.type,
                     addonsId = it.id,
                     quantity = it.quantity,
                     addOnsThumbnailUrl = it.imageUrl,
@@ -107,6 +108,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     AddonsListUiModel.AddonItemUiModel(
                         priceText = it.priceStr,
                         addOnsName = it.name,
+                        type = it.type,
                         addonsId = it.id,
                         quantity = it.quantity,
                         addOnsThumbnailUrl = it.imageUrl,
