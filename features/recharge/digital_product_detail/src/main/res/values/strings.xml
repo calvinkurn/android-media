@@ -14,4 +14,5 @@
     <string name="bottom_sheet_filter_see_all">Lihat Semua</string>
     <string name="bottom_sheet_more_info">Info penting buat kamu</string>
     <string name="qr_scanner_title_scan_barcode">Scan Barcode</string>
+    <string name="selection_null_product_error">Produk sedang tidak tersedia, silahkan coba beberapa saat lagi.</string>
 </resources>

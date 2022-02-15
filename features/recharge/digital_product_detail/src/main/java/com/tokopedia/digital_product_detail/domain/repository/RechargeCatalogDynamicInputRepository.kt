@@ -1,7 +1,7 @@
 package com.tokopedia.digital_product_detail.domain.repository
 
-import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogDynamicInput
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
 
 interface RechargeCatalogDynamicInputRepository {
-    suspend fun getDynamicInput(menuID: Int, operator: String): DigitalCatalogDynamicInput
+    suspend fun getDynamicInputTagihanListrik(menuID: Int, operator: String): CatalogProduct?
 }

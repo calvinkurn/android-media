@@ -11,6 +11,18 @@ data class DigitalCatalogDynamicInput(
 )
 
 data class DigitalDynamicInput(
+    @SerializedName("needEnquiry")
+    @Expose
+    val needEnquiry: Boolean = true,
+    @SerializedName("isShowingProduct")
+    @Expose
+    val isShowingProduct: Boolean = true,
+    @SerializedName("dynamicFields")
+    @Expose
+    val enquiryFields: List<DigitalDynamicField> = listOf()
+)
+
+data class DigitalDynamicField(
     @SerializedName("param_name")
     @Expose
     val paramName: String = "",

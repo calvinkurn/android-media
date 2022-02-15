@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
@@ -23,19 +24,21 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
-import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
@@ -44,16 +47,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
-import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeSimplifyWidgetListener
 import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
-import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unifycomponents.Toaster
@@ -145,6 +147,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 is RechargeNetworkResult.Loading -> { }
             }
         })
+
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
@@ -166,7 +169,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         viewModel.dynamicInput.observe(viewLifecycleOwner, {
             when(it) {
                 is RechargeNetworkResult.Success -> {
-
+                    productId = it.data.id.toIntOrZero()
                 }
                 is RechargeNetworkResult.Fail -> {}
                 is RechargeNetworkResult.Loading -> {}
@@ -175,9 +178,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
         viewModel.inquiry.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> {
-
-                }
+                is RechargeNetworkResult.Success -> {}
                 is RechargeNetworkResult.Fail -> {}
                 is RechargeNetworkResult.Loading -> {}
             }
@@ -187,9 +188,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
+                    navigateToCart()
                 }
                 is RechargeNetworkResult.Fail -> {
                     onLoadingBuyWidget(false)
+                    showErrorToaster(it.error)
                 }
                 is RechargeNetworkResult.Loading -> {
                     onLoadingBuyWidget(true)
@@ -264,6 +267,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         return false
                     }
                 },
+
                 autoCompleteListener = object : ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
                         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
@@ -334,6 +338,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 sortFilterListener = object : ClientNumberSortFilterListener {
                     override fun getSelectedChipOperator(operator: CatalogOperator) {
                         viewModel.operatorData = operator
+                        viewModel.getDynamicInput(menuId, getString(R.string.selection_null_product_error))
                     }
                 }
             )
@@ -361,7 +366,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun onSuccessGetPrefixOperator(operatorGroup: DigitalCatalogOperatorSelectGroup) {
-        viewModel.getDynamicInput(menuId, viewModel.operatorData.id)
+        viewModel.getDynamicInput(menuId, getString(R.string.selection_null_product_error))
         renderChipsAndTitle(operatorGroup)
         renderProduct()
     }
@@ -407,6 +412,15 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
             }
+        }
+    }
+
+    private fun navigateToCart() {
+        context?.let { context ->
+            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+            viewModel.updateCategoryCheckoutPassData(categoryId.toString())
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
+            startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL)
         }
     }
 
@@ -526,7 +540,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         .length in DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH..DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
                     hideEmptyState()
-
                 }
 
             } else {
@@ -625,9 +638,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun addToCart(){
-        viewModel.addToCart(
-            viewModel.digitalCheckoutPassData,
-            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+        viewModel.addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
             DigitalSubscriptionParams(),
             userSession.userId
         )
@@ -674,7 +685,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     override fun onClickedButton() {
-        //todo firman update checkout pass data
+        viewModel.updateCheckoutPassData(userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?:"")
         if (userSession.isLoggedIn){
             addToCart()
         } else {

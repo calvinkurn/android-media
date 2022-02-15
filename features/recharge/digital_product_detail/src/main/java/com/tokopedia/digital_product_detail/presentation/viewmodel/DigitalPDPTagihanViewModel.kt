@@ -9,6 +9,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -64,8 +65,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
-    private val _dynamicInput = MutableLiveData<RechargeNetworkResult<DigitalCatalogDynamicInput>>()
-    val dynamicInput: LiveData<RechargeNetworkResult<DigitalCatalogDynamicInput>>
+    private val _dynamicInput = MutableLiveData<RechargeNetworkResult<CatalogProduct>>()
+    val dynamicInput: LiveData<RechargeNetworkResult<CatalogProduct>>
         get() = _dynamicInput
 
     private val _inquiry = MutableLiveData<RechargeNetworkResult<TopupBillsEnquiryData>>()
@@ -115,11 +116,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicInput(menuID: Int, operator: String){
+    fun getDynamicInput(menuID: Int, nullErrorMessage: String){
         _dynamicInput.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val data  = repo.getDynamicInput(menuID, operator)
-            _dynamicInput.value = RechargeNetworkResult.Success(data)
+            val data  = repo.getDynamicInputTagihanListrik(menuID, operatorData.id)
+            if (data == null){
+                throw MessageErrorException(nullErrorMessage)
+            } else _dynamicInput.value = RechargeNetworkResult.Success(data)
         }){
             _dynamicInput.value = RechargeNetworkResult.Fail(it)
         }
@@ -165,8 +168,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
-                  digitalIdentifierParam: RequestBodyIdentifier,
+    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
                   digitalSubscriptionParams: DigitalSubscriptionParams,
                   userId: String
     ){
@@ -179,6 +181,27 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
             } else {
                 _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
+            }
+        }
+    }
+
+    fun updateCategoryCheckoutPassData(categoryId: String){
+        digitalCheckoutPassData.categoryId = categoryId
+    }
+
+    fun updateCheckoutPassData(idemPotencyKeyActive: String, clientNumberActive: String){
+        dynamicInput.value?.let {
+            if (it is RechargeNetworkResult.Success){
+                val product = it.data
+                digitalCheckoutPassData.apply {
+                    categoryId = product.attributes.categoryId
+                    clientNumber = clientNumberActive
+                    isPromo = if (product.attributes.promo != null) "1" else "0"
+                    operatorId = product.attributes.operatorId
+                    productId = product.id
+                    utmCampaign = product.attributes.categoryId
+                    idemPotencyKey = idemPotencyKeyActive
+                }
             }
         }
     }
