@@ -25,6 +25,7 @@ abstract class BaseTrackerConst {
         const val PROMO_VIEW_IRIS = "promoViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val PRODUCT_ADD_TO_CART = "addToCart"
+        const val SELECT_CONTENT = "select_content"
     }
 
     protected object Category{
@@ -98,7 +99,14 @@ abstract class BaseTrackerConst {
             val position: String,
             val promoIds: String = "",
             val promoCodes: String = "",
-            val creativeUrl: String = "")
+            val creativeUrl: String = "") {
+        companion object {
+            const val CREATIVE_NAME = "creative_name"
+            const val CREATIVE_SLOT = "creative_slot"
+            const val ITEM_ID = "item_id"
+            const val ITEM_NAME = "item_name"
+        }
+    }
 
     open class  Product(
             val name: String,
