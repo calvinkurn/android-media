@@ -118,7 +118,8 @@ ext {
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
     unifyLoaderDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '1.0.8'
+    unifyDatePickerVersion = '1.0.10'
+    unifyDateFilterVersion = '1.1.0'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
     unifyGlobalErrorVersion = '1.0.12'
@@ -126,7 +127,7 @@ ext {
     unifySortFilterVersion = '1.1.3.1'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
-    unifyListVersion = '1.0.8'
+    unifyListVersion = '1.0.9'
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
     unifyTotalAmountVersion = '1.0.5'
     unifyExplorePromoVersion = '1.0.2'
@@ -367,8 +368,9 @@ ext {
             calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}",
             banner          : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-            loader_dialog    : "com.tokopedia.unify.compositions:loader_dialog:${unifyLoaderDialogVersion}@aar",
+            loader_dialog   : "com.tokopedia.unify.compositions:loader_dialog:${unifyLoaderDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+            dateFilter      : "com.tokopedia.unify.compositions:date_filter:${unifyDateFilterVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",

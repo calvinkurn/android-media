@@ -272,6 +272,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+    String SETTING_ADDRESS = "tokopedia://setting/address";
 
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";

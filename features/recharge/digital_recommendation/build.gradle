@@ -40,7 +40,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
