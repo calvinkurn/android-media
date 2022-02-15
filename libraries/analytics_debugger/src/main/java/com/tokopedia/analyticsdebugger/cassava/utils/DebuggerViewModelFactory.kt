@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.cassava.injector
+package com.tokopedia.analyticsdebugger.cassava.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
