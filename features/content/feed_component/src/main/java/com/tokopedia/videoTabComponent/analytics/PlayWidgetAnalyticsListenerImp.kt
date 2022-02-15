@@ -1,12 +1,12 @@
-package com.tokopedia.feedcomponent.analytics
+package com.tokopedia.videoTabComponent.analytics
 
-import com.tokopedia.feedcomponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import javax.inject.Inject
 
 //slot click and impression

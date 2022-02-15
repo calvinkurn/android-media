@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.analytics.tracker
+package com.tokopedia.videoTabComponent.analytics.tracker
 
 import com.google.gson.Gson
 import com.tokopedia.iris.util.IrisSession
