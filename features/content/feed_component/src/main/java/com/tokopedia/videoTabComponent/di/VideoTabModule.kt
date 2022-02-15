@@ -4,6 +4,10 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -14,6 +18,11 @@ import kotlinx.coroutines.Dispatchers
 
 @Module
 class VideoTabModule {
+
+    @VideoTabScope
+    @Provides
+    fun provideIrisSession(@ApplicationContext context: Context) : IrisSession =
+        IrisSession(context)
 
     @VideoTabScope
     @Provides
