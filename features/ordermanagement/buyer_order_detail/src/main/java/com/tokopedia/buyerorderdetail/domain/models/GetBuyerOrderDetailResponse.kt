@@ -54,15 +54,6 @@ data class GetBuyerOrderDetailResponse(
             @SerializedName("payment_date")
             val paymentDate: String = "",
             @Expose
-            @SerializedName("products")
-            val products: List<Product> = listOf(),
-            @Expose
-            @SerializedName("have_product_bundle")
-            val haveProductBundle: Boolean = false,
-            @Expose
-            @SerializedName("bundle_detail")
-            val bundleDetail: BundleDetail? = BundleDetail(),
-            @Expose
             @SerializedName("shipment")
             val shipment: Shipment = Shipment(),
             @Expose
@@ -283,38 +274,6 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("total_price_text")
                 val totalPriceText: String = "",
             )
-
-            data class BundleDetail(
-                @Expose
-                @SerializedName("bundle")
-                val bundleList: List<Bundle> = listOf(),
-                @Expose
-                @SerializedName("product_bundling_icon")
-                val bundleIcon: String? = "",
-                @Expose
-                @SerializedName("non_bundle")
-                val nonBundleList: List<Product> = listOf()
-            ) {
-                data class Bundle(
-                    @Expose
-                    @SerializedName("bundle_id")
-                    val bundleId: String = "0",
-                    @Expose
-                    @SerializedName("bundle_name")
-                    val bundleName: String = "",
-                    @Expose
-                    @SerializedName("bundle_price")
-                    val bundlePrice: Double = 0.0,
-                    @SerializedName("bundle_quantity")
-                    val bundleQty: Int = 0,
-                    @Expose
-                    @SerializedName("bundle_subtotal_price")
-                    val bundleSubtotalPrice: Double = 0.0,
-                    @Expose
-                    @SerializedName("order_detail")
-                    val orderDetailList: List<Product> = listOf()
-                )
-            }
 
             data class Shipment(
                 @Expose

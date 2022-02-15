@@ -20,7 +20,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.kotlin.extensions.orFalse
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -66,7 +65,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             ),
             pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(
                 buyerOrderDetail.adsPageName,
-                buyerOrderDetail.products
+                buyerOrderDetail.details?.nonBundles.orEmpty()
             )
         )
     }
@@ -123,7 +122,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     private fun mapToRecommendationWidgetUiModel(
         adsPageName: String,
-        productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>
+        productsList: List<Details.NonBundle>
     ): PGRecommendationWidgetUiModel {
         val productIdList = arrayListOf<String>()
         productsList.forEach { product ->
