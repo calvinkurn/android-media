@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,7 +14,7 @@ data class GroupShop(
         var unblockingErrorMessage: String = "",
         var firstProductErrorIndex: Int = -1,
         var shop: Shop = Shop(),
-        var addOns: AddOns = AddOns(),
+        var addOns: AddOnsDataModel = AddOnsDataModel(),
         var shopShipments: List<ShopShipment> = emptyList(),
         var products: List<Product> = emptyList(),
         var shippingId: Int = 0,

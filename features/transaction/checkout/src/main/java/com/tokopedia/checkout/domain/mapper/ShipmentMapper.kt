@@ -11,7 +11,6 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnDataItem
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
@@ -22,6 +21,7 @@ import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -383,19 +383,19 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnsData(addOns: AddOnsResponse): AddOns {
-        return AddOns().apply {
+    private fun mapAddOnsData(addOns: AddOnsResponse): AddOnsDataModel {
+        return AddOnsDataModel().apply {
             status = addOns.status
-            addOnButton = mapAddOnButton(addOns.addOnButton)
-            addOnBottomsheet = mapAddOnBottomSheet(addOns.addOnBottomsheet)
-            addOnData = mapAddOnListData(addOns.addOnData)
+            addOnsButtonModel = mapAddOnButton(addOns.addOnButton)
+            addOnsBottomSheetModel = mapAddOnBottomSheet(addOns.addOnBottomsheet)
+            addOnsDataItemModelList = mapAddOnListData(addOns.addOnData)
         }
     }
 
-    private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItem> {
-        val listAddOnDataItem = arrayListOf<AddOnDataItem>()
+    private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItemModel> {
+        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
         addOnData.forEach { item ->
-            listAddOnDataItem.add(AddOnDataItem().apply {
+            listAddOnDataItem.add(AddOnDataItemModel().apply {
                 addOnPrice = item.addOnPrice
                 addOnId = item.addOnId
                 addOnMetadata = mapAddOnMetadata(item.addOnMetadata)
@@ -405,12 +405,12 @@ class ShipmentMapper @Inject constructor() {
         return listAddOnDataItem
     }
 
-    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItem {
-        return AddOnMetadataItem(mapAddOnNote(addOnMetadata.addOnNote))
+    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItemModel {
+        return AddOnMetadataItemModel(mapAddOnNote(addOnMetadata.addOnNote))
     }
 
-    private fun mapAddOnNote(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItem {
-        return AddOnNoteItem().apply {
+    private fun mapAddOnNote(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItemModel {
+        return AddOnNoteItemModel().apply {
             isCustomNote = addOnNote.isCustomNote
             to = addOnNote.to
             from = addOnNote.from
@@ -418,8 +418,8 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButton {
-        return AddOnButton().apply {
+    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
+        return AddOnButtonModel().apply {
             leftIconUrl = addOnButton.leftIconUrl
             rightIconUrl = addOnButton.rightIconUrl
             description = addOnButton.description
@@ -428,8 +428,8 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnBottomSheet(addOnBottomsheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomsheet {
-        return AddOnBottomsheet().apply {
+    private fun mapAddOnBottomSheet(addOnBottomsheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
+        return AddOnBottomSheetModel().apply {
             headerTitle = addOnBottomsheet.headerTitle
             description = addOnBottomsheet.description
             ticker = mapAddOnTicker(addOnBottomsheet.ticker)
@@ -437,16 +437,16 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTicker {
-        return AddOnTicker().apply {
+    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
+        return AddOnTickerModel().apply {
             text = ticker.text
         }
     }
 
-    private fun mapAddOnProducts(products: List<AddOnsResponse.AddOnBottomsheet.ProductsItem>): MutableList<AddOnProductsItem> {
-        val listAddOnProductItem = arrayListOf<AddOnProductsItem>()
+    private fun mapAddOnProducts(products: List<AddOnsResponse.AddOnBottomsheet.ProductsItem>): MutableList<AddOnProductItemModel> {
+        val listAddOnProductItem = arrayListOf<AddOnProductItemModel>()
         products.forEach { productItem ->
-            listAddOnProductItem.add(AddOnProductsItem().apply {
+            listAddOnProductItem.add(AddOnProductItemModel().apply {
                 productImageUrl = productItem.productImageUrl
                 productName = productItem.productName
             })

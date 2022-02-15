@@ -1,12 +1,12 @@
-package com.tokopedia.checkout.domain.model.cartshipmentform
+package com.tokopedia.purchase_platform.common.feature.gifting.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnNoteItem(
+data class AddOnNoteItemModel(
         var isCustomNote: Boolean = false,
         var to: String = "",
         var from: String = "",
-        var notes: String = ""
-) : Parcelable
+        var notes: String = "",
+): Parcelable
