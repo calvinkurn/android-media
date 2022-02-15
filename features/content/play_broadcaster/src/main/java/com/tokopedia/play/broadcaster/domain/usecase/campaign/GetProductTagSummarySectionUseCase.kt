@@ -60,7 +60,7 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
         """
 
         fun createParams(
-            channelID: Long,
+            channelID: String,
         ): Map<String, Any> {
             return mapOf(
                 PARAM_CHANNEL_ID to channelID

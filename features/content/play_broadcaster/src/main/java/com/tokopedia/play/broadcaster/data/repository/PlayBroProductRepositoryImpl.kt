@@ -107,7 +107,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProductTagSummarySection(channelID: Long) = withContext(dispatchers.io) {
+    override suspend fun getProductTagSummarySection(channelID: String) = withContext(dispatchers.io) {
         val response = getProductTagSummarySectionUseCase.apply {
             setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
         }.executeOnBackground()
