@@ -273,27 +273,35 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     //20
-    fun visitVideoTabPageOnFeed(screenName: String) {
+    fun visitVideoTabPageOnFeed(position: Int) {
         createAnalyticsData(
             EventName.OPEN_SCREEN,
             null, null, null, isLoggedInStatus = userSession.isLoggedIn,
-            screenName = screenName
+            screenName = EventLabel.getScreenName(position)
         )
     }
 
     //21
-    fun visitUpdateTabPageOnFeed(screenName: String) {
+    fun visitUpdateTabPageOnFeed(position: Int) {
         createAnalyticsData(
             EventName.OPEN_SCREEN,
-            null, null, null, isLoggedInStatus = userSession.isLoggedIn, screenName = screenName
+            null,
+            null,
+            null,
+            isLoggedInStatus = userSession.isLoggedIn,
+            screenName = EventLabel.getScreenName(position)
         )
     }
 
     //22
-    fun visitExploreTabPageOnFeed(screenName: String) {
+    fun visitExploreTabPageOnFeed(position: Int) {
         createAnalyticsData(
             EventName.OPEN_SCREEN,
-            null, null, null, isLoggedInStatus = userSession.isLoggedIn, screenName = screenName
+            null,
+            null,
+            null,
+            isLoggedInStatus = userSession.isLoggedIn,
+            screenName = EventLabel.getScreenName(position)
         )
     }
 
@@ -439,9 +447,6 @@ class PlayAnalyticsTracker @Inject constructor(
         const val CONTENT_FEED_TIMELINE_VIDEO = "content feed timeline - video"
         const val CONTENT_FEED_TIMELINE_VIDEO_CONTENT_LIST_PAGE =
             "content feed timeline - video - content list page"
-        const val SCREEN_NAME_FEED_VIDEO_TAB = "screen name: /feed - video tab"
-        const val SCREEN_NAME_FEED_UPDATE_TAB = "screen name: /feed - update tab"
-        const val SCREEN_NAME_FEED_EXPLORE_TAB = "screen name: /feed - explore tab"
     }
 
     private object EventAction {
@@ -471,12 +476,6 @@ class PlayAnalyticsTracker @Inject constructor(
         const val IMPRESSION_CONTENT_CARDS_UPCOMING = "impressions - content cards - upcoming"
         const val IMPRESSION_CONTENT_CARDS = "impressions - content cards"
         const val IMPRESSION_FILTER_CHIPS = "impression - filter chips"
-
-
-        const val SCREEN_NAME_FEED_VIDEO_TAB = "screen name: /feed - video tab"
-        const val SCREEN_NAME_FEED_UPDATE_TAB = "screen name: /feed - update tab"
-        const val SCREEN_NAME_FEED_EXPLORE_TAB = "screen name: /feed - explore tab"
-
     }
 
     private object EventLabel {
@@ -490,18 +489,20 @@ class PlayAnalyticsTracker @Inject constructor(
             "{${channelId}} - {${shopId}} - {${type}} - {filter category}"
 
         fun liveVodUpcomingFilterCategoryEntryPointCarousel(
-            channelId: String,
-            shopId: String,
-            type: String
-        ) =
-            "{${channelId}} - {${shopId}} - {${type}} - {filter category} - {entry point carousel widget}"
+            channelId: String, shopId: String, type: String
+        ) = "{${channelId}} - {${shopId}} - {${type}} - {filter category} - {entry point carousel widget}"
 
         const val FILTER_CATEGORY_ENTRY_POINT_CAROUSEL_WIDGET =
             "{filter category} - {entry point carousel widget}"
         const val FILTER_CATEGORY = "{filter category}"
 
-        const val SCREEN_NAME_FEED_VIDEO_TAB = "screen name: /feed - video tab"
-        const val SCREEN_NAME_FEED_UPDATE_TAB = "screen name: /feed - update tab"
-        const val SCREEN_NAME_FEED_EXPLORE_TAB = "screen name: /feed - explore tab"
+        fun getScreenName(position: Int): String {
+            return when (position) {
+                0 -> "/feed - update tab"
+                1 -> "/feed - explore tab"
+                2 -> "/feed - video tab"
+                else -> ""
+            }
+        }
     }
 }

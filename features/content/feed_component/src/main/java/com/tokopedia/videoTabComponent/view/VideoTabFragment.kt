@@ -142,7 +142,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        analyticListener.visitVideoTabPageOnFeed(screenName)
+        analyticListener.visitVideoTabPageOnFeed(2)
         playFeedVideoTabViewModel.getInitialPlayData()
         setupView(view)
         playWidgetCoordinator.onResume()
