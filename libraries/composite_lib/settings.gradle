@@ -16,8 +16,6 @@ buildCache {
     }
 }
 
-include ":authentication"
-include ":authentication_ext"
 include ":analytic_constant"
 include ":analytic_testapp"
 include ":annotation_processor_analytic"

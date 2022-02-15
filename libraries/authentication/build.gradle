@@ -12,9 +12,11 @@ project.ext {
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.logger
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
+    implementation rootProject.ext.supportLibDependencies.supportV4
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../../publish_local.gradle'
