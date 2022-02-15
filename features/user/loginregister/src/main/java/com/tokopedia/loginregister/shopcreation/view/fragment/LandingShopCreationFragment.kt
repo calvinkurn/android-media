@@ -38,10 +38,7 @@ import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -348,9 +345,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun setupViewDeletedShopInfo() {
         val clickableMessage = getString(R.string.deleted_shop_info_clickable)
-        val message = getString(R.string.deleted_shop_info)
+        val message = MethodChecker.fromHtml(getString(R.string.deleted_shop_info))
         val spannable = SpannableString(message).apply {
-            setSpan(clickableSpan { RouteManager.route(context, URL_DELETED_SHOP) },
+            setSpan(
+                    clickableSpan { RouteManager.route(context, URL_DELETED_SHOP) },
                     message.indexOf(clickableMessage),
                     message.indexOf(clickableMessage) + clickableMessage.length,
                     0
