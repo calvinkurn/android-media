@@ -374,7 +374,6 @@ object PayloadConverter {
 
     private fun getPayloadExtras(data : Bundle) : PayloadExtra{
         return PayloadExtra(
-            sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
             campaignName = data.getString(PayloadExtraDataKey.CAMPAIGN_NAME, null),
             journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
@@ -383,7 +382,6 @@ object PayloadConverter {
 
     private fun getPayloadExtras(data : AmplificationBaseNotificationModel) : PayloadExtra{
         return PayloadExtra(
-            sessionId = data.sessionId,
             campaignName = data.campaignName,
             journeyId = data.journeyId,
             journeyName = data.journeyName,

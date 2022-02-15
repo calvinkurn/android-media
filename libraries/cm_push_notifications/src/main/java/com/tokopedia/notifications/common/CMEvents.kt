@@ -59,6 +59,9 @@ object IrisAnalyticsEvents {
     private const val INAPP_TYPE = "inapp_type"
     private const val LABEL = "eventlabel"
     private const val SHOP_ID = "shop_id"
+    private const val CAMPAIGN_NAME = "campaign_name"
+    private const val JOURNEY_ID = "journey_id"
+    private const val JOURNEY_NAME = "journey_name"
 
     private const val AMPLIFICATION = "amplification"
 
@@ -131,6 +134,20 @@ object IrisAnalyticsEvents {
             values[IS_SILENT] = false
         }
         values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
+
+        baseNotificationModel.payloadExtra?.let {
+            it.campaignName?.let {cmpName ->
+                values[CAMPAIGN_NAME] = cmpName
+            }
+
+            it.journeyId?.let {journeyId ->
+                values[JOURNEY_ID] = journeyId
+            }
+
+            it.journeyName?.let { journeyName ->
+                values[JOURNEY_NAME] = journeyName
+            }
+        }
 
         return values
 
@@ -220,6 +237,20 @@ object IrisAnalyticsEvents {
         values[IS_SILENT] = false
         values[INAPP_TYPE] = cmInApp.type.let { cmInApp.type } ?: ""
         values[EVENT_MESSAGE_ID] = cmInApp.campaignUserToken?.let { it } ?: ""
+
+        cmInApp.payloadExtra?.let {
+            it.campaignName?.let {cmpName ->
+                values[CAMPAIGN_NAME] = cmpName
+            }
+
+            it.journeyId?.let {journeyId ->
+                values[JOURNEY_ID] = journeyId
+            }
+
+            it.journeyName?.let { journeyName ->
+                values[JOURNEY_NAME] = journeyName
+            }
+        }
 
         return values
 

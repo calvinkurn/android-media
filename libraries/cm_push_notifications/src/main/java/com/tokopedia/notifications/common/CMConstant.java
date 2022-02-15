@@ -142,7 +142,6 @@ public interface CMConstant {
         String ADVANCE_TARGET = "isAdvanceTarget";
 
         interface PayloadExtraDataKey {
-            String SESSION_ID = "sesnId";
             String CAMPAIGN_NAME = "cmpgnName";
             String JOURNEY_ID = "jrnId";
             String JOURNEY_NAME = "jrnName";

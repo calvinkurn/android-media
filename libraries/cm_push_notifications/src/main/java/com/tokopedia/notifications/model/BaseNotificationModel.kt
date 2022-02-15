@@ -157,7 +157,7 @@ data class BaseNotificationModel(
         var isBigImage: Boolean = false,
 
         @ColumnInfo(name = "payloadExtra")
-        var payloadExtra: PayloadExtra?,
+        var payloadExtra: PayloadExtra? = null,
 
 ) : Parcelable {
 

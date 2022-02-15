@@ -166,7 +166,6 @@ object CmInAppBundleConvertor {
 
     private fun getPayloadExtra(map: Map<String, String>): PayloadExtra {
         return PayloadExtra(
-            sessionId = map[CMConstant.PayloadKeys.PayloadExtraDataKey.SESSION_ID],
             campaignName = map[CMConstant.PayloadKeys.PayloadExtraDataKey.CAMPAIGN_NAME],
             journeyId = map[CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_ID],
             journeyName = map[CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_NAME],
@@ -175,7 +174,6 @@ object CmInAppBundleConvertor {
 
     private fun getPayloadExtra(amplificationCMInApp: AmplificationCMInApp): PayloadExtra {
         return PayloadExtra(
-            sessionId = amplificationCMInApp.sessionId,
             campaignName = amplificationCMInApp.campaignName,
             journeyId = amplificationCMInApp.journeyId,
             journeyName = amplificationCMInApp.journeyName,

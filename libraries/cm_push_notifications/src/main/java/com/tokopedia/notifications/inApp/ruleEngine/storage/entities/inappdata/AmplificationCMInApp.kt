@@ -81,10 +81,6 @@ data class AmplificationCMInApp (
     var shopId: String? = null,
 
     @Expose
-    @SerializedName(CMConstant.PayloadKeys.PayloadExtraDataKey.SESSION_ID)
-    var sessionId: String?,
-
-    @Expose
     @SerializedName(CMConstant.PayloadKeys.PayloadExtraDataKey.CAMPAIGN_NAME)
     var campaignName: String?,
 

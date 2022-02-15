@@ -195,10 +195,6 @@ data class AmplificationBaseNotificationModel(
     var notificationProductType: String? = null,
 
     @Expose
-    @SerializedName(PayloadExtraDataKey.SESSION_ID)
-    var sessionId: String?,
-
-    @Expose
     @SerializedName(PayloadExtraDataKey.CAMPAIGN_NAME)
     var campaignName: String?,
 
