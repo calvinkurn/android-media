@@ -31,16 +31,29 @@ class SpecialReleaseTimerView: FrameLayout {
     fun setTimer(serverTimeOffset: Long = 0L, expiredTime: String) {
         val expiredTimeDate = DateHelper.getExpiredTime(expiredTime)
         if (expiredTime.isNotEmpty() && !DateHelper.isExpired(serverTimeOffset, expiredTimeDate)) {
-            timerText?.text = SpecialReleaseTimerCopyGenerator.getCopy(
+            val timerCopy = SpecialReleaseTimerCopyGenerator.getCopy(
                 expiredTimeDate = expiredTimeDate,
                 currentTimeDate = Date(),
                 offset = serverTimeOffset
             )
-            timerText?.visible()
-            timerIcon?.visible()
+            if (timerCopy.isNotEmpty()) {
+                timerText?.text = timerCopy
+                showTimer()
+            } else {
+                hideTimer()
+            }
         } else {
-            timerText?.invisible()
-            timerIcon?.invisible()
+            hideTimer()
         }
+    }
+
+    private fun hideTimer() {
+        timerText?.invisible()
+        timerIcon?.invisible()
+    }
+
+    private fun showTimer() {
+        timerText?.visible()
+        timerIcon?.visible()
     }
 }
