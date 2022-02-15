@@ -13,7 +13,6 @@ import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
@@ -104,6 +103,8 @@ object PayloadConverter {
 
         // webHook parameters
         model.webHookParam = data.getString(WEBHOOK_PARAM)
+
+        model.payloadExtra = getPayloadExtras(data)
 
         return model
     }
@@ -212,6 +213,7 @@ object PayloadConverter {
         // webHook parameters
         model.webHookParam = data.webHookParam
 
+        model.payloadExtra = getPayloadExtras(data)
         return model
     }
 
@@ -368,5 +370,23 @@ object PayloadConverter {
         }
 
         return null
+    }
+
+    private fun getPayloadExtras(data : Bundle) : PayloadExtra{
+        return PayloadExtra(
+            sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
+            campaignName = data.getString(PayloadExtraDataKey.CAMPAIGN_NAME, null),
+            journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
+            journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
+        )
+    }
+
+    private fun getPayloadExtras(data : AmplificationBaseNotificationModel) : PayloadExtra{
+        return PayloadExtra(
+            sessionId = data.sessionId,
+            campaignName = data.campaignName,
+            journeyId = data.journeyId,
+            journeyName = data.journeyName,
+        )
     }
 }

@@ -140,6 +140,14 @@ public interface CMConstant {
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
         String ADVANCE_TARGET = "isAdvanceTarget";
+
+        interface PayloadExtraDataKey {
+            String SESSION_ID = "sesnId";
+            String CAMPAIGN_NAME = "cmpgnName";
+            String JOURNEY_ID = "jrnId";
+            String JOURNEY_NAME = "jrnName";
+        }
+
     }
 
     interface NotificationProductType {

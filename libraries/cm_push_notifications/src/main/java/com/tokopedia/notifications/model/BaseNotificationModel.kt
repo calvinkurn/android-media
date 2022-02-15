@@ -156,6 +156,9 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "is_big_image")
         var isBigImage: Boolean = false,
 
+        @ColumnInfo(name = "payloadExtra")
+        var payloadExtra: PayloadExtra?,
+
 ) : Parcelable {
 
     fun webHookParamData(): String? {

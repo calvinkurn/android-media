@@ -1,247 +1,243 @@
-package com.tokopedia.notifications.inApp.viewEngine;
+package com.tokopedia.notifications.inApp.viewEngine
 
-import android.os.Bundle;
-import android.text.TextUtils;
+import android.text.TextUtils
+import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp
+import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
+import com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.Payload
+import com.tokopedia.notifications.model.PayloadExtra
+import java.lang.Exception
+import java.lang.StringBuilder
 
-import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.tokopedia.notifications.inApp.CMInAppManager;
-import com.tokopedia.notifications.inApp.ruleEngine.RulesUtil;
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp;
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout;
+object CmInAppBundleConvertor {
 
-import org.jetbrains.annotations.Nullable;
+    const val HOURS_24_IN_MILLIS = 24 * 60 * 60 * 1000L
 
-import java.util.Map;
-
-public class CmInAppBundleConvertor {
-
-    public static final long HOURS_24_IN_MILLIS = 24 * 60 * 60 * 1000L;
-
-    public static CMInApp getCmInApp(RemoteMessage remoteMessage) {
-        try {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            Map<String, String> map = remoteMessage.getData();
-            return getCmInAppModel(gson, map);
-        } catch (Exception e) {
-            return null;
+    fun getCmInApp(remoteMessage: RemoteMessage): CMInApp? {
+        return try {
+            val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+            val map = remoteMessage.data
+            getCmInAppModel(gson, map)
+        } catch (e: Exception) {
+            null
         }
     }
 
-    public static CMInApp getCmInApp(AmplificationCMInApp amplificationCMInApp) {
-        try {
-            CMInApp cmInApp = new CMInApp();
-            if (amplificationCMInApp.getId() == null || amplificationCMInApp.getId() == 0)
-                return null;
-            cmInApp.id = amplificationCMInApp.getId();
+    fun getCmInApp(amplificationCMInApp: AmplificationCMInApp): CMInApp? {
+        return try {
+            val cmInApp = CMInApp()
 
-            if (amplificationCMInApp.getCampaignId() != null && amplificationCMInApp.getCampaignId() != 0)
-                cmInApp.setCampaignId(amplificationCMInApp.getCampaignId().toString());
-
-            if (!TextUtils.isEmpty(amplificationCMInApp.getCampaignCode()))
-                cmInApp.setCampaignCode(amplificationCMInApp.getCampaignCode());
-
-            if (!TextUtils.isEmpty(amplificationCMInApp.getCampaignUserToken()))
-                cmInApp.setCampaignUserToken(amplificationCMInApp.getCampaignUserToken());
-
-            if (amplificationCMInApp.getParentId() != null && amplificationCMInApp.getParentId() != 0)
-                cmInApp.setParentId(amplificationCMInApp.getParentId().toString());
-
-            if (amplificationCMInApp.getStartTime() != null)
-                cmInApp.setStartTime(amplificationCMInApp.getStartTime());
-
-            if (cmInApp.getStartTime() == 0L) {
-                cmInApp.setStartTime(System.currentTimeMillis());
+            amplificationCMInApp.id?.let {
+                if (it == 0L)
+                    return null
+                cmInApp.id = it
+            } ?: run {
+                return null
             }
 
-            if (amplificationCMInApp.getEndTime() != null)
-                cmInApp.setEndTime(amplificationCMInApp.getEndTime());
+            if (amplificationCMInApp.parentId != null)
+                cmInApp.setParentId(amplificationCMInApp.parentId)
 
-            if (cmInApp.getEndTime() == 0L) {
-                cmInApp.setEndTime(System.currentTimeMillis() + CMInAppManager.getInstance().getCmInAppEndTimeInterval());
-            }
+            if (amplificationCMInApp.campaignId != null)
+                cmInApp.setCampaignId(amplificationCMInApp.campaignId)
 
-            if (amplificationCMInApp.getFreq() != null)
-                cmInApp.setFreq(amplificationCMInApp.getFreq());
+            if (!TextUtils.isEmpty(amplificationCMInApp.campaignCode))
+                cmInApp.setCampaignCode(amplificationCMInApp.campaignCode)
 
-            if (amplificationCMInApp.isCancelable() != null)
-                cmInApp.setCancelable(amplificationCMInApp.isCancelable());
+            if (!TextUtils.isEmpty(amplificationCMInApp.campaignUserToken))
+                cmInApp.setCampaignUserToken(amplificationCMInApp.campaignUserToken)
 
-            if (amplificationCMInApp.isTest() != null)
-                cmInApp.setTest(amplificationCMInApp.isTest());
+            setStartTime(cmInApp, amplificationCMInApp.startTime)
 
-            if (amplificationCMInApp.isPersistentToggle() != null)
-                cmInApp.setPersistentToggle(amplificationCMInApp.isPersistentToggle());
+            setEndTime(cmInApp, amplificationCMInApp.endTime)
 
-            if (amplificationCMInApp.getType() != null)
-                cmInApp.setType(amplificationCMInApp.getType());
+            cmInApp.setFreq(amplificationCMInApp.freq ?: 1)
 
-            if (amplificationCMInApp.getCustomValues() != null)
-                cmInApp.setCustomValues(amplificationCMInApp.getCustomValues());
+            cmInApp.isCancelable = amplificationCMInApp.isCancelable ?: false
 
-            String tempScreenName = "";
+            cmInApp.isTest = amplificationCMInApp.isTest ?: false
 
-            if (amplificationCMInApp.getScreen() != null) {
-                tempScreenName = amplificationCMInApp.getScreen();
-                cmInApp.setScreen(tempScreenName);
-            }
+            cmInApp.isPersistentToggle = amplificationCMInApp.isPersistentToggle ?: true
 
-            if (amplificationCMInApp.getSs() != null) {
-                String finalScreenName = amplificationCMInApp.getSs();
-                if (!TextUtils.isEmpty(finalScreenName)) {
-                    StringBuilder sb = new StringBuilder(finalScreenName);
-                    if (!TextUtils.isEmpty(tempScreenName)) {
-                        sb.append(",");
-                        sb.append(tempScreenName);
-                    }
-                    cmInApp.setScreen(sb.toString());
-                }
-            }
+            cmInApp.setType(amplificationCMInApp.type ?: "")
 
-            boolean screenNameIsPresent = (amplificationCMInApp.getScreen() != null ||
-                    amplificationCMInApp.getSs() != null);
+            cmInApp.customValues = amplificationCMInApp.customValues ?: ""
+
+            val screenNameIsPresent =
+                amplificationCMInApp.screen != null || amplificationCMInApp.ss != null
+
             if (!screenNameIsPresent) {
-                return null;
+                return null
             }
 
-            if (amplificationCMInApp.getCmLayout() == null) {
-                return null;
+            setScreenNames(
+                cmInApp,
+                amplificationCMInApp.screen,
+                amplificationCMInApp.ss
+            )
+
+
+            if (amplificationCMInApp.cmLayout == null) {
+                return null
             }
 
-            CMLayout cmLayout = amplificationCMInApp.getCmLayout();
-            cmInApp.setCmLayout(cmLayout);
+            val cmLayout = amplificationCMInApp.cmLayout
+            cmInApp.setCmLayout(cmLayout)
 
-            cmInApp.setShopId(amplificationCMInApp.getShopId());
+            cmInApp.shopId = amplificationCMInApp.shopId
 
-            return cmInApp;
+            cmInApp.payloadExtra = getPayloadExtra(amplificationCMInApp)
 
-        } catch (Exception e) {
-            return null;
+            return cmInApp
+        } catch (e: Exception) {
+            null
         }
     }
 
-    @Nullable
-    private static CMInApp getCmInAppModel(Gson gson, Map<String, String> map) {
-        CMInApp cmInApp = new CMInApp();
+    private fun getCmInAppModel(gson: Gson, map: Map<String, String>): CMInApp? {
 
-        if (!map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_ID))
-            return null;
-        cmInApp.setId(getLongFromStr(map.get(RulesUtil.Constants.Payload.NOTIFICATION_ID)));
+        val cmInApp = CMInApp()
+        if (!map.containsKey(Payload.NOTIFICATION_ID)) return null
 
-        if (map.containsKey(RulesUtil.Constants.Payload.CAMPAIGN_ID))
-            cmInApp.setCampaignId(map.get(RulesUtil.Constants.Payload.CAMPAIGN_ID));
+        cmInApp.setId(getLongFromStr(map[Payload.NOTIFICATION_ID]))
 
-        if (map.containsKey(RulesUtil.Constants.Payload.CAMPAIGN_CODE))
-            cmInApp.setCampaignCode(map.get(RulesUtil.Constants.Payload.CAMPAIGN_CODE));
+        if (map.containsKey(Payload.CAMPAIGN_ID))
+            cmInApp.setCampaignId(map[Payload.CAMPAIGN_ID])
 
-        if (map.containsKey(RulesUtil.Constants.Payload.CAMPAIGN_USER_TOKEN))
-            cmInApp.setCampaignUserToken(map.get(RulesUtil.Constants.Payload.CAMPAIGN_USER_TOKEN));
+        if (map.containsKey(Payload.CAMPAIGN_CODE))
+            cmInApp.setCampaignCode(map[Payload.CAMPAIGN_CODE])
 
-        if (map.containsKey(RulesUtil.Constants.Payload.PARENT_ID))
-            cmInApp.setParentId(map.get(RulesUtil.Constants.Payload.PARENT_ID));
+        if (map.containsKey(Payload.CAMPAIGN_USER_TOKEN))
+            cmInApp.setCampaignUserToken(map[Payload.CAMPAIGN_USER_TOKEN])
 
-        if (map.containsKey(RulesUtil.Constants.Payload.START_TIME))
-            cmInApp.setStartTime(getLongFromStr(map.get(RulesUtil.Constants.Payload.START_TIME)));
+        if (map.containsKey(Payload.PARENT_ID))
+            cmInApp.setParentId(map[Payload.PARENT_ID])
+
+        setStartTime(cmInApp,getLongFromStr(map[Payload.START_TIME]))
+
+        setEndTime(cmInApp, getLongFromStr(map[Payload.END_TIME]))
+
+        if (map.containsKey(Payload.FREQUENCY))
+            cmInApp.setFreq(getIntFromStr(map[Payload.FREQUENCY]))
 
 
-        if (cmInApp.getStartTime() == 0L) {
-            cmInApp.setStartTime(System.currentTimeMillis());
-        }
+        if (map.containsKey(Payload.CANCELLABLE))
+            cmInApp.isCancelable = getBooleanFromString(map[Payload.CANCELLABLE])
 
-        if (map.containsKey(RulesUtil.Constants.Payload.END_TIME))
-            cmInApp.setEndTime(getLongFromStr(map.get(RulesUtil.Constants.Payload.END_TIME)));
+        if (map.containsKey(Payload.IS_TEST))
+            cmInApp.isTest = getBooleanFromString(map[Payload.IS_TEST])
 
-        if (cmInApp.getEndTime() == 0L) {
-            cmInApp.setEndTime(System.currentTimeMillis() + CMInAppManager.getInstance().getCmInAppEndTimeInterval());
-        }
+        if (map.containsKey(Payload.PERST_ON))
+            cmInApp.isPersistentToggle = getBooleanFromString(map[Payload.PERST_ON])
 
-            /*if (map.containsKey("ct"))
-                cmInApp.set(getLongFromStr(map.get("ct")));*/
+        if (map.containsKey(Payload.NOTIFICATION_TYPE))
+            cmInApp.setType(map[Payload.NOTIFICATION_TYPE])
 
-        if (map.containsKey(RulesUtil.Constants.Payload.FREQUENCY))
-            cmInApp.setFreq(getIntFromStr(map.get(RulesUtil.Constants.Payload.FREQUENCY)));
+        if (map.containsKey(Payload.CUSTOM_VALUES))
+            cmInApp.customValues = map[Payload.CUSTOM_VALUES]
 
-        if (map.containsKey(RulesUtil.Constants.Payload.CANCELLABLE))
-            cmInApp.setCancelable(getBooleanFromString(map.get(RulesUtil.Constants.Payload.CANCELLABLE)));
-
-        if (map.containsKey(RulesUtil.Constants.Payload.IS_TEST))
-            cmInApp.setTest(getBooleanFromString(map.get(RulesUtil.Constants.Payload.IS_TEST)));
-
-        if (map.containsKey(RulesUtil.Constants.Payload.PERST_ON))
-            cmInApp.setPersistentToggle(getBooleanFromString(map.get(RulesUtil.Constants.Payload.PERST_ON)));
-
-        if (map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_TYPE))
-            cmInApp.setType(map.get(RulesUtil.Constants.Payload.NOTIFICATION_TYPE));
-
-        if (map.containsKey(RulesUtil.Constants.Payload.CUSTOM_VALUES))
-            cmInApp.setCustomValues(map.get(RulesUtil.Constants.Payload.CUSTOM_VALUES));
-
-        String tempScreenName = "";
-
-        if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME)) {
-            tempScreenName = map.get(RulesUtil.Constants.Payload.SCREEN_NAME);
-            cmInApp.setScreen(tempScreenName);
-        }
-
-        if (map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME)) {
-            String finalScreenName = map.get(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME);
-            if (!TextUtils.isEmpty(finalScreenName)) {
-                StringBuilder sb = new StringBuilder(finalScreenName);
-                if (!TextUtils.isEmpty(tempScreenName)) {
-                    sb.append(",");
-                    sb.append(tempScreenName);
-                }
-                cmInApp.setScreen(sb.toString());
-            }
-        }
-
-        boolean screenNameIsPresent = (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME) ||
-                map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME));
+        val screenNameIsPresent = map.containsKey(Payload.SCREEN_NAME) ||
+                map.containsKey(Payload.MULTIPLE_SCREEN_NAME)
         if (!screenNameIsPresent) {
-            return null;
+            return null
         }
 
-        if (!map.containsKey(RulesUtil.Constants.Payload.UI)) {
-            return null;
+        setScreenNames(cmInApp, map[Payload.SCREEN_NAME], map[Payload.MULTIPLE_SCREEN_NAME])
+
+        if (!map.containsKey(Payload.UI)) {
+            return null
         }
 
-        String ui = map.get(RulesUtil.Constants.Payload.UI);
-        CMLayout cmLayout = gson.fromJson(ui, CMLayout.class);
-        cmInApp.setCmLayout(cmLayout);
+        val ui = map[Payload.UI]
+        val cmLayout = gson.fromJson(ui, CMLayout::class.java)
+        cmInApp.setCmLayout(cmLayout)
 
-        if (map.containsKey(RulesUtil.Constants.Payload.SHOP_ID))
-            cmInApp.setShopId(map.get(RulesUtil.Constants.Payload.SHOP_ID));
+        if (map.containsKey(Payload.SHOP_ID)) cmInApp.shopId = map[Payload.SHOP_ID]
 
-        return cmInApp;
+        cmInApp.payloadExtra = getPayloadExtra(map)
+
+        return cmInApp
     }
 
+    private fun getPayloadExtra(map: Map<String, String>): PayloadExtra {
+        return PayloadExtra(
+            sessionId = map[CMConstant.PayloadKeys.PayloadExtraDataKey.SESSION_ID],
+            campaignName = map[CMConstant.PayloadKeys.PayloadExtraDataKey.CAMPAIGN_NAME],
+            journeyId = map[CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_ID],
+            journeyName = map[CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_NAME],
+        )
+    }
 
-    private static boolean getBooleanFromString(String strBoolean) {
-        try {
-            return Boolean.parseBoolean(strBoolean);
-        } catch (Exception e) {
-            return false;
+    private fun getPayloadExtra(amplificationCMInApp: AmplificationCMInApp): PayloadExtra {
+        return PayloadExtra(
+            sessionId = amplificationCMInApp.sessionId,
+            campaignName = amplificationCMInApp.campaignName,
+            journeyId = amplificationCMInApp.journeyId,
+            journeyName = amplificationCMInApp.journeyName,
+        )
+    }
+
+    private fun getBooleanFromString(strBoolean: String?): Boolean {
+        return try {
+            strBoolean?.toBoolean() ?: false
+        } catch (e: Exception) {
+            false
         }
     }
 
-    private static int getIntFromStr(String strInt) {
-        try {
-            return Integer.parseInt(strInt);
-        } catch (Exception e) {
-            return 0;
+    private fun getIntFromStr(strInt: String?): Int {
+        return try {
+            strInt?.toInt() ?: 0
+        } catch (e: Exception) {
+            0
         }
     }
 
-
-    private static long getLongFromStr(String strLong) {
-        try {
-            return Long.parseLong(strLong);
-        } catch (Exception e) {
-            return 0;
+    private fun getLongFromStr(strLong: String?): Long {
+        return try {
+            strLong?.toLong() ?: 0L
+        } catch (e: Exception) {
+            0L
         }
     }
 
+    private fun setStartTime(cmInApp: CMInApp, startTime: Long?) {
+        if (startTime == null || startTime == 0L)
+            cmInApp.startTime = System.currentTimeMillis()
+        else
+            cmInApp.startTime = startTime
+    }
+
+    private fun setEndTime(cmInApp: CMInApp, endTime: Long?) {
+        if (endTime == null || endTime == 0L)
+            cmInApp.endTime = System.currentTimeMillis() +
+                    CMInAppManager.getInstance().cmInAppEndTimeInterval
+        else
+            cmInApp.endTime = endTime
+    }
+
+    private fun setScreenNames(cmInApp: CMInApp, screenName: String?, multiScreenName: String?) {
+        var tempScreenName: String? = ""
+        if (screenName != null) {
+            tempScreenName = screenName
+            cmInApp.setScreen(tempScreenName)
+        }
+
+        if (multiScreenName != null) {
+            if (!TextUtils.isEmpty(multiScreenName)) {
+                val sb = StringBuilder(multiScreenName)
+                if (!TextUtils.isEmpty(tempScreenName)) {
+                    sb.append(",")
+                    sb.append(tempScreenName)
+                }
+                cmInApp.setScreen(sb.toString())
+            }
+        }
+    }
 
 }
