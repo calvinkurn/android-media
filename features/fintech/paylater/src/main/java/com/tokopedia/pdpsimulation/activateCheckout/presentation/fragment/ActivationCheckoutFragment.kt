@@ -406,8 +406,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 }
 
                 for (i in 0 until checkoutData.tenureDetail.size) {
-                    checkoutData.tenureDetail[i].isSelectedTenure = false
-                    if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
+                    if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure)
+                    {
                         selectedTenurePosition = i
                         break
                     }
