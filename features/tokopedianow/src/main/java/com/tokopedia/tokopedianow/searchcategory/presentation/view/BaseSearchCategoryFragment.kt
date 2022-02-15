@@ -354,6 +354,7 @@ abstract class BaseSearchCategoryFragment:
             override fun onGetEventCategory(): String = eventCategory
 
             override fun onSwitchService() {
+                getViewModel().refreshMiniCart()
                 getViewModel().switchService()
             }
         }
