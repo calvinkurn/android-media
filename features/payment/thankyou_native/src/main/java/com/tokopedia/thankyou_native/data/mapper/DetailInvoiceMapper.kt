@@ -6,6 +6,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
+import com.tokopedia.thankyou_native.domain.model.AddOnItem
 import com.tokopedia.thankyou_native.domain.model.BundleGroupItem
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 
@@ -165,8 +166,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 val bundleGroupId = purchasedItem.bundleGroupId
                 if (bundleGroupId.isNotEmpty()) {
                     if (bundleToProductMap.containsKey(bundleGroupId))
-                        bundleToProductMap[bundleGroupId]?.add(createOrderItemFromPurchase(purchasedItem))
-                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItemFromPurchase(purchasedItem))
+                        bundleToProductMap[bundleGroupId]?.add(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList))
+                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList))
                 }
             }
 
@@ -174,7 +175,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 val bundleGroupId = purchasedItem.bundleGroupId
                 // Normal Product
                 if (bundleGroupId.isEmpty())
-                    orderedItemList.add(createOrderItemFromPurchase(purchasedItem, OrderItemType.SINGLE_PRODUCT))
+                    orderedItemList.add(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList, OrderItemType.SINGLE_PRODUCT))
                 else {
                     if (bundleToProductMap.containsKey(bundleGroupId)) {
                         // add bundle data name
@@ -219,7 +220,9 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     shippingInfo,
                     logisticDiscountStr,
                     if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
-                    shopOrder.address)
+                    shopOrder.address,
+                    shopOrder.addOnItemList             // add order level add-ons here
+            )
             visitableList.add(shopInvoice)
             currentIndex++
 
@@ -228,15 +231,15 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
-        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType)
+    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
+        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType, addOnList)
 
     private fun createOrderItemFromBundle(bundleGroupItem: BundleGroupItem?) = OrderedItem(
         bundleGroupItem?.bundleTitle ?: "",
         null,
         bundleGroupItem?.totalPrice.toString(),
         bundleGroupItem?.totalPriceStr ?: "",
-        false, OrderItemType.BUNDLE)
+        false, OrderItemType.BUNDLE, null)
 
 }
 

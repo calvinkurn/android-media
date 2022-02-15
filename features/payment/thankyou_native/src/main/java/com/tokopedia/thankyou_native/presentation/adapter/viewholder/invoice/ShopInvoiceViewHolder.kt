@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,6 +16,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.OrderedItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.ShopInvoice
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.thank_widget_shop_invoice.view.*
 
 class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(view) {
@@ -135,7 +137,25 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
         shopInvoice.orderedItem.forEach { orderItem ->
             val view = createShopItemView(context = view.context, orderedItem = orderItem)
             container.addView(view)
+            orderItem.productLevelAddOn?.forEach { addOn ->
+                val productLevel = addOrderLevelGifting(addOn.name, addOn.addOnPrice)
+                container.addView(productLevel)
+            }
         }
+        shopInvoice.orderLevelAddOn.forEach { addOn ->
+            val orderLevel= addOrderLevelGifting(addOn.name, addOn.addOnPrice)
+            container.addView(orderLevel)
+        }
+    }
+
+    private fun addOrderLevelGifting(titleStr: String, value: Double): View {
+        val rowView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
+        val tvTitle = rowView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
+        val tvValue = rowView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
+        tvTitle.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+        tvTitle.text = titleStr
+        tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(value, false)
+        return rowView
     }
 
     private fun createShopItemView(context: Context, orderedItem: OrderedItem): View {
