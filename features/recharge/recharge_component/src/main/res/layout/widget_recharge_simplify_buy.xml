@@ -19,11 +19,9 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_simplify_buy_widget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:text="@string/buy_widget_simplify_total_price_btn"
         />
 
