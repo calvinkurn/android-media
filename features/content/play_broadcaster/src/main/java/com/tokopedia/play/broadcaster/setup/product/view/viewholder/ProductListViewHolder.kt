@@ -59,6 +59,16 @@ internal class ProductListViewHolder private constructor() {
                     binding.llDiscount.visibility = View.GONE
                 }
             }
+
+            if (item.product.stock > 0) {
+                binding.checkboxProduct.visibility = View.VISIBLE
+                binding.flEmptyForeground.visibility = View.GONE
+                binding.viewEmptyStock.root.visibility = View.GONE
+            } else {
+                binding.checkboxProduct.visibility = View.GONE
+                binding.flEmptyForeground.visibility = View.VISIBLE
+                binding.viewEmptyStock.root.visibility = View.VISIBLE
+            }
         }
 
         private fun setCheckboxManually(item: ProductListAdapter.Model.Product) {

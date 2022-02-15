@@ -221,8 +221,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
+        if (product.stock <= 0) return
         _selectedProductSectionList.update { sections ->
             var hasProduct = false
+
             val newSections = sections.map { section ->
                 val newProducts = section.products.filter { it.id != product.id }
                 if (newProducts.size != section.products.size) hasProduct = true
@@ -230,6 +232,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     products = newProducts
                 )
             }
+
             if (!hasProduct) {
                 val section = sections.lastOrNull() ?: ProductTagSectionUiModel(
                     //when select product, we can just use default key

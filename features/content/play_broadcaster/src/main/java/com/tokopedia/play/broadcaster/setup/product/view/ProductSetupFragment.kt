@@ -24,6 +24,7 @@ class ProductSetupFragment @Inject constructor(
 
     private val productChooserListener = object : ProductChooserBottomSheet.Listener {
         override fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet) {
+            bottomSheet.dismiss()
             if (childFragmentManager.fragments.isEmpty()) {
                 //CLOSE BOTTOMSHEET
             }
@@ -32,6 +33,10 @@ class ProductSetupFragment @Inject constructor(
         override fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet) {
             bottomSheet.dismiss()
             openProductSummary()
+        }
+
+        override fun openCampaignAndEtalaseList(bottomSheet: ProductChooserBottomSheet) {
+            openCampaignAndEtalaseList()
         }
     }
 
@@ -55,7 +60,7 @@ class ProductSetupFragment @Inject constructor(
             .commit()
     }
 
-    fun openCampaignAndEtalaseList() {
+    private fun openCampaignAndEtalaseList() {
         EtalaseListBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,

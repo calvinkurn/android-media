@@ -56,9 +56,6 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
-    private val container: ProductSetupFragment?
-        get() = parentFragment as? ProductSetupFragment
-
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
     private val binding: BottomSheetPlayBroProductChooserBinding
         get() = _binding!!
@@ -376,8 +373,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleEtalaseChipsEvent(event: EtalaseChipsViewComponent.Event) {
         when (event) {
             EtalaseChipsViewComponent.Event.OnClicked -> {
-                (parentFragment as? ProductSetupFragment)
-                    ?.openCampaignAndEtalaseList()
+                mListener?.openCampaignAndEtalaseList(this)
             }
         }
     }
@@ -462,5 +458,7 @@ class ProductChooserBottomSheet @Inject constructor(
     interface Listener {
         fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet)
         fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet)
+
+        fun openCampaignAndEtalaseList(bottomSheet: ProductChooserBottomSheet)
     }
 }
