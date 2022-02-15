@@ -37,6 +37,7 @@ class PayLaterSimulationTenureAdapter(
 
     private fun changeAndUpdateSelection(pos: Int) {
         tenureItemList[lastSelectedPosition].isSelected = !tenureItemList[lastSelectedPosition].isSelected
+        tenureItemList[pos].isSelected = !tenureItemList[pos].isSelected
         notifyItemChanged(lastSelectedPosition)
         lastSelectedPosition = pos
         notifyItemChanged(pos)

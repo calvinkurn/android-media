@@ -16,7 +16,6 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
         setCardType(simulationUiModel)
         setTenureContents(simulationUiModel)
         view.setOnClickListener {
-            simulationUiModel.isSelected = !simulationUiModel.isSelected
             onTenureSelected(adapterPosition)
         }
     }
