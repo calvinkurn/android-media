@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -135,6 +136,7 @@ abstract class ProductItemViewHolder(
 
     private fun onViewDetach(){
         helper?.onViewDetach()
+        masterJob.cancelChildren()
     }
 
     override fun onPlayerIdle() {
