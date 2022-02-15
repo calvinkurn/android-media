@@ -57,7 +57,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation rootProject.ext.networkDependencies.glide
