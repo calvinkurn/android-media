@@ -45,6 +45,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.BottomSheets
@@ -578,10 +579,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
             ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> {
                 data?.let {
-                    val deviceId = data.getStringExtra(TradeInParams.PARAM_DEVICE_ID) ?: ""
-                    val phoneType = data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE) ?: ""
+                    val deviceId = data.getStringExtra(TradeInPDPHelper.PARAM_DEVICE_ID) ?: ""
+                    val phoneType = data.getStringExtra(TradeInPDPHelper.PARAM_PHONE_TYPE) ?: ""
                     ?: "none/other"
-                    val phonePrice = data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE) ?: ""
+                    val phonePrice = data.getStringExtra(TradeInPDPHelper.PARAM_PHONE_PRICE) ?: ""
                     DynamicProductDetailTracking.TradeIn.eventAddToCartFinalPrice(phoneType,
                             phonePrice,
                             deviceId,
@@ -1242,16 +1243,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onDecline() {}
 
     private fun goToHargaFinal() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
-        val tradeinParam = viewModel.tradeInParams
-        viewModel.getDynamicProductInfoP1?.let {
-            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeinParam.productId = it.basic.productID
-            tradeinParam.productName = it.data.name
-        }
-
-        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
-        startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
+        /** need to be removed**/
+//        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
+//        val tradeinParam = viewModel.tradeInParams
+//        viewModel.getDynamicProductInfoP1?.let {
+//            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
+//            tradeinParam.productId = it.basic.productID
+//            tradeinParam.productName = it.data.name
+//        }
+//
+//        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
+//        startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
     }
 
     override fun getProductFragmentManager(): FragmentManager {
@@ -3284,18 +3286,20 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToTradeInHome() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN)
-        val tradeinParam = viewModel.tradeInParams
-
         viewModel.getDynamicProductInfoP1?.let {
-            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeinParam.productId = it.basic.productID
-            tradeinParam.productName = it.data.name
-            tradeinParam.origin = viewModel.getMultiOriginByProductId().getOrigin()
+            TradeInPDPHelper.pdpToTradeIn(
+                context,
+                shopName = viewModel.getShopInfo().shopCore.name,
+                shopBadge = viewModel.getShopInfo().shopTierBadgeUrl,
+                shopLocation = viewModel.getShopInfo().location,
+                productId = it.basic.productID,
+                productName = it.data.name,
+                productImage = it.data.getProductImageUrl(),
+                productPrice = it.data.price.value.roundToIntOrZero())
+                { data, code ->
+                    startActivityForResult(data, code)
+                }
         }
-        intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
-        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
-        startActivityForResult(intent, ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

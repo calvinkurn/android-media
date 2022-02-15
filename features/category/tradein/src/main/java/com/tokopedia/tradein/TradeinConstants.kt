@@ -9,6 +9,9 @@ object TradeinConstants {
     const val CAMPAIGN_ID_STAGING = "tokopediaSandbox"
     const val LOGIN_REQUIRED = 1
     const val LOGGED_IN = 2
+    const val TRADEIN_EXCHANGE = "exchange"
+    const val TRADE_IN_HOST_SOURCE = "tradein"
+    const val TRADE_IN_HOST_TRACKING_SOURCE = "tradein page"
 
 
 

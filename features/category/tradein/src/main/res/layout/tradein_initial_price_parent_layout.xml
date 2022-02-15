@@ -19,6 +19,7 @@
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
+        app:toolbarTitle="Tukar Tambah"
         app:toolbarInitialFillColor="transparent"
         app:toolbarInitialTheme="light" />
 

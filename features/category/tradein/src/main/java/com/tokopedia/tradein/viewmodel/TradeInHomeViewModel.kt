@@ -169,7 +169,7 @@ class TradeInHomeViewModel @Inject constructor(
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn, tradeinType: Int) {
         progBarVisibility.value = true
         this.tradeInType = tradeinType
-        laku6TradeIn.getMinMaxPrice(districtId, this)
+//        laku6TradeIn.getMinMaxPrice(districtId, this)
     }
 
     fun initSessionId(laku6TradeIn: Laku6TradeIn) {
