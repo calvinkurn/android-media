@@ -8,10 +8,10 @@ import java.util.Map;
  * @author okasurya on 5/16/18.
  */
 public interface AnalyticsLogger {
-    void save(String name, Map<String, Object> data,@AnalyticsSource String source);
-
-    void saveError(String errorData);
+    void save(Map<String, Object> data, String name,@AnalyticsSource String source);
 
     void enableNotification(boolean status);
+
+    Boolean isNotificationEnabled();
 
 }

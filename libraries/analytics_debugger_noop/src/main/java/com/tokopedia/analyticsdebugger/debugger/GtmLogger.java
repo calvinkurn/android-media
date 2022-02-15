@@ -17,12 +17,7 @@ public class GtmLogger {
         if (instance == null) {
             instance = new AnalyticsLogger() {
                 @Override
-                public void save(String name, Map<String, Object> data, @AnalyticsSource String source) {
-
-                }
-
-                @Override
-                public void saveError(String errorData) {
+                public void save(Map<String, Object> data, String name,  @AnalyticsSource String source) {
 
                 }
 
@@ -31,6 +26,10 @@ public class GtmLogger {
 
                 }
 
+                @Override
+                public Boolean isNotificationEnabled() {
+                    return false;
+                }
             };
         }
 
