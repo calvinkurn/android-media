@@ -24,7 +24,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                 PARAM_ADDITIONAL_PARAMS to mapOf(
                         PARAM_GATEWAY_CODE to gatewayCode,
-                        PARAM_TENOR to tenor
+//                        PARAM_TENOR to tenor
                 )
         )
     }
@@ -395,6 +395,14 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 is_hide_digital
                 header_title
                 url_link
+            }
+            go_cicil {
+                error_message_invalid_tenure
+                error_message_top_limit
+                error_message_bottom_limit
+                error_message_unavailable_tenure
+                payment_signature
+                selected_tenure
             }
           }
         }

@@ -30,6 +30,7 @@
     <string name="lbl_change_template">Ubah</string>
     <string name="occ_lbl_order_summary">Ringkasan belanja</string>
     <string name="occ_lbl_total_item_price">Total Harga</string>
+    <string name="occ_lbl_total_item_addons_price">Total Pelengkap Hadiah</string>
     <string name="lbl_purchase_protection_price">Total Proteksi Produk</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
     <string name="occ_lbl_installment_fee">Biaya Cicilan</string>
