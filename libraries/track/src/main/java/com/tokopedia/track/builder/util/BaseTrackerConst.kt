@@ -82,6 +82,10 @@ abstract class BaseTrackerConst {
         const val KEY = "campaignCode"
     }
 
+    protected object ItemList {
+        const val KEY = "item_list"
+    }
+
     protected object Value {
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
