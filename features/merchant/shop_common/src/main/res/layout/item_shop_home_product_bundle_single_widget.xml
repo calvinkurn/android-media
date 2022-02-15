@@ -55,7 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="30dp"
-            android:maxLines="2"
+            android:maxLines="3"
+            android:maxLength="70"
             android:ellipsize="end"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintBottom_toBottomOf="@id/iv_bundle_image"
@@ -64,7 +65,7 @@
             app:layout_constraintStart_toEndOf="@id/iv_bundle_image"
             app:layout_constraintTop_toTopOf="@id/iv_bundle_image"
             app:typographyType="body_3"
-            tools:text="Sunlight On The Go Disinfectant Spray 45ml Multipack" />
+            tools:text="Zwitsal BB Hair dan Body Aloe Vera 450ml isi 3 free Gelang Anti Nyamuk" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bundle_single_package"
