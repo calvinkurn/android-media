@@ -825,7 +825,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromoRevampUiModel, orderPayment.value)
         val payment = orderPayment.value
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
-            val result = paymentProcessor.get().getGopayAdminFee(0)
+            val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart)
             if (result != null) {
                 val newWalletData = orderPayment.value.walletData
                 orderPayment.value = orderPayment.value.copy(walletData = newWalletData.copy(goCicilData = newWalletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second)))

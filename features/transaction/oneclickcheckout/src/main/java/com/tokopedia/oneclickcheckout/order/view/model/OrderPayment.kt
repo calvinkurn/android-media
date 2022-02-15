@@ -235,5 +235,6 @@ data class OrderPaymentGoCicilTerms(
     val labelType: String = "",
     val labelMessage: String = "",
     val isActive: Boolean = true,
-    val description: String = ""
+    val description: String = "",
+    val isRecommended: Boolean = false,
 )

@@ -45,4 +45,6 @@ class GoCicilInstallmentOption(
         val isActive: Boolean = false,
         @SerializedName("description")
         val description: String = "",
+        @SerializedName("is_recommended")
+        val isRecommended: Boolean = false,
 )

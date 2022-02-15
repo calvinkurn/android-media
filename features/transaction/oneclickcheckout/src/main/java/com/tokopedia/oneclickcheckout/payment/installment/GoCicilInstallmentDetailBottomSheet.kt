@@ -11,9 +11,9 @@ import com.tokopedia.oneclickcheckout.databinding.ItemGocicilInstallmentDetailBi
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
@@ -37,7 +37,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
 
     private var j: Job? = null
 
-    fun show(fragment: OrderSummaryPageFragment, orderCart: OrderCart, walletData: OrderPaymentWalletAdditionalData,
+    fun show(fragment: OrderSummaryPageFragment, orderCart: OrderCart, orderPayment: OrderPayment,
              orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
         val context: Context = fragment.activity ?: return
         fragment.parentFragmentManager.let {
@@ -49,7 +49,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 showHeader = true
                 setTitle(fragment.getString(R.string.occ_gocicil_bottom_sheet_title))
                 binding = BottomSheetGocicilInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(fragment, orderCart, walletData, orderCost, userId)
+                setupChild(fragment, orderCart, orderPayment, orderCost, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -64,22 +64,22 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
     }
 
     private fun setupChild(fragment: OrderSummaryPageFragment, orderCart: OrderCart,
-                           walletData: OrderPaymentWalletAdditionalData, orderCost: OrderCost, userId: String) {
+                           orderPayment: OrderPayment, orderCost: OrderCost, userId: String) {
         binding?.tvInstallmentMessage?.gone()
         binding?.loaderInstallment?.visible()
-        if (walletData.goCicilData.availableTerms.isEmpty()) {
+        if (orderPayment.walletData.goCicilData.availableTerms.isEmpty()) {
             j = launch {
-                val result = paymentProcessor.getGopayAdminFee(0)
+                val result = paymentProcessor.getGopayAdminFee(orderPayment, userId, orderCost, orderCart)
                 if (result != null) {
                     listener.onSelectInstallment(result.first, result.second, isSilent = true)
-                    setupInstallments(fragment, walletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second))
+                    setupInstallments(fragment, orderPayment.walletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second))
                 } else {
                     dismiss()
                     listener.onFailedLoadInstallment()
                 }
             }
         } else {
-            setupInstallments(fragment, walletData.goCicilData)
+            setupInstallments(fragment, orderPayment.walletData.goCicilData)
         }
     }
 
@@ -147,13 +147,5 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean = false)
 
         fun onFailedLoadInstallment()
-    }
-
-    companion object {
-        private const val ENABLE_ALPHA = 1.0f
-        private const val DISABLE_ALPHA = 0.5f
-
-        private const val ROTATION_DEFAULT = 0f
-        private const val ROTATION_REVERSE = 180f
     }
 }

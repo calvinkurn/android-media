@@ -5,10 +5,13 @@ import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -26,7 +29,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val creditCardData = creditCardTenorListUseCase.executeSuspend(generateCreditCardTenorListRequest(orderPaymentCreditCard, userId, orderCost, orderCart))
+                val creditCardData = creditCardTenorListUseCase.executeSuspend(
+                        generateCreditCardTenorListRequest(orderPaymentCreditCard, userId, orderCost, orderCart)
+                )
                 if (creditCardData.errorMsg.isNotEmpty()) {
                     return@withContext null
                 } else {
@@ -72,19 +77,30 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         )
     }
 
-    suspend fun getGopayAdminFee(selectedTerm: Int): Pair<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>>? {
+    suspend fun getGopayAdminFee(orderPayment: OrderPayment, userId: String,
+                                 orderCost: OrderCost, orderCart: OrderCart): Pair<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val installmentList = goCicilInstallmentOptionUseCase.executeSuspend(CreditCardTenorListRequest())
-                val selectedInstallment = installmentList.first { it.installmentTerm == selectedTerm }
+                val installmentList = mapInstallmentOptions(
+                        goCicilInstallmentOptionUseCase.executeSuspend(
+                                GoCicilInstallmentRequest(
+                                        gatewayCode = orderPayment.gatewayCode,
+                                        merchantCode = orderPayment.creditCard.additionalData.merchantCode,
+                                        profileCode = orderPayment.creditCard.additionalData.profileCode,
+                                        userId = userId,
+                                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
+                                        signature = orderPayment.walletData.goCicilData.paymentSignature,
+                                        merchantType = orderCart.shop.merchantType
+                                )
+                        )
+                )
+                var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
+                if (selectedTerm == null) {
+                    selectedTerm = autoSelectGoCicilTerm(orderPayment.walletData.goCicilData.selectedTenure, installmentList)
+                }
+                val selectedInstallment = installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
                 return@withContext selectedInstallment to installmentList
-//                val creditCardData = creditCardTenorListUseCase.executeSuspend(generateCreditCardTenorListRequest(orderPaymentCreditCard, userId, orderCost, orderCart))
-//                if (creditCardData.errorMsg.isNotEmpty()) {
-//                    return@withContext null
-//                } else {
-//                    return@withContext creditCardData.tenorList.map { mapAfpbToInstallmentTerm(it) }
-//                }
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
@@ -92,5 +108,43 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         }
         OccIdlingResource.decrement()
         return result
+    }
+
+    private fun mapInstallmentOptions(installmentOptions: List<GoCicilInstallmentOption>): List<OrderPaymentGoCicilTerms> {
+        return installmentOptions.map {
+            OrderPaymentGoCicilTerms(
+                    installmentTerm = it.installmentTerm,
+                    optionId = it.optionId,
+                    firstInstallmentDate = it.firstInstallmentTime,
+                    lastInstallmentDate = it.estInstallmentEnd,
+                    firstDueMessage = it.firstDueMessage,
+                    interestAmount = it.interestAmount,
+                    feeAmount = it.feeAmount,
+                    installmentAmountPerPeriod = it.installmentAmountPerPeriod,
+                    labelType = it.labelType,
+                    labelMessage = it.labelMessage,
+                    isActive = it.isActive,
+                    description = it.description,
+                    isRecommended = it.isRecommended
+            )
+        }
+    }
+
+    private fun autoSelectGoCicilTerm(selectedTenure: Int, installmentTerms: List<OrderPaymentGoCicilTerms>): OrderPaymentGoCicilTerms {
+        var selectedTerm: OrderPaymentGoCicilTerms?
+        if (selectedTenure > 0) {
+            selectedTerm = installmentTerms.firstOrNull { it.installmentTerm == selectedTenure }
+            if (selectedTerm != null) {
+                return selectedTerm
+            }
+        }
+        selectedTerm = installmentTerms.lastOrNull { it.isRecommended && it.isActive }
+        if (selectedTerm == null) {
+            selectedTerm = installmentTerms.lastOrNull { it.isActive }
+        }
+        if (selectedTerm == null) {
+            selectedTerm = installmentTerms.last()
+        }
+        return selectedTerm
     }
 }
