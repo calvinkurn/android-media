@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.cassava.domain
 import android.content.Context
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
 import com.tokopedia.analyticsdebugger.cassava.validator.core.QueryMode
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toCassavaQuery

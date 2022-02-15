@@ -2,7 +2,7 @@ package com.tokopedia.cassavatest
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator

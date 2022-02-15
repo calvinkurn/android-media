@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator

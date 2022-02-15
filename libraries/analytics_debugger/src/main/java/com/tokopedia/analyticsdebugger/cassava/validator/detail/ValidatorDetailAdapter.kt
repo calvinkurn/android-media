@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 
 class ValidatorDetailAdapter(actual: List<GtmLogUi>) : RecyclerView.Adapter<ValidatorDetailAdapter.DetailViewHolder>() {

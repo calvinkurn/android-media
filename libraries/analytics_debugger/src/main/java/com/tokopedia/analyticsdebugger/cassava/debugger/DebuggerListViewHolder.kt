@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 
 class DebuggerListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

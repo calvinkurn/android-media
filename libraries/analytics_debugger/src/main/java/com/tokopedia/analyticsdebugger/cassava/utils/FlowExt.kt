@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.cassava
+package com.tokopedia.analyticsdebugger.cassava.utils
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect

@@ -1,6 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource

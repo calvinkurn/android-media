@@ -3,7 +3,6 @@ package com.tokopedia.analyticsdebugger.cassava.debugger
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,10 +16,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.cassava.di.DaggerCassavaComponent
-import com.tokopedia.analyticsdebugger.cassava.throttleFirst
+import com.tokopedia.analyticsdebugger.cassava.utils.throttleFirst
 import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow

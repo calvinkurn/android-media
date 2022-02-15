@@ -3,7 +3,7 @@ package com.tokopedia.cassavatest
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsParser
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
@@ -11,7 +11,7 @@ import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource

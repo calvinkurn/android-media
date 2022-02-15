@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava
 
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
