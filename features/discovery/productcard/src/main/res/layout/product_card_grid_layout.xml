@@ -60,13 +60,6 @@
             android:src="@drawable/product_card_ic_video_identifier"
             tools:visibility="visible"/>
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/mediaBarrier"
-            app:barrierDirection="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="imageProduct, videoProduct"/>
-
         <ImageView
             android:id="@+id/labelCampaignBackground"
             android:layout_width="0dp"
