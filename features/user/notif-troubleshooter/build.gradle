@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -45,9 +46,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
@@ -58,6 +59,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.design
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest

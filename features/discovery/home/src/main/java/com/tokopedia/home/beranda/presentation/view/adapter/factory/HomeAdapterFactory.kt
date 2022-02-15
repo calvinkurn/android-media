@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
@@ -66,6 +67,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val legoSixAutoListener: Lego6AutoBannerListener,
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
+                         private val cmHomeWidgetCallback: CMHomeWidgetCallback
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener
 ) :
         BaseAdapterTypeFactory(),
@@ -284,6 +286,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return MerchantVoucherViewHolder.LAYOUT
     }
 
+    override fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int {
+        return CMHomeWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -456,6 +462,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             MerchantVoucherViewHolder.LAYOUT -> viewHolder =
                 MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
+            CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
+                view,
+                cmHomeWidgetCallback
+            )
             else -> viewHolder = super.createViewHolder(view, type)
 
         }
