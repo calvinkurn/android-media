@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -21,15 +22,17 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
@@ -38,9 +41,9 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
+import com.tokopedia.play.broadcaster.view.custom.ProductIconView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -80,7 +83,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
-    private val flProductTag: FrameLayout by detachableView(R.id.fl_product_tag)
+    private val iconProduct: ProductIconView by detachableView(R.id.icon_product)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
@@ -162,15 +165,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun scrollProductTag(
                 view: ProductTagViewComponent,
-                product: ProductContentUiModel,
+                product: ProductUiModel,
                 position: Int
             ) {
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
         })
     }
-
-    private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -213,6 +214,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductSetupFragment -> {
+                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
+                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                        //TODO("Revamp this")
+                        return parentViewModel.productSectionList
+                    }
+                })
+            }
+        }
+    }
+
     private fun initAnalytic() {
         productTagAnalyticHelper = ProductTagAnalyticHelper(analytic)
     }
@@ -225,7 +240,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
-        flProductTag.setOnClickListener {
+        iconProduct.setOnClickListener {
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
@@ -302,7 +317,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
-        observeProductTag()
     }
 
     override fun onPause() {
@@ -362,15 +376,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setNewMetrics(metrics: List<PlayMetricUiModel>) {
         pmvMetrics.addMetricsToQueue(metrics)
-    }
-
-    private fun getProductLiveBottomSheet(): PlayProductLiveBottomSheet {
-        if (!::productLiveBottomSheet.isInitialized) {
-            val setupClass = PlayProductLiveBottomSheet::class.java
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            productLiveBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayProductLiveBottomSheet
-        }
-        return productLiveBottomSheet
     }
 
     private fun showDialogWhenActionClose(): Boolean {
@@ -492,7 +497,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun doShowProductInfo() {
-        getProductLiveBottomSheet().show(childFragmentManager)
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
     }
 
     private fun navigateToSummary() {
@@ -671,10 +678,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            parentViewModel.uiState.withCache().collectLatest { cachedState ->
-                val state = cachedState.value
-                val prevState = cachedState.prevValue
+            parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
+                renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -693,12 +699,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                 }
             }
-        }
-    }
-
-    private fun observeProductTag() {
-        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
-            productTagView.setProducts(it)
         }
     }
     //endregion
@@ -744,6 +744,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 clInteraction.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun renderProductTagView(
+        prevState: List<ProductTagSectionUiModel>?,
+        state: List<ProductTagSectionUiModel>
+    ) {
+        if (prevState == state) return
+
+        productTagView.setProducts(state.flatMap { it.products })
     }
 
     private fun isPinnedFormVisible(): Boolean {

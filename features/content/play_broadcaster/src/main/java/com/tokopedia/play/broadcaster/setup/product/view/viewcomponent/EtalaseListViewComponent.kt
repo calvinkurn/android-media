@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdap
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -37,16 +38,31 @@ internal class EtalaseListViewComponent(
     fun setCampaignAndEtalaseList(
         campaignList: List<CampaignUiModel>,
         etalaseList: List<EtalaseUiModel>,
+        selected: SelectedEtalaseModel,
     ) {
         val combinedEtalaseList = buildList {
             if (campaignList.isNotEmpty()) {
                 add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
-                addAll(campaignList.map(EtalaseListAdapter.Model::Campaign))
+                addAll(campaignList.map {
+                    EtalaseListAdapter.Model.Campaign(
+                        campaignUiModel = it,
+                        isSelected = selected is SelectedEtalaseModel.Campaign &&
+                                selected.campaign.id == it.id
+                    )
+                })
             }
 
             if (etalaseList.isNotEmpty()) {
                 add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
-                addAll(etalaseList.map(EtalaseListAdapter.Model::Etalase))
+                addAll(
+                    etalaseList.map {
+                        EtalaseListAdapter.Model.Etalase(
+                            etalaseUiModel = it,
+                            isSelected = selected is SelectedEtalaseModel.Etalase &&
+                                    selected.etalase.id == it.id
+                        )
+                    }
+                )
             }
         }
 

@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -520,7 +521,7 @@ class PlayBroadcastAnalytic(
     /**
      * Scroll Product Tag Carousel
      */
-    fun scrollProductTag(channelId: String, product: ProductContentUiModel, position: Int) {
+    fun scrollProductTag(channelId: String, product: ProductUiModel, position: Int) {
         scrollGeneralEvent(
             "- product tag carousel",
             "- $channelId - ${product.id} - $position"

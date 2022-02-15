@@ -111,4 +111,7 @@
     <!--Product Chooser-->
     <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>
     <dimen name="play_bro_product_summary_btn_container_elevation">10dp</dimen>
+
+    <!--Live-->
+    <dimen name="play_product_icon_dot_radius">4dp</dimen>
 </resources>

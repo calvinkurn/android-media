@@ -315,6 +315,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
             }
             else -> openBroadcastSetupPage()
         }
+//        openBroadcastActivePage()
     }
 
     private fun requestPermission() {

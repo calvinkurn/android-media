@@ -8,15 +8,11 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -79,7 +75,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     override suspend fun getProductsInCampaign(
         campaignId: String,
         page: Int,
-    ) = withContext(dispatchers.io) {
+    ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.userId.isBlank()) error("User does not exist")
 
         val response = getProductsInCampaignUseCase.apply {
@@ -107,6 +103,8 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
     }
 
+    @ExperimentalStdlibApi
+    /** TODO: gonna remove the annotation later */
     override suspend fun getProductTagSummarySection(channelID: String) = withContext(dispatchers.io) {
         val response = getProductTagSummarySectionUseCase.apply {
             setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))

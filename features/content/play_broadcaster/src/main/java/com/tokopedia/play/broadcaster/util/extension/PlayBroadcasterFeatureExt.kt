@@ -20,20 +20,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by jegul on 16/07/20
  */
-internal fun GlobalError.productNotFoundState() {
-    errorIllustration.setImageResource(com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)
-    errorTitle.text = context.getString(R.string.play_product_not_found_title)
-    errorDescription.text = context.getString(R.string.play_product_not_found_desc)
-    errorAction.gone()
-}
-
-internal fun GlobalError.productEtalaseEmpty() {
-    errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
-    errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
-    errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
-    errorAction.gone()
-}
-
 internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
     this.errorTitle.setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))

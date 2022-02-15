@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -13,23 +14,25 @@ import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserE
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
-import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -45,18 +48,17 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted productList: List<ProductUiModel>,
+    @Assisted productSectionList: List<ProductTagSectionUiModel>,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
-    private val setupDataStore: PlayBroadcastSetupDataStore,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(
-            productList: List<ProductUiModel>
+            productSectionList: List<ProductTagSectionUiModel>,
         ): PlayBroProductSetupViewModel
     }
 
@@ -66,15 +68,16 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val maxProduct: Int
         get() = configStore.getMaxProduct()
 
-    private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
-    private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
-    private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(
-        mapOf(SelectedEtalaseModel.None to productList)
-    )
+    private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
+    private val _selectedProductSectionList = MutableStateFlow(productSectionList)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
-
+    private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
+    private val _config = MutableStateFlow(
+        ProductSetupConfig(shopName = userSession.shopName, maxProduct = configStore.getMaxProduct())
+    )
 
     private val searchQuery = MutableStateFlow("")
 
@@ -82,50 +85,25 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayBroProductChooserEvent>(extraBufferCapacity = 5)
 
-    private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
-    private val _productCount = MutableStateFlow<Int?>(null)
-    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
-
-    private val _campaignAndEtalase = combine(
-        _loadParam,
-        _campaignList,
-        _etalaseList
-    ) { loadParam, campaignList, etalaseList ->
-        if(loadParam.etalase !is SelectedEtalaseModel.None) {
-            /** TODO: TechDebt - isChecked should be val, then find a good way to update this checked status */
-            campaignList.forEach {
-                it.isChecked = loadParam.etalase is SelectedEtalaseModel.Campaign && loadParam.etalase.campaign == it
-            }
-
-            etalaseList.forEach {
-                it.isChecked = loadParam.etalase is SelectedEtalaseModel.Etalase && loadParam.etalase.etalase == it
-            }
-        }
-
-        CampaignAndEtalaseUiModel(
-            selected = loadParam.etalase,
-            campaignList = campaignList,
-            etalaseList = etalaseList,
-        )
-    }
-
     val uiEvent: SharedFlow<PlayBroProductChooserEvent>
         get() = _uiEvent
 
     val uiState = combine(
         _campaignAndEtalase,
         _focusedProductList,
-        _selectedProductMap,
+        _selectedProductSectionList,
         _loadParam,
         _saveState,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam, saveState ->
+        _config,
+    ) { campaignAndEtalase, focusedProductList, selectedProductSectionList, loadParam, saveState,
+        config ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
-            selectedProductList = selectedProductList,
-            sort = loadParam.sort,
-            shopName = userSession.shopName,
+            selectedProductSectionList = selectedProductSectionList,
+            loadParam = loadParam,
             saveState = saveState,
+            config = config,
         )
     }.stateIn(
         viewModelScope,
@@ -135,19 +113,17 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val summaryUiState = combine(
         _productTagSectionList,
-        _productCount,
         _productTagSummary,
-    ) { productTagSectionList, productCount, productTagSummary ->
+    ) { productTagSectionList, productTagSummary ->
         PlayBroProductSummaryUiState(
             productTagSectionList = productTagSectionList,
-            productCount = productCount,
+            productCount = productTagSectionList.sumOf { it.products.size },
             productTagSummary = productTagSummary
         )
     }
 
     init {
-        getCampaignList()
-        getEtalaseList()
+        getCampaignAndEtalaseList()
 
         viewModelScope.launch {
             searchQuery.debounce(300)
@@ -165,10 +141,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            _selectedProductMap.collectLatest { map ->
+            _selectedProductSectionList.collectLatest { sections ->
                 _saveState.update {
                     it.copy(
-                        canSave = map.values.flatten().isNotEmpty()
+                        canSave = sections.any { section -> section.products.isNotEmpty() }
                     )
                 }
             }
@@ -187,26 +163,38 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is PlayBroProductChooserAction.SearchProduct -> handleSearchProduct(action.keyword)
             PlayBroProductChooserAction.SaveProducts -> handleSaveProducts()
+            PlayBroProductChooserAction.CreateProduct -> handleAddProduct()
             is PlayBroProductChooserAction.LoadProductSummary -> handleLoadProductSummary()
             is PlayBroProductChooserAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
     }
 
-    private fun getEtalaseList() {
+    private fun getCampaignAndEtalaseList() {
+        _campaignAndEtalase.update {
+            it.copy(state = NetworkState.Loading)
+        }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            _etalaseList.value = repo.getEtalaseList()
+            val campaignListDeferred = asyncCatchError(block = {
+                repo.getCampaignList()
+            }) { emptyList() }
+            val etalaseListDeferred = asyncCatchError(block = {
+                repo.getEtalaseList()
+            }) { emptyList() }
+
+            _campaignAndEtalase.update {
+                it.copy(
+                    campaignList = campaignListDeferred.await().orEmpty(),
+                    etalaseList = etalaseListDeferred.await().orEmpty(),
+                    state = NetworkState.Success,
+                )
+            }
         }) {
-            print(it)
+            _campaignAndEtalase.update {
+                it.copy(state = NetworkState.Failed)
+            }
         }
     }
 
-    private fun getCampaignList() {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            _campaignList.value = repo.getCampaignList()
-        }) {
-            print(it)
-        }
-    }
 
     private fun handleSetSort(sort: SortUiModel) {
         _loadParam.update {
@@ -233,14 +221,27 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
-        //when select product, we can just treat it as no etalase/campaign
-        val etalase = SelectedEtalaseModel.None
-        _selectedProductMap.update { map ->
-            val prevSelectedProducts = map[etalase].orEmpty()
-            val newSelectedProducts = if (prevSelectedProducts.any { it.id == product.id }) {
-                prevSelectedProducts.filter { it.id != product.id }
-            } else prevSelectedProducts + product
-            map + mapOf(etalase to newSelectedProducts)
+        _selectedProductSectionList.update { sections ->
+            var hasProduct = false
+            val newSections = sections.map { section ->
+                val newProducts = section.products.filter { it.id != product.id }
+                if (newProducts.size != section.products.size) hasProduct = true
+                section.copy(
+                    products = newProducts
+                )
+            }
+            if (!hasProduct) {
+                val section = sections.lastOrNull() ?: ProductTagSectionUiModel(
+                    //when select product, we can just use default key
+                    name = "",
+                    campaignStatus = CampaignStatus.Unknown,
+                    products = emptyList(),
+                )
+                val tempSections = newSections.toMutableList()
+                tempSections.remove(section)
+                tempSections.add(section.copy(products = section.products + product))
+                tempSections
+            } else newSections
         }
     }
 
@@ -353,10 +354,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private suspend fun getProductTagSummary() {
-        val (response, productCount) = repo.getProductTagSummarySection(channelId)
+        val response = repo.getProductTagSummarySection(channelId)
 
         _productTagSectionList.value = response
-        _productCount.value = productCount
         _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 
@@ -371,8 +371,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
                 channelId = configStore.getChannelId(),
-                productIds = _selectedProductMap.value.values.flatMap { productList ->
-                    productList.map { it.id }
+                productIds = _selectedProductSectionList.value.flatMap { section ->
+                    section.products.map { it.id }
                 },
             )
             _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
@@ -384,6 +384,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     it.copy(isLoading = false)
                 }
             }
+        }
+    }
+
+    private fun handleAddProduct() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroProductChooserEvent.OpenShopPage(userSession.shopId))
         }
     }
 }

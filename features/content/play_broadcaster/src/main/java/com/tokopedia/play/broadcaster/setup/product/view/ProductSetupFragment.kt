@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import javax.inject.Inject
 
 /**
@@ -27,6 +27,17 @@ class ProductSetupFragment @Inject constructor(
 
         openProductChooser()
 //        openProductSummary()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductChooserBottomSheet -> childFragment.setOnDismissListener {
+                childFragmentManager.beginTransaction()
+                    .remove(childFragment)
+                    .commit()
+            }
+        }
     }
 
     fun removeFragment() {
@@ -64,7 +75,9 @@ class ProductSetupFragment @Inject constructor(
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return productSetupViewModelFactory.create(mDataSource?.getProductList().orEmpty()) as T
+                    return productSetupViewModelFactory.create(
+                        mDataSource?.getProductSectionList().orEmpty()
+                    ) as T
                 }
             }
         }
@@ -73,6 +86,6 @@ class ProductSetupFragment @Inject constructor(
 
     interface DataSource {
 
-        fun getProductList(): List<ProductUiModel>
+        fun getProductSectionList(): List<ProductTagSectionUiModel>
     }
 }
