@@ -1,10 +1,14 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -12,8 +16,8 @@ import javax.inject.Inject
 class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
 
     @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
-    suspend fun executeSuspend(param: CreditCardTenorListRequest): List<OrderPaymentGoCicilTerms> {
-//        val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), CreditCardTenorListResponse::class.java, generateParam(param))
+    suspend fun executeSuspend(param: GoCicilInstallmentRequest): List<OrderPaymentGoCicilTerms> {
+        val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), GoCicilInstallmentGqlResponse::class.java, generateParam(param))
 //        val response = graphqlRepository.response(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
         delay(5_000)
         return listOf(
@@ -23,8 +27,27 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
         )
     }
 
-    fun generateParam(input: CreditCardTenorListRequest): Map<String, Any?> {
-        return mapOf(INPUT to input)
+    private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {
+        val userDefinedValue = JsonObject().apply {
+            addProperty("user_id", param.userId)
+        }
+        val orderMetadata = JsonObject().apply {
+            add("order_data", JsonArray().apply {
+                add(JsonObject().apply {
+                    addProperty("merchant_type", param.merchantType)
+                    addProperty("order_amount", param.paymentAmount)
+                })
+            })
+        }
+        return mapOf(
+                PARAM_GATEWAY_CODE to param.gatewayCode,
+                PARAM_MERCHANT_CODE to param.merchantCode,
+                PARAM_PROFILE_CODE to param.profileCode,
+                PARAM_USER_DEFINED_VALUE to userDefinedValue.toString(),
+                PARAM_PAYMENT_AMOUNT to param.paymentAmount,
+                PARAM_SIGNATURE to param.signature,
+                PARAM_ORDER_METADATA to orderMetadata.toString(),
+        )
     }
 
     private fun mapInstallmentOptions(installmentOptions: List<GoCicilInstallmentOption>): List<OrderPaymentGoCicilTerms> {
@@ -48,6 +71,13 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
 
     companion object {
         private const val INPUT = "input"
+        private const val PARAM_GATEWAY_CODE = "gatewayCode"
+        private const val PARAM_MERCHANT_CODE = "merchantCode"
+        private const val PARAM_PROFILE_CODE = "profileCode"
+        private const val PARAM_USER_DEFINED_VALUE = "userDefinedValue"
+        private const val PARAM_PAYMENT_AMOUNT = "paymentAmount"
+        private const val PARAM_SIGNATURE = "signature"
+        private const val PARAM_ORDER_METADATA = "orderMetadata"
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"
         private const val QUERY = """
