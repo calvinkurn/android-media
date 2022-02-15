@@ -11,6 +11,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMerchantVoucherBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
+import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -91,6 +92,7 @@ class MerchantVoucherViewHolder(
 
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
         val list :MutableList<CarouselMerchantVoucherDataModel> = mutableListOf()
+        val positionWidget = "$adapterPosition"
         for (element in channel.channelGrids) {
             list.add(
                 CarouselMerchantVoucherDataModel(
@@ -102,7 +104,12 @@ class MerchantVoucherViewHolder(
                     imageProduct = element.imageUrl,
                     shopAppLink = element.shop.shopAppLink,
                     productAppLink = element.applink,
-                    merchantVoucherComponentListener = merchantVoucherComponentListener
+                    merchantVoucherComponentListener = merchantVoucherComponentListener,
+                    shopId = element.shop.id,
+                    bannerId = channel.channelBanner.id,
+                    positionWidget = positionWidget,
+                    headerName = channel.channelHeader.name,
+                    userId = merchantVoucherComponentListener.getUserId()
                 )
             )
         }

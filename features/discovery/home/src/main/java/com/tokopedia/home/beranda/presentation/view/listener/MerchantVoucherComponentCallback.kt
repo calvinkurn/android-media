@@ -1,8 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
+import com.tokopedia.home.analytics.v2.MerchantVoucherTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 
 /**
  * Created by dhaba
@@ -22,7 +24,12 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         TODO("Not yet implemented")
     }
 
-    override fun onShopClicked(shopAppLink: String) {
-        homeCategoryListener.onDynamicChannelClicked(shopAppLink)
+    override fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked) {
+        homeCategoryListener.onDynamicChannelClicked(merchantVoucherShopClicked.shopAppLink)
+        MerchantVoucherTracking.getShopClicked(merchantVoucherShopClicked)
+    }
+
+    override fun getUserId(): String {
+        return homeCategoryListener.userId
     }
 }

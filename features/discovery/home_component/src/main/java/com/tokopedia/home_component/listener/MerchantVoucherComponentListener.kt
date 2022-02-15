@@ -1,14 +1,16 @@
 package com.tokopedia.home_component.listener
 
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 
 /**
  * Created by dhaba
  */
 interface MerchantVoucherComponentListener  {
-    fun onShopClicked(shopAppLink: String)
+    fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked)
     fun onMerchantImpressed(channel: ChannelModel, parentPos: Int)
     fun onProductClicked(productAppLink: String)
     //for see more card click
     fun onSeeMoreCardClicked(channel: ChannelModel, appLink: String)
+    fun getUserId() : String
 }

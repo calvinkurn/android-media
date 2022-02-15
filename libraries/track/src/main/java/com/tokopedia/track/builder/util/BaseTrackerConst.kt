@@ -101,6 +101,7 @@ abstract class BaseTrackerConst {
             val promoCodes: String = "",
             val creativeUrl: String = "") {
         companion object {
+            const val KEY = "promotions"
             const val CREATIVE_NAME = "creative_name"
             const val CREATIVE_SLOT = "creative_slot"
             const val ITEM_ID = "item_id"
