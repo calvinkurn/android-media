@@ -137,4 +137,41 @@ object ContentWidgetTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun fintechActivationBottomSheetImpression(
+        userStatus: String,
+        gatewayCode: String,
+        userId:String,
+        ctaWording:String
+    )
+    {
+        val mapEvent = hashMapOf<String, Any>(
+            "event" to ProductTrackingConstant.Fintech.EVENT_VIEW_BOTTOMSHEET,
+            "eventAction" to ProductTrackingConstant.Fintech.ACTION_VIEW_BOTTOMSHEET,
+            "eventCategory" to ProductTrackingConstant.Fintech.EVENT_FINTECH_BOTTOMSHEET_CATEGORY,
+            "eventLabel" to "$userStatus - $gatewayCode - $ctaWording - $userId",
+            "businessUnit" to ProductTrackingConstant.Fintech.FINTECH_BOTTOMSHEET_BUSINESS,
+            "currentSite" to ProductTrackingConstant.Fintech.FINTECH_CURRENT_SITE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun fintechActivationClickBottomSheet(
+        userStatus: String,
+        gatewayCode: String,
+        userId:String,
+        redirectionUrl: String,
+        ctaWording:String
+    )
+    {
+        val mapEvent = hashMapOf<String, Any>(
+            "event" to ProductTrackingConstant.Fintech.EVENT_CLICK_BOTTOMSHEET,
+            "eventAction" to ProductTrackingConstant.Fintech.ACTION_CLICK_BOTTOMSHEET,
+            "eventCategory" to ProductTrackingConstant.Fintech.EVENT_FINTECH_BOTTOMSHEET_CATEGORY,
+            "eventLabel" to "$userStatus - $gatewayCode - $redirectionUrl - $ctaWording - $userId",
+            "businessUnit" to ProductTrackingConstant.Fintech.FINTECH_BOTTOMSHEET_BUSINESS,
+            "currentSite" to ProductTrackingConstant.Fintech.FINTECH_CURRENT_SITE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
 }

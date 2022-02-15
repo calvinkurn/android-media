@@ -24,7 +24,7 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
             listener.getParentViewModelStoreOwner(),
             listener.getParentLifeCyclerOwner()
         )
-        element?.idToPriceUrlMap?.let { fintechWidget.updateidToPriceMap(it  ,
+        element?.idToPriceUrlMap?.let { fintechWidget.updateIdToPriceMap(it  ,
             element.categoryId
         ) }
 

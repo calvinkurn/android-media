@@ -12,6 +12,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOpti
 import com.tokopedia.pdpsimulation.activateCheckout.listner.GatewaySelectActivityListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.GatewayListAdapter
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.activation_gateway_brand.*
@@ -98,10 +99,12 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
     private fun sendClickAnalytics(checkoutData: CheckoutData) {
         activity?.let {
             checkoutData.userAmount?.let { limit ->
-                PdpSimulationEvent.ClickChangePartnerEvent(
-                    checkoutData.gateway_name,
-                    limit, quantitySelected.toString(), variantSelected
-                )
+                checkoutData.userState?.let { userState ->
+                   sendAnalyticEvent( PdpSimulationEvent.ClickChangePartnerEvent(
+                        checkoutData.gateway_name,
+                        limit, quantitySelected.toString(), variantSelected, userState
+                    ))
+                }
             }
         }
     }
@@ -111,13 +114,19 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
             activity?.let {
                 gatewayList[i].userAmount?.let { limit ->
                     gatewayList[i].userState?.let { userState ->
-                        PdpSimulationEvent.ChangePartnerImperssion(
+                        sendAnalyticEvent(PdpSimulationEvent.ChangePartnerImperssion(
                             gatewayList[i].gateway_name,
                             limit, quantitySelected.toString(), variantSelected, userState
-                        )
+                        ))
                     }
                 }
             }
+        }
+    }
+
+    private fun sendAnalyticEvent(event: PdpSimulationEvent) {
+        activity?.let {
+            (it as PdpSimulationCallback).sendOtherAnalytics(event)
         }
     }
 

@@ -284,7 +284,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             } else {
                 for (i in variantData.children.indices) {
-                    productIdToPriceURLMap[variantData.children[i].productId] = FintechPriceUrlDataModel( variantData.children[i].url,variantData.children[i].price.toString())
+                    productIdToPriceURLMap[variantData.children[i].productId] =
+                        FintechPriceUrlDataModel( variantData.children[i].url,
+                            variantData.children[i].price.toString())
                 }
             }
 

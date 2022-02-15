@@ -112,7 +112,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
             override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand:
-            String,widgetBottomsheet: WidgetBottomsheet,gateWayID:Int) {
+            String,widgetBottomsheet: WidgetBottomsheet,gateWayID:Int,userStatus:String) {
                 instanceProductUpdateListner.fintechRedirection(
                     FintechRedirectionWidgetDataClass(
                        cta =  cta,
@@ -121,9 +121,20 @@ class PdpFintechWidget @JvmOverloads constructor(
                         gatewayId= gateWayID,
                        productUrl =  idToPriceUrlMap[productID]?.url,
                        gatewayCode =  gatewayBrand,
-                        widgetBottomSheet = widgetBottomsheet
+                        widgetBottomSheet = widgetBottomsheet,
+                        userStatus =  userStatus
                     )
                 )
+            }
+
+            override fun viewInflatedWidget(chipData: ChipsData) {
+                chipData.userStatus?.let { userStatus ->
+                    chipData.productCode?.let { productCode->
+                        FintechWidgetAnalyticsEvent.PdpWidgetScrollImpression(productID,
+                            userStatus, productCode
+                        )
+                    }
+                }
             }
 
 
@@ -193,16 +204,29 @@ class PdpFintechWidget @JvmOverloads constructor(
                 }
             }
         }
+
+        for(i in 0 until chipList.size) {
+            chipList[i].userStatus?.let { userStatus->
+                chipList[i].productCode?.let { partnerName->
+                    if(chipList[i].userStatus.equals("ELIGIBLE")) {
+                        pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                            FintechWidgetAnalyticsEvent.PdpWidgetEligibleImression(
+                                productID, userStatus,
+                                partnerName
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
-    fun updateidToPriceMap(
+    fun updateIdToPriceMap(
         productIdToPrice: HashMap<String, FintechPriceUrlDataModel>,
         productCategoryId: String?,
     ) {
         idToPriceUrlMap = productIdToPrice
         categoryId = productCategoryId
-
-
     }
 
 }

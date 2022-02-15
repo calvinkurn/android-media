@@ -12,14 +12,20 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdp.fintech.domain.datamodel.ActivationBottomSheetDescriptions
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.tracking.ContentWidgetTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
+import javax.inject.Inject
 
 class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var parentView: View? = null
     private val childLayoutRes = R.layout.bottom_sheet_pdp_widget_gopay_activation
@@ -62,14 +68,45 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
         supervisedIcon = view.findViewById(R.id.supervisedIcon)
         recyclerBenifits.adapter = gopayLinkBenefitAdapter
         recyclerBenifits.layoutManager = LinearLayoutManager(context)
-        setListner()
+        setListener()
         setData()
+        sendImpressionAnalytics()
     }
 
-    private fun setListner() {
+    private fun sendImpressionAnalytics() {
+         activationBottomSheetDetail?.userStatus?.let { userStatus ->
+            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
+                activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
+                    ContentWidgetTracking.fintechActivationBottomSheetImpression(
+                        userStatus, gatewayCode,userSession.userId,
+                        ctaWording
+                    )
+                }
+            }
+         }
+    }
+
+    private fun setListener() {
         proceedButton.setOnClickListener {
+            sendCLickAnalytic()
            openRouteView(webUrl)
         }
+    }
+
+    private fun sendCLickAnalytic() {
+        activationBottomSheetDetail?.userStatus?.let { userStatus ->
+            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
+                webUrl?.let { redirectionUrl->
+                    activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
+                        ContentWidgetTracking.fintechActivationClickBottomSheet(userStatus,gatewayCode,userSession.userId,
+                            redirectionUrl,
+                            ctaWording
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     private fun openRouteView(androidUrl: String?) {

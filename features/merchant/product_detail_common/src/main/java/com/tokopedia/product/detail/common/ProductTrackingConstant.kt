@@ -278,6 +278,17 @@ object ProductTrackingConstant {
         const val EVENT_CLICK_COURIER = "clickCourier"
     }
 
+    object Fintech{
+        const val FINTECH_CURRENT_SITE  = "TokopediaFintech"
+        const val FINTECH_BOTTOMSHEET_BUSINESS = "fintechPaylater"
+        const val EVENT_VIEW_BOTTOMSHEET = "viewFintechIris"
+        const val ACTION_VIEW_BOTTOMSHEET = "bottom sheet bnpl - impression"
+        const val EVENT_CLICK_BOTTOMSHEET = "clickFintech"
+        const val ACTION_CLICK_BOTTOMSHEET =   "bottom sheet bnpl - click"
+        const val EVENT_FINTECH_BOTTOMSHEET_CATEGORY = "fin - activation bottom sheet"
+
+    }
+
     object Affiliate {
         const val CLICK_AFFILIATE = "clickAffiliate"
         const val CATEGORY = "product detail page tokopedia by.me"
