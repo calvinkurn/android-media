@@ -23,6 +23,7 @@ class ComparisonDetailViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                     findViewById<ImageUnify>(R.id.catalog_comparison_image).loadImageWithoutPlaceholder(imageUrl)
                 }
                 findViewById<UnifyButton>(R.id.catalog_comparison_bandingkan_button).invisible()
+                findViewById<CardUnify>(R.id.catalog_card).cardType = CardUnify.TYPE_BORDER
             }
 
         }
@@ -41,7 +42,6 @@ class ComparisonDetailViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                         catalogDetailListener?.openComparisonBottomSheet(comparisonCatalog)
                     }
                 }
-
             }
         }
 

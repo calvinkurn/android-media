@@ -2,11 +2,13 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -66,6 +68,8 @@ object CatalogUtil {
     fun setSearchListener(context: Context?, view: View, onSearchKeywordEntered: () -> Unit,
                                   onClearSearch : () -> Unit) {
         val searchbar = view.findViewById<SearchBarUnify>(R.id.catalog_product_search)
+        searchbar.searchBarContainer.background = MethodChecker.getDrawable(context,
+            com.tokopedia.catalog.R.drawable.catalog_search_bar_background)
         val searchTextField = searchbar?.searchBarTextField
         val searchClearButton = searchbar?.searchBarIcon
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH

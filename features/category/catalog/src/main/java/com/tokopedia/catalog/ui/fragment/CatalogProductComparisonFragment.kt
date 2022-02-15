@@ -121,9 +121,10 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             errorSecondaryAction.gone()
             setButtonFull(true)
             errorTitle.text = getString(R.string.catalog_no_products_title)
-            errorDescription.text = getString(R.string.catalog_search_product_zero_count_text)
+            errorDescription.text = getString(R.string.catalog_cobi_cari_katalog_lain)
             errorAction.hide()
             errorAction.setOnClickListener {
+                hideErrorGroup()
                 makeApiCall(PAGE_FIRST)
             }
         }
@@ -239,6 +240,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
                 setType(GlobalError.SERVER_ERROR)
             }
             errorAction.setOnClickListener {
+                hideErrorGroup()
                 makeApiCall(PAGE_FIRST)
             }
         }

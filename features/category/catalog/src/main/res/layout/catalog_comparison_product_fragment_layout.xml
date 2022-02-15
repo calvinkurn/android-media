@@ -13,6 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:search_bar_show_icon="false"
+        android:background="@drawable/nav_toolbar_searchbar_bg_corner"
         app:search_bar_placeholder="@string/catalog_search_product_hint"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -44,7 +45,7 @@
         android:paddingTop="@dimen/dp_40"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/catalog_product_search"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
         app:imageDpiSupportType="singleDpi"
         tools:visibility="visible" />
 
