@@ -78,8 +78,7 @@ internal class EtalaseListViewHolder private constructor() {
                 else View.VISIBLE
 
             binding.icEtalaseChecked.visibility =
-                if(item.selectedEtalaseModel is SelectedEtalaseModel.Campaign &&
-                    item.campaignUiModel.id == item.selectedEtalaseModel.campaign.id) View.VISIBLE
+                if(item.campaignUiModel.isChecked) View.VISIBLE
                 else View.GONE
 
             itemView.setOnClickListener {
@@ -99,8 +98,7 @@ internal class EtalaseListViewHolder private constructor() {
             binding.labelStatus.visibility = View.GONE
 
             binding.icEtalaseChecked.visibility =
-                if(item.selectedEtalaseModel is SelectedEtalaseModel.Etalase &&
-                    item.etalaseUiModel.id == item.selectedEtalaseModel.etalase.id) View.VISIBLE
+                if(item.etalaseUiModel.isChecked) View.VISIBLE
                 else View.GONE
 
             itemView.setOnClickListener {

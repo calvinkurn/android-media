@@ -127,7 +127,10 @@ class EtalaseListBottomSheet @Inject constructor(
         if (prevModel?.campaignList == model.campaignList &&
             prevModel.etalaseList == model.etalaseList) return
 
-        etalaseListView.setCampaignAndEtalaseList(model)
+        etalaseListView.setCampaignAndEtalaseList(
+            campaignList = model.campaignList,
+            etalaseList = model.etalaseList
+        )
     }
 
     /**

@@ -91,6 +91,17 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         _campaignList,
         _etalaseList
     ) { loadParam, campaignList, etalaseList ->
+        if(loadParam.etalase !is SelectedEtalaseModel.None) {
+            /** TODO: TechDebt - isChecked should be val, then find a good way to update this checked status */
+            campaignList.forEach {
+                it.isChecked = loadParam.etalase is SelectedEtalaseModel.Campaign && loadParam.etalase.campaign == it
+            }
+
+            etalaseList.forEach {
+                it.isChecked = loadParam.etalase is SelectedEtalaseModel.Etalase && loadParam.etalase.etalase == it
+            }
+        }
+
         CampaignAndEtalaseUiModel(
             selected = loadParam.etalase,
             campaignList = campaignList,
