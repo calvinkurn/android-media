@@ -55,12 +55,6 @@
             tools:text="Stok Habis"
             tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/group_empty_stock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="iv_product_summary_cover, tv_product_summary_empty_stock" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_summary_stock"
             android:layout_width="0dp"

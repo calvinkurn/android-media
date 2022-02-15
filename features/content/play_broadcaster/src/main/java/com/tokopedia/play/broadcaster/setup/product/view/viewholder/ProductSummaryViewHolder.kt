@@ -89,11 +89,14 @@ internal class ProductSummaryViewHolder private constructor() {
                     )
                     visibility = View.VISIBLE
                 }
-                binding.groupEmptyStock.visibility = View.GONE
+                binding.tvProductSummaryEmptyStock.visibility = View.GONE
+                binding.ivProductSummaryCover.visibility = View.GONE
             }
             else {
                 binding.tvProductSummaryStock.visibility = View.GONE
-                binding.groupEmptyStock.visibility = View.VISIBLE
+
+                binding.tvProductSummaryEmptyStock.visibility = View.VISIBLE
+                binding.ivProductSummaryCover.visibility = View.VISIBLE
             }
 
 
