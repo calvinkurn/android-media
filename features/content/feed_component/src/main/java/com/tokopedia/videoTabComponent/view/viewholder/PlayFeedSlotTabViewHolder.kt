@@ -24,7 +24,8 @@ class PlayFeedSlotTabViewHolder private constructor() {
         private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_labels)
         private val adapter = SlotTabViewAdapter(this)
 
-        fun bind(item: PlaySlotTabMenuUiModel) {
+        fun bind(item: PlaySlotTabMenuUiModel, position: Int) {
+            (rvSlotTab.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position,10)
             rvSlotTab.adapter = adapter
             adapter.setItems(item.items)
         }
@@ -32,7 +33,6 @@ class PlayFeedSlotTabViewHolder private constructor() {
         class SlotTabViewAdapter(private val listener: PlaySlotTabCallback?) :
             RecyclerView.Adapter<SlotTabViewHolder>() {
 
-            private var selectedTab: Int = 0
             private val mItems: MutableList<PlaySlotTabMenuUiModel.Item> = mutableListOf()
 
             @SuppressLint("NotifyDataSetChanged")
@@ -52,10 +52,10 @@ class PlayFeedSlotTabViewHolder private constructor() {
 
             override fun onBindViewHolder(holder: SlotTabViewHolder, position: Int) {
                 holder.bind(mItems[position]) {
-                    mItems[selectedTab].isSelected = false
-                    notifyItemChanged(selectedTab)
-
-                    selectedTab = holder.adapterPosition
+//                    mItems[selectedTab].isSelected = false
+//                    notifyItemChanged(selectedTab)
+//
+//                    selectedTab = holder.adapterPosition
                 }
             }
 
@@ -92,7 +92,7 @@ class PlayFeedSlotTabViewHolder private constructor() {
         }
 
         override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
-            tabClickListener.clickTabMenu(item)
+            tabClickListener.clickTabMenu(item, position)
             (rvSlotTab.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position,10)
         }
         override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {

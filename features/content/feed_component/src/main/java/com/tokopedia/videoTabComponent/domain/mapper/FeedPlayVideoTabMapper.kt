@@ -23,13 +23,15 @@ object FeedPlayVideoTabMapper {
     }
 
     fun map(
-        playGetContentSlotResponse: PlayGetContentSlotResponse
+        playSlotList: List<PlaySlot>,
+        meta: PlayPagingProperties,
+        position: Int = 0
     ): List<PlayFeedUiModel> {
 
         val list = mutableListOf<PlayFeedUiModel>()
-        val meta = playGetContentSlotResponse.meta
 
-        playGetContentSlotResponse.data.forEach { playSlot ->
+
+        playSlotList.forEach { playSlot ->
             when (playSlot.type) {
                 FEED_TYPE_PINNED_FEEDS -> {
                     list.add(
@@ -52,7 +54,7 @@ object FeedPlayVideoTabMapper {
                                 PlaySlotTabMenuUiModel.Item(
                                     playSlotItem.id, playSlotItem.label, playSlotItem.icon_url,
                                     playSlotItem.group, playSlotItem.source_type,
-                                    playSlotItem.source_id, playSlotItem.slug_id, index == 0
+                                    playSlotItem.source_id, playSlotItem.slug_id, index == position
                                 )
                             }
                         )

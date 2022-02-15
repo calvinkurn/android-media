@@ -4,5 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class ContentSlotResponse(
         @SerializedName("playGetContentSlot")
-        val playGetContentSlot : PlayGetContentSlotResponse
+        val playGetContentSlot : PlayGetContentSlotResponse,
+        var isDataFromTabClick : Boolean = false
 )

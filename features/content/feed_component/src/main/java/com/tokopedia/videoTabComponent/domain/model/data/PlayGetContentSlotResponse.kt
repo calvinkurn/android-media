@@ -11,7 +11,9 @@ data class Data(
 )
 data class PlayGetContentSlotResponse(
         @SerializedName("data")
-        var data: List<PlaySlot> = emptyList(),
+        var data: List<PlaySlot> = mutableListOf(),
         @SerializedName("meta")
         var meta: PlayPagingProperties = PlayPagingProperties(),
+
+        var appendeList: List<PlaySlot> = mutableListOf(),
 )

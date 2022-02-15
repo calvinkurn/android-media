@@ -16,8 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
-import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -26,11 +24,14 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
+import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
@@ -48,6 +49,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var selectedTab: Int = 0
 
     companion object {
 
@@ -129,10 +131,16 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             getPlayDataRsp.observe(lifecycleOwner, Observer {
 //                hideAdapterLoading()
                 when (it) {
-                    is Success -> onSuccessPlayTabData(
-                        it.data.playGetContentSlot,
-                        it.data.playGetContentSlot.meta.next_cursor
-                    )
+                    is Success -> {
+                        if (it.data.isDataFromTabClick)
+                            onSuccessPlayTabDataFromChipClick(it.data.playGetContentSlot,
+                                    it.data.playGetContentSlot.meta.next_cursor)
+                        else
+                            onSuccessPlayTabData(
+                                    it.data.playGetContentSlot,
+                                    it.data.playGetContentSlot.meta.next_cursor
+                            )
+                    }
                     is Fail -> {
                         //TODO implement error case
 //                        fetchFirstPage()
@@ -153,7 +161,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun setupView(view: View) {
-        adapter = VideoTabAdapter(playWidgetCoordinator, this)
+        adapter = VideoTabAdapter(playWidgetCoordinator, this, selectedTab)
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             rvWidget?.addOnScrollListener(it)
@@ -166,14 +174,21 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun onSuccessInitialPlayTabData(
         playDataResponse: PlayGetContentSlotResponse, cursor: String
     ) {
-        adapter.setItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse))
+        adapter.setItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data,playDataResponse.meta))
 
     }
 
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse))
+        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta))
+
+    }
+    private fun onSuccessPlayTabDataFromChipClick(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
+        var mappedData = FeedPlayVideoTabMapper.map(playDataResponse.appendeList, playDataResponse.meta, selectedTab)
+        adapter.setItemsAndAnimateChanges(mappedData)
 
     }
 
@@ -274,8 +289,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     //click listener for tab menu slot
-    override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item) {
+    override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
+        selectedTab = position
         playWidgetAnalyticsListenerImp.filterCategory = item.label
+        callAPiOnTabCLick(item)
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
     }
 
@@ -286,8 +303,13 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {
         return object : EndlessRecyclerViewScrollListener(rvWidget?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                playFeedVideoTabViewModel.getPlayData()
+                playFeedVideoTabViewModel.getPlayData(false, null)
             }
         }
+    }
+    private fun callAPiOnTabCLick(item: PlaySlotTabMenuUiModel.Item){
+        val videoPageParams = VideoPageParams(cursor = "" , sourceId = item.sourceId, sourceType = item.sourceType, group = item.group)
+        playFeedVideoTabViewModel.getPlayData(isClickFromTabMenu = true, videoPageParams = videoPageParams)
+
     }
 }

@@ -13,7 +13,8 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
  */
 class VideoTabAdapter(
     coordinator: PlayWidgetCoordinatorVideoTab,
-    listener: PlaySlotTabCallback
+    listener: PlaySlotTabCallback,
+    position: Int
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
     init {
@@ -21,7 +22,7 @@ class VideoTabAdapter(
             .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator))
-            .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener))
+            .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener, position))
     }
 
     override fun areItemsTheSame(oldItem: PlayFeedUiModel, newItem: PlayFeedUiModel): Boolean {
