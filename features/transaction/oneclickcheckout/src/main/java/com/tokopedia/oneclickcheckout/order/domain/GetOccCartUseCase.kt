@@ -24,14 +24,13 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                 PARAM_ADDITIONAL_PARAMS to mapOf(
                         PARAM_GATEWAY_CODE to gatewayCode,
-//                        PARAM_TENOR to tenor
+//                        PARAM_TENOR to 12
                 )
         )
     }
 
     @GqlQuery(GetOccMultiQuery, GET_OCC_CART_PAGE_QUERY)
     suspend fun executeSuspend(params: Map<String, Any?>): OrderData {
-        val graphqlRequest = GET_OCC_CART_PAGE_QUERY
         val request = GraphqlRequest(GetOccMultiQuery(), GetOccCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {

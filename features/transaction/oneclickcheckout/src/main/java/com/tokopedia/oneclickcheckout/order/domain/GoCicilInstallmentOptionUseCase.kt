@@ -2,12 +2,13 @@ package com.tokopedia.oneclickcheckout.order.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
@@ -15,17 +16,17 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
     @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
     suspend fun executeSuspend(param: GoCicilInstallmentRequest): List<GoCicilInstallmentOption> {
         val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), GoCicilInstallmentGqlResponse::class.java, generateParam(param))
-//        val response = graphqlRepository.response(listOf(request)).getSuccessData<GoCicilInstallmentGqlResponse>()
-//        if (!response.response.success) {
-//            throw MessageErrorException()
-//        }
-//        return response.response.installmentOptions
-        delay(5_000)
-        return listOf(
-                GoCicilInstallmentOption(isActive = true, installmentTerm = 1),
-                GoCicilInstallmentOption(isActive = false, installmentTerm = 2),
-                GoCicilInstallmentOption(isActive = true, installmentTerm = 3),
-        )
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<GoCicilInstallmentGqlResponse>()
+        if (!response.response.success) {
+            throw MessageErrorException()
+        }
+        return response.response.installmentOptions
+//        delay(5_000)
+//        return listOf(
+//                GoCicilInstallmentOption(isActive = true, installmentTerm = 1),
+//                GoCicilInstallmentOption(isActive = false, installmentTerm = 2),
+//                GoCicilInstallmentOption(isActive = true, installmentTerm = 3),
+//        )
     }
 
     private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {

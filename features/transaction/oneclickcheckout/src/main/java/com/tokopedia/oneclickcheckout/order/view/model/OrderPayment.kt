@@ -221,6 +221,9 @@ data class OrderPaymentGoCicilData(
 ) {
     val hasValidTerm: Boolean
         get() = selectedTerm != null && selectedTerm.isActive && availableTerms.isNotEmpty()
+
+    val hasInvalidTerm: Boolean
+        get() = selectedTerm != null && !selectedTerm.isActive && availableTerms.isNotEmpty()
 }
 
 data class OrderPaymentGoCicilTerms(
