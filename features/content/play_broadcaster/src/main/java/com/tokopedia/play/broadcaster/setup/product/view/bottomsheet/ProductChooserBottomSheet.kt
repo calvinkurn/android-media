@@ -220,6 +220,7 @@ class ProductChooserBottomSheet @Inject constructor(
             viewModel.uiEvent.collect {
                 when (it) {
                     PlayBroProductChooserEvent.SaveProductSuccess -> {
+                        dismiss()
                         container?.openProductSummary()
                     }
                     is PlayBroProductChooserEvent.ShowError -> {

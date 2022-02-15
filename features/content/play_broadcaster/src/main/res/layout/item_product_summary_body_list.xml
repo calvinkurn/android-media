@@ -26,6 +26,35 @@
             app:layout_constraintVertical_bias="1.0"
             tools:src="@tools:sample/avatars" />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_product_summary_cover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_image"
+            app:layout_constraintEnd_toEndOf="@id/iv_product_summary_image"
+            app:layout_constraintStart_toStartOf="@id/iv_product_summary_image"
+            app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
+            app:srcCompat="@drawable/bg_play_product_tag_empty_stock"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_summary_empty_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_play_product_tag_stock"
+            android:padding="@dimen/spacing_lvl2"
+            android:text="@string/play_bro_product_tag_stock_empty"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_product_summary_cover"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Stok Habis"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_summary_stock"
             android:layout_width="0dp"
@@ -44,12 +73,14 @@
             android:id="@+id/tv_product_summary_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
-            app:layout_constraintEnd_toEndOf="@id/tv_product_summary_stock"
-            app:layout_constraintStart_toStartOf="@id/tv_product_summary_stock"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
             app:layout_constraintTop_toBottomOf="@id/tv_product_summary_stock"
             app:typographyType="body_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
@@ -105,7 +136,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:icon_name="DELETE"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/tv_product_summary_stock"
+            app:layout_constraintEnd_toEndOf="@id/tv_product_summary_name"
             app:layout_constraintTop_toBottomOf="@id/tv_product_summary_price" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
