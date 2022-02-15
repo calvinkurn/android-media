@@ -54,9 +54,6 @@ class MerchantVoucherViewHolder(
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
         binding?.recycleList?.setHasFixedSize(true)
         valuateRecyclerViewDecoration()
-//
-//        mappingHeader(channel)
-//        mappingCtaButton(channel.channelBanner.cta)
         mappingItem(channel, visitables)
     }
 
@@ -102,7 +99,8 @@ class MerchantVoucherViewHolder(
                     benefitPrice = element.benefit.value,
                     totalOtherCoupon = element.label,
                     iconBadge = if (element.badges.isNotEmpty()) element.badges[0].imageUrl else "",
-                    imageProduct = element.imageUrl
+                    imageProduct = element.imageUrl,
+                    shopAppLink = element.shop.shopAppLink
                 )
             )
         }
