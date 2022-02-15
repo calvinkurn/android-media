@@ -1,11 +1,13 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseItemBinding
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel.Companion.CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -57,6 +59,28 @@ class SpecialReleaseItemViewHolder(
                     applink = element.grid.shop.shopApplink
                 )
             }
+        }
+    }
+
+    override fun bind(element: CarouselSpecialReleaseDataModel?, payloads: MutableList<Any>) {
+        if (payloads.size > 0) {
+            val payload = payloads[0]
+            if (payload is Bundle) {
+                val bundle = payload as Bundle
+                if (bundle.getBoolean(CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND, false)) {
+                    adjustItemGridTimer(element)
+                    return
+                }
+            }
+        }
+    }
+
+    private fun adjustItemGridTimer(element: CarouselSpecialReleaseDataModel?) {
+        element?.let {
+            binding?.specialReleaseTimer?.setTimer(
+                channels.channelConfig.serverTimeOffset,
+                element.grid.expiredTime ?: ""
+            )
         }
     }
 }

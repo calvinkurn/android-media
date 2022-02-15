@@ -8,12 +8,15 @@ data class SpecialReleaseDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
 ): HomeComponentVisitable {
+    companion object {
+        const val SPECIAL_RELEASE_TIMER_BIND = "timer_bind"
+    }
     override fun visitableId(): String? {
         return channelModel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return false
+        return b == this
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

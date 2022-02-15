@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -14,14 +15,20 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel.Companion.CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.SpecialReleaseItemViewHolder
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.SpecialReleaseAdapter
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SpecialReleaseViewHolder(
@@ -41,9 +48,10 @@ class SpecialReleaseViewHolder(
 
     override fun bind(element: SpecialReleaseDataModel) {
         isCacheData = element.isCache
-        mappingView(element.channelModel)
+        mappingView(channel = element.channelModel)
         setHeaderComponent(element = element)
         setChannelDivider(element = element)
+        setBackground(element = element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
                 specialReleaseComponentListener?.onSpecialReleaseChannelImpressed(element.channelModel, adapterPosition)
@@ -52,7 +60,46 @@ class SpecialReleaseViewHolder(
     }
 
     override fun bind(element: SpecialReleaseDataModel, payloads: MutableList<Any>) {
-        bind(element)
+        if (payloads.size > 0) {
+            val payload = payloads[0]
+            if (payload is Bundle) {
+                val bundle = payload as Bundle
+                if (bundle.getBoolean(SpecialReleaseDataModel.SPECIAL_RELEASE_TIMER_BIND, false)) {
+                    adjustGridTimer()
+                    return
+                }
+            }
+        }
+    }
+
+    private fun setBackground(element: SpecialReleaseDataModel) {
+        val bannerItem = element.channelModel.channelBanner
+        if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
+                bannerItem.gradientColor,
+                itemView.context
+            )
+        ) {
+            binding?.background?.gone()
+        } else {
+            binding?.background?.visible()
+            binding?.background?.setGradientBackground(bannerItem.gradientColor)
+        }
+    }
+
+    private fun adjustGridTimer() {
+        for (i in 0..(binding?.homeComponentSpecialReleaseRv?.childCount?:0)) {
+            val childView = binding?.homeComponentSpecialReleaseRv?.getChildAt(i)
+            childView?.let {
+                val holder = binding?.homeComponentSpecialReleaseRv?.getChildViewHolder(childView)
+                holder?.let {
+                    if (it is SpecialReleaseItemViewHolder) {
+                        adapter?.notifyItemChanged(it.adapterPosition, Bundle().apply {
+                            putBoolean(CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND, true)
+                        })
+                    }
+                }
+            }
+        }
     }
 
     private fun setChannelDivider(element: SpecialReleaseDataModel) {
@@ -65,10 +112,28 @@ class SpecialReleaseViewHolder(
 
     private fun mappingView(channel: ChannelModel) {
         valuateRecyclerViewDecoration()
-        mappingItem(channel, channel.channelGrids.map {
+        val visitableList: MutableList<Visitable<*>> = channel.channelGrids.map {
             CarouselSpecialReleaseDataModel(it, adapterPosition, this)
         }.toMutableList()
-        )
+
+        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
+            if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
+                visitableList.add(
+                    CarouselViewAllCardDataModel(
+                        channel.channelHeader.applink,
+                        channel.channelViewAllCard,
+                        this,
+                        channel.channelBanner.imageUrl,
+                        channel.channelBanner.gradientColor,
+                        channel.layout
+                    )
+                )
+            }
+            else {
+                visitableList.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+            }
+        }
+        mappingItem(channel, visitableList)
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {

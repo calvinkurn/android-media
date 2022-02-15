@@ -989,7 +989,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
 
         refreshQuestWidget()
-
+        adapter?.onResumeSpecialRelease()
     }
 
     private fun refreshQuestWidget() {
@@ -2190,6 +2190,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
+            adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
             startTokopointRotation(rotateNow = true)
         }

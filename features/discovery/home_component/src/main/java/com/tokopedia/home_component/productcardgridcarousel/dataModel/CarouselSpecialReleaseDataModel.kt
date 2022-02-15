@@ -15,6 +15,9 @@ data class CarouselSpecialReleaseDataModel(
     val parentPosition: Int,
     val listener: CommonProductCardCarouselListener
 ) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
+    companion object {
+        const val CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND = "timer_bind_item"
+    }
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)
     }

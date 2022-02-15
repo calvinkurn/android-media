@@ -48,6 +48,8 @@
             tools:text="Shop name"
             app:typographyType="small"
             android:layout_marginTop="5dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -61,6 +63,8 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             android:layout_marginTop="8dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -86,6 +90,8 @@
             tools:layout_width="100dp"
             tools:layout_height="20dp"
             android:layout_marginTop="4dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
