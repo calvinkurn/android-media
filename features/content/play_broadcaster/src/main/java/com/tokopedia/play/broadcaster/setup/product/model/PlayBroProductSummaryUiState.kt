@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
  */
 data class PlayBroProductSummaryUiState(
     val productTagSectionList: List<ProductTagSectionUiModel>,
-    val productCount: Int?,
+    val productCount: Int,
     val productTagSummary: ProductTagSummaryUiModel,
 )
 

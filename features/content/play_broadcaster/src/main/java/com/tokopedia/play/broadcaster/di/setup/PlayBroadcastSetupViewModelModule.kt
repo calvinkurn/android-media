@@ -22,23 +22,8 @@ abstract class PlayBroadcastSetupViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PlayEtalasePickerViewModel::class)
-    abstract fun getPlayEtalasePickerViewModel(viewModel: PlayEtalasePickerViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(PlayCoverSetupViewModel::class)
     abstract fun getPlayBroadcastCoverTitleViewModel(viewModel: PlayCoverSetupViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(PlaySearchSuggestionsViewModel::class)
-    abstract fun getPlaySearchSuggestionsViewModel(viewModel: PlaySearchSuggestionsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(PlayEditProductViewModel::class)
-    abstract fun getPlayEditProductViewModel(viewModel: PlayEditProductViewModel): ViewModel
 
     @Binds
     @IntoMap

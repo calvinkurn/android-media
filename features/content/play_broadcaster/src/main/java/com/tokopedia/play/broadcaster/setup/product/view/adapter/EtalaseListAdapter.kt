@@ -39,7 +39,7 @@ internal class EtalaseListAdapter(
 
     sealed class Model {
         data class Header(val text: String) : Model()
-        data class Campaign(val campaignUiModel: CampaignUiModel) : Model()
-        data class Etalase(val etalaseUiModel: EtalaseUiModel) : Model()
+        data class Campaign(val campaignUiModel: CampaignUiModel, val isSelected: Boolean) : Model()
+        data class Etalase(val etalaseUiModel: EtalaseUiModel, val isSelected: Boolean) : Model()
     }
 }

@@ -8,8 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
@@ -17,25 +20,28 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductErrorViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButtonViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -76,9 +82,42 @@ class ProductChooserBottomSheet @Inject constructor(
     private val saveButtonView by viewComponent {
         SaveButtonViewComponent(binding.btnNext, eventBus)
     }
+    private val productErrorView by viewComponent {
+        ProductErrorViewComponent(binding.errorProduct, eventBus)
+    }
+    private val exitConfirmationDialog by lifecycleBound(
+        creator = {
+            DialogUnify(
+                it.requireContext(),
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE,
+            ).apply {
+                setTitle(it.getString(R.string.play_bro_product_chooser_exit_dialog_title))
+                setDescription(it.getString(R.string.play_bro_product_chooser_exit_dialog_desc))
+                setPrimaryCTAText(it.getString(R.string.play_batal))
+                setSecondaryCTAText(it.getString(R.string.play_broadcast_exit))
+
+                setPrimaryCTAClickListener {
+                    this@apply.dismiss()
+                }
+
+                setSecondaryCTAClickListener {
+                    this@apply.dismiss()
+                    this@ProductChooserBottomSheet.dismiss()
+                }
+            }
+        },
+        onLifecycle = whenLifecycle {
+            onDestroy { it.dismiss() }
+        }
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
+        return object : BottomSheetDialog(requireContext(), theme) {
+            override fun cancel() {
+                exitConfirmationDialog.show()
+            }
+        }.apply {
             dialogCustomizer.customize(this)
         }
     }
@@ -126,13 +165,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
-        setCloseClickListener {
-            dismiss()
-            container?.removeFragment()
-        }
-
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
+        }
+
+        setCloseClickListener {
+            exitConfirmationDialog.show()
         }
     }
 
@@ -142,14 +180,26 @@ class ProductChooserBottomSheet @Inject constructor(
                 renderProductList(
                     prevState?.focusedProductList,
                     state.focusedProductList,
-                    prevState?.selectedProductList,
-                    state.selectedProductList,
+                    prevState?.selectedProductSectionList,
+                    state.selectedProductSectionList,
                 )
-                renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
-                renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
-                renderSearchBar(state.campaignAndEtalase, prevState?.shopName, state.shopName)
-                renderBottomSheetTitle(state.selectedProductList)
+                renderSortChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
+                renderEtalaseChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
+                renderSearchBar(
+                    state.loadParam,
+                    state.focusedProductList,
+                    state.campaignAndEtalase,
+                    prevState?.config,
+                    state.config
+                )
+                renderBottomSheetTitle(
+                    prevState?.selectedProductSectionList,
+                    state.selectedProductSectionList,
+                    state.config
+                )
                 renderSaveButton(state.saveState)
+                renderProductError(state.campaignAndEtalase, state.focusedProductList)
+                renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
             }
         }
 
@@ -161,6 +211,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is ProductListViewComponent.Event -> handleProductListEvent(it)
                     is SearchBarViewComponent.Event -> handleSearchBarEvent(it)
                     is SaveButtonViewComponent.Event -> handleSaveButtonEvent(it)
+                    is ProductErrorViewComponent.Event -> handleProductErrorEvent(it)
                 }
             }
         }
@@ -174,6 +225,9 @@ class ProductChooserBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ShowError -> {
                         //TODO("Show Error")
                     }
+                    is PlayBroProductChooserEvent.OpenShopPage -> {
+                        RouteManager.route(context, ApplinkConst.SHOP, it.shopId)
+                    }
                     else -> {}
                 }
             }
@@ -183,15 +237,15 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderProductList(
         prevProductListPaging: ProductListPaging?,
         productListPaging: ProductListPaging,
-        prevSelectedMap: EtalaseProductListMap?,
-        selectedMap: EtalaseProductListMap,
+        prevSelectedProducts: List<ProductTagSectionUiModel>?,
+        selectedProducts: List<ProductTagSectionUiModel>,
     ) {
-        if (prevProductListPaging == productListPaging && prevSelectedMap == selectedMap) return
+        if (prevProductListPaging == productListPaging && prevSelectedProducts == selectedProducts) return
 
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             productListView.setProductList(
                 productList = productListPaging.productList,
-                selectedList = selectedMap.values.flatten(),
+                selectedList = selectedProducts.flatMap { it.products },
                 showLoading = productListPaging.resultState !is PageResultState.Success ||
                         productListPaging.resultState.hasNextPage,
             )
@@ -199,63 +253,72 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSortChips(
-        prevSort: SortUiModel?,
-        sort: SortUiModel?,
+        prevParam: ProductListPaging.Param?,
+        param: ProductListPaging.Param,
         campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
-        if (prevSort?.id != sort?.id) {
-            sortChipsView.setText(sort?.text)
+        if (prevParam?.sort?.id != param.sort?.id) {
+            sortChipsView.setText(param.sort?.text)
         }
 
-        if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) sortChipsView.show()
+        if (param.etalase !is SelectedEtalaseModel.Campaign) sortChipsView.show()
         else sortChipsView.hide()
     }
 
     private fun renderEtalaseChips(
-        prevModel: CampaignAndEtalaseUiModel?,
-        model: CampaignAndEtalaseUiModel
+        prevParam: ProductListPaging.Param?,
+        param: ProductListPaging.Param,
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
-        if (prevModel == model) return
+        if (prevParam == param) return
 
-        val selectedTitle = when (model.selected) {
-            is SelectedEtalaseModel.Campaign -> model.selected.campaign.title
-            is SelectedEtalaseModel.Etalase -> model.selected.etalase.title
+        val selectedTitle = when (param.etalase) {
+            is SelectedEtalaseModel.Campaign -> param.etalase.campaign.title
+            is SelectedEtalaseModel.Etalase -> param.etalase.etalase.title
             SelectedEtalaseModel.None ->
-                if (model.campaignList.isNotEmpty() && model.etalaseList.isNotEmpty()) {
+                if (campaignAndEtalase.campaignList.isNotEmpty() &&
+                    campaignAndEtalase.etalaseList.isNotEmpty()) {
                     getString(R.string.play_bro_campaign_and_etalase)
-                } else if (model.campaignList.isNotEmpty()) {
+                } else if (campaignAndEtalase.campaignList.isNotEmpty()) {
                     getString(R.string.play_bro_campaign)
                 } else {
                     getString(R.string.play_bro_etalase)
                 }
         }
 
-        etalaseChipsView.setState(selectedTitle, model.selected != SelectedEtalaseModel.None)
+        etalaseChipsView.setState(selectedTitle, param.etalase != SelectedEtalaseModel.None)
     }
 
     private fun renderSearchBar(
+        param: ProductListPaging.Param,
+        productList: ProductListPaging,
         campaignAndEtalase: CampaignAndEtalaseUiModel,
-        prevShopName: String?,
-        shopName: String,
+        prevConfig: ProductSetupConfig?,
+        config: ProductSetupConfig,
     ) {
-        if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) searchBarView.show()
-        else searchBarView.hide()
+        if (param.etalase is SelectedEtalaseModel.Campaign ||
+            hasNoProducts(campaignAndEtalase, productList)) searchBarView.hide()
+        else searchBarView.show()
 
-        if (prevShopName != shopName) {
+        if (prevConfig?.shopName != config.shopName) {
             searchBarView.setPlaceholder(
-                getString(R.string.play_etalase_search_hint, shopName)
+                getString(R.string.play_etalase_search_hint, config.shopName)
             )
         }
     }
 
     private fun renderBottomSheetTitle(
-        selectedProductList: EtalaseProductListMap,
+        prevSelectedProducts: List<ProductTagSectionUiModel>?,
+        selectedProducts: List<ProductTagSectionUiModel>,
+        config: ProductSetupConfig,
     ) {
+        if (prevSelectedProducts == selectedProducts) return
+
         setTitle(
             getString(
                 R.string.play_bro_selected_product_title,
-                selectedProductList.values.sumOf { it.size },
-                30
+                selectedProducts.sumOf { it.products.size },
+                config.maxProduct,
             )
         )
     }
@@ -264,6 +327,29 @@ class ProductChooserBottomSheet @Inject constructor(
         saveState: ProductSaveStateUiModel
     ) {
         saveButtonView.setState(isLoading = saveState.isLoading, isEnabled = saveState.canSave)
+    }
+
+    private fun renderProductError(
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
+        productList: ProductListPaging,
+    ) {
+        if (isProductEmpty(productList)) {
+            if (isEtalaseEmpty(campaignAndEtalase)) productErrorView.setHasNoProduct()
+            else productErrorView.setProductNotFound()
+
+            productErrorView.show()
+        } else {
+            productErrorView.hide()
+        }
+    }
+
+    private fun renderChipsContainer(
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
+        productList: ProductListPaging,
+    ) {
+        binding.containerChips.visibility =
+            if (hasNoProducts(campaignAndEtalase, productList)) View.GONE
+            else View.VISIBLE
     }
 
     /**
@@ -275,7 +361,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 ProductSortBottomSheet.getFragment(
                     childFragmentManager,
                     requireActivity().classLoader,
-                    selectedId = viewModel.uiState.value.sort?.id
+                    selectedId = viewModel.uiState.value.loadParam.sort?.id
                 ).show(childFragmentManager)
             }
         }
@@ -317,6 +403,35 @@ class ProductChooserBottomSheet @Inject constructor(
                 viewModel.submitAction(PlayBroProductChooserAction.SaveProducts)
             }
         }
+    }
+
+    private fun handleProductErrorEvent(event: ProductErrorViewComponent.Event) {
+        when (event) {
+            ProductErrorViewComponent.Event.AddProductClicked -> {
+                viewModel.submitAction(PlayBroProductChooserAction.CreateProduct)
+            }
+        }
+    }
+
+    /**
+     * Util
+     */
+    private fun isEtalaseEmpty(campaignAndEtalase: CampaignAndEtalaseUiModel): Boolean {
+        return campaignAndEtalase.state == NetworkState.Success &&
+                campaignAndEtalase.campaignList.isEmpty() &&
+                campaignAndEtalase.etalaseList.isEmpty()
+    }
+
+    private fun isProductEmpty(productList: ProductListPaging): Boolean {
+        return productList.resultState is PageResultState.Success &&
+                productList.productList.isEmpty()
+    }
+
+    private fun hasNoProducts(
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
+        productList: ProductListPaging,
+    ): Boolean {
+        return isEtalaseEmpty(campaignAndEtalase) && isProductEmpty(productList)
     }
 
     companion object {

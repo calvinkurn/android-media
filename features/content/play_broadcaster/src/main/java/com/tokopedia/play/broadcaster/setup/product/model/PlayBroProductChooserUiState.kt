@@ -1,13 +1,10 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -15,10 +12,10 @@ import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 data class PlayBroProductChooserUiState(
     val campaignAndEtalase: CampaignAndEtalaseUiModel,
     val focusedProductList: ProductListPaging,
-    val selectedProductList: EtalaseProductListMap,
-    val sort: SortUiModel?,
-    val shopName: String,
+    val selectedProductSectionList: List<ProductTagSectionUiModel>,
+    val loadParam: ProductListPaging.Param,
     val saveState: ProductSaveStateUiModel,
+    val config: ProductSetupConfig,
 ) {
 
     companion object {
@@ -26,25 +23,25 @@ data class PlayBroProductChooserUiState(
             get() = PlayBroProductChooserUiState(
                 campaignAndEtalase = CampaignAndEtalaseUiModel.Empty,
                 focusedProductList = ProductListPaging.Empty,
-                selectedProductList = emptyMap(),
-                sort = null,
-                shopName = "",
+                selectedProductSectionList = emptyList(),
+                loadParam = ProductListPaging.Param.Empty,
                 saveState = ProductSaveStateUiModel.Empty,
+                config = ProductSetupConfig.Empty,
             )
     }
 }
 
 data class CampaignAndEtalaseUiModel(
-    val selected: SelectedEtalaseModel,
     val campaignList: List<CampaignUiModel>,
     val etalaseList: List<EtalaseUiModel>,
+    val state: NetworkState,
 ) {
     companion object {
         val Empty: CampaignAndEtalaseUiModel
             get() = CampaignAndEtalaseUiModel(
-                selected = SelectedEtalaseModel.None,
                 campaignList = emptyList(),
                 etalaseList = emptyList(),
+                state = NetworkState.Loading,
             )
     }
 }
@@ -59,6 +56,19 @@ data class ProductSaveStateUiModel(
             get() = ProductSaveStateUiModel(
                 isLoading = false,
                 canSave = false,
+            )
+    }
+}
+
+data class ProductSetupConfig(
+    val shopName: String,
+    val maxProduct: Int,
+) {
+    companion object {
+        val Empty: ProductSetupConfig
+            get() = ProductSetupConfig(
+                shopName = "",
+                maxProduct = 0,
             )
     }
 }

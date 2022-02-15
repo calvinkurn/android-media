@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
@@ -34,7 +35,7 @@ internal class ProductListViewHolder private constructor() {
             binding.imgProduct.loadImage(item.product.imageUrl)
             binding.tvName.text = item.product.name
             binding.tvStock.text = itemView.context.getString(
-                R.string.play_bro_product_chooser_stock, item.product.stock
+                R.string.play_bro_product_stock, item.product.stock
             )
 
             setCheckboxManually(item)

@@ -20,10 +20,6 @@ abstract class PlayBroadcastSetupBindModule {
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindProductDataStore(dataStore: ProductDataStoreImpl): ProductDataStore
-
-    @Binds
-    @PlayBroadcastSetupScope
     abstract fun bindCoverDataStore(dataStore: CoverDataStoreImpl): CoverDataStore
 
     @Binds

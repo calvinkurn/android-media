@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.testdouble
 
-import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
-import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
