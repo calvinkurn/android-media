@@ -115,6 +115,7 @@ class GetOccCartMapper @Inject constructor() {
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
             addOn = mapAddOns(groupShop.addOns.firstOrNull())
+            cartString = groupShop.cartString
         }
     }
 

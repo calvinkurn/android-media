@@ -37,6 +37,7 @@ data class OrderShop(
         var overweight: Double = 0.0,
         var boMetadata: BoMetadata = BoMetadata(),
         var addOn: AddOnsDataModel = AddOnsDataModel(),
+        var cartString: String = "",
 
         // Analytics
         var hasTriggerViewOverweightTicker: Boolean = false,

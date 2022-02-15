@@ -60,7 +60,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
-        renderAddOn()
+        renderAddOn(binding, product, shop)
     }
 
     private fun renderDivider() {
@@ -377,23 +377,20 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
-    private fun renderAddOn() {
-        if (shop.isFulfillment) {
-            renderAddOn(binding, shop.addOn)
-        } else {
-            renderAddOn(binding, product.addOn)
-        }
-    }
-
-    private fun renderAddOn(binding: CardOrderProductBinding, addOn: AddOnsDataModel) {
+    private fun renderAddOn(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
         with(binding) {
+            val addOn: AddOnsDataModel = if (shop.isFulfillment) {
+                shop.addOn
+            } else {
+                product.addOn
+            }
             when (addOn.status) {
                 AddOnsResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON -> {
                     buttonGiftingAddon.apply {
                         state = ButtonGiftingAddOnView.State.ACTIVE
                         setAddOnButtonData(addOn)
                         setOnButtonClickedListener {
-                            listener.onClickAddOnButton(addOn)
+                            listener.onClickAddOnButton(addOn, product, shop)
                         }
                         show()
                     }
@@ -431,7 +428,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
         fun getLastPurchaseProtectionCheckState(productId: Long): Int
 
-        fun onClickAddOnButton(addOn: AddOnsDataModel)
+        fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop)
     }
 
     companion object {

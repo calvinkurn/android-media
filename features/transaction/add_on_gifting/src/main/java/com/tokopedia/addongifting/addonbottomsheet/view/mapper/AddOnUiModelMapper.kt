@@ -72,9 +72,9 @@ object AddOnUiModelMapper {
                 addOnNote = initialAddOnNote
             }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
-            onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.onlyGreetingCardInfo
-            packagingAndGreetingCardInfo = addOnProductData.availableBottomSheetData.packagingAndGreetingCardInfo
-            invoiceNotSentToRecipientInfo = addOnProductData.availableBottomSheetData.invoiceNotSentToRecipientInfo
+            onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.onlyGreetingCard
+            packagingAndGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.packagingAndGreetingCard
+            invoiceNotSentToRecipientInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.invoiceNotSendToRecipient
             isLoadingNoteState = false
         }
     }

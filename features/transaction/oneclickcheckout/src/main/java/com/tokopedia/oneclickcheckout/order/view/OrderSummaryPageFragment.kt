@@ -80,6 +80,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -1203,9 +1204,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
 
-        override fun onClickAddOnButton(addOn: AddOnsDataModel) {
+        override fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, AddOnBottomSheetParamMapper.generateParam())
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, AddOnBottomSheetParamMapper.generateParam(addOn, AddOnWordingData(), product, shop))
             startActivityForResult(intent, REQUEST_CODE_ADD_ON)
         }
     }

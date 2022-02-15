@@ -66,7 +66,7 @@ data class AddOnDataResponse(
         @SerializedName("add_on_metadata")
         val addOnMetadata: AddOnMetadataResponse = AddOnMetadataResponse(),
         @SerializedName("add_on_price")
-        val addOnPrice: Int = 0,
+        val addOnPrice: Long = 0,
         @SerializedName("add_on_qty")
         val addOnQty: Int = 0
 )
