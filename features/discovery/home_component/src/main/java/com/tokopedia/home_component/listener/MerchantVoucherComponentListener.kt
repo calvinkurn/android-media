@@ -6,7 +6,7 @@ import com.tokopedia.home_component.model.ChannelModel
  * Created by dhaba
  */
 interface MerchantVoucherComponentListener  {
-    fun onShopClicked(channel: ChannelModel, parentPos: Int)
+    fun onShopClicked(shopAppLink: String)
     fun onMerchantImpressed(channel: ChannelModel, parentPos: Int)
     fun onProductClicked(channel: ChannelModel, parentPos: Int)
     //for see more card click

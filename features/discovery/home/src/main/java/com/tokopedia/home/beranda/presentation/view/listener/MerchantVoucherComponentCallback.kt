@@ -22,7 +22,7 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         TODO("Not yet implemented")
     }
 
-    override fun onShopClicked(channel: ChannelModel, parentPos: Int) {
-        TODO("Not yet implemented")
+    override fun onShopClicked(shopAppLink: String) {
+        homeCategoryListener.onDynamicChannelClicked(shopAppLink)
     }
 }
