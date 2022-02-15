@@ -28,7 +28,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
-import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -85,7 +84,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Success With No Address`() {
         // Given
         val response = OrderData(errorCode = AddressState.ERROR_CODE_OPEN_ANA)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
@@ -103,7 +102,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success Twice Should Trigger Analytics Once`() {
         // Given
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns helper.orderData
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -128,7 +127,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                         ))
                 )
         )
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
@@ -146,7 +145,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Failed`() {
         // Given
         val response = Throwable()
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } throws response
 
         // When
@@ -168,7 +167,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val address = OrderProfileAddress(addressId = 0)
         val profile = OrderProfile(shipment = shipment, address = address)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, errorCode = "")
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
@@ -191,7 +190,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
@@ -213,7 +212,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val prompt = OccPrompt(TYPE_DIALOG)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, prompt = prompt)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
@@ -236,7 +235,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1, orderQuantity = 1)))
         val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
         val response = OrderData(cart = cart, preference = profile, promo = promo)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
@@ -821,7 +820,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shipment = OrderProfileShipment(serviceId = 1)
         val profile = OrderProfile(shipment = shipment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, onboarding = onboarding)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         every { ratesUseCase.execute(any()) } throws Throwable()
@@ -842,7 +841,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, onboarding = onboarding)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
@@ -886,7 +885,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val prompt = OccPrompt(type = TYPE_DIALOG, "Prompt")
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile,
                 onboarding = onboarding, prompt = prompt)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
@@ -925,7 +924,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         val shopId = 123L
         val response = helper.orderData.copy(cart = helper.orderData.cart.copy(shop = helper.orderData.cart.shop.copy(shopId = shopId)))
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
@@ -942,7 +941,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val response = helper.orderData.copy(payment = OrderPayment(walletData = OrderPaymentWalletAdditionalData(
                 activation = activationData
         )))
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
