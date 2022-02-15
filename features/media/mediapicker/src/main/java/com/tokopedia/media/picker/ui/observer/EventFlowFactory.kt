@@ -1,30 +1,9 @@
-package com.tokopedia.media.picker.utils
+package com.tokopedia.media.picker.ui.observer
 
-import com.tokopedia.media.common.uimodel.MediaUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
-interface AddMediaEvent {
-    val data: MediaUiModel?
-}
-
-sealed class EventState {
-    object Idle: EventState()
-
-    class CameraCaptured(
-        override val data: MediaUiModel?
-    ) : EventState(), AddMediaEvent
-
-    class SelectionAdded(
-        override val data: MediaUiModel?
-    ) : EventState(), AddMediaEvent
-
-    class SelectionChanged(val data: List<MediaUiModel>): EventState()
-
-    class SelectionRemoved(val media: MediaUiModel): EventState()
-}
-
-object EventBusFactory {
+object EventFlowFactory {
 
     val state = MutableSharedFlow<EventState>(1)
     private const val TIMEOUT_IN_MILLIS = 500L

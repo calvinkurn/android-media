@@ -14,11 +14,15 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding: ViewItemSelectionThumbnailBinding? by viewBinding()
 
-    fun bind(media: MediaUiModel, deletedOnClick: () -> Unit = {}) {
+    fun bind(media: MediaUiModel, onClicked: () -> Unit = {}, onRemoved: () -> Unit = {}) {
         binding?.imgThumbnail?.smallThumbnail(media)
 
+        binding?.imgThumbnail?.setOnClickListener {
+            onClicked()
+        }
+
         binding?.ivDelete?.setOnClickListener {
-            deletedOnClick()
+            onRemoved()
         }
     }
 

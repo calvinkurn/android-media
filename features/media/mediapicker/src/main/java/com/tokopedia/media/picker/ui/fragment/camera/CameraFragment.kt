@@ -16,10 +16,12 @@ import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.VideoResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
+import com.tokopedia.media.common.basecomponent.uiComponent
+import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
@@ -28,15 +30,15 @@ import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraPreviewComponent
-import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.media.picker.utils.AddMediaEvent
-import com.tokopedia.media.picker.utils.EventState
+import com.tokopedia.media.picker.ui.observer.observe
+import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
+import com.tokopedia.media.picker.ui.uimodel.containByName
+import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
+import com.tokopedia.media.picker.ui.uimodel.safeRemove
+import com.tokopedia.media.picker.utils.files.FileGenerator
 import com.tokopedia.media.picker.utils.exceptionHandler
-import com.tokopedia.media.picker.utils.generateFile
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class CameraFragment : BaseDaggerFragment()
@@ -46,8 +48,10 @@ open class CameraFragment : BaseDaggerFragment()
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentCameraBinding? by viewBinding()
-    private val param by lazy { PickerUiConfig.pickerParam() }
     private var listener: PickerActivityListener? = null
+
+    private val param by lazy { PickerUiConfig.pickerParam() }
+    private val medias = mutableListOf<MediaUiModel>()
 
     private var isTakingPictureMode = true
     private var isFlashOn = false
@@ -109,8 +113,6 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
-            preview.release()
-            controller.release()
             listener = null
         }
     }
@@ -166,9 +168,9 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun hasVideoAddedOnMediaSelection(): Boolean {
-        return listener?.mediaSelected()?.filter {
-            it.isVideo()
-        }?.size?: 0 >= param.maxVideoCount()
+        return listener?.mediaSelected()
+            ?.hasVideoBy(param.maxVideoCount())
+            ?: false
     }
 
     override fun onShowToastMediaLimit() {
@@ -204,7 +206,7 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val fileToModel = result.file.toUiModel()
+        val fileToModel = result.file.cameraToUiModel()
 
         if (!fileToModel.isVideoDurationValid(requireContext())) {
             Toast.makeText(
@@ -225,37 +227,32 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        generateFile(preview.pictureSize(), result.data) {
-            if (it == null) return@generateFile
-            val fileToModel = it.toUiModel()
+        FileGenerator.createFileCameraCapture(preview.pictureSize(), result.data) {
+            if (it == null) return@createFileCameraCapture
+            val fileToModel = it.cameraToUiModel()
 
             onShowMediaThumbnail(fileToModel)
         }
     }
 
     private fun initObservable() {
-        val currentMediaList = mutableListOf<MediaUiModel>()
-
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collect {
-                if (it is EventState.SelectionChanged) return@collect
-
-                if (it is EventState.SelectionRemoved) {
-                    if (currentMediaList.contains(it.media)) {
-                        currentMediaList.remove(it.media)
+            viewModel.uiEvent.observe(
+                onRemoved = {
+                    if (medias.containByName(it)) {
+                        medias.safeRemove(it)
                     }
-                } else if (it is AddMediaEvent) {
-                    it.data?.let { media ->
-                        if (!currentMediaList.contains(media)) {
-                            currentMediaList.add(media)
-                        }
+                },
+                onAdded = {
+                    if (!medias.containByName(it)) {
+                        medias.add(it)
                     }
                 }
-
+            ) {
                 // update the thumbnail
-                if (currentMediaList.isNotEmpty()) {
-                    val lastMediaToPreview = currentMediaList.last()
-                    controller.setThumbnailPreview(lastMediaToPreview)
+                if (medias.isNotEmpty()) {
+                    val lastMedia = medias.last()
+                    controller.setThumbnailPreview(lastMedia)
                 } else {
                     controller.removeThumbnailPreview()
                 }
@@ -275,8 +272,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
-
-        viewModel.send(EventState.CameraCaptured(element))
+        stateOnCameraCapturePublished(element)
     }
 
     private fun showShutterEffect(action: () -> Unit) {

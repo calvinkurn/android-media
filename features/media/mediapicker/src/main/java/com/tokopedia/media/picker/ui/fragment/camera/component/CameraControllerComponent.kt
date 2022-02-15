@@ -23,7 +23,7 @@ import com.tokopedia.media.picker.ui.uimodel.CameraSelectionMode
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
-import com.tokopedia.media.picker.utils.toVideoDurationFormat
+import com.tokopedia.media.picker.utils.files.toVideoDurationFormat
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -205,12 +205,12 @@ class CameraControllerComponent(
 
     private fun onTakeCamera() {
         if (isVideoMode() && listener.hasVideoAddedOnMediaSelection()) {
-            listener.onShowToastMediaLimit()
+            listener.onShowToastVideoLimit()
             return
         }
 
         if (listener.hasReachedLimit()) {
-            listener.onShowToastVideoLimit()
+            listener.onShowToastMediaLimit()
             return
         }
 

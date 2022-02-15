@@ -12,7 +12,6 @@ import com.tokopedia.media.R
 import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
-import com.tokopedia.media.picker.utils.ActionType
 import com.tokopedia.media.picker.utils.Unify_N0
 
 class DrawerSelectionWidget : FrameLayout {
@@ -162,7 +161,8 @@ class DrawerSelectionWidget : FrameLayout {
     }
 
     interface Listener {
-        fun onDataSetChanged(action: ActionType)
+        fun onItemClicked(media: MediaUiModel)
+        fun onDataSetChanged(action: DrawerActionType)
     }
 
 }

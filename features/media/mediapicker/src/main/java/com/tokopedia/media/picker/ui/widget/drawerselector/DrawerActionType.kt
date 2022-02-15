@@ -1,22 +1,22 @@
-package com.tokopedia.media.picker.utils
+package com.tokopedia.media.picker.ui.widget.drawerselector
 
 import com.tokopedia.media.common.uimodel.MediaUiModel
 
-sealed class ActionType {
+sealed class DrawerActionType {
     class Add(
         val data: List<MediaUiModel>,
         val media: MediaUiModel,
         val error: String?
-    ): ActionType()
+    ): DrawerActionType()
 
     class Remove(
         val data: List<MediaUiModel>,
         val mediaToRemove: MediaUiModel,
         val error: String?
-    ): ActionType()
+    ): DrawerActionType()
 
     class Reorder(
         val data: List<MediaUiModel>,
         val error: String?
-    ): ActionType()
+    ): DrawerActionType()
 }

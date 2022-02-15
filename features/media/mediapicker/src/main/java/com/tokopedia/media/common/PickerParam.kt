@@ -15,7 +15,7 @@ data class PickerParam(
     private var isMultipleSelection: Boolean = true,
     private var excludedMedias: List<File> = emptyList(),
     private var pageType: Int = PickerPageType.COMMON,
-    private var cameraRatio: CameraRatio = CameraRatio.Square
+    private var cameraRatio: CameraRatio = CameraRatio.Full
 ) {
 
     fun isMultipleSelectionType() = isMultipleSelection

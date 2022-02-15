@@ -11,20 +11,22 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.picker.ui.uimodel.containByName
+import com.tokopedia.media.picker.ui.uimodel.getIndexOf
+import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.PlaceholderViewHolder
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
-import com.tokopedia.media.picker.utils.ActionType
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 
 class DrawerSelectionAdapter(
     mediaPathList: List<MediaUiModel>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val medias: MutableList<MediaUiModel> = mediaPathList.toMutableList()
-    private val listRect: MutableMap<Int,Rect> = mutableMapOf()
+    private val listRect: MutableMap<Int, Rect> = mutableMapOf()
 
     private var listener: DrawerSelectionWidget.Listener? = null
-    private var totalVideo = 0
     private var maxSize = 10
 
     var backgroundColorPlaceHolder: Int = 0
@@ -51,9 +53,11 @@ class DrawerSelectionAdapter(
                 }
 
                 if (holder is ThumbnailViewHolder) {
-                    holder.bind(media) {
-                        removeData(position)
-                    }
+                    holder.bind(
+                        media,
+                        onClicked = { listener?.onItemClicked(media) },
+                        onRemoved = { removeData(media, true) }
+                    )
                 }
             }
             PLACEHOLDER_TYPE -> {
@@ -93,19 +97,31 @@ class DrawerSelectionAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun removeData(media: MediaUiModel) {
-        this.medias.remove(media)
-        notifyDataSetChanged()
+    fun removeData(media: MediaUiModel, isPublishedOnListener: Boolean = false) {
+        val index = medias.getIndexOf(media)
+
+        if (isPublishedOnListener) {
+            listener?.onDataSetChanged(
+                DrawerActionType.Remove(medias, media, null)
+            )
+        }
+
+        if (index != -1) {
+            listRect.remove(index)
+            this.medias.removeAt(index)
+            notifyItemRemoved(index)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(media: MediaUiModel) {
-        if (medias.contains(media)) return
+        if (medias.containByName(media)) return
         this.medias.add(media)
 
         listener?.onDataSetChanged(
-            ActionType.Add(medias, media, null)
+            DrawerActionType.Add(medias, media, null)
         )
+
         notifyDataSetChanged()
     }
 
@@ -117,7 +133,7 @@ class DrawerSelectionAdapter(
     }
 
     fun containsVideoMaxOf(count: Int): Boolean {
-        return this.medias.filter { it.isVideo() }.size >= count
+        return this.medias.hasVideoBy(count)
     }
 
     fun getData(): List<MediaUiModel> {
@@ -182,7 +198,7 @@ class DrawerSelectionAdapter(
                     medias[position] = draggedImagePath
 
                     listener?.onDataSetChanged(
-                        ActionType.Reorder(medias, null)
+                        DrawerActionType.Reorder(medias, null)
                     )
 
                     notifyDataSetChanged()
@@ -192,22 +208,6 @@ class DrawerSelectionAdapter(
                     false
                 }
             }
-        }
-    }
-
-    private fun removeData(index: Int) {
-        if (index > -1) {
-            val mediaToRemove = medias[index]
-            if (medias[index].isVideo()) totalVideo -= 1
-
-            medias.removeAt(index)
-
-            listener?.onDataSetChanged(
-                ActionType.Remove(medias, mediaToRemove, null)
-            )
-
-            notifyItemChanged(index)
-            listRect.remove(index)
         }
     }
 

@@ -30,6 +30,8 @@ class NavToolbarComponent(
     private val btnDone = findViewById<UnifyButton>(R.id.btn_done)
 
     init {
+        setActionColor()
+
         btnAction.setOnClickListener {
             listener.onCloseClicked()
         }

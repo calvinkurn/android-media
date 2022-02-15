@@ -14,6 +14,8 @@ import com.tokopedia.media.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.media.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
 import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.picker.ui.uimodel.fastSubtract
+import com.tokopedia.media.picker.ui.uimodel.getIndexOf
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryAdapter(
@@ -71,14 +73,22 @@ class GalleryAdapter(
 
     fun removeSelected(media: MediaUiModel) {
         mutate {
-            val elementIndex = listDiffer.currentList.indexOf(media)
-            val selectedIndex = selectedMedias.indexOf(media)
+            val elementIndex = listDiffer.currentList.getIndexOf(media)
+            val selectedIndex = selectedMedias.getIndexOf(media)
 
             if (selectedIndex != -1 && elementIndex != -1) {
                 selectedMedias.removeAt(selectedIndex)
                 notifyItemChanged(elementIndex)
             }
         }
+    }
+
+    fun removeSubtractionSelected(medias: List<MediaUiModel>) {
+        selectedMedias
+            .fastSubtract(medias)
+            .forEach {
+                removeSelected(it)
+            }
     }
 
     fun setListener(itemSelectedListener: OnMediaSelectedListener?) {

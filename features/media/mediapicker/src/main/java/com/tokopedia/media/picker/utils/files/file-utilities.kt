@@ -1,15 +1,11 @@
 @file:JvmName("PickerUtilities")
-package com.tokopedia.media.picker.utils
+package com.tokopedia.media.picker.utils.files
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
-import com.otaliastudios.cameraview.CameraUtils
-import com.otaliastudios.cameraview.size.Size
-import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import java.net.URLConnection
 
@@ -23,25 +19,6 @@ private fun fileExtension(path: String): String {
         path.substring(path.lastIndexOf(".") + 1, path.length)
     } else {
         ""
-    }
-}
-
-fun generateFile(captureSize: Size?, byteArray: ByteArray, invoke: (File?) -> Unit) {
-    val compressFormat = Bitmap.CompressFormat.JPEG
-    val nativeCaptureSize = captureSize?: return
-
-    try {
-        CameraUtils.decodeBitmap(
-            byteArray,
-            nativeCaptureSize.width,
-            nativeCaptureSize.height
-        ) {
-            if (it != null) {
-                invoke(ImageProcessingUtil.writeImageToTkpdPath(it, compressFormat))
-            }
-        }
-    } catch (e: Throwable) {
-        invoke(ImageProcessingUtil.writeImageToTkpdPath(byteArray, compressFormat))
     }
 }
 

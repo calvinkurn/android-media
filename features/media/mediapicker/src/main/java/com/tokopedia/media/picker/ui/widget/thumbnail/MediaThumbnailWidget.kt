@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
-import com.tokopedia.media.picker.utils.extractVideoDuration
+import com.tokopedia.media.picker.utils.files.extractVideoDuration
 import com.tokopedia.media.picker.utils.pickerLoadImage
-import com.tokopedia.media.picker.utils.toVideoDurationFormat
+import com.tokopedia.media.picker.utils.files.toVideoDurationFormat
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.media.common.PickerParam
-import com.tokopedia.media.picker.utils.EventBusFactory
+import com.tokopedia.media.picker.ui.observer.EventFlowFactory
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -70,7 +70,7 @@ class GalleryViewModelTest {
     @Test
     fun it_should_be_publish_media_selected() {
         // given
-        mockkObject(EventBusFactory)
+        mockkObject(EventFlowFactory)
 
 //        justRun { EventBusFactory.emit(any()) }
 

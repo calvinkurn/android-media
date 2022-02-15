@@ -5,12 +5,11 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.picker.data.mapper.toUiModel
-import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.media.common.PickerParam
 import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.picker.utils.EventBusFactory
-import com.tokopedia.media.picker.utils.EventState
+import com.tokopedia.media.picker.data.mapper.toUiModel
+import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.media.picker.ui.observer.EventFlowFactory
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,10 +20,10 @@ class GalleryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var _mediaFiles = MediatorLiveData<List<MediaUiModel>>()
-    val mediaFiles: LiveData<List<MediaUiModel>> get() = _mediaFiles
+    private var _medias = MediatorLiveData<List<MediaUiModel>>()
+    val medias: LiveData<List<MediaUiModel>> get() = _medias
 
-    val uiEvent = EventBusFactory
+    val uiEvent = EventFlowFactory
         .subscriber(viewModelScope)
         .flowOn(dispatchers.computation)
 
@@ -33,13 +32,9 @@ class GalleryViewModel @Inject constructor(
             val result = repository(bucketId, param)
 
             withContext(dispatchers.main) {
-                _mediaFiles.value = result.toUiModel()
+                _medias.value = result.toUiModel()
             }
         }
-    }
-
-    fun send(eventState: EventState) {
-        EventBusFactory.emit(eventState)
     }
 
 }

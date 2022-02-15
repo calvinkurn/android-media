@@ -15,20 +15,22 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.common.types.PickerSelectionType
-import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.FragmentGalleryBinding
+import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
-import com.tokopedia.media.picker.ui.PickerUiConfig
+import com.tokopedia.media.picker.ui.*
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.picker.ui.observer.observe
+import com.tokopedia.media.picker.ui.observer.stateOnAddPublished
+import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
+import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
-import com.tokopedia.media.picker.utils.ActionType
-import com.tokopedia.media.picker.utils.EventState
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
@@ -96,22 +98,18 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.drawerSelector?.removeListener()
     }
 
-    override fun onDataSetChanged(action: ActionType) {
+    override fun onItemClicked(media: MediaUiModel) {} //no-op
+
+    override fun onDataSetChanged(action: DrawerActionType) {
         when (action) {
-            is ActionType.Add -> {
-                viewModel.send(EventState.SelectionAdded(action.media))
-            }
-            is ActionType.Remove -> {
-                viewModel.send(EventState.SelectionRemoved(action.mediaToRemove))
-            }
-            is ActionType.Reorder -> {
-                viewModel.send(EventState.SelectionChanged(action.data))
-            }
+            is DrawerActionType.Add -> stateOnAddPublished(action.media)
+            is DrawerActionType.Remove -> stateOnRemovePublished(action.mediaToRemove)
+            is DrawerActionType.Reorder -> stateOnChangePublished(action.data)
         }
     }
 
     private fun initObservable() {
-        viewModel.mediaFiles.observe(viewLifecycleOwner) {
+        viewModel.medias.observe(viewLifecycleOwner) {
             hasMediaList(it.isNotEmpty())
 
             if (it.isNotEmpty()) {
@@ -120,23 +118,19 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collect {
-                when (it) {
-                    is EventState.SelectionChanged -> {
-                        binding?.drawerSelector?.addAllData(it.data)
-                    }
-                    is EventState.CameraCaptured -> {
-                        binding?.drawerSelector?.addData(it.data)
-                    }
-                    is EventState.SelectionAdded -> {
-                        binding?.drawerSelector?.addData(it.data)
-                    }
-                    is EventState.SelectionRemoved -> {
-                        binding?.drawerSelector?.removeData(it.media)
-                        adapter.removeSelected(it.media)
-                    }
+            viewModel.uiEvent.observe(
+                onChanged = {
+                    binding?.drawerSelector?.addAllData(it)
+                    adapter.removeSubtractionSelected(it)
+                },
+                onRemoved = {
+                    binding?.drawerSelector?.removeData(it)
+                    adapter.removeSelected(it)
+                },
+                onAdded = {
+                    binding?.drawerSelector?.addData(it)
                 }
-            }
+            )
         }
     }
 
@@ -157,7 +151,6 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
         if (isMultipleSelectionType) {
             binding?.drawerSelector?.setMaxAdapterSize(param.limitOfMedia())
-            binding?.drawerSelector?.isAbleToReorder(false)
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }
@@ -241,9 +234,9 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         }
 
         if (!isSelected) {
-            viewModel.send(EventState.SelectionAdded(media))
+            stateOnAddPublished(media)
         } else {
-            viewModel.send(EventState.SelectionRemoved(media))
+            stateOnRemovePublished(media)
         }
 
         return true

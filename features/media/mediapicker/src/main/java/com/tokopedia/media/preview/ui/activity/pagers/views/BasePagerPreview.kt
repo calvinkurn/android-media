@@ -2,11 +2,11 @@ package com.tokopedia.media.preview.ui.activity.pagers.views
 
 import android.content.Context
 import android.view.View
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 interface BasePagerPreview {
     val layout: Int
-    fun setupView(media: MediaUiModel): View
+    fun setupView(media: PreviewUiModel): View
 
     fun rootLayoutView(context: Context): View
         = View.inflate(context, layout, null)

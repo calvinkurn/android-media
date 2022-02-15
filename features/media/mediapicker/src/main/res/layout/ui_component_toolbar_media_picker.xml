@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/uc_navigation_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:background="@color/unify_N75">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_action"
@@ -17,7 +16,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_name="ARROW_BACK"/>
+        app:icon_name="ARROW_BACK"
+        tools:icon_color_night_enable="@color/Unify_Static_Black"
+        tools:icon_color_light_enable="@color/Unify_Static_Black"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_title"
