@@ -123,7 +123,8 @@ class GetOccCartMapper @Inject constructor() {
             maximumWeight = shop.maximumShippingWeight
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
-            addOn = mapAddOns(groupShop.addOns.firstOrNull())
+//            addOn = mapAddOns(groupShop.addOns.firstOrNull())
+            addOn = mapAddOns(AddOnsResponse())
         }
     }
 
@@ -190,7 +191,8 @@ class GetOccCartMapper @Inject constructor() {
             productInformation = product.productInformation.reversed()
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
-            addOn = mapAddOns(product.addOns.firstOrNull())
+//            addOn = mapAddOns(product.addOns.firstOrNull())
+            addOn = mapAddOns(AddOnsResponse())
         }
         return orderProduct
     }
@@ -446,7 +448,8 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddOns(addOnsResponse: AddOnsResponse?): AddOnsDataModel {
         return if (addOnsResponse != null) {
             AddOnsDataModel(
-                    status = addOnsResponse.status,
+//                    status = addOnsResponse.status,
+                    status = 1,
                     addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
                     addOnsButtonModel = mapAddOnButton(addOnsResponse.addOnButton),
                     addOnsBottomSheetModel = mapAddOnBottomSheet(addOnsResponse.addOnBottomsheet),
@@ -458,27 +461,37 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapAddOnDataItem(addOnDataItem: AddOnsResponse.AddOnDataItem): AddOnDataItemModel {
         return AddOnDataItemModel(
-                addOnPrice = addOnDataItem.addOnPrice,
-                addOnId = addOnDataItem.addOnId,
-                addOnQty = addOnDataItem.addOnQty,
+//                addOnPrice = addOnDataItem.addOnPrice,
+//                addOnId = addOnDataItem.addOnId,
+//                addOnQty = addOnDataItem.addOnQty,
+                addOnPrice = 5000,
+                addOnId = 101,
+                addOnQty = 1,
 //                addOnMetadata =
         )
     }
 
     private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
         return AddOnButtonModel(
-                leftIconUrl = addOnButton.leftIconUrl,
-                rightIconUrl = addOnButton.rightIconUrl,
-                description = addOnButton.description,
+//                leftIconUrl = addOnButton.leftIconUrl,
+//                rightIconUrl = addOnButton.rightIconUrl,
+//                description = addOnButton.description,
+//                action = addOnButton.action,
+//                title = addOnButton.title
+                leftIconUrl = "https://fashionsista.co/downloadpng/png/20201006/discount-coupon-line-icon-e-commerce-royalty-free-vector.jpg",
+//                rightIconUrl = addOnButton.rightIconUrl,
+                description = "Kemasan & Kartu Ucapan",
                 action = addOnButton.action,
-                title = addOnButton.title
+                title = "Pelengkap Hadiah (Rp5.000)"
         )
     }
 
     private fun mapAddOnBottomSheet(addOnBottomSheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
         return AddOnBottomSheetModel(
-                headerTitle = addOnBottomSheet.headerTitle,
-                description = addOnBottomSheet.description,
+//                headerTitle = addOnBottomSheet.headerTitle,
+//                description = addOnBottomSheet.description,
+                headerTitle = "Atur pelengkap hadiah",
+                description = "",
                 ticker = mapAddOnTicker(addOnBottomSheet.ticker),
                 products = addOnBottomSheet.products.map { mapAddOnProduct(it) }
         )
@@ -486,36 +499,45 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
         return AddOnTickerModel(
-                text = ticker.text
+//                text = ticker.text
+                text = "Untuk kirim sebagai hadiah, pastikan kamu hanya pilih barang bertanda khusus di Keranjang."
         )
     }
 
     private fun mapAddOnProduct(product: AddOnsResponse.AddOnBottomsheet.ProductsItem): AddOnProductItemModel {
         return AddOnProductItemModel(
-                productName = product.productName,
-                productImageUrl = product.productImageUrl
+//                productName = product.productName,
+//                productImageUrl = product.productImageUrl
+                productName = "Product 1",
+                productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
         )
     }
 
     private fun mapPopUp(popUp: PopUp): PopUpData {
         return PopUpData(
-                title = popUp.title,
-                description = popUp.description,
-                button = mapButton(popUp.button)
+//                title = popUp.title,
+//                description = popUp.description,
+//                title = "Ada perubahan asal kirim",
+//                description = "Pelengkap dihapus karena lokasi asal kirim yang baru tidak punya pelengkap bingkisan.",
+//                button = mapButton(popUp.button)
         )
     }
 
     private fun mapButton(button: Button): ButtonData {
         return ButtonData(
-                text = button.text
+//                text = button.text
+                text = "Cek Lagi"
         )
     }
 
     private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
         return AddOnWordingData(
-                packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
-                onlyGreetingCard = addOnWording.onlyGreetingCard,
-                invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+//                packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
+//                onlyGreetingCard = addOnWording.onlyGreetingCard,
+//                invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+                packagingAndGreetingCard = "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
+                onlyGreetingCard = "{{qty}} barang hanya dapat 1 kartu ucapan",
+                invoiceNotSendToRecipient = "Invoice tidak dikirim ke penerima pesanan"
         )
     }
 }
