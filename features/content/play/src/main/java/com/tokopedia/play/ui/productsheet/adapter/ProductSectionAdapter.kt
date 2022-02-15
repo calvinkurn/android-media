@@ -3,14 +3,14 @@ package com.tokopedia.play.ui.productsheet.adapter
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductSectionAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
-import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 /**
  * @author by astidhiyaa on 02/02/22
  */
 class ProductSectionAdapter(
     listener: ProductSectionViewHolder.Listener
-) : BaseDiffUtilAdapter<PlayProductSectionUiModel>() {
+) : BaseDiffUtilAdapter<ProductSectionUiModel>() {
 
     init {
         //TODO() = shimmering
@@ -18,15 +18,15 @@ class ProductSectionAdapter(
     }
 
     override fun areItemsTheSame(
-        oldItem: PlayProductSectionUiModel,
-        newItem: PlayProductSectionUiModel
+        oldItem: ProductSectionUiModel,
+        newItem: ProductSectionUiModel
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: PlayProductSectionUiModel,
-        newItem: PlayProductSectionUiModel
+        oldItem: ProductSectionUiModel,
+        newItem: ProductSectionUiModel
     ): Boolean {
         return oldItem == newItem
     }

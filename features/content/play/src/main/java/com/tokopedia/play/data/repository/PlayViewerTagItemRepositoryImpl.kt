@@ -5,8 +5,6 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.play.data.Config
-import com.tokopedia.play.data.Product
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -29,50 +27,30 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
 ): PlayViewerTagItemRepository {
 
     override suspend fun getTagItem(
-        channelId: String
+        channelId: String,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
             setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId).parameters)
         }.executeOnBackground()
 
-        try {
-            val sectionList = mapper.mapProductSection(
-                response.playGetTagsItem.sectionList
-            )
+        val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)
 
-            val prodArray = arrayListOf<Product>()
+        val voucherList = mapper.mapMerchantVouchers(
+            response.playGetTagsItem.voucherList
+        )
 
-            response.playGetTagsItem.sectionList.forEach {
-                it.listOfProducts.forEach {
-                    product -> prodArray.add(product)
-                }
-            }
-            val productList = mapper.mapProductTags(prodArray)
-
-            val voucherList = mapper.mapMerchantVouchers(
-                response.playGetTagsItem.voucherList
-            )
-
-            return@withContext TagItemUiModel(
-                product = ProductUiModel(
-                    productList = productList as List<PlayProductUiModel.Product>,
-                    canShow = true,
-                ),
-                voucher = VoucherUiModel(
-                    voucherList = voucherList,
-                ),
-                maxFeatured = response.playGetTagsItem.config.peekProductCount,
-                resultState = ResultState.Success,
-                section = SectionUiModel(sectionList, response.playGetTagsItem.config),
-                bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
-            )
-        }catch (e: Exception){
-            return@withContext TagItemUiModel(product = ProductUiModel( productList = emptyList(), canShow = false),
-                voucher = VoucherUiModel(voucherList = emptyList()), maxFeatured = 1, resultState = ResultState.Success, section = SectionUiModel(
-                    emptyList(), Config()
-                ), bottomSheetTitle = ""
-            )
-        }
+        return@withContext TagItemUiModel(
+            product = ProductUiModel(
+                productSectionList = productList,
+                canShow = true
+            ),
+            voucher = VoucherUiModel(
+                voucherList = voucherList,
+            ),
+            maxFeatured = response.playGetTagsItem.config.peekProductCount,
+            resultState = ResultState.Success,
+            bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
+        )
     }
 
     override suspend fun getVariant(
