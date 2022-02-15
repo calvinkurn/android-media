@@ -120,17 +120,15 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is ProductTagSummaryUiModel.Loading -> {
                         binding.ivLoading.visibility = View.VISIBLE
                         binding.globalError.visibility = View.GONE
-//                        binding.flBtnDoneContainer.visibility = View.GONE
                     }
                     is ProductTagSummaryUiModel.LoadingWithPlaceholder -> {
                         binding.ivLoading.visibility = View.GONE
                         binding.globalError.visibility = View.GONE
-//                        binding.flBtnDoneContainer.visibility = View.GONE
 
                         productSummaryListView.setLoading()
                     }
                     is ProductTagSummaryUiModel.Success -> {
-                        setTitle(state.productTagSummary.productCount)
+                        setTitle(state.productCount)
                         binding.ivLoading.visibility = View.GONE
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
