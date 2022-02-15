@@ -47,7 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
-    implementation projectOrAar(rootProject.ext.libraries.authentication)
+    
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     api rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation

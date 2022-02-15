@@ -1,4 +1,4 @@
-package com.tokopedia.authentication
+package com.tokopedia.network.authentication
 
 class AuthKeyExt {
     companion object {
