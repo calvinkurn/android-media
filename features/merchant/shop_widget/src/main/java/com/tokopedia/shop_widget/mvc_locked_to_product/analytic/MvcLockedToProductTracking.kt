@@ -162,15 +162,7 @@ class MvcLockedToProductTracking @Inject constructor() {
             putString(KEY_ITEM_ID, productId)
             putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, voucherId)
-            putLong(KEY_PRICE, filterPrice(productPrice).toLongOrZero())
-        }
-    }
-
-    private fun filterPrice(displayedPrice: String): String {
-        return if (!TextUtils.isEmpty(displayedPrice)) {
-            displayedPrice.replace("[^\\d]".toRegex(), "")
-        } else {
-            ""
+            putLong(KEY_PRICE, productPrice.toLongOrZero())
         }
     }
 }

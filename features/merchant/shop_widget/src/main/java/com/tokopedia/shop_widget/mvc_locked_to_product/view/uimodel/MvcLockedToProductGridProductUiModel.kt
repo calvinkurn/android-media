@@ -1,7 +1,5 @@
 package com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -9,6 +7,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.MvcLockedToP
 
 class MvcLockedToProductGridProductUiModel(
     val productID: String = "",
+    val finalPrice: String = "",
     val childIDs: List<String> = listOf(),
     val city: String = "",
     val minimumOrder: Int = 0,

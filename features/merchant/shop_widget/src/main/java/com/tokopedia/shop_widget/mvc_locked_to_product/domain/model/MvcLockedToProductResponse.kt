@@ -119,6 +119,9 @@ data class MvcLockedToProductResponse(
                 @SerializedName("stock")
                 @Expose
                 var stock: Int = 0,
+                @SerializedName("finalPrice")
+                @Expose
+                var finalPrice: String = "",
                 @SerializedName("productInCart")
                 @Expose
                 var productInCart: ProductInCart = ProductInCart()

@@ -94,6 +94,7 @@ class MvcLockedToProductUseCase @Inject constructor(
                       url
                     }
                     stock
+                    finalPrice
                     productInCart {
                       productID
                       qty

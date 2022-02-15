@@ -89,6 +89,7 @@ object MvcLockedToProductMapper {
     ): MvcLockedToProductGridProductUiModel {
         return MvcLockedToProductGridProductUiModel(
             productResponse.productID,
+            productResponse.finalPrice,
             productResponse.childIDs,
             productResponse.city,
             productResponse.minimumOrder,
