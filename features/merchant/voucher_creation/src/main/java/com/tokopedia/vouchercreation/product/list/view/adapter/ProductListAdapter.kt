@@ -16,7 +16,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         fun onProductCheckBoxClicked(isSelected: Boolean)
     }
 
-    private var productUiModelList: List<ProductUiModel> = listOf()
+    private var productUiModelList: MutableList<ProductUiModel> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductItemViewHolder {
         val binding = ItemProductListLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,7 +39,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     @SuppressLint("NotifyDataSetChanged")
     fun setProductList(productUiModelList: List<ProductUiModel>) {
-        this.productUiModelList = productUiModelList
+        this.productUiModelList = productUiModelList.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -57,6 +57,18 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         this.productUiModelList.forEach {
             it.isEnabled = isEnabled
         }
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addProducts(products : List<ProductUiModel>) {
+        this.productUiModelList.addAll(products)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearData() {
+        this.productUiModelList = mutableListOf()
         notifyDataSetChanged()
     }
 

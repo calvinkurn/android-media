@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.product.detail.view.fragment
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -48,11 +49,15 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponDetailBinding
+import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
 import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
+import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
@@ -67,7 +72,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
         private const val ZERO: Long = 0
         private const val PERCENT = 100
         private const val DISCOUNT_TYPE_NOMINAL = "idr"
-
         @JvmStatic
         fun newInstance(couponId: Long): CouponDetailFragment {
             return CouponDetailFragment().apply {
@@ -168,6 +172,17 @@ class CouponDetailFragment : BaseDaggerFragment() {
             btnShare.setOnClickListener {
                 viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
             }
+            tpgViewProducts.setOnClickListener {
+                val manageProductIntent = Intent(requireContext(), ManageProductActivity::class.java).apply {
+                    putExtras(Bundle().apply {
+                        putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, viewModel.getMaxProductLimit())
+                        val selectedProducts = ArrayList<ProductId>()
+                        selectedProducts.addAll(viewModel.getCoupon()?.products ?: listOf())
+                        putParcelableArrayList(BUNDLE_SELECTED_PRODUCTS, selectedProducts)
+                    })
+                }
+                startActivity(manageProductIntent)
+            }
         }
     }
 
@@ -178,6 +193,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 showContent()
                 displayCouponDetail(result.data.coupon, result.data.maxProduct)
                 viewModel.setCoupon(result.data.coupon)
+                viewModel.setMaxProductLimit(result.data.maxProduct)
             } else {
                 hideContent()
                 showError()

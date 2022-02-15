@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +47,7 @@ class AddProductViewModel @Inject constructor(
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
-    private var warehouseLocationId: Int? = null
+    private var warehouseLocationId: Int = SELLER_LOCATION_ID
     private var showCaseSelections = listOf<ShowCaseSelection>()
     private var categorySelections = listOf<CategorySelection>()
     private var selectedSort: GoodsSortInput? = null
@@ -74,6 +73,7 @@ class AddProductViewModel @Inject constructor(
     val selectedProductListLiveData = MutableLiveData<List<ProductUiModel>>(listOf())
 
     fun getProductList(
+            page: Int? = null,
             keyword: String? = null,
             shopId: String? = null,
             warehouseLocationId: Int? = null,
@@ -84,6 +84,7 @@ class AddProductViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val params = GetProductListUseCase.createRequestParams(
+                        page = page,
                         keyword = keyword,
                         shopId = shopId,
                         warehouseId = warehouseLocationId.toString(),
@@ -251,15 +252,6 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun getVariantName(combination: List<Int>, selections: List<Selection>): String {
-        val sb = StringBuilder()
-        combination.forEach { index ->
-            sb.append(selections[index].options[index].value)
-            sb.append(" ")
-        }
-        return sb.toString().trim()
-    }
-
     fun setProductUiModels(productUiModels: List<ProductUiModel>) {
         this.productUiModels = productUiModels
     }
@@ -392,21 +384,4 @@ class AddProductViewModel @Inject constructor(
             productUiModel.id !in selectedProductIds
         }
     }
-
-//    // PRODUCT SELECTIONS
-//    fun addSelectedProduct(product: ProductUiModel) {
-//        val selectedProducts = selectedProductsLiveData.value
-//        selectedProducts?.add(product)
-//        selectedProductsLiveData.value = selectedProducts
-//    }
-//
-//    fun removeSelectedProduct(product: ProductUiModel) {
-//        val selectedProducts = selectedProductsLiveData.value
-//        selectedProducts?.removeFirst { it.id == product.id }
-//        selectedProductsLiveData.value = selectedProducts
-//    }
-//
-//    fun setSelectedProduct(selectedProducts: List<ProductUiModel>) {
-//        selectedProductsLiveData.value = selectedProducts.toMutableList()
-//    }
 }

@@ -10,10 +10,10 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
-import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
+import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import javax.inject.Inject
 
@@ -75,7 +75,18 @@ class UpdateCouponActivity : AppCompatActivity() {
     }
 
     private fun navigateToProductListPage(coupon: Coupon) {
-        startActivity(Intent(this, ProductListActivity::class.java))
+        val couponSettings = coupon.settings
+        val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
+        val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putInt(CreateCouponProductActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(CreateCouponProductActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProductIds = ArrayList<String>()
+                selectedProductIds.addAll(couponPreviewFragment.getSelectedProductIds())
+                putStringArrayList(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+            })
+        }
+        startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
     }
 
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
@@ -92,39 +103,10 @@ class UpdateCouponActivity : AppCompatActivity() {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
         fragment.setOnCouponSaved {
-
-            //Stub the products data for testing purpose
-            couponPreviewFragment.setCouponProductsData(buildDummyProducts())
             router.popFragment(supportFragmentManager)
             couponPreviewFragment.setCouponSettingsData(it)
         }
         return fragment
-    }
-
-    private fun buildDummyProducts() : List<CouponProduct> {
-        return listOf(
-            CouponProduct(
-                "2147956088",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                19
-            ),
-            CouponProduct(
-                "15455652",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                1000
-            ),
-            CouponProduct(
-                "15429644",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                2100
-            ),
-            CouponProduct(
-                "15409031",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                31000
-            )
-        )
-
     }
 
     private fun notifyUpdateCouponSuccessToCouponListPage() {

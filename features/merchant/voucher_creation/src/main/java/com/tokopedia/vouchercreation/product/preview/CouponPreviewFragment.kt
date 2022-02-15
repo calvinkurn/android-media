@@ -206,6 +206,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
                     val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.products)
+                    this.selectedProducts.addAll(selectedProducts)
                     refreshProductsSection(selectedProducts)
                 }
                 is Fail -> {
