@@ -12,7 +12,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
@@ -20,7 +19,6 @@ import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject

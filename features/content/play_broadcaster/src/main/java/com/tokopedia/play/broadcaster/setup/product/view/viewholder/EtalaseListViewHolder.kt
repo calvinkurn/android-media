@@ -8,7 +8,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListHeaderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
