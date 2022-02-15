@@ -78,8 +78,10 @@ class ProductSectionViewHolder(
     }
 
     private fun setupAdapter(type: ProductSectionType) {
-        adapter = ProductLineAdapter(this, type)
-        rvProducts.adapter = adapter
+        if(!::adapter.isInitialized) {
+            adapter = ProductLineAdapter(this, type)
+            rvProducts.adapter = adapter
+        }
     }
 
     private fun setupBackground(background: Section.Background) {
