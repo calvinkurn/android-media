@@ -64,8 +64,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_shipment_tc_icon"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_tc_label"
