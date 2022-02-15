@@ -1,16 +1,11 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
-android {
-    packagingOptions {
-        pickFirst 'META-INF/*.kotlin_module'
-    }
-}
 
 project.ext {
     artifactId = 'authentication'
     groupId = 'com.tokopedia.authentication'
-    versionName = "1.0.24"
+    versionName = "0.0.1"
     artifactName = "authentication-release"
 }
 
