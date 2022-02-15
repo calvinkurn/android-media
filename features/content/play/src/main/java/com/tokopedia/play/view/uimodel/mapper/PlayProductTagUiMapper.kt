@@ -57,7 +57,7 @@ class PlayProductTagUiMapper @Inject constructor() {
                             priceNumber = input.originalPrice)
                 },
                 isVariantAvailable = input.isVariant,
-                stock = if(sectionType == ProductSectionType.Other) ComingSoon else
+                stock = if(sectionType == ProductSectionType.Upcoming) ComingSoon else
                     if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
