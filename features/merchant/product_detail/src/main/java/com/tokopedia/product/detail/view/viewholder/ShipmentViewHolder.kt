@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -134,7 +133,9 @@ class ShipmentViewHolder(
         }
         if (element.isFullfillment) {
             pdpShipmentGroupTc.show()
-            pdpShipmentTcIcon.setImageUrl(element.tokoCabangIconUrl)
+            pdpShipmentTcLabel.text = rates.fulfillmentData.prefix
+            pdpShipmentTcIcon.setImageUrl(rates.fulfillmentData.icon)
+            pdpShipmentTcValue.text = rates.fulfillmentData.description
         } else {
             val subtitle = rates.shippingCtxDesc
             pdpShipmentSubtitle.showIfWithBlock(subtitle.isNotEmpty()) {
@@ -163,22 +164,28 @@ class ShipmentViewHolder(
         element: ProductShipmentDataModel,
         rates: P2RatesEstimateData
     ) = with(viewMain) {
-        val instantLabel = rates.instanLabel
-        if (instantLabel.isEmpty() && !element.isCod) {
+        val labels = rates.chipsLabel.take(2)
+
+        if (labels.isEmpty()) {
             pdpShipmentCourierLabel2.show()
             val labelStringId = if (element.isTokoNow)
                 R.string.merchant_product_detail_label_selengkapnya
             else R.string.pdp_shipping_choose_courier_label
             pdpShipmentCourierLabel2.text = context.getString(labelStringId)
         } else {
+            val chipViews = listOf(
+                pdpShipmentCourierOption1,
+                pdpShipmentCourierOption2
+            )
+            labels.forEachIndexed { index, label ->
+                chipViews[index].showIfWithBlock(label.isNotEmpty()) {
+                    setLabel(label)
+                }
+            }
             pdpShipmentCourierLabel1.text = rates.subtitle
 
             pdpShipmentCourierLabel1.show()
             pdpShipmentCourierArrow.show()
-            pdpShipmentCourierOption1.showIfWithBlock(instantLabel.isNotEmpty()) {
-                setLabel(instantLabel)
-            }
-            pdpShipmentCourierOption2.showWithCondition(element.isCod)
             pdpShipmentCourierPlaceholder1.show()
         }
 

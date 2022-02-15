@@ -68,7 +68,15 @@ data class P2RatesEstimateData(
 
         @SerializedName("originalShippingRate")
         @Expose
-        val originalShippingRate: Double = 0.0
+        val originalShippingRate: Double = 0.0,
+
+        @SerializedName("fulfillmentData")
+        @Expose
+        val fulfillmentData: FulfillmentData = FulfillmentData(),
+
+        @SerializedName("chipsLabel")
+        @Expose
+        val chipsLabel: List<String> = emptyList()
 )
 
 data class P2RatesError(
@@ -101,4 +109,18 @@ data class ErrorBottomSheet(
         @SerializedName("buttonCopy")
         @Expose
         val buttonCopy: String = ""
+)
+
+data class FulfillmentData(
+        @SerializedName("icon")
+        @Expose
+        val icon: String = "",
+
+        @SerializedName("prefix")
+        @Expose
+        val prefix: String = "",
+
+        @SerializedName("description")
+        @Expose
+        val description: String = ""
 )
