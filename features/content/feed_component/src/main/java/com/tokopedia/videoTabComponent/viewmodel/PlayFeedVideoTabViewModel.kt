@@ -25,7 +25,6 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         private const val DEFAULT_GROUP_VALUE = "feeds_channels"
     }
 
-
      var currentCursor = ""
 
     private var currentSourceType = ""

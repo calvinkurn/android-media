@@ -2,7 +2,6 @@ package com.tokopedia.videoTabComponent.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -112,10 +110,13 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             getPlayInitialDataRsp.observe(lifecycleOwner, Observer {
 //                hideAdapterLoading()
                 when (it) {
-                    is Success -> onSuccessPlayTabData(
-                        it.data.playGetContentSlot,
-                        it.data.playGetContentSlot.meta.next_cursor
-                    )
+                    is Success -> {
+                        playWidgetAnalyticsListenerImp.filterCategory = FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)[0].title
+                        onSuccessPlayTabData(
+                            it.data.playGetContentSlot,
+                            it.data.playGetContentSlot.meta.next_cursor
+                        )
+                    }
                     is Fail -> {
                         //TODO implement error case
 //                        fetchFirstPage()
@@ -149,9 +150,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun setupView(view: View) {
-        adapter = VideoTabAdapter(
-            coordinator = playWidgetCoordinator
-        )
+        adapter = VideoTabAdapter(playWidgetCoordinator, playWidgetAnalyticsListenerImp)
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             rvWidget?.addOnScrollListener(it)
@@ -159,7 +158,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         }
 
         rvWidget?.adapter = adapter
-
     }
 
     private fun onSuccessInitialPlayTabData(

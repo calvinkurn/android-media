@@ -1,29 +1,25 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
-import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
-import com.tokopedia.videoTabComponent.domain.model.data.PlayPagingProperties
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotItems
+import com.tokopedia.videoTabComponent.domain.model.data.*
 
 private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
 private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
-private const val FEED_TYPE_TAB_MENU = "tabMenu"
+const val FEED_TYPE_TAB_MENU = "tabMenu"
 private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
-private const val LIVE = "live"
 
 object FeedPlayVideoTabMapper {
-    fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse) : List<PlaySlot>{
-        return  playGetContentSlotResponse.data.filter {
+    fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse): List<PlaySlot> {
+        return playGetContentSlotResponse.data.filter {
             it.type == FEED_TYPE_TAB_MENU
         }
-
     }
+
     fun map(
-            playGetContentSlotResponse: PlayGetContentSlotResponse
+        playGetContentSlotResponse: PlayGetContentSlotResponse
     ): List<PlayFeedUiModel> {
 
         val list = mutableListOf<PlayFeedUiModel>()
@@ -34,37 +30,43 @@ object FeedPlayVideoTabMapper {
                 FEED_TYPE_PINNED_FEEDS -> {
                     list.add(
                         PlayWidgetJumboUiModel(
-                            getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.items), meta)
+                            getWidgetUiModel(playSlot, meta)
                         )
                     )
                 }
                 FEED_TYPE_CHANNEL_BLOCK -> {
                     list.add(
-                            PlayWidgetLargeUiModel(
-                            getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.items), meta)
+                        PlayWidgetLargeUiModel(
+                            getWidgetUiModel(playSlot, meta)
                         )
                     )
                 }
                 FEED_TYPE_TAB_MENU -> {
                     list.add(
-                        PlayWidgetSlotTabUiModel(
-                            playSlot.items.mapIndexed { index, item -> item.label to (index == 0) }
+                        PlaySlotTabMenuUiModel(
+                            playSlot.items.mapIndexed { index, playSlotItem ->
+                                PlaySlotTabMenuUiModel.Item(
+                                    playSlotItem.id, playSlotItem.label, playSlotItem.icon_url,
+                                    playSlotItem.group, playSlotItem.source_type,
+                                    playSlotItem.source_id, playSlotItem.slug_id, index == 0
+                                )
+                            }
                         )
                     )
                 }
                 FEED_TYPE_CHANNEL_RECOM -> {
                     list.add(
                         PlayWidgetLargeUiModel(
-                            getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.items), meta)
+                            getWidgetUiModel(playSlot, meta)
                         )
 
                     )
                 }
                 FEED_TYPE_CHANNEL_HIGHLIGHT -> {
                     list.add(
-                            PlayWidgetMediumUiModel(
-                                    getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.items), meta)
-                            )
+                        PlayWidgetMediumUiModel(
+                            getWidgetUiModel(playSlot, meta)
+                        )
 
                     )
                 }
@@ -75,14 +77,13 @@ object FeedPlayVideoTabMapper {
     }
 
     private fun getWidgetUiModel(
-            playSlot: PlaySlot, playWidgetItemsUiModel: List<PlayWidgetItemUiModel>, meta: PlayPagingProperties,
+        playSlot: PlaySlot, meta: PlayPagingProperties,
     ): PlayWidgetUiModel {
 
         val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
 
         //check these values
         val appLink = playSlot.items.firstOrNull()?.appLink ?: ""
-        val webLink = playSlot.items.firstOrNull()?.webLink ?: ""
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
         val autoPlayAmount: Int = 0
@@ -91,18 +92,18 @@ object FeedPlayVideoTabMapper {
         //till here
 
         return PlayWidgetUiModel(
-                title = playSlot.title,
-                actionTitle = playSlot.lihat_semua.label,
-                actionAppLink = appLink,
-                isActionVisible = playSlot.lihat_semua.show,
-                config = PlayWidgetConfigUiModel(
-                        autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,
-                        meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
-                ),
-                background = PlayWidgetBackgroundUiModel(
-                        "", item.appLink, item.webLink, emptyList(), ""
-                ),
-                getWidgetItemUiModel(playSlot.items)
+            title = playSlot.title,
+            actionTitle = playSlot.lihat_semua.label,
+            actionAppLink = appLink,
+            isActionVisible = playSlot.lihat_semua.show,
+            config = PlayWidgetConfigUiModel(
+                autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,
+                meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
+            ),
+            background = PlayWidgetBackgroundUiModel(
+                "", item.appLink, item.webLink, emptyList(), ""
+            ),
+            getWidgetItemUiModel(playSlot.items)
         )
     }
 
@@ -141,7 +142,7 @@ object FeedPlayVideoTabMapper {
                         item.video.cover_url, item.video.stream_source
                     ),
                     channelType = PlayWidgetChannelType.getByValue(item.display_type),
-                    hasGiveaway= hasGiveaway,
+                    hasGiveaway = hasGiveaway,
                     share = PlayWidgetShareUiModel(item.share.text, item.share.is_show_button),
                     performanceSummaryLink = performanceSummaryLink,
                     poolType = poolType,
