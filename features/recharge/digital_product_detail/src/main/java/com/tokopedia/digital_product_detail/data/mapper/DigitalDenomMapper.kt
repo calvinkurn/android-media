@@ -95,7 +95,7 @@ class DigitalDenomMapper @Inject constructor() {
                 specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                 slashPrice = if(!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
                 slashPricePlain = if(it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
-                discountLabel = if (isMCCM) "10%" else "", // todo add from gql
+                discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
             )
         }
     }
@@ -124,7 +124,7 @@ class DigitalDenomMapper @Inject constructor() {
                 isShowChevron = true,
                 quotaInfo = "30 GB", //todo add from gql
                 expiredDays = "30 Days", // todo add from gql
-                discountLabel = if (isMCCM) "10%" else "", // todo add from gql,
+                discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
                 productDescriptions = it.attributes.productDescriptions
             )
         }

@@ -169,7 +169,10 @@ data class RechargeProductPromo(
     val newPricePlain: Int = 0,
     @SerializedName("value_text")
     @Expose
-    val valueText: String = ""
+    val valueText: String = "",
+    @SerializedName("discount")
+    @Expose
+    val discount: String = ""
 )
 
 data class TelcoFilterTagComponent(

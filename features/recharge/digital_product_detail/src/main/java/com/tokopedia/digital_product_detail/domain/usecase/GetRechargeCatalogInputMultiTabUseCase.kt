@@ -68,7 +68,6 @@ class GetRechargeCatalogInputMultiTabUseCase @Inject constructor(
                 }
                 dataCollections {
                   name
-                  cluster_type
                   products {
                     id
                     attributes {
@@ -91,6 +90,7 @@ class GetRechargeCatalogInputMultiTabUseCase @Inject constructor(
                         new_price
                         new_price_plain
                         value_text
+                        discount
                       }
                     }
                   }

@@ -228,7 +228,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     override fun onRenderOperator(isDelayed: Boolean) {
                         viewModel.operatorData.attributes.prefix.isEmpty().let {
                             if (it) {
-                                getOperatorSelectGroup()
+                                //getOperatorSelectGroup()
                             } else {
                                 renderProduct()
                             }

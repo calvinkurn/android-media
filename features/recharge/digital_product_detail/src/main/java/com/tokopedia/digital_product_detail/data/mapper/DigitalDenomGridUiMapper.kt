@@ -59,7 +59,7 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                             it.attributes.productLabels[0].equals(SPECIAL_PROMO_LABEL, true)
                         else false,
                         title = it.attributes.desc,
-                        discountLabel = "10%", //TODO Change to real data
+                        discountLabel = it.attributes.promo?.discount ?: "",
                         price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: EMPTY_PRICE else it.attributes.price,
                         pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: EMPTY_PRICE_PLAIN else it.attributes.pricePlain.toIntOrZero(),
                         specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
