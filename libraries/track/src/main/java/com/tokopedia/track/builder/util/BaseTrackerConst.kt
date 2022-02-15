@@ -86,6 +86,19 @@ abstract class BaseTrackerConst {
         const val KEY = "item_list"
     }
 
+    protected object Items {
+        const val KEY = "items"
+        const val DIMENSION_83 = "dimension83"
+        const val DIMENSION_83_DEFAULT = "bebas ongkir"
+        const val INDEX = "index"
+        const val ITEM_BRAND = "item_brand"
+        const val ITEM_CATEGORY = "item_category"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
+        const val ITEM_VARIANT = "item_variant"
+        const val PRICE = "price"
+    }
+
     protected object Value {
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
@@ -143,7 +156,7 @@ abstract class BaseTrackerConst {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
         private const val PRODUCT_VIEW = "productView"
-        private const val PRODUCT_CLICK = "productClick"
+        const val PRODUCT_CLICK = "productClick"
         private const val CLICK = "click"
         private const val ADD = "add"
         private const val IMPRESSIONS = "impressions"

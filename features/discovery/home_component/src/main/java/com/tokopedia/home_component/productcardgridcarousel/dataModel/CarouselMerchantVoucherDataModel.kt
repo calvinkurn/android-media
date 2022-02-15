@@ -24,6 +24,19 @@ data class CarouselMerchantVoucherDataModel(
     val couponCode: String,
     val couponType: String,
     val creativeName: String,
+    val productId: String,
+    val productName: String,
+    val productVariant: String,
+    val productPrice: String,
+    val buType: String,
+    val topAds: String,
+    val carousel: String,
+    val recommendationType: String,
+    val recomPageName: String,
+    val productBrand: String,
+    val catNameLevel1: String,
+    val catNameLevel2: String,
+    val catNameLevel3: String,
     val merchantVoucherComponentListener: MerchantVoucherComponentListener
 ) : Visitable<CommonCarouselProductCardTypeFactory> {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {

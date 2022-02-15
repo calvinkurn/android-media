@@ -112,7 +112,20 @@ class MerchantVoucherViewHolder(
                     userId = merchantVoucherComponentListener.getUserId(),
                     couponCode = "",
                     couponType = element.name,
-                    creativeName = ""
+                    creativeName = "",
+                    productId = element.id,
+                    productName = "",
+                    productVariant = "",
+                    productPrice = element.price,
+                    productBrand = "",
+                    buType = channel.trackingAttributionModel.galaxyAttribution,
+                    topAds = "",
+                    carousel = "",
+                    recommendationType = "",
+                    recomPageName = "",
+                    catNameLevel1 = "",
+                    catNameLevel2 = "",
+                    catNameLevel3 = ""
                 )
             )
         }

@@ -5,6 +5,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 
 /**
@@ -17,8 +18,10 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         TODO("Not yet implemented")
     }
 
-    override fun onProductClicked(productAppLink: String) {
-        homeCategoryListener.onDynamicChannelClicked(productAppLink)
+    override fun onProductClicked(merchantVoucherProductClicked: MerchantVoucherProductClicked) {
+        val tracking = MerchantVoucherTracking.getClickProduct(merchantVoucherProductClicked)
+        homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        homeCategoryListener.onDynamicChannelClicked(merchantVoucherProductClicked.productAppLink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, appLink: String) {
@@ -26,9 +29,9 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
     }
 
     override fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked) {
-        homeCategoryListener.onDynamicChannelClicked(merchantVoucherShopClicked.shopAppLink)
         val tracking = MerchantVoucherTracking.getShopClicked(merchantVoucherShopClicked)
         homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        homeCategoryListener.onDynamicChannelClicked(merchantVoucherShopClicked.shopAppLink)
     }
 
     override fun getUserId(): String {
@@ -36,8 +39,8 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
     }
 
     override fun onVoucherDetailClicked(merchantVoucherDetailClicked: MerchantVoucherDetailClicked) {
-        homeCategoryListener.onDynamicChannelClicked(merchantVoucherDetailClicked.productAppLink)
         val tracking = MerchantVoucherTracking.getClickVoucherDetail(merchantVoucherDetailClicked)
         homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        homeCategoryListener.onDynamicChannelClicked(merchantVoucherDetailClicked.productAppLink)
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBin
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
@@ -72,6 +73,33 @@ class CarouselMerchantVoucherViewHolder (
                 )
             )
         }
-        binding?.containerImageProduct?.setOnClickListener {  }
+        binding?.containerImageProduct?.setOnClickListener {
+            val horizontalPosition = "${adapterPosition + 1}"
+            element.merchantVoucherComponentListener.onProductClicked(
+                MerchantVoucherProductClicked(
+                    productAppLink = element.productAppLink,
+                    shopId = element.shopId,
+                    shopName = element.shopName,
+                    horizontalCardPosition = horizontalPosition,
+                    bannerId = element.bannerId,
+                    positionWidget = element.positionWidget,
+                    headerName = element.headerName,
+                    userId = element.userId,
+                    productId = element.productId,
+                    productName = element.productName,
+                    productVariant = element.productVariant,
+                    productPrice = element.productPrice,
+                    buType = element.buType,
+                    topAds = element.topAds,
+                    carousel = element.carousel,
+                    recommendationType = element.recommendationType,
+                    recomPageName = element.recomPageName,
+                    productBrand = element.productBrand,
+                    catNameLevel1 = element.catNameLevel1,
+                    catNameLevel2 = element.catNameLevel2,
+                    catNameLevel3 = element.catNameLevel3
+                )
+            )
+        }
     }
 }
