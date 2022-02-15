@@ -34,11 +34,11 @@ class ProductCardViewHolder(
         }
 
         binding?.productCardGridView?.setOnClickListener {
-            listener?.onProductCardClickListener(element.productUrl)
+            listener?.onProductCardClickListener(element)
         }
     }
 
     interface ProductCardListener {
-        fun onProductCardClickListener(appLink: String?)
+        fun onProductCardClickListener(product: ProductCardUiModel)
     }
 }

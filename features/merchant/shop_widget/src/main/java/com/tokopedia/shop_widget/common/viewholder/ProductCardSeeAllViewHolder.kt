@@ -6,14 +6,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
 import com.tokopedia.shop_widget.databinding.ItemProductCardSeeAllBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardSeeAllViewHolder(
-    itemView: View
+    itemView: View,
+    private var listener: ProductCardSeeAllListener? = null
 ): AbstractViewHolder<ProductCardSeeAllUiModel>(itemView) {
 
     companion object {
@@ -26,10 +26,14 @@ class ProductCardSeeAllViewHolder(
     override fun bind(element: ProductCardSeeAllUiModel) {
         binding?.apply {
             cvSeeMore.setOnClickListener {
-                RouteManager.route(itemView.context, element.appLink)
+                listener?.onProductCardSeeAllClickListener(element.appLink)
             }
             iuChevron.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
                 ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500), BlendModeCompat.SRC_ATOP)
         }
+    }
+
+    interface ProductCardSeeAllListener {
+        fun onProductCardSeeAllClickListener(appLink: String)
     }
 }

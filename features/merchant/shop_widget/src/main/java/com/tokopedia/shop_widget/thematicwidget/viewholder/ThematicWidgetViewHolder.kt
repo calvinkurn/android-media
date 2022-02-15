@@ -14,10 +14,13 @@ import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.adapter.ProductCardAdapter
 import com.tokopedia.shop_widget.common.adapter.ProductCardDiffer
 import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView
+import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView.HeaderCustomViewListener
 import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactoryImpl
 import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
 import com.tokopedia.shop_widget.common.uimodel.ProductCardSpaceUiModel
+import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
+import com.tokopedia.shop_widget.common.viewholder.ProductCardSeeAllViewHolder
 import com.tokopedia.shop_widget.common.viewholder.ProductCardViewHolder
 import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -31,7 +34,7 @@ import kotlin.math.abs
 class ThematicWidgetViewHolder (
     itemView: View,
     private val listener: ThematicWidgetListener
-) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope {
+) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
     companion object {
         @LayoutRes
@@ -53,7 +56,10 @@ class ThematicWidgetViewHolder (
 
     private val adapter by lazy {
         ProductCardAdapter(
-            baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(productCardListenerImpl()),
+            baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(
+                productCardListener = productCardListenerImpl(),
+                productCardSeeAllListener = productCardSeeAllListenerImpl()
+            ),
             differ = ProductCardDiffer()
         )
     }
@@ -78,11 +84,25 @@ class ThematicWidgetViewHolder (
 
     override fun bind(element: ThematicWidgetUiModel) {
         uiModel = element
-        dynamicHeaderCustomView?.setModel(element.header, null)
-        setupRecyclerView(element)
-        setupImage(element.imageBanner)
-        setupBackgroundColor(element.firstBackgroundColor, element.secondBackgroundColor)
-        listener.onThematicWidgetImpression(uiModel, adapterPosition)
+        dynamicHeaderCustomView?.setModel(
+            model = element.header,
+            listener = this
+        )
+        setupRecyclerView(
+            element = element
+        )
+        setupImage(
+            imageBanner = element.imageBanner
+        )
+        setupBackgroundColor(
+            startBackGroundColor = element.firstBackgroundColor,
+            endBackGroundColor = element.secondBackgroundColor
+        )
+        listener.onThematicWidgetImpressListener(element, adapterPosition)
+    }
+
+    override fun onSeeAllClick(appLink: String) {
+        listener.onSeeAllThematicWidgetClickListener(appLink, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
     }
 
     private fun setupRecyclerView(element: ThematicWidgetUiModel) {
@@ -95,16 +115,19 @@ class ThematicWidgetViewHolder (
     }
 
     private fun submitList(element: ThematicWidgetUiModel) {
+        val productList : List<ProductCardUiModel>
         val newList = mutableListOf<Visitable<*>>()
         newList.add(ProductCardSpaceUiModel())
         if (element.header.totalProduct <= MAX_TOTAL_PRODUCT) {
-            newList.addAll(element.productList)
-            adapter.submitList(newList)
+            productList = element.productList
+            newList.addAll(productList)
         } else {
-            newList.addAll(element.productList.take(MAX_TOTAL_PRODUCT))
+            productList = element.productList.take(MAX_TOTAL_PRODUCT)
+            newList.addAll(productList)
             newList.add(ProductCardSeeAllUiModel(element.header.ctaTextLink))
-            adapter.submitList(newList)
         }
+        adapter.submitList(newList)
+        listener.onProductCardThematicWidgetImpressListener(productList, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
     }
 
     private fun calculateParallaxImage(dx: Int) {
@@ -172,13 +195,31 @@ class ThematicWidgetViewHolder (
     }
 
     private fun productCardListenerImpl(): ProductCardViewHolder.ProductCardListener = object : ProductCardViewHolder.ProductCardListener {
-        override fun onProductCardClickListener(appLink: String?) {
-            listener.onThematicWidgetProductClickListener(appLink)
+        override fun onProductCardClickListener(product: ProductCardUiModel) {
+            listener.onProductCardThematicWidgetClickListener(
+                product = product,
+                campaignId = uiModel?.campaignId.orEmpty(),
+                campaignName = uiModel?.name.orEmpty(),
+                position = adapterPosition
+            )
+        }
+    }
+
+    private fun productCardSeeAllListenerImpl(): ProductCardSeeAllViewHolder.ProductCardSeeAllListener = object : ProductCardSeeAllViewHolder.ProductCardSeeAllListener {
+        override fun onProductCardSeeAllClickListener(appLink: String) {
+            listener.onProductCardSeeAllThematicWidgetClickListener(
+                appLink = appLink,
+                campaignId = uiModel?.campaignId.orEmpty(),
+                campaignName = uiModel?.name.orEmpty()
+            )
         }
     }
 
     interface ThematicWidgetListener {
-        fun onThematicWidgetProductClickListener(appLink: String?)
-        fun onThematicWidgetImpression(model: ThematicWidgetUiModel?, position: Int)
+        fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int)
+        fun onProductCardThematicWidgetImpressListener(products: List<ProductCardUiModel>, position: Int, campaignId: String, campaignName: String)
+        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int)
+        fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
+        fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
     }
 }

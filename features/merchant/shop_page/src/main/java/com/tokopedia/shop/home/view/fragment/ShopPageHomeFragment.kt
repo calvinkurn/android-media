@@ -120,6 +120,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
+import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.unifycomponents.Toaster
@@ -3023,21 +3024,67 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
-        override fun onThematicWidgetProductClickListener(appLink: String?) {
+
+        override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
+            shopPageHomeTracking.impressionThematicWidgetCampaign(
+                campaignName = model.name,
+                campaignId = model.campaignId,
+                shopId = shopId,
+                userId = userId,
+                position = position
+            )
+        }
+
+        override fun onProductCardThematicWidgetImpressListener(
+            products: List<ProductCardUiModel>,
+            position: Int,
+            campaignId: String,
+            campaignName: String
+        ) {
+            shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
+                campaignName = campaignName,
+                campaignId =campaignId,
+                shopId = shopId,
+                userId = userId,
+                products = products,
+            )
+        }
+
+        override fun onProductCardThematicWidgetClickListener(
+            product: ProductCardUiModel,
+            campaignId: String,
+            campaignName: String,
+            position: Int
+        ) {
+            shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
+                campaignName = campaignName,
+                campaignId = campaignId,
+                shopId = shopId,
+                userId = userId,
+                product = product,
+                position = position
+            )
+            RouteManager.route(context, product.productUrl)
+        }
+
+        override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
+            shopPageHomeTracking.clickProductCardSeeAllThematicWidgetCampaign(
+                campaignId = campaignId,
+                campaignName = campaignName,
+                shopId = shopId,
+                userId = userId,
+            )
             RouteManager.route(context, appLink)
         }
 
-        override fun onThematicWidgetImpression(model: ThematicWidgetUiModel?, position: Int) {
-            model?.apply {
-                shopPageHomeTracking.impressionCampaignThematicWidget(
-                    campaignName = model.name,
-                    campaignId = model.campaignId,
-                    statusCampaign = model.header.statusCampaign,
-                    shopId = shopId,
-                    userId = userId,
-                    position = position
-                )
-            }
+        override fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
+            shopPageHomeTracking.clickSeeAllThematicWidgetCampaign(
+                campaignId = campaignId,
+                campaignName = campaignName,
+                shopId = shopId,
+                userId = userId,
+            )
+            RouteManager.route(context, appLink)
         }
     }
 

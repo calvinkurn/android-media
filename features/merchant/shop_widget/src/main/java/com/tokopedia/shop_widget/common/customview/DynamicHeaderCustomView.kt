@@ -30,7 +30,7 @@ class DynamicHeaderCustomView: FrameLayout {
         private const val MIN_TOTAL_PRODUCT = 10
     }
 
-    private var listener: HeaderListener? = null
+    private var listener: HeaderCustomViewListener? = null
     private var itemView: View?
     private var headerContainer: ConstraintLayout? = null
     private var tusCountDown: TimerUnifySingle? = null
@@ -47,7 +47,7 @@ class DynamicHeaderCustomView: FrameLayout {
         this.itemView = view
     }
 
-    fun setModel(model: DynamicHeaderUiModel, listener: HeaderListener? = null) {
+    fun setModel(model: DynamicHeaderUiModel, listener: HeaderCustomViewListener? = null) {
         this.listener = listener
         handleHeaderComponent(model)
     }
@@ -166,7 +166,7 @@ class DynamicHeaderCustomView: FrameLayout {
         return TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS)
     }
 
-    interface HeaderListener {
-        fun onSeeAllClick(link: String)
+    interface HeaderCustomViewListener {
+        fun onSeeAllClick(appLink: String)
     }
 }
