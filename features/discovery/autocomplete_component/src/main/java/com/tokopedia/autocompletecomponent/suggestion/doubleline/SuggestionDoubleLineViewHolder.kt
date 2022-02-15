@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.setBodyText
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
@@ -51,7 +51,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
         if (item.isBoldSquareType()) {
-            itemView.iconImage?.loadImage(item.data.imageUrl)
+            itemView.iconImage?.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         } else {
             itemView.iconImage?.loadImageCircle(item.data.imageUrl)
         }
