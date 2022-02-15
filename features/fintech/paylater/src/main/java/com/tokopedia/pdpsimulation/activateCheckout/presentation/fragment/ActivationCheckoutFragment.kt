@@ -413,7 +413,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     }
                 }
 
-                checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
+                if(selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty())
+                    checkoutData.tenureDetail[0].isSelectedTenure = true
+                else
+                    checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
+
+
                 DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
                     installmentModel = it
                 }

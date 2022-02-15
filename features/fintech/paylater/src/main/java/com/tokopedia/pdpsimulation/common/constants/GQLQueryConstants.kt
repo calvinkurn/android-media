@@ -178,6 +178,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       user_balance_amt
       detail {
         tenure
+        label
         chip_title
         monthly_installment
         description
