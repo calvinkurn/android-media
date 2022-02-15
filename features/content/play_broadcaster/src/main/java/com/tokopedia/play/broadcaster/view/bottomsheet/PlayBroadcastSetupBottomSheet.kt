@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFr
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play_common.lifecycle.lifecycleBound
@@ -68,6 +69,7 @@ class PlayBroadcastSetupBottomSheet :
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private var mListener: SetupResultListener? = null
+    private var mDataSource: DataSource? = null
 
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
@@ -136,12 +138,23 @@ class PlayBroadcastSetupBottomSheet :
         super.onAttachFragment(childFragment)
 
         when (childFragment) {
-            is PlayCoverSetupFragment -> childFragment.setListener(this)
+            is PlayCoverSetupFragment -> {
+                childFragment.setListener(this)
+                childFragment.setDataSource(object : PlayCoverSetupFragment.DataSource {
+                    override fun getProductList(): List<ProductUiModel> {
+                        return mDataSource?.getProductList().orEmpty()
+                    }
+                })
+            }
         }
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -206,5 +219,9 @@ class PlayBroadcastSetupBottomSheet :
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
+    }
+
+    interface DataSource {
+        fun getProductList(): List<ProductUiModel>
     }
 }
