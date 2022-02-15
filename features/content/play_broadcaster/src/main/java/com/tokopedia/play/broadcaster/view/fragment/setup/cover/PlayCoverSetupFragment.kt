@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
@@ -27,6 +28,8 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -38,6 +41,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropViewComponent
@@ -63,17 +67,19 @@ import javax.inject.Inject
  * Created by furqan on 02/06/20
  */
 class PlayCoverSetupFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
-        private val permissionPref: PermissionSharedPreferences,
-        private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener, FragmentWithDetachableView {
+    private val coverSetupViewModelFactory: PlayCoverSetupViewModel.Factory,
+    private val dispatcher: CoroutineDispatchers,
+    private val permissionPref: PermissionSharedPreferences,
+    private val analytic: PlayBroadcastAnalytic
+) : PlayBaseSetupFragment(),
+    CoverCropViewComponent.Listener,
+    CoverSetupViewComponent.Listener,
+    FragmentWithDetachableView {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var viewModel: PlayCoverSetupViewModel
-    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private lateinit var yalantisImageCropper: YalantisImageCropper
 
@@ -136,6 +142,9 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
+
+    private lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var toasterBottomMargin = 0
 
@@ -170,8 +179,10 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
-        dataStoreViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(DataStoreViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            getViewModelFactory()
+        ).get(PlayCoverSetupViewModel::class.java)
         permissionHelper = PermissionHelperImpl(this, permissionPref)
     }
 
@@ -278,6 +289,10 @@ class PlayCoverSetupFragment @Inject constructor(
 
     fun setListener(listener: Listener) {
         mListener = listener
+    }
+
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
     }
 
     private fun onGetCoverFromCamera(imageUri: Uri?) {
@@ -517,13 +532,8 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun onUploadSuccess() {
-        scope.launch {
-            val error = mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
-            error?.let {
-                yield()
-                onUploadFailed(it)
-            }
-        }
+        val selectedCover = viewModel.selectedCover ?: return
+        mListener?.onCoverSetupFinished(selectedCover)
     }
 
     private fun onUploadFailed(e: Throwable) {
@@ -531,6 +541,19 @@ class PlayCoverSetupFragment @Inject constructor(
         coverCropView.setLoading(false)
 
         showErrorToaster(e)
+    }
+
+    fun getViewModelFactory(): ViewModelProvider.Factory {
+        if (!::viewModelFactory.isInitialized) {
+            viewModelFactory = object : ViewModelProvider.Factory {
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    return coverSetupViewModelFactory.create(
+                        mDataSource?.getProductList().orEmpty()
+                    ) as T
+                }
+            }
+        }
+        return viewModelFactory
     }
 
     //region observe
@@ -633,6 +656,10 @@ class PlayCoverSetupFragment @Inject constructor(
          * @return true means cancel has been handled by the listener
          */
         fun onCancelCropping(coverSource: CoverSource): Boolean = false
-        suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable?
+        fun onCoverSetupFinished(cover: PlayCoverUiModel)
+    }
+
+    interface DataSource {
+        fun getProductList(): List<ProductUiModel>
     }
 }

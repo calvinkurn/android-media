@@ -16,6 +16,9 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -59,7 +62,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** ViewModel */
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
-    private lateinit var coverSetupViewModel: PlayCoverSetupViewModel
     private lateinit var scheduleViewModel: BroadcastScheduleViewModel
 
     /** View */
@@ -78,7 +80,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        coverSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
         scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
 
@@ -138,6 +139,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Use uiState directly when uiState already return StateFlow")
                         return parentViewModel.productSectionList
+                    }
+                })
+            }
+            is PlayBroadcastSetupBottomSheet -> {
+                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
+                    override fun onCoverChanged(cover: PlayCoverUiModel) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetCover(cover)
+                        )
+                    }
+                })
+                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
+                    override fun getProductList(): List<ProductUiModel> {
+                        return parentViewModel.productSectionList.flatMap { it.products }
                     }
                 })
             }
@@ -227,20 +242,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         croppedCover.coverImage.toString().contains("http")) {
                         binding.viewPreparationMenu.isSetCoverChecked(true)
                         binding.formCover.setCover(croppedCover.coverImage.toString())
+                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()){
+                        binding.viewPreparationMenu.isSetCoverChecked(true)
+                        binding.formCover.setCover(croppedCover.localImage.toString())
                     }
-                }
-            }
-        }
-
-        coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
-            when(it) {
-                is NetworkResult.Success -> {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        parentViewModel.getChannelDetail()
-                    }
-                }
-                is NetworkResult.Fail -> {
-                    showErrorToaster(it.error)
                 }
             }
         }

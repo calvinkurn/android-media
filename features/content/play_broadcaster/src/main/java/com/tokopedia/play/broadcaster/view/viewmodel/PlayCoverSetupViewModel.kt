@@ -21,7 +21,13 @@ import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.event.Event
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -31,15 +37,21 @@ import javax.inject.Inject
 /**
  * @author by furqan on 09/06/2020
  */
-class PlayCoverSetupViewModel @Inject constructor(
-        private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatchers,
-        private val setupDataStore: PlayBroadcastSetupDataStore,
-        private val uploadImageUseCase: UploadImageToRemoteV2UseCase,
-        private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
-        private val coverImageUtil: PlayCoverImageUtil,
-        private val coverImageTransformer: ImageTransformer
+class PlayCoverSetupViewModel @AssistedInject constructor(
+    @Assisted productList: List<ProductUiModel>,
+    private val hydraConfigStore: HydraConfigStore,
+    private val dispatcher: CoroutineDispatchers,
+    private val setupDataStore: PlayBroadcastSetupDataStore,
+    private val uploadImageUseCase: UploadImageToRemoteV2UseCase,
+    private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
+    private val coverImageUtil: PlayCoverImageUtil,
+    private val coverImageTransformer: ImageTransformer
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(productList: List<ProductUiModel>): PlayCoverSetupViewModel
+    }
 
     private val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -77,8 +89,15 @@ class PlayCoverSetupViewModel @Inject constructor(
         get() = _observableUploadCoverEvent
     private val _observableUploadCoverEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
+    val productList: StateFlow<List<ProductUiModel>>
+        get() = _productList
+    private val _productList = MutableStateFlow(productList)
+
     val maxTitleChars: Int
         get() = hydraConfigStore.getMaxTitleChars()
+
+    val selectedCover: PlayCoverUiModel?
+        get() = setupDataStore.getSelectedCover()
 
     fun isValidCoverTitle(coverTitle: String): Boolean {
         return coverTitle.isNotBlank() && coverTitle.length <= maxTitleChars
