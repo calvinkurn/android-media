@@ -33,7 +33,6 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 04/02/22
  */
 class ProductSummaryBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayBroadcastAnalytic,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
@@ -50,7 +49,6 @@ class ProductSummaryBottomSheet @Inject constructor(
         ProductSummaryListViewComponent(binding.rvProductSummaries, this)
     }
 
-    @ExperimentalStdlibApi
     override fun onProductDeleteClicked(product: ProductUiModel) {
         analytic.clickDeleteProductOnProductSetup(productId = product.id)
         viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
@@ -61,8 +59,6 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupBottomSheet()
     }
 
-    /** TODO: gonna delete this later */
-    @ExperimentalStdlibApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -111,8 +107,6 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
     }
 
-    @ExperimentalStdlibApi
-    /** TODO: gonna remove this annotation later */
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
