@@ -414,6 +414,7 @@ class ShopInfoViewHolder(
         regularMerchantStatus.run {
             text = context.resources.getString(R.string.setting_verified)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            isClickable = false
         }
     }
 
