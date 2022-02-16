@@ -9,8 +9,8 @@
         android:id="@+id/imgCoupon"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/img_mvc_cashback_khusus" />
@@ -24,28 +24,13 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/light_N700_96"
-        android:textStyle="bold"
         android:textSize="@dimen/fontSize_lvl2"
-        app:layout_constraintBottom_toTopOf="@+id/tpgCouponDescription"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imgCoupon"
-        app:layout_constraintTop_toTopOf="@+id/imgCoupon"
-        tools:text="Hura Hura Hujan Rejeki" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgCouponDescription"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mvc_dimen_12dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/light_N700_96"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imgCoupon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/imgCoupon"
-        app:layout_constraintTop_toBottomOf="@+id/tpgCouponName"
-        app:typographyType="body_3"
+        app:layout_constraintTop_toTopOf="@+id/imgCoupon"
         tools:text="Hura Hura Hujan Rejeki" />
 
     <View
@@ -96,11 +81,11 @@
         android:id="@+id/textFieldQuota"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/mvc_dimen_20dp"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/mvc_dimen_20dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -182,15 +167,23 @@
         android:id="@+id/btnSave"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/mvc_dimen_20dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/unify_space_16"
         android:text="@string/mvc_save_changes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tpgRetry"
         app:layout_constraintTop_toBottomOf="@+id/layoutExpenseEstimation"
         app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupTicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="imgTips,tpgTips,divider" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
