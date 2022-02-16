@@ -18,10 +18,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
-        android:elevation="2dp"
+        android:elevation="1dp"
         app:toolbarContentType="typeTitle"
         app:toolbarTitle="Tukar Tambah"
-        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialFillColor="@color/Unify_N0"
         app:toolbarInitialTheme="light" />
 
     <androidx.core.widget.NestedScrollView
@@ -115,4 +115,9 @@
         app:layout_constraintTop_toBottomOf="@id/initial_price_navToolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <FrameLayout
+        android:id="@+id/educational_frame_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

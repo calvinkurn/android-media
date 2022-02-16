@@ -70,7 +70,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 Manifest.permission.VIBRATE),
                 MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
-            setUpEducationalFrgament()
+            setUpEducationalFragment()
         }
     }
 
@@ -109,7 +109,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                         return
                     }
                 }
-                setUpEducationalFrgament()
+                setUpEducationalFragment()
             } else {
                 showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
                     getString(R.string.tradein_ok)) { askPermissions() }
@@ -117,7 +117,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         }
     }
 
-    private fun setUpEducationalFrgament() {
+    private fun setUpEducationalFragment() {
         val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
         (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
         supportFragmentManager.beginTransaction()

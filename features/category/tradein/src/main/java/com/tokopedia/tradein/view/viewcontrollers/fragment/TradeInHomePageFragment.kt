@@ -21,6 +21,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
@@ -38,7 +41,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>(), ChooseAddressWidget.ChooseAddressWidgetListener{
+class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>(), ChooseAddressWidget.ChooseAddressWidgetListener, TradeInEducationalPageFragment.OnDoTradeInClick{
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -74,6 +77,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             arguments?.getString(CACHE_ID, "")?.let {
                 setUpPdpData(it)
             }
+            findViewById<NavToolbar>(R.id.initial_price_navToolbar)?.run {
+                viewLifecycleOwner.lifecycle.addObserver(this)
+                setIcon(
+                    IconBuilder()
+                        .addIcon(IconList.ID_INFORMATION) {
+                            setUpEducationalFragment()
+                        }
+                )
+            }
             chooseAddressWidget = findViewById(R.id.tradein_choose_address_widget)
             chooseAddressWidget?.bindChooseAddress(this@TradeInHomePageFragment)
             findViewById<View>(R.id.collapse_view).setOnClickListener {
@@ -86,6 +98,27 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
         }
     }
+
+    private fun setUpEducationalFragment() {
+        view?.findViewById<View>(R.id.educational_frame_content_layout)?.show()
+        view?.findViewById<View>(R.id.initial_price_navToolbar)?.hide()
+        val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
+        (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.educational_frame_content_layout, newFragment, newFragment.tag)
+            .commit()
+    }
+
+    override fun onClick() {
+        view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
+        view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+    }
+
+    override fun onBackClick() {
+        view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
+        view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+    }
+
 
     private fun setUpPdpData(id: String) {
         view?.apply {
