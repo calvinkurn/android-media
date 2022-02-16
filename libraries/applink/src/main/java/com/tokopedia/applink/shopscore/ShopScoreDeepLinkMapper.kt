@@ -11,12 +11,12 @@ object ShopScoreDeepLinkMapper {
     /**
      * mapping applink external to internal
      * e.g, external
-     * MA with param: tokopedia://shop-score-detail?coahmark=disabled
+     * MA with param: tokopedia://shop-score-detail?coachmark=disabled
      * MA without param: tokopedia://shop-score-detail
-     * SA with param: sellerapp://shop-score-detail?coahmark=disabled
+     * SA with param: sellerapp://shop-score-detail?coachmark=disabled
      * SA without param: sellerapp://shop-score-detail
      * to Internal Applink
-     * with param: tokopedia-android-internal://marketplace/shop/performance?coahmark=disabled
+     * with param: tokopedia-android-internal://marketplace/shop/performance?coachmark=disabled
      * without param: tokopedia-android-internal://marketplace/shop/performance
      */
     fun getInternalAppLinkShopScore(uri: Uri): String {
