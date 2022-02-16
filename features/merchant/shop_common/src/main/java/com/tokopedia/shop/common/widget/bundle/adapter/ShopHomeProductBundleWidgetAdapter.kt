@@ -11,11 +11,13 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleCli
 
 class ShopHomeProductBundleWidgetAdapter(
         private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
-        private val singleProductBundleClickListener: SingleProductBundleClickListener
+        private val singleProductBundleClickListener: SingleProductBundleClickListener,
+        private val bundleListSize: Int
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val PRODUCT_BUNDLE_SINGLE = "single_bundling"
+        const val SINGLE_SIZE_WIDGET = 1
     }
 
     private var bundleListItem: List<ShopHomeProductBundleItemUiModel> = listOf()
@@ -25,12 +27,14 @@ class ShopHomeProductBundleWidgetAdapter(
         return if (viewType == ShopHomeProductBundleSingleViewHolder.LAYOUT) {
             ShopHomeProductBundleSingleViewHolder(
                     View.inflate(parent.context, viewType, null),
-                    singleProductBundleClickListener
+                    singleProductBundleClickListener,
+                    bundleListSize
             )
         } else {
             ShopHomeProductBundleMultipleViewHolder(
                     View.inflate(parent.context, viewType, null),
-                    multipleProductBundleClickListener
+                    multipleProductBundleClickListener,
+                    bundleListSize
             )
         }
     }

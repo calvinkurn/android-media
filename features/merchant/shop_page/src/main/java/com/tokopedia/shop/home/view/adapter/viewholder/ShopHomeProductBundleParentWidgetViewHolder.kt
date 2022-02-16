@@ -36,6 +36,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
     private var tvWidgetTitle : TextView? = null
     private var rvBundleList : RecyclerView? = null
     private var rvBundleAdapter : ShopHomeProductBundleWidgetAdapter? = null
+    private var bundleListSize = 0
 
     init {
         initView()
@@ -43,7 +44,8 @@ class ShopHomeProductBundleParentWidgetViewHolder (
 
     override fun bind(element: ShopHomeProductBundleListUiModel) {
         tvWidgetTitle?.text = element.header.title
-        val bundleLayoutManager = if (element.productBundleList.size >= BUNDLE_MULTIPLE_ITEM_SIZE) {
+        bundleListSize = element.productBundleList.size
+        val bundleLayoutManager = if (bundleListSize >= BUNDLE_MULTIPLE_ITEM_SIZE) {
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         } else {
             GridLayoutManager(itemView.context, BUNDLE_SINGLE_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
@@ -61,7 +63,8 @@ class ShopHomeProductBundleParentWidgetViewHolder (
     private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
                 multipleProductBundleClickListener,
-                singleProductBundleClickListener
+                singleProductBundleClickListener,
+                bundleListSize
         )
         rvBundleList?.apply {
             setHasFixedSize(true)

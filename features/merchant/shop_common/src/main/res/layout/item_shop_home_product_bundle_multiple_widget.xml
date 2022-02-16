@@ -9,6 +9,7 @@
     android:paddingTop="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bundle_widget_container"
         android:layout_width="300dp"
         android:layout_height="225dp">
 

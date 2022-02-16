@@ -3,6 +3,8 @@ package com.tokopedia.shop.common.widget.bundle.viewholder
 import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.orFalse
@@ -11,6 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleSingleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleSingleAdapter
+import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.adapter.SingleBundleVariantSelectedListener
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -24,7 +27,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleSingleViewHolder(
         itemView: View,
-        private val singleProductBundleClickListener: SingleProductBundleClickListener
+        private val singleProductBundleClickListener: SingleProductBundleClickListener,
+        private val bundleListSize: Int
 ): RecyclerView.ViewHolder(itemView), SingleBundleVariantSelectedListener {
 
     companion object {
@@ -43,6 +47,7 @@ class ShopHomeProductBundleSingleViewHolder(
     private var labelBundleDiscount: Label? = null
     private var imageBundleProduct: ImageUnify? = null
     private var rvBundleDetails: RecyclerView? = null
+    private var widgetContainer: ConstraintLayout? = null
     private var selectedSingleBundle: ShopHomeProductBundleDetailUiModel = ShopHomeProductBundleDetailUiModel()
 
     init {
@@ -57,6 +62,7 @@ class ShopHomeProductBundleSingleViewHolder(
             labelBundleDiscount = labelDiscountBundle
             imageBundleProduct = ivBundleImage
             rvBundleDetails = rvBundleSinglePackage
+            widgetContainer = bundleWidgetContainer
         }
         initBundleDetailsRecyclerView()
     }
@@ -117,6 +123,15 @@ class ShopHomeProductBundleSingleViewHolder(
             adapter = ShopHomeProductBundleSingleAdapter(
                     singleBundleVariantSelectedListener = this@ShopHomeProductBundleSingleViewHolder
             )
+        }
+
+        if (bundleListSize == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
+            // change widget container width to match parent
+            val constraintSet = ConstraintSet()
+            val params = ConstraintLayout.LayoutParams.MATCH_PARENT
+            widgetContainer?.layoutParams?.width = params
+            constraintSet.clone(widgetContainer)
+            constraintSet.applyTo(widgetContainer)
         }
     }
 

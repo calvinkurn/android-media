@@ -3,11 +3,14 @@ package com.tokopedia.shop.common.widget.bundle.viewholder
 import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleMultipleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleMultipleAdapter
+import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -18,7 +21,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultipleViewHolder(
         itemView: View,
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener
+        private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
+        private val bundleListSize: Int
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -34,6 +38,7 @@ class ShopHomeProductBundleMultipleViewHolder(
     private var buttonAtc: UnifyButton? = null
     private var labelBundleDiscount: Label? = null
     private var rvBundleProducts: RecyclerView? = null
+    private var widgetContainer: ConstraintLayout? = null
 
     init {
         viewBinding?.apply {
@@ -44,6 +49,7 @@ class ShopHomeProductBundleMultipleViewHolder(
             typographyBundleProductSavingAmount = tvSavingAmountPriceWording
             buttonAtc = btnBundleAtc
             rvBundleProducts = rvMultipleBundleProducts
+            widgetContainer = bundleWidgetContainer
         }
     }
 
@@ -85,6 +91,15 @@ class ShopHomeProductBundleMultipleViewHolder(
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
             adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleClickListener)
+        }
+
+        if (bundleListSize == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
+            // change widget container width to match parent
+            val constraintSet = ConstraintSet()
+            val params = ConstraintLayout.LayoutParams.MATCH_PARENT
+            widgetContainer?.layoutParams?.width = params
+            constraintSet.clone(widgetContainer)
+            constraintSet.applyTo(widgetContainer)
         }
     }
 
