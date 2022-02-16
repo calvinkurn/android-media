@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.consts.NumberConstant
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.UpdateQuotaUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -58,12 +59,13 @@ class UpdateCouponQuotaViewModel @Inject constructor(
     }
 
 
-    fun validateInput(newQuota: Int, minQuota: Int) {
+    fun validateInput(newQuota: Int, minQuota: Int, @VoucherStatusConst couponStatus : Int) {
         if (newQuota == NumberConstant.ZERO) {
             _validInput.value = QuotaState.QuotaIsZero
             return
         }
-        if (newQuota < minQuota) {
+
+        if (isOngoingCoupon(couponStatus) && newQuota < minQuota) {
             _validInput.value = QuotaState.BelowMinQuota(minQuota)
             return
         }
@@ -79,6 +81,11 @@ class UpdateCouponQuotaViewModel @Inject constructor(
 
     fun calculateMaxExpenseEstimation(maxDiscountAmount: Int, quota: Int) {
         _maxExpenseEstimation.value = (maxDiscountAmount * quota).toLong()
+    }
+
+
+    fun isOngoingCoupon(@VoucherStatusConst couponStatus : Int) : Boolean {
+        return couponStatus == VoucherStatusConst.ONGOING
     }
 
 }
