@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +10,8 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
@@ -22,14 +19,12 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetu
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -38,7 +33,6 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 04/02/22
  */
 class ProductSummaryBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayBroadcastAnalytic,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
@@ -55,10 +49,9 @@ class ProductSummaryBottomSheet @Inject constructor(
         ProductSummaryListViewComponent(binding.rvProductSummaries, this)
     }
 
-    @ExperimentalStdlibApi
     override fun onProductDeleteClicked(product: ProductUiModel) {
         analytic.clickDeleteProductOnProductSetup(productId = product.id)
-        viewModel.submitAction(PlayBroProductChooserAction.DeleteSelectedProduct(product))
+        viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,15 +59,13 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupBottomSheet()
     }
 
-    /** TODO: gonna delete this later */
-    @ExperimentalStdlibApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
         setupObserve()
 
-        viewModel.submitAction(PlayBroProductChooserAction.LoadProductSummary)
+        viewModel.submitAction(ProductSetupAction.LoadProductSummary)
     }
 
     override fun onDestroyView() {
@@ -116,8 +107,6 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
     }
 
-    @ExperimentalStdlibApi
-    /** TODO: gonna remove this annotation later */
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->

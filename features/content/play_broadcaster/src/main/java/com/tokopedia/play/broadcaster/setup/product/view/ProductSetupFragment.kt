@@ -26,24 +26,34 @@ class ProductSetupFragment @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
+    private val productChooserListener = object : ProductChooserBottomSheet.Listener {
+        override fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet) {
+            bottomSheet.dismiss()
+            removeFragment()
+        }
+
+        override fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet) {
+            bottomSheet.dismiss()
+            openProductSummary()
+        }
+
+        override fun openCampaignAndEtalaseList(bottomSheet: ProductChooserBottomSheet) {
+            openCampaignAndEtalaseList()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProvider(requireActivity(), getViewModelFactory())[PlayBroadcastViewModel::class.java]
 
-        if(parentViewModel.productSectionList.isEmpty())
-            openProductChooser()
-        else
-            openProductSummary()
+        if (parentViewModel.productSectionList.isEmpty()) openProductChooser()
+        else openProductSummary()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductChooserBottomSheet -> childFragment.setOnDismissListener {
-                childFragmentManager.beginTransaction()
-                    .remove(childFragment)
-                    .commit()
-            }
+            is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
             is ProductSummaryBottomSheet -> childFragment.setListener(object: ProductSummaryBottomSheet.Listener {
                 override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
                     parentViewModel.submitAction(
@@ -60,7 +70,7 @@ class ProductSetupFragment @Inject constructor(
             .commit()
     }
 
-    fun openCampaignAndEtalaseList() {
+    private fun openCampaignAndEtalaseList() {
         EtalaseListBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,

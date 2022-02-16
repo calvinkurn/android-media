@@ -6,10 +6,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
@@ -151,21 +150,20 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    fun submitAction(action: PlayBroProductChooserAction) {
+    fun submitAction(action: ProductSetupAction) {
         when (action) {
-            is PlayBroProductChooserAction.SetSort -> handleSetSort(action.sort)
-            is PlayBroProductChooserAction.SelectEtalase -> handleSelectEtalase(action.etalase)
-            is PlayBroProductChooserAction.SelectCampaign -> handleSelectCampaign(action.campaign)
-            is PlayBroProductChooserAction.SelectProduct -> handleSelectProduct(action.product)
-            is PlayBroProductChooserAction.LoadProductList -> handleLoadProductList(
+            is ProductSetupAction.SetSort -> handleSetSort(action.sort)
+            is ProductSetupAction.SelectEtalase -> handleSelectEtalase(action.etalase)
+            is ProductSetupAction.SelectCampaign -> handleSelectCampaign(action.campaign)
+            is ProductSetupAction.SelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.LoadProductList -> handleLoadProductList(
                 param = _loadParam.value,
                 resetList = false,
             )
-            is PlayBroProductChooserAction.SearchProduct -> handleSearchProduct(action.keyword)
-            PlayBroProductChooserAction.SaveProducts -> handleSaveProducts()
-            PlayBroProductChooserAction.CreateProduct -> handleAddProduct()
-            is PlayBroProductChooserAction.LoadProductSummary -> handleLoadProductSummary()
-            is PlayBroProductChooserAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
+            ProductSetupAction.SaveProducts -> handleSaveProducts()
+            is ProductSetupAction.LoadProductSummary -> handleLoadProductSummary()
+            is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
     }
 
@@ -221,8 +219,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
+        if (product.stock <= 0) return
+
         _selectedProductSectionList.update { sections ->
             var hasProduct = false
+
             val newSections = sections.map { section ->
                 val newProducts = section.products.filter { it.id != product.id }
                 if (newProducts.size != section.products.size) hasProduct = true
@@ -230,7 +231,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     products = newProducts
                 )
             }
-            if (!hasProduct) {
+
+            if (!hasProduct &&
+                configStore.getMaxProduct() > sections.sumOf { it.products.size }) {
+
                 val section = sections.lastOrNull() ?: ProductTagSectionUiModel(
                     //when select product, we can just use default key
                     name = "",
@@ -325,7 +329,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             _productTagSummary.value = ProductTagSummaryUiModel.Unknown
             _uiEvent.emit(
                 PlayBroProductChooserEvent.GetDataError(it) {
-                    submitAction(PlayBroProductChooserAction.LoadProductSummary)
+                    submitAction(ProductSetupAction.LoadProductSummary)
                 }
             )
         }
@@ -347,7 +351,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             _productTagSummary.value = ProductTagSummaryUiModel.Unknown
             _uiEvent.emit(
                 PlayBroProductChooserEvent.DeleteProductError(it) {
-                    submitAction(PlayBroProductChooserAction.DeleteSelectedProduct(product))
+                    submitAction(ProductSetupAction.DeleteSelectedProduct(product))
                 }
             )
         }
@@ -385,12 +389,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     it.copy(isLoading = false)
                 }
             }
-        }
-    }
-
-    private fun handleAddProduct() {
-        viewModelScope.launch {
-            _uiEvent.emit(PlayBroProductChooserEvent.OpenShopPage(userSession.shopId))
         }
     }
 }

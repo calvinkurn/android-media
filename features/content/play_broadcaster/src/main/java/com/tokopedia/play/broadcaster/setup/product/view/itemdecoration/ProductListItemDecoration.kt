@@ -13,7 +13,7 @@ class ProductListItemDecoration(
     context: Context,
 ) : RecyclerView.ItemDecoration() {
 
-    private val offset8 = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl3)
+    private val offset4 = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl2)
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -21,7 +21,7 @@ class ProductListItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.left = offset8
-        outRect.bottom = offset8
+        outRect.left = offset4
+        outRect.bottom = offset4
     }
 }

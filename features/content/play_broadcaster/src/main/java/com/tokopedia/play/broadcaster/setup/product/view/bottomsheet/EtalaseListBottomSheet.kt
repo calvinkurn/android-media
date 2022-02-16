@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
@@ -141,11 +141,11 @@ class EtalaseListBottomSheet @Inject constructor(
     private fun handleEtalaseListEvent(event: EtalaseListViewComponent.Event) {
         when (event) {
             is EtalaseListViewComponent.Event.OnCampaignSelected -> {
-                viewModel.submitAction(PlayBroProductChooserAction.SelectCampaign(event.campaign))
+                viewModel.submitAction(ProductSetupAction.SelectCampaign(event.campaign))
                 dismiss()
             }
             is EtalaseListViewComponent.Event.OnEtalaseSelected -> {
-                viewModel.submitAction(PlayBroProductChooserAction.SelectEtalase(event.etalase))
+                viewModel.submitAction(ProductSetupAction.SelectEtalase(event.etalase))
                 dismiss()
             }
         }
