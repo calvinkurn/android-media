@@ -47,14 +47,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         SortBottomSheet.OnApplyButtonClickListener {
 
     companion object {
-
         private const val ZERO = 0
         private const val NO_BACKGROUND: Int = 0
         private const val PAGE_SIZE = 10
         private const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
         private const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         private const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
-
         @JvmStatic
         fun createInstance(maxProductLimit: Int,
                            couponSettings: CouponSettings?,
@@ -142,7 +140,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         setupSearchBar(binding)
         setupProductListFilter(binding)
         setupSelectionBar(binding)
-        setupProductListView(binding)
         setupButtonAddProduct(binding)
     }
 
@@ -263,14 +260,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         }
     }
 
-    private fun setupProductListView(binding: FragmentMvcAddProductBinding?) {
-        adapter = ProductListAdapter(this)
-        binding?.rvProductList?.let {
-            it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        }
-    }
-
     private fun setupButtonAddProduct(binding: FragmentMvcAddProductBinding?) {
         binding?.buttonAddProduct?.setOnClickListener {
             val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
@@ -315,10 +304,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     val productUiModels = viewModel.mapProductDataToProductUiModel(productData)
                     val productList = viewModel.excludeSelectedProducts(productUiModels, viewModel.getSelectedProductIds())
                     viewModel.setProductUiModels(productList)
-                    if (productList.isEmpty()) {
-//                        binding?.selectionBar?.hide()
-//                        binding?.emptyProductsLayout?.show()
-                    } else {
+                    if (productList.isNotEmpty()) {
                         binding?.selectionBar?.show()
                         binding?.emptyProductsLayout?.hide()
                         viewModel.getCouponSettings()?.run {

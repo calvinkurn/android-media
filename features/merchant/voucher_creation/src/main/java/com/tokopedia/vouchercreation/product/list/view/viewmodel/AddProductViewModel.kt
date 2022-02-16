@@ -55,9 +55,6 @@ class AddProductViewModel @Inject constructor(
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
 
-    // ADAPTER
-    private var adapterPosition: Int? = null
-
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
     val productListResult: LiveData<Result<ProductListResponse>> get() = getProductListResultLiveData
@@ -281,7 +278,7 @@ class AddProductViewModel @Inject constructor(
         this.warehouseLocationId = warehouseLocation
     }
 
-    fun getWarehouseLocationId(): Int? {
+    fun getWarehouseLocationId(): Int {
         return warehouseLocationId
     }
 

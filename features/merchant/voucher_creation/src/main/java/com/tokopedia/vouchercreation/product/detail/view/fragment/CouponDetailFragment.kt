@@ -57,7 +57,7 @@ import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
 import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
-import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_SELECTED_PRODUCTS
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
@@ -178,7 +178,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                         putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, viewModel.getMaxProductLimit())
                         val selectedProducts = ArrayList<ProductId>()
                         selectedProducts.addAll(viewModel.getCoupon()?.products ?: listOf())
-                        putParcelableArrayList(BUNDLE_SELECTED_PRODUCTS, selectedProducts)
+                        putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
                     })
                 }
                 startActivity(manageProductIntent)

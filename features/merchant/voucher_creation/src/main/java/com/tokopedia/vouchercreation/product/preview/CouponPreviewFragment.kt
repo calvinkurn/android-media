@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.preview
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,11 +36,15 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
+import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
+import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.net.URLEncoder
@@ -251,6 +256,18 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             copyToClipboard(content)
         }
 
+        binding.tpgUpdateProduct.setOnClickListener {
+            val manageProductIntent = Intent(requireContext(), ManageProductActivity::class.java).apply {
+                putExtras(Bundle().apply {
+                    putInt(ManageProductFragment.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxAllowedProduct)
+                    putParcelable(CreateCouponProductActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                    val selectedProducts = ArrayList<ProductUiModel>()
+                    selectedProducts.addAll(this@CouponPreviewFragment.selectedProducts)
+                    putParcelableArrayList(ManageProductFragment.BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
+                })
+            }
+            startActivity(manageProductIntent)
+        }
     }
 
     private fun changeToolbarTitle(title: String) {

@@ -147,6 +147,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".product.list.view.activity.ManageProductActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>
