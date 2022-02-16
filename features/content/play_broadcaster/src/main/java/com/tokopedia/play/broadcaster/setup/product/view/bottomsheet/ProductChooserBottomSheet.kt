@@ -50,7 +50,6 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 26/01/22
  */
 class ProductChooserBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
@@ -199,7 +198,6 @@ class ProductChooserBottomSheet @Inject constructor(
                     state.config
                 )
                 renderSaveButton(
-                    prevState?.selectedProductSectionList,
                     state.selectedProductSectionList,
                     state.saveState
                 )
@@ -326,11 +324,10 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSaveButton(
-        prevSelectedProducts: List<ProductTagSectionUiModel>?,
         selectedProducts: List<ProductTagSectionUiModel>,
         saveState: ProductSaveStateUiModel
     ) {
-        val isProductChanged = prevSelectedProducts != null && prevSelectedProducts != selectedProducts
+        val isProductChanged = selectedProducts != viewModel.initialProductSectionList
         saveButtonView.setState(
             isLoading = saveState.isLoading,
             isEnabled = saveState.canSave && isProductChanged
