@@ -81,6 +81,7 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus.Companion.HISTORY
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
 import java.util.*
@@ -210,7 +211,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     override fun onDataEmpty() {
         if (viewModel.couponSearchKeyword.orEmpty().isNotEmpty() ||
             viewModel.selectedFilterType.value != CouponFilterBottomSheet.FilterType.NOT_SELECTED ||
-            viewModel.selectedFilterTarget.value != CouponFilterBottomSheet.FilterTarget.NOT_SELECTED
+            viewModel.selectedFilterTarget.value != CouponFilterBottomSheet.FilterTarget.NOT_SELECTED ||
+            viewModel.couponStatusFilter == HISTORY
         ) {
             emptyStateList?.show()
         } else {
