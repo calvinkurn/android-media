@@ -28,7 +28,10 @@ class PersoFavoriteNumberModifyBottomSheet(
 
     private fun initBottomSheet() {
         setTitle(getString(R.string.common_topup_fav_number_modify_bottom_sheet_title))
-        setCloseClickListener { dismiss() }
+        setCloseClickListener {
+            dismiss()
+            listener.onCloseClick(favNumberItem)
+        }
 
         binding = BottomSheetSeamlessFavoriteNumberModifyBinding.inflate(LayoutInflater.from(context))
         setChild(binding.root)
@@ -101,6 +104,7 @@ class PersoFavoriteNumberModifyBottomSheet(
 
     interface PersoFavoriteNumberModifyListener {
         fun onChangeName(newName: String, favNumberItem: TopupBillsPersoFavNumberDataView)
+        fun onCloseClick(favNumberItem: TopupBillsPersoFavNumberDataView)
     }
 
     companion object {

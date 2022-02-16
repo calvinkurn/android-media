@@ -14,6 +14,7 @@ import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPTokenListrikFragment
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
@@ -65,7 +66,7 @@ class DigitalPDPTokenListrikActivity: BaseSimpleActivity(), HasComponent<Digital
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.run {
             val mActivity = WeakReference<Activity>(this@DigitalPDPTokenListrikActivity)
-            setupOrderListIcon(mActivity)
+            setupOrderListIcon(mActivity, (fragment as DigitalHistoryIconListener))
             return true
         }
         return false

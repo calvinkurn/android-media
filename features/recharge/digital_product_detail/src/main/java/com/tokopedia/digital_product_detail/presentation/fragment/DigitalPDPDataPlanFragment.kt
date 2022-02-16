@@ -50,6 +50,7 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
@@ -101,7 +102,8 @@ class DigitalPDPDataPlanFragment :
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    FilterPDPBottomsheet.FilterBottomSheetListener
+    FilterPDPBottomsheet.FilterBottomSheetListener,
+    DigitalHistoryIconListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -822,7 +824,13 @@ class DigitalPDPDataPlanFragment :
     ) {
         context?.let {
             val intent = TopupBillsPersoSavedNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
+                it,
+                clientNumber,
+                dgCategoryIds,
+                categoryName,
+                viewModel.operatorData,
+                isSwitchChecked,
+                loyaltyStatus
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -953,6 +961,11 @@ class DigitalPDPDataPlanFragment :
 
     override fun onClickIcon(isSwitchChecked: Boolean) {
         binding?.run {
+            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                userSession.userId
+            )
             val clientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
             val dgCategoryIds = arrayListOf(
                 TelcoCategoryType.CATEGORY_PULSA.toString(),
@@ -1162,6 +1175,16 @@ class DigitalPDPDataPlanFragment :
             operator.attributes.name,
             chipName,
             userSession.userId,
+        )
+    }
+
+    /** DigitalHistoryIconListener */
+
+    override fun onClickDigitalIconHistory() {
+        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
         )
     }
 

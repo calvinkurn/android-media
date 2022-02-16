@@ -71,6 +71,10 @@ interface DigitalPDPEventTracking {
             const val CLICK_FILTER_CHIP = "click filter chip"
             const val CLICK_CHEVRON_IN_PRODUCT_CLUSTER = "click chevron in product cluster"
             const val CLICK_CHEVRON_IN_PROMO_SECTION = "click chevron in promo section"
+            const val CLICK_TRANSACTION_HISTORY_ICON = "click transaction history icon"
+            const val CLICK_SCAN_BARCODE = "click scan barcode"
+            const val CLICK_TRANSACTION_DETAIL_INFO = "click transaction detail info"
+            const val CLICK_LIST_FAVORITE_NUMBER = "click list favorite number"
         }
     }
 }

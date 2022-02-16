@@ -43,6 +43,7 @@ import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenL
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
@@ -74,7 +75,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_digital_pdp_token_listrik.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,7 +83,8 @@ import javax.inject.Inject
 class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
-    RechargeRecommendationCardListener
+    RechargeRecommendationCardListener,
+    DigitalHistoryIconListener
 {
 
     @Inject
@@ -296,7 +297,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             it.rechargePdpTickerWidgetProductDesc.apply {
                 setText(dummyInfo)
                 setLinks(clickableInfo, View.OnClickListener {
-                    showMoreInfoBottomSheet(dummyListInfo, dummyInfo)
+                    digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                    showMoreInfoBottomSheet(dummyListInfo)
                 })
             }
 
@@ -643,8 +650,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     }
 
                     override fun onClickNavigationIcon() {
-                        digitalPDPTelcoAnalytics.clickOnContactIcon(
+                        digitalPDPTelcoAnalytics.clickScanBarcode(
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                            loyaltyStatus,
                             userSession.userId
                         )
 
@@ -723,6 +731,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
+                            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                                userSession.userId
+                            )
                             val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(categoryId.toString())
                             navigateToContact(
@@ -743,7 +756,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData
+                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -751,9 +764,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>, tickerInfo: String){
+    private fun showMoreInfoBottomSheet(listInfo: List<String>){
         fragmentManager?.let {
-            MoreInfoPDPBottomsheet(tickerInfo, listInfo).show(it, "")
+            MoreInfoPDPBottomsheet(listInfo).show(it, "")
         }
     }
 
@@ -862,6 +875,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             userSession.userId,
             recommendation,
             position
+        )
+    }
+
+    /** DigitalHistoryIconListener */
+
+    override fun onClickDigitalIconHistory() {
+        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
         )
     }
 

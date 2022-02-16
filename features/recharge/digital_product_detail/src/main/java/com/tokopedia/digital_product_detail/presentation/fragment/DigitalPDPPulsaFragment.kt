@@ -50,6 +50,7 @@ import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaB
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
@@ -92,7 +93,8 @@ import javax.inject.Inject
 class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
-    RechargeRecommendationCardListener
+    RechargeRecommendationCardListener,
+    DigitalHistoryIconListener
 {
 
     @Inject
@@ -517,6 +519,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
+                            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                userSession.userId
+                            )
                             val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(
                                 TelcoCategoryType.CATEGORY_PULSA.toString(),
@@ -576,7 +583,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoSavedNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
+                it,
+                clientNumber,
+                dgCategoryIds,
+                categoryName,
+                viewModel.operatorData,
+                isSwitchChecked,
+                loyaltyStatus
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -1017,6 +1030,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             userSession.userId,
             recommendation,
             position
+        )
+    }
+
+    /** DigitalHistoryIconListener */
+
+    override fun onClickDigitalIconHistory() {
+        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
         )
     }
 

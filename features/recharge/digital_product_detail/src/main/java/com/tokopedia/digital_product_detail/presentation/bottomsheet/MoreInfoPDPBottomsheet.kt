@@ -12,7 +12,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MoreInfoPDPBottomsheet(
-    private val tickerInfo: String,
     private val listInfo: List<String>
 ): BottomSheetUnify() {
 
@@ -49,7 +48,6 @@ class MoreInfoPDPBottomsheet(
                 adapter = adapterMoreInfo
                 adapterMoreInfo.setListInfo(listInfo)
             }
-            tickerWidgetMoreInfo.setText(tickerInfo)
         }
         setTitle(getString(R.string.bottom_sheet_more_info))
         setChild(binding?.root)

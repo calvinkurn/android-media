@@ -407,7 +407,60 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    /** Common Tracking Methods*/
+    fun clickTransactionHistoryIcon(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_TRANSACTION_HISTORY_ICON,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickScanBarcode(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_SCAN_BARCODE,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickTransactionDetailInfo(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_TRANSACTION_DETAIL_INFO,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickListFavoriteNumber(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_LIST_FAVORITE_NUMBER,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    /** Common Tracking extension function*/
 
     fun Bundle.viewItemList(userId: String): Bundle {
         addGeneralTracker(userId)
