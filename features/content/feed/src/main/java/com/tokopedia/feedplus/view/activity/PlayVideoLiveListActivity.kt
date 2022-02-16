@@ -7,13 +7,18 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.fragment.PlayFeedSeeMoreFragment
 
 class PlayVideoLiveListActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
 
-            return PlayFeedSeeMoreFragment()
+    override fun getNewFragment(): Fragment {
+            val bundle = Bundle()
+            intent.extras?.let {
+                bundle.putString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE, it.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE))
+            }
+            return PlayFeedSeeMoreFragment.createInstance(bundle)
         }
 
 

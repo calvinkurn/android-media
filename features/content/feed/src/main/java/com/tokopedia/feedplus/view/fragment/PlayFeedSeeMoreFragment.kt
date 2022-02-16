@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.PlayVideoLiveListActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.playseemore.PlaySeeMoreAdapter
@@ -33,7 +35,9 @@ import javax.inject.Inject
  */
 class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
-    private val rvWidgetSample by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
+    private val rvWidgetSample by lazy(LazyThreadSafetyMode.NONE) { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
+    private val widgetType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE)?:""
+    }
 
     private lateinit var adapter: PlaySeeMoreAdapter
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
@@ -117,7 +121,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setUpShopDataHeader()
-        playFeedVideoTabViewModel.getLivePlayData()
+        playFeedVideoTabViewModel.getLivePlayData(widgetType)
     }
     private fun setupView(view: View) {
         adapter = PlaySeeMoreAdapter(
@@ -134,7 +138,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {
         return object : EndlessRecyclerViewScrollListener(rvWidgetSample?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                playFeedVideoTabViewModel.getLivePlayData()
+                playFeedVideoTabViewModel.getLivePlayData(widgetType)
             }
         }
     }
@@ -151,8 +155,25 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     }
     private fun setUpShopDataHeader() {
         (activity as PlayVideoLiveListActivity).getShopInfoLayout()?.run {
+            shopHeader.text =
+                when (widgetType) {
+                    WIDGET_UPCOMING -> getString(R.string.feed_play_header_upcoming_text)
+                    else ->  getString(R.string.feed_play_header_text)
+
+            }
+
             product_detail_back_icon?.setOnClickListener { activity?.finish() }
             show()
+        }
+    }
+    companion object{
+        const val WIDGET_LIVE ="live"
+        const val WIDGET_UPCOMING ="upcoming"
+
+        fun createInstance(bundle: Bundle) : Fragment {
+            val fragment = PlayFeedSeeMoreFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 

@@ -332,7 +332,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELLATION_REQUEST) { _, uri, _, _ -> getSomCancellationRequestAppLink(uri) },
             DLP.startWith(ApplinkConst.SELLER_STATUS) { _, uri, _, _ -> getSomShippedAppLink(uri) },
             DLP.startWith(ApplinkConst.FEED_DETAILS) { _, _, deeplink, _ -> getRegisteredFeed(deeplink) },
-            DLP.exact(ApplinkConst.FEED_PlAY_LIVE_DETAIL, ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS),
+            DLP.startWith(ApplinkConst.FEED_PlAY_LIVE_DETAIL, ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS),
             DLP.startWith(ApplinkConst.INTEREST_PICK) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP.exact(ApplinkConst.FEED,
                 targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }),

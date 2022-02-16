@@ -135,19 +135,14 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                         onSuccessPlayTabDataFromChipClick(it.data.playGetContentSlot,
                             it.data.playGetContentSlot.meta.next_cursor)
                     }
+                    is Fail ->{
+
+                    }
                 }
             }
             getPlayDataRsp.observe(lifecycleOwner, Observer {
-//                hideAdapterLoading()
                 when (it) {
                     is Success -> {
-                        if (it.data.isDataFromTabClick) {
-                            /*onSuccessPlayTabDataFromChipClick(
-                                it.data.playGetContentSlot,
-                                it.data.playGetContentSlot.meta.next_cursor
-                            )*/
-                        }
-                        else
                             onSuccessPlayTabData(
                                     it.data.playGetContentSlot,
                                     it.data.playGetContentSlot.meta.next_cursor
@@ -155,7 +150,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     }
                     is Fail -> {
                         //TODO implement error case
-//                        fetchFirstPage()
+
                     }
                 }
             })

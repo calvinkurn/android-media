@@ -25,6 +25,9 @@ class PlayFeedVideoTabViewModel@Inject constructor(
     companion object {
         private const val DEFAULT_GROUP_VALUE = "feeds_channels"
         private const val DEFAULT_LIVE_GROUP_VALUE = "feeds_channels_live"
+        private const val DEFAULT_UPCOMING_GROUP_VALUE = "feeds_channels_upco"
+        private const val WIDGET_LIVE ="live"
+        private const val WIDGET_UPCOMING ="upcoming"
     }
 
      var currentCursor = ""
@@ -33,6 +36,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
     private var currentSourceType = ""
     private var currentSourceId = ""
     private var currentGroup = DEFAULT_GROUP_VALUE
+    private var currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
     val getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     val getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     val getLivePlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
@@ -107,7 +111,13 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             getPlayDataRsp.value = Fail(it)
         }
     }
-    fun getLivePlayData(){
+    fun getLivePlayData(widgetType: String){
+        if (widgetType == WIDGET_LIVE)
+            currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
+        else if (widgetType == WIDGET_UPCOMING)
+            currentGroupSeeMorePage = DEFAULT_UPCOMING_GROUP_VALUE
+
+
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 getLivePlayPageDataResult()
@@ -133,7 +143,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
     }
     private suspend fun getLivePlayPageDataResult(): ContentSlotResponse {
         try {
-            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = "", sourceType = "", group = DEFAULT_LIVE_GROUP_VALUE))
+            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = "", sourceType = "", group = currentGroupSeeMorePage))
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e

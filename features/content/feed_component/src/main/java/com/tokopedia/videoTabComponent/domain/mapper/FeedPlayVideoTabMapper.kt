@@ -1,5 +1,7 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -14,7 +16,14 @@ private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
 const val FEED_TYPE_TAB_MENU = "tabMenu"
 private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
-private const val FEED_SEE_MORE_APP_LINK = "tokopedia://feedplaylivedetail"
+private const val WIDGET_LIVE ="live"
+private const val WIDGET_UPCOMING ="upcoming"
+private val FEED_SEE_MORE_LIVE_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_LIVE}"
+private val FEED_SEE_MORE_UPCOMING_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_UPCOMING}"
+private const val  UPCOMING_WIDGET_TITLE = "Nantikan live seru lainnya!"
+private const val  LIVE_WIDGET_TITLE = "Lagi Live, nih!"
+
+
 
 
 object FeedPlayVideoTabMapper {
@@ -91,18 +100,20 @@ object FeedPlayVideoTabMapper {
         val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
 
         //check these values
-        val appLink = playSlot.items.firstOrNull()?.appLink ?: ""
+
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
         val autoPlayAmount: Int = 0
         val maxAutoPlayWifiDuration: Int = 30
         val businessWidgetPosition: Int = 30
         //till here
+        val actionLink = if (playSlot.title == UPCOMING_WIDGET_TITLE) FEED_SEE_MORE_UPCOMING_APP_LINK else FEED_SEE_MORE_LIVE_APP_LINK
+
 
         return PlayWidgetUiModel(
             title = playSlot.title,
             actionTitle = playSlot.lihat_semua.label,
-            actionAppLink = FEED_SEE_MORE_APP_LINK,
+            actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
                 autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,
