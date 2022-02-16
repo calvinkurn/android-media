@@ -29,8 +29,7 @@ class GqlShopPageGetHomeType @Inject constructor(
                 shopID: ${'$'}shopID,
                 extParam: ${'$'}extParam
               ){
-                shopHomeType
-                shopHomeTabIcon
+                shopHomeType 
                 homeLayoutData {
                   layoutID
                   masterLayoutID

@@ -6,7 +6,6 @@ data class NewShopPageP1HeaderData(
         val isOfficial: Boolean = false,
         val isGoldMerchant: Boolean = false,
         val shopHomeType: String = "",
-        val shopHomeTabIcon: String = "",
         val shopName: String = "",
         val shopAvatar: String = "",
         val shopDomain: String = "",

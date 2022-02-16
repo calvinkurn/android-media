@@ -1360,7 +1360,7 @@ class NewShopPageFragment :
             shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it, isMyShop)
         }
         getShopPageP2Data()
-        setupTabs(shopPageP1Data.shopHomeTabIcon)
+        setupTabs()
         sendShopPageOpenScreenTracker()
         sendShopPageTabImpressionTracker()
         if (shouldOpenShopNoteBottomSheet) {
@@ -1402,8 +1402,8 @@ class NewShopPageFragment :
         shopShareBottomSheet?.dismiss()
     }
 
-    private fun setupTabs(iconImageUrl: String) {
-        listShopPageTabModel = (createListShopPageTabModel(iconImageUrl) as? List<ShopPageTabModel>) ?: listOf()
+    private fun setupTabs() {
+        listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
         val selectedPosition = getSelectedTabPosition()
@@ -1544,7 +1544,7 @@ class NewShopPageFragment :
         return selectedPosition
     }
 
-    private fun createListShopPageTabModel(iconImage: String): List<ShopPageTabModel> {
+    private fun createListShopPageTabModel(): List<ShopPageTabModel> {
         val listShopPageTabModel  = mutableListOf<ShopPageTabModel>()
         if (isShowHomeTab()) {
             getHomeFragment()?.let { homeFragment ->
@@ -1552,8 +1552,7 @@ class NewShopPageFragment :
                         getString(R.string.shop_info_title_tab_home),
                         iconTabHomeInactive,
                         iconTabHomeActive,
-                        homeFragment,
-                        iconImage
+                        homeFragment
                 ))
             }
         }

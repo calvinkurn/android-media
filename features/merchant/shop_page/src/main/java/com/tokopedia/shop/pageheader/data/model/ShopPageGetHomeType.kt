@@ -8,10 +8,6 @@ data class ShopPageGetHomeType(
         @Expose
         val shopHomeType: String = "",
 
-        @SerializedName("shopHomeTabIcon")
-        @Expose
-        val shopHomeTabIcon: String = "",
-
         @SerializedName("homeLayoutData")
         @Expose
         val homeLayoutData: HomeLayoutData = HomeLayoutData()

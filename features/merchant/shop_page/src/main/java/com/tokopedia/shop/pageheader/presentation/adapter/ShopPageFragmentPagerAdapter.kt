@@ -9,15 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
-        private val ctx: Context?,
+        ctx: Context?,
         fragment: Fragment
 ) : FragmentStateAdapter(fragment) {
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
@@ -25,23 +22,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun getTabView(position: Int, selectedPosition: Int): View = ShopPageTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
         val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
-        val tabIconUrl = listShopPageTabModel[position].tabIconUrl
-        if (tabIconUrl.isBlank()) {
-            shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(position, position == selectedPosition))
-        } else {
-            shopPageTabViewIcon.layoutParams.width = ctx?.resources?.getDimension(R.dimen.dp_32).toIntSafely()
-            shopPageTabViewIcon.loadImage(tabIconUrl)
-        }
+        shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(position, position == selectedPosition))
     }.root
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
-        val tabIconUrl = listShopPageTabModel[tab.position].tabIconUrl
         tab.customView?.let {
             ShopPageTabViewBinding.bind(it).apply {
-                if (tabIconUrl.isBlank()) {
-                    val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
-                    shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
-                }
+                val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
+                shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
             }
         }
     }
