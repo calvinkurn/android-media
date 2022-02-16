@@ -62,7 +62,7 @@ class OfficialHomeMapper (
             }
         }
         listOfficialStore = newList
-        adapter?.submitList(newList)
+        adapter?.submitList(listOfficialStore)
     }
 
     fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
@@ -293,7 +293,7 @@ class OfficialHomeMapper (
             }
         }
         listOfficialStore = newList
-        action.invoke(newList.toMutableList())
+        action.invoke(listOfficialStore)
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
@@ -304,7 +304,7 @@ class OfficialHomeMapper (
             }
         }
         listOfficialStore = newList
-        action.invoke(newList.toMutableList())
+        action.invoke(listOfficialStore)
     }
 
     fun mappingRecomWidget(data: BestSellerDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
@@ -323,7 +323,7 @@ class OfficialHomeMapper (
             newList.add(RECOM_WIDGET_POSITION, data)
         }
         listOfficialStore = newList
-        action.invoke(newList)
+        action.invoke(listOfficialStore)
     }
 
     fun removeRecomWidget(
@@ -336,6 +336,6 @@ class OfficialHomeMapper (
             }
         }
         listOfficialStore = newList
-        action.invoke(newList)
+        action.invoke(listOfficialStore)
     }
 }

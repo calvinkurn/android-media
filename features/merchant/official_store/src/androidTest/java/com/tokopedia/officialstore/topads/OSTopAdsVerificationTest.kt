@@ -22,8 +22,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -37,6 +39,8 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -148,6 +152,14 @@ class OSTopAdsVerificationTest {
             is ProductRecommendationDataModel -> {
                 if (item.productItem.isTopAds) count++
             }
+            is BestSellerDataModel -> {
+                for (recom in item.recommendationItemList)
+                    if (recom.isTopAds) count++
+            }
+            is FeaturedShopDataModel -> {
+                for (grid in item.channelModel.channelGrids)
+                    if (grid.isTopads) count++
+            }
         }
         return count
     }
@@ -166,6 +178,18 @@ class OSTopAdsVerificationTest {
             is OfficialProductRecommendationViewHolder -> {
                 Espresso.onView(firstView(withId(R.id.os_child_recycler_view)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+            }
+            is BestSellerViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
+            }
+            is FeaturedShopViewHolder -> {
+                val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
+                checkLoadingView?.let { checkLoadingView.gone() }
+//                val recyclerView: View? = activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
+//                recyclerView?.let {
+//                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+//                }
+//                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
         }
     }
