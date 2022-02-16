@@ -45,7 +45,7 @@ class PlayToaster(
     fun showError(
         err: Throwable,
         customErrMessage: String? = null,
-        duration: Int = Toaster.LENGTH_INDEFINITE,
+        duration: Int = Toaster.LENGTH_SHORT,
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener {  },
         bottomMargin: Int = 0,
@@ -68,6 +68,7 @@ class PlayToaster(
                 errCode
             ).orEmpty()
         }
+
         showInternal(
             errMessage,
             Toaster.TYPE_ERROR,
