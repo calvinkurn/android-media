@@ -55,8 +55,10 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             paymentDetailHeader.text = tenureDetail.chip_title
             paymentDetailSubHeader.text = tenureDetail.description
 
-            if (!tenureDetail.lable.isNullOrBlank() && !tenureSelectListener.isDisable())
+            if (!tenureDetail.lable.isNullOrBlank() && !tenureSelectListener.isDisable()) {
+                tenureRecommendation.visibility = View.VISIBLE
                 tenureRecommendation.text = tenureDetail.lable
+            }
             else
                 tenureRecommendation.visibility = View.GONE
         }
