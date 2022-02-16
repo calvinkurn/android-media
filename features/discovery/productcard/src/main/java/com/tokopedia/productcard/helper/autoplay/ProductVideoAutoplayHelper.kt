@@ -19,6 +19,10 @@ class ProductVideoAutoplayHelper<T, R : T>(
     private var productVideoAutoPlayJob: Job? = null
     private var productVideoPlayer: ProductVideoPlayer? = null
 
+    private var visibleVideoPlayers: List<ProductVideoPlayer> = emptyList()
+    private var videoPlayerIterator: Iterator<ProductVideoPlayer>? = null
+    private var isPaused = false
+
     fun startVideoAutoplay(
         recyclerView: RecyclerView?,
         layoutManager: RecyclerView.LayoutManager?,
@@ -26,7 +30,7 @@ class ProductVideoAutoplayHelper<T, R : T>(
         filter: (List<T>) -> List<R>
     ) {
         productVideoAutoPlayJob?.cancel()
-        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager)
+        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
         val lastCompleteVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
         if (!itemList.isNullOrEmpty()
             && firstVisibleItemIndex != -1
@@ -37,46 +41,90 @@ class ProductVideoAutoplayHelper<T, R : T>(
                 lastCompleteVisibleItemIndex + 1
             )
             val visibleItems : List<R> = filter(subList)
-            val visibleItemIterable = visibleItems.iterator()
-            productVideoAutoPlayJob = launch {
-                playNextVideo(visibleItemIterable, itemList, recyclerView)
+            val currentlyVisibleVideoPlayers = visibleItems.map {
+                val index = itemList.indexOf(it)
+                if (index == -1) return
+                recyclerView?.findViewHolderForAdapterPosition(index)
+            }
+                .filterIsInstance<ProductVideoPlayer>()
+            if(currentlyVisibleVideoPlayers != visibleVideoPlayers) {
+                visibleVideoPlayers = currentlyVisibleVideoPlayers
+                val visibleItemIterable = currentlyVisibleVideoPlayers.iterator()
+                videoPlayerIterator = visibleItemIterable
+                productVideoAutoPlayJob = launch {
+                    isPaused = false
+                    playNextVideo(visibleItemIterable)
+                }
+            }
+        }
+    }
+
+     fun resumeVideoAutoplay() {
+        synchronized(this) {
+            val visibleItemIterator = videoPlayerIterator ?: return
+            if(isPaused && visibleItemIterator.hasNext()) {
+                productVideoAutoPlayJob = launch {
+                    isPaused = false
+                    playNextVideo(visibleItemIterator)
+                }
+            }
+        }
+    }
+
+    fun pauseVideoAutoplay() {
+        synchronized(this) {
+            if(!isPaused) {
+                isPaused = true
+                productVideoPlayer?.stopVideo()
+                productVideoAutoPlayJob?.cancel()
             }
         }
     }
 
     fun stopVideoAutoplay() {
         productVideoPlayer?.stopVideo()
+        productVideoPlayer = null
         productVideoAutoPlayJob?.cancel()
+        clearQueue()
     }
 
-    private suspend fun playNextVideo(
-        visibleItemIterator: Iterator<R>,
-        visitableList: List<T>,
-        recyclerView: RecyclerView?
-    ) {
-        if (isActive && visibleItemIterator.hasNext()) {
+    private suspend fun playNextVideo(visibleItemIterator: Iterator<ProductVideoPlayer>) {
+        if (isActive && !isPaused && visibleItemIterator.hasNext()) {
             val visibleItem = visibleItemIterator.next()
-            val index = visitableList.indexOf(visibleItem)
-            if (index == -1) return
-            val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: return
-            if (viewHolder is ProductVideoPlayer && viewHolder.hasProductVideo) {
-                productVideoPlayer = viewHolder
-                viewHolder.playVideo()
+            if (visibleItem.hasProductVideo) {
+                productVideoPlayer = visibleItem
+                visibleItem.playVideo()
                     .filter { state ->
                         state is VideoPlayerState.Ended
                                 || state is VideoPlayerState.NoVideo
                                 || state is VideoPlayerState.Error
                     }
-                    .catch { t -> Timber.e(t) }
+                    .catch { t ->
+                        Timber.e(t)
+                        VideoPlayerState.Error(t.message ?: "Unknown Error")
+                    }
                     .collect {
                         productVideoPlayer = null
-                        if (isActive && visibleItemIterator.hasNext()) {
-                            playNextVideo(visibleItemIterator, visitableList, recyclerView)
+                        if (isActive && !isPaused && visibleItemIterator.hasNext()) {
+                            playNextVideo(visibleItemIterator)
+                        } else if(!visibleItemIterator.hasNext()) {
+                            clearQueue()
                         }
                     }
-            } else if (isActive && visibleItemIterator.hasNext()) {
-                playNextVideo(visibleItemIterator, visitableList, recyclerView)
+            } else if (isActive && !isPaused && visibleItemIterator.hasNext()) {
+                playNextVideo(visibleItemIterator)
+            } else if(!visibleItemIterator.hasNext()) {
+                clearQueue()
             }
+        } else if(!visibleItemIterator.hasNext()) {
+            clearQueue()
+        }
+    }
+
+    private fun clearQueue() {
+        synchronized(this) {
+            visibleVideoPlayers = emptyList()
+            videoPlayerIterator = null
         }
     }
 }

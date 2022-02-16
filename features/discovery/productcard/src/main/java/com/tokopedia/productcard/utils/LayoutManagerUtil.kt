@@ -6,36 +6,48 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 internal object LayoutManagerUtil {
-    fun getFirstVisibleItemIndex(layoutManager: RecyclerView.LayoutManager?): Int {
+    fun getFirstVisibleItemIndex(
+        layoutManager: RecyclerView.LayoutManager?,
+        isCompletelyVisible: Boolean
+    ): Int {
         return when (layoutManager) {
-            is StaggeredGridLayoutManager -> getFirstVisibleItemIndex(layoutManager)
-            is GridLayoutManager -> getFirstVisibleItemIndex(layoutManager)
-            is LinearLayoutManager -> getFirstVisibleItemIndex(layoutManager)
+            is StaggeredGridLayoutManager -> getFirstVisibleItemIndex(layoutManager, isCompletelyVisible)
+            is GridLayoutManager -> getFirstVisibleItemIndex(layoutManager, isCompletelyVisible)
+            is LinearLayoutManager -> getFirstVisibleItemIndex(layoutManager, isCompletelyVisible)
             else -> -1
         }
     }
 
-    private fun getFirstVisibleItemIndex(layoutManager: LinearLayoutManager): Int {
+    private fun getFirstVisibleItemIndex(
+        layoutManager: LinearLayoutManager,
+        isCompletelyVisible: Boolean
+    ): Int {
         val firstCompleteVisibleItemIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
         val firstVisibleItemIndex = layoutManager.findFirstVisibleItemPosition()
         return when {
-            firstCompleteVisibleItemIndex != -1 -> firstCompleteVisibleItemIndex
+            firstCompleteVisibleItemIndex != -1 && isCompletelyVisible -> firstCompleteVisibleItemIndex
             firstVisibleItemIndex != -1 -> firstVisibleItemIndex
             else -> -1
         }
     }
 
-    private fun getFirstVisibleItemIndex(layoutManager: GridLayoutManager): Int {
+    private fun getFirstVisibleItemIndex(
+        layoutManager: GridLayoutManager,
+        isCompletelyVisible: Boolean
+    ): Int {
         val firstCompleteVisibleItemIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
         val firstVisibleItemIndex = layoutManager.findFirstVisibleItemPosition()
         return when {
-            firstCompleteVisibleItemIndex != -1 -> firstCompleteVisibleItemIndex
+            firstCompleteVisibleItemIndex != -1 && isCompletelyVisible -> firstCompleteVisibleItemIndex
             firstVisibleItemIndex != -1 -> firstVisibleItemIndex
             else -> -1
         }
     }
 
-    private fun getFirstVisibleItemIndex(layoutManager: StaggeredGridLayoutManager): Int {
+    private fun getFirstVisibleItemIndex(
+        layoutManager: StaggeredGridLayoutManager,
+        isCompletelyVisible: Boolean
+    ): Int {
         val firstCompleteVisibleItemIndex = layoutManager
             .findFirstCompletelyVisibleItemPositions(null)
             .minOrNull() ?: -1
@@ -43,7 +55,7 @@ internal object LayoutManagerUtil {
             .findFirstVisibleItemPositions(null)
             .minOrNull() ?: -1
         return when {
-            firstCompleteVisibleItemIndex != -1 -> firstCompleteVisibleItemIndex
+            firstCompleteVisibleItemIndex != -1 && isCompletelyVisible -> firstCompleteVisibleItemIndex
             else -> firstVisibleItemIndex
         }
     }

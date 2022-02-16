@@ -496,8 +496,6 @@ class ProductListFragment: BaseDaggerFragment(),
             super.onScrollStateChanged(recyclerView, newState)
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 startVideoAutoplayWhenRecyclerViewIsIdle()
-            } else {
-                stopVideoAutoplay()
             }
         }
     }
@@ -538,6 +536,14 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun resumeVideoAutoplay() {
+        productVideoAutoplayHelper.resumeVideoAutoplay()
+    }
+
+    private fun pauseVideoAutoplay() {
+        productVideoAutoplayHelper.pauseVideoAutoplay()
+    }
+
     private fun stopVideoAutoplay() {
         productVideoAutoplayHelper.stopVideoAutoplay()
     }
@@ -568,6 +574,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
 
+        resumeVideoAutoplay()
         presenter?.onViewResumed()
     }
 
@@ -779,6 +786,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
+        pauseVideoAutoplay()
 
         trackingQueue?.sendAll()
     }
