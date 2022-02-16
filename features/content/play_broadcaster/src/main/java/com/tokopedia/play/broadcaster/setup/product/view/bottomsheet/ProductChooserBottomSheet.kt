@@ -135,6 +135,7 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mListener = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
