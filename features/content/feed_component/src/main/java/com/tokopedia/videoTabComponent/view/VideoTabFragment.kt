@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.util.scrollLayout
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -49,7 +50,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private var selectedTab: Int = 0
+    private var selectedSlotTabMenu: Int = 0
 
     companion object {
 
@@ -161,7 +162,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun setupView(view: View) {
-        adapter = VideoTabAdapter(playWidgetCoordinator, this, selectedTab)
+        adapter = VideoTabAdapter(playWidgetCoordinator, this)
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             rvWidget?.addOnScrollListener(it)
@@ -187,9 +188,14 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun onSuccessPlayTabDataFromChipClick(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        var mappedData = FeedPlayVideoTabMapper.map(playDataResponse.appendeList, playDataResponse.meta, selectedTab)
+        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.appendeList, playDataResponse.meta, selectedSlotTabMenu)
         adapter.setItemsAndAnimateChanges(mappedData)
 
+        mappedData.forEachIndexed { index, playFeedUiModel ->
+            if(playFeedUiModel is PlaySlotTabMenuUiModel) {
+                rvWidget?.scrollLayout(index)
+            }
+        }
     }
 
     override fun onToggleReminderClicked(
@@ -290,7 +296,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     //click listener for tab menu slot
     override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
-        selectedTab = position
+        selectedSlotTabMenu = position
         playWidgetAnalyticsListenerImp.filterCategory = item.label
         callAPiOnTabCLick(item)
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
