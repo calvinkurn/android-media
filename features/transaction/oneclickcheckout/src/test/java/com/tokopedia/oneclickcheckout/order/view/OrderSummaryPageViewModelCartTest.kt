@@ -1141,7 +1141,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `GoCicil Installment Options Success`() {
+    fun `GoCicil Installment Options Success With Matching Selected Tenure`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
@@ -1150,22 +1150,189 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2)))
 
-        val option = GoCicilInstallmentOption(
+        val option1 = GoCicilInstallmentOption(
                 isActive = true,
                 installmentTerm = 2
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option)
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 4
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option.installmentTerm),
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option1.installmentTerm),
                 totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true)),
-                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true)),
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option1.installmentTerm, isActive = true)),
                 orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Matching Selected Term`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 4
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Matching Recommendation`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2,
+                isRecommended = true,
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3,
+                isRecommended = true,
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 4,
+                isRecommended = true,
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = true)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Fallback Matching Active State`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2,
+                isRecommended = false,
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3,
+                isRecommended = false,
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 4,
+                isRecommended = false,
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = false)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Fallback`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 2,
+                isRecommended = false,
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 3,
+                isRecommended = false,
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 4,
+                isRecommended = false,
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option3.installmentTerm, isActive = false, isRecommended = false)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        assertEquals(OrderPaymentErrorData(), orderSummaryPageViewModel.orderPayment.value.errorData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
     }
 
     @Test
@@ -1191,6 +1358,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 selectedTerm = OrderPaymentGoCicilTerms(isActive = true)),
                 orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
         assertEquals(OccGlobalEvent.AdjustAdminFeeError, orderSummaryPageViewModel.globalEvent.value)
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
     }
 
     @Test
@@ -1238,7 +1406,29 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), true)
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+        coVerify(inverse = true) {
+            updateCartOccUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
+    fun `Choose GoCicil Installment Options With Invalid Profile`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
 
         // When

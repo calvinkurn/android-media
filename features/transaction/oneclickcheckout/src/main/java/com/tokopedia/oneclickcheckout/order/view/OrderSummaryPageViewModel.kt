@@ -827,7 +827,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
             val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart)
             if (result != null) {
-                chooseInstallment(result.first, result.second, false)
+                chooseInstallment(result.first, result.second, !result.third)
                 return
             } else {
                 val newWalletData = orderPayment.value.walletData

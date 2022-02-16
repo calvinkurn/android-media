@@ -187,7 +187,7 @@ class GoCicilData(
         val errorMessageTopLimit: String = "",
         @SerializedName("error_message_bottom_limit")
         val errorMessageBottomLimit: String = "",
-        @SerializedName("error_message_unavailable_tenures")
+        @SerializedName("error_message_unavailable_tenure")
         val errorMessageUnavailableTenures: String = "",
         @SerializedName("payment_signature")
         val paymentSignature: String = "",

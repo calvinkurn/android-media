@@ -212,10 +212,10 @@ data class OrderPaymentWalletErrorData(
 data class OrderPaymentGoCicilData(
         val selectedTerm: OrderPaymentGoCicilTerms? = null,
         val availableTerms: List<OrderPaymentGoCicilTerms> = emptyList(),
-        val errorMessageInvalidTenure: String = "tenure invalid",
-        val errorMessageTopLimit: String = "over top limit",
-        val errorMessageBottomLimit: String = "below bottom limit",
-        val errorMessageUnavailableTenures: String = "unavailable tenures",
+        val errorMessageInvalidTenure: String = "",
+        val errorMessageTopLimit: String = "",
+        val errorMessageBottomLimit: String = "",
+        val errorMessageUnavailableTenures: String = "",
         val paymentSignature: String = "",
         val selectedTenure: Int = 0,
 ) {

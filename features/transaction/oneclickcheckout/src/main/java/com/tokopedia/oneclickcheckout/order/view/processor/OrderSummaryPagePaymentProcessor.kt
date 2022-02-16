@@ -78,7 +78,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
     }
 
     suspend fun getGopayAdminFee(orderPayment: OrderPayment, userId: String,
-                                 orderCost: OrderCost, orderCart: OrderCart): Pair<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>>? {
+                                 orderCost: OrderCost, orderCart: OrderCart): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
@@ -96,11 +96,13 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                         )
                 )
                 var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
+                var shouldUpdateCart = false
                 if (selectedTerm == null) {
+                    shouldUpdateCart = true
                     selectedTerm = autoSelectGoCicilTerm(orderPayment.walletData.goCicilData.selectedTenure, installmentList)
                 }
                 val selectedInstallment = installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
-                return@withContext selectedInstallment to installmentList
+                return@withContext Triple(selectedInstallment, installmentList, shouldUpdateCart)
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
