@@ -18,7 +18,7 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_promo"
+        android:id="@+id/iv_info"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="10dp"
@@ -40,14 +40,14 @@
         app:typographyType="body_2" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/mdoel_text"
+        android:id="@+id/model_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@id/model"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/model"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Samsung S8 32GB" />
 
@@ -70,7 +70,7 @@
         app:layout_constraintBottom_toBottomOf="@id/estimated_price_text"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/estimated_price_text"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Rp2.700.000*" />
 
@@ -93,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imei"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imei"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="345681982131408571345" />
 

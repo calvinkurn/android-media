@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
+        android:elevation="2dp"
         app:toolbarContentType="typeTitle"
         app:toolbarTitle="Tukar Tambah"
         app:toolbarInitialFillColor="transparent"
@@ -96,30 +97,22 @@
         android:gravity="center_horizontal"
         android:text="@string/tradein_mulai_tes_hp" />
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
-        android:id="@+id/error_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="@color/Unify_N0"
-        android:gravity="center"
-        android:paddingTop="40dp"
-        android:visibility="gone"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
-        app:imageDpiSupportType="singleDpi"
-        app:layout_constraintBottom_toTopOf="@id/home_global_error"
-        app:layout_constraintTop_toBottomOf="@id/initial_price_navToolbar"
-        tools:visibility="visible" />
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/home_global_error"
+    <include
+        android:id="@+id/tradein_error_layout"
+        layout="@layout/tradein_error_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="16dp"
-        android:background="@color/Unify_N0"
-        android:gravity="center"
         android:visibility="gone"
-        app:globalerrors_type="SERVER_ERROR"
-        app:layout_constraintTop_toBottomOf="@id/error_image_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@id/initial_price_navToolbar"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include
+        android:id="@+id/tradein_loading_layout"
+        layout="@layout/tradein_loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:visibility= "gone"
+        app:layout_constraintTop_toBottomOf="@id/initial_price_navToolbar"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

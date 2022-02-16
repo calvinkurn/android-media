@@ -164,5 +164,8 @@
     <string name="tradein_edu_subtext_4">Tukar di alamatmu atau di Indomaret terdekat.</string>
     <string name="tradein_edu_heading_2">Penting: Kami tidak terima HP Black Market (BM)</string>
     <string name="tradein_tukar_tambah_sekarang">Tukar Tambah Sekarang</string>
+    <string name="tradein_session_id">"Session ID : \n %1$s"</string>
+    <string name="tradein_tunggu_sebentar_ya">Tunggu sebentar, ya!</string>
+    <string name="tradein_loading_text">Kami sedang mengenali tipe HP kamu untuk menentukan estimasi harga yang sesuai.</string>
 
 </resources>

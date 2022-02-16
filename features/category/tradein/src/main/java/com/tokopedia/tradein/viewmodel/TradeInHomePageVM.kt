@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
-import com.tokopedia.common_tradein.model.TradeInPDPData
-import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.url.Env
@@ -17,6 +15,7 @@ import javax.inject.Inject
 class TradeInHomePageVM @Inject constructor(private val userSession: UserSessionInterface) : BaseTradeInViewModel(), CoroutineScope {
 
     val askUserLogin = MutableLiveData<Int>()
+    val laku6DeviceModel = MutableLiveData<Laku6DeviceModel>()
     private lateinit var laku6TradeIn: Laku6TradeIn
     var is3PLSelected : Boolean = false
 
@@ -35,12 +34,8 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
         return laku6TradeIn.permissionGranted()
     }
 
-    fun getDeviceModal(): Laku6DeviceModel? {
-        return Gson().fromJson(laku6TradeIn.deviceModel.toString(), Laku6DeviceModel::class.java)
-    }
-
-    fun getSessionId(): String? {
-        return laku6TradeIn.xSessionId
+    fun getDeviceModel() {
+        laku6DeviceModel.value = Gson().fromJson(laku6TradeIn.deviceModel.toString(), Laku6DeviceModel::class.java)
     }
 
     fun checkLogin() {
