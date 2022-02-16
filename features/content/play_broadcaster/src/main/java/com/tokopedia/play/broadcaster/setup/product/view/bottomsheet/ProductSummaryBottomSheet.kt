@@ -185,8 +185,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun handleAddMoreProduct() {
-        container?.openProductChooser()
-        dismiss()
+        mListener?.onShouldAddProduct(this)
     }
 
     fun setListener(listener: Listener?) {
@@ -215,5 +214,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     interface Listener {
 
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
+
+        fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet)
     }
 }

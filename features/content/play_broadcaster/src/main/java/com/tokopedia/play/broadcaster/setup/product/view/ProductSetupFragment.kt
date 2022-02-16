@@ -26,10 +26,16 @@ class ProductSetupFragment @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
+    private var chooserSource = ChooserSource.Preparation
+
     private val productChooserListener = object : ProductChooserBottomSheet.Listener {
         override fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet) {
             bottomSheet.dismiss()
-            removeFragment()
+
+            when (chooserSource) {
+                ChooserSource.Preparation -> removeFragment()
+                ChooserSource.Summary -> openProductSummary()
+            }
         }
 
         override fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet) {
@@ -42,11 +48,24 @@ class ProductSetupFragment @Inject constructor(
         }
     }
 
+    private val productSummaryListener = object : ProductSummaryBottomSheet.Listener {
+        override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.SetProduct(productTagSectionList)
+            )
+        }
+
+        override fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet) {
+            bottomSheet.dismiss()
+            openProductChooser(ChooserSource.Summary)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProvider(requireActivity(), getViewModelFactory())[PlayBroadcastViewModel::class.java]
 
-        if (parentViewModel.productSectionList.isEmpty()) openProductChooser()
+        if (parentViewModel.productSectionList.isEmpty()) openProductChooser(ChooserSource.Preparation)
         else openProductSummary()
     }
 
@@ -54,13 +73,7 @@ class ProductSetupFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
-            is ProductSummaryBottomSheet -> childFragment.setListener(object: ProductSummaryBottomSheet.Listener {
-                override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-                    parentViewModel.submitAction(
-                        PlayBroadcastAction.SetProduct(productTagSectionList)
-                    )
-                }
-            })
+            is ProductSummaryBottomSheet -> childFragment.setListener(productSummaryListener)
         }
     }
 
@@ -77,14 +90,16 @@ class ProductSetupFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    fun openProductChooser() {
+    private fun openProductChooser(chooserSource: ChooserSource) {
+        this.chooserSource = chooserSource
+
         ProductChooserBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
         ).show(childFragmentManager)
     }
 
-    fun openProductSummary() {
+    private fun openProductSummary() {
         ProductSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
@@ -106,6 +121,11 @@ class ProductSetupFragment @Inject constructor(
             }
         }
         return viewModelFactory
+    }
+
+    private enum class ChooserSource {
+        Preparation,
+        Summary
     }
 
     interface DataSource {
