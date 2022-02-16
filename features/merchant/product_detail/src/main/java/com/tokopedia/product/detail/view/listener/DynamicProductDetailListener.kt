@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -55,6 +56,7 @@ interface DynamicProductDetailListener {
     fun goToApplink(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
