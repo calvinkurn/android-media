@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -30,7 +29,6 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductLi
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButtonViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
@@ -107,6 +105,7 @@ class ProductChooserBottomSheet @Inject constructor(
         }
     )
 
+    private var isSelectedProductsChanged = false
     private var mListener: Listener? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -177,6 +176,12 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                if (prevState?.selectedProductSectionList != null &&
+                    prevState.selectedProductSectionList != state.selectedProductSectionList) {
+
+                    isSelectedProductsChanged = true
+                }
+
                 renderProductList(
                     prevState?.focusedProductList,
                     state.focusedProductList,
@@ -198,7 +203,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     state.config
                 )
                 renderSaveButton(
-                    state.selectedProductSectionList,
+                    isSelectedProductsChanged,
                     state.saveState
                 )
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
@@ -324,13 +329,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSaveButton(
-        selectedProducts: List<ProductTagSectionUiModel>,
+        isSelectedProductsChanged: Boolean,
         saveState: ProductSaveStateUiModel
     ) {
-        val isProductChanged = selectedProducts != viewModel.initialProductSectionList
         saveButtonView.setState(
             isLoading = saveState.isLoading,
-            isEnabled = saveState.canSave && isProductChanged
+            isEnabled = saveState.canSave && isSelectedProductsChanged
         )
     }
 

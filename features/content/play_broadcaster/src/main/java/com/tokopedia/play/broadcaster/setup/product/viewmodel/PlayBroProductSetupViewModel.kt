@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted val initialProductSectionList: List<ProductTagSectionUiModel>,
+    @Assisted productSectionList: List<ProductTagSectionUiModel>,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
@@ -68,7 +68,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         get() = configStore.getMaxProduct()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
-    private val _selectedProductSectionList = MutableStateFlow(initialProductSectionList)
+    private val _selectedProductSectionList = MutableStateFlow(productSectionList)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
     private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
