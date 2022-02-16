@@ -1,9 +1,10 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
@@ -15,6 +16,10 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.network.exception.MessageErrorException
@@ -34,26 +39,20 @@ import javax.inject.Inject
 class DigitalPDPDataPlanViewModel @Inject constructor(
     val repo: DigitalPDPTelcoRepository,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : ViewModel() {
 
     private val _filterDataParams = ArrayList<HashMap<String, Any>>()
-
-    var filterData = emptyList<TelcoFilterTagComponent>()
-
     private var loadingJob: Job? = null
     private var catalogProductJob: Job? = null
 
-    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
-        RechargeCatalogPrefixSelect()
-    )
-
+    var filterData = emptyList<TelcoFilterTagComponent>()
+    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
-
     var selectedFullProduct = SelectedProduct()
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-        .instantCheckout("0")
+        .instantCheckout(CHECKOUT_NO_PROMO)
         .utmContent(GlobalConfig.VERSION_NAME)
         .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
         .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
@@ -74,8 +73,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
-    private val _observableDenomMCCMData =
-        MutableLiveData<RechargeNetworkResult<InputMultiTabDenomModel>>()
+    private val _observableDenomMCCMData = MutableLiveData<RechargeNetworkResult<InputMultiTabDenomModel>>()
     val observableDenomMCCMData: LiveData<RechargeNetworkResult<InputMultiTabDenomModel>>
         get() = _observableDenomMCCMData
 
@@ -88,12 +86,12 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         get() = _clientNumberValidatorMsg
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
-        _menuDetailData.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _menuDetailData.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud, true)
-            _menuDetailData.postValue(RechargeNetworkResult.Success(menuDetail))
+            _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
         }) {
-            _menuDetailData.postValue(RechargeNetworkResult.Fail(it))
+            _menuDetailData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -104,47 +102,41 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         isFilterRefreshed: Boolean = true
     ) {
         catalogProductJob?.cancel()
-        _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
-        catalogProductJob = launchCatchError(block = {
-            val denomFull = repo.getProductInputMultiTabDenomFull(
-                menuId,
-                operator,
-                clientNumber,
-                _filterDataParams,
-                isFilterRefreshed
+        _observableDenomMCCMData.value = RechargeNetworkResult.Loading
+        catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
+            val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber,
+                _filterDataParams, isFilterRefreshed
             )
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
             if (isFilterRefreshed) {
                 setFilterDataParam(denomFull.filterTagComponents)
             }
+            _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomFull)
         }) {
             if (it !is CancellationException)
-                _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+                _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
     fun getFavoriteNumber(categoryIds: List<Int>) {
-        _favoriteNumberData.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _favoriteNumberData.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
-            _favoriteNumberData.postValue(
-                RechargeNetworkResult.Success(
-                    favoriteNumber.persoFavoriteNumber.items
-                )
-            )
+            _favoriteNumberData.value =
+                RechargeNetworkResult.Success(favoriteNumber.persoFavoriteNumber.items)
         }) {
-            _favoriteNumberData.postValue(RechargeNetworkResult.Fail(it))
+            _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
     fun getPrefixOperator(menuId: Int) {
-        _catalogPrefixSelect.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _catalogPrefixSelect.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             operatorData = repo.getOperatorList(menuId)
-            delay(DELAY_TIME)
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success(operatorData))
+            delay(DELAY_PREFIX_TIME)
+            _catalogPrefixSelect.value = RechargeNetworkResult.Success(operatorData)
         }) {
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
+            _catalogPrefixSelect.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -158,20 +150,20 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         digitalSubscriptionParams: DigitalSubscriptionParams,
         userId: String
     ) {
-        _addToCartResult.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _addToCartResult.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
                 digitalSubscriptionParams,
                 userId
             )
-            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+            _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
+                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
             } else {
-                _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
+                _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
         }
     }
@@ -198,7 +190,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         digitalCheckoutPassData.apply {
             categoryId = recom.categoryId
             clientNumber = recom.clientNumber
-            isPromo = DigitalPDPPulsaViewModel.CHECKOUT_NO_PROMO
+            isPromo = CHECKOUT_NO_PROMO
             operatorId = recom.operatorId
             productId = recom.productId
             utmCampaign = recom.categoryId
@@ -224,7 +216,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             }
             isEligibleToBuy = errorMessage.isEmpty()
             delay(VALIDATOR_DELAY_TIME)
-            _clientNumberValidatorMsg.postValue(errorMessage)
+            _clientNumberValidatorMsg.value = errorMessage
         }
     }
 
@@ -296,8 +288,5 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     companion object {
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"
-
-        const val DELAY_TIME = 200L
-        const val VALIDATOR_DELAY_TIME = 3000L
     }
 }

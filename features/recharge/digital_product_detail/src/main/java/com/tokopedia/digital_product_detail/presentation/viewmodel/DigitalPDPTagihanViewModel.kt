@@ -14,6 +14,8 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -34,12 +36,10 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     private var loadingJob: Job? = null
 
     var isEligibleToBuy = false
-
     var operatorData: CatalogOperator = CatalogOperator()
-
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-        .instantCheckout("0")
+        .instantCheckout(CHECKOUT_NO_PROMO)
         .utmContent(GlobalConfig.VERSION_NAME)
         .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
         .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
