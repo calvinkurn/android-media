@@ -14,6 +14,7 @@
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Product Lainnya</string>
     <string name="title_feed_onboarding">Topik Favorit</string>
+    <string name="title_feed_play_live">Lagi Live ini</string>
     <string name="see_shop">Kunjungi Toko</string>
     <string name="see_promo">Lihat Promo</string>
     <string name="see_all">Lihat Semua</string>
@@ -134,5 +135,6 @@ dari Feed.</string>
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
     <string name="feed_detail_page_header">Semua Barang Terbaru</string>
+    <string name="feed_play_header_text">Lagi Live, Nih!</string>
 
 </resources>

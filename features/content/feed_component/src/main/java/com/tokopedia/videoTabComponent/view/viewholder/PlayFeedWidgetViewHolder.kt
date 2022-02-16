@@ -36,7 +36,7 @@ class PlayFeedWidgetViewHolder private constructor() {
         }
     }
 
-    internal class Large private constructor(
+     class Large private constructor(
         itemView: View,
         private val coordinator: PlayWidgetCoordinatorVideoTab
     ) : RecyclerView.ViewHolder(itemView) {

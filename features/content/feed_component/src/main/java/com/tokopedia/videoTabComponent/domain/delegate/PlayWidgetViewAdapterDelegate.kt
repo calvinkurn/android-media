@@ -38,7 +38,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         }
     }
 
-    internal class Large(
+     class Large(
         private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Large>(

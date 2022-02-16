@@ -14,6 +14,8 @@ private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
 const val FEED_TYPE_TAB_MENU = "tabMenu"
 private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
+private const val FEED_SEE_MORE_APP_LINK = "tokopedia://feedplaylivedetail"
+
 
 object FeedPlayVideoTabMapper {
     fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse): List<PlaySlot> {
@@ -100,7 +102,7 @@ object FeedPlayVideoTabMapper {
         return PlayWidgetUiModel(
             title = playSlot.title,
             actionTitle = playSlot.lihat_semua.label,
-            actionAppLink = appLink,
+            actionAppLink = FEED_SEE_MORE_APP_LINK,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
                 autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,

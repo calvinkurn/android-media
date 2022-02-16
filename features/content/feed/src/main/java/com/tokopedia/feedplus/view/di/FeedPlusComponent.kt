@@ -30,4 +30,5 @@ interface FeedPlusComponent {
     fun inject(feedPlusDetailFragment: FeedPlusDetailFragment)
     fun inject(dynamicFeedFragment: DynamicFeedFragment)
     fun inject(feedOnboardingFragment: FeedOnboardingFragment)
+    fun inject(feedSeeMoreFragment: PlayFeedSeeMoreFragment)
 }

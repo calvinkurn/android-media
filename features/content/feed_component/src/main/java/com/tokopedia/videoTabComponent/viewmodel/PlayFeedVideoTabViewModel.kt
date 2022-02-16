@@ -24,15 +24,18 @@ class PlayFeedVideoTabViewModel@Inject constructor(
 
     companion object {
         private const val DEFAULT_GROUP_VALUE = "feeds_channels"
+        private const val DEFAULT_LIVE_GROUP_VALUE = "feeds_channels_live"
     }
 
      var currentCursor = ""
+     var currentLivePageCursor = ""
 
     private var currentSourceType = ""
     private var currentSourceId = ""
     private var currentGroup = DEFAULT_GROUP_VALUE
     val getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     val getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
+    val getLivePlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
 
 
     fun getInitialPlayData(){
@@ -102,6 +105,20 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             getPlayDataRsp.value = Fail(it)
         }
     }
+    fun getLivePlayData(){
+        launchCatchError(block = {
+            val results = withContext(baseDispatcher.io) {
+                getLivePlayPageDataResult()
+            }
+            currentLivePageCursor = results.playGetContentSlot.meta.next_cursor
+
+            getLivePlayDataRsp.value = Success(results)
+
+        }) {
+            getLivePlayDataRsp.value = Fail(it)
+        }
+
+    }
 
 
     private suspend fun getPlayDataResult(): ContentSlotResponse {
@@ -112,5 +129,14 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             throw e
         }
     }
+    private suspend fun getLivePlayPageDataResult(): ContentSlotResponse {
+        try {
+            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = "", sourceType = "", group = DEFAULT_LIVE_GROUP_VALUE))
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
 
 }
