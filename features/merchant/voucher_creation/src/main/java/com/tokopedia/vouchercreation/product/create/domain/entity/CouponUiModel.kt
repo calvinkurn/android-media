@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.product.create.domain.entity
 import android.os.Parcelable
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -30,5 +31,6 @@ data class CouponUiModel(
     val updatedTime: String,
     val isPublic: Boolean,
     var tnc: String,
-    val productIds : List<Long>
+    val productIds : List<Long>,
+    val products: List<ProductId>
 ): Parcelable

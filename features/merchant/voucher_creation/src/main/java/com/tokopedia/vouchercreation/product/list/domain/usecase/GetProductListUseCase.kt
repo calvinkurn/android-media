@@ -13,6 +13,7 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
     : GraphqlUseCase<ProductListResponse>(repository) {
 
     companion object {
+
         private const val KEY_KEYWORD = "keyword"
         private const val KEY_MENU = "menu"
         private const val KEY_CATEGORY = "category"
@@ -20,10 +21,14 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
         private const val KEY_WAREHOUSE_ID = "warehouseID"
         private const val KEY_FILTER = "filter"
         private const val KEY_SORT = "sort"
+        private const val KEY_PAGE = "page"
+        private const val KEY_PAGE_SIZE = "pageSize"
+        private const val PAGE_SIZE = "10"
 
         @JvmStatic
         fun createRequestParams(
-                keyword: String?,
+                page: Int? = null,
+                keyword: String? = null,
                 shopId: String?,
                 warehouseId: String? = null,
                 shopShowCaseIds: List<String>? = null,
@@ -34,6 +39,8 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
                 keyword?.run { add(GoodsFilterInput(id = KEY_KEYWORD, value = listOf(this))) }
                 shopShowCaseIds?.run { add(GoodsFilterInput(id = KEY_MENU, value = shopShowCaseIds)) }
                 categories?.run { add(GoodsFilterInput(id = KEY_CATEGORY, value = categories)) }
+                page?.run { add(GoodsFilterInput(id = KEY_PAGE, value = listOf(this.toString()))) }
+                add(GoodsFilterInput(id = KEY_PAGE_SIZE, value = listOf(PAGE_SIZE)))
             }
 
             return RequestParams.create().apply {

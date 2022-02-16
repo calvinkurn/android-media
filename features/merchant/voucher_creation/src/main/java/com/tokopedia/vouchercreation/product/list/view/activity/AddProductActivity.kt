@@ -10,7 +10,7 @@ import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponPr
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
 
-class ProductListActivity : BaseSimpleActivity() {
+class AddProductActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class ProductListActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         return AddProductFragment.createInstance(
                 // TODO : do something about default value
-                maxProductLimit = intent.getIntExtra(BUNDLE_KEY_MAX_PRODUCT_LIMIT, 100),
+                maxProductLimit = intent.getIntExtra(BUNDLE_KEY_MAX_PRODUCT_LIMIT, 0),
                 couponSettings = intent.getParcelableExtra(BUNDLE_KEY_COUPON_SETTINGS),
                 selectedProductIds = intent.getStringArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCT_IDS) ?: ArrayList()
         )

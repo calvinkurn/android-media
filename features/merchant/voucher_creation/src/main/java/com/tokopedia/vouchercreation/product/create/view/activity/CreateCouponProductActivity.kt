@@ -15,7 +15,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
-import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
+import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
@@ -91,7 +91,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private fun navigateToProductListPage(coupon: Coupon) {
         val couponSettings = coupon.settings
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
-        val addProductIntent = Intent(this, ProductListActivity::class.java).apply {
+        val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
@@ -184,7 +184,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
-            if(resultCode == Activity.RESULT_OK){
+            if(resultCode == Activity.RESULT_OK) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.addProducts(selectedProducts)
             }

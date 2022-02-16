@@ -11,8 +11,9 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentMvcAddProductBinding
@@ -37,7 +39,7 @@ import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewM
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import javax.inject.Inject
 
-class AddProductFragment : BaseDaggerFragment(),
+class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiModel>(),
         ProductListAdapter.OnProductItemClickListener,
         LocationBottomSheet.OnApplyButtonClickListener,
         ShowCaseBottomSheet.OnApplyButtonClickListener,
@@ -45,13 +47,12 @@ class AddProductFragment : BaseDaggerFragment(),
         SortBottomSheet.OnApplyButtonClickListener {
 
     companion object {
-
         private const val ZERO = 0
         private const val NO_BACKGROUND: Int = 0
+        private const val PAGE_SIZE = 10
         private const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
         private const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         private const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
-
         @JvmStatic
         fun createInstance(maxProductLimit: Int,
                            couponSettings: CouponSettings?,
@@ -84,7 +85,6 @@ class AddProductFragment : BaseDaggerFragment(),
     private var sortBottomSheet: SortBottomSheet? = null
 
     private var binding: FragmentMvcAddProductBinding? = null
-    private var adapter: ProductListAdapter? = null
     private var warehouseLocationFilter: SortFilterItem? = null
     private var categoryFilter: SortFilterItem? = null
     private var showCaseFilter: SortFilterItem? = null
@@ -125,8 +125,8 @@ class AddProductFragment : BaseDaggerFragment(),
         viewModel.setSelectedProductIds(selectedProductIds ?: ArrayList())
         val shopId = userSession.shopId
         // get initial product list
-        viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
-        viewModel.getProductList(shopId = shopId, warehouseLocationId = SELLER_LOCATION_ID)
+//        viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
+//        viewModel.getProductList(shopId = shopId, warehouseLocationId = SELLER_LOCATION_ID)
         // get warehouse locations
         val shopIdInt = shopId.toIntOrNull()
         shopIdInt?.run { viewModel.getWarehouseLocations(this) }
@@ -140,7 +140,6 @@ class AddProductFragment : BaseDaggerFragment(),
         setupSearchBar(binding)
         setupProductListFilter(binding)
         setupSelectionBar(binding)
-        setupProductListView(binding)
         setupButtonAddProduct(binding)
     }
 
@@ -261,14 +260,6 @@ class AddProductFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setupProductListView(binding: FragmentMvcAddProductBinding?) {
-        adapter = ProductListAdapter(this)
-        binding?.rvProductList?.let {
-            it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        }
-    }
-
     private fun setupButtonAddProduct(binding: FragmentMvcAddProductBinding?) {
         binding?.buttonAddProduct?.setOnClickListener {
             val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
@@ -313,10 +304,7 @@ class AddProductFragment : BaseDaggerFragment(),
                     val productUiModels = viewModel.mapProductDataToProductUiModel(productData)
                     val productList = viewModel.excludeSelectedProducts(productUiModels, viewModel.getSelectedProductIds())
                     viewModel.setProductUiModels(productList)
-                    if (productList.isEmpty()) {
-                        binding?.selectionBar?.hide()
-                        binding?.emptyProductsLayout?.show()
-                    } else {
+                    if (productList.isNotEmpty()) {
                         binding?.selectionBar?.show()
                         binding?.emptyProductsLayout?.hide()
                         viewModel.getCouponSettings()?.run {
@@ -346,7 +334,8 @@ class AddProductFragment : BaseDaggerFragment(),
                             productList = productList,
                             validationResults = validationResults
                     )
-                    adapter?.setProductList(updatedProductList)
+                    renderList(updatedProductList, true)
+//                    adapter?.setProductList(updatedProductList)
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -410,7 +399,7 @@ class AddProductFragment : BaseDaggerFragment(),
         viewModel.getProductList(
                 keyword = viewModel.getSearchKeyWord(),
                 shopId = userSession.shopId,
-                warehouseLocationId = selectedWarehouseLocation.warehouseId,
+                warehouseLocationId = viewModel.getWarehouseLocationId(),
                 shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
                 categoryList = viewModel.getSelectedCategoryIds(),
                 sort = viewModel.getSelectedSort()
@@ -457,5 +446,50 @@ class AddProductFragment : BaseDaggerFragment(),
                 categoryList = viewModel.getSelectedCategoryIds(),
                 sort = viewModel.getSelectedSort()
         )
+    }
+
+    override fun createAdapter() = ProductListAdapter(this)
+
+    override fun getRecyclerView(view: View): RecyclerView? = binding?.rvProductList
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? = binding?.productListSwipeLayout
+
+    override fun getPerPage() = PAGE_SIZE
+
+    override fun addElementToAdapter(list: List<ProductUiModel>) {
+        adapter?.addProducts(list)
+    }
+
+    override fun loadData(page: Int) {
+        viewModel.getProductList(
+                page = page,
+                keyword = viewModel.getSearchKeyWord(),
+                shopId = userSession.shopId,
+                warehouseLocationId = viewModel.getWarehouseLocationId(),
+                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                categoryList = viewModel.getSelectedCategoryIds(),
+                sort = viewModel.getSelectedSort()
+        )
+    }
+
+    override fun clearAdapterData() {
+        adapter?.clearData()
+    }
+
+    override fun onShowLoading() {
+
+    }
+
+    override fun onHideLoading() {
+
+    }
+
+    override fun onDataEmpty() {
+        binding?.selectionBar?.hide()
+        binding?.emptyProductsLayout?.show()
+    }
+
+    override fun onGetListError(message: String) {
+
     }
 }
