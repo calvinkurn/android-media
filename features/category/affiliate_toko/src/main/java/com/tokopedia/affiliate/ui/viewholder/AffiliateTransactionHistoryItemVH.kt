@@ -40,21 +40,11 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
             itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
                 when(element?.transaction?.transactionType){
                     TRANSACTION_TYPE_DEPOSIT -> {
-                        AffiliateAnalytics.sendEvent(
-                                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                                AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                                AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
-                                "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.INCOMING}",
-                                UserSession(itemView.context).userId)
+                        sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.DEPOSIT)
                         itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
                     }
                     TRANSACTION_TYPE_WITHDRAWAL -> {
-                        AffiliateAnalytics.sendEvent(
-                                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                                AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                                AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
-                                "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.OUTGOING}",
-                                UserSession(itemView.context).userId)
+                        sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.WITHDRAWAL)
                         itemView.context.startActivity(AffiliateSaldoWithdrawalDetailActivity.newInstance(itemView.context, element.transaction.transactionID))
                     }
                 }
@@ -89,5 +79,12 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
                 }
             }
         }
+    }
+
+    private fun sendTransactionClickEvent(transactionID: String, label: String) {
+        AffiliateAnalytics.sendIcomeTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+            label,adapterPosition,transactionID,UserSession(itemView.context).userId
+        )
     }
 }
