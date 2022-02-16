@@ -51,7 +51,7 @@ class PdpSimulationAnalytics @Inject constructor(
         url: String
     ) {
         val map = TrackAppUtils.gtmData(
-            EVENT_NAME_FIN_TECH,
+            CLICK_EVENT_NAME_FIN_TECH_V3,
             EVENT_CATEGORY_FIN_TECH,
             EVENT_CLICK_GOPAY_BOTTOMSHEET,
             "$EVENT_PDP- $productId - $tenure -$partnerName -$url - $emiAmount"
@@ -102,7 +102,7 @@ class PdpSimulationAnalytics @Inject constructor(
             event.ctaWording
         )
         val map = TrackAppUtils.gtmData(
-            EVENT_NAME_FIN_TECH,
+            CLICK_EVENT_NAME_FIN_TECH_V3,
             EVENT_CATEGORY_FIN_TECH,
             event.action,
             label
@@ -282,7 +282,7 @@ class PdpSimulationAnalytics @Inject constructor(
         userStatus: String
     ) {
         val map = TrackAppUtils.gtmData(
-            EVENT_NAME_FIN_TECH,
+            CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_EVENT_ACTION,
             OCC_EVENT_CATEGORY,
             " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
@@ -295,9 +295,8 @@ class PdpSimulationAnalytics @Inject constructor(
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
-        const val BUSINESS_UNIT_FINTECH = "fintechPayLater"
+        const val BUSINESS_UNIT_FINTECH = "fintechPaylater"
         const val CURRENT_SITE_FINTECH = "TokopediaFintech"
-        const val EVENT_NAME_FIN_TECH = "clickFintechMicrosite"
         const val EVENT_PDP = "pdp"
         const val PDP_SIMULATION_PAGE = "PDPSimulationPage"
 
