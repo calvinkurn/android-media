@@ -301,13 +301,18 @@ object ShopPageHomeMapper {
 
     private fun mapToCardDonationUiModel(
         widgetResponse: ShopLayoutWidget.Widget
-    ) = ShopHomeCardDonationUiModel(
-        widgetId = widgetResponse.widgetID,
-        layoutOrder = widgetResponse.layoutOrder,
-        name = widgetResponse.name,
-        type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header)
-    )
+    ): ShopHomeCardDonationUiModel {
+        val header = widgetResponse.header.copy(
+            ctaLink = widgetResponse.header.ctaLink + "&need_login=true"
+        )
+        return ShopHomeCardDonationUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = mapToHeaderModel(header)
+        )
+    }
 
     private fun mapToNewProductLaunchCampaignUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
@@ -659,7 +664,8 @@ object ShopPageHomeMapper {
         }
     }
 
-    fun mapToShopHomeWidgetLayoutData(response: ShopPageGetHomeType.HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {return ShopPageHomeWidgetLayoutUiModel(
+    fun mapToShopHomeWidgetLayoutData(response: ShopPageGetHomeType.HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {
+        return ShopPageHomeWidgetLayoutUiModel(
             layoutId = response.layoutId,
             masterLayoutId = response.masterLayoutId.toIntOrZero().toString(),
             listWidgetLayout = response.widgetIdList.map {
