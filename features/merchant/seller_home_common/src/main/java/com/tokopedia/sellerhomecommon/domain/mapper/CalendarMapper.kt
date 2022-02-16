@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.domain.model.CalendarEventModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCalendarDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
@@ -63,8 +64,33 @@ class CalendarMapper @Inject constructor() :
                 label = event.label,
                 startDate = event.startDate,
                 endDate = event.endDate,
-                appLink = event.appLink
+                appLink = event.appLink,
+                isOnGoingEvent = getIsOnGoingEvent(event)
             )
         }
+    }
+
+    private fun getIsOnGoingEvent(event: CalendarEventModel): Boolean {
+        val todayInMillis = Date().time
+        val startDateCal = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtil.getTimeInMillis(
+                event.startDate, DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+            set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
+            set(Calendar.MINUTE, ShcConst.INT_0)
+            set(Calendar.SECOND, ShcConst.INT_0)
+            set(Calendar.MILLISECOND, ShcConst.INT_0)
+        }
+        val endDateCal = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtil.getTimeInMillis(
+                event.endDate, DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+            set(Calendar.HOUR_OF_DAY, ShcConst.INT_24)
+            set(Calendar.MINUTE, ShcConst.INT_0)
+            set(Calendar.SECOND, ShcConst.INT_0)
+            set(Calendar.MILLISECOND, ShcConst.INT_0)
+        }
+
+        return todayInMillis in startDateCal.timeInMillis..endDateCal.timeInMillis
     }
 }

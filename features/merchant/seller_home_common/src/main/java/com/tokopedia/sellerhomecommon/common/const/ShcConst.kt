@@ -5,16 +5,14 @@ package com.tokopedia.sellerhomecommon.common.const
  */
 
 object ShcConst {
-    const val EMPTY = 0
-    const val DAY_1 = 1
-    const val DAYS_6 = 6
-    const val DAYS_7 = 7
-    const val DAYS_30 = 30
-    const val DAYS_31 = 31
-    const val DAYS_90 = 90
-    const val DAYS_91 = 91
-    const val DAYS_120 = 120
-    const val DAYS_365 = 365
+    const val INT_0 = 0
+    const val INT_1 = 1
+    const val INT_6 = 6
+    const val INT_24 = 24
+    const val INT_30 = 30
+    const val INT_90 = 90
+    const val INT_120 = 120
+    const val INT_365 = 365
 
     const val FORMAT_DD_MM_YYYY = "dd MMM yyyy"
 

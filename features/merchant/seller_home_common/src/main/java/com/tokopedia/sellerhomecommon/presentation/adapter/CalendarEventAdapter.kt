@@ -8,12 +8,9 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetItemBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import java.util.*
 
 /**
  * Created by @ilhamsuaib on 09/02/22.
@@ -81,22 +78,20 @@ class CalendarEventAdapter(
 
         private fun showDateEvent(item: CalendarEventUiModel) {
             with(binding) {
-                val todayStr = DateTimeUtil.format(Date().time, DateTimeUtil.FORMAT_DD_MM_YYYY)
-                val isTodayEvent = todayStr == item.startDate || todayStr == item.endDate
-
                 tvShcCalendarStartDate.text = DateTimeUtil.format(
                     item.startDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD
                 )
                 tvShcCalendarStartMonth.text = DateTimeUtil.format(
                     item.startDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_MMM
                 )
-                val resColor = if (isTodayEvent) {
+                val resColor: Int = if (item.isOnGoingEvent) {
                     com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 } else {
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 }
                 tvShcCalendarStartDate.setTextColor(root.context.getResColor(resColor))
                 tvShcCalendarStartMonth.setTextColor(root.context.getResColor(resColor))
+                imgShcEventItemDash.setImage(newLightEnable = root.context.getResColor(resColor))
 
                 lblShcCalendarEventLabel.setLabel(item.label)
 

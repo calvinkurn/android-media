@@ -51,7 +51,7 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
     private var calendarView: CalendarPickerView? = null
     private val minDate by lazy {
         filterItem?.calendarPickerMinDate
-            ?: Date(DateTimeUtil.getNPastDaysTimestamp(ShcConst.DAYS_365.toLong()))
+            ?: Date(DateTimeUtil.getNPastDaysTimestamp(ShcConst.INT_365.toLong()))
     }
     private val maxDate by lazy {
         filterItem?.calendarPickerMaxDate ?: Date()
@@ -175,7 +175,7 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
         if (cpv.selectedDates.isNotEmpty()) {
             binding?.tickerStcCalendarPicker?.visible()
             val selected: Date = cpv.selectedDates.first()
-            if (cpv.selectedDates.size == ShcConst.DAY_1) {
+            if (cpv.selectedDates.size == ShcConst.INT_1) {
                 updateMaxDateSameMonth(cpv, selected)
                 selectDate(cpv, selected)
 
@@ -220,13 +220,13 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
     }
 
     private fun selectCustomDateRange(cpv: CalendarPickerView) {
-        val isDateRangeSelected = cpv.selectedDates.size > ShcConst.DAY_1
+        val isDateRangeSelected = cpv.selectedDates.size > ShcConst.INT_1
         if (isDateRangeSelected) {
             this.selectedDates = cpv.selectedDates
             dismiss()
         } else {
             if (cpv.selectedDates.isNotEmpty()) {
-                val newMaxDateMillis = TimeUnit.DAYS.toMillis(ShcConst.DAYS_90.toLong())
+                val newMaxDateMillis = TimeUnit.DAYS.toMillis(ShcConst.INT_90.toLong())
                 val selectedDate = cpv.selectedDates.first()
                 val areDatesSame = getAreDatesSame(selectedDate, maxDate)
 
@@ -263,7 +263,7 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
                 selectDate(cpv, selectedPair.first)
                 selectDate(cpv, selectedPair.second)
             } catch (e: IllegalArgumentException) {
-                val m6Days = TimeUnit.DAYS.toMillis(ShcConst.DAYS_6.toLong())
+                val m6Days = TimeUnit.DAYS.toMillis(ShcConst.INT_6.toLong())
                 val minDateMillis = minDate.time.plus(m6Days)
                 val mSelectedPair = if (minDateMillis >= selected.time) {
                     getPerWeekSelectedPair(Date(minDateMillis))
@@ -285,7 +285,7 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
             return onGoingWeekPair
         }
 
-        val m6Day = TimeUnit.DAYS.toMillis(ShcConst.DAYS_6.toLong())
+        val m6Day = TimeUnit.DAYS.toMillis(ShcConst.INT_6.toLong())
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = selected
         calendar.firstDayOfWeek = Calendar.MONDAY
@@ -304,10 +304,10 @@ class CalendarPicker : BaseBottomSheet<ShcCalendarPickerBinding>() {
         with(firstDayOfOnGoingWeek) {
             firstDayOfWeek = Calendar.MONDAY
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            set(Calendar.HOUR_OF_DAY, ShcConst.EMPTY)
-            set(Calendar.MINUTE, ShcConst.EMPTY)
-            set(Calendar.SECOND, ShcConst.EMPTY)
-            set(Calendar.MILLISECOND, ShcConst.EMPTY)
+            set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
+            set(Calendar.MINUTE, ShcConst.INT_0)
+            set(Calendar.SECOND, ShcConst.INT_0)
+            set(Calendar.MILLISECOND, ShcConst.INT_0)
         }
 
         val firstDayMillis = firstDayOfOnGoingWeek.timeInMillis

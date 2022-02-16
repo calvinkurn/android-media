@@ -10,5 +10,6 @@ data class CalendarEventUiModel(
     val label: String = "",
     val startDate: String = "",
     val endDate: String = "",
-    val appLink: String = ""
+    val appLink: String = "",
+    val isOnGoingEvent: Boolean = false
 )

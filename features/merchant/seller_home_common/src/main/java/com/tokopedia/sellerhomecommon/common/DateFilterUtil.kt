@@ -94,7 +94,7 @@ object DateFilterUtil {
     object FilterList {
 
         fun getCalendarPickerFilterList(context: Context): List<DateFilterItem> {
-            val nextNDaysCount = ShcConst.DAYS_120
+            val nextNDaysCount = ShcConst.INT_120
             val filterPerMonth = getFilterPerMonth(context, nextNDaysCount).apply {
                 isSelected = true
             }
@@ -109,35 +109,35 @@ object DateFilterUtil {
             context: Context,
             maxDaysCount: Int
         ): DateFilterItem.Pick {
-            val sixDaysMillis = TimeUnit.DAYS.toMillis(ShcConst.DAYS_6.toLong())
+            val sixDaysMillis = TimeUnit.DAYS.toMillis(ShcConst.INT_6.toLong())
 
             val maxDateCal = Calendar.getInstance().apply {
                 time = Date(DateTimeUtil.getNNextDaysTimestamp(maxDaysCount.toLong()))
                 firstDayOfWeek = Calendar.MONDAY
                 set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-                set(Calendar.HOUR_OF_DAY, ShcConst.EMPTY)
-                set(Calendar.MINUTE, ShcConst.EMPTY)
-                set(Calendar.SECOND, ShcConst.EMPTY)
-                set(Calendar.MILLISECOND, ShcConst.EMPTY)
+                set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
+                set(Calendar.MINUTE, ShcConst.INT_0)
+                set(Calendar.SECOND, ShcConst.INT_0)
+                set(Calendar.MILLISECOND, ShcConst.INT_0)
             }
 
             val minDateCal = Calendar.getInstance().apply {
-                time = Date(DateTimeUtil.getNPastDaysTimestamp(ShcConst.DAYS_30.toLong()))
+                time = Date(DateTimeUtil.getNPastDaysTimestamp(ShcConst.INT_30.toLong()))
                 firstDayOfWeek = Calendar.MONDAY
                 set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-                set(Calendar.HOUR_OF_DAY, ShcConst.EMPTY)
-                set(Calendar.MINUTE, ShcConst.EMPTY)
-                set(Calendar.SECOND, ShcConst.EMPTY)
-                set(Calendar.MILLISECOND, ShcConst.EMPTY)
+                set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
+                set(Calendar.MINUTE, ShcConst.INT_0)
+                set(Calendar.SECOND, ShcConst.INT_0)
+                set(Calendar.MILLISECOND, ShcConst.INT_0)
             }
 
             val calendar: Calendar = Calendar.getInstance().apply {
                 firstDayOfWeek = Calendar.MONDAY
                 set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-                set(Calendar.HOUR_OF_DAY, ShcConst.EMPTY)
-                set(Calendar.MINUTE, ShcConst.EMPTY)
-                set(Calendar.SECOND, ShcConst.EMPTY)
-                set(Calendar.MILLISECOND, ShcConst.EMPTY)
+                set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
+                set(Calendar.MINUTE, ShcConst.INT_0)
+                set(Calendar.SECOND, ShcConst.INT_0)
+                set(Calendar.MILLISECOND, ShcConst.INT_0)
             }
 
             val firstDateOfWeek = calendar.time
