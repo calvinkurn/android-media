@@ -36,6 +36,7 @@ import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -55,7 +56,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -173,6 +174,12 @@ abstract class TopchatRoomTest {
     protected lateinit var unsendReplyUseCase: UnsendReplyUseCaseStub
 
     @Inject
+    protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
+
+    @Inject
+    protected lateinit var getChatPreAttachPayloadUseCase: GetChatPreAttachPayloadUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject
@@ -207,6 +214,7 @@ abstract class TopchatRoomTest {
 
     companion object {
         const val MSG_ID = "66961"
+        const val EX_PRODUCT_ID = "1111"
         var chatComponentStub: ChatComponentStub? = null
         var keyboardStateIdling: CountingIdlingResource? = null
     }
@@ -223,13 +231,25 @@ abstract class TopchatRoomTest {
 
     protected open fun enableUploadImageByService() {
         remoteConfig.setString(
-            TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
         )
     }
 
     protected open fun disableUploadImageByService() {
         remoteConfig.setString(
-            TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+        )
+    }
+
+    protected open fun enableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "true"
+        )
+    }
+
+    protected open fun disableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "false"
         )
     }
 
@@ -524,6 +544,10 @@ abstract class TopchatRoomTest {
         onView(withText(msg)).check(doesNotExist())
     }
 
+    protected fun assertSnackbarWithSubText(msg: String) {
+        onView(withSubstring(msg)).check(matches(isDisplayed()))
+    }
+
     protected fun assertSrwPreviewContentIsVisible() {
         assertSrwPreviewContentContainerVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
@@ -547,7 +571,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertSrwPreviewContentIsError() {
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-        assertTemplateChatVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     protected fun assertSrwPreviewContentIsHidden() {
@@ -835,7 +859,7 @@ abstract class TopchatRoomTest {
             )
     }
 
-    protected fun getAttachProductData(totalProduct: Int): Intent {
+    protected open fun getAttachProductData(totalProduct: Int): Intent {
         val products = ArrayList<ResultProduct>(totalProduct)
         for (i in 0 until totalProduct) {
             products.add(

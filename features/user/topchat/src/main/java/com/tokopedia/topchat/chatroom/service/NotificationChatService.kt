@@ -14,8 +14,9 @@ import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -23,14 +24,16 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
-import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import rx.Subscriber
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class NotificationChatService : JobIntentService() {
+class NotificationChatService : JobIntentService(), CoroutineScope {
 
     private val REPLY_KEY = "reply_chat_key"
     private val MESSAGE_ID = "message_chat_id"
@@ -38,10 +41,13 @@ class NotificationChatService : JobIntentService() {
     private val USER_ID = "user_id"
 
     @Inject
-    lateinit var replyChatUseCase: ReplyChatUseCase
+    lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
 
     @Inject
     lateinit var analytics: TopChatAnalytics
+
+    @Inject
+    lateinit var dispatcher: CoroutineDispatchers
 
     private var jobScheduler: JobScheduler? = null
     private var remoteConfig: RemoteConfig? = null
@@ -98,39 +104,33 @@ class NotificationChatService : JobIntentService() {
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
         val userId = intent.getStringExtra(USER_ID)
 
-        val params = ReplyChatUseCase.generateParamWithSource(messageId, message, TopChatAnalytics.SELLERAPP_PUSH_NOTIF)
-
-        replyChatUseCase.execute(params, object : Subscriber<ReplyChatViewModel>() {
-            override fun onNext(response: ReplyChatViewModel) {
-                if (response.isSuccessReplyChat) {
-                    analytics.eventClickReplyChatFromNotif(if (userId.isNullOrBlank()) "0" else userId)
-                    clearNotification(notificationId)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (isJobIdRunning(JOB_ID_RETRY)) {
-                            jobScheduler?.cancel(JOB_ID_RETRY)
-                            applicationContext.stopService(Intent(applicationContext, NotificationChatJobService::class.java))
-                        }
-                    }
-                } else {
-                    onError(IllegalStateException())
+        launchCatchError(block = {
+            withContext(dispatcher.io) {
+                val param = ReplyChatGQLUseCase.Param(
+                    msgId = messageId,
+                    msg = message,
+                    source = TopChatAnalytics.SELLERAPP_PUSH_NOTIF
+                )
+                replyChatGQLUseCase(param)
+                analytics.eventClickReplyChatFromNotif(if (userId.isNullOrBlank()) "0" else userId)
+                clearNotification(notificationId)
+                if (isJobIdRunning(JOB_ID_RETRY)) {
+                    jobScheduler?.cancel(JOB_ID_RETRY)
+                    applicationContext.stopService(Intent(applicationContext, NotificationChatJobService::class.java))
                 }
             }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                if (!DeviceConnectionInfo.isInternetAvailable(applicationContext,
-                                checkWifi = true,
-                                checkCellular = true,
-                                checkEthernet = true)) {
-                    jobScheduler?.cancelAll()
-                    if (isEnableReplyChatNotification()) {
-                        setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
-                    }
-                } else {
-                    jobScheduler?.cancelAll()
-                    ServerLogger.log(Priority.P2, "PUSH_NOTIF_REPLY_CHAT", mapOf("type" to "ErrorReplyChat", "error" to e?.message.orEmpty()))
+        }, onError = {
+            if (!DeviceConnectionInfo.isInternetAvailable(applicationContext,
+                    checkWifi = true,
+                    checkCellular = true,
+                    checkEthernet = true)) {
+                jobScheduler?.cancelAll()
+                if (isEnableReplyChatNotification()) {
+                    setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
                 }
+            } else {
+                jobScheduler?.cancelAll()
+                ServerLogger.log(Priority.P2, "PUSH_NOTIF_REPLY_CHAT", mapOf("type" to "ErrorReplyChat", "error" to it.message.orEmpty()))
             }
         })
     }
@@ -175,6 +175,7 @@ class NotificationChatService : JobIntentService() {
             applicationContext.stopService(Intent(applicationContext, NotificationChatJobService::class.java))
         }
         super.onDestroy()
+        replyChatGQLUseCase.cancel()
     }
 
     private fun clearNotification(notificationId: Int) {
@@ -185,4 +186,7 @@ class NotificationChatService : JobIntentService() {
     private fun isEnableReplyChatNotification(): Boolean {
         return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false) == true
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcher.io + SupervisorJob()
 }

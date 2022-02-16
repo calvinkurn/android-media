@@ -1,7 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain
 
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionResponse
 import com.tokopedia.autocompletecomponent.util.CPM
 import com.tokopedia.autocompletecomponent.util.CPM_ITEM_COUNT
 import com.tokopedia.autocompletecomponent.util.CPM_PAGE
@@ -14,19 +13,18 @@ import com.tokopedia.autocompletecomponent.util.DEVICE_ID
 import com.tokopedia.autocompletecomponent.util.IS_TYPING
 import com.tokopedia.autocompletecomponent.util.KEY_COUNT
 import com.tokopedia.autocompletecomponent.util.SEARCHBAR
+import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SOURCE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.UNIQUE_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Observable
-import rx.functions.Func2
 
 object SuggestionRequestUtils {
 
@@ -110,7 +108,7 @@ object SuggestionRequestUtils {
         searchParameter: Map<String, Any>,
         userSession: UserSessionInterface,
         isTyping: Boolean,
-        warehouseId: String,
+        chooseAddressData: LocalCacheModel,
     ): RequestParams {
         val registrationId = userSession.deviceId
         val userId = userSession.userId
@@ -125,9 +123,7 @@ object SuggestionRequestUtils {
         params.putString(UNIQUE_ID, uniqueId)
         params.putString(DEVICE_ID, registrationId)
         params.putBoolean(IS_TYPING, isTyping)
-
-        if (warehouseId.isNotEmpty())
-            params.putString(USER_WAREHOUSE_ID, warehouseId)
+        params.putChooseAddressParams(chooseAddressData)
 
         return params
     }

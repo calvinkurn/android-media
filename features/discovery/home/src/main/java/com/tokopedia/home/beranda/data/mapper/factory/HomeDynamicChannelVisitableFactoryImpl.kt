@@ -184,6 +184,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
+                DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
+                    createHomeToDoWidget(channel)
+                }
             }
         }
         if (addLoadingMore) {
@@ -195,7 +198,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createFeaturedShopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(FeaturedShopDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                DynamicChannelComponentMapper.mapHomeChannelToComponentBannerHeader(channel, verticalPosition)
         ))
         if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty()) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
@@ -604,5 +607,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
         val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
         if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
+    }
+
+    private fun createHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(CMHomeWidgetDataModel(null, channel))
     }
 }

@@ -975,11 +975,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    private fun onErrorAddToCart(
-            exception: Throwable
-    ) {
+    private fun onErrorAddToCart(exception: Throwable) {
         view?.let { view ->
-            val errorMessage = ErrorHandler.getErrorMessage(context, exception)
+            val errorMessage = if (exception is MessageErrorException) {
+                exception.message
+            } else {
+                ErrorHandler.getErrorMessage(context, exception)
+            }
             NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
         }
     }
@@ -2591,7 +2593,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopId,
                     ShopUtil.getActualPositionFromIndex(position),
                     isSeeCampaign,
-                    selectedBanner?.imageId.toString(),
+                    selectedBanner?.imageId.orEmpty(),
                     selectedBanner?.imageUrl ?: "",
                     customDimensionShopPage,
                     isOwner
@@ -2689,7 +2691,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ))
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData)
+        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
             refreshProductList()
     }
 

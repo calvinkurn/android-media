@@ -24,7 +24,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 ): GraphqlUseCase<ChannelDetailsWithRecomResponse>(gqlRepository) {
 
     init {
-        setGraphqlQuery(GetChannelDetailsWithRecomUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(GetChannelDetailsWithRecomUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ChannelDetailsWithRecomResponse::class.java)
@@ -99,10 +99,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     }
                     show_cart
                     show_pinned_product
-                    ping_interval
-                    max_chars
-                    max_retries
-                    min_reconnect_delay
+                    active
+                    freezed
                     has_promo
                     reminder{
                       is_set

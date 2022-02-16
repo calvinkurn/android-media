@@ -59,7 +59,7 @@ interface HomeTypeFactory {
 
     fun type(emptyBannerDataModel: EmptyBannerDataModel): Int
 
-    fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int
+    fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int
 
     fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int
 
@@ -76,4 +76,6 @@ interface HomeTypeFactory {
     fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int
 
     fun type(errorStateAtfModel: ErrorStateAtfModel): Int
+
+    fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int
 }

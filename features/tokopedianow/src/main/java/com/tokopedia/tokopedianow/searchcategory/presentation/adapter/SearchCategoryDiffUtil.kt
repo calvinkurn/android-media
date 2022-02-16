@@ -7,6 +7,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 
 open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
 
@@ -57,6 +58,8 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                     oldItem.quickFilterItemList == newItem.quickFilterItemList
                 } else if (oldItem is ProductCountDataView && newItem is ProductCountDataView) {
                     oldItem.totalDataText == newItem.totalDataText
+                } else if (oldItem is ChooseAddressDataView && newItem is ChooseAddressDataView) {
+                    oldItem.chooseAddressData == newItem.chooseAddressData
                 } else {
                     true
                 }
