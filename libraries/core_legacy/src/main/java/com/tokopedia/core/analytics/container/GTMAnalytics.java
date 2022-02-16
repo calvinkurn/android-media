@@ -282,7 +282,7 @@ public class GTMAnalytics extends ContextAnalytics {
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 stacktrace.append(String.format("%s\n", ste.toString()));
             }
-            Map<String, String> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
+            Map<String, Object> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
             GtmLogger.getInstance(context).save(logMap, null, AnalyticsSource.ERROR);
             if (!TextUtils.isEmpty(e.getMessage())) {
                 Map<String, String> map = new HashMap<>();
