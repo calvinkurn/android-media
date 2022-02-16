@@ -2,17 +2,21 @@ package com.tokopedia.addongifting.addonbottomsheet.view
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -32,6 +36,7 @@ import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
@@ -60,6 +65,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     private var adapter: AddOnListAdapter? = null
     private var viewBinding: LayoutAddOnBottomSheetBinding? = null
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
+    private var delayScrollJob: Job? = null
+    private var isKeyboardOpened = false
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddOnViewModel::class.java)
@@ -85,7 +92,36 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         initializeObserver(viewBinding)
         initializeData(addOnProductData)
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        addViewTreeObserver(view, viewBinding)
+
+        return view
+    }
+
+    private fun addViewTreeObserver(view: View?, viewBinding: LayoutAddOnBottomSheetBinding) {
+        view?.viewTreeObserver?.addOnGlobalLayoutListener {
+            val heightDiff = (view.rootView?.height ?: 0) - view.height
+            val displayMetrics = DisplayMetrics()
+            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            windowManager?.let {
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
+                if (heightDiffInDp > 150) {
+                    if (!isKeyboardOpened) {
+                        viewBinding.totalAmount.gone()
+                        delayScrollJob?.cancel()
+                        delayScrollJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                            delay(200)
+                            viewBinding.rvAddOn.smoothScrollBy(0, 200)
+                        }
+                    }
+                    isKeyboardOpened = true
+                } else if (isKeyboardOpened) {
+                    viewBinding.totalAmount.show()
+                    isKeyboardOpened = false
+                }
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -321,6 +357,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     override fun onDismiss(dialog: DialogInterface) {
         viewBinding = null
         measureRecyclerViewPaddingDebounceJob?.cancel()
+        delayScrollJob?.cancel()
         activity?.finish()
         activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
         super.onDismiss(dialog)
