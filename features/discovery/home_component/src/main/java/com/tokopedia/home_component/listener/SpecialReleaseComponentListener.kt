@@ -8,7 +8,7 @@ import com.tokopedia.home_component.model.ChannelModel
  */
 interface SpecialReleaseComponentListener {
     fun onSpecialReleaseItemImpressed(grid: ChannelGrid, channelModel: ChannelModel, position: Int)
-    fun onSpecialReleaseItemClicked(grid: ChannelGrid, channelModel: ChannelModel, position: Int)
+    fun onSpecialReleaseItemClicked(grid: ChannelGrid, channelModel: ChannelModel, position: Int, applink: String)
     fun onSpecialReleaseItemSeeAllClicked(channelModel: ChannelModel, applink: String)
     fun onSpecialReleaseChannelImpressed(channelModel: ChannelModel, position: Int)
 }

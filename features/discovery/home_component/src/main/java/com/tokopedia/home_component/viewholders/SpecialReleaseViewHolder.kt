@@ -70,6 +70,7 @@ class SpecialReleaseViewHolder(
                 }
             }
         }
+        bind(element)
     }
 
     private fun setBackground(element: SpecialReleaseDataModel) {
@@ -189,10 +190,17 @@ class SpecialReleaseViewHolder(
         specialReleaseComponentListener?.onSpecialReleaseItemClicked(
             grid = channelGrid,
             channelModel = channel,
-            position = position
+            position = position,
+            applink = applink
         )
     }
 
-    override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {}
+    override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
+        specialReleaseComponentListener?.onSpecialReleaseItemSeeAllClicked(
+            channelModel = channel,
+            applink = applink
+        )
+    }
+
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {}
 }

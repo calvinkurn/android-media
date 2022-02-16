@@ -32,7 +32,8 @@ class SpecialReleaseComponentCallback(
     override fun onSpecialReleaseItemClicked(
         grid: ChannelGrid,
         channelModel: ChannelModel,
-        position: Int
+        position: Int,
+        applink: String
     ) {
         SpecialReleaseTracking.sendSpecialReleaseItemClick(
             channelModel = channelModel,
@@ -40,6 +41,7 @@ class SpecialReleaseComponentCallback(
             position = position,
             userId = homeCategoryListener.userId
         )
+        RouteManager.route(context, applink)
     }
 
     override fun onSpecialReleaseItemSeeAllClicked(channelModel: ChannelModel, applink: String) {
