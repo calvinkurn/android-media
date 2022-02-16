@@ -78,6 +78,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playWidget)
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
     implementation projectOrAar(rootProject.ext.features.questWidget)
+    implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -120,10 +121,10 @@ dependencies {
     // Tkpd internal
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.supportLibDependencies.constraintLayout
