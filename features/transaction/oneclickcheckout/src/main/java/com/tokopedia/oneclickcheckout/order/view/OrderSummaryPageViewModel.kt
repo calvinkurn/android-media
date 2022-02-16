@@ -10,6 +10,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -779,18 +780,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
         eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-            },
-            {
-                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
+                {
+                    eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+                },
+                {
+                    eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+                },
+                AddressConstant.ANA_REVAMP_FEATURE_ID
         )
     }
 
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
-        // Todo : update add on button view
         // Todo : set add on amount
         // Todo : set param on afpb
         // Todo : calculate total
@@ -798,13 +798,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         // Add on currently only support single product on OCC
         val orderProduct = orderProducts.value.firstOrNull()
         val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
-        if (addOnResult != null) {
-            if (orderProduct != null && addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER /*&& addOnResult.addOnKey == "${orderCart.cartString}-0"*/) {
-                orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+        if (orderProduct != null) {
+            if (addOnResult != null) {
+                if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER /*&& addOnResult.addOnKey == "${orderCart.cartString}-0"*/) {
+                    orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                    orderProducts.value = listOf(orderProduct)
+                } else {
+                    orderProduct.addOn = AddOnsDataModel()
+                    orderProducts.value = listOf(orderProduct)
+                }
+            } else {
+                orderProduct.addOn = AddOnsDataModel()
                 orderProducts.value = listOf(orderProduct)
             }
-        } else {
-
         }
     }
 

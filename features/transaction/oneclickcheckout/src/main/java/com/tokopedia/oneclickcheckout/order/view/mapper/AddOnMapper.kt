@@ -24,7 +24,8 @@ object AddOnMapper {
                                 productId = orderProduct.productId.toString(),
                                 productName = orderProduct.productName,
                                 productImageUrl = orderProduct.productImageUrl,
-                                productPrice = orderProduct.productPrice
+                                productPrice = orderProduct.productPrice,
+                                productQuantity = orderProduct.orderQuantity
                         )),
                         isTokoCabang = orderShop.isFulfillment,
                         cartString = orderCart.cartString,
