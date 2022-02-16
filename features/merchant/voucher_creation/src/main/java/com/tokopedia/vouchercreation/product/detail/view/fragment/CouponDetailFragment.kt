@@ -183,6 +183,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 }
                 startActivity(manageProductIntent)
             }
+            header.setNavigationOnClickListener { activity?.onBackPressed() }
         }
     }
 

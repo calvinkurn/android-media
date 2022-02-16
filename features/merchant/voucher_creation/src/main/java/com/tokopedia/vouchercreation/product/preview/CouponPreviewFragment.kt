@@ -242,7 +242,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
         binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
-
+        binding.header.setNavigationOnClickListener { activity?.onBackPressed() }
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
             override fun onLinkClick(url: String?) {
                 displayTermAndConditionBottomSheet()
