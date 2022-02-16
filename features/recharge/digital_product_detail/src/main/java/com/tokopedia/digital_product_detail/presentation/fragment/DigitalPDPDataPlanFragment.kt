@@ -890,6 +890,7 @@ class DigitalPDPDataPlanFragment :
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId
         )
+        onHideBuyWidget()
     }
 
     override fun onClickNavigationIcon() {
