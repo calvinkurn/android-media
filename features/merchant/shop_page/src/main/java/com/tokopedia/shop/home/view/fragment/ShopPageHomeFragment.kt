@@ -1420,7 +1420,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun handleOnFinishAtcBundle(atcBundleModel: AddToCartBundleModel) {
         atcBundleModel.validateResponse(
                 onSuccess = {
-                    showToastSuccess(atcBundleModel.addToCartBundleDataModel.message.firstOrNull().orEmpty())
+                    showToastSuccess(
+                            getString(R.string.shop_page_product_bundle_success_atc_text),
+                            getString(R.string.see_label)
+                    ) {
+                        goToCart()
+                    }
                 },
                 onFailedWithMessages = {
                     showErrorToast(it.firstOrNull().orEmpty())
@@ -2278,6 +2283,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun goToWishlist() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+    }
+
+    private fun goToCart() {
+        RouteManager.route(context, ApplinkConst.CART)
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {

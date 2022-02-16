@@ -297,4 +297,7 @@
     <string name="shop_page_label_thousand">rb</string>
     <string name="shop_page_label_million">jt</string>
     <string name="shop_page_label_oke">Oke</string>
+
+    <!-- Product Bundling Widget -->
+    <string name="shop_page_product_bundle_success_atc_text">Paket berhasil dimasukkan ke keranjang belanja</string>
 </resources>
