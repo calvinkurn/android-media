@@ -91,7 +91,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         initializeData(addOnProductData)
 
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        addViewTreeObserver(view, viewBinding)
+//        addViewTreeObserver(view, viewBinding)
 
         return view
     }
