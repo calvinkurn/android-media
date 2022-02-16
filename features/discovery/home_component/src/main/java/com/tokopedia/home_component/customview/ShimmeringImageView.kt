@@ -96,8 +96,6 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         val performanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring?.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
 
-        Embrace.getInstance().startEvent(fpmItemLabel, null, false)
-
         return performanceMonitoring
     }
 
@@ -106,7 +104,6 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
                                  fpmItemLabel: String) {
         if (dataSource == DataSource.REMOTE) {
             performanceMonitoring?.stopTrace()
-            Embrace.getInstance().endEvent(fpmItemLabel)
         }
     }
 }
