@@ -38,6 +38,18 @@
             android:layout_width="60dp"
             android:layout_height="60dp"/>
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/special_release_shop_badge"
+            app:layout_constraintBottom_toBottomOf="@id/special_release_shop_image"
+            app:layout_constraintEnd_toEndOf="@id/special_release_shop_image"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="circle"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="110dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/special_release_shop_name"
             android:layout_width="wrap_content"

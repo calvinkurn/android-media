@@ -47,6 +47,12 @@ class SpecialReleaseItemViewHolder(
                 url = element.grid.shop.shopProfileUrl
             )
 
+            element.grid.badges.firstOrNull()?.let {
+                binding?.specialReleaseShopBadge?.loadImage(
+                    url = it.imageUrl
+                )
+            }
+
             binding?.specialReleaseBrandCard?.loadImage(
                 url = element.grid.imageUrl
             )
