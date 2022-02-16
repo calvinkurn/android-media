@@ -128,7 +128,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
 
         tradeInAddressViewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
             global_error.setType(GlobalError.SERVER_ERROR)
-            global_error.errorDescription.text = it
+//            global_error.errorDescription.text = it
             global_error.setActionClickListener {
                 getAddress()
             }

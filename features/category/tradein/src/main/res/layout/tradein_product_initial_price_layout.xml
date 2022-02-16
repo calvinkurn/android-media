@@ -22,15 +22,30 @@
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
 
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            android:id="@+id/tradein_image_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/Unify_N0"
+            android:gravity="center"
+            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/Icon_trade_in.png"
+            app:imageDpiSupportType="singleDpi"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/discounted_price"
+            app:layout_constraintBottom_toBottomOf="@id/discounted_price"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/discounted_price"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginRight="16dp"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintTop_toBottomOf="@id/product_save_text"
+            app:layout_constraintLeft_toRightOf="@id/tradein_image_view"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
             tools:text="Rp16.300.000" />
@@ -40,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:gravity="center_vertical"
             app:labelType="general_light_red"
             app:layout_constraintStart_toStartOf="parent"

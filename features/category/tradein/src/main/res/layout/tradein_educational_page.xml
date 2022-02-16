@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/Unify_Background"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/edu_navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeTitle"
+        app:toolbarTitle="Tukar Tambah"
+        android:elevation="2dp"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_heading_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_heading_1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toBottomOf="@id/edu_navToolbar"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/edu_image_1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_1.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintBottom_toBottomOf="@id/edu_subtext_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edu_subheading_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subheading_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subheading_1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_heading_1"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subtext_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subtext_1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subheading_1"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/edu_image_2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_2.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintBottom_toBottomOf="@id/edu_subtext_2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edu_subheading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subheading_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subheading_2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subtext_1"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subtext_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subtext_2"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subheading_2"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/edu_image_3"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_3.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintBottom_toBottomOf="@id/edu_subtext_3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edu_subheading_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subheading_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subheading_3"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subtext_2"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subtext_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subtext_3"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subheading_3"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/edu_image_4"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_4.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintBottom_toBottomOf="@id/edu_subtext_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edu_subheading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subheading_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subheading_4"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_4"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subtext_3"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subtext_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_subtext_4"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_4"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_subheading_4"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/edu_subtext_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_heading_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/tradein_edu_heading_2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:typographyType="heading_4" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/edu_image_5"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_5.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edu_heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subtext_5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/edu_image_5"
+        app:layout_constraintLeft_toRightOf="@id/edu_image_5"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edu_image_5"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Jika terbukti HP-mu termasuk barang BM, transaksi akan dibatalkan. Selengkapnya" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/edu_image_5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edu_subtext_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintTop_toBottomOf="@id/divider2"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Dengan mulai Tukar Tambah, kamu setuju dengan
+Syarat &amp; Ketentuan yang berlaku." />
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edu_subtext_6"
+        android:layout_margin="16dp"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:text="@string/tradein_tukar_tambah_sekarang" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

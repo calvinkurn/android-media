@@ -71,7 +71,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             chooseAddressWidget = findViewById(R.id.tradein_choose_address_widget)
             chooseAddressWidget?.bindChooseAddress(this@TradeInHomePageFragment)
             findViewById<View>(R.id.exchange_layout).setOnClickListener {
-                val bottomSheet = TradeInExchangeMethodBS.newInstance(arrayListOf(), tradeInHomePageVM.is3PLSelected)
+                val bottomSheet = TradeInExchangeMethodBS.newInstance(arrayListOf(), tradeInHomePageVM.is3PLSelected, "")
                 bottomSheet.show(childFragmentManager, "")
             }
             findViewById<View>(R.id.tradein_promo_view).setOnClickListener {

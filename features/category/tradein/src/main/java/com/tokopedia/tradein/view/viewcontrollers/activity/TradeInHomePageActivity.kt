@@ -22,12 +22,15 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
+import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInEducationalPageFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInHomePageFragment
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
-class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>() {
+class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
+    TradeInEducationalPageFragment.OnDoTradeInClick {
+
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
@@ -67,7 +70,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>() {
                 Manifest.permission.VIBRATE),
                 MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
-            setUpFragment()
+            setUpEducationalFrgament()
         }
     }
 
@@ -106,7 +109,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>() {
                         return
                     }
                 }
-                setUpFragment()
+                setUpEducationalFrgament()
             } else {
                 showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
                     getString(R.string.tradein_ok)) { askPermissions() }
@@ -114,11 +117,28 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>() {
         }
     }
 
+    private fun setUpEducationalFrgament() {
+        val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
+        (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
+        supportFragmentManager.beginTransaction()
+            .replace(parentViewResourceID, newFragment, newFragment.tag)
+            .commit()
+    }
+
+    override fun onClick() {
+        supportFragmentManager.popBackStack()
+        setUpFragment()
+    }
+
+    override fun onBackClick() {
+        onBackPressed()
+    }
+
     private fun setUpFragment() {
         intent.getStringExtra(TradeInPDPHelper.TRADE_IN_PDP_CACHE_ID)?.let {
             val newFragment = TradeInHomePageFragment.getFragmentInstance(it)
             supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, newFragment, tagFragment)
+                .replace(parentViewResourceID, newFragment, newFragment.tag)
                 .commit()
         }
 

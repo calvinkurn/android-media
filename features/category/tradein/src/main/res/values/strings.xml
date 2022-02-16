@@ -153,5 +153,16 @@
     <string name="tradein_ditukar_di_indomaret">Ditukar di Indomaret</string>
     <string name="tradein_undiagnosed_info_text">Harga akhir tergantung pada hasil pengecekan kondisi HP.</string>
     <string name="tradein_pilih_method">Pilih Metode Penukaran</string>
+    <string name="tradein_edu_heading_1">4 Langkah Mudah Tukar Tambah</string>
+    <string name="tradein_edu_subheading_1">Cari toko dan gadget</string>
+    <string name="tradein_edu_subtext_1">Cek jangkauan toko dan kisaran harga gadget.</string>
+    <string name="tradein_edu_subheading_2">Lakukan Tes Fungsi HP</string>
+    <string name="tradein_edu_subtext_2">"Tes fungsi HP-mu sebelum ditukar tambah. "</string>
+    <string name="tradein_edu_subheading_3">Ambil foto HP-mu</string>
+    <string name="tradein_edu_subtext_3">Foto HP-mu dengan jelas supaya terlihat kondisinya.</string>
+    <string name="tradein_edu_subheading_4">Pilih lokasi penukaran</string>
+    <string name="tradein_edu_subtext_4">Tukar di alamatmu atau di Indomaret terdekat.</string>
+    <string name="tradein_edu_heading_2">Penting: Kami tidak terima HP Black Market (BM)</string>
+    <string name="tradein_tukar_tambah_sekarang">Tukar Tambah Sekarang</string>
 
 </resources>

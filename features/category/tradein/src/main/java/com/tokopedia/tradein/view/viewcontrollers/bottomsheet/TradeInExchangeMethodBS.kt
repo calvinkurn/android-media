@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.TradeInDetailModel.GetTradeInDetailData.LogisticOption
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
 class TradeInExchangeMethodBS : BottomSheetUnify() {
@@ -18,16 +19,19 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
 
     companion object {
         private const val LOGISTIC_OPTIONS = "LOGISTIC_OPTIONS"
+        private const val LOGISTIC_MESSAGE = "LOGISTIC_MESSAGE"
         private const val IS_3PL_SELECTED = "IS_3PL_SELECTED"
 
         fun newInstance(
             logisticOption: ArrayList<LogisticOption>,
-            is3PLSelected: Boolean
+            is3PLSelected: Boolean,
+            logisticMessage : String
         ): TradeInExchangeMethodBS {
             return TradeInExchangeMethodBS().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(LOGISTIC_OPTIONS, logisticOption)
                     putBoolean(IS_3PL_SELECTED, is3PLSelected)
+                    putString(LOGISTIC_MESSAGE, logisticMessage)
                 }
             }
         }
@@ -51,60 +55,92 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
             R.layout.tradein_exchange_method_bottomsheet, null
         )
         contentView?.apply {
-            arguments?.getBoolean(IS_3PL_SELECTED, false)?.let {
-                findViewById<IconUnify>(R.id.tradein_p1_tick)?.let { icon ->
-                    if (it) icon.hide() else icon.show()
-                }
-                findViewById<IconUnify>(R.id.tradein_p3_tick)?.let { icon ->
-                    if (it) icon.show() else icon.hide()
-                }
+            arguments?.getString(LOGISTIC_MESSAGE, getString(R.string.tradein_exchange_ticker))?.apply {
+                findViewById<Ticker>(R.id.ticker_address_info).setTextDescription(this)
             }
             arguments?.getParcelableArrayList<LogisticOption>(LOGISTIC_OPTIONS)?.let {
                 for (logistic in it) {
-                    if (logistic.is3PL) {
-                        findViewById<Typography>(R.id.tradein_p1_price).let { typography ->
-                            typography.text =
-                                if (logistic.isDiagnosed)
-                                    logistic.diagnosticPriceFmt
-                                else
-                                    logistic.estimationPriceFmt
-                            typography.setTextColor(
-                                MethodChecker.getColor(
-                                    context,
+                    if (!logistic.is3PL) {
+                        logistic.isAvailable.let { available ->
+                            arguments?.getBoolean(IS_3PL_SELECTED, false)?.let { is3PLSelected->
+                                findViewById<IconUnify>(R.id.tradein_p1_tick)?.let { icon ->
+                                    when {
+                                        !available -> icon.hide()
+                                        is3PLSelected -> icon.hide()
+                                        else -> icon.show()
+                                    }
+                                }
+                            }
+                            findViewById<Typography>(R.id.tradein_p1_price).let { typography ->
+                                typography.text =
                                     if (logistic.isDiagnosed)
-                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                        logistic.diagnosticPriceFmt
                                     else
-                                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                        logistic.estimationPriceFmt
+                                typography.setTextColor(
+                                    MethodChecker.getColor(
+                                        context,
+                                        when {
+                                            !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                                            logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                        }
+                                    )
                                 )
-                            )
+                            }
+                            findViewById<Typography>(R.id.tradein_p1_info).text = logistic.subTitle
+                            setTextColour(findViewById(R.id.tradein_p1_info), available)
+                            findViewById<Typography>(R.id.tradein_p1).text = logistic.title
+                            setTextColour(findViewById(R.id.tradein_p1), available)
                         }
-                        findViewById<Typography>(R.id.tradein_p1_info).text = logistic.subTitle
-                        findViewById<Typography>(R.id.tradein_p1).text = logistic.title
                     } else {
-                        findViewById<Typography>(R.id.tradein_p3_price).let { typography ->
-                            typography.text =
-                                if (logistic.isDiagnosed)
-                                    logistic.diagnosticPriceFmt
-                                else
-                                    logistic.estimationPriceFmt
-                            typography.setTextColor(
-                                MethodChecker.getColor(
-                                    context,
+                        logistic.isAvailable.let { available ->
+                            arguments?.getBoolean(IS_3PL_SELECTED, false)?.let { is3PLSelected->
+                                findViewById<IconUnify>(R.id.tradein_p3_tick)?.let { icon ->
+                                    when {
+                                        !available -> icon.hide()
+                                        is3PLSelected -> icon.show()
+                                        else -> icon.hide()
+                                    }
+                                }
+                            }
+                            findViewById<Typography>(R.id.tradein_p3_price).let { typography ->
+                                typography.text =
                                     if (logistic.isDiagnosed)
-                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                        logistic.diagnosticPriceFmt
                                     else
-                                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                        logistic.estimationPriceFmt
+                                typography.setTextColor(
+                                    MethodChecker.getColor(
+                                        context,
+                                        when {
+                                            !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                                            logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                        }
+                                    )
                                 )
-                            )
+                            }
+                            findViewById<Typography>(R.id.tradein_p3_info).text = logistic.subTitle
+                            setTextColour(findViewById(R.id.tradein_p3_info), available)
+                            findViewById<Typography>(R.id.tradein_p3).text = logistic.title
+                            setTextColour(findViewById(R.id.tradein_p3), available)
                         }
-                        findViewById<Typography>(R.id.tradein_p3_info).text = logistic.subTitle
-                        findViewById<Typography>(R.id.tradein_p3).text = logistic.title
-
                     }
                 }
             }
         }
         setChild(contentView)
+    }
+
+    private fun setTextColour(typography: Typography?, available: Boolean) {
+        typography?.setTextColor(MethodChecker.getColor(
+            context,
+            when {
+                !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            }
+        ))
     }
 
 }
