@@ -19,10 +19,14 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiMod
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -37,6 +41,8 @@ class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayBroadcastAnalytic,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
+
+    private var mListener: Listener? = null
 
     private val container: ProductSetupFragment?
         get() = parentFragment as? ProductSetupFragment
@@ -57,8 +63,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)
-            .get(PlayBroProductSetupViewModel::class.java)
         setupBottomSheet()
     }
 
@@ -76,6 +80,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mListener = null
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -128,6 +133,8 @@ class ProductSummaryBottomSheet @Inject constructor(
                         productSummaryListView.setLoading()
                     }
                     is ProductTagSummaryUiModel.Success -> {
+                        mListener?.onProductChanged(state.productTagSectionList)
+
                         setTitle(state.productCount)
                         binding.ivLoading.visibility = View.GONE
                         binding.globalError.visibility = View.GONE
@@ -159,6 +166,11 @@ class ProductSummaryBottomSheet @Inject constructor(
                         productSummaryListView.setProductList(emptyList())
                         binding.ivLoading.visibility = View.GONE
                     }
+                    is PlayBroProductChooserEvent.DeleteProductSuccess -> {
+                        view?.rootView?.showToaster(
+                            message = getString(R.string.play_bro_product_summary_success_delete_product, event.deletedProductCount),
+                        )
+                    }
                     is PlayBroProductChooserEvent.DeleteProductError -> {
                         view?.rootView?.showErrorToaster(
                             err = event.throwable,
@@ -188,6 +200,10 @@ class ProductSummaryBottomSheet @Inject constructor(
         dismiss()
     }
 
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
 
@@ -205,5 +221,10 @@ class ProductSummaryBottomSheet @Inject constructor(
                 ) as ProductSummaryBottomSheet
             }
         }
+    }
+
+    interface Listener {
+
+        fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
     }
 }

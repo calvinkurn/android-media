@@ -222,6 +222,7 @@ class PlayCoverSetupFragment @Inject constructor(
         imagePickerHelper = null
         super.onDestroyView()
         job.cancelChildren()
+        mListener = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
