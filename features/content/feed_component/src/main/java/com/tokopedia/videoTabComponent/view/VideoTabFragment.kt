@@ -129,13 +129,24 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     }
                 }
             })
+            getPlayDataForSlotRsp.observe(lifecycleOwner) {
+                when(it) {
+                    is Success -> {
+                        onSuccessPlayTabDataFromChipClick(it.data.playGetContentSlot,
+                            it.data.playGetContentSlot.meta.next_cursor)
+                    }
+                }
+            }
             getPlayDataRsp.observe(lifecycleOwner, Observer {
 //                hideAdapterLoading()
                 when (it) {
                     is Success -> {
-                        if (it.data.isDataFromTabClick)
-                            onSuccessPlayTabDataFromChipClick(it.data.playGetContentSlot,
-                                    it.data.playGetContentSlot.meta.next_cursor)
+                        if (it.data.isDataFromTabClick) {
+                            /*onSuccessPlayTabDataFromChipClick(
+                                it.data.playGetContentSlot,
+                                it.data.playGetContentSlot.meta.next_cursor
+                            )*/
+                        }
                         else
                             onSuccessPlayTabData(
                                     it.data.playGetContentSlot,
@@ -188,14 +199,16 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun onSuccessPlayTabDataFromChipClick(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.appendeList, playDataResponse.meta, selectedSlotTabMenu)
-        adapter.setItemsAndAnimateChanges(mappedData)
+        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, selectedSlotTabMenu)
 
-        mappedData.forEachIndexed { index, playFeedUiModel ->
+        adapter.updateList(mappedData)
+        //adapter.setItemsAndAnimateChanges(mappedData)
+
+        /*mappedData.forEachIndexed { index, playFeedUiModel ->
             if(playFeedUiModel is PlaySlotTabMenuUiModel) {
                 rvWidget?.scrollLayout(index)
             }
-        }
+        }*/
     }
 
     override fun onToggleReminderClicked(
