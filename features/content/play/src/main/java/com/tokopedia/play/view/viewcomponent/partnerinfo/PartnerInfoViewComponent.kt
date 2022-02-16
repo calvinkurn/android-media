@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PartnerInfoViewComponent(
     container: ViewGroup,
-    listener: Listener,
+    private val listener: Listener,
 ) : ViewComponent(container, R.id.view_partner_info) {
 
     private val ivIcon: ImageUnify = findViewById(R.id.iv_icon)
@@ -22,10 +22,6 @@ class PartnerInfoViewComponent(
     private val btnFollow: UnifyButton = findViewById(R.id.btn_follow)
 
     init {
-        rootView.setOnClickListener {
-            listener.onPartnerNameClicked(this)
-        }
-
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
         }
@@ -39,6 +35,7 @@ class PartnerInfoViewComponent(
         } else ivBadge.hide()
         tvPartnerName.text = info.name
         setFollowStatus(info.status, info.isLoadingFollow, info.isFollowBtnShown)
+        setupListener(info.applink)
     }
 
     private fun setFollowStatus(
@@ -53,8 +50,14 @@ class PartnerInfoViewComponent(
         } else btnFollow.hide()
     }
 
+    private fun setupListener(applink: String){
+        rootView.setOnClickListener {
+            listener.onPartnerNameClicked(this, applink)
+        }
+    }
+
     interface Listener {
-        fun onPartnerNameClicked(view: PartnerInfoViewComponent)
+        fun onPartnerNameClicked(view: PartnerInfoViewComponent, applink: String)
         fun onFollowButtonClicked(view: PartnerInfoViewComponent)
     }
 

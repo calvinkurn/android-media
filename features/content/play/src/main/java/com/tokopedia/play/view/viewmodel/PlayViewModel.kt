@@ -1,23 +1,16 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
@@ -81,7 +74,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.flow.collect
 import kotlin.math.max
 
 /**
@@ -813,7 +805,7 @@ class PlayViewModel @AssistedInject constructor(
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             ClickFollowAction -> handleClickFollow(isFromLogin = false)
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
-            ClickPartnerNameAction -> handleClickPartnerName()
+            is ClickPartnerNameAction -> handleClickPartnerName(action.applink)
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
@@ -1715,18 +1707,9 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
-    private fun handleClickPartnerName() {
+    private fun handleClickPartnerName(applink: String) {
         viewModelScope.launch {
-            val partnerInfo = _partnerInfo.value
-
-            when (partnerInfo.type) {
-                PartnerType.Shop -> {
-                    playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
-                    _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
-                }
-                PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
-                else -> {}
-            }
+            _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
         }
     }
 

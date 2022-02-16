@@ -28,7 +28,7 @@ object RefreshLeaderboard: PlayViewerNewAction()
  * Partner
  */
 object ClickFollowAction : PlayViewerNewAction()
-object ClickPartnerNameAction : PlayViewerNewAction()
+data class ClickPartnerNameAction(val applink: String) : PlayViewerNewAction()
 
 /**
  * Like

@@ -82,7 +82,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         status = PlayPartnerFollowStatus.Unknown,
         iconUrl = partnerResponse.thumbnailUrl,
         badgeUrl = partnerResponse.badgeUrl,
-        isFollowBtnShown = isFollowBtnShown
+        isFollowBtnShown = isFollowBtnShown,
+        applink = partnerResponse.appLink
     )
 
     private fun mapLikeInfo(
