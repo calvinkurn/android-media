@@ -124,8 +124,6 @@ class ProductChooserBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)
-            .get(PlayBroProductSetupViewModel::class.java)
         setupBottomSheet()
     }
 

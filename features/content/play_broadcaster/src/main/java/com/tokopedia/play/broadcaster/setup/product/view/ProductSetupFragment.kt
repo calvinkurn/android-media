@@ -19,7 +19,6 @@ class ProductSetupFragment @Inject constructor(
 ) : Fragment() {
 
     private var mDataSource: DataSource? = null
-    private var mListener: Listener? = null
 
     private lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -38,11 +37,6 @@ class ProductSetupFragment @Inject constructor(
                     .remove(childFragment)
                     .commit()
             }
-            is ProductSummaryBottomSheet -> childFragment.setListener(object: ProductSummaryBottomSheet.Listener {
-                override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-                    mListener?.onProductChanged(productTagSectionList)
-                }
-            })
         }
     }
 
@@ -77,10 +71,6 @@ class ProductSetupFragment @Inject constructor(
         mDataSource = dataSource
     }
 
-    fun setListener(listener: Listener?) {
-        mListener = listener
-    }
-
     fun getViewModelFactory(): ViewModelProvider.Factory {
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory = object : ViewModelProvider.Factory {
@@ -97,10 +87,5 @@ class ProductSetupFragment @Inject constructor(
     interface DataSource {
 
         fun getProductSectionList(): List<ProductTagSectionUiModel>
-    }
-
-    interface Listener {
-
-        fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
     }
 }
