@@ -3,9 +3,9 @@ package com.tokopedia.cassavatest
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.cassava.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource

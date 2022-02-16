@@ -2,7 +2,7 @@ package com.tokopedia.analyticsdebugger.cassava.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.analyticsdebugger.cassava.debugger.DebuggerListViewModel
+import com.tokopedia.analyticsdebugger.cassava.ui.debugger.DebuggerListViewModel
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 

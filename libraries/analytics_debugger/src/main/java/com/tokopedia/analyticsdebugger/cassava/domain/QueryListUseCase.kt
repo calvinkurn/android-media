@@ -4,9 +4,9 @@ import android.content.Context
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.utils.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
-import com.tokopedia.analyticsdebugger.cassava.validator.core.QueryMode
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toCassavaQuery
+import com.tokopedia.analyticsdebugger.cassava.core.CassavaQuery
+import com.tokopedia.analyticsdebugger.cassava.core.QueryMode
+import com.tokopedia.analyticsdebugger.cassava.core.toCassavaQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

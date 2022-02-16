@@ -12,7 +12,7 @@ import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequ
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
 import com.tokopedia.analyticsdebugger.cassava.utils.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
+import com.tokopedia.analyticsdebugger.cassava.core.*
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.url.TokopediaUrl
