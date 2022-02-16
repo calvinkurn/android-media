@@ -71,10 +71,15 @@ class OrderSummaryPageViewModelTestHelper {
             "", "", "", false, "",
             500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false)
 
+    val logisticPromoEko = LogisticPromoUiModel("boeko", "boeko", "boeko", firstCourierSecondDuration.productData.shipperName,
+        secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
+        "", "", "", false, "",
+        500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false)
+
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
-        listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo)
+        listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo, this@OrderSummaryPageViewModelTestHelper.logisticPromoEko)
     }
 
     val address = OrderProfileAddress(addressId = 1, latitude = "0", longitude = "0")

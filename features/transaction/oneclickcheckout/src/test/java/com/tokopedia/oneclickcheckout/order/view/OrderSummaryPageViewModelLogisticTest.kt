@@ -6,7 +6,6 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -973,6 +972,36 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, shipping.isApplyLogisticPromo)
+        assertEquals(true, shipping.isServicePickerEnable)
+        assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Logistic Promo From List of Promo Success`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "")
+        val promoSelected = helper.logisticPromoEko
+
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+            PromoCheckoutVoucherOrdersItemUiModel(code = promoSelected.promoCode, messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK")
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(promoSelected)
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        val promoSelectedAfterApplied = promoSelected.copy(isApplied = true)
+
+        assertEquals(promoSelectedAfterApplied, shipping.logisticPromoViewModel)
+        assertEquals(promoSelectedAfterApplied, shipping.shippingRecommendationData?.listLogisticPromo?.find { it.isApplied })
+        assertEquals(null, shipping.logisticPromoTickerMessage)
+
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
