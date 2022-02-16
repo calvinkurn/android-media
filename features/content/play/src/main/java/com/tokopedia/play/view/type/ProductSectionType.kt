@@ -6,7 +6,8 @@ package com.tokopedia.play.view.type
 enum class ProductSectionType(val value: String) {
     Active("active"),
     Other("other"),
-    Upcoming("upcoming");
+    Upcoming("upcoming"),
+    Unknown("");
 
     companion object{
         fun getSectionValue(sectionType: String): ProductSectionType{

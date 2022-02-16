@@ -1535,7 +1535,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
-        productSeeMoreView?.setTotalProduct(tagItem.product.productList.size)
+        productSeeMoreView?.setTotalProduct(tagItem.product.productSectionList.size)
     }
 
     private fun renderFeaturedProductView(
@@ -1544,16 +1544,16 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
     ) {
-        if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
+        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.setPlaceholder()
-        } else if (prevTagItem?.product?.productList != tagItem.product.productList) {
+        } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
             productFeaturedView?.setFeaturedProducts(
-                tagItem.product.productList,
+                tagItem.product.productSectionList,
                 tagItem.maxFeatured,
             )
         }
 
-        if (!tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
+        if (!tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.hide()
         } else if (tagItem.product.canShow &&
             !bottomInsets.isAnyShown &&

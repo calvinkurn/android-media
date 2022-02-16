@@ -1,20 +1,19 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.data.Config
-import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
+import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 
 data class ProductUiModel(
-    val productList: List<PlayProductUiModel.Product>,
+    val productSectionList: List<ProductSectionUiModel>,
     val canShow: Boolean,
 ) {
     companion object {
         val Empty: ProductUiModel
             get() = ProductUiModel(
-                productList = emptyList(),
+                productSectionList = emptyList(),
                 canShow = false,
             )
     }
@@ -43,15 +42,42 @@ data class VariantUiModel(
     }
 }
 
-data class SectionUiModel(
-    val sections : List<PlayProductSectionUiModel.ProductSection>,
-    val config: Config
-){
+data class ProductSectionUiModel(
+    val productList: List<PlayProductUiModel.Product>,
+    val config: ConfigUiModel
+) {
+
+    data class ConfigUiModel(
+        val type: ProductSectionType,
+        val title: String,
+        val serverTime: String, // RFC3339
+        val startTime: String, // RFC3339
+        val endTime: String, // RFC3339
+        val timerInfo: String,
+        val background: BackgroundUiModel
+    )
+
+    data class BackgroundUiModel(
+        val gradients: List<String>,
+        val imageUrl: String
+    )
+
     companion object{
-        val Empty: SectionUiModel
-            get() = SectionUiModel(
-                sections = emptyList(),
-                config = Config()
+        val Empty: ProductSectionUiModel
+            get() = ProductSectionUiModel(
+                productList = emptyList(),
+                config = ConfigUiModel(
+                    type = ProductSectionType.Unknown,
+                    title = "",
+                    serverTime = "",
+                    startTime = "",
+                    endTime = "",
+                    timerInfo = "",
+                    background = BackgroundUiModel(
+                        emptyList(),
+                        ""
+                    )
+                )
             )
     }
 }

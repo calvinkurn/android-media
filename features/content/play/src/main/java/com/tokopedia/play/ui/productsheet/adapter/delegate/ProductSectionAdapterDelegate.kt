@@ -4,20 +4,20 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
-import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 /**
  * @author by astidhiyaa on 02/02/22
  */
 class ProductSectionAdapterDelegate(
     listener: ProductSectionViewHolder.Listener
-) : TypedAdapterDelegate<PlayProductSectionUiModel.ProductSection, PlayProductSectionUiModel, ProductSectionViewHolder>(
+) : TypedAdapterDelegate<ProductSectionUiModel, ProductSectionUiModel, ProductSectionViewHolder>(
     ProductSectionViewHolder.LAYOUT
 ),
     ProductSectionViewHolder.Listener by listener {
 
     override fun onBindViewHolder(
-        item: PlayProductSectionUiModel.ProductSection,
+        item: ProductSectionUiModel,
         holder: ProductSectionViewHolder
     ) {
         holder.bind(item)

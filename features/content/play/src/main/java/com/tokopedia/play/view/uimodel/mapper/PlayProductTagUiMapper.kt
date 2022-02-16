@@ -1,13 +1,11 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.play.data.Product
-import com.tokopedia.play.data.ProductSection
 import com.tokopedia.play.data.Section
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.SectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import javax.inject.Inject
 
 /**
@@ -16,30 +14,27 @@ import javax.inject.Inject
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
 
-    fun mapSections(input: ProductSection): SectionUiModel{
-        return SectionUiModel(
-            sections = input.sectionList.map(::mapSection),
-            config = input.config
-        )
-    }
+    fun mapSection(input: Section) = ProductSectionUiModel(
+        productList = input.listOfProducts.map {
+            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
+        },
+        config = mapConfig(input)
+    )
 
-    fun mapSection(input: Section): PlayProductSectionUiModel.ProductSection {
-        return PlayProductSectionUiModel.ProductSection(
-            title = input.sectionTitle,
-            type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
-            productList = input.listOfProducts.map{
-                mapProductTag(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
-            },
-            serverTime = input.serverTime,
-            startTime = input.timerStartTime,
-            endTime = input.timerEndTime,
-            timerInfo = input.countdown.countdownInfo,
-            background = input.background
-        )
-    }
+    private fun mapConfig(input: Section) = ProductSectionUiModel.ConfigUiModel(
+        title = input.sectionTitle,
+        type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
+        serverTime = input.serverTime,
+        startTime = input.timerStartTime,
+        endTime = input.timerEndTime,
+        timerInfo = input.countdown.countdownInfo,
+        background = ProductSectionUiModel.BackgroundUiModel(
+            gradients = input.background.gradientList,
+            imageUrl = input.background.imageUrl
+        ),
+    )
 
-
-    fun mapProductTag(input: Product, sectionType: ProductSectionType = ProductSectionType.Other): PlayProductUiModel.Product {
+    private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
                 id = input.id,
                 shopId = input.shopId,
@@ -57,7 +52,7 @@ class PlayProductTagUiMapper @Inject constructor() {
                             priceNumber = input.originalPrice)
                 },
                 isVariantAvailable = input.isVariant,
-                stock = if(sectionType == ProductSectionType.Upcoming) ComingSoon else
+                stock = if (sectionType == ProductSectionType.Upcoming) ComingSoon else
                     if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,

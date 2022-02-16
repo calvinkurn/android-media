@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -12,12 +11,6 @@ import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
@@ -1002,7 +995,7 @@ class PlayViewModel @AssistedInject constructor(
             _tagItems.value = tagItem
 
             sendProductTrackerToBro(
-                productList = tagItem.product.productList
+                productList = tagItem.product.productSectionList.flatMap { it.productList } // todo: retest
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
@@ -1464,11 +1457,16 @@ class PlayViewModel @AssistedInject constructor(
                     channelStateProcessor.setIsFreeze(result.isFreeze)
                 }
             }
-            is ProductSection ->{
+            is ProductSection -> {
                 val mappedData = playSocketToModelMapper.mapProductSection(result)
+
                 _tagItems.update {
                     it.copy(
-                        section = mappedData
+                        product = it.product.copy(
+                            productSectionList = mappedData.first
+                        ),
+                        maxFeatured = mappedData.second,
+                        bottomSheetTitle = mappedData.third
                     )
                 }
             }
