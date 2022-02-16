@@ -40,7 +40,6 @@ class ReviewViewHolder(
 
     override fun bind(element: ReviewDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
-        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         binding?.reviewCardBg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->
             if (suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
@@ -126,6 +125,5 @@ class ReviewViewHolder(
         }
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
-        Embrace.getInstance().endEvent(performanceTraceName)
     }
 }
