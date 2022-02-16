@@ -12,6 +12,6 @@ data class AddOnGiftingRequest (
         var itemId: String = "",
         @SerializedName("item_qty")
         var itemQty: Int = 0,
-        @SerializedName("item_metada")
+        @SerializedName("item_metadata")
         var itemMetadata: String = "",
 ) : Parcelable

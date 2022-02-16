@@ -4,9 +4,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnDataItem;
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnProductsItem;
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddOns;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -18,12 +15,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
-import com.tokopedia.logisticcart.shipping.model.AddOnBottomSheetModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnButtonModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnDataItemModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnProductItemModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnTickerModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
@@ -289,7 +280,7 @@ public class ShipmentDataConverter {
 
         shipmentCartItemModel.setHasSetDropOffLocation(hasTradeInDropOffAddress);
 
-        shipmentCartItemModel.setAddOnsOrderLevelModel(setAddOnsModel(groupShop.getAddOns()));
+        shipmentCartItemModel.setAddOnsOrderLevelModel(groupShop.getAddOns());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -302,49 +293,6 @@ public class ShipmentDataConverter {
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));
-    }
-
-    private AddOnsDataModel setAddOnsModel(AddOns addOns) {
-        AddOnsDataModel addOnsDataModel = new AddOnsDataModel();
-        addOnsDataModel.setStatus(addOns.getStatus());
-
-        List<AddOnDataItemModel> addOnDataItemModels = new ArrayList<>();
-        for (AddOnDataItem addOnDataItem : addOns.getAddOnData()) {
-            AddOnDataItemModel addOnDataItemModel = new AddOnDataItemModel();
-            addOnDataItemModel.setAddOnId(addOnDataItem.getAddOnId());
-            addOnDataItemModel.setAddOnQty(addOnDataItem.getAddOnQty());
-            addOnDataItemModel.setAddOnPrice(addOnDataItem.getAddOnPrice());
-            addOnDataItemModel.setAddOnMetadata(addOnDataItem.getAddOnMetadata());
-            addOnDataItemModels.add(addOnDataItemModel);
-        }
-        addOnsDataModel.setAddOnsDataItemModelList(addOnDataItemModels);
-
-        AddOnButtonModel addOnButtonModel = new AddOnButtonModel();
-        addOnButtonModel.setTitle(addOns.getAddOnButton().getTitle());
-        addOnButtonModel.setDescription(addOns.getAddOnButton().getDescription());
-        addOnButtonModel.setAction(addOns.getAddOnButton().getAction());
-        addOnButtonModel.setLeftIconUrl(addOns.getAddOnButton().getLeftIconUrl());
-        addOnButtonModel.setRightIconUrl(addOns.getAddOnButton().getRightIconUrl());
-        addOnsDataModel.setAddOnsButtonModel(addOnButtonModel);
-
-        AddOnBottomSheetModel addOnBottomSheetModel = new AddOnBottomSheetModel();
-        addOnBottomSheetModel.setHeaderTitle(addOns.getAddOnBottomsheet().getHeaderTitle());
-        addOnBottomSheetModel.setDescription(addOns.getAddOnBottomsheet().getDescription());
-
-        AddOnTickerModel addOnTickerModel = new AddOnTickerModel();
-        addOnTickerModel.setText(addOns.getAddOnBottomsheet().getTicker().getText());
-        addOnBottomSheetModel.setTicker(addOnTickerModel);
-
-        List<AddOnProductItemModel> addOnProductItemModels = new ArrayList<>();
-        for (AddOnProductsItem addOnProductsItem : addOns.getAddOnBottomsheet().getProducts()) {
-            AddOnProductItemModel addOnProductItemModel = new AddOnProductItemModel();
-            addOnProductItemModel.setProductName(addOnProductsItem.getProductName());
-            addOnProductItemModel.setProductImageUrl(addOnProductsItem.getProductImageUrl());
-            addOnProductItemModels.add(addOnProductItemModel);
-        }
-        addOnBottomSheetModel.setProducts(addOnProductItemModels);
-        addOnsDataModel.setAddOnsBottomSheetModel(addOnBottomSheetModel);
-        return addOnsDataModel;
     }
 
     private List<CartItemModel> convertFromProductList(List<Product> products) {
@@ -433,7 +381,7 @@ public class ShipmentDataConverter {
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
 
-        cartItemModel.setAddOnProductLevelModel(setAddOnsModel(product.getAddOnProduct()));
+        cartItemModel.setAddOnProductLevelModel(product.getAddOnProduct());
         return cartItemModel;
     }
 

@@ -37,8 +37,8 @@ import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHold
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnDataItemModel;
-import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;

@@ -109,6 +109,10 @@ fun getQueryCartRevampV3(): String {
                   message
                 }
                 available_group {
+                  add_on {
+                    ticker_text
+                    icon_url
+                  }
                   user_address_id
                   shipment_information {
                     shop_location
@@ -189,6 +193,10 @@ fun getQueryCartRevampV3(): String {
                       checkbox_state
                       cart_id
                       product_information
+                      product_information_with_icon {
+                        text
+                        icon_url
+                      }
                       product_tracker_data {
                         attribution
                         tracker_list_name

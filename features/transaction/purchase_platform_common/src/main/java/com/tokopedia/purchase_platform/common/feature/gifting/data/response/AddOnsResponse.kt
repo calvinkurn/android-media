@@ -76,13 +76,32 @@ data class AddOnsResponse(
 			@SerializedName("add_on_price")
 			val addOnPrice: Long = 0L,
 
-			@SuppressLint("Invalid Data Type") @SerializedName("add_on_id")
-			val addOnId: Long = 0L,
+			@SerializedName("add_on_id")
+			val addOnId: String = "",
 
 			@SerializedName("add_on_metadata")
-			val addOnMetadata: String = "",
+			val addOnMetadata: AddOnMetadata = AddOnMetadata(),
 
 			@SerializedName("add_on_qty")
 			val addOnQty: Long = 0L
-	)
+	) {
+		data class AddOnMetadata(
+				@SerializedName("add_on_note")
+				val addOnNote: AddOnNote = AddOnNote()
+		) {
+			data class AddOnNote(
+					@SerializedName("is_custom_note")
+					val isCustomNote: Boolean = false,
+
+					@SerializedName("to")
+					val to: String = "",
+
+					@SerializedName("from")
+					val from: String = "",
+
+					@SerializedName("notes")
+					val notes: String = ""
+			)
+		}
+	}
 }

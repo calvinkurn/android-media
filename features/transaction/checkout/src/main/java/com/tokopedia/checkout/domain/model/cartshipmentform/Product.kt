@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.parcelize.Parcelize
 
@@ -60,5 +61,5 @@ data class Product(
         var bundleOriginalPrice: Long = 0L,
         var bundleQuantity: Int = 0,
         var bundleIconUrl: String = "",
-        var addOnProduct: AddOns = AddOns()
+        var addOnProduct: AddOnsDataModel = AddOnsDataModel()
 ) : Parcelable
