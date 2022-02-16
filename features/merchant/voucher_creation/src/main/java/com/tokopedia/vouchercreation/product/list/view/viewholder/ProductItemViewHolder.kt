@@ -59,6 +59,7 @@ class ProductItemViewHolder(
         // product list item views
         binding.root.setTag(R.id.product, productUiModel)
         binding.cbuProductItem.isChecked = productUiModel.isSelected
+        binding.iuRemoveProduct.isVisible = productUiModel.isEditing
         binding.iuProductImage.loadImage(productUiModel.imageUrl)
         binding.tpgProductName.text = productUiModel.productName
         binding.tpgSku.text = productUiModel.sku
