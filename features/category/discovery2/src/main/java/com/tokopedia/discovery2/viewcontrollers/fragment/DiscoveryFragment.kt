@@ -31,7 +31,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
@@ -76,21 +75,21 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.IntentManger
 import com.tokopedia.mvcwidget.IntentManger.Keys.REGISTER_MEMBER_SUCCESS
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.widget.MiniCartWidget
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -110,6 +109,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import com.tokopedia.unifyprinciples.R as RUnify
 
 
 private const val LOGIN_REQUEST_CODE = 35769
@@ -425,10 +425,10 @@ class DiscoveryFragment :
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
+                            hideGlobalError()
                             scrollToPinnedComponent(listComponent)
                         }
                     }
-                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
@@ -869,7 +869,7 @@ class DiscoveryFragment :
                 globalError.setType(GlobalError.NO_CONNECTION)
             }
             is IllegalStateException -> {
-                globalError.setType(GlobalError.PAGE_FULL)
+                globalError.setType(GlobalError.PAGE_NOT_FOUND)
             }
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
@@ -1415,7 +1415,7 @@ class DiscoveryFragment :
             AtcVariantHelper.goToAtcVariant(
                 it,
                 productId,
-                AtcVariantHelper.DISCOVERY_PAGESOURCE,
+                VariantPageSource.DISCOVERY_PAGESOURCE,
                 true,
                 userAddressData?.shop_id?: "",
                 startActivitResult = { intent, reqCode ->

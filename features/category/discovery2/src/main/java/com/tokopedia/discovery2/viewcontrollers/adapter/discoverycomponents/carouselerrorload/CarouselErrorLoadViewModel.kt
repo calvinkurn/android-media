@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.car
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -24,7 +25,7 @@ class CarouselErrorLoadViewModel(val application: Application,
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getParentComponentPosition() = components.parentComponentPosition
+    fun getParentComponentPosition() = Utils.getParentPosition(components)
     fun getShowLoaderStatus(): LiveData<Boolean> = showLoader
 
     fun loadData() {

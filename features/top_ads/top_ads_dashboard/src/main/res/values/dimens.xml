@@ -11,4 +11,6 @@
     <dimen name="edit_icon_size">12dp</dimen>
     <dimen name="top_spacing">12dp</dimen>
     <dimen name="edit_icon_left_spacing">10dp</dimen>
+    <dimen name="topads_dashboard_empty_image_height">200dp</dimen>
+    <dimen name="topads_dashboard_empty_image_width">150dp</dimen>
 </resources>

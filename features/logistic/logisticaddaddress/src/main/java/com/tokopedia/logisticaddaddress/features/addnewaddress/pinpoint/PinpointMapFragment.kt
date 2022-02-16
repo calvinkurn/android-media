@@ -345,7 +345,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 .zoom(zoomLevel)
                 .build()
 
-        googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
     override fun onResume() {

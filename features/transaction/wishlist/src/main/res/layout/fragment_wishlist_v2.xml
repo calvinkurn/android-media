@@ -85,13 +85,38 @@
         app:layout_constraintBottom_toTopOf="@id/container_delete"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_wishlist"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:visibility="visible"/>
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/globalErrorWishlistV2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/Unify_Background"
+                android:gravity="center"
+                android:visibility="gone"/>
+
+            <com.tokopedia.empty_state.EmptyStateUnify
+                android:id="@+id/emptyStateGlobalWishlistV2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                android:background="@color/Unify_Background"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_wishlist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible"/>
+
+        </FrameLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

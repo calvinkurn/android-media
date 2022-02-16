@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.discoverymapper
 
+import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
@@ -26,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
+import kotlin.math.roundToInt
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -148,11 +150,18 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = "", parentComponentPosition: Int? = null): ArrayList<ComponentsItem> {
+    fun mapListToComponentList(
+        itemList: List<DataItem>?,
+        subComponentName: String = "",
+        properties: Properties?,
+        creativeName: String? = "",
+        parentComponentPosition: Int? = null,
+        parentListSize:Int = 0
+    ): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
-            componentsItem.position = index
+            componentsItem.position = index + parentListSize
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             componentsItem.creativeName = creativeName
@@ -212,7 +221,7 @@ class DiscoveryDataMapper {
             productName = dataItem.title ?: ""
             slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
             formattedPrice = setFormattedPrice(dataItem.discountedPrice, dataItem.price)
-            isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+            isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage?.roundToIntOrZero().toString(), SALE_PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
@@ -310,14 +319,14 @@ class DiscoveryDataMapper {
 
     private fun setStockProgress(dataItem: DataItem): Int {
         val stockSoldPercentage = dataItem.stockSoldPercentage
-        if (stockSoldPercentage?.toIntOrNull() == null || stockSoldPercentage.isEmpty()) {
+        if (stockSoldPercentage?.roundToInt() == null) {
             dataItem.stockWording?.title = ""
         } else {
-            if (stockSoldPercentage.toIntOrZero() !in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
+            if (stockSoldPercentage.roundToIntOrZero() !in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
                 dataItem.stockWording?.title = ""
             }
         }
-        return stockSoldPercentage.toIntOrZero()
+        return stockSoldPercentage?.roundToIntOrZero() ?: 0
     }
 
     private fun outOfStockLabelStatus(productStock: String?, saleStockValidation: Int = 0): Boolean {

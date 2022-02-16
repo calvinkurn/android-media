@@ -20,6 +20,9 @@ object ApplinkConstInternalSellerapp {
     //SellerHomeActivity
     const val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
+    //InitialSearchActivity
+    const val SELLER_SEARCH = "$INTERNAL_SELLERAPP/seller-search"
+
     const val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
 
     const val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
@@ -67,9 +70,6 @@ object ApplinkConstInternalSellerapp {
 
     //SellerMenuActivity
     const val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
-
-    // SellerActionActivity
-    const val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
 
     // SellerSettingsActivity
     const val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"
