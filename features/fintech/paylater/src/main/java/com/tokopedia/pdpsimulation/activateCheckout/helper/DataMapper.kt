@@ -11,7 +11,7 @@ object DataMapper {
     fun mapToInstallationDetail(tenureDetail: TenureDetail): TenureSelectedModel {
 
         val priceText = tenureDetail.monthly_installment
-        val tenure = "X${tenureDetail.tenure}"
+        val tenure = tenureDetail.tenure.toString()
         val contentList: MutableList<Content> = ArrayList()
         for (i in 0 until tenureDetail.installment_details.detailContent.size) {
             val content = Content(

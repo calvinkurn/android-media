@@ -70,6 +70,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private var productId: String = ""
     private var shopId: String = ""
+    private var tenureSelected:String = ""
 
     private val gatewayCode: String by lazy {
         arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
@@ -77,9 +78,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private var gateWayId = ""
 
-    private val tenureSelected: String by lazy {
-        arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
-    }
 
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
     private lateinit var installmentModel: InstallmentDetails
@@ -114,6 +112,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         super.onViewCreated(view, savedInstanceState)
         productId = arguments?.getString(PARAM_PRODUCT_ID, "").toString()
         gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
+        tenureSelected =  arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
         observerProductData()
         observerOtherDetail()
         observeCartDetail()
@@ -366,7 +365,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun removeBottomDetailForError() {
         proceedToCheckout.isEnabled = false
-        amountToPay.text = "Rp"
+        amountToPay.text = "Rp-"
         paymentDuration.visibility = View.GONE
         priceBreakdown.isEnabled = false
     }
@@ -459,7 +458,22 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     it.subtitle2
             else
                 gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
-            gatewayDetailLayout.additionalDetail.text = data.footer
+
+            if(it.tenureDetail.isNotEmpty())
+            {
+                gatewayDetailLayout.additionalDetail.text = data.footer
+            }
+            else
+            {
+                gatewayDetailLayout.additionalDetail.text = ""
+                removeBottomDetailForError()
+            }
+
+
+            if(isDisabled)
+                removeBottomDetailForError()
+
+
             setTenureDetail(it.tenureDetail)
         }
 
@@ -744,11 +758,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             amountToPay.text = it
         }
         tenureSelectedModel.tenure?.let {
-            paymentDuration.text = it
+            paymentDuration.text = "X$it"
         }
         listOfTenureDetail[selectedTenurePosition].isSelectedTenure = false
         listOfTenureDetail[newPositionToSelect].isSelectedTenure = true
         selectedTenurePosition = newPositionToSelect
+        tenureSelected = tenureSelectedModel.tenure.toString()
         activationTenureAdapter.updateList(listOfTenureDetail)
 
     }
