@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -76,7 +77,6 @@ class ShipmentViewHolder(
             else -> {
                 loading(false)
                 loadShipmentState(element, rates)
-                listener.onImpressComponent(getComponentTrackData(element))
             }
         }
     }
@@ -113,6 +113,11 @@ class ShipmentViewHolder(
         renderBo(element, rates)
         renderShipment(element, rates)
         renderCourier(element, rates)
+
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.showCoachmark(pdpShipmentTitle, element.isBoeType())
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun renderBo(
