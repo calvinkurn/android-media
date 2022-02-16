@@ -232,13 +232,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             setListener(
                 inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.operatorData.attributes.prefix.isEmpty().let {
-                            if (it) {
-                                //getOperatorSelectGroup()
-                            } else {
-                                renderProduct()
-                            }
-                        }
+                        renderProduct()
                     }
 
                     override fun onClearInput() {
