@@ -31,6 +31,7 @@ class CouponDetailViewModel @Inject constructor(
     val couponImageWithShop: LiveData<Result<CouponImageWithShop>> = _couponImageWithShop
 
     private var coupon: CouponUiModel? = null
+    private var maxProductLimit: Int = 0
 
     fun getCouponDetail(couponId : Long) {
         launchCatchError(
@@ -70,5 +71,13 @@ class CouponDetailViewModel @Inject constructor(
 
     fun getCoupon(): CouponUiModel? {
         return coupon
+    }
+
+    fun setMaxProductLimit(maxProductLimit: Int) {
+        this.maxProductLimit = maxProductLimit
+    }
+
+    fun getMaxProductLimit(): Int {
+        return maxProductLimit
     }
 }

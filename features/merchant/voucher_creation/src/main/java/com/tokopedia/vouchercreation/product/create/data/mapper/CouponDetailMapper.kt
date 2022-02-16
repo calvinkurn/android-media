@@ -39,7 +39,8 @@ class CouponDetailMapper @Inject constructor() {
             updatedTime = voucher.updateTime,
             isPublic = voucher.isPublic == 1,
             tnc = voucher.tnc,
-            productIds = products
+            productIds = products,
+            products = voucher.productIds
         )
 
     }

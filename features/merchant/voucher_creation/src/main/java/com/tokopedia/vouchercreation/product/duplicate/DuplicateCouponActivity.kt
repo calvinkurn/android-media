@@ -17,7 +17,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
-import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
+import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import javax.inject.Inject
 
 class DuplicateCouponActivity : AppCompatActivity() {
@@ -95,7 +95,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
     }
 
     private fun navigateToProductListPage(coupon: Coupon) {
-        startActivity(Intent(this, ProductListActivity::class.java))
+        startActivity(Intent(this, AddProductActivity::class.java))
     }
 
     private fun onDuplicateCouponSuccess() {
