@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -43,6 +44,8 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
+import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -51,6 +54,7 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -75,7 +79,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var shareButton: ImageButton
     private lateinit var seeShopButton: Typography
     private lateinit var progressBar: ProgressBar
-    private lateinit var recyclerviewScrollListener: RecyclerView.OnScrollListener
+    private lateinit var recyclerviewScrollListener: EndlessScrollRecycleListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: DetailFeedAdapter
     private lateinit var pagingHandler: PagingHandler
@@ -85,7 +89,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var shopName: String = ""
     private var postType: String = ""
     private var isFollowed: Boolean = false
-    private var productList = emptyList<FeedXProduct>()
+    private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
     private lateinit var shareData: LinkerData
     private var lastScrollPosition: Int = -1
@@ -216,13 +220,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 isFollowed = it
             }
         }
-        if (productList.isEmpty()) {
-            arguments?.run {
-                getParcelableArrayList<FeedXProduct>(FeedPlusDetailActivity.PARAM_PRODUCT_LIST)?.let {
-                    productList = it
-                }
-            }
-        }
+
         layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false){
             override fun onLayoutCompleted(state: RecyclerView.State?) {
                 super.onLayoutCompleted(state)
@@ -239,16 +237,29 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
 
-    private fun onRecyclerViewListener(): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
-           override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-               if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                   var index = layoutManager.findLastVisibleItemPosition()
-                   if (index > lastScrollPosition)
-                       lastScrollPosition = index
-               }
-           }
-       }
+    private fun onRecyclerViewListener() : EndlessScrollRecycleListener {
+        return object : EndlessScrollRecycleListener() {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    if (!adapter.isLoading && presenter.cursor.isNotEmpty()) {
+                        pagingHandler.nextPage()
+                        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+                    }
+            }
+
+            override fun onScroll(lastVisiblePosition: Int) {
+            }
+
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    var index = layoutManager.findLastVisibleItemPosition()
+                    if (index > lastScrollPosition)
+                        lastScrollPosition = index
+                }
+            }
+        }
+
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -285,11 +296,73 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val ret = mapPostTag(productList)
-        adapter.addList(ret)
-        adapter.notifyDataSetChanged()
+
+        setUpObservers()
+        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+
         setUpShopDataHeader()
     }
+    private fun setUpObservers() {
+        presenter.run {
+            getFeedDetailLiveData().observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is FeedDetailViewState.LoadingState -> {
+                        if (it.loadingMore) {
+                            if (it.isLoading) {
+                                showLoadingMore()
+                            } else {
+                                dismissLoadingMore()
+                            }
+                        } else {
+                            if (it.isLoading) {
+                                showLoading()
+                            } else {
+                                dismissLoading()
+                            }
+                        }
+                    }
+
+                    is FeedDetailViewState.SuccessWithNoData -> {
+                        onEmptyFeedDetail()
+                    }
+
+                    is FeedDetailViewState.Success -> {
+                        onSuccessGetFeedDetail(it.feedDetailList, it.cursor)
+                    }
+
+                    is FeedDetailViewState.Error -> {
+                        onErrorGetFeedDetail(it.error)
+                    }
+                }
+            })
+
+            getPagingLiveData().observe(viewLifecycleOwner, Observer {
+                setHasNextPage(it)
+            })
+        }
+    }
+    private fun onSuccessGetFeedDetail(
+            products: List<FeedXProduct>,
+            cursor: String) {
+        setUpShopDataHeader()
+        productList.addAll(products)
+        val ret = mapPostTag(products)
+        adapter.addList(ret)
+      pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
+        adapter.notifyDataSetChanged()
+    }
+    private fun onErrorGetFeedDetail(error: Throwable) {
+        dismissLoading()
+        NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(context, error)) {
+            presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+        }
+    }
+
+    private fun onEmptyFeedDetail() {
+        adapter.showEmpty()
+    }
+
+
 
 
     override fun onStart() {
@@ -632,7 +705,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun trackImpression(postTagItemList: List<FeedXProduct>) {
         if (impressionProductList == null) {
             impressionProductList = ArrayList()
-            impressionProductList?.addAll(postTagItemList.slice(0..lastScrollPosition))
+            if (lastScrollPosition < postTagItemList.size && lastScrollPosition >= 0 ) {
+                impressionProductList?.addAll(postTagItemList.slice(0..lastScrollPosition))
+            }
         } else {
             impressionProductList = ArrayList()
         }
@@ -651,6 +726,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun onPause() {
         super.onPause()
+        if (productList.isNotEmpty())
         trackImpression(productList)
     }
 

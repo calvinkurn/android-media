@@ -39,7 +39,6 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     text = productFeedDetailViewModelNew.originalPriceFmt
                 }
-                productFeedDetailViewModelNew.text = productFeedDetailViewModelNew.discountFmt
                 productPrice.text = productFeedDetailViewModelNew.priceDiscountFmt
 
             }
