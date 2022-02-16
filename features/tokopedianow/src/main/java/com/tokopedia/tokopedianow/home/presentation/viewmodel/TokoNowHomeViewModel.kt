@@ -149,6 +149,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var channelToken = ""
 
     private var getHomeLayoutJob: Job? = null
+    private var getMiniCartJob: Job? = null
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -285,6 +286,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            getMiniCartJob?.cancel()
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
@@ -295,6 +297,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 })
             }) {
                 _miniCart.postValue(Fail(it))
+            }.let {
+                getMiniCartJob = it
             }
         }
     }

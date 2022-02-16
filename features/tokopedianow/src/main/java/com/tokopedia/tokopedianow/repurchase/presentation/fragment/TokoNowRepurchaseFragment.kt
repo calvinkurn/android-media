@@ -205,8 +205,11 @@ class TokoNowRepurchaseFragment:
 
     override fun onResume() {
         super.onResume()
-        checkIfChooseAddressWidgetDataUpdated()
-        getMiniCart()
+        if (isChooseAddressDataUpdated()) {
+            refreshLayout()
+        } else {
+            getMiniCart()
+        }
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -660,7 +663,7 @@ class TokoNowRepurchaseFragment:
             data.serviceType
         )
 
-        refreshLayoutPage()
+        refreshLayout()
     }
 
     private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
@@ -798,11 +801,18 @@ class TokoNowRepurchaseFragment:
     private fun checkIfChooseAddressWidgetDataUpdated() {
         localCacheModel?.let {
             context?.apply {
-                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(this, it)) {
+                if (isChooseAddressDataUpdated()) {
                     updateCurrentPageLocalCacheModelData()
                 }
             }
         }
+    }
+
+    private fun isChooseAddressDataUpdated(): Boolean {
+        localCacheModel?.let {
+           return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+        return false
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -901,6 +911,12 @@ class TokoNowRepurchaseFragment:
         carouselScrollPosition.clear()
         viewModel.clearSelectedFilters()
         viewModel.showLoading()
+        refreshMiniCart()
+    }
+
+    private fun refreshMiniCart() {
+        checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
     }
 
     private fun resetSwipeLayout() {

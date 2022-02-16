@@ -263,6 +263,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when getMiniCart twice should run and give success result`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+        onGetMiniCart_thenReturn(createMiniCartSimplifier())
+
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
+
+        verifyMiniCartResponseSuccess(createMiniCartSimplifier())
+    }
+
+    @Test
     fun `when shopId is empty should get null for category livedata`(){
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
