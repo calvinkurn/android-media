@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -73,6 +74,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         val view = inflater.inflate(R.layout.fragment_play_broadcast_summary, container, false)
 
         observeChannelInfo()
+        observeCover()
         observeLiveDuration()
         observeLiveTrafficMetrics()
         observeSaveVideo()
@@ -137,7 +139,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
         summaryInfoView.setChannelTitle(channelInfo.title)
-        summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
 
     private fun setLiveDuration(model: LiveDurationUiModel) {
@@ -175,6 +176,20 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Success -> setChannelInfo(it.data)
                 else -> {}
+            }
+        }
+    }
+
+    private fun observeCover() {
+        parentViewModel.observableCover.observe(viewLifecycleOwner) {
+            when (val croppedCover = it.croppedCover) {
+                is CoverSetupState.Cropped.Uploaded -> {
+                    if(croppedCover.coverImage.toString().isNotEmpty() && croppedCover.coverImage.toString().contains("http")) {
+                        summaryInfoView.setChannelCover(croppedCover.coverImage.toString())
+                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()){
+                        summaryInfoView.setChannelCover(croppedCover.localImage.toString())
+                    }
+                }
             }
         }
     }
