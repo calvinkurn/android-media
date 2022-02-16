@@ -442,6 +442,7 @@
     <string name="coupon_quota">Kuota Kupon</string>
     <string name="update_quota_rule">Kamu hanya dapat <b>menambah kuota kupon</b> selama masa kupon berlangsung.</string>
     <string name="update_quota_success">Kuota kupon berhasil ditambahkan</string>
+    <string name="mvc_quota_updated">Kuota kupon berhasil diperbaharui</string>
     <string name="update_active_coupon_period">Ubah periode kupon aktif</string>
     <string name="start">Mulai</string>
     <string name="end">Selesai</string>

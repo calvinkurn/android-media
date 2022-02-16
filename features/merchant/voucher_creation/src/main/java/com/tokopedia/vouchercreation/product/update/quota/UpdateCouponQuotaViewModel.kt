@@ -88,4 +88,8 @@ class UpdateCouponQuotaViewModel @Inject constructor(
         return couponStatus == VoucherStatusConst.ONGOING
     }
 
+    fun isQuotaDecreased(quota : Int, newQuota: Int): Boolean {
+        return newQuota < quota
+    }
+
 }

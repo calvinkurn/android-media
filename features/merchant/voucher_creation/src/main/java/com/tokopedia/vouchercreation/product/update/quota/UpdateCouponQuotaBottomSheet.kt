@@ -60,7 +60,7 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
     private val viewModel by lazy { viewModelProvider.get(UpdateCouponQuotaViewModel::class.java) }
 
 
-    private var onUpdateQuotaSuccess: () -> Unit = {}
+    private var onUpdateQuotaSuccess: (Boolean) -> Unit = {}
     private var onUpdateQuotaError: (String) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,7 +109,8 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
 
             when (result) {
                 is Success -> {
-                    onUpdateQuotaSuccess()
+                    handleUpdateQuotaSuccess()
+
                 }
                 is Fail -> {
                     onUpdateQuotaError(result.throwable.message.toBlankOrString())
@@ -119,6 +120,7 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
             dismiss()
         }
     }
+
 
     private fun observeValidationResult() {
         viewModel.validInput.observe(viewLifecycleOwner) { result ->
@@ -235,7 +237,14 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
         binding.imgCoupon.loadImageDrawable(drawableRes)
     }
 
-    fun setOnUpdateQuotaSuccess(action: () -> Unit) {
+    private fun handleUpdateQuotaSuccess() {
+        val newQuota = binding.textFieldQuota.textFieldInput.text.toString().digitsOnlyInt()
+        val isQuotaDecreased = viewModel.isQuotaDecreased(voucher?.quota ?: return, newQuota)
+        onUpdateQuotaSuccess(isQuotaDecreased)
+    }
+
+
+    fun setOnUpdateQuotaSuccess(action: (Boolean) -> Unit) {
         onUpdateQuotaSuccess = action
     }
 

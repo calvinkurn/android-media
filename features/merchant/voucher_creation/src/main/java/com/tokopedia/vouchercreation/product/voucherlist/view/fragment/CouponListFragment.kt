@@ -630,16 +630,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         if (!isAdded) return
 
         val bottomSheet = UpdateCouponQuotaBottomSheet.newInstance(voucher)
-        bottomSheet.setOnUpdateQuotaSuccess {
+        bottomSheet.setOnUpdateQuotaSuccess { isQuotaDecreased ->
             loadInitialData()
-            view?.run {
-                Toaster.build(
-                    this,
-                    getString(R.string.update_quota_success).toBlankOrString(),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context?.getString(R.string.mvc_oke).toBlankOrString()
-                ).show()
+            if (isQuotaDecreased) {
+                toaster(getString(R.string.mvc_quota_updated))
+            } else {
+                toaster( getString(R.string.update_quota_success))
             }
         }
         bottomSheet.setOnUpdateQuotaError { message ->
@@ -780,6 +776,15 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         longToaster(toasterMessage, toasterType)
     }
 
+    private fun toaster(text: String) {
+        Toaster.build(
+            view ?: return,
+            text,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            context?.getString(R.string.mvc_oke).toBlankOrString()
+        ).show()
+    }
 
     private fun longToaster(text: String, toasterType: Int) {
         if (text.isEmpty()) return
