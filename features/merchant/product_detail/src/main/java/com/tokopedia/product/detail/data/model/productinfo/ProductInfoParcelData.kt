@@ -16,5 +16,6 @@ data class ProductInfoParcelData(
         val listOfYoutubeVideo: List<YoutubeVideo> = listOf(),
         val data: List<ProductDetailInfoContent> = listOf(),
         val forceRefresh: Boolean = false,
-        val isTokoNow: Boolean = false
+        val isTokoNow: Boolean = false,
+        val isGiftable: Boolean = false
 )

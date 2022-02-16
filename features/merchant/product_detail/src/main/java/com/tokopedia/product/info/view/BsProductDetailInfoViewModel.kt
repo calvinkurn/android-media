@@ -24,8 +24,7 @@ import javax.inject.Inject
 class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                        private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
                                                        val userSession: UserSessionInterface
-)
-    : BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.io) {
 
     companion object {
         private const val ERROR_TYPE_DESCRIPTION_INFO = "error_description_info"
@@ -36,7 +35,7 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
     val bottomSheetDetailData: LiveData<Result<List<ProductDetailInfoVisitable>>> = Transformations.switchMap(parcelData) {
         val bottomSheetData = MutableLiveData<Result<List<ProductDetailInfoVisitable>>>()
         launchCatchError(block = {
-            val requestParams = GetProductDetailBottomSheetUseCase.createParams(it.productId, it.shopId)
+            val requestParams = GetProductDetailBottomSheetUseCase.createParams(it.productId, it.shopId, it.isGiftable)
             val responseData = getProductDetailBottomSheetUseCase.executeOnBackground(requestParams, it.forceRefresh)
             val visitableData = ProductDetailInfoMapper.generateVisitable(responseData, it)
 
@@ -53,6 +52,7 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
     }
 
     private fun logProductDetailBottomSheet(throwable: Throwable) {
-        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_DESCRIPTION_INFO,  parcelData.value?.productId ?: "", userSession.deviceId)
+        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_DESCRIPTION_INFO, parcelData.value?.productId
+                ?: "", userSession.deviceId)
     }
 }
