@@ -36,7 +36,6 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
-import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
@@ -63,6 +62,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
         const val COUPON_ID_NOT_YET_CREATED : Long = -1
         const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
+        private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
+        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -204,18 +205,21 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             hideLoading()
             when(result) {
                 is Success -> {
-                    showContent()
                     this.couponInformation = result.data.information
                     this.couponProducts = result.data.products.toMutableList()
                     this.couponSettings = result.data.settings
+                    adjustCouponDefaultCouponStartEndDate(
+                        pageMode,
+                        couponInformation ?: return@observe
+                    )
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
                     val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.products)
                     this.selectedProducts.addAll(selectedProducts)
                     refreshProductsSection(selectedProducts)
+                    showContent()
                 }
                 is Fail -> {
-                    hideLoading()
                     hideContent()
                     showError(result.throwable)
                 }
@@ -741,14 +745,46 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun updateButtonConstraint() {
         val set = ConstraintSet()
+        val margin = 24
         set.clone(binding.layout)
         set.connect(
             binding.btnPreviewCouponImage.id,
             ConstraintSet.BOTTOM,
             ConstraintSet.PARENT_ID,
             ConstraintSet.BOTTOM,
-            resources.getDimension(R.dimen.unify_space_24).toIntSafely()
+            margin
         )
         set.applyTo(binding.layout)
     }
+
+    private fun adjustCouponDefaultCouponStartEndDate(
+        mode: Mode,
+        couponInformation: CouponInformation
+    ) {
+        //Modify duplicated coupon with current time + 3 hours
+        if (mode == Mode.DUPLICATE) {
+            val startDate = getCouponDefaultStartDate()
+            val endDate = getCouponDefaultEndDate()
+            val now = CouponInformation.Period(startDate, endDate)
+            this.couponInformation = couponInformation.copy(
+                target = couponInformation.target,
+                name = couponInformation.name,
+                code = couponInformation.code,
+                period = now
+            )
+        }
+    }
+
+    private fun getCouponDefaultStartDate() : Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
+        return calendar.time
+    }
+
+    private fun getCouponDefaultEndDate(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        return calendar.time
+    }
+
 }
