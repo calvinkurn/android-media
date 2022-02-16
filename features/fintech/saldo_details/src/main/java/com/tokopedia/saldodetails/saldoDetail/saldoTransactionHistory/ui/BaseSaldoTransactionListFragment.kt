@@ -102,7 +102,7 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         }
     }
 
-    protected fun initObservers() {
+    private fun initObservers() {
         transactionHistoryViewModel?.getLiveDataByTransactionType(transactionType)?.observe(
             viewLifecycleOwner
         ) {
