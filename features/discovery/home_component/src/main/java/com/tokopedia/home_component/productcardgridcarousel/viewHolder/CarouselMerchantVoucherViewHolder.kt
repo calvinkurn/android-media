@@ -9,10 +9,12 @@ import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBin
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -98,6 +100,22 @@ class CarouselMerchantVoucherViewHolder (
                     catNameLevel1 = element.catNameLevel1,
                     catNameLevel2 = element.catNameLevel2,
                     catNameLevel3 = element.catNameLevel3
+                )
+            )
+        }
+        itemView.addOnImpressionListener(element.impressHolder) {
+            val horizontalPosition = "${adapterPosition + 1}"
+            element.merchantVoucherComponentListener.onMerchantImpressed(
+                MerchantVoucherImpressed(
+                    couponCode = element.couponCode,
+                    couponType = element.couponType,
+                    creativeName = element.creativeName,
+                    cardPositionHorizontal = horizontalPosition,
+                    bannerId = element.bannerId,
+                    shopId = element.shopId,
+                    positionWidget = element.positionWidget,
+                    headerName = element.headerName,
+                    userId = element.userId
                 )
             )
         }

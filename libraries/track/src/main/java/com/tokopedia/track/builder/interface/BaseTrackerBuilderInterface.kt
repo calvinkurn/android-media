@@ -63,6 +63,14 @@ interface BaseTrackerBuilderInterface {
                                    eventLabel: String
     ): BaseTrackerBuilderInterface
 
+    fun constructBasicPromotionV5View(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        promotions: ArrayList<BaseTrackerConst.PromotionV5>
+    ): BaseTrackerBuilderInterface
+
     fun appendEvent(value: String): BaseTrackerBuilderInterface
     fun appendEventCategory(value: String): BaseTrackerBuilderInterface
     fun appendEventAction(value: String): BaseTrackerBuilderInterface

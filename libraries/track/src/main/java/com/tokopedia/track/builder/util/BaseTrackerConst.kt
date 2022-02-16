@@ -2,6 +2,7 @@ package com.tokopedia.track.builder.util
 
 import android.os.Bundle
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.util.BaseTrackerConst.Value.FORMAT_2_ITEMS_UNDERSCORE
@@ -26,6 +27,7 @@ abstract class BaseTrackerConst {
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val PRODUCT_ADD_TO_CART = "addToCart"
         const val SELECT_CONTENT = "select_content"
+        const val VIEW_ITEM = "view_item"
     }
 
     protected object Category{
@@ -126,6 +128,13 @@ abstract class BaseTrackerConst {
         }
     }
 
+    data class PromotionV5(
+        val creativeName: String = "",
+        val creativeSlot: String = "",
+        val itemId: String = "",
+        val itemName: String = "",
+    )
+
     open class  Product(
             val name: String,
             val id: String,
@@ -201,10 +210,19 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
+        private const val KEY_CREATIVE_NAME = "creative_name"
+        private const val KEY_CREATIVE_SLOT = "creative_slot"
+        private const val KEY_ITEM_ID = "item_id"
+        private const val KEY_ITEM_NAME = "item_name"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
                     PROMO_VIEW, getPromotionsMap(promotions))
+        }
+
+        fun getEcommercePromoV5View(promotions: List<PromotionV5>): Map<String, Any> {
+            return DataLayer.mapOf(
+                    PROMO_VIEW, getPromotionsV5Map(promotions))
         }
 
         fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any> {
@@ -223,6 +241,10 @@ abstract class BaseTrackerConst {
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
+        }
+
+        fun getPromotionsV5Map(promotions: List<PromotionV5>): Map<String, Any> {
+            return DataLayer.mapOf(PROMOTIONS, promotions)
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
@@ -275,6 +297,12 @@ abstract class BaseTrackerConst {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
+        private fun getPromotionsV5(promotions: List<PromotionV5>): List<Any>{
+            val list = ArrayList<Map<String,Any>>()
+            promotions.forEach { list.add(createPromotionV5Map(it)) }
+            return DataLayer.listOf(*list.toTypedArray<Any>())
+        }
+
         private fun getProducts(products: List<Product>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it)) }
@@ -308,6 +336,15 @@ abstract class BaseTrackerConst {
             map[KEY_POSITION] = promotion.position
             if(promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
             if(promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
+            return map
+        }
+
+        private fun createPromotionV5Map(promotion: PromotionV5) : Map<String, String>{
+            val map = HashMap<String, String>()
+            map[KEY_CREATIVE_NAME] = promotion.creativeName
+            map[KEY_CREATIVE_SLOT] = promotion.creativeSlot
+            map[KEY_ITEM_ID] = promotion.itemId
+            map[KEY_ITEM_NAME] = promotion.itemName
             return map
         }
 

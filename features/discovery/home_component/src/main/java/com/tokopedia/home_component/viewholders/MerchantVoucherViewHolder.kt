@@ -23,6 +23,7 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -119,9 +120,9 @@ class MerchantVoucherViewHolder(
                     productPrice = element.price,
                     productBrand = "",
                     buType = channel.trackingAttributionModel.galaxyAttribution,
-                    topAds = "",
+                    topAds = element.getTopadsString(),
                     carousel = "",
-                    recommendationType = "",
+                    recommendationType = element.recommendationType,
                     recomPageName = "",
                     catNameLevel1 = "",
                     catNameLevel2 = "",

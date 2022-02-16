@@ -1,10 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
 import com.tokopedia.home.analytics.v2.MerchantVoucherTracking
+import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 
@@ -14,8 +16,9 @@ import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopCli
 class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryListener) :
     MerchantVoucherComponentListener {
 
-    override fun onMerchantImpressed(channel: ChannelModel, parentPos: Int) {
-        TODO("Not yet implemented")
+    override fun onMerchantImpressed(merchantVoucherImpressed: MerchantVoucherImpressed) {
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                MerchantVoucherTracking.getMerchantVoucherView(merchantVoucherImpressed) as HashMap<String, Any>)
     }
 
     override fun onProductClicked(merchantVoucherProductClicked: MerchantVoucherProductClicked) {

@@ -3,6 +3,7 @@ package com.tokopedia.home_component.productcardgridcarousel.dataModel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by dhaba
@@ -37,6 +38,7 @@ data class CarouselMerchantVoucherDataModel(
     val catNameLevel1: String,
     val catNameLevel2: String,
     val catNameLevel3: String,
+    val impressHolder: ImpressHolder = ImpressHolder(),
     val merchantVoucherComponentListener: MerchantVoucherComponentListener
 ) : Visitable<CommonCarouselProductCardTypeFactory> {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {

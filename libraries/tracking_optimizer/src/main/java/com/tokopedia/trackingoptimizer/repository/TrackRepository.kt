@@ -6,6 +6,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.PROMOTIONS
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.impressionEventList
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEDataSource
@@ -51,20 +52,35 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
         map.remove(Constant.EVENT_ACTION)
         map.remove(Constant.EVENT_CATEGORY)
         map.remove(Constant.EVENT_LABEL)
+        val promotionsMap = HashMap<String, Any>()
         val ecommerceMap = HashMap<String, Any>()
-        if (map.containsKey(Constant.ECOMMERCE)) {
+        if (map.containsKey(PROMOTIONS)) {
+            val value = map.remove(PROMOTIONS)
+            value?.run {
+                promotionsMap.put(PROMOTIONS, value)
+            }
+        }
+        else if (map.containsKey(Constant.ECOMMERCE)) {
             val value = map.remove(Constant.ECOMMERCE)
             value?.run {
                 ecommerceMap.put(ECOMMERCE, value)
             }
         }
-        if (ecommerceMap.isEmpty()) {
+        if (ecommerceMap.isEmpty() && promotionsMap.isEmpty()) {
             putRegular(EventModel(event.toString(), category.toString(), action.toString(), label.toString()), map)
         } else {
-            putEE(EventModel(event.toString(), category.toString(), action.toString(), label.toString()),
+            if(ecommerceMap.isNotEmpty()) {
+                putEE(EventModel(event.toString(), category.toString(), action.toString(), label.toString()),
                     map,
                     ecommerceMap)
+            }
+            else if(promotionsMap.isNotEmpty()) {
+                putEE(EventModel(event.toString(), category.toString(), action.toString(), label.toString()),
+                    map,
+                    promotionsMap)
+            }
         }
+
     }
 
     override fun putEE(map: HashMap<String, Any>?, inputEnhanceECommerceMap: HashMap<String, Any>?) {

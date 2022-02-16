@@ -2,8 +2,11 @@ package com.tokopedia.home.analytics.v2
 
 import android.os.Bundle
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
+import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
+import com.tokopedia.home_component.util.getTopadsString
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 /**
@@ -15,7 +18,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val MERCHANT_VOUCHER_MULTIPLE_FORMAT = "merchant voucher multiple - %s"
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
-            const val EVENT_ACTION_CLICK_VIEW_ALL = "merchant voucher multiple - click view all"
+            const val CLICK_VIEW_ALL = "click view all"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
@@ -24,6 +27,8 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val ITEM_NAME_VOUCHER_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
             const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/ - p%s - product - %s - %s - %s - %s - %s - %s"
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
+            const val VIEW_COUPON = "view coupon"
+            const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
         }
     }
 
@@ -137,12 +142,48 @@ object MerchantVoucherTracking : BaseTrackerConst() {
     fun getClickViewAll(headerName: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK_VIEW_ALL)
+        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL) )
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, headerName)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
 
         return Pair(Event.CLICK_HOMEPAGE, bundle)
+    }
+
+    fun getMerchantVoucherView(merchantVoucherImpressed: MerchantVoucherImpressed) : Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
+            merchantVoucherImpressed.couponCode,
+            merchantVoucherImpressed.couponType,
+            merchantVoucherImpressed.creativeName
+        )
+        val creativeSlot = merchantVoucherImpressed.cardPositionHorizontal
+        val itemId = CustomAction.ITEM_ID_FORMAT.format(
+            merchantVoucherImpressed.bannerId,
+            merchantVoucherImpressed.shopId
+        )
+        val itemName = CustomAction.ITEM_NAME_VOUCHER_DETAIL_FORMAT.format(
+            merchantVoucherImpressed.positionWidget,
+            merchantVoucherImpressed.headerName
+        )
+        val listPromotions = arrayListOf(
+            PromotionV5(
+                creativeName = creativeName,
+                creativeSlot = creativeSlot,
+                itemId = itemId,
+                itemName = itemName
+            )
+        )
+        return trackingBuilder.constructBasicPromotionV5View(
+                event = Event.VIEW_ITEM,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
+                eventLabel = Label.NONE,
+                promotions = listPromotions)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(merchantVoucherImpressed.userId)
+                .build()
     }
 }
