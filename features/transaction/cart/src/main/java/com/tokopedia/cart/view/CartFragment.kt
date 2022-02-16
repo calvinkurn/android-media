@@ -43,6 +43,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
@@ -121,6 +122,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.coroutines.*
 import rx.Emitter
 import rx.Observable
@@ -216,6 +218,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NO_ELEVATION = 0
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
+        const val KEY_EMBRACE_MOMENT_LOAD_CART = "mp_cart"
         const val CART_PAGE = "cart"
         const val NAVIGATION_PDP = 123
         const val NAVIGATION_SHOP_PAGE = 234
@@ -270,6 +273,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
+                Embrace.getInstance().startEvent(KEY_EMBRACE_MOMENT_LOAD_CART, null, false)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -1654,7 +1658,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isAdded) {
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
-            binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
+            binding?.goToCourierPageButton?.setOnClickListener {
+                Embrace.getInstance().startEvent(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY, null, false)
+                checkGoToShipment("")
+            }
         }
     }
 
@@ -2323,6 +2330,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun stopCartPerformanceTrace() {
         if (!isTraceCartStopped) {
+            Embrace.getInstance().startEvent(KEY_EMBRACE_MOMENT_LOAD_CART, null, false)
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }

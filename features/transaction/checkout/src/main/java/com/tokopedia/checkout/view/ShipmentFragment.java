@@ -100,6 +100,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
@@ -140,6 +141,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.embrace.android.embracesdk.Embrace;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import rx.Observable;
@@ -306,6 +308,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentPresenter.attachView(this);
+        Embrace.getInstance().endEvent(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY);
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
 

@@ -15,6 +15,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
+import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
 
 open class AddToCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
@@ -47,6 +48,7 @@ open class AddToCartUseCase @Inject constructor(@ApplicationContext private val 
     }
 
     override suspend fun executeOnBackground(): AddToCartDataModel {
+        Embrace.getInstance().startEvent(KEY_EMBRACE_MOMENT_ADD_TO_CART, null, false)
         if (addToCartRequestParams == null) {
             throw RuntimeException("Parameters has not been initialized!")
         }
@@ -56,6 +58,7 @@ open class AddToCartUseCase @Inject constructor(@ApplicationContext private val 
 
         val result = addToCartDataMapper.mapAddToCartResponse(response)
         if (!result.isStatusError()) {
+            Embrace.getInstance().endEvent(KEY_EMBRACE_MOMENT_ADD_TO_CART)
             addToCartRequestParams?.let {
                 AddToCartBaseAnalytics.sendAppsFlyerTracking(
                         it.productId.toString(), it.productName, it.price,
@@ -87,6 +90,8 @@ open class AddToCartUseCase @Inject constructor(@ApplicationContext private val 
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atcFromExternalSource"
         private const val PARAM_IS_SCP = "isSCP"
+
+        private const val KEY_EMBRACE_MOMENT_ADD_TO_CART = "act_add_to_cart"
 
         @JvmStatic
         @JvmOverloads
