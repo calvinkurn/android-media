@@ -16,9 +16,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.linker.LinkerManager
@@ -334,9 +336,15 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun setupBackButton(view: View) {
         val toolbar = view.findViewById<HeaderUnify>(R.id.toolbarMvcList)
+        val iconAdd = IconUnify(requireContext(), IconUnify.ADD,
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
         toolbar.headerTitle = getString(R.string.mvc_coupon_list_title)
+        toolbar.addCustomRightContent(iconAdd)
         toolbar.setNavigationOnClickListener {
             activity?.finish()
+        }
+        iconAdd.setOnClickListener {
+            onCreateCouponMenuSelected()
         }
     }
 
