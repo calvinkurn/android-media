@@ -43,6 +43,13 @@ class GetRechargeCatalogOperatorSelectGroupUseCase @Inject constructor(
           rechargeCatalogOperatorSelectGroup(menuID:${'$'}menuID, platformID: 5){
             text
             style
+            help
+            validations {
+              id
+              title
+              rule
+              message
+            }
             operatorGroup{
               name
               operators{

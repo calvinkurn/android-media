@@ -39,6 +39,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
@@ -67,7 +68,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class DigitalPDPTagihanFragment: BaseDaggerFragment(),
-    RechargeSimplifyWidgetListener {
+    RechargeSimplifyWidgetListener,
+    DigitalHistoryIconListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -443,16 +446,16 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             it.rechargePdpTickerWidgetProductDesc.apply {
                 setText(dummyInfo)
                 setLinks(clickableInfo, View.OnClickListener {
-                    showMoreInfoBottomSheet(dummyListInfo, dummyInfo)
+                    showMoreInfoBottomSheet(dummyListInfo)
                 })
             }
 
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>, tickerInfo: String){
+    private fun showMoreInfoBottomSheet(listInfo: List<String>){
         fragmentManager?.let {
-            MoreInfoPDPBottomsheet(tickerInfo, listInfo).show(it, "")
+            MoreInfoPDPBottomsheet(listInfo).show(it, "")
         }
     }
 
@@ -647,6 +650,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun navigateToLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+    }
+
+    /** DigitalHistoryIconListener */
+    override fun onClickDigitalIconHistory() {
+
     }
 
 

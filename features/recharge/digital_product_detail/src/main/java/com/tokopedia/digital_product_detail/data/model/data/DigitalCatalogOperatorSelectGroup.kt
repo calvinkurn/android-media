@@ -3,7 +3,6 @@ package com.tokopedia.digital_product_detail.data.model.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 
 data class DigitalCatalogOperatorSelectGroup(
     @SerializedName("rechargeCatalogOperatorSelectGroup")
@@ -19,9 +18,15 @@ data class DigitalOperatorCluster(
     @SerializedName("style")
     @Expose
     val style: String = "",
+    @SerializedName("help")
+    @Expose
+    val help: String = "",
     @SerializedName("operatorGroup")
     @Expose
-    var operatorGroups: List<DigitalOperatorGroup>? = listOf()
+    var operatorGroups: List<DigitalOperatorGroup>? = listOf(),
+    @SerializedName("validations")
+    @Expose
+    var validations: List<Validation>? = listOf()
 
 )
 

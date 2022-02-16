@@ -6,20 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogDynamicInput
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -29,8 +24,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 class DigitalPDPTagihanViewModel @Inject constructor(
@@ -57,11 +50,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
+    private val _favoriteNumberData =
+        MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
-    private val _catalogSelectGroup = MutableLiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>()
+    private val _catalogSelectGroup =
+        MutableLiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>()
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
@@ -96,7 +91,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
-                favoriteNumber.persoFavoriteNumber.items)
+                favoriteNumber.persoFavoriteNumber.items
+            )
         }) {
             _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
         }
@@ -107,40 +103,40 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
             val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
-            if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()){
+            if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()) {
                 operatorData = operatorList.get(0)
             }
-            _catalogSelectGroup.value =  RechargeNetworkResult.Success(data)
+            _catalogSelectGroup.value = RechargeNetworkResult.Success(data)
         }) {
             _catalogSelectGroup.value = RechargeNetworkResult.Fail(it)
         }
     }
 
-    fun getDynamicInput(menuID: Int, nullErrorMessage: String){
+    fun getDynamicInput(menuID: Int, nullErrorMessage: String) {
         _dynamicInput.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val data  = repo.getDynamicInputTagihanListrik(menuID, operatorData.id)
-            if (data == null){
+            val data = repo.getDynamicInputTagihanListrik(menuID, operatorData.id)
+            if (data == null) {
                 throw MessageErrorException(nullErrorMessage)
             } else _dynamicInput.value = RechargeNetworkResult.Success(data)
-        }){
+        }) {
             _dynamicInput.value = RechargeNetworkResult.Fail(it)
         }
     }
 
-    fun inquiry(productId: String, clientNumber: String, inputData: Map<String, String>){
+    fun inquiry(productId: String, clientNumber: String, inputData: Map<String, String>) {
         _inquiry.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
             var data: TopupBillsEnquiryData
             do {
                 data = repo.inquiryProduct(productId, clientNumber, inputData)
 
-                with (data.enquiry) {
+                with(data.enquiry) {
                     if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * MS_TO_S_DURATION)
                 }
             } while (data.enquiry.status != STATUS_DONE)
             _inquiry.value = RechargeNetworkResult.Success(data)
-        }){
+        }) {
             _inquiry.value = RechargeNetworkResult.Fail(it)
         }
     }
@@ -160,21 +156,27 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 isEligibleToBuy = errorMessage.isEmpty()
                 delay(VALIDATOR_DELAY_TIME)
                 _clientNumberValidatorMsg.value = errorMessage
-            }){
-                if (it !is CancellationException){
+            }) {
+                if (it !is CancellationException) {
 
                 }
             }
         }
     }
 
-    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  userId: String
-    ){
+    fun addToCart(
+        digitalIdentifierParam: RequestBodyIdentifier,
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        userId: String
+    ) {
         _addToCartResult.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val categoryIdAtc = repo.addToCart(
+                digitalCheckoutPassData,
+                digitalIdentifierParam,
+                digitalSubscriptionParams,
+                userId
+            )
             _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
@@ -185,13 +187,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryCheckoutPassData(categoryId: String){
+    fun updateCategoryCheckoutPassData(categoryId: String) {
         digitalCheckoutPassData.categoryId = categoryId
     }
 
-    fun updateCheckoutPassData(idemPotencyKeyActive: String, clientNumberActive: String){
+    fun updateCheckoutPassData(idemPotencyKeyActive: String, clientNumberActive: String) {
         dynamicInput.value?.let {
-            if (it is RechargeNetworkResult.Success){
+            if (it is RechargeNetworkResult.Success) {
                 val product = it.data
                 digitalCheckoutPassData.apply {
                     categoryId = product.attributes.categoryId
