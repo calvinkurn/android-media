@@ -357,6 +357,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         val response = repo.getProductTagSummarySection(channelId)
 
         _productTagSectionList.value = response
+        _selectedProductSectionList.value = response
         _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 
