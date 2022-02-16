@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,7 +38,7 @@ class ProductSectionViewHolder(
     private val tvTimerInfo: TextView = itemView.findViewById(R.id.tv_header_info)
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
-    private val btnReminder: UnifyButton = itemView.findViewById(R.id.btn_section_reminder)
+    private val btnReminder: IconUnify = itemView.findViewById(R.id.btn_section_reminder)
 
     private var timerTime = ""
 
