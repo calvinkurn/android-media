@@ -1020,8 +1020,12 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-        isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget
+        chooseAddressData?.let {
+            val outOfCoverage = it.isOutOfCoverage()
+            val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
+            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
+            isShowMiniCartMutableLiveData.value = showMiniCart && !outOfCoverage
+        }
     }
 
     private suspend fun updateMiniCartInBackground(

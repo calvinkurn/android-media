@@ -73,6 +73,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class TokoNowRepurchaseViewModel @Inject constructor(
@@ -135,6 +136,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
+    private var getMiniCartJob: Job? = null
+
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
     }
@@ -179,6 +182,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            getMiniCartJob?.cancel()
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 val data = getMiniCartUseCase.executeOnBackground()
@@ -193,6 +197,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 _miniCart.postValue(Success(data))
             }) {
                 _miniCart.postValue(Fail(it))
+            }.let {
+                getMiniCartJob = it
             }
         }
     }

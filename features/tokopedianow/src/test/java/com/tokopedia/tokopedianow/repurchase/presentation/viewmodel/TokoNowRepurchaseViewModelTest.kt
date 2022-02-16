@@ -354,6 +354,22 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
+    fun `when getMiniCart twice should set miniCart value success`() {
+        val response = MiniCartSimplifiedData()
+
+        onGetMiniCart_thenReturn(response)
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+
+        viewModel.getMiniCart(listOf("1"), "1")
+        viewModel.getMiniCart(listOf("1"), "1")
+
+        verifyGetMiniCartUseCaseCalled()
+
+        viewModel.miniCart
+            .verifySuccessEquals(Success(response))
+    }
+
+    @Test
     fun `when getMiniCart error should set miniCart value FAIL`() {
         val error = NullPointerException()
 

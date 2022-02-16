@@ -205,8 +205,11 @@ class TokoNowRepurchaseFragment:
 
     override fun onResume() {
         super.onResume()
-        checkIfChooseAddressWidgetDataUpdated()
-        getMiniCart()
+        if (isChooseAddressDataUpdated()) {
+            refreshLayout()
+        } else {
+            getMiniCart()
+        }
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -660,7 +663,7 @@ class TokoNowRepurchaseFragment:
             data.serviceType
         )
 
-        refreshLayoutPage()
+        refreshLayout()
     }
 
     private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
@@ -798,11 +801,18 @@ class TokoNowRepurchaseFragment:
     private fun checkIfChooseAddressWidgetDataUpdated() {
         localCacheModel?.let {
             context?.apply {
-                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(this, it)) {
+                if (isChooseAddressDataUpdated()) {
                     updateCurrentPageLocalCacheModelData()
                 }
             }
         }
+    }
+
+    private fun isChooseAddressDataUpdated(): Boolean {
+        localCacheModel?.let {
+           return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+        return false
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -825,7 +835,10 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
-        if(data.isShowMiniCartWidget) {
+        val showMiniCartWidget = data.isShowMiniCartWidget
+        val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
+
+        if(showMiniCartWidget && !outOfCoverage) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
             miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget?.show()
@@ -836,7 +849,8 @@ class TokoNowRepurchaseFragment:
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
-            val paddingBottom = if (isShowMiniCartWidget) {
+            val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
+            val paddingBottom = if (isShowMiniCartWidget && !outOfCoverage) {
                 miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_16).toInt()
             } else {
                 activity?.resources?.getDimensionPixelSize(
@@ -897,6 +911,12 @@ class TokoNowRepurchaseFragment:
         carouselScrollPosition.clear()
         viewModel.clearSelectedFilters()
         viewModel.showLoading()
+        refreshMiniCart()
+    }
+
+    private fun refreshMiniCart() {
+        checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
     }
 
     private fun resetSwipeLayout() {

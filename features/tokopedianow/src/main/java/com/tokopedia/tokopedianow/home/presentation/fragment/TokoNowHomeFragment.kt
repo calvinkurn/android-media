@@ -332,10 +332,10 @@ class TokoNowHomeFragment: Fragment(),
         when (requestCode) {
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 stickyLoginLoadContent()
-                refreshLayoutPage()
+                onRefreshLayout()
             }
             REQUEST_CODE_LOGIN -> {
-                refreshLayoutPage()
+                onRefreshLayout()
             }
         }
     }
@@ -636,7 +636,6 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showLayout() {
         getHomeLayout()
-        getMiniCart()
         navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
     }
 
@@ -694,6 +693,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onRefreshLayout() {
+        refreshMiniCart()
         resetMovingPosition()
         removeAllScrollListener()
         hideStickyLogin()
@@ -701,6 +701,11 @@ class TokoNowHomeFragment: Fragment(),
         carouselScrollState.clear()
         isRefreshed = true
         loadLayout()
+    }
+
+    private fun refreshMiniCart() {
+        checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
     }
 
     private fun setupUi() {
@@ -1003,7 +1008,8 @@ class TokoNowHomeFragment: Fragment(),
             warehouses,
             data.serviceType
         )
-        refreshLayoutPage()
+
+        onRefreshLayout()
     }
 
     private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
@@ -1042,9 +1048,13 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
-        if(data.isShowMiniCartWidget) {
+        val showMiniCartWidget = data.isShowMiniCartWidget
+        val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
+
+        if(showMiniCartWidget && !outOfCoverage) {
+            val pageName = MiniCartAnalytics.Page.HOME_PAGE
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-            miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
+            miniCartWidget?.initialize(shopIds, this, this, pageName = pageName)
             miniCartWidget?.show()
             hideStickyLogin()
         } else {
@@ -1055,7 +1065,8 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
-            val paddingBottom = if (isShowMiniCartWidget) {
+            val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
+            val paddingBottom = if (isShowMiniCartWidget && !outOfCoverage) {
                 miniCartWidget?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
