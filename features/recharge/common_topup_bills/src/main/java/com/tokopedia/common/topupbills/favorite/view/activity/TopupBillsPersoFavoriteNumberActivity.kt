@@ -22,6 +22,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
     protected lateinit var dgCategoryIds: ArrayList<String>
     protected var currentCategoryName = ""
     protected var operatorData: TelcoCatalogPrefixSelect? = null
+    protected var loyaltyStatus: String = ""
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_favorite_number
@@ -52,6 +53,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             this.currentCategoryName = extras.getString(EXTRA_DG_CATEGORY_NAME, "")
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
             this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
+            this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_fav_number_title))
@@ -69,7 +71,8 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             number,
             operatorData,
             currentCategoryName,
-            dgCategoryIds
+            dgCategoryIds,
+            loyaltyStatus
         )
     }
 
@@ -79,13 +82,15 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             clientNumber: String,
             dgCategoryIds: ArrayList<String>,
             categoryName: String,
-            operatorData: TelcoCatalogPrefixSelect
+            operatorData: TelcoCatalogPrefixSelect,
+            loyaltyStatus: String
         ): Intent {
             val intent = Intent(context, TopupBillsPersoFavoriteNumberActivity::class.java)
             val extras = Bundle()
             extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
+            extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
 
@@ -98,6 +103,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
         const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
+        const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
     }
 
 }

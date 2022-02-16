@@ -28,6 +28,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     private lateinit var dgCategoryIds: ArrayList<String>
     private var currentCategoryName = ""
     private var number: String = ""
+    private var loyaltyStatus: String = ""
     private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var isSwitchChecked: Boolean = false
@@ -58,6 +59,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             isSwitchChecked = arguments.getBoolean(ARG_PARAM_IS_SWITCH_CHECKED, false)
+            loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
         operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
     }
@@ -119,7 +121,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     private fun initViewPager() {
         pagerAdapter = TopupBillsPersoSavedNumTabAdapter(
             this, clientNumberType, number,
-            dgCategoryIds, currentCategoryName, operatorData)
+            dgCategoryIds, currentCategoryName, operatorData, loyaltyStatus)
         binding?.commonTopupBillsSavedNumViewpager?.run {
             adapter = pagerAdapter
             registerOnPageChangeCallback(viewPagerCallback)
@@ -194,16 +196,15 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
             clientNumberType: String, number: String,
             operatorData: TelcoCatalogPrefixSelect?,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
-            isSwitchChecked: Boolean
+            isSwitchChecked: Boolean, loyaltyStatus: String
         ): Fragment {
 
             val fragment = DualTabSavedNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
-            bundle.putString(
-                ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(
-                Locale.getDefault()))
+            bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
+            bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putBoolean(ARG_PARAM_IS_SWITCH_CHECKED, isSwitchChecked)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
@@ -217,6 +218,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_IS_SWITCH_CHECKED = "ARG_PARAM_IS_SWITCH_CHECKED"
+        const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
 
         const val POSITION_CONTACT_LIST = 0
         const val POSITION_FAVORITE_NUMBER = 1

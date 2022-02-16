@@ -741,7 +741,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData
+                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
