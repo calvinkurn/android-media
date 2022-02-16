@@ -9,5 +9,6 @@ sealed class PlayBroProductChooserEvent {
     data class ShowError(val error: Throwable) : PlayBroProductChooserEvent()
 
     data class GetDataError(val throwable: Throwable, val action: (()->Unit)? = null): PlayBroProductChooserEvent()
+    data class DeleteProductSuccess(val deletedProductCount: Int): PlayBroProductChooserEvent()
     data class DeleteProductError(val throwable: Throwable, val action: (()->Unit)? = null): PlayBroProductChooserEvent()
 }

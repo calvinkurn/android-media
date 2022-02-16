@@ -307,6 +307,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is PlayBroadcastAction.SetPinnedMessage -> handleSetPinnedMessage(event.message)
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
             is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
+            is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
         }
     }
 
@@ -881,7 +882,11 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun handleSetCover(cover: PlayCoverUiModel) {
-        getCurrentSetupDataStore().setFullCover(cover)
+        setSelectedCover(cover)
+    }
+
+    private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
+        setSelectedProduct(productSectionList)
     }
 
     /**

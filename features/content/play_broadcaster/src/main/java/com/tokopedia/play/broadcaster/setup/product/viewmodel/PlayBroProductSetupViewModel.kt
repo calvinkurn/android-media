@@ -336,12 +336,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
-            val productSectionList = _productTagSectionList.value
-
-            val productIds = productSectionList.flatMap { section ->
+            val productIds = _productTagSectionList.value.flatMap { section ->
                 section.products.mapNotNull { if (it.id != product.id) it.id else null }
             }
             repo.setProductTags(channelId, productIds)
+
+            _uiEvent.emit(PlayBroProductChooserEvent.DeleteProductSuccess(1))
 
             getProductTagSummary()
         }) {
@@ -358,6 +358,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         val response = repo.getProductTagSummarySection(channelId)
 
         _productTagSectionList.value = response
+        _selectedProductSectionList.value = response
         _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 

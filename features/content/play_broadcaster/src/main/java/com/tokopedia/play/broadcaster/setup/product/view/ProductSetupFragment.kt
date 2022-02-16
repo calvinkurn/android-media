@@ -9,6 +9,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseList
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import javax.inject.Inject
 
 /**
@@ -22,12 +24,12 @@ class ProductSetupFragment @Inject constructor(
 
     private lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var parentViewModel: PlayBroadcastViewModel
+
     private val productChooserListener = object : ProductChooserBottomSheet.Listener {
         override fun onSetupCancelled(bottomSheet: ProductChooserBottomSheet) {
             bottomSheet.dismiss()
-            if (childFragmentManager.fragments.isEmpty()) {
-                //CLOSE BOTTOMSHEET
-            }
+            removeFragment()
         }
 
         override fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet) {
@@ -42,15 +44,23 @@ class ProductSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        parentViewModel = ViewModelProvider(requireActivity(), getViewModelFactory())[PlayBroadcastViewModel::class.java]
 
-        openProductChooser()
-//        openProductSummary()
+        if (parentViewModel.productSectionList.isEmpty()) openProductChooser()
+        else openProductSummary()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
+            is ProductSummaryBottomSheet -> childFragment.setListener(object: ProductSummaryBottomSheet.Listener {
+                override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                    parentViewModel.submitAction(
+                        PlayBroadcastAction.SetProduct(productTagSectionList)
+                    )
+                }
+            })
         }
     }
 

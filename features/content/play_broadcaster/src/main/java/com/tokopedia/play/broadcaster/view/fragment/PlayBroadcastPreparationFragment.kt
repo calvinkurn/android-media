@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -143,7 +144,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {
-                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
+                childFragment.setListener(object: PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
                         parentViewModel.submitAction(
                             PlayBroadcastAction.SetCover(cover)
@@ -284,14 +285,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-
-                if (prevState?.selectedProduct != state.selectedProduct) {
-                    binding.viewPreparationMenu.isSetProductChecked(
-                        state.selectedProduct.any { it.products.isNotEmpty() }
-                    )
-                }
-
+                renderProductMenu(prevState, state)
             }
+        }
+    }
+
+
+    private fun renderProductMenu(prevState: PlayBroadcastUiState?, state: PlayBroadcastUiState) {
+        if (prevState?.selectedProduct != state.selectedProduct) {
+            binding.viewPreparationMenu.isSetProductChecked(
+                state.selectedProduct.any { it.products.isNotEmpty() }
+            )
         }
     }
 
