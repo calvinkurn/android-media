@@ -41,7 +41,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private var mListener: Listener? = null
 
     private val container: ProductSetupFragment?
         get() = parentFragment as? ProductSetupFragment
@@ -62,7 +62,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[PlayBroadcastViewModel::class.java]
         setupBottomSheet()
     }
 
@@ -132,9 +131,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         productSummaryListView.setLoading()
                     }
                     is ProductTagSummaryUiModel.Success -> {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetProduct(state.productTagSectionList)
-                        )
+                        mListener?.onProductChanged(state.productTagSectionList)
 
                         setTitle(state.productCount)
                         binding.ivLoading.visibility = View.GONE
@@ -196,6 +193,10 @@ class ProductSummaryBottomSheet @Inject constructor(
         dismiss()
     }
 
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
 
@@ -213,5 +214,10 @@ class ProductSummaryBottomSheet @Inject constructor(
                 ) as ProductSummaryBottomSheet
             }
         }
+    }
+
+    interface Listener {
+
+        fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
     }
 }
