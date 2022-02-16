@@ -8,9 +8,19 @@ object ShopScoreDeepLinkMapper {
 
     const val COACH_MARK_PARAM = "coachmark"
 
-    fun getInternalAppLinkShopScore(appLink: String): String {
-        val uri = Uri.parse(appLink)
-        val coachMark = uri.getQueryParameter(appLink).orEmpty()
+    /**
+     * mapping applink external to internal
+     * e.g, external
+     * MA with param: tokopedia://shop-score-detail?coahmark=disabled
+     * MA without param: tokopedia://shop-score-detail
+     * SA with param: sellerapp://shop-score-detail?coahmark=disabled
+     * SA without param: sellerapp://shop-score-detail
+     * to Internal Applink
+     * with param: tokopedia-android-internal://marketplace/shop/performance?coahmark=disabled
+     * without param: tokopedia-android-internal://marketplace/shop/performance
+     */
+    fun getInternalAppLinkShopScore(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(COACH_MARK_PARAM).orEmpty()
         return if (coachMark.isEmpty()) {
             ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
         } else {
