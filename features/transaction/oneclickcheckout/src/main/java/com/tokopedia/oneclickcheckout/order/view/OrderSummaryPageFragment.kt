@@ -48,7 +48,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingC
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
-import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -80,6 +79,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest

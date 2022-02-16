@@ -1,12 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view.mapper
 
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product
 
 object AddOnMapper {
 
@@ -63,7 +61,7 @@ object AddOnMapper {
     private fun mapAddOnDataItem(addOnData: AddOnData): AddOnDataItemModel {
         return AddOnDataItemModel(
                 addOnPrice = addOnData.addOnPrice,
-                addOnId = addOnData.addOnId.toLongOrZero(),
+                addOnId = addOnData.addOnId,
                 addOnQty = addOnData.addOnQty.toLong(),
 //                addOnMetadata =
         )

@@ -1,6 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
-import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(

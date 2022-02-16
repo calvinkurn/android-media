@@ -10,7 +10,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -28,6 +27,7 @@ import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest

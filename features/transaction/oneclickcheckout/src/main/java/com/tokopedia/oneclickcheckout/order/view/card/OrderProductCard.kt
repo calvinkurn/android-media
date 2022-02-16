@@ -13,12 +13,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData

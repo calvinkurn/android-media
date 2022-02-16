@@ -7,6 +7,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
@@ -465,7 +466,7 @@ class GetOccCartMapper @Inject constructor() {
 //                addOnId = addOnDataItem.addOnId,
 //                addOnQty = addOnDataItem.addOnQty,
                 addOnPrice = 5000,
-                addOnId = 101,
+                addOnId = "101",
                 addOnQty = 1,
 //                addOnMetadata =
         )
