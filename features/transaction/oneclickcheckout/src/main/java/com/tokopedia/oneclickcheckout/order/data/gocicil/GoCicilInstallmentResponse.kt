@@ -10,6 +10,11 @@ class GoCicilInstallmentGqlResponse(
 class GoCicilInstallmentResponse(
         @SerializedName("success")
         val success: Boolean = false,
+        @SerializedName("data")
+        val data: GoCicilInstallmentData = GoCicilInstallmentData(),
+)
+
+class GoCicilInstallmentData(
         @SerializedName("installment_options")
         val installmentOptions: List<GoCicilInstallmentOption> = emptyList(),
 )

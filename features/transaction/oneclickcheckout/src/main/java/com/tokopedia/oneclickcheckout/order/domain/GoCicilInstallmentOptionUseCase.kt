@@ -20,13 +20,7 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
         if (!response.response.success) {
             throw MessageErrorException()
         }
-        return response.response.installmentOptions
-//        delay(5_000)
-//        return listOf(
-//                GoCicilInstallmentOption(isActive = true, installmentTerm = 1),
-//                GoCicilInstallmentOption(isActive = false, installmentTerm = 2),
-//                GoCicilInstallmentOption(isActive = true, installmentTerm = 3),
-//        )
+        return response.response.data.installmentOptions
     }
 
     private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {
@@ -55,20 +49,23 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
             query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}signature: String, ${'$'}orderMetadata: String) {
                 getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, signature: ${'$'}signature, orderMetadata: ${'$'}orderMetadata) {
                     success
-                    installment_options {
-                        installment_term
-                        option_id
-                        installment_period
-                        first_installment_time
-                        est_installment_end
-                        first_due_message
-                        interest_amount
-                        fee_amount
-                        installment_amount_per_period
-                        label_type
-                        label_message
-                        is_active
-                        description
+                    data {
+                        installment_options {
+                            installment_term
+                            option_id
+                            installment_period
+                            first_installment_time
+                            est_installment_end
+                            first_due_message
+                            interest_amount
+                            fee_amount
+                            installment_amount_per_period
+                            label_type
+                            label_message
+                            is_active
+                            description
+                            is_recommended
+                        }
                     }
                 }
             }
