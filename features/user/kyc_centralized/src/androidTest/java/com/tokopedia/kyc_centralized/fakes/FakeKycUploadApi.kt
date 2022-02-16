@@ -27,6 +27,7 @@ class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
             )
             Case.NetworkFailed -> {
                 if (uploadCount == 0) {
+                    uploadCount += 1
                     throw StreamResetException(ErrorCode.CANCEL)
                 } else {
                     KycResponse(

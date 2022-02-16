@@ -166,14 +166,27 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                         NOT_RETAKE -> {
                             //if liveness, upload the files immediately
                             if (!isKycSelfie) {
-                                uploadKycFiles()
+                                uploadKycFiles(
+                                        isKtpFileUsingEncryption = true,
+                                        isFaceFileUsingEncryption = true
+                                )
                             }
                         }
                         RETAKE_KTP -> {
+                            retakeActionCode = RETAKE_KTP_AND_FACE
                             goToLivenessOrSelfie()
                         }
                         RETAKE_FACE -> {
-                            uploadKycFiles()
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = false,
+                                    isFaceFileUsingEncryption = true
+                            )
+                        }
+                        RETAKE_KTP_AND_FACE -> {
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = true,
+                                    isFaceFileUsingEncryption = true
+                            )
                         }
                     }
                 }
@@ -268,7 +281,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         } else {
             //if not using encryption, send immediately, else wait for encrypt and show loading
             if (!isUsingEncrypt()) {
-                uploadKycFiles()
+                uploadKycFiles(
+                        isKtpFileUsingEncryption = false,
+                        isFaceFileUsingEncryption = false
+                )
             } else {
                 showLoading()
             }
@@ -279,14 +295,33 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    private fun uploadKycFiles() {
+    private fun uploadKycFiles(
+            isKtpFileUsingEncryption: Boolean,
+            isFaceFileUsingEncryption: Boolean
+    ) {
         showLoading()
         loadTimeUploadStart = System.currentTimeMillis()
         stepperModel?.let {
             if (isSocketTimeoutException) {
                 isSocketTimeoutException = false
             }
-            kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString(), isUsingEncrypt())
+            if (isUsingEncrypt()) {
+                kycUploadViewModel.uploadImages(
+                        it.ktpFile,
+                        it.faceFile,
+                        projectId.toString(),
+                        isKtpFileUsingEncryption,
+                        isFaceFileUsingEncryption
+                )
+            } else {
+                kycUploadViewModel.uploadImages(
+                        it.ktpFile,
+                        it.faceFile,
+                        projectId.toString(),
+                        isKtpFileUsingEncryption = false,
+                        isFaceFileUsingEncryption = false
+                )
+            }
         }
     }
 
@@ -302,7 +337,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         generateLink()
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickUploadPhotos()
-            uploadKycFiles()
+            uploadKycFiles(
+                    isKtpFileUsingEncryption = false,
+                    isFaceFileUsingEncryption = false
+            )
         }
     }
 
@@ -356,6 +394,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun setFaceRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeSelfieFinalFormPage()
+            retakeActionCode = RETAKE_FACE
             goToLivenessOrSelfie()
         }
     }
@@ -451,24 +490,29 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         when (requestCode) {
             KYCConstant.REQUEST_CODE_CAMERA_KTP -> {
                 retakeActionCode = RETAKE_KTP
-                stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
+                stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).orEmpty()
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull(), KYC_IV_KTP_CACHE)
+                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.orEmpty(), KYC_IV_KTP_CACHE)
                 } else {
                     goToLivenessOrSelfie()
                 }
             }
             KYCConstant.REQUEST_CODE_CAMERA_FACE -> {
-                retakeActionCode = RETAKE_FACE
-                if (!isKycSelfie) {
-                    stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
+                if (retakeActionCode != RETAKE_FACE) {
+                    retakeActionCode = RETAKE_KTP_AND_FACE
+                }
+                stepperModel?.faceFile = if (!isKycSelfie) {
+                    data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).orEmpty()
                 } else {
-                    stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
+                    data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).orEmpty()
                 }
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), KYC_IV_FACE_CACHE)
+                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.orEmpty(), KYC_IV_FACE_CACHE)
                 } else {
-                    uploadKycFiles()
+                    uploadKycFiles(
+                            isKtpFileUsingEncryption = true,
+                            isFaceFileUsingEncryption = true
+                    )
                 }
             }
             else -> {
@@ -582,13 +626,18 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     stepperListener?.finishPage()
                 }
                 message.contains(FILE_PATH_FACE_EMPTY) -> {
+                    retakeActionCode = RETAKE_FACE
                     goToLivenessOrSelfie()
                 }
                 !isKycSelfie -> {
+                    retakeActionCode = RETAKE_FACE
                     openLivenessView()
                 }
                 else -> {
-                    uploadKycFiles()
+                    uploadKycFiles(
+                            isKtpFileUsingEncryption = true,
+                            isFaceFileUsingEncryption = true
+                    )
                 }
             }
         }
@@ -623,6 +672,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         private const val NOT_RETAKE = 0
         private const val RETAKE_KTP = 1
         private const val RETAKE_FACE = 2
+        private const val RETAKE_KTP_AND_FACE = 3
 
         fun createInstance(projectid: Int): Fragment {
             val fragment = UserIdentificationFormFinalFragment()

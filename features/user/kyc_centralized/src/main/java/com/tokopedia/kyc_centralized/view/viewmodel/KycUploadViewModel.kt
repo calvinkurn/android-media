@@ -37,12 +37,19 @@ class KycUploadViewModel @Inject constructor(
     val encryptImageLiveData : LiveData<Result<String>>
         get() = _encryptImage
 
-    fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String, isUsingEncrypt: Boolean) {
+    fun uploadImages(
+            ktpPath: String,
+            facePath: String,
+            tkpdProjectId: String,
+            isKtpFileUsingEncryption: Boolean,
+            isFaceFileUsingEncryption: Boolean
+    ) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 var finalKtp = ktpPath
                 var finalFace = facePath
-                if(isUsingEncrypt) {
+
+                if(isKtpFileUsingEncryption) {
                     try {
                         kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)?.let {
                             finalKtp = decryptImage(ktpPath, it, KYC_IV_KTP_CACHE)
@@ -51,7 +58,9 @@ class KycUploadViewModel @Inject constructor(
                         _kycResponse.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on decrypt file KTP; error: ${e.message}")))
                         return@withContext
                     }
+                }
 
+                if (isFaceFileUsingEncryption) {
                     try {
                         kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)?.let {
                             finalFace = decryptImage(facePath, it, KYC_IV_FACE_CACHE)
