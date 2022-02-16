@@ -229,15 +229,15 @@ data class OrderPaymentGoCicilData(
 data class OrderPaymentGoCicilTerms(
         val installmentTerm: Int = 0,
         val optionId: String = "",
-        val firstInstallmentDate: String = "1234",
+        val firstInstallmentDate: String = "",
         val lastInstallmentDate: String = "",
-        val firstDueMessage: String = "qwerty",
+        val firstDueMessage: String = "",
         val interestAmount: Double = 0.0,
         val feeAmount: Double = 0.0,
         val installmentAmountPerPeriod: Double = 0.0,
         val labelType: String = "",
         val labelMessage: String = "",
-        val isActive: Boolean = true,
+        val isActive: Boolean = false,
         val description: String = "",
         val isRecommended: Boolean = false,
 ) {

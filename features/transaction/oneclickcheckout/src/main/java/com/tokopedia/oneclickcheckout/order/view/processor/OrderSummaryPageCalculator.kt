@@ -207,7 +207,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             var installmentData: OrderCostInstallmentData? = null
             val selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
-            if (orderPayment.walletData.isGoCicil && selectedTerm != null) {
+            if (orderPayment.walletData.isGoCicil && selectedTerm != null && orderPayment.walletData.goCicilData.hasValidTerm) {
                 installmentData = OrderCostInstallmentData(
                         installmentFee = selectedTerm.interestAmount,
                         installmentTerm = selectedTerm.installmentTerm,
