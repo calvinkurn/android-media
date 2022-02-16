@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.Section
 import com.tokopedia.play.di.PlayScope
@@ -14,6 +15,13 @@ import javax.inject.Inject
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
 
+    fun mapSection(input: Section) = ProductSectionUiModel(
+        productList = input.listOfProducts.map {
+            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
+        },
+        config = mapConfig(input)
+    )
+
     private fun mapConfig(input: Section) = ProductSectionUiModel.ConfigUiModel(
         title = input.sectionTitle,
         type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
@@ -25,6 +33,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             gradients = input.background.gradientList,
             imageUrl = input.background.imageUrl
         ),
+        hasReminder = input.sourceId.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming)
     )
 
     private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {

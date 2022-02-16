@@ -54,7 +54,8 @@ data class ProductSectionUiModel(
         val startTime: String, // RFC3339
         val endTime: String, // RFC3339
         val timerInfo: String,
-        val background: BackgroundUiModel
+        val background: BackgroundUiModel,
+        val hasReminder: Boolean
     )
 
     data class BackgroundUiModel(
@@ -76,7 +77,8 @@ data class ProductSectionUiModel(
                     background = BackgroundUiModel(
                         emptyList(),
                         ""
-                    )
+                    ),
+                    hasReminder = false
                 )
             )
     }

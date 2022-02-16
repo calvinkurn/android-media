@@ -11,12 +11,14 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -35,6 +37,7 @@ class ProductSectionViewHolder(
     private val tvTimerInfo: TextView = itemView.findViewById(R.id.tv_header_info)
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
+    private val btnReminder: UnifyButton = itemView.findViewById(R.id.btn_section_reminder)
 
     private var timerTime = ""
 
@@ -65,6 +68,7 @@ class ProductSectionViewHolder(
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
             tvSectionTitle.text = item.config.title
         }
+        btnReminder.showWithCondition(item.config.hasReminder)
         tvTimerInfo.text = item.config.timerInfo
 
         when (item.config.type) {
