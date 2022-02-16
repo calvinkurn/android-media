@@ -268,7 +268,7 @@ class GetOccCartMapper @Inject constructor() {
                 isCalculationError = false,
                 gatewayCode = payment.gatewayCode,
                 gatewayName = payment.gatewayName,
-                minimumAmount = payment.minimumAmount + 300000,
+                minimumAmount = payment.minimumAmount,
                 maximumAmount = payment.maximumAmount,
                 fee = payment.fee,
                 walletAmount = payment.walletAmount,
@@ -355,8 +355,8 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData, callbackUrl: String): OrderPaymentWalletAdditionalData {
         return OrderPaymentWalletAdditionalData(
-                walletType = 4,
-                enableWalletAmountValidation = false,
+                walletType = walletAdditionalData.walletType,
+                enableWalletAmountValidation = walletAdditionalData.enableWalletAmountValidation,
                 callbackUrl = callbackUrl,
                 activation = mapPaymentWalletActionData(walletAdditionalData.activation),
                 topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
@@ -377,7 +377,7 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
         return OrderPaymentWalletActionData(
-                isRequired = false,
+                isRequired = walletData.isRequired,
                 buttonTitle = walletData.buttonTitle,
                 successToaster = walletData.successToaster,
                 errorToaster = walletData.errorToaster,
@@ -390,10 +390,10 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {
         return OrderPaymentGoCicilData(
-                errorMessageInvalidTenure = "goCicilData.errorMessageInvalidTenure",
-                errorMessageBottomLimit = "goCicilData.errorMessageBottomLimit",
-                errorMessageTopLimit = "goCicilData.errorMessageTopLimit",
-                errorMessageUnavailableTenures = "goCicilData.errorMessageUnavailableTenures",
+                errorMessageInvalidTenure = goCicilData.errorMessageInvalidTenure,
+                errorMessageBottomLimit = goCicilData.errorMessageBottomLimit,
+                errorMessageTopLimit = goCicilData.errorMessageTopLimit,
+                errorMessageUnavailableTenures = goCicilData.errorMessageUnavailableTenures,
                 paymentSignature = goCicilData.paymentSignature,
                 selectedTenure = goCicilData.selectedTenure,
         )
