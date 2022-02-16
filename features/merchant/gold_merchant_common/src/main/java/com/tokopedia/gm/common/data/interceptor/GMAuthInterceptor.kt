@@ -3,7 +3,7 @@ package com.tokopedia.gm.common.data.interceptor
 import android.content.Context
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.authentication.HEADER_AUTHORIZATION
+import com.tokopedia.network.authentication.HEADER_AUTHORIZATION
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 
 class GMAuthInterceptor(
