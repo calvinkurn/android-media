@@ -25,12 +25,6 @@ internal class ProductListViewHolder private constructor() {
         private val onSelected: (ProductUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            itemView.setOnClickListener {
-                binding.checkboxProduct.isChecked = !binding.checkboxProduct.isChecked
-            }
-        }
-
         fun bind(item: ProductListAdapter.Model.Product) {
             binding.imgProduct.loadImage(item.product.imageUrl)
             binding.tvName.text = item.product.name
@@ -38,7 +32,7 @@ internal class ProductListViewHolder private constructor() {
                 R.string.play_bro_product_stock, item.product.stock
             )
 
-            setCheckboxManually(item)
+            binding.checkboxProduct.isChecked = item.isSelected
 
             when(item.product.price) {
                 is OriginalPrice -> {
@@ -69,12 +63,8 @@ internal class ProductListViewHolder private constructor() {
                 binding.flEmptyForeground.visibility = View.VISIBLE
                 binding.viewEmptyStock.root.visibility = View.VISIBLE
             }
-        }
 
-        private fun setCheckboxManually(item: ProductListAdapter.Model.Product) {
-            binding.checkboxProduct.setOnCheckedChangeListener(null)
-            binding.checkboxProduct.isChecked = item.isSelected
-            binding.checkboxProduct.setOnCheckedChangeListener { _, _ -> onSelected(item.product) }
+            itemView.setOnClickListener { onSelected(item.product) }
         }
 
         companion object {

@@ -218,8 +218,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSelectProduct(product: ProductUiModel) {
-        if (product.stock <= 0) return
+    private fun handleSelectProduct(product: ProductUiModel) = whenProductsNotSaving {
+        if (product.stock <= 0) return@whenProductsNotSaving
 
         _selectedProductSectionList.update { sections ->
             var hasProduct = false
@@ -390,5 +390,13 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 }
             }
         }
+    }
+
+    /**
+     * Util
+     */
+    private fun <T: Any> whenProductsNotSaving(fn: () -> T) {
+        if (_saveState.value.isLoading) return
+        fn()
     }
 }

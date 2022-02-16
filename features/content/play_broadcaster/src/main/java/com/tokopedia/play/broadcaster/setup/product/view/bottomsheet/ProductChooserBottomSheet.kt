@@ -422,6 +422,8 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun closeBottomSheet() {
+        if (viewModel.uiState.value.saveState.isLoading) return
+
         if (saveButtonView.isEnabled()) exitConfirmationDialog.show()
         else mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
     }

@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_dp_10"
             android:layout_marginTop="@dimen/play_dp_10"
+            android:clickable="false"
             app:bold="true"
             app:indeterminate="false"
             app:layout_constraintStart_toStartOf="parent"
