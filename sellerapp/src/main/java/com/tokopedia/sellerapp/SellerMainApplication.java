@@ -130,6 +130,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         Loader.init(this);
         setEmbraceUserId();
+        initEmbraceConfig();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -230,6 +231,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                 return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
+    }
+
+    private void initEmbraceConfig() {
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
+        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
+            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+
+            EmbraceConfigObject.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
+        }
     }
 
     private void initEmbrace() {

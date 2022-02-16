@@ -15,16 +15,9 @@ private const val COOKIE_RENDER_PAGE = 33;
 private const val TRACING_BUFF_SIZE = 50 * 1024 * 1024;
 private const val TRACING_INTERVAL = 500;
 
-private val ALLOW_EMBRACE_MOMENTS = arrayListOf(
-    "mp_home",
-    "pdp_result_trace",
-    "mp_shop",
-    "search_result_trace",
-    "act_add_to_cart",
-    "mp_cart",
-    "act_buy",
-    "discovery_result_trace"
-)
+object EmbraceConfigObject {
+    var ALLOW_EMBRACE_MOMENTS: MutableSet<String> = mutableSetOf()
+}
 
 open class PageLoadTimePerformanceCallback(
     val tagPrepareDuration: String,
@@ -70,7 +63,7 @@ open class PageLoadTimePerformanceCallback(
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
-        if (ALLOW_EMBRACE_MOMENTS.contains(traceName))
+        if (EmbraceConfigObject.ALLOW_EMBRACE_MOMENTS.contains(traceName))
             Embrace.getInstance().startEvent(traceName, null, false)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
         startMethodTracing(traceName);
@@ -83,7 +76,7 @@ open class PageLoadTimePerformanceCallback(
 
         performanceMonitoring?.let {
             performanceMonitoring?.stopTrace()
-            if (ALLOW_EMBRACE_MOMENTS.contains(traceName))
+            if (EmbraceConfigObject.ALLOW_EMBRACE_MOMENTS.contains(traceName))
                 stopEmbraceMonitoringOnly()
             overallDuration = System.currentTimeMillis() - overallDuration
             stopMethodTracing(traceName)
