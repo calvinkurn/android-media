@@ -174,7 +174,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     preselectedSpId = preselectedId3
                 }
 
-                val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.listLogisticPromo.firstOrNull { it.isApplied }
+                val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
                     if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected) || profileShipment.isDisableChangeCourier) {

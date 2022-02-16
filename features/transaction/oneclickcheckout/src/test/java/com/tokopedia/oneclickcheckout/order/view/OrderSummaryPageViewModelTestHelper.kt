@@ -74,6 +74,7 @@ class OrderSummaryPageViewModelTestHelper {
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
+        listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo)
     }
 
     val address = OrderProfileAddress(addressId = 1, latitude = "0", longitude = "0")
