@@ -566,7 +566,6 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.VOUCHER_ACTIVE
             ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.VOUCHER_HISTORY
             ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL
-            ApplinkConst.SellerApp.VOUCHER_DETAIL_PRODUCT -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL_PRODUCT
             ApplinkConst.SellerApp.CAMPAIGN_LIST -> ApplinkConstInternalSellerapp.CAMPAIGN_LIST
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
@@ -580,6 +579,7 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isCreateShowcaseApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShowcase(deeplink)
                 DeeplinkMapperMerchant.isCreateVoucherProductApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct(deeplink)
                 DeeplinkMapperMerchant.isVoucherProductListApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductList(deeplink)
+                DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(deeplink)
                 else -> ""
             }
         }

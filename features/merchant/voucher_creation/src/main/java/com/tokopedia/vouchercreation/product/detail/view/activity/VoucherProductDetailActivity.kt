@@ -1,10 +1,9 @@
 package com.tokopedia.vouchercreation.product.detail.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -18,15 +17,7 @@ class VoucherProductDetailActivity : AppCompatActivity() {
     lateinit var fragmentRouter: FragmentRouter
 
     companion object {
-        private const val ZERO: Long = 0
-        private const val COUPON_ID = "couponId"
-
-        @JvmStatic
-        fun start(context: Context, couponId: Long) {
-            val starter = Intent(context, VoucherProductDetailActivity::class.java)
-                .putExtra(COUPON_ID, couponId)
-            context.startActivity(starter)
-        }
+        private const val COUPON_ID_SEGMENT_INDEX = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,10 +35,15 @@ class VoucherProductDetailActivity : AppCompatActivity() {
     }
 
     private fun displayCouponDetail() {
-        val couponId = intent.extras?.getLong(COUPON_ID, ZERO).orZero()
-        val fragment = CouponDetailFragment.newInstance(couponId)
+        val couponId = getCouponIdFromAppLink()
+        val fragment = CouponDetailFragment.newInstance(couponId.orZero())
         fragmentRouter.replace(supportFragmentManager, R.id.parent_view, fragment)
     }
 
+    private fun getCouponIdFromAppLink(): Long? {
+        val appLinkData = RouteManager.getIntent(this, intent.data.toString()).data
+        val pathSegments = appLinkData?.pathSegments.orEmpty()
+        return pathSegments.getOrNull(COUPON_ID_SEGMENT_INDEX)?.toLong()
+    }
 
 }

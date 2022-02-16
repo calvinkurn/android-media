@@ -8,6 +8,8 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
@@ -17,7 +19,6 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
-import com.tokopedia.vouchercreation.product.detail.view.activity.VoucherProductDetailActivity
 import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_ACTIVE
@@ -92,7 +93,8 @@ class CouponListActivity : BaseSimpleActivity() {
     }
 
     private fun navigateToCouponDetail(couponId: Long) {
-        VoucherProductDetailActivity.start(this, couponId)
+        val appLink = UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL, couponId.toString())
+        RouteManager.route(this, appLink)
     }
 
 

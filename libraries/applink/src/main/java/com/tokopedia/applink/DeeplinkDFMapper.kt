@@ -148,7 +148,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCH
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL_PRODUCT
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
@@ -632,7 +632,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
             add(DFP({
                 it.startsWith(CREATE_VOUCHER_PRODUCT) ||
-                        it.startsWith(VOUCHER_DETAIL_PRODUCT)
+                        it.startsWith(VOUCHER_PRODUCT_DETAIL)
             }, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
