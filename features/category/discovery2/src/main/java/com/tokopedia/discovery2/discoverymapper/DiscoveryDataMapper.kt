@@ -2,7 +2,7 @@ package com.tokopedia.discovery2.discoverymapper
 
 import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
-import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.SINGLE_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
@@ -10,9 +10,6 @@ import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
-import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
-import com.tokopedia.discovery2.TRANSPARENT_BLACK
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -212,6 +209,7 @@ class DiscoveryDataMapper {
             componentsItem.parentComponentId = compId
             it.parentComponentName = parentComponentName
             componentsItem.parentComponentPosition = position
+            componentsItem.parentListSize = itemList.size
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem

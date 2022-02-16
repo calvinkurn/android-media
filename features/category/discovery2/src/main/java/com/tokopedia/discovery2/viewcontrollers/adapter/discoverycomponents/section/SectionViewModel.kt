@@ -30,6 +30,8 @@ class SectionViewModel(
     private val _showErrorState = SingleLiveEvent<Boolean>()
     val showErrorState: LiveData<Boolean> = _showErrorState
 
+    private val _hideSection = SingleLiveEvent<Boolean>()
+    val hideSection: LiveData<Boolean> = _hideSection
     @Inject
     lateinit var sectionUseCase: SectionUseCase
 
@@ -44,7 +46,8 @@ class SectionViewModel(
             val shouldRefresh =
                 sectionUseCase.getChildComponents(components.id, components.pageEndPoint)
             if (shouldRefresh) {
-//                Todo:: Add handling to update anchor view in case of empty List.
+                if (components.getComponentsItem().isNullOrEmpty())
+                    _hideSection.value = true
                 syncData.value = true
                 components.shouldRefreshComponent = true
             }
@@ -54,6 +57,7 @@ class SectionViewModel(
                 components.verticalProductFailState = true
                 _showErrorState.value  = true
             } else {
+                _hideSection.value = true
                 _hideShimmer.value = true
             }
         })
@@ -70,6 +74,10 @@ class SectionViewModel(
 
     fun shouldShowError(): Boolean {
         return components.verticalProductFailState
+    }
+
+    fun getSectionID(): String {
+        return components.sectionId
     }
 
 }

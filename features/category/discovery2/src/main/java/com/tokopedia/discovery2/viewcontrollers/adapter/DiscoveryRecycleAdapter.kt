@@ -21,7 +21,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shim
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
     : ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
@@ -130,6 +130,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     fun getCurrentHeader() = mCurrentHeader
+
+    fun notifySectionId(it: String) {
+        (fragment as? DiscoveryFragment)?.updateSelectedSection(it)
+    }
 
 }
 

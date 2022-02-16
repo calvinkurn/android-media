@@ -41,6 +41,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
                 mDiscoveryRecycleAdapter.notifyItemChanged(newPos)
                 anchorRV.post {
                     anchorRV.smoothScrollToPosition(newPos)
+//                    linearLayoutManager.scrollToPositionWithOffset(newPos,0)
                 }
             })
         }

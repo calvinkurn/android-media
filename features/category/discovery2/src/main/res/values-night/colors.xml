@@ -2,5 +2,4 @@
 <resources>
     <color name="disco_lihat_clr_arrow">#FFFFFF</color>
     <color name="disco_lihat_bg">#31353B</color>
-    <color name="discovery2_dms_anchor_bg">@color/Unify_NN100</color>
 </resources>

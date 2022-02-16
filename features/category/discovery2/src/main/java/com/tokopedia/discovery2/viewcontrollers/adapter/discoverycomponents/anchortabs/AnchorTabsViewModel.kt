@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -73,6 +74,28 @@ class AnchorTabsViewModel(
             oldItem?.data?.firstOrNull()?.isSelected = false
             updatePositions.value = Pair(selectedSectionPos, newPos)
             selectedSectionPos = newPos
+        }
+    }
+
+    fun deleteSectionTab(sectionID: String) {
+        if (sectionPositionMap.containsKey(sectionID)) {
+            var shouldSync = false
+            val dataList = arrayListOf<DataItem>()
+            if (!components.data.isNullOrEmpty()) {
+                components.data?.forEach { dataItem ->
+                    if (sectionID == dataItem.targetSectionID) {
+                        shouldSync = true
+                    } else {
+                        dataList.add(dataItem)
+                    }
+                }
+            }
+            if (shouldSync) {
+                components.data = dataList
+                components.noOfPagesLoaded = 0
+                mapToComponents()
+                setupData()
+            }
         }
     }
 

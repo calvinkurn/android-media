@@ -124,8 +124,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 updateCarouselWithCart(component)
                 listComponents.add(component)
             }
+            ComponentNames.AnchorTabs.componentName -> {
+                saveSectionPosition(component.pageEndPoint, ComponentNames.AnchorTabs.componentName, component.position)
+                listComponents.add(component)
+            }
             ComponentNames.Section.componentName ->{
-                saveSectionPosition(component)
+                saveSectionPosition(component.pageEndPoint, component.sectionId, component.position)
                 listComponents.addAll(parseSectionComponent(component))
             }
             ComponentNames.QuickCoupon.componentName -> {
@@ -189,12 +193,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         return listComponents
     }
 
-    private fun saveSectionPosition(component: ComponentsItem) {
-        if (getSectionPositionMap(component.pageEndPoint) == null) {
-            setSectionPositionMap(mutableMapOf(), component.pageEndPoint)
+    private fun saveSectionPosition(pageEndPoint: String, sectionId: String, position: Int) {
+        if (getSectionPositionMap(pageEndPoint) == null) {
+            setSectionPositionMap(mutableMapOf(), pageEndPoint)
         }
-        getSectionPositionMap(component.pageEndPoint)?.let {
-            it.put(component.sectionId, component.position)
+        getSectionPositionMap(pageEndPoint)?.let {
+            it.put(sectionId, position)
         }
     }
 

@@ -21,6 +21,7 @@ import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
@@ -100,6 +101,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     val miniCartOperationFailed:LiveData<Pair<Int,Int>>
         get() = _miniCartOperationFailed
     private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
+
+    private val _scrollState  = MutableLiveData<ScrollData>()
+    val scrollState: LiveData<ScrollData> = _scrollState
 
     var pageIdentifier: String = ""
     var pageType: String = ""
@@ -414,5 +418,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             campaignCode = data.campaignCode.substring(0,11)
         }
         return "${data.identifier}-${campaignCode}"
+    }
+
+    fun updateScroll(dx: Int, dy: Int, newState: Int) {
+        _scrollState.value = ScrollData(dx,dy,newState)
     }
 }

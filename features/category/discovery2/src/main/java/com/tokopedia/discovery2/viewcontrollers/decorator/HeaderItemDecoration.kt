@@ -9,8 +9,9 @@ import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerVie
 import kotlinx.android.synthetic.main.sticky_header_recycler_view.view.*
 
 class HeaderItemDecoration(
-        val parent: StickyHeadRecyclerView,
-        private val isHeader: (itemPosition: Int) -> Boolean
+    val parent: StickyHeadRecyclerView,
+    private val isHeader: (itemPosition: Int) -> Boolean,
+    private val notifySection: (currentSectionId: String) -> Unit
 ) : RecyclerView.ItemDecoration() {
 
 
@@ -51,8 +52,10 @@ class HeaderItemDecoration(
 
         val headerPosition = getHeaderPositionForItem(itemPosition)
         if (headerPosition == RecyclerView.NO_POSITION) return null
-//        Todo:: update sectionId to notify viewholder
-        getRecyclerAdapter().currentList[itemPosition].parentSectionId
+        getRecyclerAdapter().currentList[itemPosition].parentSectionId?.let {
+            if (it.isNotEmpty())
+                notifySection(it)
+        }
         val headerType = parent.adapter?.getItemViewType(headerPosition) ?: return null
         if (getRecyclerAdapter().getCurrentHeader()?.second?.itemViewType == headerType) {
             return getRecyclerAdapter().getCurrentHeader()?.second?.itemView
