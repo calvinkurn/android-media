@@ -55,6 +55,7 @@ import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEsti
 import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
 import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
+import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
@@ -72,6 +73,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
         private const val ZERO: Long = 0
         private const val PERCENT = 100
         private const val DISCOUNT_TYPE_NOMINAL = "idr"
+        private const val PROGRESS_BAR_HEIGHT = 6
+
         @JvmStatic
         fun newInstance(couponId: Long): CouponDetailFragment {
             return CouponDetailFragment().apply {
@@ -168,9 +171,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
                     squareImageUrl,
                     portraitImageUrl
                 )
-            }
-            btnShare.setOnClickListener {
-                viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
             }
             tpgViewProducts.setOnClickListener {
                 val manageProductIntent = Intent(requireContext(), ManageProductActivity::class.java).apply {
@@ -465,9 +465,15 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun displayCouponStatus(coupon: CouponUiModel) {
         when (coupon.status) {
             VoucherStatusConst.ONGOING -> {
+                binding.tpgLabelMaxExpense.text = getString(R.string.mvc_spending_so_far)
+                binding.card.visible()
                 binding.labelCountdown.visible()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_ongoing))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+                binding.button.text = getString(R.string.mvc_share)
+                binding.button.setOnClickListener {
+                    viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
+                }
             }
             VoucherStatusConst.NOT_STARTED -> {
                 binding.labelCountdown.gone()
@@ -475,6 +481,14 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
             VoucherStatusConst.STOPPED -> {
+                binding.tpgCancelledAt.visible()
+                val cancelledDate = coupon.updatedTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
+                    .parseTo(DateTimeUtils.DATE_FORMAT)
+                val formattedCancelledDate =
+                    String.format(getString(R.string.mvc_placeholder_cancelled_at), cancelledDate)
+                        .parseAsHtml()
+                binding.tpgCancelledAt.text = formattedCancelledDate
+
                 binding.labelCountdown.gone()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_stopped))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
@@ -485,11 +499,19 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_deleted))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
-            else -> {
+            VoucherStatusConst.ENDED -> {
+                binding.card.visible()
+                binding.tpgLabelMaxExpense.text = getString(R.string.mvc_total_expense)
                 binding.labelCountdown.gone()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_ended))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+                binding.button.text = getString(R.string.mvc_duplicate)
+                binding.button.setOnClickListener {
+                    val couponId = viewModel.getCoupon()?.id.orZero().toLong()
+                    DuplicateCouponActivity.start(requireActivity(), couponId)
+                }
             }
+            else -> {}
         }
 
     }
@@ -507,7 +529,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun displayQuotaUsage(coupon: CouponUiModel) {
         val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
         binding.progressBarQuotaUsage.setValue(progressBarValue, true)
-        binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(6).toInt()
+        binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
         binding.tpgTotalQuota.text = String.format(
@@ -539,12 +561,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun showContent() {
-        binding.cardShare.visible()
         binding.content.visible()
     }
 
     private fun hideContent() {
-        binding.cardShare.gone()
+        binding.card.gone()
         binding.content.gone()
     }
 
