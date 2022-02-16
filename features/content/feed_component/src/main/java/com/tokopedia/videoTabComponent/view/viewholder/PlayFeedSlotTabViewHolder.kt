@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedcomponent.util.util.scrollLayout
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 
 /**
  * Created by meyta.taliti on 01/02/22.
@@ -19,20 +19,34 @@ class PlayFeedSlotTabViewHolder private constructor() {
 
     internal class SlotTab private constructor(
         itemView: View, private val tabClickListener: PlaySlotTabCallback
-    ) : RecyclerView.ViewHolder(itemView),PlaySlotTabCallback {
+    ) : RecyclerView.ViewHolder(itemView), PlaySlotTabCallback {
 
         private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_labels)
         private val adapter = SlotTabViewAdapter(this)
 
-        fun bind(item: PlaySlotTabMenuUiModel, position: Int) {
-            (rvSlotTab.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position,10)
+        fun bind(item: PlaySlotTabMenuUiModel) {
             rvSlotTab.adapter = adapter
             adapter.setItems(item.items)
+
+            item.items.forEachIndexed { index, obj ->
+                if (obj.isSelected) rvSlotTab.scrollLayout(index)
+            }
         }
 
-        class SlotTabViewAdapter(private val listener: PlaySlotTabCallback?) :
-            RecyclerView.Adapter<SlotTabViewHolder>() {
+        override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
+            tabClickListener.clickTabMenu(item, position)
+            rvSlotTab.scrollLayout(position)
+        }
 
+        override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
+            tabClickListener.impressTabMenu(item)
+        }
+
+        class SlotTabViewAdapter(
+            private val listener: PlaySlotTabCallback?
+        ) : RecyclerView.Adapter<SlotTabViewHolder>() {
+
+            private var selectedTabMenuPosition: Int = 0
             private val mItems: MutableList<PlaySlotTabMenuUiModel.Item> = mutableListOf()
 
             @SuppressLint("NotifyDataSetChanged")
@@ -45,17 +59,22 @@ class PlayFeedSlotTabViewHolder private constructor() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotTabViewHolder {
                 return SlotTabViewHolder(
                     LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_play_slot_tab_card, parent, false),
-                    listener
+                        .inflate(R.layout.item_play_slot_tab_card, parent, false)
                 )
             }
 
-            override fun onBindViewHolder(holder: SlotTabViewHolder, position: Int) {
-                holder.bind(mItems[position]) {
-//                    mItems[selectedTab].isSelected = false
-//                    notifyItemChanged(selectedTab)
-//
-//                    selectedTab = holder.adapterPosition
+            override fun onBindViewHolder(
+                holder: SlotTabViewHolder, position: Int
+            ) {
+                val slot = mItems[holder.adapterPosition]
+                holder.bind(slot) {
+                    mItems[selectedTabMenuPosition].isSelected = false
+                    notifyItemChanged(selectedTabMenuPosition)
+                    listener?.clickTabMenu(slot, holder.adapterPosition)
+                    selectedTabMenuPosition = holder.adapterPosition
+                }
+                holder.itemView.addOnImpressionListener(slot.impressHolder) {
+                    listener?.impressTabMenu(slot)
                 }
             }
 
@@ -63,24 +82,20 @@ class PlayFeedSlotTabViewHolder private constructor() {
         }
 
         class SlotTabViewHolder(
-            itemView: View, private val listener: PlaySlotTabCallback?
+            itemView: View
         ) : RecyclerView.ViewHolder(itemView) {
 
             private val chip = itemView.findViewById<ChipsUnify>(R.id.cu_label)
 
-            fun bind(slot: PlaySlotTabMenuUiModel.Item, unSelect: () -> Unit) {
-                itemView.addOnImpressionListener(slot.impressHolder) {
-                    listener?.impressTabMenu(slot)
-                }
+            fun bind(slot: PlaySlotTabMenuUiModel.Item, chipSelected: () -> Unit) {
                 updateChipView(chip, slot.isSelected)
                 chip.chipText = slot.label
 
                 chip.setOnClickListener {
                     if (slot.isSelected) return@setOnClickListener
                     slot.isSelected = true
-                    unSelect()
                     updateChipView(chip, slot.isSelected)
-                    listener?.clickTabMenu(slot,adapterPosition)
+                    chipSelected()
                 }
             }
 
@@ -89,14 +104,6 @@ class PlayFeedSlotTabViewHolder private constructor() {
                     ChipsUnify.TYPE_SELECTED
                 } else ChipsUnify.TYPE_NORMAL
             }
-        }
-
-        override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
-            tabClickListener.clickTabMenu(item, position)
-            (rvSlotTab.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position,10)
-        }
-        override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
-            tabClickListener.impressTabMenu(item)
         }
 
         companion object {

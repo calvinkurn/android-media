@@ -36,6 +36,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
     val getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     val getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     val getLivePlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
+    val getPlayDataForSlotRsp = MutableLiveData<Result<ContentSlotResponse>>()
 
 
     fun getInitialPlayData(){
@@ -92,11 +93,12 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             }
             currentCursor = results.playGetContentSlot.meta.next_cursor
             if (isClickFromTabMenu) {
-                var data = results
+                getPlayDataForSlotRsp.value = Success(results)
+                /*var data = results
                 val appendedList = getAppendedList(data)
                 data.isDataFromTabClick = isClickFromTabMenu
                 data.playGetContentSlot.appendeList = appendedList
-                getPlayDataRsp.value = Success(data)
+                getPlayDataRsp.value = Success(data)*/
             } else {
                 getPlayDataRsp.value = Success(results)
             }

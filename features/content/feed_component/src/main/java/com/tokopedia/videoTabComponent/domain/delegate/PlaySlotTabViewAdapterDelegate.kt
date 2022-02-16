@@ -14,7 +14,7 @@ import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
  */
 class PlaySlotTabViewAdapterDelegate private constructor() {
 
-    internal class SlotTab(private val listener: PlaySlotTabCallback, private val position: Int) :
+    internal class SlotTab(private val listener: PlaySlotTabCallback) :
         TypedAdapterDelegate<PlaySlotTabMenuUiModel, PlayFeedUiModel, PlayFeedSlotTabViewHolder.SlotTab>(
             R.layout.item_play_slot_tab
         ) {
@@ -22,7 +22,7 @@ class PlaySlotTabViewAdapterDelegate private constructor() {
             item: PlaySlotTabMenuUiModel,
             holder: PlayFeedSlotTabViewHolder.SlotTab
         ) {
-            holder.bind(item, position)
+            holder.bind(item)
         }
 
         override fun onCreateViewHolder(
