@@ -25,7 +25,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val ITEM_NAME_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
             const val CREATIVE_NAME_VOUCHER_DETAIL_FORMAT = "voucher detail - %s - %s - %s"
             const val ITEM_NAME_VOUCHER_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
-            const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/ - p%s - product - %s - %s - %s - %s - %s - %s"
+            const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - product - %s - %s - %s - %s - %s - %s"
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
             const val VIEW_COUPON = "view coupon"
             const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
@@ -116,7 +116,8 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             merchantVoucherProductClicked.carousel,
             merchantVoucherProductClicked.recommendationType,
             merchantVoucherProductClicked.recomPageName,
-            merchantVoucherProductClicked.buType)
+            merchantVoucherProductClicked.buType,
+            merchantVoucherProductClicked.headerName)
         )
 
         val item = Bundle()

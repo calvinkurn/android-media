@@ -159,7 +159,10 @@ class MerchantVoucherViewHolder(
     private fun setHeaderComponent(element: MerchantVoucherDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-
+                merchantVoucherComponentListener.onViewAllClicked(
+                    element.channelModel.channelHeader.name,
+                    link
+                )
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
