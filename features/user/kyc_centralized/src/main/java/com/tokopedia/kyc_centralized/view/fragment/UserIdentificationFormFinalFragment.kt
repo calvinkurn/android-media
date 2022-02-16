@@ -252,17 +252,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
-        if (isKycSelfie) {
-            hideLoading()
-            setKycSelfieView()
-        } else {
-            //if not using encryption, send immediately, else wait for encrypt and show loading
-            if (!isUsingEncrypt()) {
-                uploadKycFiles()
-            } else {
-                showLoading()
-            }
-        }
+        uploadKycFiles()
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
