@@ -1,12 +1,16 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -20,6 +24,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.NotificationUnify
+import timber.log.Timber
 
 /**
  * Created by @ilhamsuaib on 07/02/22.
@@ -49,6 +54,7 @@ class CalendarViewHolder(
             override fun canScrollVertically(): Boolean = false
         }
     }
+    private var highestHeight = Int.ZERO
 
     override fun bind(element: CalendarWidgetUiModel) {
         observeState(element)
@@ -165,16 +171,30 @@ class CalendarViewHolder(
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                    if (currentPosition != RecyclerView.NO_POSITION) {
+                    if (currentPosition != RecyclerView.NO_POSITION && pages.size > Int.ONE) {
                         pageControlShcCalendar.setCurrentIndicator(currentPosition)
+                        layoutManager.findViewByPosition(currentPosition)?.let { view ->
+                            adjustEventsListViewHeight(view)
+                        }
                     }
                 }
             })
+
             try {
                 PagerSnapHelper().attachToRecyclerView(rvShcCalendar)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.e(e)
             }
+
+            resetEventsListViewHeight()
         }
+    }
+
+    private fun resetEventsListViewHeight() {
+        highestHeight = Int.ZERO
+        binding.rvShcCalendar.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        binding.rvShcCalendar.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        binding.rvShcCalendar.requestLayout()
     }
 
     private fun bindViewData(element: CalendarWidgetUiModel) {
@@ -203,6 +223,28 @@ class CalendarViewHolder(
         return itemView.context.getString(
             R.string.shc_calendar_date_range, startDateFmt, endDateFmt
         )
+    }
+
+    private fun adjustEventsListViewHeight(view: View) {
+        binding.run {
+            val wMeasureSpec =
+                View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+            val hMeasureSpec =
+                View.MeasureSpec.makeMeasureSpec(Int.ZERO, View.MeasureSpec.UNSPECIFIED)
+            view.measure(wMeasureSpec, hMeasureSpec)
+
+            if (rvShcCalendar.layoutParams?.height != view.measuredHeight) {
+                rvShcCalendar.layoutParams =
+                    (rvShcCalendar.layoutParams as? ConstraintLayout.LayoutParams)
+                        ?.also { lp ->
+                            if (view.measuredHeight > highestHeight) {
+                                highestHeight = view.measuredHeight
+                                lp.height = view.measuredHeight
+                                lp.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+                            }
+                        }
+            }
+        }
     }
 
     interface Listener : BaseViewHolderListener {

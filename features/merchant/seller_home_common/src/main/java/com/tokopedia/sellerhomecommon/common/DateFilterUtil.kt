@@ -94,12 +94,12 @@ object DateFilterUtil {
     object FilterList {
 
         fun getCalendarPickerFilterList(context: Context): List<DateFilterItem> {
-            val nNextDays = ShcConst.DAYS_120
-            val filterPerMonth = getFilterPerMonth(context, nNextDays).apply {
+            val nextNDaysCount = ShcConst.DAYS_120
+            val filterPerMonth = getFilterPerMonth(context, nextNDaysCount).apply {
                 isSelected = true
             }
             return listOf(
-                getDateFilterPerWeek(context, nNextDays),
+                getDateFilterPerWeek(context, nextNDaysCount),
                 filterPerMonth,
                 DateFilterItem.ApplyButton
             )
