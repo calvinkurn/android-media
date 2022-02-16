@@ -10,7 +10,7 @@ data class PlayWidgetJumboUiModel(
 ): PlayFeedUiModel()
 
 data class PlayWidgetLargeUiModel(
-    var model: PlayWidgetUiModel
+    val model: PlayWidgetUiModel
 ): PlayFeedUiModel()
 
 data class PlayWidgetMediumUiModel(
