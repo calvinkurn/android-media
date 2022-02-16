@@ -177,7 +177,7 @@ class ContentExploreFragment :
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = Integer.valueOf(arguments!!.getString(
+            categoryId = Integer.valueOf(requireArguments().getString(
                     PARAM_CATEGORY_ID,
                     DEFAULT_CATEGORY)
             )
@@ -189,7 +189,6 @@ class ContentExploreFragment :
         if (userVisibleHint && isAdded && activity != null && ::presenter.isInitialized) {
             if (!hasLoadedOnce) {
                 performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE)
-                Embrace.getInstance().startEvent(PEFORMANCE_EXPLORE, null, false)
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
@@ -392,7 +391,6 @@ class ContentExploreFragment :
     override fun stopTrace() {
         if (::performanceMonitoring.isInitialized && !isTraceStopped) {
             performanceMonitoring.stopTrace()
-            Embrace.getInstance().endEvent(PEFORMANCE_EXPLORE)
             isTraceStopped = true
         }
     }
