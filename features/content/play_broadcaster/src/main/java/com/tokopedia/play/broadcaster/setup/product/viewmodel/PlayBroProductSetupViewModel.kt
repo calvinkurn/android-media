@@ -369,7 +369,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         searchQuery.value = keyword
     }
 
-    private fun handleSaveProducts() {
+    private fun handleSaveProducts() = whenProductsNotSaving {
         _saveState.update {
             it.copy(isLoading = true)
         }
