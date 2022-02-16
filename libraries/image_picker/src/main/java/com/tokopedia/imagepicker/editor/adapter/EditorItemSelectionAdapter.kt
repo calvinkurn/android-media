@@ -11,7 +11,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.data.ItemSelection
-import com.tokopedia.imagepicker.videorecorder.utils.clear
 import com.tokopedia.imagepicker.videorecorder.utils.hide
 import com.tokopedia.imagepicker.videorecorder.utils.show
 import com.tokopedia.imagepicker.videorecorder.utils.visible
@@ -85,7 +84,7 @@ class EditorItemSelectionAdapter constructor(
         items[position].isSelected = true
         selectedPosition = position
 
-        items[position].placeholderBitmap?.let { bitmap -> listener?.onItemSelected(bitmap, item.itemType) }
+        item.placeholderBitmap?.let { bitmap -> listener?.onItemSelected(bitmap, item.itemType) }
         notifyDataSetChanged()
     }
 
@@ -103,9 +102,9 @@ class EditorItemSelectionAdapter constructor(
         private val viewSelection = itemView.findViewById<View>(R.id.view_selection)
         private val txtItem = itemView.findViewById<TextView>(R.id.txt_item)
 
+        //clear image with setbackground to null to clear memory
         fun clearImage() {
             imgItemPlaceholder.loadImageRounded(null, 0f) {
-
             }
         }
 

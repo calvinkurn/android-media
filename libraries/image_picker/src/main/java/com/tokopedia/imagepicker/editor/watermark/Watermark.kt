@@ -212,7 +212,6 @@ data class Watermark(
                 )
             }
 
-//            canvasBitmap = newBitmap
             outputImage = newBitmap
         }
     }
@@ -246,7 +245,6 @@ data class Watermark(
                 )
             })
         }
-
         return mainBitmap
     }
 
