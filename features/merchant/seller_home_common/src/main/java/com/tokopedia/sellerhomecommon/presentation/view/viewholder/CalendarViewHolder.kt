@@ -20,6 +20,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventGroupUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -180,6 +181,8 @@ class CalendarViewHolder(
                 }
             })
 
+            scrollToClosestEvent(pages)
+
             try {
                 PagerSnapHelper().attachToRecyclerView(rvShcCalendar)
             } catch (e: Exception) {
@@ -187,6 +190,13 @@ class CalendarViewHolder(
             }
 
             resetEventsListViewHeight()
+        }
+    }
+
+    private fun scrollToClosestEvent(pages: List<CalendarEventGroupUiModel>) {
+        val closestEventIndex = pages.indexOfFirst { it.autoScrollToHere }
+        if (closestEventIndex != RecyclerView.NO_POSITION) {
+            binding.rvShcCalendar.scrollToPosition(closestEventIndex)
         }
     }
 
