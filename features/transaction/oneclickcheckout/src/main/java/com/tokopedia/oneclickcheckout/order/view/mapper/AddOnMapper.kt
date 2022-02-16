@@ -63,7 +63,22 @@ object AddOnMapper {
                 addOnPrice = addOnData.addOnPrice,
                 addOnId = addOnData.addOnId,
                 addOnQty = addOnData.addOnQty.toLong(),
-//                addOnMetadata =
+                addOnMetadata = mapAddOnMetadata(addOnData.addOnMetadata)
+        )
+    }
+
+    private fun mapAddOnMetadata(addOnMetadata: AddOnMetadata): AddOnMetadataItemModel {
+        return AddOnMetadataItemModel(
+            addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
+        )
+    }
+
+    private fun mapAddOnNoteItem(addOnNote: AddOnNote): AddOnNoteItemModel {
+        return AddOnNoteItemModel(
+                isCustomNote = addOnNote.isCustomNote,
+                to = addOnNote.to,
+                from = addOnNote.from,
+                notes = addOnNote.notes
         )
     }
 

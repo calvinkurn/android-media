@@ -12,9 +12,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddO
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -468,7 +466,26 @@ class GetOccCartMapper @Inject constructor() {
                 addOnPrice = 5000,
                 addOnId = "101",
                 addOnQty = 1,
-//                addOnMetadata =
+                addOnMetadata = mapAddOnMetadata(addOnDataItem.addOnMetadata)
+        )
+    }
+
+    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItemModel {
+        return AddOnMetadataItemModel(
+                addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
+        )
+    }
+
+    private fun mapAddOnNoteItem(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItemModel {
+        return AddOnNoteItemModel(
+//                isCustomNote = addOnNote.isCustomNote,
+//                to = addOnNote.to,
+//                from = addOnNote.from,
+//                notes = addOnNote.notes
+                isCustomNote = true,
+                to = "You",
+                from = "Me",
+                notes = "Hello, World!"
         )
     }
 
