@@ -22,8 +22,8 @@ import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecorati
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -53,17 +53,27 @@ class ProductSheetViewComponent(
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
-        override fun onBuyProduct(product: PlayProductUiModel.Product) {
+        override fun onBuyProduct(
+            product: PlayProductUiModel.Product,
+            config: ProductSectionUiModel.ConfigUiModel
+        ) {
             listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
 
         }
-        override fun onATCProduct(product: PlayProductUiModel.Product) {
+        override fun onATCProduct(
+            product: PlayProductUiModel.Product,
+            config: ProductSectionUiModel.ConfigUiModel
+        ) {
             listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
         }
-        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+        override fun onClickProductCard(
+            product: PlayProductUiModel.Product,
+            config: ProductSectionUiModel.ConfigUiModel,
+            position: Int
+        ) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
-        override fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection) {
+        override fun onTimerExpired(product: ProductSectionUiModel) {
 //            TODO("Not yet implemented")
         }
         override fun onProductChanged() {
@@ -141,7 +151,7 @@ class ProductSheetViewComponent(
     }
 
     fun setProductSheet(
-        sectionList: List<PlayProductSectionUiModel.ProductSection>,
+        sectionList: List<ProductSectionUiModel>,
         voucherList: List<MerchantVoucherUiModel>,
         title: String,
     ) {
@@ -231,19 +241,19 @@ class ProductSheetViewComponent(
     /**
      * Analytic Helper
      */
-    fun getVisibleProducts(): List<Pair<PlayProductSectionUiModel.ProductSection, Int>> {
-        val products = productSectionAdapter.getItems()
-        if (products.isNotEmpty()) {
-            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
-            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
-            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                    .filterIsInstance<PlayProductSectionUiModel.ProductSection>()
-                    .mapIndexed { index, item ->
-                        Pair(item, startPosition + index)
-                    }
-        }
-        return emptyList()
-    }
+//    fun getVisibleProducts(): List<Pair<PlayProductSectionUiModel.ProductSection, Int>> {
+//        val products = productSectionAdapter.getItems()
+//        if (products.isNotEmpty()) {
+//            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
+//            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
+//            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
+//                    .filterIsInstance<PlayProductSectionUiModel.ProductSection>()
+//                    .mapIndexed { index, item ->
+//                        Pair(item, startPosition + index)
+//                    }
+//        }
+//        return emptyList()
+//    }
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)

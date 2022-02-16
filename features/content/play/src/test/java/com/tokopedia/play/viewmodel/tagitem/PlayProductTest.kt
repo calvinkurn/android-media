@@ -11,7 +11,6 @@ import com.tokopedia.play.util.assertNotEqualTo
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.websocket.response.PlayProductTagSocketResponse
-import com.tokopedia.play.websocket.response.PlayQuickReplySocketResponse
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -53,7 +52,7 @@ class PlayProductTest {
 
         robot.use {
             val state = it.recordState {}
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .assertEqualTo(emptyProductList)
         }
     }
@@ -81,7 +80,7 @@ class PlayProductTest {
 
         robot.use {
             val state = it.recordState {}
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .assertEqualTo(mockProductList)
         }
     }
@@ -117,7 +116,7 @@ class PlayProductTest {
             val state = it.recordState {
                 focusPage(mockk(relaxed = true))
             }
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .assertEqualTo(mockProductList)
         }
     }
@@ -157,9 +156,9 @@ class PlayProductTest {
             val state = it.recordState {
                 focusPage(mockk(relaxed = true))
             }
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .assertEqualTo(initialProductList)
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .assertNotEqualTo(mockProductList)
         }
     }
@@ -203,11 +202,11 @@ class PlayProductTest {
                     WebSocketAction.NewMessage(mockProductsSocketResponse)
                 )
             }
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .size
                 .assertEqualTo(productSize)
 
-            state.tagItems.product.productList
+            state.tagItems.product.productSectionList
                 .forEachIndexed { index, product ->
                     product.title.assertEqualTo("$productBaseTitle ${index+1}")
                 }

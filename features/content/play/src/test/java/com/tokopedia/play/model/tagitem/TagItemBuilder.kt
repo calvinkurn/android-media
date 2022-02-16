@@ -7,6 +7,7 @@ import com.tokopedia.play.view.type.ProductPrice
 import com.tokopedia.play.view.type.ProductStock
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
@@ -18,11 +19,12 @@ interface TagItemBuilder {
         product: ProductUiModel = buildProductModel(),
         voucher: VoucherUiModel = buildVoucherModel(),
         maxFeatured: Int = 0,
+        bottomSheetTitle: String = "",
         resultState: ResultState = ResultState.Success,
     ): TagItemUiModel
 
     fun buildProductModel(
-        productList: List<PlayProductUiModel.Product> = emptyList(),
+        productList: List<ProductSectionUiModel> = emptyList(),
         canShow: Boolean = false,
     ): ProductUiModel
 

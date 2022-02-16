@@ -5,6 +5,7 @@ import com.tokopedia.play.view.type.ProductPrice
 import com.tokopedia.play.view.type.ProductStock
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
@@ -16,19 +17,21 @@ class TagItemBuilderImpl : TagItemBuilder {
         product: ProductUiModel,
         voucher: VoucherUiModel,
         maxFeatured: Int,
+        bottomSheetTitle: String,
         resultState: ResultState
     ) = TagItemUiModel(
         product = product,
         voucher = voucher,
         maxFeatured = maxFeatured,
+        bottomSheetTitle = bottomSheetTitle,
         resultState = resultState,
     )
 
     override fun buildProductModel(
-        productList: List<PlayProductUiModel.Product>,
+        productList: List<ProductSectionUiModel>,
         canShow: Boolean
     ) = ProductUiModel(
-        productList = productList,
+        productSectionList = productList,
         canShow = canShow,
     )
 

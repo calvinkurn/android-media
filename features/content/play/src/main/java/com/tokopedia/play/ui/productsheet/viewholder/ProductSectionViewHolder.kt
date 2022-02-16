@@ -13,17 +13,15 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
-import com.tokopedia.play.data.Section
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.view.type.ProductSectionType
-import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -40,31 +38,36 @@ class ProductSectionViewHolder(
 
     private var timerTime = ""
 
-    private val adapter: ProductLineAdapter =
-        ProductLineAdapter(object : ProductLineViewHolder.Listener {
-            override fun onBuyProduct(product: PlayProductUiModel.Product) {
-                listener.onBuyProduct(product)
-            }
-            override fun onAtcProduct(product: PlayProductUiModel.Product) {
-                listener.onATCProduct(product)
-            }
-            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                listener.onClickProductCard(product, position)
-            }
-        })
+    private lateinit var adapter: ProductLineAdapter
 
     init {
         rvProducts.layoutManager = LinearLayoutManager(itemView.context)
-        rvProducts.adapter = adapter
     }
 
-    fun bind(item: PlayProductSectionUiModel.ProductSection) {
-        tvSectionTitle.shouldShowWithAction(item.title.isNotEmpty()){
-            tvSectionTitle.text = item.title
+    private fun setupListener(config: ProductSectionUiModel.ConfigUiModel) = object : ProductLineViewHolder.Listener {
+        override fun onBuyProduct(product: PlayProductUiModel.Product) {
+            listener.onBuyProduct(product, config)
         }
-        tvTimerInfo.text = item.timerInfo
 
-        when (item.type) {
+        override fun onAtcProduct(product: PlayProductUiModel.Product) {
+            listener.onATCProduct(product, config)
+        }
+
+        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+            listener.onClickProductCard(product, config, position)
+        }
+
+    }
+
+    fun bind(item: ProductSectionUiModel) {
+        adapter = ProductLineAdapter(setupListener(item.config))
+        rvProducts.adapter = adapter
+        tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
+            tvSectionTitle.text = item.config.title
+        }
+        tvTimerInfo.text = item.config.timerInfo
+
+        when (item.config.type) {
             ProductSectionType.Active -> {
                 tvTimerInfo.show()
                 timerSection.show()
@@ -81,17 +84,20 @@ class ProductSectionViewHolder(
                 tvTimerInfo.hide()
                 timerSection.hide()
             }
+            ProductSectionType.Unknown -> {
+                // todo: handle unknown section
+            }
         }
-        setupBackground(item.background)
+        setupBackground(item.config.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
     }
 
-    private fun setupBackground(background: Section.Background) {
-        if (background.gradientList.isNotEmpty()) {
+    private fun setupBackground(background: ProductSectionUiModel.BackgroundUiModel) {
+        if (background.gradients.isNotEmpty()) {
             try {
-                val bgArray = IntArray(background.gradientList.size)
-                background.gradientList.forEachIndexed { index, s ->
+                val bgArray = IntArray(background.gradients.size)
+                background.gradients.forEachIndexed { index, s ->
                     bgArray[index] = android.graphics.Color.parseColor(s)
                 }
                 val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
@@ -102,10 +108,10 @@ class ProductSectionViewHolder(
         }
     }
 
-    private fun setupTimer(item : PlayProductSectionUiModel.ProductSection) {
-        timerTime = if(item.type == ProductSectionType.Active) item.endTime else item.startTime
+    private fun setupTimer(item : ProductSectionUiModel) {
+        timerTime = if(item.config.type == ProductSectionType.Active) item.config.endTime else item.config.startTime
 
-        val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        val convertedServerTime = item.config.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val convertedTimerTime = timerTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
         val dt = DateUtil.getCurrentCalendar().apply {
@@ -115,7 +121,7 @@ class ProductSectionViewHolder(
             timerSection.pause()
             timerSection.targetDate = dt
             timerSection.onFinish = {
-                listener.onTimerExpired(product = item)
+                listener.onTimerExpired(item)
             }
             timerSection.resume()
     }
@@ -141,11 +147,11 @@ class ProductSectionViewHolder(
     }
 
     interface Listener {
-        fun onBuyProduct(product: PlayProductUiModel.Product)
-        fun onATCProduct(product: PlayProductUiModel.Product)
-        fun onClickProductCard(product: PlayProductUiModel.Product, position: Int)
+        fun onBuyProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.ConfigUiModel)
+        fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.ConfigUiModel)
+        fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.ConfigUiModel, position: Int)
         fun onProductChanged()
-        fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection)
+        fun onTimerExpired(product: ProductSectionUiModel)
     }
 }
 

@@ -9,7 +9,7 @@ import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.tagitem.SectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -52,8 +52,12 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductSection(input: ProductSection): SectionUiModel{
-        return productTagMapper.mapSections(input)
+    fun mapProductSection(input: ProductSection): Triple<List<ProductSectionUiModel>, Int, String> {
+        return Triple(
+            input.sectionList.map(productTagMapper::mapSection),
+            input.config.peekProductCount,
+            input.config.bottomSheetTitle
+        )
     }
 
     fun mapMerchantVoucher(input: MerchantVoucher): List<MerchantVoucherUiModel> {

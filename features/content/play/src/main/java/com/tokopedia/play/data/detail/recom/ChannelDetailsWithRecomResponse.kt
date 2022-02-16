@@ -160,9 +160,6 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("feeds_like_params")
         val feedLikeParam: FeedLikeParam = FeedLikeParam(),
 
-        @SerializedName("pinned_product_config")
-        val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
-
         @SerializedName("room_background")
         val roomBackground: RoomBackground = RoomBackground(),
 
@@ -215,14 +212,6 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("like_type")
         val likeType: Int = 1
-    )
-
-    data class PinnedProductConfig(
-        @SerializedName("pin_title")
-        val pinTitle: String = "",
-
-        @SerializedName("bottom_sheet_title")
-        val bottomSheetTitle: String = ""
     )
 
     data class RoomBackground(

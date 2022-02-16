@@ -20,3 +20,11 @@ data class ProductSection(
         val playGetTagsItem: ProductSection = ProductSection()
     )
 }
+
+data class Config(
+    @SerializedName("peek_product_count")
+    val peekProductCount: Int = 0,
+
+    @SerializedName("title_bottomsheet")
+    val bottomSheetTitle: String = ""
+)
