@@ -141,6 +141,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return parentViewModel.productSectionList
                     }
                 })
+                childFragment.setListener(object: ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetProduct(productTagSectionList)
+                        )
+                    }
+                })
             }
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
