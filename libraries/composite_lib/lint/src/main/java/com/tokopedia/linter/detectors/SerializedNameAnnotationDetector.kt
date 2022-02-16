@@ -18,8 +18,36 @@ import org.jetbrains.uast.kotlin.KotlinConstructorUMethod
 class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
 
     companion object {
-        val ISSUE = Issue.create(
-            id = "SerializedNameAnnotation",
+        val RESPONSE_ISSUE = Issue.create(
+            id = "ResponseFieldAnnotation",
+            briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
+            explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
+                "Add @SerializedName and @Expose annotation to avoid error.",
+            category = Category.CORRECTNESS,
+            priority = 10,
+            severity = Severity.WARNING,
+            implementation = Implementation(
+                SerializedNameAnnotationDetector::class.java,
+                Scope.JAVA_FILE_SCOPE
+            )
+        )
+
+        val ENTITY_ISSUE = Issue.create(
+            id = "EntityFieldAnnotation",
+            briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
+            explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
+                "Add @SerializedName and @Expose annotation to avoid error.",
+            category = Category.CORRECTNESS,
+            priority = 10,
+            severity = Severity.FATAL,
+            implementation = Implementation(
+                SerializedNameAnnotationDetector::class.java,
+                Scope.JAVA_FILE_SCOPE
+            )
+        )
+
+        val PARAM_ISSUE = Issue.create(
+            id = "ParamFieldAnnotation",
             briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
             explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
                 "Add @SerializedName and @Expose annotation to avoid error.",
@@ -56,7 +84,7 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
                     exposeAnnotation == null
 
                 if(shouldCheckAnnotation(context, node) && shouldReportIssue) {
-                    reportError(context, node)
+                    reportIssue(context, node)
                 }
             }
         }
@@ -67,7 +95,7 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
         val filePath = context.file.path
         val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
             ?.containsAll(listOf("equals", "hashCode")) == true
-        val isEntityClass = node.getContainingUClass()?.findAnnotation(ENTITY_ANNOTATION) != null
+        val isEntityClass = isEntityClass(context, node)
 
         return (fileName.contains(RESPONSE_KEYWORD) || fileName.contains(PARAM_KEYWORD) ||
             fileName.contains(ENTITY_KEYWORD) || filePath.contains(DOMAIN_MODEL_PATH)) &&
@@ -75,15 +103,56 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
             (isDataClass || isEntityClass)
     }
 
-    private fun reportError(context: JavaContext, node: UElement) {
-        val fieldName = (node.sourcePsi as? KtParameter)?.name.orEmpty()
+    private fun reportIssue(context: JavaContext, node: UParameter) {
+        val element = node as UElement
+        val fieldName = (element.sourcePsi as? KtParameter)?.name.orEmpty()
         val message = String.format(MESSAGE, fieldName)
 
-        context.report(
-            ISSUE,
-            node,
-            context.getNameLocation(node),
-            message
-        )
+        when {
+            isResponseClass(context, node) -> {
+                context.report(
+                    RESPONSE_ISSUE,
+                    element,
+                    context.getNameLocation(element),
+                    message
+                )
+            }
+            isParamClass(context, node) -> {
+                context.report(
+                    PARAM_ISSUE,
+                    element,
+                    context.getNameLocation(element),
+                    message
+                )
+            }
+            isEntityClass(context, node) -> {
+                context.report(
+                    ENTITY_ISSUE,
+                    element,
+                    context.getNameLocation(element),
+                    message
+                )
+            }
+        }
+    }
+
+    private fun isResponseClass(context: JavaContext, node: UParameter): Boolean {
+        val fileName = context.file.name
+        val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
+            ?.containsAll(listOf("equals", "hashCode")) == true
+        return fileName.contains(RESPONSE_KEYWORD) && isDataClass
+    }
+
+    private fun isParamClass(context: JavaContext, node: UParameter): Boolean {
+        val fileName = context.file.name
+        val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
+            ?.containsAll(listOf("equals", "hashCode")) == true
+        return fileName.contains(PARAM_KEYWORD) && isDataClass
+    }
+
+    private fun isEntityClass(context: JavaContext, node: UParameter): Boolean {
+        val fileName = context.file.name
+        val isEntityClass = node.getContainingUClass()?.findAnnotation(ENTITY_ANNOTATION) != null
+        return isEntityClass || fileName.contains(ENTITY_KEYWORD)
     }
 }
