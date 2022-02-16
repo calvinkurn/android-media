@@ -96,29 +96,30 @@ class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProduct
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView(binding)
+        observeLiveData()
 
         val isEditing = arguments?.getBoolean(BUNDLE_KEY_IS_EDITING, true) ?: true
-//        val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
-//        viewModel.setMaxProductLimit(maxProductLimit)
+        val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
+        viewModel.setMaxProductLimit(maxProductLimit)
 
-//        val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
-//        viewModel.setCouponSettings(couponSettings)
-//        val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
-//        viewModel.setSelectedProductIds(selectedProductIds ?: ArrayList())
-//        val shopId = userSession.shopId
+        val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
+        viewModel.setCouponSettings(couponSettings)
+        val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
+        viewModel.setSelectedProductIds(selectedProductIds ?: ArrayList())
+        val shopId = userSession.shopId
 
         // render selected products from voucher creation process
-//        val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
-//        selectedProducts?.run {
-//            if (selectedProducts.isNotEmpty()) {
-//                val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isEditing, selectedProducts)
-//                adapter?.setProductList(updatedProductList)
-//            }
-//            viewModel.setSetSelectedProducts(selectedProducts.toList())
-//        }
+        val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
+        selectedProducts?.run {
+            if (selectedProducts.isNotEmpty()) {
+                val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isEditing, selectedProducts)
+                adapter?.setProductList(updatedProductList)
+            }
+            viewModel.setSetSelectedProducts(selectedProducts.toList())
+        }
         // TODO : if only product ids available => hit product list => impl lazy variant load => match variant selection manually
 
-//        observeLiveData()
+
     }
 
     private fun setupView(binding: FragmentMvcManageProductBinding?) {
