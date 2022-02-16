@@ -67,7 +67,7 @@ import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
 import com.tokopedia.oneclickcheckout.order.view.card.*
-import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnBottomSheetParamMapper
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
@@ -80,8 +80,8 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -177,6 +177,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
             REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
+            REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
         }
     }
 
@@ -277,6 +278,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
         refresh()
+    }
+
+    private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            viewModel.updateAddOn(result)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -1228,7 +1236,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
-                    AddOnBottomSheetParamMapper.generateParam(addOn, product, shop, viewModel.orderCart)
+                    AddOnMapper.mapAddOnBottomSheetParam(addOn, product, shop, viewModel.orderCart)
             )
             startActivityForResult(intent, REQUEST_CODE_ADD_ON)
         }

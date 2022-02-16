@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SaveAddOnStateResponse(
         @SerializedName("save_add_ons")
-        val getAddOns: SaveAddOnsResponse = SaveAddOnsResponse()
+        val saveAddOns: SaveAddOnsResponse = SaveAddOnsResponse()
 )
 
 data class SaveAddOnsResponse(

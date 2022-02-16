@@ -23,8 +23,11 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECo
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -784,6 +787,25 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             },
             AddressConstant.ANA_REVAMP_FEATURE_ID
         )
+    }
+
+    fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
+        // Todo : update add on button view
+        // Todo : set add on amount
+        // Todo : set param on afpb
+        // Todo : calculate total
+
+        // Add on currently only support single product on OCC
+        val orderProduct = orderProducts.value.firstOrNull()
+        val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
+        if (addOnResult != null) {
+            if (orderProduct != null && addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER /*&& addOnResult.addOnKey == "${orderCart.cartString}-0"*/) {
+                orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                orderProducts.value = listOf(orderProduct)
+            }
+        } else {
+
+        }
     }
 
     override fun onCleared() {
