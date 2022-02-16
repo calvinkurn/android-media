@@ -87,8 +87,8 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
             {
                 gatewayHeader.isEnabled = false
                 gatewaySubHeader.isEnabled = false
-                radioGatewaySelector.isEnabled = false
                 gatewaySubHeader2.isEnabled = false
+                radioGatewaySelector.isEnabled = false
             }
             else
             {

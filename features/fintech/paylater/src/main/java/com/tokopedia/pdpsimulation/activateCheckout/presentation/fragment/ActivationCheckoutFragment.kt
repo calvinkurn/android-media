@@ -340,7 +340,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             gatewayDetailLayout.errorTicker.visibility = View.VISIBLE
             gatewayDetailLayout.errorTicker.setTextDescription(it.reason_long)
             proceedToCheckout.isEnabled = false
-            priceBreakdown.isEnabled = false
+            priceBreakdown.visibility = View.GONE
+
         } else {
             gatewayDetailLayout.errorTicker.visibility = View.GONE
             proceedToCheckout.isEnabled = true

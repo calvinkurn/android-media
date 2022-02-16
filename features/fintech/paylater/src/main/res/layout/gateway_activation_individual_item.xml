@@ -73,12 +73,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/gatewaySubHeader"
                 app:typographyType="body_3" />
 
-            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            <RadioButton
                 android:id="@+id/radioGatewaySelector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:bold="false"
-                android:layout_marginRight="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="@+id/gatewaySubHeader2"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/gatewayHeader" />
@@ -114,7 +113,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier2"
                 />
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

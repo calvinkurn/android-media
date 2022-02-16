@@ -68,12 +68,11 @@
                 app:typographyType="body_2" />
 
 
-            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            <RadioButton
                 android:id="@+id/radioSelector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/unify_space_16"
-                app:bold="false"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="@id/paymentDetailSubHeader"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/paymentDetailHeader" />

@@ -1,8 +1,10 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
@@ -21,9 +23,9 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
     ) {
 
         itemView.apply {
-             changeViewColor(tenureSelectListener.isDisable())
+            changeViewColor(tenureSelectListener.isDisable())
             updateData(tenureDetail)
-            if(!tenureSelectListener.isDisable()) {
+            if (!tenureSelectListener.isDisable()) {
                 if (tenureDetail.isSelectedTenure) {
                     individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioSelector.isChecked = true
@@ -37,8 +39,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                 radioSelector.setOnClickListener {
                     tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
                 }
-            }
-            else{
+            } else {
                 individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioSelector.isChecked = false
             }
@@ -59,23 +60,31 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
 
     private fun changeViewColor(disable: Boolean) {
         itemView.apply {
-            if(disable)
-            {
-                paymentDetailHeader.isEnabled = false
-               paymentDetailSubHeader.isEnabled = false
-                radioSelector.isEnabled = false
+            if (disable) {
+                setDisabledLogic()
 
-            }
-            else
-            {
-               paymentDetailHeader.isEnabled = true
-                paymentDetailSubHeader.isEnabled = true
-                radioSelector.isEnabled = true
-
+            } else {
+                setEnabledLogic()
 
             }
         }
 
+    }
+
+    private fun setDisabledLogic() {
+        itemView.apply {
+            paymentDetailHeader.isEnabled = false
+            paymentDetailSubHeader.isEnabled = false
+            radioSelector.isEnabled = false
+        }
+    }
+
+    private fun setEnabledLogic() {
+        itemView.apply {
+            paymentDetailHeader.isEnabled = true
+            paymentDetailSubHeader.isEnabled = true
+            radioSelector.isEnabled = true
+        }
     }
 
 
