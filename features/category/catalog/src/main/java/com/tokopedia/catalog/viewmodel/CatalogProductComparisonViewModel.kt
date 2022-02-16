@@ -31,7 +31,6 @@ class CatalogProductComparisonViewModel @Inject constructor(
                                        limit: Int, page : Int, name : String) {
         addShimmer(page)
         launchCatchError(block = {
-            delay(1000)
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page.toString(),name)
             removeShimmer()
