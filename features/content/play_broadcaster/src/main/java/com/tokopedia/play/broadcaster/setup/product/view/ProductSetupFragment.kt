@@ -99,7 +99,7 @@ class ProductSetupFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    fun openProductSummary() {
+    private fun openProductSummary() {
         ProductSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
