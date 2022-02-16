@@ -26,6 +26,7 @@
     <string name="path_digital_pdp_data_plan">/pdp_paket_data</string>
     <string name="path_digital_pdp_roaming">/roaming</string>
     <string name="path_digital_pdp_token_listrik">/pdp_token_listrik</string>
+    <string name="path_digital_pdp_tagihan_listrik">/pdp_tagihan_listrik</string>
 
     <string name="path_emoney" translatable="false">/smartcard/emoney</string>
     <string name="path_brizzi" translatable="false">/smartcard/brizzi</string>

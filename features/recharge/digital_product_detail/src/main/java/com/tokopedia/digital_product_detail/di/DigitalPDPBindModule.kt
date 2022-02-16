@@ -1,21 +1,29 @@
 package com.tokopedia.digital_product_detail.di
 
+import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTagihanListrikRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTelcoRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTokenListrikRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeAddToCartRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogDynamicInputRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogInputMultiTabRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogMenuDetailRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogOperatorSelectGroupRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeInquiryRepositoryImpl
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogDynamicInputRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogOperatorSelectGroupRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeInquiryRepository
 import dagger.Binds
 import dagger.Module
 
@@ -52,9 +60,25 @@ abstract class DigitalPDPBindModule {
 
     @Binds
     @DigitalPDPScope
+    abstract fun bindRechargeSelectGroupRepository(repo: RechargeCatalogOperatorSelectGroupRepositoryImpl): RechargeCatalogOperatorSelectGroupRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeDynamicInputRepository(repo: RechargeCatalogDynamicInputRepositoryImpl): RechargeCatalogDynamicInputRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeInquiryRepository(repo: RechargeInquiryRepositoryImpl): RechargeInquiryRepository
+
+    @Binds
+    @DigitalPDPScope
     abstract fun bindDigitalPDPPulsaRepository(repo: DigitalPDPTelcoRepositoryImpl): DigitalPDPTelcoRepository
 
     @Binds
     @DigitalPDPScope
     abstract fun bindDigitalPDPTokenListrikRepository(repo: DigitalPDPTokenListrikRepositoryImpl): DigitalPDPTokenListrikRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindDigitalPDPTagihanListrikRepository(repo: DigitalPDPTagihanListrikRepositoryImpl): DigitalPDPTagihanListrikRepository
 }

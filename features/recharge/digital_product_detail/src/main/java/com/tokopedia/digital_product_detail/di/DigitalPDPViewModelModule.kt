@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTagihanViewModel
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
 import dagger.Binds
 import dagger.Module
@@ -32,4 +33,9 @@ abstract class DigitalPDPViewModelModule {
     @IntoMap
     @ViewModelKey(DigitalPDPTokenListrikViewModel::class)
     internal abstract fun digitalPDPTokenListrikViewModel(customViewModel: DigitalPDPTokenListrikViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DigitalPDPTagihanViewModel::class)
+    internal abstract fun digitalPDPTagihanListrikViewModel(customViewModel: DigitalPDPTagihanViewModel): ViewModel
 }

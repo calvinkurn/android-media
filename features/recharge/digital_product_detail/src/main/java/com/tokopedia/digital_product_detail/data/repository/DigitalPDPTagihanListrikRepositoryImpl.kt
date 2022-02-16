@@ -1,22 +1,31 @@
 package com.tokopedia.digital_product_detail.data.repository
 
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogDynamicInputRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogOperatorSelectGroupRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeInquiryRepository
 import javax.inject.Inject
 
-class DigitalPDPTokenListrikRepositoryImpl @Inject constructor(
+class DigitalPDPTagihanListrikRepositoryImpl @Inject constructor(
     private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
     private val rechargeCatalogPrefixSelectRepo: RechargeCatalogPrefixSelectRepository,
     private val rechargeCatalogMenuDetailRepo: RechargeCatalogMenuDetailRepository,
     private val rechargeAddToCardRepo: RechargeAddToCartRepository,
-    private val rechargeCatalogProduct: RechargeCatalogRepository
-): DigitalPDPTokenListrikRepository,
+    private val rechargeCatalogProduct: RechargeCatalogRepository,
+    private val rechargeSelectGroup: RechargeCatalogOperatorSelectGroupRepository,
+    private val rechargeCatalogDynamicInputRepository: RechargeCatalogDynamicInputRepository,
+    private val rechargeInquiryRepository: RechargeInquiryRepository
+): DigitalPDPTagihanListrikRepository,
     RechargeFavoriteNumberRepository by rechargeFavoriteNumberRepo,
     RechargeCatalogPrefixSelectRepository by rechargeCatalogPrefixSelectRepo,
     RechargeCatalogMenuDetailRepository by rechargeCatalogMenuDetailRepo,
     RechargeAddToCartRepository by rechargeAddToCardRepo,
-    RechargeCatalogRepository by rechargeCatalogProduct
+    RechargeCatalogRepository by rechargeCatalogProduct,
+    RechargeCatalogOperatorSelectGroupRepository by rechargeSelectGroup,
+    RechargeCatalogDynamicInputRepository by rechargeCatalogDynamicInputRepository,
+    RechargeInquiryRepository by rechargeInquiryRepository

@@ -27,7 +27,6 @@ import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSav
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
-import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -63,16 +62,20 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
+import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
+import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -96,9 +99,9 @@ class DigitalPDPDataPlanFragment :
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
     RechargeDenomFullListener,
-    RechargeClientNumberWidget.ClientNumberInputFieldListener,
-    RechargeClientNumberWidget.ClientNumberFilterChipListener,
-    RechargeClientNumberWidget.ClientNumberAutoCompleteListener,
+    ClientNumberInputFieldListener,
+    ClientNumberFilterChipListener,
+    ClientNumberAutoCompleteListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
     DigitalHistoryIconListener
 {
@@ -572,7 +575,7 @@ class DigitalPDPDataPlanFragment :
                     com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
                 )
             )
-            setInputFieldType(RechargeClientNumberWidget.InputFieldType.Telco)
+            setInputFieldType(InputFieldType.Telco)
             setListener(
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment,

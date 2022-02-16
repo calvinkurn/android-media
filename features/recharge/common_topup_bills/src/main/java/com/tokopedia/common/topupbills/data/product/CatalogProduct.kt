@@ -75,6 +75,9 @@ open class CatalogProduct(
                 var terms: String = "",
                 @SerializedName("value_text")
                 @Expose
-                var valueText: String = ""
+                var valueText: String = "",
+                @SerializedName("discount")
+                @Expose
+                var discount: String = "",
         )
 }

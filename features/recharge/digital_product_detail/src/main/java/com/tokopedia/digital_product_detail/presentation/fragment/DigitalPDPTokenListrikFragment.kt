@@ -26,7 +26,6 @@ import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberIte
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
-import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -54,9 +53,14 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
+import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
+import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
@@ -624,10 +628,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
                 )
             )
-            setInputFieldType(RechargeClientNumberWidget.InputFieldType.Listrik)
+            setInputFieldType(InputFieldType.Listrik)
             setListener(
-                inputFieldListener = object :
-                    RechargeClientNumberWidget.ClientNumberInputFieldListener {
+                inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
                         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
                             if (it) {
@@ -669,7 +672,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     }
                 },
                 autoCompleteListener = object :
-                    RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
+                    ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
                         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
                         if (isFavoriteContact) {
@@ -689,8 +692,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                         }
                     }
                 },
-                filterChipListener = object :
-                    RechargeClientNumberWidget.ClientNumberFilterChipListener {
+                filterChipListener = object : ClientNumberFilterChipListener {
                     override fun onShowFilterChip(isLabeled: Boolean) {
                         if (isLabeled) {
                             digitalPDPTelcoAnalytics.impressionFavoriteContactChips(

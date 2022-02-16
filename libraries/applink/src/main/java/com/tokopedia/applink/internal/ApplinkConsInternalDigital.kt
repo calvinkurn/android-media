@@ -53,6 +53,7 @@ object ApplinkConsInternalDigital {
     /** Paket data and roaming using this same applink*/
     const val DIGITAL_PDP_PAKET_DATA = "$INTERNAL_DIGITAL/pdp_paket_data"
     const val DIGITAL_TOKEN_LISTRIK = "$INTERNAL_DIGITAL/pdp_token_listrik"
+    const val DIGITAL_TAGIHAN_LISTRIK = "$INTERNAL_DIGITAL/pdp_tagihan_listrik"
 
     /** End Applink Digital PDP Revamp 2022*/
 }

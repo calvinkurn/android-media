@@ -84,6 +84,7 @@ object CommonTopupBillsGqlQuery {
                       id
                       new_price
                       new_price_plain
+                      discount
                     }
                     product_labels
                     detail
