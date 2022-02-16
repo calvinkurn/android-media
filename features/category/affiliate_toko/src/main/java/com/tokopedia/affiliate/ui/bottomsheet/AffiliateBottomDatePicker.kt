@@ -17,6 +17,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -114,41 +115,10 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
     private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
     private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0",getMessage(TODAY),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1",getMessage(YESTERDAY),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7",getMessage(SEVEN_DAYS),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30",getMessage(THIRTY_DAYS),identifier == IDENTIFIER_HOME)))
-    }
-
-    private fun getMessage(dayRange: String): String {
-        val calendar = Calendar.getInstance()
-        when(dayRange){
-            TODAY -> {
-                calendar.add(Calendar.HOUR,-2)
-                val date = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
-                val time = SimpleDateFormat("HH:00",Locale.ENGLISH).format(calendar.time)
-                return "$date - ${getString(R.string.terkhir_text)} $time"
-            }
-            YESTERDAY -> {
-                calendar.add(Calendar.DATE,-1)
-                return SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
-            }
-            SEVEN_DAYS -> {
-                calendar.add(Calendar.DATE,-1)
-                val lastDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
-                calendar.add(Calendar.DATE,-6)
-                val finalDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
-                return "$finalDay - $lastDay"
-            }
-            THIRTY_DAYS -> {
-                calendar.add(Calendar.DATE,-1)
-                val lastDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
-                calendar.add(Calendar.DATE,-29)
-                val finalDay = SimpleDateFormat("dd MMM yyyy",Locale.ENGLISH).format(calendar.time)
-                return "$finalDay - $lastDay"
-            }
-        }
-        return ""
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0",DateUtils().getMessage(TODAY,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1",DateUtils().getMessage(YESTERDAY,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7",DateUtils().getMessage(SEVEN_DAYS,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30",DateUtils().getMessage(THIRTY_DAYS,context),identifier == IDENTIFIER_HOME)))
     }
 
     override fun onDateRangeClicked(position: Int) {

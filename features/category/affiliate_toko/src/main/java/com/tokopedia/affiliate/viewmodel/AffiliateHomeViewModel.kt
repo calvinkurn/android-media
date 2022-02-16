@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.*
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -162,16 +163,7 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
-    private var selectedDateMessage = getSelectedDateMessage()
-
-    private fun getSelectedDateMessage(): String {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE,-1)
-        val lastDay = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(calendar.time)
-        calendar.add(Calendar.DATE,-29)
-        val finalDay = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(calendar.time)
-        return "$finalDay - $lastDay"
-    }
+    private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
 
     private var selectedDateValue = "30"
     fun getSelectedDate(): String {
