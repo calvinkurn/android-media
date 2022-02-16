@@ -345,7 +345,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         } else {
             gatewayDetailLayout.errorTicker.visibility = View.GONE
             proceedToCheckout.isEnabled = true
+            priceBreakdown.visibility = View.VISIBLE
             priceBreakdown.isEnabled = true
+
+
         }
     }
 
