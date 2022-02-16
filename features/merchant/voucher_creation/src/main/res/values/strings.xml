@@ -458,6 +458,8 @@
     <string name="share_component_outgoing_text_description">Yuk, belanja dan pakai Voucher Tokonya sekarang!</string>
     <string name="placeholder_share_component_outgoing_title">Voucher Toko dari %s</string>
     <string name="error_message_quota_is_zero">Min. 1 Kupon</string>
+    <string name="mvc_placeholder_cancelled_at">Dibatalkan pada &lt;b>%s&lt;/b></string>
+    <string name="mvc_total_expense">Total Pengeluaran</string>
 
     <!--create coupon-->
     <string name="mvc_coupon_information_title">Informasi Kupon</string>
