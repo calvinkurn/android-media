@@ -57,7 +57,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
             intent.extras?.let {
                 productId = it.getString(PARAM_PRODUCT_ID) ?: ""
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
-                bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
+                bundle.putString(PARAM_PRODUCT_ID, productId)
             }
             PdpSimulationFragment.newInstance(bundle)
         }

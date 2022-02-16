@@ -34,12 +34,11 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
         }
     }
 
-
     private fun getRequestParams(amount: Double, productId: String): MutableMap<String, Any?> {
         return mutableMapOf(
             "request" to mutableMapOf(
                 PARAM_PRODUCT_AMOUNT to amount,
-                PARAM_PRODUCT_ID to "1"
+                PARAM_PRODUCT_ID to productId
             )
         )
     }

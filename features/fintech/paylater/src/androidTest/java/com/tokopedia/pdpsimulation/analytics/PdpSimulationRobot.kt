@@ -18,15 +18,15 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.unifycomponents.TabsUnify
+import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 
 class PdpSimulationRobot {
 
-
     fun clickPartnerButton() {
         onView(
-            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnHowToUse), isDisplayed()))
+            CommonMatcher.firstView(AllOf.allOf(withId(R.id.payLaterActionCta), isDisplayed()))
         ).perform(ViewActions.click())
     }
 
@@ -50,33 +50,6 @@ class PdpSimulationRobot {
         )
     }
 
-
-    fun clickPartnerFaq() {
-        onView(
-            CommonMatcher.firstView(AllOf.allOf(withId(R.id.faqList), isDisplayed()))
-        ).perform(ViewActions.click())
-    }
-
-
-    fun swipeUpCoordinateLayout() {
-        onView(
-            CommonMatcher.firstView(
-                AllOf.allOf(
-                    withId(R.id.parent_scroll_view),
-                    isDisplayed()
-                )
-            )
-        ).perform(
-            swipeUp()
-        )
-    }
-
-
-    fun clickPartnerFaqBottomSheet() {
-        onView(
-            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnSeeMore), isDisplayed()))
-        ).perform(ViewActions.click())
-    }
 
 
     infix fun assertTest(action: PdpSimulationRobot.() -> Unit) = PdpSimulationRobot().apply(action)

@@ -239,7 +239,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         payLaterSimulationGlobalError.visible()
         payLaterSimulationGlobalError.setActionClickListener {
             payLaterSimulationGlobalError.gone()
-            productInfoShimmer.visible()
+            if (!isProductDetailShown)
+                productInfoShimmer.visible()
             showSimulationViews()
             payLaterViewModel.getProductDetail(payLaterArgsDescriptor.productId)
         }

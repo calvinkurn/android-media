@@ -60,6 +60,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
     fun getProductDetail(productId: String) {
+        idlingResourceProvider?.increment()
         productDetailUseCase.cancelJobs()
         productDetailUseCase.getProductDetail(
             ::onAvailableProductDetail,
@@ -69,12 +70,14 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
+        idlingResourceProvider?.decrement()
         baseProductDetailClass.getProductV3?.let {
             _productDetailLiveData.value = Success(it)
         }
     }
 
     private fun onFailProductDetail(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _productDetailLiveData.value = Fail(throwable)
     }
 
@@ -84,9 +87,9 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
-        idlingResourceProvider?.decrement()
         mapperUseCase.cancelJobs()
         mapperUseCase.mapResponseToUi({ data ->
+            idlingResourceProvider?.decrement()
             if (data.isNotEmpty()) {
                 tenureMap =
                     data.mapIndexed { index, simulationUiModel -> simulationUiModel.tenure to index }
@@ -98,7 +101,9 @@ class PayLaterViewModel @Inject constructor(
                 _payLaterOptionsDetailLiveData.value =
                     Fail(PdpSimulationException.PayLaterEmptyDataException(DATA_EMPTY))
             }
-        }, { _payLaterOptionsDetailLiveData.value = Fail(it) },
+        }, {
+            idlingResourceProvider?.decrement()
+            _payLaterOptionsDetailLiveData.value = Fail(it) },
             paylaterGetSimulation, defaultTenure
         )
     }
@@ -114,6 +119,5 @@ class PayLaterViewModel @Inject constructor(
     companion object {
         const val DATA_FAILURE = "NULL DATA"
         const val DATA_EMPTY = "EMPTY DATA"
-        const val PAY_LATER_NOT_APPLICABLE = "Pay Later Not Applicable"
     }
 }
