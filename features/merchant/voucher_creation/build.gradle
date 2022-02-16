@@ -14,13 +14,6 @@ buildscript {
 }
 
 android {
-    buildFeatures {
-        viewBinding true
-    }
-}
-
-
-android {
     packagingOptions {
         exclude 'META-INF/**'
     }

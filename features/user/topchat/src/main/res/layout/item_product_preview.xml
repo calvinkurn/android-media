@@ -8,20 +8,21 @@
     android:layout_marginStart="@dimen/dp_topchat_1"
     android:layout_marginTop="@dimen/dp_topchat_6"
     android:layout_marginBottom="@dimen/unify_space_2"
-    android:minHeight="@dimen/unify_space_64"
-    android:paddingTop="@dimen/unify_space_8"
-    android:paddingBottom="@dimen/unify_space_8">
+    android:minHeight="@dimen/unify_space_64">
 
     <ImageView
         android:id="@+id/iv_product"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
         android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_bias="0.0"
         tools:src="@color/Unify_G200" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -109,6 +110,7 @@
         android:layout_marginTop="@dimen/unify_space_2"
         android:ellipsize="end"
         android:maxLines="1"
+        android:paddingBottom="@dimen/unify_space_8"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/iv_close"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -118,10 +120,22 @@
         app:typographyWeight="bold"
         tools:text="Rp500.000" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_product_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"
+        tools:visibility="gone" />
+
     <ImageView
         android:id="@+id/iv_close"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/dp_topchat_10"
         android:contentDescription="@null"
         android:paddingStart="@dimen/dp_topchat_6"
@@ -130,5 +144,40 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/topchat_ic_close" />
+
+    <LinearLayout
+        android:id="@+id/ll_retry_product_preview"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/title_topchat_click_refresh"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="body_3" />
+
+        <FrameLayout
+            android:id="@+id/iu_retry_product_preview"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                app:icon_name="RELOAD" />
+        </FrameLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
