@@ -203,6 +203,15 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                             addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
                             addOnLevel = AddOnRequest.ADD_ON_LEVEL_PRODUCT
                         }
+                        cartProducts = addOnProductData.availableBottomSheetData.products.map {
+                            CartProduct().apply {
+                                cartId = it.cartId
+                                productId = it.productId
+                                warehouseId = addOnProductData.availableBottomSheetData.warehouseId
+                                productName = it.productName
+                                productImageUrl = it.productImageUrl
+                            }
+                        }
                         _addOnUiModel.value.let {
                             addOnData = listOf(
                                     AddOnDataRequest().apply {
@@ -257,8 +266,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     fun updateFragmentUiModel(addOnUiModel: AddOnUiModel) {
         _totalAmountUiModel.value = TotalAmountUiModel().apply {
             if (addOnUiModel.isAddOnSelected) {
-                addOnTotalPrice = addOnUiModel.addOnPrice
-                addOnTotalQuantity = 1
+                addOnTotalPrice = addOnUiModel.addOnQty * addOnUiModel.addOnPrice
+                addOnTotalQuantity = addOnUiModel.addOnQty
             } else {
                 addOnTotalPrice = 0
                 addOnTotalQuantity = 0

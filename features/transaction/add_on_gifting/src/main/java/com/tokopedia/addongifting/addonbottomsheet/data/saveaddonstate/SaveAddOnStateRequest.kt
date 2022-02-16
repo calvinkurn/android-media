@@ -14,6 +14,8 @@ data class AddOnRequest(
         var addOnKey: String = "",
         @SerializedName("add_on_level")
         var addOnLevel: String = "",
+        @SerializedName("cart_products")
+        var cartProducts: List<CartProduct> = emptyList(),
         @SerializedName("add_on_data")
         var addOnData: List<AddOnDataRequest> = emptyList()
 ) {
@@ -22,6 +24,19 @@ data class AddOnRequest(
         const val ADD_ON_LEVEL_ORDER = "order"
     }
 }
+
+data class CartProduct(
+        @SerializedName("cart_id")
+        var cartId: String = "",
+        @SerializedName("product_id")
+        var productId: String = "",
+        @SerializedName("warehouse_id")
+        var warehouseId: String = "",
+        @SerializedName("product_name")
+        var productName: String = "",
+        @SerializedName("product_image_url")
+        var productImageUrl: String = ""
+)
 
 data class AddOnDataRequest(
         @SerializedName("add_on_id")

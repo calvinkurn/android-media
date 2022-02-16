@@ -556,7 +556,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productName = "Product 1"
                         productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
                         productPrice = 10000
-                        productQuantity = 1
+                        productQuantity = 11
                     }
                     val product2 = Product().apply {
                         cartId = "456"
@@ -564,7 +564,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productName = "Product 2"
                         productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
                         productPrice = 20000
-                        productQuantity = 2
+                        productQuantity = 22
                     }
                     val product3 = Product().apply {
                         cartId = "789"
@@ -572,18 +572,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productName = "Product 3"
                         productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
                         productPrice = 30000
-                        productQuantity = 3
+                        productQuantity = 33
                     }
                     products = listOf(product1, product2, product3)
-                    isTokoCabang = true
+                    isTokoCabang = false
                     cartString = "123-456-789"
                     warehouseId = "111222"
                     shopName = "Tokoku"
-                    addOnFooterMessages = listOf(
-                            "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
-                            "{{qty}} barang hanya dapat 1 kartu ucapan",
-                            "Invoice tidak dikirim ke penerima pesanan"
-                    )
+                    onlyGreetingCardInfo = "{{qty}} barang hanya dapat 1 kartu ucapan"
+                    packagingAndGreetingCardInfo = "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan"
+                    invoiceNotSentToRecipientInfo = "Invoice tidak dikirim ke penerima pesanan"
                     addOnSavedStates = listOf(AddOnData().apply {
                         addOnId = "898"
                         addOnMetadata = AddOnMetadata().apply {

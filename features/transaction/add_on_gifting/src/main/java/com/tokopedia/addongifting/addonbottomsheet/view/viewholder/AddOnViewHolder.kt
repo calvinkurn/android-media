@@ -8,10 +8,11 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.addongifting.R
-import com.tokopedia.addongifting.databinding.ItemAddOnBinding
-import com.tokopedia.addongifting.databinding.SubLayoutAddOnFooterMessageBinding
+import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.BasicInfoResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.AddOnActionListener
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
+import com.tokopedia.addongifting.databinding.ItemAddOnBinding
+import com.tokopedia.addongifting.databinding.SubLayoutAddOnFooterMessageBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.Utils
@@ -56,10 +57,11 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             } else {
                 labelAddOnDescription.gone()
             }
-            labelAddOnPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
+            val addOnQuantityAndPrice = "${element.addOnQty} x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()}"
+            labelAddOnQuantityAndPrice.text = addOnQuantityAndPrice
             labelAddOnName.setOnClickListener(getCheckboxClickListener())
             labelAddOnDescription.setOnClickListener(getCheckboxClickListener())
-            labelAddOnPrice.setOnClickListener(getCheckboxClickListener())
+            labelAddOnQuantityAndPrice.setOnClickListener(getCheckboxClickListener())
         }
     }
 
@@ -195,10 +197,21 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderAddOnFooterMessages(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
+            val informationMessages = mutableListOf<String>()
+            if (element.isTokoCabang) {
+                informationMessages.add(element.invoiceNotSentToRecipientInfo)
+            } else {
+                if (element.addOnType == BasicInfoResponse.ADD_ON_TYPE_GREETING_CARD) {
+                    informationMessages.add(element.onlyGreetingCardInfo)
+                } else if (element.addOnType == BasicInfoResponse.ADD_ON_TYPE_GREETING_CARD_AND_PACKAGING) {
+                    informationMessages.add(element.packagingAndGreetingCardInfo)
+                }
+                informationMessages.add(element.invoiceNotSentToRecipientInfo)
+            }
             containerFooterMessages.removeAllViews()
-            element.addOnFooterMessages.forEach {
+            informationMessages.forEach {
                 val messageView = SubLayoutAddOnFooterMessageBinding.inflate(LayoutInflater.from(itemView.context))
-                val message = it.replace(QUANTITY_PLACEHOLDER, element.productCount.toString())
+                val message = it.replace(QUANTITY_PLACEHOLDER, element.mainProductQuantity.toString())
                 messageView.labelFooterMessage.text = message
                 containerFooterMessages.addView(messageView.root)
             }

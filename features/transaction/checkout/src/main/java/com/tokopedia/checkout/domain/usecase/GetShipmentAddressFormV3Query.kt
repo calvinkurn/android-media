@@ -52,6 +52,40 @@ fun getQueryShipmentAddressFormV3(): String {
                   }
                 }
                 group_shop {
+                  add_ons {
+                    status
+                    add_on_data {
+                      add_on_id
+                      add_on_qty
+                      add_on_price
+                      add_on_metadata {
+                        add_on_note {
+                            is_custom_note
+                            to
+                            from
+                            notes
+                        }
+                      }
+                    }
+                    add_on_button {
+                      title
+                      description
+                      left_icon_url
+                      right_icon_url
+                      action
+                    }
+                    add_on_bottomsheet {
+                      header_title
+                      description
+                      products {
+                        product_name
+                        product_image_url
+                      }
+                      ticker {
+                        text
+                      }
+                    }
+                  }
                   errors
                   errors_unblocking
                   shipping_id
@@ -167,6 +201,40 @@ fun getQueryShipmentAddressFormV3(): String {
                       bundle_icon_url
                     }
                     products {
+                      add_ons {
+                        status
+                        add_on_data {
+                            add_on_id
+                            add_on_qty
+                            add_on_price
+                            add_on_metadata {
+                                add_on_note {
+                                    is_custom_note
+                                    to
+                                    from
+                                    notes
+                                }
+                            }
+                          }
+                          add_on_button {
+                            title
+                            description
+                            left_icon_url
+                            right_icon_url
+                            action
+                          }
+                          add_on_bottomsheet {
+                            header_title
+                            description
+                            products {
+                               product_name
+                               product_image_url
+                            }
+                            ticker {
+                               text
+                            }
+                          }
+                      }
                       errors
                       cart_id
                       product_id
