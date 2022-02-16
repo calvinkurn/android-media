@@ -21,6 +21,7 @@ object DigitalPDPConstant {
 
     const val TELCO_PREFERENCES_NAME = "telco_preferences"
     const val TOKEN_LISTRIK_PREFERENCES_NAME = "token_listrik_preferences"
+    const val TAGIHAN_PREFERENCES_NAME = "tagihan_preferences"
     const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
 
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
