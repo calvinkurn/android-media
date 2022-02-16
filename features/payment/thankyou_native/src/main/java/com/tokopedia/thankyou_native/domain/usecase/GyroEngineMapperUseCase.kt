@@ -52,7 +52,7 @@ class GyroEngineMapperUseCase @Inject constructor(
 
     private fun setTokomemberData(gyroRecommendationListItem: GyroRecommendation?) {
         tokomemberModel?.also { tokomemberModel ->
-            gyroRecommendationListItem?.gyroVisitable?.add(
+            gyroRecommendationListItem?.gyroVisitable?.add(0,
                 tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_WAITING_WIDGET)?:GyroTokomemberItem())
 
             gyroRecommendationListItem?.gyroMembershipSuccessWidget =
