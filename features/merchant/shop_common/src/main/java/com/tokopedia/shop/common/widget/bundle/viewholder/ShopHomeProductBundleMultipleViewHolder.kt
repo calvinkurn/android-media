@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleMultipleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleMultipleAdapter
@@ -35,6 +36,7 @@ class ShopHomeProductBundleMultipleViewHolder(
     private var typographyBundleProductDisplayPrice: Typography? = null
     private var typographyBundleProductOriginalPrice: Typography? = null
     private var typographyBundleProductSavingAmount: Typography? = null
+    private var typographyBundlePreOrder: Typography? = null
     private var buttonAtc: UnifyButton? = null
     private var labelBundleDiscount: Label? = null
     private var rvBundleProducts: RecyclerView? = null
@@ -45,6 +47,7 @@ class ShopHomeProductBundleMultipleViewHolder(
             typographyBundleName = tvBundleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
+            typographyBundlePreOrder = tvBundlePreorder
             labelBundleDiscount = labelDiscountBundle
             typographyBundleProductSavingAmount = tvSavingAmountPriceWording
             buttonAtc = btnBundleAtc
@@ -66,6 +69,14 @@ class ShopHomeProductBundleMultipleViewHolder(
             paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
         typographyBundleProductSavingAmount?.text = HtmlLinkHelper(itemView.context, multipleBundleItem.savingAmountWording).spannedString
+        typographyBundlePreOrder?.shouldShowWithAction(multipleBundleItem.isPreOrder) {
+            typographyBundlePreOrder?.text = multipleBundleItem.preOrderInfo
+        }
+        buttonAtc?.text = if (multipleBundleItem.isPreOrder) {
+            itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
+        } else {
+            itemView.context.getString(R.string.shop_page_product_bundle_atc_button_text)
+        }
 
         // bundle products list
         initBundleProductsRecyclerView(spanSize = bundle.bundleProducts.size)

@@ -38,7 +38,7 @@ class ShopHomeProductBundleSingleViewHolder(
 
     private var viewBinding: ItemShopHomeProductBundleSingleWidgetBinding? by viewBinding()
     private var typographyBundleName: Typography? = null
-    private var typographyBundlePreorder: Typography? = null
+    private var typographyBundlePreOrder: Typography? = null
     private var typographyBundleProductName: Typography? = null
     private var typographyBundleProductDisplayPrice: Typography? = null
     private var typographyBundleProductOriginalPrice: Typography? = null
@@ -53,7 +53,7 @@ class ShopHomeProductBundleSingleViewHolder(
     init {
         viewBinding?.apply {
             typographyBundleName = tvBundleName
-            typographyBundlePreorder = tvBundlePreorder
+            typographyBundlePreOrder = tvBundlePreorder
             typographyBundleProductName = tvBundleProductSingleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
@@ -79,8 +79,13 @@ class ShopHomeProductBundleSingleViewHolder(
         // bundle card item details
         renderBundlePriceDetails(selectedSingleBundle)
         typographyBundleName?.text = bundle.bundleName
-        typographyBundlePreorder?.apply {
-            shouldShowWithAction(selectedSingleBundle.isPreOrder.orFalse()) { text = selectedSingleBundle.preOrderInfo }
+        typographyBundlePreOrder?.shouldShowWithAction(selectedSingleBundle.isPreOrder) {
+            typographyBundlePreOrder?.text = selectedSingleBundle.preOrderInfo
+        }
+        buttonAtc?.text = if (selectedSingleBundle.isPreOrder) {
+            itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
+        } else {
+            itemView.context.getString(R.string.shop_page_product_bundle_atc_button_text)
         }
 
         // single bundle product detail
