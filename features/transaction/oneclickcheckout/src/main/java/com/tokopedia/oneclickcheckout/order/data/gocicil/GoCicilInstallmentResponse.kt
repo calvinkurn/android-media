@@ -27,14 +27,10 @@ class GoCicilInstallmentOption(
         val estInstallmentEnd: String = "",
         @SerializedName("first_due_message")
         val firstDueMessage: String = "",
-        @SerializedName("principal_amount")
-        val principalAmount: Double = 0.0,
         @SerializedName("interest_amount")
         val interestAmount: Double = 0.0,
         @SerializedName("fee_amount")
         val feeAmount: Double = 0.0,
-        @SerializedName("total_amount")
-        val totalAmount: Double = 0.0,
         @SerializedName("installment_amount_per_period")
         val installmentAmountPerPeriod: Double = 0.0,
         @SerializedName("label_type")

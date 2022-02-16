@@ -24,7 +24,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                 PARAM_ADDITIONAL_PARAMS to mapOf(
                         PARAM_GATEWAY_CODE to gatewayCode,
-//                        PARAM_TENOR to 12
+                        PARAM_TENOR to tenor
                 )
         )
     }

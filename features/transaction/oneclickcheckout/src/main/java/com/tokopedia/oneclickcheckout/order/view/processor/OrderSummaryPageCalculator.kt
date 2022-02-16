@@ -126,10 +126,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             }
             if (payment.walletData.isGoCicil && payment.minimumAmount > orderCost.totalPriceWithoutPaymentFees) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
-                if (payment.isOvoOnlyCampaign) {
-                    currentState = disableButtonState(currentState)
-                    buttonType = OccButtonType.PAY
-                }
                 if (payment.specificGatewayCampaignOnlyType > 0) {
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
@@ -152,10 +148,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             }
             if (payment.walletData.isGoCicil && payment.maximumAmount > 0 && payment.maximumAmount < orderCost.totalPriceWithoutPaymentFees) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
-                if (payment.isOvoOnlyCampaign) {
-                    currentState = disableButtonState(currentState)
-                    buttonType = OccButtonType.PAY
-                }
                 if (payment.specificGatewayCampaignOnlyType > 0) {
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
