@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -429,7 +430,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     installmentModel = it
                 }
                 DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).tenure?.let {
-                    paymentDuration.text = it
+                    paymentDuration.text = "X$it"
                 }
                 DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).priceText?.let {
                     amountToPay.text = it
