@@ -26,6 +26,8 @@ class SaveButtonViewComponent(
         view.isEnabled = isEnabled
     }
 
+    fun isEnabled() = view.isEnabled
+
     sealed class Event {
         object OnClicked : Event()
     }

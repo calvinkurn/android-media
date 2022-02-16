@@ -17,12 +17,11 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
@@ -114,7 +113,7 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun cancel() {
-                exitConfirmationDialog.show()
+                closeBottomSheet()
             }
         }.apply {
             dialogCustomizer.customize(this)
@@ -148,7 +147,7 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     override fun onSortChosen(bottomSheet: ProductSortBottomSheet, item: SortUiModel) {
-        viewModel.submitAction(PlayBroProductChooserAction.SetSort(item))
+        viewModel.submitAction(ProductSetupAction.SetSort(item))
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -173,7 +172,7 @@ class ProductChooserBottomSheet @Inject constructor(
         }
 
         setCloseClickListener {
-            exitConfirmationDialog.show()
+            closeBottomSheet()
         }
     }
 
@@ -200,7 +199,11 @@ class ProductChooserBottomSheet @Inject constructor(
                     state.selectedProductSectionList,
                     state.config
                 )
-                renderSaveButton(state.saveState)
+                renderSaveButton(
+                    prevState?.selectedProductSectionList,
+                    state.selectedProductSectionList,
+                    state.saveState
+                )
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
                 renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
             }
@@ -227,9 +230,6 @@ class ProductChooserBottomSheet @Inject constructor(
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
                         //TODO("Show Error")
-                    }
-                    is PlayBroProductChooserEvent.OpenShopPage -> {
-                        RouteManager.route(context, ApplinkConst.SHOP, it.shopId)
                     }
                     else -> {}
                 }
@@ -327,9 +327,15 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSaveButton(
+        prevSelectedProducts: List<ProductTagSectionUiModel>?,
+        selectedProducts: List<ProductTagSectionUiModel>,
         saveState: ProductSaveStateUiModel
     ) {
-        saveButtonView.setState(isLoading = saveState.isLoading, isEnabled = saveState.canSave)
+        val isProductChanged = prevSelectedProducts != null && prevSelectedProducts != selectedProducts
+        saveButtonView.setState(
+            isLoading = saveState.isLoading,
+            isEnabled = saveState.canSave && isProductChanged
+        )
     }
 
     private fun renderProductError(
@@ -381,11 +387,11 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductListEvent(event: ProductListViewComponent.Event) {
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
-                viewModel.submitAction(PlayBroProductChooserAction.SelectProduct(event.product))
+                viewModel.submitAction(ProductSetupAction.SelectProduct(event.product))
             }
             is ProductListViewComponent.Event.OnLoadMore -> {
                 viewModel.submitAction(
-                    PlayBroProductChooserAction.LoadProductList(keyword = "")
+                    ProductSetupAction.LoadProductList(keyword = "")
                 )
             }
         }
@@ -394,7 +400,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleSearchBarEvent(event: SearchBarViewComponent.Event) {
         when (event) {
             is SearchBarViewComponent.Event.OnSearched -> {
-                viewModel.submitAction(PlayBroProductChooserAction.SearchProduct(event.keyword))
+                viewModel.submitAction(ProductSetupAction.SearchProduct(event.keyword))
             }
         }
     }
@@ -402,7 +408,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleSaveButtonEvent(event: SaveButtonViewComponent.Event) {
         when (event) {
             SaveButtonViewComponent.Event.OnClicked -> {
-                viewModel.submitAction(PlayBroProductChooserAction.SaveProducts)
+                viewModel.submitAction(ProductSetupAction.SaveProducts)
             }
         }
     }
@@ -410,9 +416,14 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductErrorEvent(event: ProductErrorViewComponent.Event) {
         when (event) {
             ProductErrorViewComponent.Event.AddProductClicked -> {
-                viewModel.submitAction(PlayBroProductChooserAction.CreateProduct)
+                RouteManager.route(context, ApplinkConst.PRODUCT_ADD)
             }
         }
+    }
+
+    private fun closeBottomSheet() {
+        if (saveButtonView.isEnabled()) exitConfirmationDialog.show()
+        else mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
     }
 
     /**

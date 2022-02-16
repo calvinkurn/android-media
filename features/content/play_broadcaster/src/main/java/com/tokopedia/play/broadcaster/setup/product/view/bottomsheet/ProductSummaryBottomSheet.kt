@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,21 +10,17 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -52,7 +47,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     @ExperimentalStdlibApi
     override fun onProductDeleteClicked(product: ProductUiModel) {
         analytic.clickDeleteProductOnProductSetup(productId = product.id)
-        viewModel.submitAction(PlayBroProductChooserAction.DeleteSelectedProduct(product))
+        viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +65,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupView()
         setupObserve()
 
-        viewModel.submitAction(PlayBroProductChooserAction.LoadProductSummary)
+        viewModel.submitAction(ProductSetupAction.LoadProductSummary)
     }
 
     override fun onDestroyView() {
