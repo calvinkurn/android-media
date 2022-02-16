@@ -446,7 +446,6 @@ object ShopPageHomeMapper {
                 ctaText = widgetResponse.header.ctaText,
                 ctaTextLink = widgetResponse.header.ctaLink,
                 endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
-                timeCounter = widgetResponse.data.firstOrNull()?.timeCounter.toLongOrZero(),
                 statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
                 totalProduct = widgetResponse.data.firstOrNull()?.totalProduct.orZero()
             ),
@@ -461,17 +460,7 @@ object ShopPageHomeMapper {
                      imageUrl = it.imageUrl,
                      imageUrl300 = "",
                      productUrl = it.urlApps,
-                     hideGimmick = it.hideGimmick,
-                     stockLabel = it.stockWording.title,
-                     stockSoldPercentage =  it.stockSoldPercentage.toInt(),
-                     labelGroupList  = it.labelGroups.map { labelGroup ->
-                         com.tokopedia.shop_widget.common.uimodel.LabelGroupUiModel(
-                             position = labelGroup.position,
-                             title = labelGroup.title,
-                             type = labelGroup.type,
-                             url = labelGroup.url
-                         )
-                     }
+                     hideGimmick = it.hideGimmick
                  )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),

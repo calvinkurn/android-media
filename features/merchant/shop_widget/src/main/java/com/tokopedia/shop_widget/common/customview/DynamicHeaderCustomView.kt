@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit
 class DynamicHeaderCustomView: FrameLayout {
 
     companion object {
-        private const val NO_TIMER = 0L
         private const val H24 = 24
         private const val D7 = 7
         private const val MIN_TOTAL_PRODUCT = 10
@@ -57,7 +56,7 @@ class DynamicHeaderCustomView: FrameLayout {
         handleTitle(model.title)
         handleSubtitle(model.subTitle)
         handleSeeAllAppLink(model.ctaText, model.ctaTextLink, model.totalProduct)
-        handleCountDownTimer(model.statusCampaign, model.endDate, model.timeCounter)
+        handleCountDownTimer(model.statusCampaign, model.endDate)
     }
 
     private fun setupUi() {
@@ -103,14 +102,12 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleCountDownTimer(statusCampaign: String, endDate: String, timeCounter: Long) {
+    private fun handleCountDownTimer(statusCampaign: String, endDate: String) {
         try {
             tusCountDown?.isShowClockIcon = false
-            if (timeCounter != NO_TIMER) {
-                checkStatusCampaign( statusCampaign, endDate)
-            } else {
-                tusCountDown?.gone()
-                tpSubtitle?.gone()
+            checkStatusCampaign( statusCampaign, endDate)
+            tusCountDown?.onFinish = {
+                listener?.onTimerFinish()
             }
         } catch (e: Throwable) {
             tusCountDown?.gone()
@@ -120,8 +117,8 @@ class DynamicHeaderCustomView: FrameLayout {
 
     private fun checkStatusCampaign(statusCampaign: String, endDate: String) {
         when {
-            isStatusCampaignFinished(statusCampaign) || statusCampaign.isEmpty() -> checkStatusCampaignFinished()
             isStatusCampaignOngoing(statusCampaign) -> checkStatusCampaignOngoing(endDate)
+            else -> checkStatusCampaignFinished()
         }
     }
 
@@ -134,8 +131,8 @@ class DynamicHeaderCustomView: FrameLayout {
         val calendar = Calendar.getInstance()
         val endDateMillis = DateHelper.getDateFromString(endDate).time
         val currentMillis = System.currentTimeMillis()
-        val isMoreThan1Day = getDateHours(endDateMillis - currentMillis) > H24
-        if (isMoreThan1Day) {
+        val isMoreOrEqualThan1Day = getDateHours(endDateMillis - currentMillis) >= H24
+        if (isMoreOrEqualThan1Day) {
             val isMoreThan7Days = getDateDays(endDateMillis - currentMillis) > D7
             if (isMoreThan7Days) {
                 tusCountDown?.gone()
@@ -148,10 +145,6 @@ class DynamicHeaderCustomView: FrameLayout {
         }
         calendar.time = Date(endDateMillis)
         tusCountDown?.targetDate = calendar
-    }
-
-    private fun isStatusCampaignFinished(statusCampaign: String): Boolean {
-        return statusCampaign.equals(StatusCampaign.FINISHED.statusCampaign, true)
     }
 
     private fun isStatusCampaignOngoing(statusCampaign: String): Boolean {
@@ -168,5 +161,6 @@ class DynamicHeaderCustomView: FrameLayout {
 
     interface HeaderCustomViewListener {
         fun onSeeAllClick(appLink: String)
+        fun onTimerFinish()
     }
 }

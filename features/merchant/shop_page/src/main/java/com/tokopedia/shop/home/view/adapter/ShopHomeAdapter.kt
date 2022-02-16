@@ -382,16 +382,7 @@ class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun removeShopHomeCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel){
-        val newList = getNewVisitableItems()
-        val modelIndex = newList.indexOf(model)
-        if(modelIndex != -1){
-            newList.remove(model)
-            submitList(newList)
-        }
-    }
-
-    fun removeShopHomeFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+    fun removeWidget(model: Visitable<*>) {
         val newList = getNewVisitableItems()
         val modelIndex = newList.indexOf(model)
         if(modelIndex != INVALID_INDEX){

@@ -105,6 +105,10 @@ class ThematicWidgetViewHolder (
         listener.onSeeAllThematicWidgetClickListener(appLink, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
     }
 
+    override fun onTimerFinish() {
+        listener.onThematicWidgetTimerFinishListener(uiModel)
+    }
+
     private fun setupRecyclerView(element: ThematicWidgetUiModel) {
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         rvProduct?.layoutManager = layoutManager
@@ -229,5 +233,6 @@ class ThematicWidgetViewHolder (
         fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int)
         fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
+        fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?)
     }
 }

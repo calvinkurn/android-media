@@ -2636,7 +2636,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     // npl widget
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
+        shopHomeAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
@@ -2646,7 +2646,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     // flash sale widget
     override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
-        shopHomeAdapter.removeShopHomeFlashSaleWidget(model)
+        shopHomeAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
@@ -3099,6 +3099,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 userId = userId,
             )
             RouteManager.route(context, appLink)
+        }
+
+        override fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?) {
+            model?.apply {
+                shopHomeAdapter.removeWidget(this)
+            }
         }
     }
 
