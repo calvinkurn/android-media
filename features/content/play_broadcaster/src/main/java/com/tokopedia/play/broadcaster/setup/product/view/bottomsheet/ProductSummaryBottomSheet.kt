@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -163,6 +164,11 @@ class ProductSummaryBottomSheet @Inject constructor(
 
                         productSummaryListView.setProductList(emptyList())
                         binding.ivLoading.visibility = View.GONE
+                    }
+                    is PlayBroProductChooserEvent.DeleteProductSuccess -> {
+                        view?.rootView?.showToaster(
+                            message = getString(R.string.play_bro_product_summary_success_delete_product, event.deletedProductCount),
+                        )
                     }
                     is PlayBroProductChooserEvent.DeleteProductError -> {
                         view?.rootView?.showErrorToaster(
