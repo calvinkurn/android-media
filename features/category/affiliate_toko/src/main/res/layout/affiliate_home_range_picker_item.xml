@@ -43,7 +43,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_10"
-        app:card_background_color="@color/Neutral_N50"
+        app:card_background_color="@color/Unify_N50_68"
         app:card_type="clear"
         android:layout_width="0dp"
         android:layout_height="46dp"
