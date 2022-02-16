@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDatePickerAdapterFactory
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeAdapter
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeDiffcallback
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeTypeFactory
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapterFactory
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapter
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetDiffcallback
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetTypeFactory
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
@@ -89,9 +89,9 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
 
     private val adapter by lazy {
-        val asyncDifferConfig = AsyncDifferConfig.Builder(AffiliateDateRangeDiffcallback())
+        val asyncDifferConfig = AsyncDifferConfig.Builder(AffiliateBottomSheetDiffcallback())
             .build()
-        AffiliateDateRangeAdapter(asyncDifferConfig, AffiliateDatePickerAdapterFactory(this))
+        AffiliateBottomSheetAdapter(asyncDifferConfig, AffiliateBottomSheetAdapterFactory(this))
     }
 
     private fun setData() {
@@ -100,7 +100,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
        getData()
        adapter.submitList(itemList as List<Visitable<*>>?)
     }
-    private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
+    private val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
     private fun getData() {
         itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0")))
         itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1")))

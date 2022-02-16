@@ -161,6 +161,19 @@ class AffiliateHomeViewModel @Inject constructor(
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
     private var selectedDateValue = "30"
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun getSelectedDate(): String {
         return selectedDateRange
     }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/dp_18"
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Komisi Penjualan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Rp1.250.000"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/Unify_GN500"
+        android:id="@+id/amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="+Rp550.000"
+        app:layout_constraintBottom_toBottomOf="@+id/text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text"
+        app:typographyType="body_3"/>
+    <com.tokopedia.iconunify.IconUnify
+        app:layout_constraintTop_toTopOf="@+id/amount"
+        app:layout_constraintBottom_toBottomOf="@+id/amount"
+        app:layout_constraintEnd_toStartOf="@+id/amount"
+        android:rotation="90"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_name="ARROW_BACK"
+        android:layout_width="10dp"
+        android:layout_height="@dimen/dp_10"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:visibility="gone"
+        android:id="@+id/text_sub_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="Komisi kunjungan dihitung dari kunjungan terpilih x komisi per 1 kunjungan. Contoh: 20 kunjungan terpilih x Rp50 = Rp1.000."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="small"
+        app:typographyWeight="reguler"/>
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerUnify"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="@+id/text_sub_title"
+        app:layout_constraintTop_toBottomOf="@id/text_sub_title" />
+</androidx.constraintlayout.widget.ConstraintLayout>
