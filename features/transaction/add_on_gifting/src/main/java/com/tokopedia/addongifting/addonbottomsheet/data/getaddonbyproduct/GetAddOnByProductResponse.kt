@@ -62,7 +62,12 @@ data class BasicInfoResponse(
         val productAddOnType: String = "",
         @SerializedName("Status")
         val status: String = ""
-)
+) {
+        companion object {
+                const val ADD_ON_TYPE_GREETING_CARD = "GREETING_CARD_TYPE"
+                const val ADD_ON_TYPE_GREETING_CARD_AND_PACKAGING = "GREETING_CARD_AND_PACKAGING_TYPE"
+        }
+}
 
 data class RulesResponse(
         @SerializedName("MaxOrder")

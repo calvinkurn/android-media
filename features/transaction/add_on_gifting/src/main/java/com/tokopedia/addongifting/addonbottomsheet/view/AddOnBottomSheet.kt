@@ -207,7 +207,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             setLabelTitle(context.getString(R.string.add_on_label_total_amount))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.totalAmount.addOnTotalPrice, false).removeDecimalSuffix())
             if (fragmentUiModel.totalAmount.addOnTotalQuantity > 0) {
-                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.totalAmount.addOnTotalQuantity))
+                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save_with_quantity), fragmentUiModel.totalAmount.addOnTotalQuantity))
             } else {
                 setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }
@@ -336,6 +336,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         val addOnImages = arrayListOf<String>()
         addOnImages.addAll(addOnUiModel.addOnAllImageUrls)
         intent.putStringArrayListExtra(AddOnConstant.EXTRA_ADD_ON_IMAGES, addOnImages)
+        intent.putExtra(AddOnConstant.EXTRA_ADD_ON_NAME, addOnUiModel.addOnName)
+        intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRICE, addOnUiModel.addOnPrice)
         startActivity(intent)
     }
 }

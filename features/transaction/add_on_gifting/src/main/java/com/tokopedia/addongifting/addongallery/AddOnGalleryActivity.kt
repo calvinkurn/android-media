@@ -9,6 +9,8 @@ import com.tokopedia.image_gallery.ImageGalleryItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class AddOnGalleryActivity : BaseSimpleActivity() {
 
@@ -18,26 +20,47 @@ class AddOnGalleryActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = GalleryActivityBinding.inflate(layoutInflater)
         setContentView(viewBinding?.root)
-        renderImageGallery()
+
+        viewBinding?.let {
+            val imageUrls = intent.extras?.getStringArrayList(AddOnConstant.EXTRA_ADD_ON_IMAGES)?.toList()
+                    ?: emptyList()
+            val addOnName = intent.extras?.getString(AddOnConstant.EXTRA_ADD_ON_NAME) ?: ""
+            val addOnPrice = intent.extras?.getLong(AddOnConstant.EXTRA_ADD_ON_PRICE) ?: 0
+            renderView(it, imageUrls, addOnName, addOnPrice)
+        }
     }
 
-    private fun renderImageGallery() {
-        val imageGalleryItems = arrayListOf<ImageGalleryItem>()
-        intent.extras?.getStringArrayList(AddOnConstant.EXTRA_ADD_ON_IMAGES)?.forEach {
-            imageGalleryItems.add(ImageGalleryItem(null, it))
-        }
-        if (imageGalleryItems.isNotEmpty()) {
-            viewBinding?.imageGalleryAddOn?.apply {
-                isHiddenOverlay = true
-                setImages(imageGalleryItems)
-            }
-            viewBinding?.imageGalleryAddOn?.show()
-        } else {
-            viewBinding?.imageGalleryAddOn?.gone()
-        }
+    private fun renderView(viewBinding: GalleryActivityBinding, imageUrls: List<String>, addOnName: String, addOnPrice: Long) {
+        renderImageGallery(viewBinding, imageUrls)
+        renderAddOnInfo(viewBinding, addOnName, addOnPrice)
+    }
 
-        viewBinding?.buttonClose?.setOnClickListener {
-            finish()
+    private fun renderImageGallery(viewBinding: GalleryActivityBinding, imageUrls: List<String>) {
+        with(viewBinding) {
+            val imageGalleryItems = arrayListOf<ImageGalleryItem>()
+            imageUrls.forEach {
+                imageGalleryItems.add(ImageGalleryItem(null, it))
+            }
+            if (imageGalleryItems.isNotEmpty()) {
+                imageGalleryAddOn.apply {
+                    isHiddenOverlay = true
+                    setImages(imageGalleryItems)
+                }
+                imageGalleryAddOn.show()
+            } else {
+                imageGalleryAddOn.gone()
+            }
+
+            buttonClose.setOnClickListener {
+                finish()
+            }
+        }
+    }
+
+    private fun renderAddOnInfo(viewBinding: GalleryActivityBinding, addOnName: String, addOnPrice: Long) {
+        with(viewBinding) {
+            labelAddOnName.text = addOnName
+            labelAddOnPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnPrice, false).removeDecimalSuffix()
         }
     }
 
