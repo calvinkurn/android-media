@@ -1362,20 +1362,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String
     ) {
-        if (selectedMultipleBundle.isProductsHaveVariant) {
-            // go to bundling selection page
-            goToBundlingSelectionPage(selectedMultipleBundle.bundleId.toString())
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            // atc bundle directly from shop page home
-            viewModel?.addBundleToCart(
-                    shopId = shopId,
-                    userId = userId,
-                    bundleId = selectedMultipleBundle.bundleId.toString(),
-                    productDetails = productDetails,
-                    onFinishAddToCart = { handleOnFinishAtcBundle(it) },
-                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                    bundleQuantity = selectedMultipleBundle.minOrder
-            )
+            if (selectedMultipleBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedMultipleBundle.bundleId.toString())
+            } else {
+                // atc bundle directly from shop page home
+                viewModel?.addBundleToCart(
+                        shopId = shopId,
+                        userId = userId,
+                        bundleId = selectedMultipleBundle.bundleId.toString(),
+                        productDetails = productDetails,
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it) },
+                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                        bundleQuantity = selectedMultipleBundle.minOrder
+                )
+            }
         }
         shopPageHomeTracking.clickAtcProductBundleMultiple(
                 shopId = shopId,
@@ -1391,20 +1396,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String
     ) {
-        if (selectedBundle.isProductsHaveVariant) {
-            // go to bundling selection page
-            goToBundlingSelectionPage(selectedBundle.bundleId.toString())
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            // atc bundle directly from shop page home
-            viewModel?.addBundleToCart(
-                    shopId = shopId,
-                    userId = userId,
-                    bundleId = selectedBundle.bundleId.toString(),
-                    productDetails = listOf(bundleProducts),
-                    onFinishAddToCart = { handleOnFinishAtcBundle(it) },
-                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                    bundleQuantity = selectedBundle.minOrder
-            )
+            if (selectedBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedBundle.bundleId.toString())
+            } else {
+                // atc bundle directly from shop page home
+                viewModel?.addBundleToCart(
+                        shopId = shopId,
+                        userId = userId,
+                        bundleId = selectedBundle.bundleId.toString(),
+                        productDetails = listOf(bundleProducts),
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it) },
+                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                        bundleQuantity = selectedBundle.minOrder
+                )
+            }
         }
         shopPageHomeTracking.clickAtcProductBundleSingle(
                 shopId = shopId,
