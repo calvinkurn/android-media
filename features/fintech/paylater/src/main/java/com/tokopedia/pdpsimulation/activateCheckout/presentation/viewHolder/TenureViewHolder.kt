@@ -33,6 +33,8 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                     radioSelector.isChecked = false
                 }
+                individualTenureItemContainer.isClickable = true
+                radioSelector.isClickable = true
                 individualTenureItemContainer.setOnClickListener {
                     tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
                 }
@@ -42,6 +44,8 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             } else {
                 individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioSelector.isChecked = false
+                individualTenureItemContainer.isClickable = false
+                radioSelector.isClickable = false
             }
         }
     }
