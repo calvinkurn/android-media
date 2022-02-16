@@ -47,8 +47,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_banner_icon"
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
+            android:layout_width="@dimen/quest_widget_dim_48dp"
+            android:layout_height="@dimen/quest_widget_dim_48dp"
             app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
             app:layout_constraintEnd_toEndOf="@id/progressBarContainer"
             app:layout_constraintStart_toStartOf="@id/progressBarContainer"
@@ -56,8 +56,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_banner_icon_second"
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
+            android:layout_width="@dimen/quest_widget_dim_48dp"
+            android:layout_height="@dimen/quest_widget_dim_48dp"
             android:translationY="56dp"
             app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
             app:layout_constraintEnd_toEndOf="@id/progressBarContainer"
