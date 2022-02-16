@@ -39,6 +39,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnWordingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.PopUpData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -98,10 +99,23 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -165,6 +179,7 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.E
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_BOTTOMSHEET;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
@@ -203,6 +218,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean isShipmentTraceStopped;
     private String cornerId;
     private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
+    private AddOnWordingData _addOnWordingData;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -1164,6 +1180,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromSetTradeInPinpoint(data);
         } else if (requestCode == REQUEST_CODE_PROMO) {
             onResultFromPromo(resultCode, data);
+        } else if (requestCode == REQUEST_ADD_ON_BOTTOMSHEET) {
+            onResultFromAddOnBottomSheet(data);
         }
     }
 
@@ -2819,6 +2837,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private void onResultFromAddOnBottomSheet(Intent data) {
+        if (data != null) {
+            SaveAddOnStateResult saveAddOnStateResult = data.getParcelableExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT);
+            shipmentPresenter.updateAddOnsData(saveAddOnStateResult);
+        }
+    }
+
     @Override
     public boolean isTradeInByDropOff() {
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
@@ -3229,7 +3254,100 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onOpenAddOnBottomSheet(CartItemModel cartItemModel) {
-        // internal applink to new bottomsheet
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
+            AddOnProductData addOnProductData = new AddOnProductData();
+            addOnProductData.setBottomSheetType(AddOnProductData.ADD_ON_BOTTOM_SHEET);
+            addOnProductData.setBottomSheetTitle(cartItemModel.getAddOnProductLevelModel().getAddOnsBottomSheetModel().getHeaderTitle());
+            addOnProductData.setSource(AddOnProductData.SOURCE_NORMAL_CHECKOUT);
+
+            AddOnBottomSheetModel addOnBottomSheetModel = cartItemModel.getAddOnProductLevelModel().getAddOnsBottomSheetModel();
+            if (cartItemModel.getAddOnProductLevelModel().getStatus() == 2) {
+                UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
+                unavailableBottomSheetData.setDescription(addOnBottomSheetModel.getDescription());
+                unavailableBottomSheetData.setTickerMessage(addOnBottomSheetModel.getTicker().getText());
+
+                List<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listUnavailableProduct = new ArrayList<>();
+                for (AddOnProductItemModel addOnProductItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsBottomSheetModel().getProducts()) {
+                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
+                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
+                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
+                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
+                    product.setProductQuantity(cartItemModel.getQuantity());
+                    product.setProductName(addOnProductItemModel.getProductName());
+                    product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
+                    listUnavailableProduct.add(product);
+                }
+                unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
+            }
+
+            if (cartItemModel.getAddOnProductLevelModel().getStatus() == 1) {
+                AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
+
+                if (!_addOnWordingData.getOnlyGreetingCard().isEmpty() ||
+                        !_addOnWordingData.getPackagingAndGreetingCard().isEmpty() ||
+                        !_addOnWordingData.getInvoiceNotSendToRecipient().isEmpty()) {
+                    ArrayList<String> listAddOnWording = new ArrayList<>();
+
+                    if (!_addOnWordingData.getOnlyGreetingCard().isEmpty()) {
+                        listAddOnWording.add(_addOnWordingData.getOnlyGreetingCard());
+                    }
+                    if (!_addOnWordingData.getPackagingAndGreetingCard().isEmpty()) {
+                        listAddOnWording.add(_addOnWordingData.getPackagingAndGreetingCard());
+                    }
+                    if (!_addOnWordingData.getInvoiceNotSendToRecipient().isEmpty()) {
+                        listAddOnWording.add(_addOnWordingData.getInvoiceNotSendToRecipient());
+                    }
+                    availableBottomSheetData.setAddOnFooterMessages(listAddOnWording);
+                    availableBottomSheetData.setShopName(cartItemModel.getShopName());
+
+                    ArrayList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listProduct = new ArrayList<>();
+                    if (!cartItemModel.getAddOnProductLevelModel().getAddOnsBottomSheetModel().getProducts().isEmpty()) {
+                        for (AddOnProductItemModel addOnProductItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsBottomSheetModel().getProducts()) {
+                            com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
+                            product.setCartId(String.valueOf(cartItemModel.getCartId()));
+                            product.setProductId(String.valueOf(cartItemModel.getProductId()));
+                            product.setProductName(addOnProductItemModel.getProductName());
+                            product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
+                            product.setProductQuantity(cartItemModel.getQuantity());
+                            product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
+                            listProduct.add(product);
+                        }
+                    }
+                    availableBottomSheetData.setProducts(listProduct);
+
+                    if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
+                        ArrayList<AddOnData> addOnDataList = new ArrayList<>();
+                        for (AddOnDataItemModel addOnDataItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList()) {
+                            AddOnData addOnData = new AddOnData();
+                            addOnData.setAddOnId(addOnDataItemModel.getAddOnId());
+                            addOnData.setAddOnPrice((int) addOnDataItemModel.getAddOnPrice());
+                            addOnData.setAddOnQty((int) addOnDataItemModel.getAddOnQty());
+
+                            AddOnNote addOnNote = new AddOnNote();
+                            AddOnNoteItemModel addOnNoteItemModel = addOnDataItemModel.getAddOnMetadata().getAddOnNoteItemModel();
+                            addOnNote.setCustomNote(addOnNoteItemModel.isCustomNote());
+                            addOnNote.setNotes(addOnNoteItemModel.getNotes());
+                            addOnNote.setFrom(addOnNoteItemModel.getFrom());
+                            addOnNote.setTo(addOnNoteItemModel.getTo());
+
+                            AddOnMetadata addOnMetadata = new AddOnMetadata();
+                            addOnMetadata.setAddOnNote(addOnNote);
+
+                            addOnData.setAddOnMetadata(addOnMetadata);
+                            addOnDataList.add(addOnData);
+                        }
+                        availableBottomSheetData.setAddOnSavedStates(addOnDataList);
+                    }
+
+                    availableBottomSheetData.setCartString(cartItemModel.getCartString());
+                    availableBottomSheetData.setTokoCabang(cartItemModel.isTokoCabang());
+                    availableBottomSheetData.setWarehouseId(cartItemModel.getWarehouseId());
+                }
+            }
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
+            startActivityForResult(intent, REQUEST_ADD_ON_BOTTOMSHEET);
+        }
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
@@ -3270,19 +3388,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void showPopUp(PopUpData popUpData) {
-        DialogUnify popUpDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-        popUpDialog.setTitle(popUpData.getTitle());
-        popUpDialog.setDescription(popUpData.getDescription());
-        popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
-        popUpDialog.setPrimaryCTAClickListener(() -> {
-            shipmentPresenter.processInitialLoadCheckoutPage(
-                    true, isOneClickShipment(), isTradeIn(), true,
-                    true, null, getDeviceId(), getCheckoutLeasingId()
-            );
-            popUpDialog.dismiss();
-            return Unit.INSTANCE;
-        });
+        if (getActivity() != null) {
+            DialogUnify popUpDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            popUpDialog.setTitle(popUpData.getTitle());
+            popUpDialog.setDescription(popUpData.getDescription());
+            popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
+            popUpDialog.setPrimaryCTAClickListener(() -> {
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                        true, isOneClickShipment(), isTradeIn(), true,
+                        true, null, getDeviceId(), getCheckoutLeasingId()
+                );
+                popUpDialog.dismiss();
+                return Unit.INSTANCE;
+            });
 
-        popUpDialog.show();
+            popUpDialog.show();
+        }
+    }
+
+    @Override
+    public void setAddOnWording(AddOnWordingData addOnWordingData) {
+        _addOnWordingData = addOnWordingData;
+    }
+
+    @Override
+    public void updateAddOnsData(AddOnsDataModel addOnsDataModel) {
+        System.out.println("++ updateAddOnsData - addOnsDataModel = "+addOnsDataModel);
     }
 }

@@ -68,5 +68,8 @@ data class CartItemModel(
         var bundleOriginalPrice: Long = 0L,
         var bundleQuantity: Int = 0,
         var bundleIconUrl: String = "",
-        var addOnProductLevelModel: AddOnsDataModel = AddOnsDataModel()
+        var addOnProductLevelModel: AddOnsDataModel = AddOnsDataModel(),
+        var isTokoCabang: Boolean = false,
+        var cartString: String = "",
+        var warehouseId: String = ""
 ) : Parcelable

@@ -20,6 +20,8 @@ data class ShipmentAddressFormDataResponse(
         val keroUnixTime: Int = 0,
         @SerializedName("pop_up")
         val popup: PopUp = PopUp( ),
+        @SerializedName("add_on_wording")
+        val addOnWording: AddOnWording = AddOnWording( ),
         @SerializedName("donation")
         val donation: Donation = Donation(),
         @SerializedName("cod")

@@ -29,6 +29,9 @@ object CheckoutConstant {
     const val RESULT_CODE_COUPON_STATE_CHANGED = 735
     const val KERO_TOKEN = "token"
     const val EXTRA_REF = "EXTRA_REF"
+    const val REQUEST_ADD_ON_BOTTOMSHEET = 333
+    const val ADD_ON_PRODUCT_LEVEL = "product"
+    const val ADD_ON_ORDER_LEVEL = "order"
 
     const val EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN"
     const val EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS"

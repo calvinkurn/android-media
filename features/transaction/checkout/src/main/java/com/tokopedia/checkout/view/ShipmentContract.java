@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnWordingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.PopUpData;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -30,6 +31,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -161,6 +164,10 @@ public interface ShipmentContract {
         void logOnErrorCheckout(Throwable throwable, String request);
 
         void showPopUp(PopUpData popUpData);
+
+        void setAddOnWording(AddOnWordingData addOnWordingData);
+
+        void updateAddOnsData(AddOnsDataModel addOnsDataModel);
     }
 
     interface AnalyticsActionListener {
@@ -358,6 +365,8 @@ public interface ShipmentContract {
         String generateRatesMvcParam(String cartString);
 
         void setCheckoutData(CheckoutData checkoutData);
+
+        void updateAddOnsData(SaveAddOnStateResult saveAddOnStateResult);
     }
 
 }

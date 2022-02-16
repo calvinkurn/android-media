@@ -90,6 +90,7 @@ class ShipmentMapper @Inject constructor() {
                 crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
+            addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
         }
     }
 
@@ -695,6 +696,14 @@ class ShipmentMapper @Inject constructor() {
             button = mapButton(popup.button)
             description = popup.description
             title = popup.title
+        }
+    }
+
+    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+        return AddOnWordingData().apply {
+            packagingAndGreetingCard = addOnWording.packagingAndGreetingCard
+            onlyGreetingCard = addOnWording.onlyGreetingCard
+            invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
         }
     }
 

@@ -23,6 +23,7 @@ data class CartShipmentAddressFormData(
         var keroDiscomToken: String? = null,
         var keroUnixTime: Int = 0,
         var popup: PopUpData? = null,
+        var addOnWording: AddOnWordingData? = null,
         var donation: Donation? = null,
         var crossSell: List<CrossSellModel> = ArrayList(),
         var cod: CodModel? = null,
