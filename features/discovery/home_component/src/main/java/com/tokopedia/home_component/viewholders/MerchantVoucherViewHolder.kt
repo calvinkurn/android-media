@@ -189,7 +189,7 @@ class MerchantVoucherViewHolder(
         channelGrid: ChannelGrid,
         position: Int
     ) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onProductCardClicked(
@@ -198,15 +198,18 @@ class MerchantVoucherViewHolder(
         position: Int,
         applink: String
     ) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        TODO("Not yet implemented")
+        merchantVoucherComponentListener.onViewAllClicked(
+            channel.channelHeader.name,
+            channel.channelHeader.applink
+        )
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-        TODO("Not yet implemented")
+
     }
 
     private val masterJob = SupervisorJob()

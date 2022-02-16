@@ -24,8 +24,10 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         homeCategoryListener.onDynamicChannelClicked(merchantVoucherProductClicked.productAppLink)
     }
 
-    override fun onSeeMoreCardClicked(channel: ChannelModel, appLink: String) {
-        TODO("Not yet implemented")
+    override fun onViewAllClicked(headerName: String, seeMoreAppLink: String) {
+        val tracking = MerchantVoucherTracking.getClickViewAll(headerName)
+        homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        homeCategoryListener.onDynamicChannelClicked(seeMoreAppLink)
     }
 
     override fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked) {

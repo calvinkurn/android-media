@@ -9,11 +9,10 @@ import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopCli
  * Created by dhaba
  */
 interface MerchantVoucherComponentListener  {
+    fun onViewAllClicked(headerName: String, seeMoreAppLink: String)
     fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked)
     fun onMerchantImpressed(channel: ChannelModel, parentPos: Int)
     fun onProductClicked(merchantVoucherProductClicked: MerchantVoucherProductClicked)
     fun onVoucherDetailClicked(merchantVoucherDetailClicked: MerchantVoucherDetailClicked)
-    //for see more card click
-    fun onSeeMoreCardClicked(channel: ChannelModel, appLink: String)
     fun getUserId() : String
 }

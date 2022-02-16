@@ -15,6 +15,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val MERCHANT_VOUCHER_MULTIPLE_FORMAT = "merchant voucher multiple - %s"
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
+            const val EVENT_ACTION_CLICK_VIEW_ALL = "merchant voucher multiple - click view all"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
@@ -131,5 +132,17 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
 
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
+    }
+
+    fun getClickViewAll(headerName: String): Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK_VIEW_ALL)
+        bundle.putString(Category.KEY, Category.HOMEPAGE)
+        bundle.putString(Label.KEY, headerName)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+
+        return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 }
