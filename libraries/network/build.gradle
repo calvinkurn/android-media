@@ -13,12 +13,6 @@ buildscript {
     }
 }
 
-android {
-    buildFeatures {
-        buildConfig true
-    }
-}
-
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
