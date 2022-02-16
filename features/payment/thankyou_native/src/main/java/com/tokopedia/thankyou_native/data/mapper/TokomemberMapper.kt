@@ -1,21 +1,31 @@
 package com.tokopedia.thankyou_native.data.mapper
 
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.OPEN_MEMBERSHIP
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.tokomember.model.MembershipGetShopRegistrationWidget
 import com.tokopedia.tokomember.model.WidgetContentItem
 
 object TokomemberMapper {
+    var waitingWidgetData = WidgetContentItem()
+    var instantWidgetData = WidgetContentItem()
+    var successWidgetData = WidgetContentItem()
     fun getGyroTokomemberItem(
         shopRegisterResponse: MembershipGetShopRegistrationWidget?,
         tokomemberRequestParam: TokoMemberRequestParam
     ): TokomemberModel {
         val membershipType = shopRegisterResponse?.membershipType ?: 0
         val cardId = shopRegisterResponse?.cardID ?: 0
-        val waitingWidgetData = shopRegisterResponse?.widgetContent?.get(TOKOMEMBER_WAITING_WIDGET) ?: WidgetContentItem()
-        val instantWidgetData = shopRegisterResponse?.widgetContent?.get(TOKOMEMBER_INSTANT_WIDGET) ?: WidgetContentItem()
-        val successWidgetData = shopRegisterResponse?.widgetContent?.get(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
-        val bottomSheetContentItem = shopRegisterResponse?.bottomSheetContent?.get(TOKOMEMBER_SUCCESS_BOTTOMSHEET) ?: BottomSheetContentItem()
+
+        if (membershipType == CLOSE_MEMBERSHIP) {
+            populateWidgetContent(shopRegisterResponse)
+        }
+        else if (membershipType ==  OPEN_MEMBERSHIP) {
+            populateWidgetContent(shopRegisterResponse)
+            successWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
+        }
+        val bottomSheetContentItem = shopRegisterResponse?.bottomSheetContent?.getOrNull(TOKOMEMBER_SUCCESS_BOTTOMSHEET) ?: BottomSheetContentItem()
 
         bottomSheetContentItem.source = tokomemberRequestParam.source
         bottomSheetContentItem.shopID = tokomemberRequestParam.shopID
@@ -66,4 +76,10 @@ object TokomemberMapper {
             membershipCardId = cardId.toString()
         )
     }
+
+    private fun populateWidgetContent(shopRegisterResponse: MembershipGetShopRegistrationWidget?){
+        waitingWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_WAITING_WIDGET) ?: WidgetContentItem()
+        instantWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_INSTANT_WIDGET) ?: WidgetContentItem()
+    }
+
 }

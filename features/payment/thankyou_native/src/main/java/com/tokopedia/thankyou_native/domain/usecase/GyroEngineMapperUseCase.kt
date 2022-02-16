@@ -41,25 +41,23 @@ class GyroEngineMapperUseCase @Inject constructor(
                 FeatureRecommendationMapper.getFeatureList(featureEngineData)
             }
             getTokomemberData()
-            val gyroRecommendationListItem = gyroRecommendationList.await()
+            var gyroRecommendationListItem = gyroRecommendationList.await()
+            if (gyroRecommendationListItem == null) {
+                gyroRecommendationListItem = GyroRecommendation("", "", ArrayList())
+            }
             setTokomemberData(gyroRecommendationListItem)
-            gyroRecommendationListItem ?: GyroRecommendation("", "", ArrayList())
+            gyroRecommendationListItem
         }
     }
 
     private fun setTokomemberData(gyroRecommendationListItem: GyroRecommendation?) {
         tokomemberModel?.also { tokomemberModel ->
-            when (queryParamTokomember?.pageType) {
-                is WaitingPaymentPage -> gyroRecommendationListItem?.gyroVisitable?.addAll(
-                    listOf(tokomemberModel.listOfTokomemberItem[TOKOMEMBER_WAITING_WIDGET])
-                )
-                is InstantPaymentPage -> gyroRecommendationListItem?.gyroVisitable?.addAll(
-                    listOf(tokomemberModel.listOfTokomemberItem[TOKOMEMBER_INSTANT_WIDGET])
-                )
-                else -> {
-                }
-            }
-            gyroRecommendationListItem?.gyroMembershipSuccessWidget = tokomemberModel.listOfTokomemberItem[TOKOMEMBER_SUCCESS_WIDGET]
+            gyroRecommendationListItem?.gyroVisitable?.add(
+                tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_WAITING_WIDGET)?:GyroTokomemberItem())
+
+            gyroRecommendationListItem?.gyroMembershipSuccessWidget =
+                tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)
+                    ?: GyroTokomemberItem()
         }
     }
 
