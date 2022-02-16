@@ -148,13 +148,13 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
         }
     }
 
-    private fun addOrderLevelGifting(titleStr: String, value: Double): View {
+    private fun addOrderLevelGifting(titleStr: String, value: String): View {
         val rowView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
         val tvTitle = rowView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
         val tvValue = rowView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
         tvTitle.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
         tvTitle.text = titleStr
-        tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(value, false)
+        tvValue.text = getString(R.string.thankyou_rp_without_space, value)
         return rowView
     }
 

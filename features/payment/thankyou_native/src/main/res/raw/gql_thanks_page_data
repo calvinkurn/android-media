@@ -56,7 +56,7 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         addon_item {
             name
             quantity
-            price
+            price_str
         }
         item_list{
             product_id
@@ -81,7 +81,7 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
             addon_item {
                 name
                 quantity
-                price
+                price_str
             }
         }
         bundle_group_data {

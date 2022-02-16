@@ -321,8 +321,8 @@ data class AddOnItem(
     val name: String,
     @SerializedName("quantity")
     val quantity: Int,
-    @SerializedName("price")
-    val addOnPrice: Double
+    @SerializedName("price_str")
+    val addOnPrice: String
 ): Parcelable
 
 data class BundleGroupItem(
