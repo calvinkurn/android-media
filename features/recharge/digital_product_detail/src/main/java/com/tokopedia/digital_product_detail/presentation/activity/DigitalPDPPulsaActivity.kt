@@ -16,6 +16,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.P
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil.DEFAULT_MENU_ID_TELCO
 import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
@@ -66,7 +67,7 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.run {
             val mActivity = WeakReference<Activity>(this@DigitalPDPPulsaActivity)
-            setupOrderListIcon(mActivity)
+            setupOrderListIcon(mActivity, (fragment as DigitalHistoryIconListener))
             return true
         }
         return false

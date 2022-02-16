@@ -10,6 +10,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -50,7 +51,7 @@ fun AppBarLayout.setupDynamicAppBar(
     })
 }
 
-fun Menu.setupOrderListIcon(activityRef: WeakReference<Activity>) {
+fun Menu.setupOrderListIcon(activityRef: WeakReference<Activity>, listener: DigitalHistoryIconListener?) {
     activityRef.get()?.let { activity ->
         activity.menuInflater.inflate(com.tokopedia.digital_product_detail.R.menu.menu_pdp, this)
         val iconUnify = getIconUnifyDrawable(
@@ -60,6 +61,7 @@ fun Menu.setupOrderListIcon(activityRef: WeakReference<Activity>) {
         )
         iconUnify?.toBitmap()?.let {
             this.getItem(0).setOnMenuItemClickListener {
+                listener?.onClickDigitalIconHistory()
                 RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
                 true
             }
