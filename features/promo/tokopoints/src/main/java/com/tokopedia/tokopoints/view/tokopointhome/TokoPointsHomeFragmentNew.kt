@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -767,8 +768,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
             REQUEST_FROM_TP_NOTIFICATION -> {
-                RouteManager.route(this.context,"tokopedia://rewards")
-            }
+                RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD)            }
         }
     }
 

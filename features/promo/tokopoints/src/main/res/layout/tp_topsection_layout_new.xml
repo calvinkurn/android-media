@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/img_egg"
         android:layout_toEndOf="@id/text_transaksi_desc"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:orientation="horizontal">
     </LinearLayout>
 
@@ -76,7 +76,7 @@
         android:layout_marginStart="@dimen/unify_space_2"
         android:textColor="@color/Unify_N0"
         app:typographyType="body_3"
-        android:text="Lagi" />
+        android:text="@string/tp_lagi" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_current_tier"
@@ -88,7 +88,7 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_G300_32"
+        android:textColor="@color/Unify_N0"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Gold" />
@@ -107,18 +107,18 @@
             android:id="@+id/progressbar_membership"
             android:layout_width="match_parent"
             android:layout_height="@dimen/tp_dp_30"
-            android:layout_marginEnd="@dimen/dp_4"
             android:clipToPadding="false"
             android:clipChildren="false"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
             app:unify_progress_bar_color_type="color_green"
             app:unify_progress_bar_from_color="@color/green_50"
             app:unify_progress_bar_height="10" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/tier_icon_progressbar"
-            android:layout_gravity="center_vertical|end"
+            android:layout_gravity="center|end"
             android:layout_width="@dimen/tp_dp_20"
+            android:layout_marginEnd="-2dp"
             android:layout_marginTop="@dimen/unify_space_8"
             android:elevation="@dimen/unify_space_2"
             android:layout_height="@dimen/tp_dp_20" />

@@ -66,7 +66,9 @@ class DigitTextView : FrameLayout {
             currentTextView?.animate()?.translationY(height.toFloat())?.setDuration(
                 ANIMATION_DURATION.toLong()
             )?.start()
-            nextTextView?.translationY = -nextTextView?.height?.toFloat()!!
+            nextTextView?.let {
+                nextTextView?.translationY = -it.height.toFloat()
+            }
             nextTextView?.animate()?.translationY(0f)?.setDuration(ANIMATION_DURATION.toLong())
                 ?.setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator?) {}
@@ -86,6 +88,6 @@ class DigitTextView : FrameLayout {
     }
 
     companion object {
-        private const val ANIMATION_DURATION = 80
+        private const val ANIMATION_DURATION = 100
     }
 }

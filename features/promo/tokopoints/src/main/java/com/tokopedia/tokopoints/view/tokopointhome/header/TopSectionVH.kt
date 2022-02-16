@@ -131,7 +131,7 @@ class TopSectionVH(
                 renderStatusMatchingView(it.rewardsTickerList?.tickerList)
             }
         }
-        isNextTier = model.popupNotification != null
+        isNextTier = model.popupNotification?.tokoPoints?.popupNotif?.isEmpty == true
         popupNotification = model.popupNotification?.tokoPoints?.popupNotif
         topSectionData = model
     }
@@ -144,11 +144,12 @@ class TopSectionVH(
         currentTier?.text = data?.progressInfoList?.get(0)?.currentTierName
         val currentAmount = data?.progressInfoList?.get(0)?.currentAmountStr.toString()
         tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.iconImageURL ?: "")
-        val getDigitValue = currentAmount.toCharArray()
+        var getDigitValue = currentAmount.toCharArray()
 
         if (digitContainer?.childCount == 0) {
             if (isContainsRp(currentAmount)) {
                 addRPToTransaction()
+                getDigitValue = currentAmount.removePrefix("Rp").toCharArray()
             }
             setDigitContainerView(getDigitValue)
             if (!isContainsRp(currentAmount)) {
@@ -497,7 +498,8 @@ class TopSectionVH(
         val dotView =Typography(itemView.context)
         dotView.text="Rp"
         dotView.setWeight(Typography.BOLD)
-        digitContainer?.gravity = Gravity.BOTTOM
+        dotView.setType(Typography.BODY_3)
+        dotView.gravity = Gravity.CENTER
         dotView.setTextColor(Color.WHITE)
         digitContainer?.addView(dotView)
     }
@@ -514,7 +516,7 @@ class TopSectionVH(
     private fun progressBarAnimation(){
 
         val container = progressBar?.progressBarContainer
-        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
+        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_LARGE
         (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
         (progressBar?.progressBarWrapper)?.clipChildren = false
         (progressBar?.progressBarIndicatorWrapper)?.clipChildren = false
@@ -524,9 +526,9 @@ class TopSectionVH(
 
         if(container?.childCount?.minus(1) ?:0  >= 0){
             val target = container?.getChildAt(container.childCount - 1)
-            val moveXX = ObjectAnimator.ofFloat(target, "scaleX", 2f).setDuration(ANIMATION_DURATION)
+            val moveXX = ObjectAnimator.ofFloat(target, View.SCALE_X, 2f).setDuration(ANIMATION_DURATION)
             val animatorContainerX =
-                ObjectAnimator.ofFloat(target, "scaleY", 2f).setDuration(ANIMATION_DURATION)
+                ObjectAnimator.ofFloat(target, View.SCALE_Y, 2f).setDuration(ANIMATION_DURATION)
             val animSet = AnimatorSet()
 
             animSet.addListener(object :Animator.AnimatorListener{
@@ -535,7 +537,7 @@ class TopSectionVH(
 
                 override fun onAnimationEnd(p0: Animator?) {
                     progressBar?.setProgressIcon(null)
-                    if (isNextTier) {
+                    if (!isNextTier) {
                         topSectionData?.popupNotification = null
                         refreshOnTierUpgrade.refreshReward(popupNotification)
                     }
