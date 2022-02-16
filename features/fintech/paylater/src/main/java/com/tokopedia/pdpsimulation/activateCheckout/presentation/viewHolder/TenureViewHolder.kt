@@ -22,6 +22,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
 
         itemView.apply {
              changeViewColor(tenureSelectListener.isDisable())
+            updateData(tenureDetail)
             if(!tenureSelectListener.isDisable()) {
                 if (tenureDetail.isSelectedTenure) {
                     individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
@@ -30,14 +31,6 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                     radioSelector.isChecked = false
                 }
-                paymentDetailHeader.text = tenureDetail.chip_title
-                paymentDetailSubHeader.text = tenureDetail.description
-
-                if(!tenureDetail.lable.isNullOrBlank())
-                    tenureRecommendation.setText(tenureDetail.lable)
-                else
-                    tenureRecommendation.visibility = View.GONE
-
                 individualTenureItemContainer.setOnClickListener {
                     tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
                 }
@@ -49,6 +42,18 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                 individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioSelector.isChecked = false
             }
+        }
+    }
+
+    private fun updateData(tenureDetail: TenureDetail) {
+        itemView.apply {
+            paymentDetailHeader.text = tenureDetail.chip_title
+            paymentDetailSubHeader.text = tenureDetail.description
+
+            if (!tenureDetail.lable.isNullOrBlank() && !tenureSelectListener.isDisable())
+                tenureRecommendation.text = tenureDetail.lable
+            else
+                tenureRecommendation.visibility = View.GONE
         }
     }
 
