@@ -575,7 +575,7 @@ public class GTMAnalytics extends ContextAnalytics {
         ArrayList<Bundle> promotionBundles = new ArrayList<>();
         for (int i = 0; i < promotions.size(); i++) {
             Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
-            promotionBundles.add(promotionMap(promotion));
+            promotionBundles.add(promotionMapV5(promotion));
         }
         bundle.putParcelableArrayList("promotions", promotionBundles);
     }
@@ -762,6 +762,17 @@ public class GTMAnalytics extends ContextAnalytics {
         promotionsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);    // promotion slot name: ex: /p/fashion-wanita - p1 - slider banner
         promotionsBundle.putString(FirebaseAnalytics.Param.CREATIVE_NAME, creative);
         promotionsBundle.putString(FirebaseAnalytics.Param.CREATIVE_SLOT, position);
+
+        // custom dimension
+        for (Map.Entry<String, Object> entry : value.entrySet()) {
+            promotionsBundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
+        }
+        return promotionsBundle;
+
+    }
+
+    private Bundle promotionMapV5(Map<String, Object> value) {
+        Bundle promotionsBundle = new Bundle();
 
         // custom dimension
         for (Map.Entry<String, Object> entry : value.entrySet()) {
