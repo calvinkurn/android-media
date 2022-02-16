@@ -23,7 +23,14 @@ class ComparisonDetailViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                     findViewById<ImageUnify>(R.id.catalog_comparison_image).loadImageWithoutPlaceholder(imageUrl)
                 }
                 findViewById<UnifyButton>(R.id.catalog_comparison_bandingkan_button).invisible()
-                findViewById<CardUnify>(R.id.catalog_card).cardType = CardUnify.TYPE_BORDER
+                findViewById<CardUnify>(R.id.catalog_card).apply {
+                    cardType = CardUnify.TYPE_BORDER
+                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT)
+                    params.setMargins(0, 0, 0,
+                        itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt())
+                    layoutParams = params
+                }
             }
 
         }

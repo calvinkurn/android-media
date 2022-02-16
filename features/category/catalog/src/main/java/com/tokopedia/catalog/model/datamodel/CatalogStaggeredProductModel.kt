@@ -17,7 +17,7 @@ class CatalogStaggeredProductModel(val name : String = "", val type : String = "
     }
 
     override fun equalsWith(newData: BaseCatalogDataModel): Boolean {
-        return newData == this
+        return newData === this
     }
 
     override fun getChangePayload(newData: BaseCatalogDataModel): Bundle? {

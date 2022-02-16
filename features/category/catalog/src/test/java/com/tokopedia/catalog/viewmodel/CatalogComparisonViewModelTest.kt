@@ -36,21 +36,27 @@ class CatalogComparisonViewModelTest {
 
     private lateinit var viewModel : CatalogProductComparisonViewModel
     private var catalogDetailObserver = mockk<Observer<ArrayList<BaseCatalogDataModel>>>(relaxed = true)
+    private var catalogDetailObserverHasMoreItems = mockk<Observer<Boolean>>(relaxed = true)
+    private var catalogDetailObserverError= mockk<Observer<Throwable>>(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel = CatalogProductComparisonViewModel(useCase)
         viewModel.getDataItems().observeForever(catalogDetailObserver)
+        viewModel.getHasMoreItems().observeForever(catalogDetailObserverHasMoreItems)
+        viewModel.getError().observeForever(catalogDetailObserverError)
     }
 
     @Test
     fun `Get Catalog Comparison Response Success`() {
-        val mockGqlResponse : GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_comparison_dummy_response.json"))
-        val data = mockGqlResponse.getData<CatalogComparisonProductsResponse>(
-            CatalogComparisonProductsResponse::class.java)
-        coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
-        viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",1,"","")
-        assertEquals(viewModel.getDataItems().value, data.catalogComparisonList?.catalogComparisonList)
+        runBlocking {
+            val mockGqlResponse : GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_comparison_dummy_response.json"))
+            val data = mockGqlResponse.getData<CatalogComparisonProductsResponse>(
+                CatalogComparisonProductsResponse::class.java)
+            coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
+            viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",1,"","")
+            assertEquals(viewModel.getDataItems().value, data.catalogComparisonList?.catalogComparisonList)
+        }
     }
 
     @Test
@@ -63,7 +69,7 @@ class CatalogComparisonViewModelTest {
     }
 
     @Test
-    fun `Get Catalog Comparison Response Excpetion`() {
+    fun `Get Catalog Comparison Response Exception`() {
         val exception = "Validate Data Exception"
         runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } throws Exception(exception)

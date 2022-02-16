@@ -31,6 +31,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:paddingBottom="@dimen/unify_space_40"
         tools:visibility="visible"
         android:visibility="visible"

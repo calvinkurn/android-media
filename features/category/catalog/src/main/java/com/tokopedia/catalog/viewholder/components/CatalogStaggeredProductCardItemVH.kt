@@ -23,7 +23,7 @@ class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListene
     }
 
     override fun bind(element: CatalogStaggeredProductModel?) {
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide(element?.comparisonItem?.brand ?: "")
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide("${element?.comparisonItem?.brand} pos : $adapterPosition" ?: "")
         itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(element?.comparisonItem?.name ?: "")
         itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).
         displayTextOrHide("${element?.comparisonItem?.marketPrice?.firstOrNull()?.minFmt} - ${element?.comparisonItem?.marketPrice?.firstOrNull()?.maxFmt}")

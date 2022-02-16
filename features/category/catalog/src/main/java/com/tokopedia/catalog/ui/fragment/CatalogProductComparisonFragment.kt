@@ -16,7 +16,6 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
-import com.tokopedia.catalog.adapter.decorators.CatalogItemOffSetDecoration
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
@@ -32,14 +31,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductComparisonViewModel>() , CatalogDetailListener{
 
-    private var currentPageNumber = PAGE_FIRST
     private var catalogId = ""
     private var catalogName = ""
     private var brand  = ""
@@ -107,7 +104,6 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         view.findViewById<RecyclerView>(R.id.catalog_staggered_recycler_view)?.let { rV ->
             recyclerView = rV
             recyclerView?.apply {
-                addItemDecoration(CatalogItemOffSetDecoration())
                 layoutManager = staggeredLayoutManager
                 loadMoreTriggerListener = getEndlessRecyclerViewListener(staggeredLayoutManager)
                 adapter = catalogDetailAdapter
@@ -138,7 +134,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     private fun makeApiCall(page : Int) {
         catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
             catalogId,brand,
-            categoryId,LIMIT,page.toString(),searchKeyword)
+            categoryId,LIMIT,page,searchKeyword)
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
@@ -177,10 +173,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private fun observerHasMoreItems() {
         catalogProductComparisonViewModel.getHasMoreItems().observe(this, { hasMoreItems ->
-            if(hasMoreItems) {
-                currentPageNumber ++
-                loadMoreTriggerListener?.setHasNextPage(true)
-            }
+            if(hasMoreItems) loadMoreTriggerListener?.setHasNextPage(true)
             else loadMoreTriggerListener?.setHasNextPage(false)
         })
 
@@ -198,16 +191,13 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         catalogDetailAdapter.submitList(dataList)
         catalogDetailAdapter.notifyDataSetChanged()
         loadMoreTriggerListener?.updateStateAfterGetData()
-        currentPageNumber++
     }
 
     private fun onSearchKeywordEntered(){
         resetPage()
         val searchText = view?.findViewById<SearchBarUnify>(R.id.catalog_product_search)?.searchBarTextField?.text.toString()
-        if(searchText.isNotBlank()){
-            searchKeyword = searchText
-            makeApiCall(PAGE_FIRST)
-        }
+        searchKeyword = searchText
+        makeApiCall(PAGE_FIRST)
     }
 
     private fun onClearSearch() {
@@ -217,7 +207,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun resetPage(){
-        currentPageNumber = PAGE_FIRST
+        hideErrorGroup()
         loadMoreTriggerListener?.resetState()
     }
 

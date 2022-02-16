@@ -8,10 +8,12 @@ import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredShimmerModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class CatalogProductComparisonViewModel @Inject constructor(
@@ -23,13 +25,15 @@ class CatalogProductComparisonViewModel @Inject constructor(
     var masterDataList = ArrayList<BaseCatalogDataModel>()
     private var hasMoreItems = MutableLiveData<Boolean>()
     private var error = MutableLiveData<Throwable>()
+    private val pageFirst = 1
 
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
-                                       limit: Int, page : String, name : String) {
-        addShimmer(name.isNotBlank())
+                                       limit: Int, page : Int, name : String) {
+        addShimmer(page)
         launchCatchError(block = {
+            delay(1000)
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
-                categoryId,limit.toString(),page,name)
+                categoryId,limit.toString(),page.toString(),name)
             removeShimmer()
             when(result){
                 is Success -> {
@@ -68,12 +72,12 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private val shimmerItemCount = 4
     private val shimmerList = arrayListOf<BaseCatalogDataModel>()
 
-    private fun addShimmer(isFromSearch : Boolean) {
+    private fun addShimmer(page : Int) {
         if(shimmerList.size == 0){
             for (i in 1..shimmerItemCount) {
                 shimmerList.add(CatalogStaggeredShimmerModel())
             }
-            if(isFromSearch){
+            if(page == pageFirst){
                 masterDataList.clear()
             }
             masterDataList.addAll(shimmerList)
