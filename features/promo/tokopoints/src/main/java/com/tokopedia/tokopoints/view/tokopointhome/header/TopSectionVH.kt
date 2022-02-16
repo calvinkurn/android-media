@@ -141,18 +141,25 @@ class TopSectionVH(
             cardRuntimeHeightListener.setCardLayoutHeight(it.height)
         }
         mTextMembershipLabel?.text = data?.introductionText
-        currentTier?.text = data?.progressInfoList?.get(0)?.currentTierName
-        val currentAmount = data?.progressInfoList?.get(0)?.currentAmountStr.toString()
-        tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.iconImageURL ?: "")
-        var getDigitValue = currentAmount.toCharArray()
+        currentTier?.text = data?.progressInfoList?.get(0)?.nextTierName
+
+        val diffAmount = data?.progressInfoList?.get(0)?.differenceAmountStr
+        val diffAmountStr = diffAmount?.split(" ")?.get(1)
+
+        tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.nextTierIconImageURL ?: "")
+        var getDigitValue = diffAmountStr?.toCharArray()
 
         if (digitContainer?.childCount == 0) {
-            if (isContainsRp(currentAmount)) {
+            getDigitValue = if (isContainsRp(diffAmountStr)) {
                 addRPToTransaction()
-                getDigitValue = currentAmount.removePrefix("Rp").toCharArray()
+                diffAmountStr?.removePrefix("Rp")?.toCharArray()
+            } else {
+                diffAmountStr?.removeSuffix("x")?.toCharArray()
             }
-            setDigitContainerView(getDigitValue)
-            if (!isContainsRp(currentAmount)) {
+            if (getDigitValue != null) {
+                setDigitContainerView(getDigitValue)
+            }
+            if (!isContainsRp(diffAmountStr)) {
                 addXToTransaction()
             }
         }
@@ -465,8 +472,8 @@ class TopSectionVH(
          containerStatusMatching?.hide()
     }
 
-    private fun isContainsRp(upgradeValue: String) : Boolean{
-        return upgradeValue.startsWith("Rp")
+    private fun isContainsRp(upgradeValue: String?) : Boolean {
+        return upgradeValue?.startsWith("Rp")?:false
     }
 
     private fun getProgress(current:Float,next:Float) : Int{

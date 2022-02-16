@@ -59,9 +59,9 @@
         android:id="@+id/digitContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/img_egg"
+        android:layout_alignBottom="@id/text_transaksi_desc"
+        android:layout_alignTop="@id/text_transaksi_desc"
         android:layout_toEndOf="@id/text_transaksi_desc"
-        android:layout_marginTop="@dimen/unify_space_12"
         android:orientation="horizontal">
     </LinearLayout>
 

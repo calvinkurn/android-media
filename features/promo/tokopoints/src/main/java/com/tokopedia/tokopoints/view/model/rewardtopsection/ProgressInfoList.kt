@@ -9,6 +9,9 @@ data class ProgressInfoList(
     @SerializedName("nextAmount")
     val nextAmount: Int? = 0,
 
+    @SerializedName("differenceAmountStr")
+    val differenceAmountStr: String? = "",
+
     @SerializedName("currentAmountStr")
     val currentAmountStr: String? = "",
 

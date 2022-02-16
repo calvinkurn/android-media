@@ -212,6 +212,7 @@ query  tokopediaRewardTopSection(${'$'}apiVersion: String!) {
       currentAmount
       nextAmountStr
       currentAmountStr
+      differenceAmountStr
       nextAmount
       iconImageURL
       tierID
