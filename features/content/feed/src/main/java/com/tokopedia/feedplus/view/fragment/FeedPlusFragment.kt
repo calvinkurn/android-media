@@ -146,7 +146,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.net.ConnectException

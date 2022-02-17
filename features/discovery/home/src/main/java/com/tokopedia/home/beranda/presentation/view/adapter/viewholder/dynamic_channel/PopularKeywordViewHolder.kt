@@ -33,8 +33,6 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.binding.viewBinding
-import io.embrace.android.embracesdk.Embrace
 
 /**
  * @author by yoasfs on 2020-02-18

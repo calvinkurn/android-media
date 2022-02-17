@@ -36,7 +36,6 @@ import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
 
 /**

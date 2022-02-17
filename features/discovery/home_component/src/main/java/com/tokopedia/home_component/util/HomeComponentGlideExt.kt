@@ -8,7 +8,6 @@ import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.wrapper.MediaDataSource
-import io.embrace.android.embracesdk.Embrace
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
