@@ -121,6 +121,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
     private var couponId : Long = -1
     private var maxAllowedProduct = 0
+    private var showCouponDuplicatedToaster : () -> Unit = {}
 
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
@@ -176,9 +177,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (viewModel.isUpdateMode(pageMode)|| viewModel.isDuplicateMode(pageMode)) {
-            viewModel.getCouponDetail(couponId)
-        }
+        viewModel.getMaxAllowedProducts(pageMode)
     }
 
     override fun onCreateView(
@@ -199,7 +198,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         observeCreateCouponResult()
         observeUpdateCouponResult()
         observeMaxAllowedProductResult()
-        viewModel.getMaxAllowedProducts(pageMode)
         handlePageMode()
         refreshCouponDetail()
     }
@@ -342,6 +340,12 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             binding.loader.gone()
             when (result) {
                 is Success -> {
+                    if (viewModel.isUpdateMode(pageMode)|| viewModel.isDuplicateMode(pageMode)) {
+                        viewModel.getCouponDetail(couponId)
+                    }
+
+                    displayCouponDuplicatedToaster()
+
                     binding.content.visible()
                     binding.tpgMaxProduct.text = String.format(getString(R.string.placeholder_max_product), result.data)
                     this.maxAllowedProduct = result.data
@@ -808,4 +812,16 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             setOrientation(EmptyStateUnify.Orientation.VERTICAL)
         }
     }
+
+    fun setOnCouponDuplicated(showCouponDuplicatedToaster : () -> Unit) {
+        this.showCouponDuplicatedToaster = showCouponDuplicatedToaster
+    }
+
+    private fun displayCouponDuplicatedToaster() {
+        if (viewModel.isDuplicateMode(pageMode)) {
+            showCouponDuplicatedToaster()
+        }
+
+    }
+
 }
