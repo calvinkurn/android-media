@@ -47,7 +47,7 @@ internal class PlayBroadcastViewModelRobot(
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
-    productMapper: PlayBroProductUiMapper,
+    productMapper: PlayBroProductUiMapper = mockk(relaxed = true),
     channelInteractiveMapper: PlayChannelInteractiveMapper = mockk(relaxed = true),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),

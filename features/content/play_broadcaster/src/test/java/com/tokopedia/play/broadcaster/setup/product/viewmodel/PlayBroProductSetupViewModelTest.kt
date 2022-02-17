@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
@@ -11,6 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.isEqualTo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
@@ -74,6 +76,29 @@ internal class PlayBroProductSetupViewModelTest {
             state.productCount.assertEqualTo(mockProductCount)
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Success)
             state.productTagSectionList.assertEqualTo(mockProductTagSection)
+        }
+    }
+
+    @Test
+    fun `when user failed load product section, it should emit error state`() {
+
+        val exception = Exception("Network Error")
+        coEvery { mockRepo.getProductTagSummarySection(any()) } throws exception
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val (state, event) = robot.recordSummaryStateAndEvent{
+                robot.submitAction(ProductSetupAction.LoadProductSummary)
+            }
+
+            state.productCount.assertEqualTo(0)
+            state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
+            state.productTagSectionList.assertEqualTo(emptyList())
+            assertTrue(event[0] is PlayBroProductChooserEvent.GetDataError)
         }
     }
 }
