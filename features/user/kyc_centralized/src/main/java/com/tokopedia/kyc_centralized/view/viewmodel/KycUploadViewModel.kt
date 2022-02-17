@@ -105,7 +105,7 @@ class KycUploadViewModel @Inject constructor(
         })
     }
 
-    private fun writeEncryptedResult(originalFilePath: String, encryptedImagePath: String, aes: Cipher): String {
+    fun writeEncryptedResult(originalFilePath: String, encryptedImagePath: String, aes: Cipher): String {
         ImageEncryptionUtil.writeEncryptedImage(originalFilePath, encryptedImagePath, aes)
         return deleteAndRenameResult(originalFilePath, encryptedImagePath)
     }
