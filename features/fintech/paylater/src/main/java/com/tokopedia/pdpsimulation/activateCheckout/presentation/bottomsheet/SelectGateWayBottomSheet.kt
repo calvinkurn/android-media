@@ -24,6 +24,9 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
     private var quantitySelected = 0;
     private var variantSelected = ""
+    private var productId = ""
+    private var selectedTenure = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         arguments?.let {
             quantitySelected = it.getInt(CURRENT_QUANTITY, 0)
             variantSelected = it.getString(CURRENT_VARINT, "")
+            productId = it.getString(CURRENT_PRODUCT_ID,"")
+            selectedTenure = it.getString(CURRENT_SELECTED_TENURE,"")
             val gatewayList: PaylaterGetOptimizedModel? = it.getParcelable(GATEWAY_LIST)
             val selectedId = it.getString(SELECTED_GATEWAY) ?: ""
             gatewayList?.checkoutData?.let { listOfGateway ->
@@ -100,8 +105,13 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
             checkoutData.userAmount?.let { limit ->
                 checkoutData.userState?.let { userState ->
                    sendAnalyticEvent( PdpSimulationEvent.ClickChangePartnerEvent(
+                       productId,userState,
                         checkoutData.gateway_name,
-                        limit, quantitySelected.toString(), variantSelected, userState
+                       checkoutData.userAmount,
+                       selectedTenure,
+                         quantitySelected.toString(),
+                       limit,
+                       variantSelected
                     ))
                 }
             }
@@ -139,6 +149,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         const val SELECTED_GATEWAY = "selected_gateway"
         const val CURRENT_VARINT = "selected_variant"
         const val CURRENT_QUANTITY = "selected_quantity"
+        const val CURRENT_PRODUCT_ID = "selected_product_id"
+        const val CURRENT_SELECTED_TENURE = "selected_tenure"
 
         fun show(
             bundle: Bundle,

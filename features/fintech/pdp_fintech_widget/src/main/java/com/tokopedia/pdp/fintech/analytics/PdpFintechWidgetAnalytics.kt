@@ -34,8 +34,8 @@ class PdpFintechWidgetAnalytics @Inject constructor(
     private fun sendPdpWidgetImpression(partnerId: String, productId: String, userStatus: String) {
         val map = TrackAppUtils.gtmData(
             viewEvent,
-            eventCategory,
             pdpBnplImpression,
+            eventCategory,
             "$eventLable- $productId - $userStatus -$partnerId"
 
         )
@@ -46,10 +46,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
 
     companion object {
         const val viewEvent = "viewFintechIris"
-        const val clickEvent = "clickFintech"
         const val pdpBnplImpression = "pdp bnpl - impression status buyers"
-        const val pdpBnplImpressionEligible = "pdp bnpl - impression status eligible buyers"
-        const val pdpWidgetScrollEvent = "pdp bnpl - scroll widget"
         const val eventCategory = "fin - pdp page"
         const val eventLable = "eventLabel"
         const val KEY_USER_ID = "userId"

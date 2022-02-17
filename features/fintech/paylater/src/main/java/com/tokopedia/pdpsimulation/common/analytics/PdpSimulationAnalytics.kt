@@ -165,12 +165,15 @@ class PdpSimulationAnalytics @Inject constructor(
                 )
             }
 
-            is PdpSimulationEvent.ClickChangePartnerEvent -> sendOccChangePartnerCLickEvent(
+            is PdpSimulationEvent.ClickChangePartnerEvent -> sendChangePartnerCLickEvent(
+                pdpSimulationEvent.productId,
                 pdpSimulationEvent.userStatus,
                 pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.emiAmount,
+                pdpSimulationEvent.tenure,
                 pdpSimulationEvent.quantity,
                 pdpSimulationEvent.limit,
-                pdpSimulationEvent.variant
+                pdpSimulationEvent.variantName,
             )
             is PdpSimulationEvent.OccChangeVariantClicked -> sendOccChangeVariantEvent (
                 pdpSimulationEvent.productId,
@@ -217,18 +220,21 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendOccChangePartnerCLickEvent(
+    private fun sendChangePartnerCLickEvent(
+        productId: String,
         userStatus: String,
         partnerName: String,
+        emiAmount: String,
+        tenure: String,
         quantity: String,
         limit: String,
-        variant: String
+        variantName: String
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_CHANGE_PARTNER_CLICK_ACTION,
             OCC_EVENT_CATEGORY,
-            " $userStatus -$partnerName  - $quantity - $limit- $variant"
+            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)
@@ -267,7 +273,7 @@ class PdpSimulationAnalytics @Inject constructor(
         variantName: String
     ) {
         val map = TrackAppUtils.gtmData(
-            CLICK_EVENT_NAME_FIN_TECH_V3,
+            IRIS_EVENT_NAME_FIN_TECH_V3,
             OCC_EVENT_ACTION,
             OCC_EVENT_CATEGORY,
             " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
@@ -301,11 +307,11 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_IMPRESSION_GOPAY_BOTTOMSHEET = "sim vcc - impression sambungin akun"
         const val EVENT_CLICK_GOPAY_BOTTOMSHEET = "sim vcc - click sambungin akun"
 
-        const val OCC_EVENT_ACTION = "pre occ bnpl - activated buyer pre occ page impression"
+        const val OCC_EVENT_ACTION = "pre occ page - impression activated buyer"
         const val OCC_CHANGE_VARIANT_ACTION = "pre occ bnpl - activated buyer variant cta click"
         const val OCC_CHANGE_PARTNER_CLICK_ACTION =
-            "pre occ bnpl - click partner option CTA"
-        const val OCC_EVENT_CATEGORY = "fin - pre occ page"
+            "partner option cta - click activated buyer"
+        const val OCC_EVENT_CATEGORY = "fin - optimize occ page"
     }
 
 }

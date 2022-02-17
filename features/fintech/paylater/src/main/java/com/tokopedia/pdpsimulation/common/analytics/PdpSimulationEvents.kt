@@ -59,11 +59,14 @@ sealed class PdpSimulationEvent {
 
 
     data class ClickChangePartnerEvent(
+        val productId: String,
+        val userStatus: String,
         val partnerName: String,
-        val limit: String,
+        val emiAmount: String,
+        val tenure: String,
         val quantity: String,
-        val variant: String,
-        val userStatus: String
+        val limit: String,
+        val variantName: String
     ) : PdpSimulationEvent()
 }
 

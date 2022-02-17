@@ -23,7 +23,9 @@ import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_PRODUCT_ID
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_QUANTITY
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_SELECTED_TENURE
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_VARINT
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.GATEWAY_LIST
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.SELECTED_GATEWAY
@@ -556,10 +558,18 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         CURRENT_VARINT,
                         variantName
                     )
+                    putString(
+                        CURRENT_PRODUCT_ID,
+                        productId)
+                    putString(
+                        CURRENT_SELECTED_TENURE,
+                        tenureSelected
+                    )
                     putInt(
                         CURRENT_QUANTITY,
                         quantity
                     )
+
                 }
 
                 sendChangePartnerClickEvent()
