@@ -11,6 +11,8 @@
     <string name="shc_table_widget_on_empty_message">Oops, belum ada data yang dapat \nditampilkan saat ini.</string>
     <string name="shc_current_period">Periode ini</string>
     <string name="shc_last_period">Periode sebelumnya</string>
+    <string name="shc_select_category">Pilih Kategori</string>
+    <string name="shc_select_statistic_data">Pilih data statistik</string>
     <string name="shc_apply_btn">Terapkan</string>
     <string name="shc_data_empty_state_title">Belum ada data hari ini</string>
     <string name="shc_empty_state_description">Statistik penjualan tokomu akan ditampilkan di sini jika produkmu sudah terjual.</string>
