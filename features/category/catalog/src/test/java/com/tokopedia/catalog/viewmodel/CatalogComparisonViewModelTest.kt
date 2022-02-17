@@ -76,6 +76,7 @@ class CatalogComparisonViewModelTest {
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,2,"")
             assertEquals(viewModel.getShimmerData().value?.size, 2)
+            assertEquals(viewModel.masterDataList.size, 2)
         }
     }
 
