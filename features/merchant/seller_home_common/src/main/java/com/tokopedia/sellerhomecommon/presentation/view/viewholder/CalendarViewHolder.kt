@@ -20,12 +20,12 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
-import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventGroupUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.NotificationUnify
 import timber.log.Timber
+import java.util.*
 
 /**
  * Created by @ilhamsuaib on 07/02/22.
@@ -180,7 +180,7 @@ class CalendarViewHolder(
                 }
             })
 
-            scrollToClosestEvent(pages)
+            scrollToClosestEvent(element)
 
             try {
                 PagerSnapHelper().attachToRecyclerView(rvShcCalendar)
@@ -192,11 +192,20 @@ class CalendarViewHolder(
         }
     }
 
-    private fun scrollToClosestEvent(pages: List<CalendarEventGroupUiModel>) {
-        val closestEventIndex = pages.indexOfFirst { it.autoScrollToHere }
-        if (closestEventIndex != RecyclerView.NO_POSITION) {
-            binding.rvShcCalendar.scrollToPosition(closestEventIndex)
-            binding.pageControlShcCalendar.setCurrentIndicator(closestEventIndex)
+    private fun scrollToClosestEvent(element: CalendarWidgetUiModel) {
+        val filterEndDateMillis = DateTimeUtil.getTimeInMillis(
+            element.filter.endDate, DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        val todayInMillis = Date().time
+        val canAutoScroll = todayInMillis < filterEndDateMillis
+
+        if (canAutoScroll) {
+            val pages = element.data?.eventGroups.orEmpty()
+            val closestEventIndex = pages.indexOfFirst { it.autoScrollToHere }
+            if (closestEventIndex != RecyclerView.NO_POSITION) {
+                binding.rvShcCalendar.scrollToPosition(closestEventIndex)
+                binding.pageControlShcCalendar.setCurrentIndicator(closestEventIndex)
+            }
         }
     }
 
