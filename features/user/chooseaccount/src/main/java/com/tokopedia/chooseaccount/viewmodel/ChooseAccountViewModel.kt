@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +20,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-11-14.
@@ -30,7 +28,7 @@ import javax.inject.Named
 
 open class ChooseAccountViewModel @Inject constructor(
         private val getAccountsListUseCase: GetAccountListUseCase,
-        @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
+        private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
         dispatcher: CoroutineDispatchers
 ) : BaseChooseAccountViewModel(dispatcher) {

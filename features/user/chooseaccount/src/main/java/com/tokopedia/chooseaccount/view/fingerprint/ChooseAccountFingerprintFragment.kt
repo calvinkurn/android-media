@@ -14,13 +14,11 @@ import com.tokopedia.chooseaccount.di.ChooseAccountComponent
 import com.tokopedia.chooseaccount.view.base.BaseChooseAccountFragment
 import com.tokopedia.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
@@ -29,7 +27,6 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 

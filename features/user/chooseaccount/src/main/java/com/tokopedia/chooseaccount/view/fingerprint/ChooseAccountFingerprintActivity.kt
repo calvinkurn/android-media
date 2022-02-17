@@ -11,10 +11,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.chooseaccount.di.ChooseAccountComponent
 import com.tokopedia.chooseaccount.di.DaggerChooseAccountComponent
-import com.tokopedia.chooseaccount.common.di.DaggerLoginRegisterPhoneComponent
+import com.tokopedia.kotlin.extensions.view.hide
 
 class ChooseAccountFingerprintActivity: BaseSimpleActivity(), HasComponent<ChooseAccountComponent> {
 
@@ -32,10 +31,10 @@ class ChooseAccountFingerprintActivity: BaseSimpleActivity(), HasComponent<Choos
     override fun getComponent(): ChooseAccountComponent {
         val appComponent = (application as BaseMainApplication)
             .baseAppComponent
-        val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
-            .baseAppComponent(appComponent).build()
+//        val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
+//            .baseAppComponent(appComponent).build()
         return DaggerChooseAccountComponent.builder()
-            .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+            .baseAppComponent(appComponent)
             .build()
     }
 
