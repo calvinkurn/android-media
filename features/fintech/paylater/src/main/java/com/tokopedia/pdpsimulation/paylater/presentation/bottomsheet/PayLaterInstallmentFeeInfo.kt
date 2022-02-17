@@ -25,7 +25,7 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.paylater_additional_fee_info_bottomsheet
 
-    private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(PayLaterOptionInteraction({},{},{},{}))
+    private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(PayLaterOptionInteraction({},{},{},{},{}))
 
     private val simulationAdapter: PayLaterSimulationAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterSimulationAdapter(getAdapterTypeFactory())

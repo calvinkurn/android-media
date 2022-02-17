@@ -5,12 +5,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterProductImpressionEvent
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationErrorModel
+import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterDetailViewHolder
 
 class PayLaterSimulationAdapter(private val adapterFactory: PayLaterAdapterFactoryImpl) :
@@ -18,8 +21,20 @@ class PayLaterSimulationAdapter(private val adapterFactory: PayLaterAdapterFacto
 
     private val impressionMap = hashSetOf<Int>()
 
+    private fun showEmptyState() {
+        addElement(EmptyModel())
+        notifyItemChanged(0)
+    }
+
+    fun showSimulationLoadingFailed(throwable: Throwable) {
+        setErrorNetworkModel(SimulationErrorModel(throwable))
+        showErrorNetwork()
+    }
+
     fun showLoadingInAdapter() {
         removeErrorNetwork()
+        if (visitables.getOrNull(0) is EmptyModel)
+            visitables.removeAt(0)
         showLoading()
     }
 
@@ -30,17 +45,19 @@ class PayLaterSimulationAdapter(private val adapterFactory: PayLaterAdapterFacto
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(element)
+        if (element.isEmpty()) showEmptyState()
         diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateOptionList(adapterPosition: Int) {
         if (visitables[adapterPosition] is SeeMoreOptionsUiModel) {
-            val moreOptionList = (visitables[adapterPosition] as SeeMoreOptionsUiModel).remainingItems
+            val moreOptionList =
+                (visitables[adapterPosition] as SeeMoreOptionsUiModel).remainingItems
             // remove see more model
             visitables.removeAt(adapterPosition)
             // add remaining options
             visitables.addAll(adapterPosition, moreOptionList)
-            notifyItemRangeChanged(adapterPosition, moreOptionList.size+1)
+            notifyItemRangeChanged(adapterPosition, moreOptionList.size + 1)
         }
     }
 
@@ -54,9 +71,9 @@ class PayLaterSimulationAdapter(private val adapterFactory: PayLaterAdapterFacto
                 val event = PayLaterProductImpressionEvent().apply {
                     tenureOption = item.tenure ?: 0
                     userStatus = item.userState ?: ""
-                    payLaterPartnerName = item.gatewayDetail?.name?:""
+                    payLaterPartnerName = item.gatewayDetail?.name ?: ""
                     action = PdpSimulationAnalytics.IMPRESSION_PARTNER_CARD
-                    emiAmount = item.installment_per_month_ceil?.toString() ?:""
+                    emiAmount = item.installment_per_month_ceil?.toString() ?: ""
                 }
                 adapterFactory.interaction.invokeAnalytics(event)
             }

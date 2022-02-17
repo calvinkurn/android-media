@@ -26,7 +26,6 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
-import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -47,7 +46,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private var isProductDetailShown: Boolean = false
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -80,7 +78,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             onCtaClicked = { handleAction(it) },
             installementDetails = { openInstallmentBottomSheet(it) },
             seeMoreOptions = { simulationAdapter.updateOptionList(it) },
-            invokeAnalytics = { sendEvent(it) }
+            invokeAnalytics = { sendEvent(it) },
+            retryLoading = { retryLoading() }
         )
     )
 
@@ -112,18 +111,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initArguments()
         initViews()
+        payLaterViewModel.defaultTenure = payLaterArgsDescriptor.defaultTenure
         payLaterViewModel.getProductDetail(payLaterArgsDescriptor.productId)
     }
 
-    private fun initArguments() {
-        payLaterViewModel.defaultTenure = payLaterArgsDescriptor.defaultTenure
-    }
-
     private fun initViews() {
-        rvPayLaterSimulation.visible()
-        rvPayLaterOption.visible()
         rvPayLaterSimulation.adapter = tenureAdapter
         rvPayLaterSimulation.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -139,7 +132,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> productDetailSuccess(it.data)
-                is Fail -> showErrorUI(it.throwable)
+                is Fail -> onProductDetailFailed(it.throwable)
             }
         }
 
@@ -152,8 +145,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
+        // hide shimmer
         productInfoShimmer.gone()
-        showSimulationViews()
+        showSimulationViews(data.isNotEmpty())
         setTenureAdapter(data)
         setSimulationAdapter(data)
     }
@@ -164,64 +158,67 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         tenureAdapter.lastSelectedPosition = defaultSelectedSimulation
     }
 
+    // set paylater options for selected simulation
     private fun setSimulationAdapter(data: ArrayList<SimulationUiModel>) {
         val defaultSelectedSimulation = payLaterViewModel.defaultSelectedSimulation
         if (defaultSelectedSimulation >= 0) {
             rvPayLaterSimulation.scrollToPosition(defaultSelectedSimulation)
             simulationAdapter.addAllElements(
-                data[defaultSelectedSimulation].simulationList ?: arrayListOf()
+                data.getOrNull(defaultSelectedSimulation)?.simulationList ?: arrayListOf()
             )
         }
-
-        sendPayLaterImpression(data, defaultSelectedSimulation)
+        if (data.isNotEmpty())
+            sendPayLaterImpression(data, defaultSelectedSimulation)
     }
 
     private fun sendPayLaterImpression(data: ArrayList<SimulationUiModel>, defaultSelectedSimulation:Int) {
         val firstDetail = data[defaultSelectedSimulation].simulationList?.getOrNull(0)
-        var userState = ""
-        if (firstDetail is Detail) {
-            userState = firstDetail.userState ?:""
-        }
-        val event = PayLaterAnalyticsBase().apply {
+        val userState: String = if (firstDetail is Detail) firstDetail.userState ?: "" else ""
+
+        PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation
             action = PdpSimulationAnalytics.IMPRESSION_PAYLATER
             userStatus = userState
+            sendEvent(this)
         }
-        sendEvent(event)
     }
 
     private fun simulationFailed(throwable: Throwable) {
         // show product detail only after simulation has been done
-        if (isProductDetailShown)
-            productDetail.visible()
-        showErrorUI(throwable)
+        productDetail.visible()
+        productInfoShimmer.gone()
+        rvPayLaterSimulation.gone()
+        simulationAdapter.showSimulationLoadingFailed(throwable)
     }
 
-    private fun showErrorUI(throwable: Throwable) {
+    private fun onProductDetailFailed(throwable: Throwable) {
         hideSimulationViews()
         when (throwable) {
-            is PdpSimulationException.PayLaterEmptyDataException,
-            is PdpSimulationException.PayLaterNullDataException -> showEmptyInstallmentView()
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
             else -> setGlobalErrors(GlobalError.SERVER_ERROR)
         }
     }
 
-    private fun showEmptyInstallmentView() {
-        emptyStateInstallment.visible()
-        emptyStateInstallment.setPrimaryCTAClickListener {
-            emptyStateInstallment.gone()
-            showSimulationViews()
-            payLaterViewModel.getProductDetail(payLaterArgsDescriptor.productId)
-        }
+    private fun retryLoading() {
+        // hide data views
+        productDetail.gone()
+        // show shimmer views
+        productInfoShimmer.visible()
+        rvPayLaterSimulation.visible()
+        rvPayLaterOption.visible()
+        payLaterBorder.visible()
+        simulationAdapter.showLoadingInAdapter()
+        payLaterViewModel.getProductDetail(payLaterArgsDescriptor.productId)
     }
 
-    private fun showSimulationViews() {
+    private fun showSimulationViews(isDataValid: Boolean) {
         // show product detail only after simulation has been done
-        if (isProductDetailShown)
+        if (payLaterViewModel.productDetailLiveData.value is Success)
             productDetail.visible()
-        rvPayLaterSimulation.visible()
+        if (isDataValid)
+            rvPayLaterSimulation.visible()
+        else rvPayLaterSimulation.gone()
         rvPayLaterOption.visible()
         payLaterBorder.visible()
     }
@@ -230,8 +227,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         productInfoShimmer.gone()
         rvPayLaterSimulation.gone()
         rvPayLaterOption.gone()
-        if (!isProductDetailShown)
-            payLaterBorder.gone()
+        payLaterBorder.gone()
     }
 
     private fun setGlobalErrors(errorType: Int) {
@@ -239,29 +235,18 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         payLaterSimulationGlobalError.visible()
         payLaterSimulationGlobalError.setActionClickListener {
             payLaterSimulationGlobalError.gone()
-            if (!isProductDetailShown)
-                productInfoShimmer.visible()
-            showSimulationViews()
-            payLaterViewModel.getProductDetail(payLaterArgsDescriptor.productId)
+            retryLoading()
         }
     }
 
-    /**
-     * THis method called on product detail api success
-     */
+    // THis method called on product detail api success
     private fun productDetailSuccess(data: GetProductV3) {
         payLaterViewModel.getPayLaterAvailableDetail(data.price ?: 0.0, payLaterArgsDescriptor.productId)
-        if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
-            productDetail.gone()
-        else
-            setProductDetailView(data)
+        setProductDetailView(data)
     }
 
-    /**
-     * This method called to set view for the product image,price and variant
-     */
+    // This method called to set view for the product image,price and variant
     private fun setProductDetailView(data: GetProductV3) {
-        isProductDetailShown = true
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
                 productDetail.productImage.setImageUrl(
@@ -269,10 +254,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 )
             }
         }
-        data.productName?.let {
-            productDetail.productName.text = it
-        }
-
+        data.productName?.let { productDetail.productName.text = it }
         productDetail.productPrice.text =
             PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
 
@@ -286,16 +268,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun showProductVariant(data: GetProductV3) {
         data.variant?.let { variant ->
             if (variant.products.isNotEmpty() && variant.selections.isNotEmpty()) {
-                var combination = -1
-                for (i in variant.products.indices) {
-                    if (payLaterArgsDescriptor.productId == variant.products[i].productID) {
-                        combination = variant.products[i].combination[0] ?: -1
-                        break
-                    }
-                }
-                if (combination != -1)
-                    productDetail.productVariant.text =
-                        variant.selections[0].options[combination]?.value ?: ""
+                val combinationIdx = variant.products.find {
+                    payLaterArgsDescriptor.productId == it.productID
+                }?.combination?.getOrNull(0) ?: -1
+
+                if (combinationIdx != -1)
+                    productDetail.productVariant.text = variant.selections[0].options[combinationIdx]?.value ?: ""
             } else {
                 productDetail.productVariant.gone()
             }
@@ -303,9 +281,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     }
 
-    private fun sendEvent(event: PayLaterAnalyticsBase) = activity?.let {
-        (it as PdpSimulationCallback).sendAnalytics(event)
-    }
+    private fun sendEvent(event: PayLaterAnalyticsBase) =
+        activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
 
     override fun getScreenName() = "PayLater & Cicilan"
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)
