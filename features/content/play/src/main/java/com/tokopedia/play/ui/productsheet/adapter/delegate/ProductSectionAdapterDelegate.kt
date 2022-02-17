@@ -11,13 +11,13 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
  */
 class ProductSectionAdapterDelegate(
     listener: ProductSectionViewHolder.Listener
-) : TypedAdapterDelegate<ProductSectionUiModel, ProductSectionUiModel, ProductSectionViewHolder>(
+) : TypedAdapterDelegate<ProductSectionUiModel.Section, ProductSectionUiModel, ProductSectionViewHolder>(
     ProductSectionViewHolder.LAYOUT
 ),
     ProductSectionViewHolder.Listener by listener {
 
     override fun onBindViewHolder(
-        item: ProductSectionUiModel,
+        item: ProductSectionUiModel.Section,
         holder: ProductSectionViewHolder
     ) {
         holder.bind(item)

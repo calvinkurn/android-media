@@ -14,21 +14,21 @@ import javax.inject.Inject
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
 
-    fun mapSection(input: Section) = ProductSectionUiModel(
+    fun mapSection(input: Section) = ProductSectionUiModel.Section(
         productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
         config = mapConfig(input)
     )
 
-    private fun mapConfig(input: Section) = ProductSectionUiModel.ConfigUiModel(
+    private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
         title = input.sectionTitle,
         type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
         serverTime = input.serverTime,
         startTime = input.timerStartTime,
         endTime = input.timerEndTime,
         timerInfo = input.countdown.countdownInfo,
-        background = ProductSectionUiModel.BackgroundUiModel(
+        background = ProductSectionUiModel.Section.BackgroundUiModel(
             gradients = input.background.gradientList,
             imageUrl = input.background.imageUrl
         ),

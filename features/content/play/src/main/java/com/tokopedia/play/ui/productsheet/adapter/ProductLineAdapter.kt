@@ -2,7 +2,6 @@ package com.tokopedia.play.ui.productsheet.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductLineAdapterDelegate
-import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductPlaceholderAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
@@ -16,7 +15,6 @@ class ProductLineAdapter(
     init {
         delegatesManager
                 .addDelegate(ProductLineAdapterDelegate(this))
-                .addDelegate(ProductPlaceholderAdapterDelegate())
     }
 
     override fun areItemsTheSame(oldItem: PlayProductUiModel, newItem: PlayProductUiModel): Boolean {

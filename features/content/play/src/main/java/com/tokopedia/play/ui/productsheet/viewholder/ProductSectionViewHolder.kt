@@ -44,7 +44,7 @@ class ProductSectionViewHolder(
         rvProducts.layoutManager = LinearLayoutManager(itemView.context)
     }
 
-    private fun setupListener(config: ProductSectionUiModel.ConfigUiModel) = object : ProductLineViewHolder.Listener {
+    private fun setupListener(config: ProductSectionUiModel.Section.ConfigUiModel) = object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
             listener.onBuyProduct(product, config)
         }
@@ -59,7 +59,7 @@ class ProductSectionViewHolder(
 
     }
 
-    fun bind(item: ProductSectionUiModel) {
+    fun bind(item: ProductSectionUiModel.Section) {
         adapter = ProductLineAdapter(setupListener(item.config))
         rvProducts.adapter = adapter
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
@@ -93,7 +93,7 @@ class ProductSectionViewHolder(
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
     }
 
-    private fun setupBackground(background: ProductSectionUiModel.BackgroundUiModel) {
+    private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
             try {
                 val bgArray = IntArray(background.gradients.size)
@@ -108,7 +108,7 @@ class ProductSectionViewHolder(
         }
     }
 
-    private fun setupTimer(item : ProductSectionUiModel) {
+    private fun setupTimer(item : ProductSectionUiModel.Section) {
         timerTime = if(item.config.type == ProductSectionType.Active) item.config.endTime else item.config.startTime
 
         val convertedServerTime = item.config.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
@@ -147,11 +147,11 @@ class ProductSectionViewHolder(
     }
 
     interface Listener {
-        fun onBuyProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.ConfigUiModel)
-        fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.ConfigUiModel)
-        fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.ConfigUiModel, position: Int)
+        fun onBuyProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
+        fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
+        fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
         fun onProductChanged()
-        fun onTimerExpired(product: ProductSectionUiModel)
+        fun onTimerExpired(product: ProductSectionUiModel.Section)
     }
 }
 

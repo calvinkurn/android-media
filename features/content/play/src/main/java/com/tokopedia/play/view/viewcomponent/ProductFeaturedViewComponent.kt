@@ -95,7 +95,9 @@ class ProductFeaturedViewComponent(
     }
 
     private fun getFinalFeaturedItems(products: List<ProductSectionUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        return products.flatMap { it.productList }.take(maxProducts) // todo: retest
+        return products
+            .filterIsInstance<ProductSectionUiModel.Section>()
+            .flatMap { it.productList }.take(maxProducts) // todo: retest
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }

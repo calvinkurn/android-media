@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.productsheet.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductPlaceholderAdapterDelegate
 import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductSectionAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -13,8 +14,9 @@ class ProductSectionAdapter(
 ) : BaseDiffUtilAdapter<ProductSectionUiModel>() {
 
     init {
-        //TODO() = shimmering
-        delegatesManager.addDelegate(ProductSectionAdapterDelegate(listener))
+        delegatesManager
+            .addDelegate(ProductSectionAdapterDelegate(listener))
+            .addDelegate(ProductPlaceholderAdapterDelegate())
     }
 
     override fun areItemsTheSame(
