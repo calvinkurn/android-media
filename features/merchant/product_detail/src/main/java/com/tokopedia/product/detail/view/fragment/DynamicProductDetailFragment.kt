@@ -1007,7 +1007,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
-        viewModel.getRecommendation(recommendationDataModel, annotationChip, position, filterPosition)
+        viewModel.recommendationChipClicked(recommendationDataModel, annotationChip, position, filterPosition)
     }
 
     override fun onSeeAllRecomClicked(recommendationWidget: RecommendationWidget, pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1839,7 +1839,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             })
         }
 
-        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
+        viewLifecycleOwner.observe(viewModel.) {
             if (it is Fail) {
                 view?.showToasterError(context?.getString(R.string.recom_filter_chip_click_error_network)
                         ?: "", ctaText = getString(R.string.label_oke_pdp))
