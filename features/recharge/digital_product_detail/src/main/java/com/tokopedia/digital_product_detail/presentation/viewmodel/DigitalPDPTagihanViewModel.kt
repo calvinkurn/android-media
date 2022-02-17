@@ -14,6 +14,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
+import com.tokopedia.digital_product_detail.data.model.data.Validation
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
@@ -26,6 +27,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class DigitalPDPTagihanViewModel @Inject constructor(
@@ -33,6 +35,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
+    private var validators: List<Validation> = listOf()
     private var loadingJob: Job? = null
 
     var isEligibleToBuy = false
@@ -106,6 +109,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
             if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()) {
                 operatorData = operatorList.get(0)
             }
+            validators = data.response.validations ?: listOf()
             _catalogSelectGroup.value = RechargeNetworkResult.Success(data)
         }) {
             _catalogSelectGroup.value = RechargeNetworkResult.Fail(it)
@@ -146,13 +150,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         loadingJob = viewModelScope.launch {
             launchCatchError(dispatchers.main, block = {
                 var errorMessage = ""
-//                for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-//                    val phoneIsValid = Pattern.compile(validation.rule)
-//                        .matcher(clientNumber).matches()
-//                    if (!phoneIsValid) {
-//                        errorMessage = validation.message
-//                    }
-//                }
+                for (validation in validators) {
+                    val phoneIsValid = Pattern.compile(validation.rule)
+                        .matcher(clientNumber).matches()
+                    if (!phoneIsValid) {
+                        errorMessage = validation.message
+                    }
+                }
                 isEligibleToBuy = errorMessage.isEmpty()
                 delay(VALIDATOR_DELAY_TIME)
                 _clientNumberValidatorMsg.value = errorMessage

@@ -429,6 +429,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             userSession.userId
                         )
+                        onHideBuyWidget()
                     }
 
                     override fun onClickNavigationIcon() {

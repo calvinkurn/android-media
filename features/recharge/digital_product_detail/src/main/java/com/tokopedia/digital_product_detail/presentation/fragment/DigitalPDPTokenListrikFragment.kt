@@ -644,6 +644,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             userSession.userId
                         )
+                        onHideBuyWidget()
                     }
 
                     override fun onClickNavigationIcon() {
