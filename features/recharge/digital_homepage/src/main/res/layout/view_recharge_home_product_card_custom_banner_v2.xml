@@ -26,10 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_GN500"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/tv_section_title"
         app:layout_constraintBottom_toBottomOf="@id/tv_section_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="heading_5"
+        app:typographyType="heading_6"
         tools:text="Lihat Semua"/>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/content_container"
