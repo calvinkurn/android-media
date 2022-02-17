@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-
-    <gradient
-        android:angle="135"
-        android:centerColor="@color/topchat_dms_image_upload_overlay"
-        android:centerX="30%"
-        android:endColor="@color/topchat_dms_image_upload_overlay"
-        android:startColor="@color/topchat_dms_image_upload_overlay_start_color"
-        android:type="linear" />
-
-    <corners android:radius="@dimen/spacing_lvl3" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:angle="135" android:centerColor="@color/topchat_dms_image_upload_overlay" android:centerX="30%" android:endColor="@color/topchat_dms_image_upload_overlay" android:startColor="@color/topchat_dms_image_upload_overlay_start_color" android:type="linear"/>
+    <corners android:radius="@dimen/spacing_lvl3"/>
 </shape>

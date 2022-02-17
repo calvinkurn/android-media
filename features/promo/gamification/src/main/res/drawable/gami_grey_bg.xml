@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke
-        android:width="@dimen/dp_1"
-        android:color="@color/gf_outline_btn" />
-    <corners android:radius="8dp" />
+    <stroke android:width="@dimen/dp_1" android:color="@color/gf_outline_btn"/>
+    <corners android:radius="8dp"/>
     <solid android:color="@color/transparent"/>
 </shape>

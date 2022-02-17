@@ -1,9 +1,3 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="13dp"
-    android:height="9dp"
-    android:viewportWidth="13"
-    android:viewportHeight="9">
-  <path
-      android:pathData="M10.5779,7.7385L6.7497,3.9103L2.9227,7.7385C2.4143,8.2469 1.5971,8.26 1.1077,7.7706C0.6184,7.2812 0.6326,6.4652 1.141,5.9569L5.8589,1.2378C6.3482,0.7484 7.1512,0.7484 7.6406,1.2378L12.3596,5.9569C12.868,6.4652 12.8811,7.2812 12.3917,7.7706C11.9023,8.26 11.0863,8.2469 10.5779,7.7385Z"
-      android:fillColor="@color/Unify_N400"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="13dp" android:height="9dp" android:viewportWidth="13" android:viewportHeight="9">
+    <path android:pathData="M10.578 7.739L6.75 3.91 2.923 7.74C2.414 8.247 1.597 8.26 1.108 7.77 0.618 7.28 0.633 6.465 1.14 5.957l4.718-4.72c0.49-0.489 1.292-0.489 1.782 0l4.719 4.72c0.508 0.508 0.521 1.324 0.032 1.814-0.49 0.489-1.306 0.476-1.814-0.032z" android:fillColor="@color/Unify_N400"/>
 </vector>

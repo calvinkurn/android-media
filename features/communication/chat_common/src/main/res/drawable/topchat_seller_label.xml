@@ -3,4 +3,3 @@
     <solid android:color="@color/chatcommon_dms_g200"/>
     <corners android:radius="20dp"/>
 </shape>
-

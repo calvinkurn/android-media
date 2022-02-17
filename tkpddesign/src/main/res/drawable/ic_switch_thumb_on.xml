@@ -2,19 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/Unify_N0" />
-            <stroke android:color="@color/Unify_G500"
-                android:width="0.5dp"/>
-            <size android:height="6dp"
-                android:width="6dp"/>
+            <solid android:color="@color/Unify_N0"/>
+            <stroke android:color="@color/Unify_G500" android:width="0.5dp"/>
+            <size android:height="6dp" android:width="6dp"/>
         </shape>
     </item>
-    <item
-        android:top="10dp"
-        android:bottom="10dp"
-        android:left="@dimen/dp_7"
-        android:right="@dimen/dp_7">
-        <bitmap android:src="@drawable/ic_action_check"
-            android:tint="@color/Unify_G500" />
+    <item android:top="10dp" android:bottom="10dp" android:left="@dimen/dp_7" android:right="@dimen/dp_7">
+        <bitmap android:src="@drawable/ic_action_check" android:tint="@color/Unify_G500"/>
     </item>
 </layer-list>

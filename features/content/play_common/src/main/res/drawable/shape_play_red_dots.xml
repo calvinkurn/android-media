@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-    <size
-        android:height="@dimen/layout_lvl1"
-        android:width="@dimen/layout_lvl1"
-        />
-
-    <solid android:color="@color/play_dms_R500" />
-
-    <stroke android:width="@dimen/dp_1"
-        android:color="@color/Unify_Static_White"
-        />
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <size android:height="@dimen/layout_lvl1" android:width="@dimen/layout_lvl1"/>
+    <solid android:color="@color/play_dms_R500"/>
+    <stroke android:width="@dimen/dp_1" android:color="@color/Unify_Static_White"/>
 </shape>
