@@ -1,12 +1,11 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import io.mockk.every
 import io.mockk.mockk
@@ -67,7 +66,7 @@ class WebsocketSendTest: BaseTopChatViewModelTest() {
     @Test
     fun should_send_attachment_to_ws() {
         // Given
-        val sendablePreview = SendableProductPreview(ProductPreview())
+        val sendablePreview = TopchatProductAttachmentPreviewUiModel.Builder().build()
         val preview = StickerUiModel.Builder().build()
         val payload = ""
         every {

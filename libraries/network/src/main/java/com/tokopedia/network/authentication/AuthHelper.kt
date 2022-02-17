@@ -1,4 +1,4 @@
-package com.tokopedia.authentication
+package com.tokopedia.network.authentication
 
 import android.os.Build
 import android.util.Base64

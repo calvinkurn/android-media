@@ -184,19 +184,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     val allDisabledCartItemData: List<CartItemHolderData>
         get() {
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            loop@ for (data in cartDataList) {
-                when (data) {
-                    is CartShopHolderData -> {
-                        if (data.isError) {
-                            cartItemDataList.addAll(data.productUiModelList)
-                        }
-                    }
-                    hasReachAllShopItems(data) -> break@loop
-                }
-            }
-
             if (tmpAllUnavailableShop?.isNotEmpty() == true) {
                 cartItemDataList.addAll(collapsedUnavailableCartItemData)
+            } else {
+                loop@ for (data in cartDataList) {
+                    when (data) {
+                        is CartShopHolderData -> {
+                            if (data.isError) {
+                                cartItemDataList.addAll(data.productUiModelList)
+                            }
+                        }
+                        hasReachAllShopItems(data) -> break@loop
+                    }
+                }
             }
 
             return cartItemDataList

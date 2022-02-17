@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
@@ -119,7 +119,7 @@ abstract class BaseSearchCategoryViewModel(
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val filterController = FilterController()
-    protected val chooseAddressDataView = ChooseAddressDataView()
+    protected var chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
     protected val queryParamMutable = queryParamMap.toMutableMap()
@@ -227,6 +227,7 @@ abstract class BaseSearchCategoryViewModel(
 
         hasGlobalMenu = isABTestNavigationRevamp()
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
     }
 
     private fun showLoading() {
@@ -553,6 +554,7 @@ abstract class BaseSearchCategoryViewModel(
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
         dynamicFilterModelMutableLiveData.value = null
 
         showLoading()
@@ -564,6 +566,7 @@ abstract class BaseSearchCategoryViewModel(
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
         dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
