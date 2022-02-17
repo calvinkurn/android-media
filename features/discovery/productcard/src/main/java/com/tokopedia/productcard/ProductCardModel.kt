@@ -78,7 +78,7 @@ data class ProductCardModel (
         val hasButtonThreeDotsWishlist: Boolean = false,
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
-        val customVideoURL : String = ""
+        val customVideoURL : String = "",
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

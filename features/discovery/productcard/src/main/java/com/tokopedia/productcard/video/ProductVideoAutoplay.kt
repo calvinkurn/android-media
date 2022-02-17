@@ -11,7 +11,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ProductVideoAutoplayHelper<T, R : T>(
+class ProductVideoAutoplay<T, R : T>(
     scope: CoroutineScope
 ) : CoroutineScope by scope {
     private var productVideoAutoPlayJob: Job? = null
@@ -28,7 +28,7 @@ class ProductVideoAutoplayHelper<T, R : T>(
         filter: (List<T>) -> List<R>
     ) {
         productVideoAutoPlayJob?.cancel()
-        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
+        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, true)
         val lastCompleteVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
         if (!itemList.isNullOrEmpty()
             && firstVisibleItemIndex != -1

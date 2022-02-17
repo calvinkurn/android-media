@@ -65,7 +65,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
-import com.tokopedia.productcard.video.ProductVideoAutoplayHelper
+import com.tokopedia.productcard.video.ProductVideoAutoplay
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -483,8 +483,8 @@ class ProductListFragment: BaseDaggerFragment(),
     //endregion
 
     //region product video autoplay
-    private val productVideoAutoplayHelper : ProductVideoAutoplayHelper<Visitable<*>, ProductItemDataView> by lazy {
-        ProductVideoAutoplayHelper(this)
+    private val productVideoAutoplay : ProductVideoAutoplay<Visitable<*>, ProductItemDataView> by lazy {
+        ProductVideoAutoplay(this)
     }
 
     private val isAutoplayProductVideoEnabled : Boolean by lazy {
@@ -524,7 +524,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun startVideoAutoplayWhenRecyclerViewIsIdle() {
-        productVideoAutoplayHelper.startVideoAutoplay(
+        productVideoAutoplay.startVideoAutoplay(
             recyclerView,
             staggeredGridLayoutManager,
             productListAdapter?.itemList
@@ -537,15 +537,15 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun resumeVideoAutoplay() {
-        productVideoAutoplayHelper.resumeVideoAutoplay()
+        productVideoAutoplay.resumeVideoAutoplay()
     }
 
     private fun pauseVideoAutoplay() {
-        productVideoAutoplayHelper.pauseVideoAutoplay()
+        productVideoAutoplay.pauseVideoAutoplay()
     }
 
     private fun stopVideoAutoplay() {
-        productVideoAutoplayHelper.stopVideoAutoplay()
+        productVideoAutoplay.stopVideoAutoplay()
     }
     //endregion
 
