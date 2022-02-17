@@ -441,12 +441,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return result
     }
 
-    fun getIsNewRatesComponentByProductId(): Boolean{
-        return p2Data.value?.ratesEstimate?.find {
-            getDynamicProductInfoP1?.basic?.productID in it.listfProductId
-        }?.isNewRatesComponent == true
-    }
-
     fun getP2RatesBottomSheetData(): ErrorBottomSheet? {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
         var result: ErrorBottomSheet? = null

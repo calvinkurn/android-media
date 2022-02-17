@@ -57,6 +57,9 @@ data class ProductInfoP2UiData(
         var rating: ProductRatingCount = ProductRatingCount(),
         var ticker: ProductTicker = ProductTicker()
 ) {
+
+    val isNewRatesComponent: Boolean = ratesEstimate.firstOrNull()?.isNewRatesComponent == true
+
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
             productId in it.productIDs
