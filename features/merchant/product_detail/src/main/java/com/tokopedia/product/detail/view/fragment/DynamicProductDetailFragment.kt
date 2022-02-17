@@ -1839,7 +1839,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             })
         }
 
-        viewLifecycleOwner.observe(viewModel.) {
+        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
             if (it is Fail) {
                 view?.showToasterError(context?.getString(R.string.recom_filter_chip_click_error_network)
                         ?: "", ctaText = getString(R.string.label_oke_pdp))
