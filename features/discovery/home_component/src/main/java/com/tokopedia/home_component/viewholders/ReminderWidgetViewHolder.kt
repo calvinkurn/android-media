@@ -12,7 +12,6 @@ import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.model.ReminderState
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import io.embrace.android.embracesdk.Embrace
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.view.binding.viewBinding
 
