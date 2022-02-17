@@ -34,6 +34,7 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DIHAPUS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -247,8 +248,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(GRUP)
         tab_layout?.addNewTab(TANPA_GRUP)
+        tab_layout?.addNewTab(DIHAPUS)
         list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment.createInstance(prepareBundle())))
         list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment.createInstance(prepareBundle())))
+        list.add(FragmentTabItem(DIHAPUS, TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())))
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
@@ -542,6 +545,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     fun setNonGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
+    }
+
+    fun setDeletedGroupCount(size: Int) {
+        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 
 
