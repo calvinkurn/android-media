@@ -134,16 +134,18 @@ class ProductCardViewHelper(
 
     override fun play(url: String) {
         val context = context ?: return
-        if (
-            DeviceConnectionInfo.isConnectWifi(context) &&
-            isDeviceHasRequirementAutoPlay() &&
-            (!isPlayerPlaying() || url != videoUri.toString())
-        ) {
+        if (canPlay(context, url)) {
             videoUri = Uri.parse(url)
             resumeVideo()
         } else {
             playerPause()
         }
+    }
+
+    private fun canPlay(context: Context, url: String) : Boolean {
+        return DeviceConnectionInfo.isConnectWifi(context) &&
+                isDeviceHasRequirementAutoPlay() &&
+                (!isPlayerPlaying() || url != videoUri.toString())
     }
 
     override fun stop() {
@@ -157,13 +159,16 @@ class ProductCardViewHelper(
     }
 
     private fun resumeVideo() {
-        if (videoUri != null
-            && !videoUri?.toString().isNullOrEmpty()
-            && isAutoPlay
-        ) {
+        if (canResume()) {
             playUri(videoUri ?: Uri.parse(""))
             exoPlayerView.setPlayer(videoPlayer)
         }
+    }
+
+    private fun canResume() : Boolean {
+        return videoUri != null
+                && !videoUri?.toString().isNullOrEmpty()
+                && isAutoPlay
     }
 
     private fun playUri(uri: Uri, autoPlay: Boolean = true) {
