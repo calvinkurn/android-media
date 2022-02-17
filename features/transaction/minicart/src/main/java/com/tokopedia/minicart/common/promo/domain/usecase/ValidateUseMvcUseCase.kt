@@ -59,7 +59,7 @@ class ValidateUseMvcUseCase @Inject constructor(@ApplicationContext private val 
                     data {
                         curr_purchase
                         min_purchase
-                        max_potential_benefit
+                        progress_percentage
                         message
                     }
                 }

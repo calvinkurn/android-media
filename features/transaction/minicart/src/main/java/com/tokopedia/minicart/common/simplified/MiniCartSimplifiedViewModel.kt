@@ -52,7 +52,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {
                 _miniCartSimplifiedData.value = it
-                validateUseMvc()
+                validateUseMvc(false)
             },
             onError = {
                 if (_miniCartSimplifiedData.value == null) {
@@ -62,9 +62,10 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             })
     }
 
-    private fun generateValidateUseMvcParam(miniCartItems: List<MiniCartItem>, isMoveToCart: Boolean = false): ValidateUseMvcParam {
-        val cartString = miniCartItems.first { !it.isError }.cartString
-        val shopId = miniCartItems.first { !it.isError }.shopId
+    private fun generateValidateUseMvcParam(miniCartItems: List<MiniCartItem>, isMoveToCart: Boolean): ValidateUseMvcParam {
+        val firstAvailableItem = miniCartItems.first { !it.isError }
+        val cartString = firstAvailableItem.cartString
+        val shopId = firstAvailableItem.shopId
         return ValidateUseMvcParam(
             apply = isMoveToCart,
             codes = listOf(currentPromoCode),
@@ -95,7 +96,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
         }
     }
 
-    private fun validateUseMvc(isMoveToCart: Boolean = false) {
+    private fun validateUseMvc(isMoveToCart: Boolean) {
         val miniCartSimplifiedData = _miniCartSimplifiedData.value
         if (miniCartSimplifiedData == null ||
             miniCartSimplifiedData.miniCartItems.isEmpty() ||
