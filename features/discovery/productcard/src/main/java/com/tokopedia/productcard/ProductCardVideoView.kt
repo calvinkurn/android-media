@@ -21,7 +21,7 @@ class ProductCardVideoView(
     companion object{
         private val playerLayoutId = R.layout.product_card_video_view
 
-        private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.12f
+        private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.5f
         private const val PIVOT_MULTIPLIER_FIT_CENTER = 0.5f
     }
     private val componentListener: ComponentListener
