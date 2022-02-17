@@ -26,6 +26,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "com.google.protobuf:protobuf-javalite:3.19.1"
+    implementation 'com.google.crypto.tink:tink-android:1.6.1'
 }
 
 protobuf {

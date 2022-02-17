@@ -8,12 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+
 class UserSessionDataStoreImpl (val context: Context):
     UserSessionDataStore {
-    
+
     private val Context.userSessionStore: DataStore<UserSessionProto> by dataStore(
-        fileName = DATA_STORE_FILE_NAME,
-        serializer = UserSessionSerializer()
+        fileName = UserSessionDataStoreImpl.DATA_STORE_FILE_NAME,
+        serializer = UserSessionSerializer(UserSessionDataStoreClient.createAead(context))
     )
 
     fun getUserSessionFlow(): Flow<UserSessionProto> {
@@ -31,6 +32,15 @@ class UserSessionDataStoreImpl (val context: Context):
         )
     }
 
+    override fun getUserSession(): Flow<UserData> {
+        return getUserSessionFlow().map { UserData(
+            name = it.name,
+            email = it.email,
+            phoneNumber = it.phoneNumber,
+            accessToken = it.accessToken,
+            refreshToken = it.refreshToken
+        ) }
+    }
     private suspend fun userSessionSetter(func: UserSessionProto.Builder.() -> Unit) {
         context.userSessionStore.updateData { preferences ->
             preferences.toBuilder()
@@ -464,8 +474,7 @@ class UserSessionDataStoreImpl (val context: Context):
 
     override suspend fun setIsShopOwner(isShopOwner: Boolean) {
         userSessionSetter {
-            TODO("shop owner")
-//            setIsShopOwner(isShopOwner)
+            setIsShopOwner(isShopOwner)
         }
     }
 

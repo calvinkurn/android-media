@@ -3,13 +3,14 @@ package com.tokopedia.user.session
 import android.content.Context
 import android.util.Pair
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl
+import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import com.tokopedia.user.session.datastore.UserSessionKeyMapper
 import com.tokopedia.user.session.util.EncoderDecoder
 
-open class MigratedUserSession(var context: Context) {
+open class MigratedUserSession(var context: Context?) {
 
-    private val userSessionDataStore: UserSessionDataStore = UserSessionDataStoreImpl(context)
+    private var userSessionDataStore: UserSessionDataStore? = null
+    	get() = UserSessionDataStoreClient.getInstance(context!!)
 
     protected fun getLong(prefName: String?, keyName: String?, defValue: Long): Long {
 	val newPrefName = String.format("%s%s", prefName, suffix)
@@ -35,22 +36,22 @@ open class MigratedUserSession(var context: Context) {
 	    UserSessionMap.map[key] = oldValue
 	    return oldValue
 	}
-	val sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
-	val value = sharedPrefs.getLong(newKeyName, defValue)
+	val sharedPrefs = context?.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
+	val value = sharedPrefs?.getLong(newKeyName, defValue) ?: defValue
 	UserSessionMap.map[key] = value
 	return value
     }
 
     private fun internalGetLong(prefName: String?, keyName: String?, defValue: Long): Long {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	return sharedPrefs.getLong(keyName, defValue)
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	return sharedPrefs?.getLong(keyName, defValue) ?: defValue
     }
 
     private fun internalSetLong(prefName: String, keyName: String, value: Long) {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	val editor = sharedPrefs.edit()
-	editor.putLong(keyName, value)
-	editor.apply()
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs?.edit()
+	editor?.putLong(keyName, value)
+	editor?.apply()
     }
 
     fun convertToNewKey(prefName: String?, keyName: String?): Pair<String, String> {
@@ -77,10 +78,10 @@ open class MigratedUserSession(var context: Context) {
 	internalCleanKey(prefName, keyName)
     }
 
-    private fun internalCleanKey(prefName: String?, keyName: String?) {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	val editor = sharedPrefs.edit()
-	editor.remove(keyName).apply()
+    fun internalCleanKey(prefName: String?, keyName: String?) {
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs?.edit()
+	editor?.remove(keyName)?.apply()
     }
 
     protected fun nullString(prefName: String?, keyName: String?) {
@@ -94,28 +95,32 @@ open class MigratedUserSession(var context: Context) {
     }
 
     private fun internalGetString(prefName: String?, keyName: String?, defValue: String): String? {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	return sharedPrefs.getString(keyName, defValue)
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	return sharedPrefs?.getString(keyName, defValue)
     }
 
     protected fun setString(prefName: String?, keyName: String?, value: String?) {
+	if(keyName != null && value != null) {
+	    UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
+	}
 	var prefName = prefName
 	var keyName = keyName
 	var value = value
 	val newKeys = convertToNewKey(prefName, keyName)
 	prefName = newKeys.first
 	keyName = newKeys.second
-	UserSessionMap.map[Pair(prefName, keyName)] = value
+	if(value != null) {
+	    UserSessionMap.map[Pair(prefName, keyName)] = value
+	}
 	value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV) // encrypt string here
 	internalSetString(prefName, keyName, value)
     }
 
     private fun internalSetString(prefName: String?, keyName: String, value: String) {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	val editor = sharedPrefs.edit()
-	editor.putString(keyName, value)
-	editor.apply()
-	UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs?.edit()
+	editor?.putString(keyName, value)
+	editor?.apply()
     }
 
     protected fun getAndTrimOldString(
@@ -153,8 +158,8 @@ open class MigratedUserSession(var context: Context) {
 		UserSessionMap.map[key] = oldValue
 		return oldValue
 	    }
-	    val sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
-	    var value = sharedPrefs.getString(newKeyName, defValue)
+	    val sharedPrefs = context?.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
+	    var value = sharedPrefs?.getString(newKeyName, defValue)
 	    if (value != null) {
 		if (value == defValue) { // if value same with def value\
 		    value
@@ -180,19 +185,21 @@ open class MigratedUserSession(var context: Context) {
 	keyName: String?,
 	defValue: Boolean
     ): Boolean {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	return sharedPrefs.getBoolean(keyName, defValue)
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	return sharedPrefs?.getBoolean(keyName, defValue) ?: defValue
     }
 
     private fun internalSetBoolean(prefName: String, keyName: String, value: Boolean) {
-	val sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-	val editor = sharedPrefs.edit()
-	editor.putBoolean(keyName, value)
-	editor.apply()
-	UserSessionKeyMapper.mapUserSessionKeyBoolean(keyName, userSessionDataStore, value)
+	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+	val editor = sharedPrefs?.edit()
+	editor?.putBoolean(keyName, value)
+	editor?.apply()
     }
 
     protected fun setBoolean(prefName: String?, keyName: String?, value: Boolean) {
+	if(keyName != null) {
+	    UserSessionKeyMapper.mapUserSessionKeyBoolean(keyName, userSessionDataStore, value)
+	}
 	var prefName = prefName
 	var keyName = keyName
 	val newKeys = convertToNewKey(prefName, keyName)
@@ -228,8 +235,8 @@ open class MigratedUserSession(var context: Context) {
 	    UserSessionMap.map[key] = oldValue
 	    return oldValue
 	}
-	val sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
-	val value = sharedPrefs.getBoolean(newKeyName, defValue)
+	val sharedPrefs = context?.getSharedPreferences(newPrefName, Context.MODE_PRIVATE)
+	val value = sharedPrefs?.getBoolean(newKeyName, defValue) ?: defValue
 	UserSessionMap.map[key] = value
 	return value
     }
@@ -239,6 +246,6 @@ open class MigratedUserSession(var context: Context) {
     }
 
     init {
-	context = context.applicationContext
+	context = context?.applicationContext
     }
 }

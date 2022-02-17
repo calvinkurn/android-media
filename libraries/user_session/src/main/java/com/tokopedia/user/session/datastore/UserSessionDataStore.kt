@@ -11,6 +11,8 @@ interface UserSessionDataStore {
 	const val LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock"
     }
 
+    fun getUserSession(): Flow<UserData>
+
     fun getAccessToken(): Flow<String>
 
     fun getTokenType(): Flow<String>
