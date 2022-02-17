@@ -5,13 +5,44 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.model.DigitalHomePageSearchAutoComplete
+import com.tokopedia.digital.home.model.RechargeHomepageBannerEmptyModel
+import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
+import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
+import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
+import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
+import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
+import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
+import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
+import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
+import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
+import com.tokopedia.digital.home.model.RechargeProductCardUnifyModel
+import com.tokopedia.digital.home.model.RechargeTicker
+import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
+import com.tokopedia.digital.home.model.TickerRechargeEnum
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.old.model.DigitalHomepageSearchEnumLayoutType
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.DynamicChannelLayout
+import com.tokopedia.home_component.model.ReminderData
+import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.model.ReminderState
+import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.DateHelper.isExpired
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
@@ -26,6 +57,9 @@ object RechargeHomepageSectionMapper {
 
     private const val LEGO_BANNER_SIZE_6 = 6
     private const val LEGO_BANNER_SIZE_3 = 3
+
+    private const val RECOMMENDATION_BANNER_SIZE_4 = 4
+    private const val RECOMMENDATION_BANNER_SIZE_2 = 2
 
     fun updateSectionsData(
         oldData: List<RechargeHomepageSections.Section>,
@@ -163,7 +197,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomepageProductCardCustomBannerV2Model(
                         it
                     )
-                    SECTION_RECOMMENDATION_BANNER -> RechargeHomepageRecommendationBannerModel(it)
+                    SECTION_RECOMMENDATION_BANNER -> getRecommendationBannerModel(it)
                     SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM -> RechargeHomepageProductCardCustomLastItemModel(
                         it
                     )
@@ -223,6 +257,24 @@ object RechargeHomepageSectionMapper {
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
                 })
         )
+    }
+
+    private fun getRecommendationBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageRecommendationBannerModel? {
+        if (section.items.size < RECOMMENDATION_BANNER_SIZE_2) return null
+
+        val items: List<RechargeHomepageSections.Item> = when {
+            section.items.size >= RECOMMENDATION_BANNER_SIZE_4 -> section.items.subList(
+                0,
+                RECOMMENDATION_BANNER_SIZE_4
+            )
+            section.items.size >= RECOMMENDATION_BANNER_SIZE_2 -> section.items.subList(
+                0,
+                RECOMMENDATION_BANNER_SIZE_2
+            )
+            else -> emptyList()
+        }
+
+        return RechargeHomepageRecommendationBannerModel(section.copy(items = items))
     }
 
     fun setDynamicHeaderViewChannel(

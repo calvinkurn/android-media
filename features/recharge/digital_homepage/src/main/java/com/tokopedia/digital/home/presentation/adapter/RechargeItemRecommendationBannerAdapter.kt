@@ -42,6 +42,10 @@ class RechargeItemRecommendationBannerAdapter(
                     setImageResource(PLACEHOLDER_RES_UNIFY)
                     show()
                 }
+
+                binding.root.setOnClickListener {
+                    listener.onRechargeSectionItemClicked(element)
+                }
             }
         }
     }
