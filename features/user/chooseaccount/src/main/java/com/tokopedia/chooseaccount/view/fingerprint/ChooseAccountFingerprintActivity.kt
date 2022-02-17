@@ -31,8 +31,6 @@ class ChooseAccountFingerprintActivity: BaseSimpleActivity(), HasComponent<Choos
     override fun getComponent(): ChooseAccountComponent {
         val appComponent = (application as BaseMainApplication)
             .baseAppComponent
-//        val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
-//            .baseAppComponent(appComponent).build()
         return DaggerChooseAccountComponent.builder()
             .baseAppComponent(appComponent)
             .build()
