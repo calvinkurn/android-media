@@ -31,7 +31,7 @@ object TopChatVoucherViewHolderBinder {
         voucherListener: TopChatVoucherListener
     ) {
         merchantVoucherView?.setOnClickListener {
-            voucherListener.onVoucherClicked(element.voucher)
+            voucherListener.onVoucherClicked(element)
         }
     }
 

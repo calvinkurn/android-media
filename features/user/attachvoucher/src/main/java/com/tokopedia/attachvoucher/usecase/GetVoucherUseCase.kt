@@ -114,6 +114,7 @@ open class GetVoucherUseCase @Inject constructor(
                             share
                         }
                         is_lock_to_product
+                        applink
                     }
                 }
             }

@@ -13,6 +13,7 @@ class TopChatVoucherUiModel private constructor(
     private val voucherModel: MerchantVoucherModel = builder.voucherModel
     private val isPublic: Int = builder.isPublic
     private val isLockToProduct: Int = builder.isLockToProduct
+    val applink: String = builder.applink
     val voucher: MerchantVoucherViewModel = MerchantVoucherViewModel(voucherModel).apply {
         this.isPublic = isPublic()
         this.isLockToProduct = isLockToProduct()
@@ -26,7 +27,7 @@ class TopChatVoucherUiModel private constructor(
         return isPublic == 1
     }
 
-    private fun isLockToProduct(): Boolean {
+    fun isLockToProduct(): Boolean {
         return isLockToProduct == 1
     }
 
@@ -35,6 +36,7 @@ class TopChatVoucherUiModel private constructor(
         internal lateinit var voucherModel: MerchantVoucherModel
         internal var isPublic: Int = 1
         internal var isLockToProduct: Int = 0
+        internal var applink: String = ""
 
         fun withVoucherModel(voucherModel: MerchantVoucherModel): Builder {
             this.voucherModel = voucherModel
@@ -48,6 +50,11 @@ class TopChatVoucherUiModel private constructor(
 
         fun withIsLockToProduct(isLockToProduct: Int): Builder {
             this.isLockToProduct = isLockToProduct
+            return self()
+        }
+
+        fun withApplink(applink: String): Builder {
+            this.applink = applink
             return self()
         }
 

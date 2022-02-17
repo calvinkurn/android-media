@@ -20,7 +20,8 @@ open class VoucherUiModel constructor(
         restrictedForLiquidProduct: Boolean,
         val isPublic: Int = 1,
         val remainingQuota: Int = 0,
-        val isLockToProduct: Int = 0
+        val isLockToProduct: Int = 0,
+        val applink: String = ""
 ) : MerchantVoucherModel(
         voucherId,
         voucherName,

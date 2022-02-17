@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.listener
 
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 interface TopChatVoucherListener {
-    fun onVoucherClicked(data: MerchantVoucherViewModel)
+    fun onVoucherClicked(data: TopChatVoucherUiModel)
 }

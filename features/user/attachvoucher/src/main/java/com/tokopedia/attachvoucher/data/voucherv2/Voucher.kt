@@ -71,5 +71,7 @@ data class Voucher(
     @SerializedName("voucher_type_formatted")
     val voucherTypeFormatted: String = "",
     @SerializedName("is_lock_to_product")
-    val isLockToProduct: Int = 0
+    val isLockToProduct: Int = 0,
+    @SerializedName("applink")
+    val applink: String = ""
 )

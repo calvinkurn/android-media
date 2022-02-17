@@ -207,7 +207,7 @@ open class MerchantVoucherView : CustomVoucherView {
 
     private fun String.getAdditionalText(isLockToProduct: Boolean): String {
         return if (isLockToProduct) {
-            "$this \n${context.getString(R.string.voucher_public_suffix)}"
+            "$this ${context.getString(R.string.voucher_public_suffix)}"
         } else this
     }
 }
