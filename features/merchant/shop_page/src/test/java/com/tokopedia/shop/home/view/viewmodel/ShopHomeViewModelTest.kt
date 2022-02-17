@@ -33,6 +33,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
@@ -48,6 +49,9 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -131,6 +135,7 @@ class ShopHomeViewModelTest {
     lateinit var context: Context
     private lateinit var viewModel: ShopHomeViewModel
 
+    private val mockExtParam = "fs_widget%3D23600"
     private val mockShopId = "1234"
     private val mockCampaignId = "123"
     private val mockPage = 2
@@ -212,7 +217,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `when getShopPageHomeWidgetLayoutData success should return expected results`() {
         coEvery { gqlShopPageGetHomeType.executeOnBackground() } returns ShopPageGetHomeType()
-        viewModel.getShopPageHomeWidgetLayoutData(mockShopId)
+        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
         coVerify {
             gqlShopPageGetHomeType.executeOnBackground()
         }
@@ -222,7 +227,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `when getShopPageHomeWidgetLayoutData error should return expected results`() {
         coEvery { gqlShopPageGetHomeType.executeOnBackground() } throws Exception()
-        viewModel.getShopPageHomeWidgetLayoutData(mockShopId)
+        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
         coVerify {
             gqlShopPageGetHomeType.executeOnBackground()
         }
@@ -1215,6 +1220,86 @@ class ShopHomeViewModelTest {
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
+        }
+    }
+
+    @Test
+    fun `when getWidgetContentData success should return expected thematic widget`() {
+        runBlocking {
+            val widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+            val widgetType = WidgetType.CAMPAIGN
+            val widgetId = "2"
+            val layoutOrder = 0
+            val resultWidget = ThematicWidgetUiModel(
+                name = widgetName,
+                type = widgetType,
+                widgetId = widgetId,
+                layoutOrder = layoutOrder,
+                header = DynamicHeaderUiModel()
+            )
+
+            val shopHomeWidgetContentData = async {
+                viewModel.shopHomeWidgetContentData.first()
+            }
+            coEvery {
+                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
+            } returns ShopLayoutWidgetV2(
+                listWidget = listOf(
+                    ShopLayoutWidget.Widget(
+                        name = widgetName,
+                        type =  widgetType,
+                        widgetID = widgetId
+                    )
+                )
+            )
+
+            mockkObject(ShopPageHomeMapper)
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any()) } returns listOf(
+                resultWidget
+            )
+
+            viewModel.getWidgetContentData(
+                listOf(
+                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = widgetId,
+                        widgetType = widgetType,
+                        widgetName = widgetName
+                    )
+                ),
+                mockShopId,
+                addressWidgetData
+            )
+            assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
+        }
+    }
+
+    @Test
+    fun `when getWidgetContentData success should return null`() {
+        runBlocking {
+            val shopHomeWidgetContentData = async {
+                viewModel.shopHomeWidgetContentData.first()
+            }
+            coEvery {
+                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
+            } returns ShopLayoutWidgetV2()
+
+            mockkObject(ShopPageHomeMapper)
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any()) } returns listOf(
+                ProductCardUiModel()
+            )
+
+            viewModel.getWidgetContentData(
+                listOf(
+                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = "2",
+                        widgetType = WidgetType.CAMPAIGN,
+                        widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+                    )
+                ),
+                mockShopId,
+                addressWidgetData
+            )
+            assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
     }
 
