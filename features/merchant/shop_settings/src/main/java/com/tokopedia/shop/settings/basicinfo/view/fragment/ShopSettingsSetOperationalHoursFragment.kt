@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionItemUnify
 import com.tokopedia.accordion.AccordionUnify
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
@@ -405,7 +407,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     keyword = getString(R.string.shop_operational_hour_read_tnc_label),
                     clickableSpan = object : ClickableSpan() {
                         override fun onClick(textView: View) {
-                            // goto tnc page can atc while holiday
+                            // go to seller education page
+                            RouteManager.route(context, String.format(
+                                    WEBVIEW_APPLINK_FORMAT,
+                                    ApplinkConst.WEBVIEW,
+                                    getString(R.string.shop_operational_hour_seller_edu_revamp)
+                            ))
                         }
 
                         override fun updateDrawState(ds: TextPaint) {
@@ -420,7 +427,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     keyword = getString(R.string.shop_operational_hour_read_tnc_label),
                     clickableSpan = object : ClickableSpan() {
                         override fun onClick(textView: View) {
-                            // goto tnc page cannot atc while holiday
+                            // go to seller education page
+                            RouteManager.route(context, String.format(
+                                    WEBVIEW_APPLINK_FORMAT,
+                                    ApplinkConst.WEBVIEW,
+                                    getString(R.string.shop_operational_hour_seller_edu_revamp)
+                            ))
                         }
 
                         override fun updateDrawState(ds: TextPaint) {
