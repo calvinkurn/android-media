@@ -17,7 +17,7 @@ object EmbraceMonitoring {
     fun startMoments(
         eventName: String,
         identifier: String? = null,
-        properties: Map<String, Any> = mapOf(),
+        properties: Map<String, Any> = emptyMap(),
         allowScreenshot: Boolean = false
     ) {
         if (ALLOW_EMBRACE_MOMENTS.contains(eventName))
@@ -32,7 +32,7 @@ object EmbraceMonitoring {
     fun stopMoments(
         eventName: String,
         identifier: String? = null,
-        properties: Map<String, Any> = mapOf(),
+        properties: Map<String, Any> = emptyMap(),
     ) {
         if (ALLOW_EMBRACE_MOMENTS.contains(eventName))
             Embrace.getInstance().endEvent(
