@@ -15,6 +15,8 @@ class VideoTabAdapter(
     coordinator: PlayWidgetCoordinatorVideoTab, listener: PlaySlotTabCallback,
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
+    private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
+
     init {
         delegatesManager
             .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
@@ -34,6 +36,15 @@ class VideoTabAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
     }
+    fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
+        mCurrentHeader = currentHeader
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return super.getItemViewType(position)
+    }
+
+    fun getCurrentHeader() = mCurrentHeader
 
     fun updateList(mappedData: List<PlayFeedUiModel>) {
         val newList = mutableListOf<PlayFeedUiModel>()
@@ -56,4 +67,8 @@ class VideoTabAdapter(
             }
         }*/
     }
+    fun isStickyHeaderView(it: Int): Boolean {
+        return getItem(it) is PlaySlotTabMenuUiModel
+    }
+
 }

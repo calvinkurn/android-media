@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.util.util.scrollLayout
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -34,6 +33,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotRespo
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
+import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import javax.inject.Inject
@@ -41,7 +41,7 @@ import javax.inject.Inject
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
     PlaySlotTabCallback {
 
-    private val rvWidget by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample_feed) }
+    private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_widget_sample_feed) }
 
     private lateinit var adapter: VideoTabAdapter
     private val playFeedVideoTabViewModel: PlayFeedVideoTabViewModel by lazy {
@@ -117,6 +117,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 //                hideAdapterLoading()
                 when (it) {
                     is Success -> {
+                        setAdapter()
                         playWidgetAnalyticsListenerImp.filterCategory = FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)[0].title
                         onSuccessPlayTabData(
                             it.data.playGetContentSlot,
@@ -175,14 +176,15 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             it.resetState()
         }
 
-        rvWidget?.adapter = adapter
+        setAdapter()
     }
 
-    private fun onSuccessInitialPlayTabData(
-        playDataResponse: PlayGetContentSlotResponse, cursor: String
-    ) {
-        adapter.setItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data,playDataResponse.meta))
-
+    private fun setAdapter() {
+        rvWidget?.apply {
+            adapter = VideoTabAdapter(playWidgetCoordinator, this@VideoTabFragment).also {
+                setAdapter(it)
+            }
+        }
     }
 
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
@@ -315,9 +317,20 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {
-        return object : EndlessRecyclerViewScrollListener(rvWidget?.layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(rvWidget?.getLayoutManager()) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 playFeedVideoTabViewModel.getPlayData(false, null)
+            }
+
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                rvWidget?.setShouldShowStickyHeaderValue(false)
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    rvWidget?.setShouldShowStickyHeaderValue(true)
             }
         }
     }

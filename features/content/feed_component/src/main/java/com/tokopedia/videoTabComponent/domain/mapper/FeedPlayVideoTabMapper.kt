@@ -10,6 +10,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
+import com.tokopedia.videoTabComponent.util.PlayFeedDateTimeFormatter
 
 private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
 private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
@@ -148,7 +149,7 @@ object FeedPlayVideoTabMapper {
                     channelId = item.id,
                     title = item.title,
                     appLink = item.appLink,
-                    startTime = item.start_time,
+                    startTime = PlayFeedDateTimeFormatter.formatDate(item.start_time),
                     totalView = PlayWidgetTotalView(item.stats.view.formatted, isTotalViewVisible),
                     promoType = PlayWidgetPromoType.getByType(
                         item.configurations.promoLabels.firstOrNull()?.type ?: "",
@@ -160,7 +161,7 @@ object FeedPlayVideoTabMapper {
                         item.video.id, item.is_live,
                         item.video.cover_url, item.video.stream_source
                     ),
-                    channelType = PlayWidgetChannelType.getByValue(item.display_type),
+                    channelType = PlayWidgetChannelType.getByValue(item.video.type),
                     hasGiveaway = hasGiveaway,
                     share = PlayWidgetShareUiModel(item.share.text, item.share.is_show_button),
                     performanceSummaryLink = performanceSummaryLink,
