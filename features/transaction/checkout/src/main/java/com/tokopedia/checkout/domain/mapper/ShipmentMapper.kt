@@ -26,6 +26,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopU
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault

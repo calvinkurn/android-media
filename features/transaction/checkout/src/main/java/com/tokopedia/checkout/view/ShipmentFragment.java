@@ -39,7 +39,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnWordingData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -219,7 +219,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean isShipmentTraceStopped;
     private String cornerId;
     private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
-    private AddOnWordingData _addOnWordingData;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -3285,15 +3284,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (cartItemModel.getAddOnProductLevelModel().getStatus() == 1) {
                 AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
 
-                if (!addOnWordingModel.getOnlyGreetingCard().isEmpty()) {
-                    availableBottomSheetData.setOnlyGreetingCardInfo(addOnWordingModel.getOnlyGreetingCard());
-                }
-                if (!addOnWordingModel.getPackagingAndGreetingCard().isEmpty()) {
-                    availableBottomSheetData.setPackagingAndGreetingCardInfo(addOnWordingModel.getPackagingAndGreetingCard());
-                }
-                if (!addOnWordingModel.getInvoiceNotSendToRecipient().isEmpty()) {
-                    availableBottomSheetData.setInvoiceNotSentToRecipientInfo(addOnWordingModel.getInvoiceNotSendToRecipient());
-                }
+                AddOnWordingData addOnWordingData = new AddOnWordingData();
+                addOnWordingData.setOnlyGreetingCard(addOnWordingModel.getOnlyGreetingCard());
+                addOnWordingData.setPackagingAndGreetingCard(addOnWordingModel.getPackagingAndGreetingCard());
+                addOnWordingData.setInvoiceNotSendToRecipient(addOnWordingModel.getInvoiceNotSendToRecipient());
+                availableBottomSheetData.setAddOnInfoWording(addOnWordingData);
+
                 availableBottomSheetData.setShopName(cartItemModel.getShopName());
 
                 ArrayList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listProduct = new ArrayList<>();
