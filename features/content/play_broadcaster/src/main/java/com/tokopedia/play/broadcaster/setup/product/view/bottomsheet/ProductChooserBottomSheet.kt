@@ -15,6 +15,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
+import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
@@ -51,6 +52,7 @@ import javax.inject.Inject
 class ProductChooserBottomSheet @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val analyticManager: ProductChooserAnalyticManager,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
@@ -92,12 +94,11 @@ class ProductChooserBottomSheet @Inject constructor(
                 setSecondaryCTAText(it.getString(R.string.play_broadcast_exit))
 
                 setPrimaryCTAClickListener {
-                    this@apply.dismiss()
+                    eventBus.emit(Event.ExitDialogCancel)
                 }
 
                 setSecondaryCTAClickListener {
-                    this@apply.dismiss()
-                    mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
+                    eventBus.emit(Event.ExitDialogConfirm)
                 }
             }
         },
@@ -148,7 +149,7 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     override fun onSortChosen(bottomSheet: ProductSortBottomSheet, item: SortUiModel) {
-        viewModel.submitAction(ProductSetupAction.SetSort(item))
+        eventBus.emit(Event.SortChosen(item))
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -192,7 +193,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     prevState?.selectedProductSectionList,
                     state.selectedProductSectionList,
                 )
-                renderSortChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
+                renderSortChips(prevState?.loadParam, state.loadParam)
                 renderEtalaseChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
                 renderSearchBar(
                     state.loadParam,
@@ -224,6 +225,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is SearchBarViewComponent.Event -> handleSearchBarEvent(it)
                     is SaveButtonViewComponent.Event -> handleSaveButtonEvent(it)
                     is ProductErrorViewComponent.Event -> handleProductErrorEvent(it)
+                    is Event -> handleBottomSheetEvent(it)
                 }
             }
         }
@@ -241,6 +243,12 @@ class ProductChooserBottomSheet @Inject constructor(
                 }
             }
         }
+
+        analyticManager.observe(
+            viewLifecycleOwner.lifecycleScope,
+            eventBus,
+            viewModel.uiState,
+        )
     }
 
     private fun renderProductList(
@@ -264,7 +272,6 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderSortChips(
         prevParam: ProductListPaging.Param?,
         param: ProductListPaging.Param,
-        campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
         if (prevParam?.sort?.id != param.sort?.id) {
             sortChipsView.setText(param.sort?.text)
@@ -425,11 +432,26 @@ class ProductChooserBottomSheet @Inject constructor(
         }
     }
 
+    private fun handleBottomSheetEvent(event: Event) {
+        when (event) {
+            Event.ExitDialogCancel -> exitConfirmationDialog.dismiss()
+            Event.ExitDialogConfirm -> {
+                exitConfirmationDialog.dismiss()
+                mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
+            }
+            Event.CloseClicked -> {
+                if (saveButtonView.isEnabled()) exitConfirmationDialog.show()
+                else mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
+            }
+            is Event.SortChosen -> {
+                viewModel.submitAction(ProductSetupAction.SetSort(event.sort))
+            }
+        }
+    }
+
     private fun closeBottomSheet() {
         if (viewModel.uiState.value.saveState.isLoading) return
-
-        if (saveButtonView.isEnabled()) exitConfirmationDialog.show()
-        else mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
+        eventBus.emit(Event.CloseClicked)
     }
 
     /**
@@ -477,5 +499,13 @@ class ProductChooserBottomSheet @Inject constructor(
         fun onSetupSuccess(bottomSheet: ProductChooserBottomSheet)
 
         fun openCampaignAndEtalaseList(bottomSheet: ProductChooserBottomSheet)
+    }
+
+    sealed class Event {
+
+        object ExitDialogConfirm : Event()
+        object ExitDialogCancel : Event()
+        object CloseClicked : Event()
+        data class SortChosen(val sort: SortUiModel) : Event()
     }
 }

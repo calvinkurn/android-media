@@ -10,7 +10,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
@@ -96,7 +96,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         _config,
     ) { campaignAndEtalase, focusedProductList, selectedProductSectionList, loadParam, saveState,
         config ->
-        PlayBroProductChooserUiState(
+        ProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductSectionList = selectedProductSectionList,
@@ -107,7 +107,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        PlayBroProductChooserUiState.Empty,
+        ProductChooserUiState.Empty,
     )
 
     val summaryUiState = combine(
