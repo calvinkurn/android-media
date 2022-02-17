@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -44,6 +45,14 @@ class ProductSummaryBottomSheet @Inject constructor(
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
         get() = _binding!!
+
+    private val loadingDialogFragment: LoadingDialogFragment by lazy(LazyThreadSafetyMode.NONE) {
+        val setupClass = LoadingDialogFragment::class.java
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val fragment = fragmentFactory.instantiate(requireActivity().classLoader, setupClass.name) as LoadingDialogFragment
+        fragment.setLoaderType(LoadingDialogFragment.LoaderType.CIRCULAR)
+        fragment
+    }
 
     private val productSummaryListView by viewComponent {
         ProductSummaryListViewComponent(binding.rvProductSummaries, this)
@@ -112,11 +121,11 @@ class ProductSummaryBottomSheet @Inject constructor(
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
                 when(state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
-                        binding.ivLoading.visibility = View.VISIBLE
+                        showLoading(true)
                         binding.globalError.visibility = View.GONE
                     }
                     is ProductTagSummaryUiModel.LoadingWithPlaceholder -> {
-                        binding.ivLoading.visibility = View.GONE
+                        showLoading(false)
                         binding.globalError.visibility = View.GONE
 
                         productSummaryListView.setLoading()
@@ -125,7 +134,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         mListener?.onProductChanged(state.productTagSectionList)
 
                         setTitle(state.productCount)
-                        binding.ivLoading.visibility = View.GONE
+                        showLoading(false)
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
@@ -153,7 +162,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         )
 
                         productSummaryListView.setProductList(emptyList())
-                        binding.ivLoading.visibility = View.GONE
+                        showLoading(false)
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
                         view?.rootView?.showToaster(
@@ -168,11 +177,25 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        binding.ivLoading.visibility = View.GONE
+                        showLoading(false)
                     }
                 }
             }
         }
+    }
+
+    private fun showLoading(isShow: Boolean) {
+        if(isShow) {
+            if(!isLoadingDialogVisible())
+                loadingDialogFragment.show(childFragmentManager)
+        }
+        else if(loadingDialogFragment.isAdded) {
+            loadingDialogFragment.dismiss()
+        }
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        return loadingDialogFragment.isVisible
     }
 
     private fun setTitle(productCount: Int?) {
@@ -185,8 +208,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun handleAddMoreProduct() {
-        container?.openProductChooser()
-        dismiss()
+        mListener?.onShouldAddProduct(this)
     }
 
     fun setListener(listener: Listener?) {
@@ -215,5 +237,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     interface Listener {
 
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
+
+        fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet)
     }
 }
