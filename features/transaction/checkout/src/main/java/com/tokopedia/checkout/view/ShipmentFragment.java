@@ -308,7 +308,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentPresenter.attachView(this);
-        Embrace.getInstance().endEvent(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY);
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
 
@@ -816,6 +815,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentTracePerformance.stopTrace();
             isShipmentTraceStopped = true;
         }
+    }
+
+    @Override
+    public void stopEmbraceTrace() {
+        Embrace.getInstance().endEvent(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY);
     }
 
     @Override
