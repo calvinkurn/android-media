@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -34,6 +33,7 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -60,8 +60,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
@@ -69,15 +67,14 @@ import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2DataUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
+import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
+import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -125,8 +122,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
                                                              private val removeWishlistUseCase: Lazy<RemoveWishListUseCase>,
                                                              private val addWishListUseCase: Lazy<AddWishListUseCase>,
+                                                             private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
                                                              private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-                                                             private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
@@ -758,76 +755,35 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun loadRecommendation(pageName: String) {
-        launch(dispatcher.main) {
-            if (!GlobalConfig.isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
+            return
+        }
 
-                if (!alreadyHitRecom.contains(pageName)) {
-                    alreadyHitRecom.add(pageName)
-                } else {
-                    return@launch
-                }
+        if (!alreadyHitRecom.contains(pageName)) {
+            alreadyHitRecom.add(pageName)
+        } else {
+            return
+        }
 
-                try {
-                    val recomData = withContext(dispatcher.io) {
-                        var recomWidget = RecommendationWidget()
+        launchCatchError(dispatcher.main, block = {
+            val basicInfo = getDynamicProductInfoP1?.basic ?: BasicInfo()
+            val response = getProductRecommendationUseCase.get().executeOnBackground(
+                    GetProductRecommendationUseCase.createParams(
+                            productId = basicInfo.productID,
+                            pageName = pageName,
+                            isTokoNow = basicInfo.isTokoNow,
+                            miniCartData = p2Data.value?.miniCart
+                    )
+            )
 
-                        val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
-                                ?: "")
-                        val productIdsString = TextUtils.join(",", productIds) ?: ""
-                        val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-                        if (pageName == PDP_3 || pageName == PDP_K2K) {
-                            getRecommendationFilterChips.get().setParams(
-                                    userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
-                                    pageName = pageName,
-                                    productIDs = productIdsString,
-                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE,
-                                    isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
-                            )
-                            recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
-                        }
+            val updatedResponse = ProductRecommendationMapper.updateRecomWhenTokoNow(
+                    response,
+                    p2Data.value?.miniCart
+            )
 
-                        val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomTokonowParams(
-                                pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                                pageName = pageName,
-                                productIds = productIds,
-                                isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
-                        )).toBlocking().first()
-
-                        if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                            recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilterList,
-                                    pageName = pageName
-                            )
-                            if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                                recomWidget.recommendationItemList.forEach { item ->
-                                    _p2Data.value?.miniCart?.let {
-                                        if (item.isProductHasParentID()) {
-                                            var variantTotalItems = 0
-                                            it.values.forEach { miniCartItem ->
-                                                if (miniCartItem.productParentId == item.parentID.toString()) {
-                                                    variantTotalItems += miniCartItem.quantity
-                                                }
-                                            }
-                                            item.updateItemCurrentStock(variantTotalItems)
-                                        } else {
-                                            item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
-                                                    ?: 0)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        recomWidget
-                    }
-                    //since there is posibility gql return empty page name and recom list
-                    //we append UI Page Name to be validated
-                    recomData.recomUiPageName = pageName
-                    _loadTopAdsProduct.value = recomData.asSuccess()
-                } catch (e: Throwable) {
-                    _loadTopAdsProduct.value = Throwable(pageName).asFail()
-                }
-            }
+            _loadTopAdsProduct.value = updatedResponse.asSuccess()
+        }) {
+            _loadTopAdsProduct.value = Throwable(pageName).asFail()
         }
     }
 
@@ -1160,7 +1116,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         ProductDetailLogger.logThrowable(throwable, P2_DATA_ERROR_TYPE, productId, deviceId, extras)
     }
 
-    private fun updateNotifyMeData(productId:String) {
+    private fun updateNotifyMeData(productId: String) {
         val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(productId)
         p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe = selectedUpcoming?.notifyMe != true
     }
@@ -1175,7 +1131,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } ?: emptyList()
 
             val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
-                productIds, categoryIds
+                    productIds, categoryIds
             )
             val response = playWidgetTools.getWidgetFromNetwork(widgetType)
             val uiModel = playWidgetTools.mapWidgetToModel(response)
@@ -1186,13 +1142,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun updatePlayWidgetToggleReminder(
-        playWidgetUiModel: PlayWidgetUiModel,
-        channelId: String,
-        reminderType: PlayWidgetReminderType
+            playWidgetUiModel: PlayWidgetUiModel,
+            channelId: String,
+            reminderType: PlayWidgetReminderType
     ) {
         launchCatchError(block = {
             val updatedUi = playWidgetTools.updateActionReminder(
-                playWidgetUiModel, channelId, reminderType
+                    playWidgetUiModel, channelId, reminderType
             )
             _playWidgetModel.value = Success(updatedUi)
 
@@ -1201,14 +1157,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _playWidgetReminderSwitch.value = Success(reminderType)
             } else {
                 val reversedToggleUi = playWidgetTools.updateActionReminder(
-                    playWidgetUiModel, channelId, reminderType.switch()
+                        playWidgetUiModel, channelId, reminderType.switch()
                 )
                 _playWidgetModel.value = Success(reversedToggleUi)
                 _playWidgetReminderSwitch.value = Fail(Throwable())
             }
         }, onError = {
             val reversedToggleUi = playWidgetTools.updateActionReminder(
-                playWidgetUiModel, channelId, reminderType.switch()
+                    playWidgetUiModel, channelId, reminderType.switch()
             )
             _playWidgetModel.value = Success(reversedToggleUi)
             _playWidgetReminderSwitch.value = Fail(it)
