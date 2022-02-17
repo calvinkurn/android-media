@@ -10,8 +10,8 @@
     android:padding="@dimen/spacing_lvl2">
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_icon"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         tools:src="@drawable/ic_icon_alert"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
