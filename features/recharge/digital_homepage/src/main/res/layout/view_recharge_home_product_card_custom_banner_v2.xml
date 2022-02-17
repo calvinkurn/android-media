@@ -56,9 +56,7 @@
                     android:id="@+id/parallax_image"
                     android:layout_width="@dimen/product_card_custom_banner_width"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/product_card_custom_banner_image_margin_top"
                     android:layout_marginStart="@dimen/recharge_custom_product_card_iv_margin"
-                    android:paddingHorizontal="@dimen/spacing_lvl4"
                     android:clickable="true"
                     android:focusable="true"/>
             </FrameLayout>
