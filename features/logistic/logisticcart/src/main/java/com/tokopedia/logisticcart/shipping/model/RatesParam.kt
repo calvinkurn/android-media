@@ -121,6 +121,7 @@ data class RatesParam(
             "order_value" to order_value,
             "spids" to spids,
             "shop_id" to shop_id,
+            "shop_tier" to shop_tier,
             "user_history" to user_history,
             "is_fulfillment" to is_fulfillment,
             "bo_metadata" to bo_metadata,
