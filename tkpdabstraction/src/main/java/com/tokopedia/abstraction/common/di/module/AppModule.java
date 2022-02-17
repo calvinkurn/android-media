@@ -14,7 +14,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
 import com.tokopedia.user.session.datastore.UserSessionDataStore;
-import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl;
+import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
 
 import dagger.Module;
 import dagger.Provides;
@@ -75,6 +75,6 @@ public class AppModule {
 
     @Provides
     public UserSessionDataStore provideUserSessionDataStore(@ApplicationContext Context context) {
-        return new UserSessionDataStoreImpl(context);
+        return UserSessionDataStoreClient.INSTANCE.getInstance(context);
     }
 }
