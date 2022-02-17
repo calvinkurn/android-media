@@ -28,7 +28,6 @@ class ShopPageHomeDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        // need to separate checking ui model for temporary purpose
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
         if(isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)){

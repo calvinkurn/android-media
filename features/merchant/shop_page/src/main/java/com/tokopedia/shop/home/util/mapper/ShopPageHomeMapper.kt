@@ -626,7 +626,6 @@ object ShopPageHomeMapper {
             isLoggedIn: Boolean
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
-            // need to separate updating ui model for temporary purpose
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC}.onEach {
                 when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)) {
                     is BaseShopHomeWidgetUiModel -> {
@@ -668,7 +667,6 @@ object ShopPageHomeMapper {
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
-                // need to separate updating ui model for temporary purpose
                 mapToWidgetUiModel(
                         ShopLayoutWidget.Widget(
                                 widgetID = it.widgetId,

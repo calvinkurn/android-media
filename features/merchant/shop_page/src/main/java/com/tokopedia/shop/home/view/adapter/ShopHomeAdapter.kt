@@ -476,7 +476,6 @@ class ShopHomeAdapter(
     fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         val newList = getNewVisitableItems()
         listWidgetContentData.onEach { widgetContentData ->
-            // need to separate updating ui model for temporary purpose
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {
                 when(it) {
                     is BaseShopHomeWidgetUiModel -> {
@@ -514,7 +513,6 @@ class ShopHomeAdapter(
 
     fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
         listWidgetLayout.onEach { widgetLayout ->
-            // need to separate updating ui model for temporary purpose
             visitables.filterIsInstance<Visitable<*>>().firstOrNull {
                 when(it) {
                     is BaseShopHomeWidgetUiModel -> {
@@ -541,7 +539,6 @@ class ShopHomeAdapter(
     }
 
     fun isLoadNextHomeWidgetData(position: Int): Boolean {
-        // need to separate updating ui model for temporary purpose
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER ||
                 visitables.filterIsInstance<ThematicWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
     }
@@ -573,7 +570,6 @@ class ShopHomeAdapter(
     }
 
     fun isLoadFirstWidgetContentData(): Boolean {
-        // need to separate checking ui model for temporary purpose
         return visitables.filterIsInstance<Visitable<*>>().none {
             when(it) {
                 is BaseShopHomeWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
@@ -592,7 +588,6 @@ class ShopHomeAdapter(
     }
 
     fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
-        // need to separate updating ui model for temporary purpose
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {
@@ -621,7 +616,6 @@ class ShopHomeAdapter(
         val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
-        // need to separate updating ui model for temporary purpose
         newList.forEach {
             when(it) {
                 is BaseShopHomeWidgetUiModel -> it.isNewData = false
