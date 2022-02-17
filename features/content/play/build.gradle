@@ -54,7 +54,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
