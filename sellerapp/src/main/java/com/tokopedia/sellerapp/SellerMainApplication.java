@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
-import com.google.gson.Gson;
-import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 
@@ -42,7 +39,6 @@ import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -55,7 +51,6 @@ import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -135,7 +130,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         Loader.init(this);
         setEmbraceUserId();
-        initEmbraceConfig();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -236,15 +230,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                 return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
-    }
-
-    private void initEmbraceConfig() {
-        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
-        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
-            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
-
-            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
-        }
     }
 
     private void initEmbrace() {

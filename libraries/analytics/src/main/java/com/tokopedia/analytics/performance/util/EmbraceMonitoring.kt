@@ -6,7 +6,7 @@ object EmbraceMonitoring {
     var ALLOW_EMBRACE_MOMENTS: MutableSet<String> = mutableSetOf(
         "mp_home",
         "pdp_result_trace",
-        "mp_shop",
+        "mp_shop_home_v2",
         "search_result_trace",
         "act_add_to_cart",
         "mp_cart",
