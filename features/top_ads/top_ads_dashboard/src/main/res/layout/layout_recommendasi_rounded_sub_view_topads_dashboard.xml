@@ -6,7 +6,6 @@
     android:layout_height="@dimen/layout_lvl7">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutIvWallet"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:background="@drawable/topads_dashboard_green_200_circular_background"
@@ -15,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/ivWallet"
+            android:id="@+id/imageView"
             android:layout_width="@dimen/spacing_lvl5"
             android:layout_height="@dimen/spacing_lvl5"
             android:src="@drawable/iconunify_wallet"
@@ -45,7 +44,7 @@
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtValue"
+        android:id="@+id/txtSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/topads_dashboard_kali_hari_value"

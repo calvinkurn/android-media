@@ -445,12 +445,18 @@
     <string name="topads_education_tips_lainnya_topads">Tips Lainnya</string>
     <string name="topads_education_article_frag_title">Ayo kenalan lebih dekat dengan TopAds dan pelajari cara beriklan yang efektif di TopAds.</string>
 
+    <string name="topads_dashboard_lihat_semua">Lihat Semua</string>
+    <string name="topads_dashboard_grup_iklan">+%d Grup Iklan Lainnya</string>
+    <string name="topads_dashboard_kata_kunci_yang">Kata kunci yang disarankan untuk</string>
     <string name="topads_dashboard_atur_kata_kunci">Atur Kata Kunci</string>
     <string name="topads_dashboard_atur_anggaran_harian">Atur Anggaran Harian</string>
     <string name="topads_dashboard_atur_iklannya">Atur Iklannya</string>
     <string name="topads_dashboard_produk_berpotensi">Produk Berpotensi</string>
     <string name="topads_dashboard_potensi_tampil">Potensi Tampil</string>
     <string name="topads_dashboard_kali_hari_value"><b><font color="#F531353B" size="14">+%d</font></b> kali/hari</string>
-    <string name="topads_dashboard_n_more_product"><b><font color="#F531353B">%d produkmu</font></b> lagi banyak dicari, nih! Yuk, ikuti trennya dan iklankan produkmu.</string>
+    <string name="topads_dashboard_produk_berpostensi_desc"><b><font color="#F531353B">%d produkmu</font></b> lagi banyak dicari, nih! Yuk, ikuti trennya dan iklankan produkmu.</string>
+    <string name="topads_dashboard_anggaran_harian_desc">Wah, <b><font color="#F531353B">%d grup iklanmu</font></b> tidak tampil karena Anggaran Hariannya habis. Atur anggarannya yuk!</string>
+    <string name="topads_dashboard_kata_kunci_desc">Ada <b><font color="#F531353B">%d grup iklanmu</font></b> yang bisa dimaksimalkan. Yuk, pakai rekomendasi kata kunci di bawah ini!</string>
+    <string name="topads_dashboard_n_grup_iklanmu">Ada <b><font color="#F531353B">%d</font></b>grup iklanmu</string>
 </resources>
 

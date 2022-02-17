@@ -11,6 +11,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -31,6 +33,16 @@ object Utils {
 
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
+
+    internal suspend fun <T : Any> executeQuery(
+        query: String, responseClass: Class<T>, params: Map<String, Any?>
+    ): T? {
+        val gql = MultiRequestGraphqlUseCase()
+        val request = GraphqlRequest(query, responseClass, params)
+        gql.addRequest(request)
+        val response = gql.executeOnBackground()
+        return response.getData(responseClass) as? T
+    }
 
     fun Context.openWebView(url: String) {
         RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, url)

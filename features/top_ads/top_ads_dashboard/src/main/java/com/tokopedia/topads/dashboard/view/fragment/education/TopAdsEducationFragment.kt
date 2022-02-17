@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -14,7 +13,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.ListArticle
 import com.tokopedia.topads.dashboard.data.raw.articlesJson
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEducationActivity
-import com.tokopedia.topads.dashboard.view.adapter.TopadsEducationRvAdapter
+import com.tokopedia.topads.dashboard.view.adapter.education.TopadsEducationRvAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 

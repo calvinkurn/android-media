@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.adapter
+package com.tokopedia.topads.dashboard.view.adapter.education
 
 import android.content.Context
 import android.graphics.drawable.Drawable

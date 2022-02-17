@@ -81,7 +81,7 @@ class TopAdsBerandaSummaryRvAdapter :
     inner class RingkasanViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: Typography = view.findViewById(R.id.txtTitle)
         val ivInformation: ImageUnify = view.findViewById(R.id.ivInformation)
-        val txtValue: Typography = view.findViewById(R.id.txtValue)
+        val txtValue: Typography = view.findViewById(R.id.txtSubTitle)
         val txtPercentageChange: Typography = view.findViewById(R.id.txtPercentageChange)
         val rootLayout: ConstraintLayout = view.findViewById(R.id.root_layout)
         val bottomView: View = view.findViewById(R.id.bottomView)

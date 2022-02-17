@@ -1,15 +1,10 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.TopadsEducationRvAdapter
 import androidx.fragment.app.Fragment
-import com.tokopedia.topads.dashboard.view.fragment.education.ListArticleTopAdsEducationFragment
 import com.tokopedia.topads.dashboard.view.fragment.education.TopAdsEducationFragment
 
 

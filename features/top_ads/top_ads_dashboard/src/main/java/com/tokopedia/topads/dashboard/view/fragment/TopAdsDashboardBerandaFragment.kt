@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.data.response.DepositAmount
@@ -17,6 +15,8 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.Chip
+import com.tokopedia.topads.dashboard.data.model.beranda.ImageModel
+import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
@@ -25,8 +25,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsDashboardBerandaBaseBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
-import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
-import com.tokopedia.topads.dashboard.view.adapter.beranda.TopAdsBerandaSummaryRvAdapter
+import com.tokopedia.topads.dashboard.view.adapter.beranda.*
 import com.tokopedia.topads.dashboard.view.fragment.education.READ_MORE_URL
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
@@ -40,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
- * Created by Pika on 15/5/20.
+ * Created by Ankit
  */
 open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
@@ -56,6 +55,10 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
     private val summaryInformationBottomSheet by lazy { SummaryInformationBottomSheet.createInstance() }
 
+    private val kataKunciChipsDetailRvAdapter by lazy { TopAdsBerandsKataKunciChipsDetailRvAdapter() }
+    private val kataKunciChipsRvAdapter by lazy { TopAdsBerandsKataKunciChipsRvAdapter(::kataKunciItemSelected) }
+    private val anggarnHarianAdapter by lazy { TopAdsBerandaAnggarnHarianAdapter() }
+    private val produkBerpotensiAdapter by lazy { TopadsImageRvAdapter.createInstance() }
     private val summaryRvAdapter by lazy { TopAdsBerandaSummaryRvAdapter.createInstance() }
     private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
 
@@ -90,37 +93,48 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         return TopAdsDashboardBerandaFragment::class.java.name
     }
 
+    private fun kataKunciItemSelected(item: Any) {
+        //todo add items to TopAdsBerandsKataKunciChipsDetailRvAdapter
+    }
+
     private fun initializeView() {
         with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
             this.txtTitle.text = resources.getString(R.string.topads_dashboard_produk_berpotensi)
-            this.layoutPotesiTampil.ivWallet.setImageDrawable(
+            this.layoutRoundedView.txtTitle.text =
+                resources.getString(R.string.topads_dashboard_potensi_tampil)
+            this.layoutRoundedView.imageView.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
                     com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
                 )
             )
             this.button.text = resources.getString(R.string.topads_dashboard_atur_iklannya)
+            rvVertical.hide()
         }
 
-        with(binding.layoutRecommendasi.layoutAnagranHarian) {
+        with(binding.layoutRecommendasi.layoutAnggaranHarian) {
+            this.layoutRoundedView.txtTitle.text =
+                resources.getString(R.string.topads_dash_potential_click)
             this.txtTitle.text = resources.getString(R.string.topads_dash_anggaran_harian)
-            this.layoutPotesiTampil.ivWallet.setImageDrawable(
+            this.layoutRoundedView.imageView.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
                 )
             )
             this.button.text = resources.getString(R.string.topads_dashboard_atur_anggaran_harian)
+            recyclerView.hide()
         }
 
         with(binding.layoutRecommendasi.layoutkataKunci) {
+            this.layoutRoundedView.txtTitle.text =
+                resources.getString(R.string.topads_dashboard_kata_kunci_yang)
             this.txtTitle.text = resources.getString(R.string.label_top_ads_keyword)
-            this.layoutPotesiTampil.ivWallet.setImageDrawable(
+            this.layoutRoundedView.imageView.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
                 )
             )
             this.button.text = resources.getString(R.string.topads_dashboard_atur_kata_kunci)
-            this.chipsRecyclerView.show()
         }
     }
 
@@ -157,9 +171,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun setUpRecyclerView() {
         binding.layoutRingkasan.rvSummary.adapter = summaryRvAdapter
-
         binding.layoutLatestReading.rvLatestReading.adapter = latestReadingRvAdapter
-
+        binding.layoutRecommendasi.layoutProdukBerpostensi.recyclerView.adapter =
+            produkBerpotensiAdapter
+        binding.layoutRecommendasi.layoutAnggaranHarian.rvVertical.adapter =
+            anggarnHarianAdapter
+        binding.layoutRecommendasi.layoutkataKunci.recyclerView.adapter = kataKunciChipsRvAdapter
+        binding.layoutRecommendasi.layoutkataKunci.rvVertical.adapter = kataKunciChipsDetailRvAdapter
     }
 
     private fun showInformationBottomSheet() {
@@ -187,7 +205,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             .commit()
     }
 
-
     private fun showFirstTimeDialog() {
         requireActivity().showDialogWithCoachMark(
             binding.scrollView, binding.layoutRingkasan.rvSummary,
@@ -198,7 +215,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun hideShimmer() {
-        if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
+        if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats || !checkResponse.recommendation) return
         binding.shimmerView.root.hide()
         (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
         binding.swipeRefreshLayout.show()
@@ -247,6 +264,97 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 is Fail -> {}
             }
         }
+
+        topAdsDashboardViewModel.recommendationStatsLiveData.observe(viewLifecycleOwner) {
+            checkResponse.recommendation = true
+            when (it) {
+                is Success -> setRecommendationData(it.data)
+                is Fail -> {}
+            }
+        }
+    }
+
+    private fun setRecommendationData(data: RecommendationStatistics.Statistics.Data) {
+        with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
+            val item = data.productRecommendationStats
+            layoutRoundedView.txtSubTitle.text = String.format(
+                resources.getString(R.string.topads_dashboard_kali_hari_value),
+                item.totalSearchCount
+            )
+            txtDescription.text = String.format(
+                resources.getString(R.string.topads_dashboard_produk_berpostensi_desc), item.count
+            )
+            val it = listOf(
+                ImageModel("https://images-staging.tokopedia.net/img/jJtrdn/2021/7/29/5d358149-b754-4b5e-80a6-badeba45462e.jpg"),
+                ImageModel("https://images-staging.tokopedia.net/img/jJtrdn/2021/7/29/5d358149-b754-4b5e-80a6-badeba45462e.jpg"),
+                ImageModel("https://images-staging.tokopedia.net/img/jJtrdn/2021/7/29/5d358149-b754-4b5e-80a6-badeba45462e.jpg"),
+            )
+            //item.productList
+            produkBerpotensiAdapter.addItems(it)
+        }
+
+        with(binding.layoutRecommendasi.layoutAnggaranHarian) {
+            val item = data.dailyBudgetRecommendationStats
+            layoutRoundedView.txtSubTitle.text = String.format(
+                resources.getString(R.string.topads_dashboard_kali_hari_value), item.totalClicks
+            )
+            txtDescription.text = String.format(
+                resources.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
+            )
+            //val list = item.groupList
+            val list = listOf(
+                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
+                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
+                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
+                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
+            )
+            if (list.isNotEmpty()) {
+                val items = mutableListOf<String>()
+                items.add(list[0].groupName)
+
+                val restCount = list.size - 1
+                if (restCount > 0) {
+                    items.add(
+                        String.format(
+                            resources.getString(R.string.topads_dashboard_grup_iklan), restCount
+                        )
+                    )
+                }
+                anggarnHarianAdapter.addItems(items)
+            }
+        }
+
+        with(binding.layoutRecommendasi.layoutkataKunci) {
+            val item = data.keywordRecommendationStats
+            layoutRoundedView.txtSubTitle.text = String.format(
+                resources.getString(R.string.topads_dashboard_n_grup_iklanmu), item.groupCount
+            )
+            txtDescription.text = String.format(
+                resources.getString(R.string.topads_dashboard_kata_kunci_desc), item.groupCount
+            )
+            /*kataKunciChipsRvAdapter.addItems(
+                item.topGroups, binding.root.resources.getString(R.string.topads_dashboard_lihat_semua)
+            )*/
+            kataKunciChipsRvAdapter.addItems(
+                listOf(
+                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
+                        groupName = "ankit"
+                    ),
+                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
+                        groupName = "ankit"
+                    ),
+                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
+                        groupName = "ankit"
+                    ),
+                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
+                        groupName = "ankit"
+                    ),
+                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
+                        groupName = "ankit"
+                    )
+                ), "Lihat Semua'"
+            )
+        }
     }
 
     //method to be invoked when ad type is changed from ringkasan dropdown section
@@ -284,6 +392,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchLatestReading()
+        topAdsDashboardViewModel.fetchRecommendationStatistics()
     }
 
     private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
@@ -352,6 +461,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 hideShimmer()
             }
         var latestReading: Boolean = false
+            set(value) {
+                field = value
+                hideShimmer()
+            }
+        var recommendation: Boolean = false
             set(value) {
                 field = value
                 hideShimmer()

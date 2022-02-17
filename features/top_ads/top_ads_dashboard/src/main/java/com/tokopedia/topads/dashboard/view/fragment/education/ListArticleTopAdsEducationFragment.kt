@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.ListArticle
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
-import com.tokopedia.topads.dashboard.view.adapter.ListArticleRvAdapter
+import com.tokopedia.topads.dashboard.view.adapter.education.ListArticleRvAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 

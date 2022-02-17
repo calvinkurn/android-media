@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txtValue"
+            android:id="@+id/txtSubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/leftGuide"
@@ -51,12 +51,12 @@
             android:textColor="@color/Unify_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/leftGuide"
-            app:layout_constraintTop_toBottomOf="@id/txtValue"
+            app:layout_constraintTop_toBottomOf="@id/txtSubTitle"
             app:typographyType="heading_5"
             tools:text="+16%" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txtFromLastWeek"
+            android:id="@+id/txtFooterRingkasan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"

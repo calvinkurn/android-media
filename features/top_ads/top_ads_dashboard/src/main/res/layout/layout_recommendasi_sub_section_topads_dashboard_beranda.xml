@@ -19,8 +19,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
-            android:id="@+id/layoutPotesiTampil"
-            layout="@layout/layout_potensi_tampil_topads_dashboard"
+            android:id="@+id/layoutRoundedView"
+            layout="@layout/layout_recommendasi_rounded_sub_view_topads_dashboard"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl7"
             android:layout_marginTop="@dimen/unify_space_12"
@@ -33,28 +33,28 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:lines="2"
-            android:text="@string/topads_dashboard_n_more_product"
+            android:text="@string/topads_dashboard_produk_berpostensi_desc"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutPotesiTampil"
+            app:layout_constraintTop_toBottomOf="@id/layoutRoundedView"
             app:typographyType="body_3" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chipsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/txtDescription" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/chipsRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@id/txtDescription" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:text="@string/topads_dashboard_atur_iklannya"
-            app:layout_constraintTop_toBottomOf="@id/recyclerView"
+            app:layout_constraintTop_toBottomOf="@id/rvVertical"
             app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />

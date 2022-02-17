@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsLatestReadingUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 class TopAdsDashboardViewModel @Inject constructor(
     private val summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase,
-    private val topAdsLatestReadingUseCase: TopAdsLatestReadingUseCase
+    private val topAdsLatestReadingUseCase: TopAdsLatestReadingUseCase,
+    private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val _summaryStatisticsLiveData =
@@ -27,6 +30,24 @@ class TopAdsDashboardViewModel @Inject constructor(
         MutableLiveData<Result<List<TopAdsLatestReading.CategoryTree.Data.Category>>>()
     val latestReadingLiveData: LiveData<Result<List<TopAdsLatestReading.CategoryTree.Data.Category>>> get() = _latestReadingLiveData
 
+    private val _recommendationStatsLiveData =
+        MutableLiveData<Result<RecommendationStatistics.Statistics.Data>>()
+    val recommendationStatsLiveData: LiveData<Result<RecommendationStatistics.Statistics.Data>> get() = _recommendationStatsLiveData
+
+
+    fun fetchRecommendationStatistics() {
+        launchCatchError(block = {
+            val data = recommendationStatisticsUseCase.fetchRecommendationStatistics()
+            _recommendationStatsLiveData.value =
+                if (data?.statistics?.data != null) {
+                    Success(data.statistics.data)
+                } else {
+                    Fail(Throwable())
+                }
+        }, onError = {
+            _recommendationStatsLiveData.value = Fail(Throwable())
+        })
+    }
 
     fun fetchLatestReading() {
         launchCatchError(block = {

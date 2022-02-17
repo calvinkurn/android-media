@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -15,11 +16,7 @@ class TopAdsWidgetSummaryStatisticsUseCase @Inject constructor(
         startDate: String, endDate: String, adTypes: String,
     ): TopadsWidgetSummaryStatisticsModel? {
         val params = createParams(startDate, endDate, adTypes)
-        val gql = MultiRequestGraphqlUseCase()
-        val request = GraphqlRequest(query, TopadsWidgetSummaryStatisticsModel::class.java, params)
-        gql.addRequest(request)
-        val response = gql.executeOnBackground()
-        return response.getData(TopadsWidgetSummaryStatisticsModel::class.java) as? TopadsWidgetSummaryStatisticsModel
+        return Utils.executeQuery(query,TopadsWidgetSummaryStatisticsModel::class.java,params)
     }
 
     private fun createParams(
