@@ -184,7 +184,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         title = getString(R.string.shop_operational_hour_holiday_warning_dialog_title),
                         description = getString(R.string.shop_operational_hour_holiday_warning_dialog_desc),
                         primaryCtaText = getString(R.string.shop_operational_hour_label_set_holiday_sch),
-                        secondaryCtaText = getString(R.string.label_back),
+                        secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
                         imageUrl = getString(R.string.shop_operational_hour_ops_hour_holiday_illustration),
                         dialogAction = DialogUnify.VERTICAL_ACTION,
                         imageType = DialogUnify.WITH_ILLUSTRATION,
@@ -198,7 +198,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     title = getString(R.string.shop_operational_hour_dialog_title),
                     description = getString(R.string.shop_operational_hour_dialog_description),
                     primaryCtaText = getString(R.string.label_save),
-                    secondaryCtaText = getString(R.string.label_back),
+                    secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
                     primaryCtaClickListener = {
                         // update to new shop operational hours list
                         updateShopOperationalHoursList()
@@ -216,7 +216,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     title = getString(R.string.shop_operational_hour_dialog_data_change_title),
                     description = getString(R.string.shop_operational_hour_dialog_data_change_description),
                     primaryCtaText = getString(R.string.action_delete),
-                    secondaryCtaText = getString(R.string.label_back),
+                    secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
                     primaryCtaClickListener = {
                         activity?.onBackPressed()
                         activity?.finish()

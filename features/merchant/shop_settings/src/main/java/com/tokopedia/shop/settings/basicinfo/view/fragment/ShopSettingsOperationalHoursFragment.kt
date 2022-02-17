@@ -706,7 +706,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 dialogTitle = getString(R.string.shop_operational_hour_dialog_data_change_title),
                 dialogDescription = getString(R.string.shop_operational_hour_dialog_data_change_holiday_description),
                 ctaPrimaryText = getString(R.string.action_delete),
-                ctaSecondaryText = getString(R.string.label_back),
+                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     holidayBottomSheet?.dismiss()
                 },
@@ -720,7 +720,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 dialogTitle = getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_title),
                 dialogDescription = getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_desc),
                 ctaPrimaryText = getString(R.string.label_save),
-                ctaSecondaryText = getString(R.string.label_back),
+                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     holidayBottomSheet?.dismiss()
                     showLoader()
@@ -736,7 +736,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 dialogTitle = getString(R.string.shop_operational_hour_delete_holiday_schedule_dialog_title),
                 dialogDescription = getString(R.string.shop_operational_hour_delete_holiday_schedule_dialog_desc),
                 ctaPrimaryText = getString(R.string.action_delete),
-                ctaSecondaryText = getString(R.string.label_back),
+                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     showLoader()
                     deleteShopHolidaySchedule()
@@ -751,7 +751,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 dialogTitle = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_title),
                 dialogDescription = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_desc),
                 ctaPrimaryText = getString(R.string.label_open_shop),
-                ctaSecondaryText = getString(R.string.label_back),
+                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     showLoader()
                     deleteShopHolidaySchedule()
