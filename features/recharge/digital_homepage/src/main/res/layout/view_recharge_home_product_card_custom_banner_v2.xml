@@ -39,7 +39,6 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/product_card_custom_banner_margin"
         android:layout_marginEnd="@dimen/product_card_custom_banner_margin"
-        app:card_background_color="@color/dms_product_card_custom_banner_background_color"
         app:layout_constraintTop_toBottomOf="@id/tv_section_title">
         <FrameLayout
             android:layout_width="match_parent"
