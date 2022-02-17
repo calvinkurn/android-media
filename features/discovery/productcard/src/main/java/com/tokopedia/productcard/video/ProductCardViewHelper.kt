@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.helper
+package com.tokopedia.productcard.video
 
 import android.content.Context
 import android.net.Uri
@@ -20,13 +20,13 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.productcard.ProductVideoView
+import com.tokopedia.productcard.ProductCardVideoView
 import com.tokopedia.productcard.utils.DimensionUtils
 import java.lang.ref.WeakReference
 
 class ProductCardViewHelper(
     context: Context,
-    private val exoPlayerView: ProductVideoView
+    private val exoPlayerView: ProductCardVideoView
 ) : ExoPlayerControl {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f
@@ -102,10 +102,10 @@ class ProductCardViewHelper(
         videoPlayer.repeatMode = Player.REPEAT_MODE_OFF
     }
 
-    class Builder(context: Context, productVideoView: ProductVideoView) {
+    class Builder(context: Context, productCardVideoView: ProductCardVideoView) {
         private val mExoPlayerHelper: ProductCardViewHelper = ProductCardViewHelper(
             context,
-            productVideoView
+            productCardVideoView
         )
 
         fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {

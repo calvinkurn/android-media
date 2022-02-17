@@ -190,7 +190,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         return imageProduct
     }
 
-    override fun getProductVideoView(): ProductVideoView? {
+    override fun getProductVideoView(): ProductCardVideoView? {
         return videoProduct
     }
 

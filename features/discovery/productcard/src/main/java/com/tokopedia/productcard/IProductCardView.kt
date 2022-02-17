@@ -22,5 +22,5 @@ interface IProductCardView {
 
     fun getProductImageView(): ImageView?
 
-    fun getProductVideoView(): ProductVideoView?
+    fun getProductVideoView(): ProductCardVideoView?
 }

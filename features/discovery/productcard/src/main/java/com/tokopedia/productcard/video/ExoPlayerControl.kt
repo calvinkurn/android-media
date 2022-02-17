@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.helper
+package com.tokopedia.productcard.video
 
 interface ExoPlayerControl {
     fun init()

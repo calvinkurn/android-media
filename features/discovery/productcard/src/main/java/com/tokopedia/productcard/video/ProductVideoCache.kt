@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.helper
+package com.tokopedia.productcard.video
 
 import android.content.Context
 import com.google.android.exoplayer2.database.ExoDatabaseProvider

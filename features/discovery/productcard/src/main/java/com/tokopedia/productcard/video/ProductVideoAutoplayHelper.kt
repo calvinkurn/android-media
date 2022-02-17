@@ -1,8 +1,6 @@
-package com.tokopedia.productcard.helper.autoplay
+package com.tokopedia.productcard.video
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard.helper.ProductVideoPlayer
-import com.tokopedia.productcard.helper.VideoPlayerState
 import com.tokopedia.productcard.utils.LayoutManagerUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

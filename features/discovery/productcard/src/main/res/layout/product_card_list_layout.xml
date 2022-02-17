@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="@+id/imageProduct"
             app:layout_constraintEnd_toEndOf="@+id/imageProduct"/>
 
-        <com.tokopedia.productcard.ProductVideoView
+        <com.tokopedia.productcard.ProductCardVideoView
             android:id="@+id/videoProduct"
             android:layout_width="@dimen/product_card_list_image_size"
             android:layout_height="@dimen/product_card_list_image_size"

@@ -7,10 +7,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.helper.ExoPlayerListener
-import com.tokopedia.productcard.helper.ProductCardViewHelper
-import com.tokopedia.productcard.helper.ProductVideoPlayer
-import com.tokopedia.productcard.helper.VideoPlayerState
+import com.tokopedia.productcard.video.ExoPlayerListener
+import com.tokopedia.productcard.video.ProductCardViewHelper
+import com.tokopedia.productcard.video.ProductVideoPlayer
+import com.tokopedia.productcard.video.VideoPlayerState
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
