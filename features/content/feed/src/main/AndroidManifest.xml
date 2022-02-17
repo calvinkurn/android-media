@@ -35,7 +35,6 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.PlayVideoLiveListActivity"
-            android:label="@string/title_feed_play_live"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
         <intent-filter>
