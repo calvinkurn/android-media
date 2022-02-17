@@ -6,7 +6,6 @@ import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
@@ -21,14 +20,12 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -128,9 +125,6 @@ class PlayBroadcastPrepareViewModelTest {
 
     @Test
     fun `when create livestream with no product, it should return error`() {
-        /** TODO: fix this */
-//        productDataStore.setSelectedProducts(emptyList())
-
         viewModel.createLiveStream()
 
         val result = viewModel.observableCreateLiveStream.value
@@ -166,8 +160,6 @@ class PlayBroadcastPrepareViewModelTest {
 
     @Test
     fun `when create livestream with products and valid cover, it should return success`() {
-        /** TODO: fix this */
-//        productDataStore.setSelectedProducts(listOf(modelBuilder.buildProductData()))
         coverDataStore.setFullCover(PlayCoverUiModel(
                 croppedCover = CoverSetupState.Cropped.Uploaded(null, mockk(relaxed = true), CoverSource.Camera),
                 state = SetupDataState.Uploaded
