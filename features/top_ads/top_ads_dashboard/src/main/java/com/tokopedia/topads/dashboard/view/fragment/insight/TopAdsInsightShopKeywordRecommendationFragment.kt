@@ -39,7 +39,6 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView()
         observeViewModel()
         getDataFromArgument()
         accordionUnify.onItemClick = ::accordionUnifyItemClick
@@ -118,13 +117,17 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     private fun getExpandedView(posi: Int) =
         accordionUnify.accordionData[posi].expandableView as TopAdsInsightShopKeywordRecommendationView
 
-    private fun initView() {
-        emptyView.findViewById<Typography>(R.id.text_title).text =
-            resources.getString(R.string.empty_view_title)
-        emptyView.findViewById<Typography>(R.id.text_desc).text =
-            resources.getString(R.string.topads_dash_empty_daily_budget_desc)
-        emptyView.findViewById<ImageUnify>(R.id.image_empty)
-            .setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+    private fun initView(view: View) {
+        emptyView = view.findViewById(R.id.empty_view)
+        try {
+            view.findViewById<Typography>(R.id.text_title).text =
+                resources.getString(R.string.empty_view_title)
+            view.findViewById<Typography>(R.id.text_desc).text =
+                resources.getString(R.string.topads_dash_empty_daily_budget_desc)
+            view.findViewById<ImageUnify>(R.id.image_empty)
+                .setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+        } catch (e: Exception) {
+        }
     }
 
     private fun getAccordionTitle(type: Int, count: Int): String {
@@ -158,8 +161,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     ): View {
         initInjector()
         val view = inflater.inflate(layout, container, false)
-
-        emptyView = view.findViewById(R.id.empty_view)
+        initView(view)
         return view
     }
 
