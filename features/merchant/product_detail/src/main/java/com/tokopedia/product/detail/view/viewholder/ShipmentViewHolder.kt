@@ -115,7 +115,6 @@ class ShipmentViewHolder(
         renderCourier(element, rates)
 
         itemView.addOnImpressionListener(element.impressHolder) {
-            listener.showCoachmark(pdpShipmentTitle, element.isBoeType())
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
