@@ -10,10 +10,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
-import com.tokopedia.pdpsimulation.common.analytics.PayLaterBottomSheetImpression
-import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
-import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterActionStepsAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -24,8 +20,6 @@ import java.net.URLEncoder
 class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private var payLaterItemProductData: Detail? = null
-    private var clickEvent: PayLaterCtaClick? = null
-    private var impression: PayLaterBottomSheetImpression? = null
     private val childLayoutRes = R.layout.paylater_action_steps_bottomsheet_widget
     private var actionUrl: String = ""
     private var partnerName: String? = ""
@@ -45,8 +39,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             payLaterItemProductData = it.getParcelable(STEPS_DATA)
-            clickEvent = it.getParcelable(CLICK)
-            impression = it.getParcelable(IMPRESSION)
             setDataFromArguments(payLaterItemProductData)
         } ?: dismiss()
     }
@@ -86,7 +78,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         setDefaultParams()
         initAdapter()
         setTitle(titleText)
-        sendEvent(impression)
     }
 
     private fun initBottomSheet() {
@@ -108,7 +99,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun initListeners() {
         btnRegister.setOnClickListener {
-            sendEvent(clickEvent)
             if (actionUrl.isNotEmpty())
                 openUrlView(actionUrl)
         }
@@ -137,17 +127,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun sendEvent(event: PayLaterAnalyticsBase?) {
-        if (event != null)
-            activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
-    }
-
     companion object {
 
         private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
-        const val CLICK = "click"
-        const val IMPRESSION = "impression"
         const val REDIRECT_TOKO_ENV = 1
 
         fun show(

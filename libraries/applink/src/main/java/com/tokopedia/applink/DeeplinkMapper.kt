@@ -38,6 +38,7 @@ import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
 import com.tokopedia.applink.internal.ApplinkConstInternalOvo.STATUS
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.getInactivePhoneInternalDeepLink
 import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
@@ -380,6 +381,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
             DLP.exact(ApplinkConst.SELLER_WAREHOUSE_DATA, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
             DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),
+            DLP.exact(ApplinkConst.SETTING_ADDRESS, ApplinkConstInternalLogistic.MANAGE_ADDRESS),
             DLP.exact(ApplinkConst.SETTING_PAYMENT, ApplinkConstInternalGlobal.PAYMENT_SETTING),
             DLP.exact(ApplinkConst.SETTING_ACCOUNT, ApplinkConstInternalGlobal.ACCOUNT_SETTING),
             DLP.exact(ApplinkConst.ADD_CREDIT_CARD, ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD),
@@ -429,7 +431,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
-            DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE),
+            DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE) {_, _, deeplink, _ -> getInactivePhoneInternalDeepLink(deeplink)},
             DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalGlobal.INIT_REGISTER),
             DLP.exact(ApplinkConst.OVO_FINAL_PAGE, ApplinkConstInternalGlobal.OVO_FINAL_PAGE),

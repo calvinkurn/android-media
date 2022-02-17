@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateInstallment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginStart="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateImageDrawable="@drawable/bg_installment_not_available"
+        app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
+        app:unifyEmptyStateTitle="@string/pay_later_unavailable_title"
+        app:unifyEmptyStateDescription="@string/pay_later_unavailable_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

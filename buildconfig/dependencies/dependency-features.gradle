@@ -145,6 +145,7 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
+            cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
             reputationCommon                : ":features:merchant:reputation_common",

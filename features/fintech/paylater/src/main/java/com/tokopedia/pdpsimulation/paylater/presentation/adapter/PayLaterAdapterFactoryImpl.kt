@@ -3,6 +3,8 @@ package com.tokopedia.pdpsimulation.paylater.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
@@ -20,7 +22,13 @@ class PayLaterAdapterFactoryImpl(
 
     override fun type(viewModel: LoadingModel) = PayLaterShimmerViewHolder.LAYOUT
 
+    override fun type(errorNetworkModel: ErrorNetworkModel) = SimulationLoadingFailedViewHolder.LAYOUT
+
+    override fun type(vm: EmptyModel) = SimulationEmptyViewHolder.LAYOUT
+
     override fun type(supervisorUiModel: SupervisorUiModel) = PayLaterSupervisorViewHolder.LAYOUT
+
+    // These two layouts are only used in Installment BottomSheet
     override fun type(content: Content): Int {
         return when(content.type) {
             2 -> InstallmentDividerViewHolder.LAYOUT
@@ -37,6 +45,8 @@ class PayLaterAdapterFactoryImpl(
             PayLaterInstallmentInfoViewHolder.LAYOUT  -> PayLaterInstallmentInfoViewHolder(parent)
             InstallmentDividerViewHolder.LAYOUT  -> InstallmentDividerViewHolder(parent)
             PayLaterShimmerViewHolder.LAYOUT -> PayLaterShimmerViewHolder(parent)
+            SimulationLoadingFailedViewHolder.LAYOUT -> SimulationLoadingFailedViewHolder(parent, interaction)
+            SimulationEmptyViewHolder.LAYOUT -> SimulationEmptyViewHolder(parent, interaction)
             else -> super.createViewHolder(parent, type)
         }
     }

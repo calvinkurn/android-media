@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -268,7 +269,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     private fun getNotifyRequestBundle(dataItem: DataItem): CampaignNotifyMeRequest {
         val campaignNotifyMeRequest = CampaignNotifyMeRequest()
         campaignNotifyMeRequest.campaignID = dataItem.campaignId.toIntOrZero()
-        campaignNotifyMeRequest.productID = dataItem.productId.toIntOrZero()
+        campaignNotifyMeRequest.productID = dataItem.productId.toLongOrZero()
         campaignNotifyMeRequest.action = if (dataItem.notifyMe == true) {
             UNREGISTER
         } else {

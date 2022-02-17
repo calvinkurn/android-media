@@ -348,7 +348,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
                 .bearing(0)
                 .build();
 
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override

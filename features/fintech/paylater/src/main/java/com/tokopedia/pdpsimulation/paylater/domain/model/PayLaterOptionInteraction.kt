@@ -7,4 +7,5 @@ data class PayLaterOptionInteraction(
     val installementDetails : (Detail) -> Unit,
     val seeMoreOptions: (Int) -> Unit,
     val invokeAnalytics: (PayLaterAnalyticsBase) -> Unit,
+    val retryLoading: () -> Unit,
 )

@@ -1,8 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
-import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
-import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel.Companion.DATA_FAILURE
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -13,7 +11,6 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
 
     fun mapResponseToUi(
         onSuccess: (ArrayList<SimulationUiModel>) -> Unit,
-        onError: (Throwable) -> Unit,
         payLaterGetSimulation: PayLaterGetSimulation?,
         defaultTenure: Int,
     ) {
@@ -21,10 +18,7 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
         this.defaultTenure = defaultTenure
         this.execute({
             onSuccess(it)
-        }, {
-            onError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
-        })
-
+        }, { onSuccess(arrayListOf())} )
     }
     override suspend fun executeOnBackground(): ArrayList<SimulationUiModel> {
         return mapTenureToUi(payLaterGetSimulation)
@@ -61,7 +55,9 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
         val uiList = arrayListOf<SimulationUiModel>()
         payLaterGetSimulation?.let {
             var isTenureFound = false
-            it.productList?.forEach { data ->
+            if (it.productList.isNullOrEmpty()) return uiList
+
+            it.productList.forEach { data ->
                 val getPayLaterList = mapSimulationToUi(data.detail)
                 if (defaultTenure == data.tenure)
                     isTenureFound = true

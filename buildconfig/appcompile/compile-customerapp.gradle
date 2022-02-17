@@ -107,6 +107,7 @@ includeIfEnabled("features:home:searchbar")
 includeIfEnabled("features:im:common_promo")
 includeIfEnabled("features:im:referral")
 includeIfEnabled("features:im:install_referral")
+includeIfEnabled("features:im:cm_home_widget")
 
 includeIfEnabled("features:kyc")
 

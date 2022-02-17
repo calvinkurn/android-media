@@ -3,7 +3,6 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
@@ -12,7 +11,6 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
-import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -46,11 +44,7 @@ class PayLaterViewModel @Inject constructor(
     // (K,V) -> Tenure -> Index of Simulation Item for corresponding tenure
     var tenureMap: Map<Int?, Int?> = mapOf()
 
-    private var idlingResourceProvider =
-        TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
-
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
-        idlingResourceProvider?.increment()
         paylaterGetSimulationV3UseCase.cancelJobs()
         paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
             ::onAvailableDetailSuccess,
@@ -69,22 +63,22 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
-        baseProductDetailClass.getProductV3?.let {
-            _productDetailLiveData.value = Success(it)
+        baseProductDetailClass.getProductV3?.let { data ->
+            if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
+                onFailProductDetail(IllegalStateException("Data invalid"))
+            else  _productDetailLiveData.postValue(Success(data))
         }
     }
 
     private fun onFailProductDetail(throwable: Throwable) {
-        _productDetailLiveData.value = Fail(throwable)
+        _productDetailLiveData.postValue(Fail(throwable))
     }
 
     private fun onAvailableDetailFail(throwable: Throwable) {
-        idlingResourceProvider?.decrement()
-        _payLaterOptionsDetailLiveData.value = Fail(throwable)
+        _payLaterOptionsDetailLiveData.postValue(Fail(throwable))
     }
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
-        idlingResourceProvider?.decrement()
         mapperUseCase.cancelJobs()
         mapperUseCase.mapResponseToUi({ data ->
             if (data.isNotEmpty()) {
@@ -93,13 +87,9 @@ class PayLaterViewModel @Inject constructor(
                         .toMap()
                 // set selection
                 defaultSelectedSimulation = tenureMap[defaultTenure] ?: data.size - 1
-                _payLaterOptionsDetailLiveData.value = Success(data)
-            } else {
-                _payLaterOptionsDetailLiveData.value =
-                    Fail(PdpSimulationException.PayLaterEmptyDataException(DATA_EMPTY))
             }
-        }, { _payLaterOptionsDetailLiveData.value = Fail(it) },
-            paylaterGetSimulation, defaultTenure
+            _payLaterOptionsDetailLiveData.postValue(Success(data))
+        }, paylaterGetSimulation, defaultTenure
         )
     }
 
@@ -110,10 +100,4 @@ class PayLaterViewModel @Inject constructor(
         super.onCleared()
     }
 
-
-    companion object {
-        const val DATA_FAILURE = "NULL DATA"
-        const val DATA_EMPTY = "EMPTY DATA"
-        const val PAY_LATER_NOT_APPLICABLE = "Pay Later Not Applicable"
-    }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -20,7 +21,6 @@ object PayLaterHelper {
     fun handleClickNavigation(
         context: Context?,
         detail: Detail,
-        productId: String,
         openHowToUse: (Bundle) -> Unit,
         openGoPay: (Bundle) -> Unit
     ) {
@@ -28,7 +28,7 @@ object PayLaterHelper {
             TYPE_APP_LINK -> routeToAppLink(context, detail.cta.android_url)
             TYPE_WEB_VIEW -> {
                 if (shouldShowGoPayBottomSheet(detail))
-                    openGoPay(PayLaterBundleGenerator.getGoPayBundle(productId, detail))
+                    openGoPay(PayLaterBundleGenerator.getGoPayBundle(detail.cta))
                 else routeToWebView(context, detail.cta.android_url)
             }
             TYPE_HOW_TO_USE, TYPE_HOW_TO_USE_II -> {
@@ -52,6 +52,7 @@ object PayLaterHelper {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
     }
 
+    // currently will be closed from backend
     private fun shouldShowGoPayBottomSheet(detail: Detail) = !detail.cta.android_url.isNullOrEmpty()
             && detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true
 
@@ -68,5 +69,17 @@ object PayLaterHelper {
             kursIndonesia.format(price.toLong())
         else kursIndonesia.format(price)
         return result.replace(",", ".")
+    }
+
+    fun getProductNameList(modelList: ArrayList<BasePayLaterWidgetUiModel>?): String {
+        val nameList = arrayListOf<String>()
+        modelList?.forEach {
+            if (it is Detail) {
+                if (it.gatewayDetail?.name?.isEmpty() == false) {
+                    nameList.add(it.gatewayDetail.name)
+                }
+            }
+        }
+        return nameList.joinToString(",")
     }
 }

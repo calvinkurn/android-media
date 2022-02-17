@@ -78,17 +78,9 @@ open class PayLaterAnalyticsBase {
     var action: String = ""
 }
 
-open class PayLaterProductImpressionEvent : PayLaterAnalyticsBase() {
+class PayLaterCtaClick: PayLaterAnalyticsBase(){
     var emiAmount: String = ""
-}
-
-@Parcelize
-open class PayLaterBottomSheetImpression : PayLaterProductImpressionEvent(), Parcelable {
     var limit: String = ""
     var redirectLink: String = ""
-}
-
-@Parcelize
-class PayLaterCtaClick : PayLaterBottomSheetImpression(), Parcelable {
     var ctaWording: String = ""
 }

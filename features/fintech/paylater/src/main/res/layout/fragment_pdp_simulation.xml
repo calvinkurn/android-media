@@ -59,21 +59,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation" />
 
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyStateInstallment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:layout_marginStart="@dimen/unify_space_24"
-        android:layout_marginEnd="@dimen/unify_space_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
-        app:unifyEmptyStateImageDrawable="@drawable/bg_installment_not_available"
-        app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
-        app:unifyEmptyStateTitle="@string/pay_later_unavailable_title"
-        app:unifyEmptyStateDescription="@string/pay_later_unavailable_description" />
- </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

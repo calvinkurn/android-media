@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
 import com.tkpd.atcvariant.data.uidata.VariantErrorDataModel

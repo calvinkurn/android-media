@@ -13,7 +13,7 @@ import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.analytics.actionTest
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
-import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.paylater.presentation.activity.PdpSimulationActivity
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -46,15 +46,19 @@ class PdpSimulationFragmentTest {
     fun setUp() {
         clearData()
         login()
-        //launchActivity()
+        launchActivity()
         setupIdlingResource()
         setupGraphqlMockResponse {
             addMockResponse(
-                SIMULATION_V2_KEY,
-                InstrumentationMockHelper.getRawString(context, R.raw.simulationv2response),
+                PRODUCT_V3_KEY,
+                InstrumentationMockHelper.getRawString(context, R.raw.product_detail_response),
                 MockModelConfig.FIND_BY_CONTAINS
             )
-
+            addMockResponse(
+                SIMULATION_V3_KEY,
+                InstrumentationMockHelper.getRawString(context, R.raw.simulationv3response),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
     }
 
@@ -69,12 +73,9 @@ class PdpSimulationFragmentTest {
     fun check_pay_later_partner_button_click() {
         assert(true)
         /*actionTest {
-            swipeUpCoordinateLayout()
+
             clickPartnerButton()
-            clickPartnerButtonBottomSheet()
-            closeBottomSheet()
-            clickPartnerFaq()
-            clickPartnerFaqBottomSheet()
+
         } assertTest {
             hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
@@ -88,9 +89,8 @@ class PdpSimulationFragmentTest {
 
     private fun launchActivity() {
         val bundle = Bundle()
-        bundle.putString("price", "1000000")
-        bundle.putString(PARAM_PRODUCT_URL, "https://dummyurl.com")
-        bundle.putString(PARAM_PRODUCT_ID, "2147828387")
+        bundle.putString(PARAM_PRODUCT_ID, "1")
+        bundle.putString(PARAM_PRODUCT_TENURE, "12")
         val intent = Intent(context, PdpSimulationActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
@@ -109,7 +109,8 @@ class PdpSimulationFragmentTest {
     }
 
     companion object {
-        const val SIMULATION_V2_KEY = "paylater_getSimulationV2"
+        const val SIMULATION_V3_KEY = "PaylaterGetSimulationV3"
+        const val PRODUCT_V3_KEY = "GetProductV3"
 
         const val PAY_LATER_PARTNER_BUTTON_CLICK =
             "tracker/fintech/pdpsimulation/partner_button_click.json"
