@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.data.source
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.review.common.util.ReviewInboxUtil.convertMapObjectToString
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationDetailMapper
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
