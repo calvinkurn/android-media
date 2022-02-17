@@ -2,7 +2,7 @@ package com.tokopedia.network.refreshtoken;
 
 import android.content.Context;
 
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;

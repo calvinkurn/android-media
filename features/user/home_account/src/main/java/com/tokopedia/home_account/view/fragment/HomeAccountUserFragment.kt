@@ -648,25 +648,31 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if(activity != null) {
                 if(BiometricPromptHelper.isBiometricAvailable(requireActivity())) {
                     homeAccountAnalytic.trackOnShowBiometricOffering()
-                    biometricOfferingDialog = FingerprintDialogHelper.createBiometricOfferingDialog(
-                        requireActivity(),
-                        onPrimaryBtnClicked = {
-                            biometricTracker.trackClickOnAktivasi()
-                            val intent = RouteManager.getIntent(
-                                requireContext(),
-                                ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
-                            )
-                            startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
-                            biometricOfferingDialog?.dismiss()
-                        },
-                        onSecondaryBtnClicked = {
-                            biometricTracker.trackClickOnTetapKeluar()
-                            showDialogLogout()
-                            biometricOfferingDialog?.dismiss()
-                        }, onCloseBtnClicked = {
-                            biometricOfferingDialog?.dismiss()
-                            biometricTracker.trackClickOnCloseBtnOffering()
-                        })
+                    if(biometricOfferingDialog != null) {
+                        activity?.supportFragmentManager?.run {
+                            biometricOfferingDialog?.show(this, "")
+                        }
+                    } else {
+                        biometricOfferingDialog = FingerprintDialogHelper.createBiometricOfferingDialog(
+                                requireActivity(),
+                                onPrimaryBtnClicked = {
+                                    biometricTracker.trackClickOnAktivasi()
+                                    val intent = RouteManager.getIntent(
+                                        requireContext(),
+                                        ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
+                                    )
+                                    startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+                                    biometricOfferingDialog?.dismiss()
+                                },
+                                onSecondaryBtnClicked = {
+                                    biometricTracker.trackClickOnTetapKeluar()
+                                    showDialogLogout()
+                                    biometricOfferingDialog?.dismiss()
+                                }, onCloseBtnClicked = {
+                                    biometricOfferingDialog?.dismiss()
+                                    biometricTracker.trackClickOnCloseBtnOffering()
+                                })
+                    }
                 } else {
                     showDialogLogout()
                 }
