@@ -45,11 +45,13 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
         itemView.setOnClickListener {
             if (::viewModel.isInitialized) {
                 val sectionID = viewModel.getSectionID()
-                if (sectionID.isNotEmpty())
+                if (sectionID.isNotEmpty()) {
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackAnchorTabClick(viewModel.components)
                     (fragment as DiscoveryFragment).scrollToSection(
                         sectionID,
                         viewModel.parentPosition()
                     )
+                }
             }
         }
     }
@@ -58,6 +60,7 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
         viewModel = discoveryBaseViewModel as AnchorTabsItemViewModel
         setupCardType()
         setupView()
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewAnchorTabs(viewModel.components)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
