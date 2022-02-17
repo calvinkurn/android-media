@@ -46,7 +46,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
 
     companion object {
         const val viewEvent = "viewFintechIris"
-        const val pdpBnplImpression = "pdp bnpl - impression status buyers"
+        const val pdpBnplImpression = "pdp page - impression bnpl widget"
         const val eventCategory = "fin - pdp page"
         const val eventLable = "eventLabel"
         const val KEY_USER_ID = "userId"
