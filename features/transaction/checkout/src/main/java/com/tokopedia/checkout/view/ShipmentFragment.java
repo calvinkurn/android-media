@@ -142,7 +142,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import rx.Observable;
