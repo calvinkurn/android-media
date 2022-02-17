@@ -1,6 +1,5 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -44,6 +43,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val _filterDataParams = ArrayList<HashMap<String, Any>>()
     private var loadingJob: Job? = null
     private var catalogProductJob: Job? = null
+    var recomCheckoutUrl = ""
 
     var filterData = emptyList<TelcoFilterTagComponent>()
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())

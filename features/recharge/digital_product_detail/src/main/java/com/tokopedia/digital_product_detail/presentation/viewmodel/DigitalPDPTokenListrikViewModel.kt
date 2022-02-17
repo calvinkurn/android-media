@@ -45,6 +45,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
+    var recomCheckoutUrl = ""
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
