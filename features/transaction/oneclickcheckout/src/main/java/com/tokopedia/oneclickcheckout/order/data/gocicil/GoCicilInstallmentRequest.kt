@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.gocicil
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class GoCicilInstallmentRequest(
         val gatewayCode: String = "",
@@ -14,7 +15,7 @@ class GoCicilInstallmentRequest(
 ) {
     val userDefinedValue
         get() = JsonObject().apply {
-            addProperty(USER_DEFINED_VALUE_KEY_USER_ID, userId)
+            addProperty(USER_DEFINED_VALUE_KEY_USER_ID, userId.toLongOrZero())
         }.toString()
 
     val orderMetadata
