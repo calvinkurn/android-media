@@ -11,12 +11,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
-import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
@@ -27,12 +27,13 @@ class CouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val createCouponUseCase: CreateCouponFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase,
-    private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val initiateCouponUseCase: InitiateCouponUseCase,
     private val getCouponDetailUseCase: GetCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
+        private const val IS_TO_CREATE_NEW_COUPON = true
     }
 
     private val _areInputValid = SingleLiveEvent<Boolean>()
@@ -154,10 +155,10 @@ class CouponPreviewViewModel @Inject constructor(
         val isUpdateMode = mode == CouponPreviewFragment.Mode.UPDATE
 
         launchCatchError(block = {
-            initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
-            initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
+            initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
+            initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdateMode, IS_TO_CREATE_NEW_COUPON)
             val result = withContext(dispatchers.io) {
-                initiateVoucherUseCase.executeOnBackground()
+                initiateCouponUseCase.executeOnBackground()
             }
             _maxAllowedProductCount.value = Success(result.maxProducts)
         }, onError = {
