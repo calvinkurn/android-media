@@ -60,6 +60,12 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
       quotaLeft
       quotaLeftLabel
       tagImageURLs
+      cta {
+        text
+        url
+        appLink
+        type
+      }
     }
     toasterSuccessMessage
   }

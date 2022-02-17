@@ -16,9 +16,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.linker.LinkerManager
@@ -81,6 +83,7 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus.Companion.HISTORY
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
 import java.util.*
@@ -210,7 +213,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     override fun onDataEmpty() {
         if (viewModel.couponSearchKeyword.orEmpty().isNotEmpty() ||
             viewModel.selectedFilterType.value != CouponFilterBottomSheet.FilterType.NOT_SELECTED ||
-            viewModel.selectedFilterTarget.value != CouponFilterBottomSheet.FilterTarget.NOT_SELECTED
+            viewModel.selectedFilterTarget.value != CouponFilterBottomSheet.FilterTarget.NOT_SELECTED ||
+            viewModel.couponStatusFilter == HISTORY
         ) {
             emptyStateList?.show()
         } else {
@@ -332,9 +336,15 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun setupBackButton(view: View) {
         val toolbar = view.findViewById<HeaderUnify>(R.id.toolbarMvcList)
+        val iconAdd = IconUnify(requireContext(), IconUnify.ADD,
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
         toolbar.headerTitle = getString(R.string.mvc_coupon_list_title)
+        toolbar.addCustomRightContent(iconAdd)
         toolbar.setNavigationOnClickListener {
             activity?.finish()
+        }
+        iconAdd.setOnClickListener {
+            onCreateCouponMenuSelected()
         }
     }
 
@@ -628,16 +638,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         if (!isAdded) return
 
         val bottomSheet = UpdateCouponQuotaBottomSheet.newInstance(voucher)
-        bottomSheet.setOnUpdateQuotaSuccess {
+        bottomSheet.setOnUpdateQuotaSuccess { isQuotaDecreased ->
             loadInitialData()
-            view?.run {
-                Toaster.build(
-                    this,
-                    getString(R.string.update_quota_success).toBlankOrString(),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context?.getString(R.string.mvc_oke).toBlankOrString()
-                ).show()
+            if (isQuotaDecreased) {
+                toaster(getString(R.string.mvc_quota_updated))
+            } else {
+                toaster( getString(R.string.update_quota_success))
             }
         }
         bottomSheet.setOnUpdateQuotaError { message ->
@@ -778,6 +784,15 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         longToaster(toasterMessage, toasterType)
     }
 
+    private fun toaster(text: String) {
+        Toaster.build(
+            view ?: return,
+            text,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            context?.getString(R.string.mvc_oke).toBlankOrString()
+        ).show()
+    }
 
     private fun longToaster(text: String, toasterType: Int) {
         if (text.isEmpty()) return

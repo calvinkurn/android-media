@@ -59,6 +59,8 @@ class CouponListViewModel @Inject constructor(
         get() = _selectedFilterTarget
     val couponSearchKeyword: String?
         get() = _couponSearchKeyword
+    val couponStatusFilter: String
+        get() = _couponStatusFilter
 
     private val _couponImageWithShop = MutableLiveData<Result<CouponImageWithShop>>()
     val couponImageWithShop: LiveData<Result<CouponImageWithShop>> = _couponImageWithShop

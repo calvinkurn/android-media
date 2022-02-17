@@ -195,6 +195,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
                     estimatedMaxExpense
                 )
             }
+            headerUnify.setNavigationOnClickListener { activity?.onBackPressed() }
         }
 
     }

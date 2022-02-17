@@ -14,13 +14,6 @@ buildscript {
 }
 
 android {
-    buildFeatures {
-        viewBinding true
-    }
-}
-
-
-android {
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -47,6 +40,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -65,8 +59,8 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)

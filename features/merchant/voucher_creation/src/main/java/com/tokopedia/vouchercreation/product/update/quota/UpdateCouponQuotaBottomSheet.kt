@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -18,7 +18,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.NumberConstant
-import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
@@ -61,7 +60,7 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
     private val viewModel by lazy { viewModelProvider.get(UpdateCouponQuotaViewModel::class.java) }
 
 
-    private var onUpdateQuotaSuccess: () -> Unit = {}
+    private var onUpdateQuotaSuccess: (Boolean) -> Unit = {}
     private var onUpdateQuotaError: (String) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,7 +109,8 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
 
             when (result) {
                 is Success -> {
-                    onUpdateQuotaSuccess()
+                    handleUpdateQuotaSuccess()
+
                 }
                 is Fail -> {
                     onUpdateQuotaError(result.throwable.message.toBlankOrString())
@@ -120,6 +120,7 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
             dismiss()
         }
     }
+
 
     private fun observeValidationResult() {
         viewModel.validInput.observe(viewLifecycleOwner) { result ->
@@ -200,7 +201,7 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 viewModel.calculateMaxExpenseEstimation(maxDiscountAmount, number.toInt())
-                viewModel.validateInput(number.toInt(), quota)
+                viewModel.validateInput(number.toInt(), quota, voucher?.status ?: return)
             }
         }
 
@@ -212,20 +213,12 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handleTickerVisibility(voucherStatus: Int) {
-        if (voucherStatus == VoucherStatusConst.NOT_STARTED) {
-            removeTicker()
-        }
-
+    private fun handleTickerVisibility(couponStatus: Int) {
+        binding.groupTicker.isVisible = viewModel.isOngoingCoupon(couponStatus)
     }
 
     private fun displayCouponInformation(voucher: VoucherUiModel) {
         binding.tpgCouponName.text = voucher.name
-        binding.tpgCouponDescription.text = String.format(
-            getString(R.string.mvc_discount_formatted).toBlankOrString(),
-            voucher.typeFormatted,
-            voucher.discountAmtFormatted
-        )
     }
 
 
@@ -244,13 +237,14 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
         binding.imgCoupon.loadImageDrawable(drawableRes)
     }
 
-    private fun removeTicker() {
-        binding.imgTips.gone()
-        binding.tpgTips.gone()
-        binding.divider.gone()
+    private fun handleUpdateQuotaSuccess() {
+        val newQuota = binding.textFieldQuota.textFieldInput.text.toString().digitsOnlyInt()
+        val isQuotaDecreased = viewModel.isQuotaDecreased(voucher?.quota ?: return, newQuota)
+        onUpdateQuotaSuccess(isQuotaDecreased)
     }
 
-    fun setOnUpdateQuotaSuccess(action: () -> Unit) {
+
+    fun setOnUpdateQuotaSuccess(action: (Boolean) -> Unit) {
         onUpdateQuotaSuccess = action
     }
 
