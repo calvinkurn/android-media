@@ -96,6 +96,7 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetail
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -1363,7 +1364,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
-            bundleName: String
+            bundleName: String,
+            widgetLayout: ShopHomeWidgetLayout
     ) {
         if (isOwner) {
             // disable owner add their own bundle to cart
@@ -1374,12 +1376,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 goToBundlingSelectionPage(selectedMultipleBundle.bundleId.toString())
             } else {
                 // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = widgetLayout.widgetId,
+                        widgetMasterId = widgetLayout.widgetMasterId,
+                        widgetType = widgetLayout.widgetType,
+                        widgetName = widgetLayout.widgetName
+                )
                 viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
                         bundleId = selectedMultipleBundle.bundleId.toString(),
                         productDetails = productDetails,
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         bundleQuantity = selectedMultipleBundle.minOrder
                 )
@@ -1398,7 +1406,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             selectedBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
-            bundleName: String
+            bundleName: String,
+            widgetLayout: ShopHomeWidgetLayout
     ) {
         if (isOwner) {
             // disable owner add their own bundle to cart
@@ -1409,12 +1418,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 goToBundlingSelectionPage(selectedBundle.bundleId.toString())
             } else {
                 // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = widgetLayout.widgetId,
+                        widgetMasterId = widgetLayout.widgetMasterId,
+                        widgetType = widgetLayout.widgetType,
+                        widgetName = widgetLayout.widgetName
+                )
                 viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
                         bundleId = selectedBundle.bundleId.toString(),
                         productDetails = listOf(bundleProducts),
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         bundleQuantity = selectedBundle.minOrder
                 )
@@ -1431,7 +1446,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    private fun handleOnFinishAtcBundle(atcBundleModel: AddToCartBundleModel, bundleListSize: Int) {
+    private fun handleOnFinishAtcBundle(
+            atcBundleModel: AddToCartBundleModel,
+            bundleListSize: Int,
+            widgetLayout: ShopPageHomeWidgetLayoutUiModel.WidgetLayout
+    ) {
         atcBundleModel.validateResponse(
                 onSuccess = {
                     showToastSuccess(
@@ -1453,7 +1472,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     showErrorDialogAtcBundle(
                             errorTitle = getString(R.string.shop_page_product_bundle_failed_oos_dialog_title),
                             errorDescription = errorMessageDescription,
-                            ctaText = errorDialogCtaText
+                            ctaText = errorDialogCtaText,
+                            widgetLayoutParams = widgetLayout
                     )
                 },
                 onFailedWithException = {
@@ -1485,7 +1505,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showErrorDialogAtcBundle(
             errorTitle: String,
             errorDescription: String,
-            ctaText: String
+            ctaText: String,
+            widgetLayoutParams: ShopPageHomeWidgetLayoutUiModel.WidgetLayout
     ) {
         context?.let {
             DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -1493,7 +1514,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 setDescription(errorDescription)
                 setPrimaryCTAText(ctaText)
                 setPrimaryCTAClickListener {
-                    loadInitialDataAfterOnViewCreated()
+                    dismiss()
+                    getWidgetContentData(mutableListOf(widgetLayoutParams))
                 }
             }.show()
         }

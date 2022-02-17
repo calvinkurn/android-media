@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleMult
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
@@ -23,7 +24,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeProductBundleMultipleViewHolder(
         itemView: View,
         private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
-        private val bundleListSize: Int
+        private val bundleListSize: Int,
+        private val widgetLayout: ShopHomeWidgetLayout
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -93,7 +95,8 @@ class ShopHomeProductBundleMultipleViewHolder(
                     multipleBundleItem,
                     bundleListSize,
                     bundle.bundleProducts,
-                    bundle.bundleName
+                    bundle.bundleName,
+                    widgetLayout
             )
         }
     }

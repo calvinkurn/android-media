@@ -12,6 +12,7 @@ import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductMultipleBi
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -70,7 +71,7 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
                     bundleProductItem,
                     bundleDetail,
                     bundleParent.bundleName,
-                    bundlePosition
+                    bundlePosition,
             )
         }
     }
@@ -82,12 +83,13 @@ interface MultipleProductBundleClickListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundlePosition: Int
+            bundlePosition: Int,
     )
     fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
+            widgetLayout: ShopHomeWidgetLayout
     )
 }

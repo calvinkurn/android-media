@@ -50,7 +50,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
         } else {
             GridLayoutManager(itemView.context, BUNDLE_SINGLE_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
         }
-        initRecyclerView(bundleLayoutManager)
+        initRecyclerView(bundleLayoutManager, element)
         rvBundleAdapter?.updateDataSet(element.productBundleList)
         rvBundleAdapter?.setParentPosition(adapterPosition)
     }
@@ -60,11 +60,15 @@ class ShopHomeProductBundleParentWidgetViewHolder (
         rvBundleList = viewBinding?.rvProductBundleList
     }
 
-    private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager) {
+    private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: ShopHomeProductBundleListUiModel) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
                 multipleProductBundleClickListener,
                 singleProductBundleClickListener,
-                bundleListSize
+                bundleListSize,
+                bundleLayout.widgetId,
+                bundleLayout.widgetMasterId,
+                bundleLayout.type,
+                bundleLayout.name
         )
         rvBundleList?.apply {
             setHasFixedSize(true)

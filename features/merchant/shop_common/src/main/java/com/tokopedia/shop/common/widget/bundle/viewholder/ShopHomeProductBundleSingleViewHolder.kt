@@ -18,6 +18,7 @@ import com.tokopedia.shop.common.widget.bundle.adapter.SingleBundleVariantSelect
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -28,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeProductBundleSingleViewHolder(
         itemView: View,
         private val singleProductBundleClickListener: SingleProductBundleClickListener,
-        private val bundleListSize: Int
+        private val bundleListSize: Int,
+        private val widgetLayout: ShopHomeWidgetLayout
 ): RecyclerView.ViewHolder(itemView), SingleBundleVariantSelectedListener {
 
     companion object {
@@ -118,6 +120,7 @@ class ShopHomeProductBundleSingleViewHolder(
                     bundleListSize,
                     singleBundleProduct,
                     bundle.bundleName,
+                    widgetLayout
             )
         }
     }
@@ -167,5 +170,6 @@ interface SingleProductBundleClickListener {
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
+            widgetLayout: ShopHomeWidgetLayout
     )
 }

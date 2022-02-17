@@ -8,11 +8,16 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleC
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultipleViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSingleViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 
 class ShopHomeProductBundleWidgetAdapter(
         private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
         private val singleProductBundleClickListener: SingleProductBundleClickListener,
-        private val bundleListSize: Int
+        private val bundleListSize: Int,
+        private val widgetId: String,
+        private val widgetMasterId: String,
+        private val widgetType: String,
+        private val widgetName: String,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -22,19 +27,27 @@ class ShopHomeProductBundleWidgetAdapter(
 
     private var bundleListItem: List<ShopHomeProductBundleItemUiModel> = listOf()
     private var parentPosition: Int = 0
+    private var widgetLayout = ShopHomeWidgetLayout(
+            widgetId,
+            widgetMasterId,
+            widgetType,
+            widgetName
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == ShopHomeProductBundleSingleViewHolder.LAYOUT) {
             ShopHomeProductBundleSingleViewHolder(
                     View.inflate(parent.context, viewType, null),
                     singleProductBundleClickListener,
-                    bundleListSize
+                    bundleListSize,
+                    widgetLayout
             )
         } else {
             ShopHomeProductBundleMultipleViewHolder(
                     View.inflate(parent.context, viewType, null),
                     multipleProductBundleClickListener,
-                    bundleListSize
+                    bundleListSize,
+                    widgetLayout
             )
         }
     }

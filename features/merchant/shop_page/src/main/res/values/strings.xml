@@ -301,9 +301,9 @@
     <!-- Product Bundling Widget -->
     <string name="shop_page_product_bundle_success_atc_text">Paket berhasil dimasukkan ke keranjang belanja</string>
     <string name="shop_page_product_bundle_failed_atc_text_for_shop_owner">Oops, kamu nggak bisa menambahkan barang jualanmu ke keranjang.</string>
-    <string name="shop_page_product_bundle_failed_oos_dialog_title">Oops, paket yang kamu pilih habis</string>
-    <string name="shop_page_product_bundle_failed_oos_dialog_desc_with_alt">Tenang kamu bisa coba lihat paket lain di toko ini</string>
-    <string name="shop_page_product_bundle_failed_oos_dialog_desc_no_alt">Kamu tetap bisa beli barang dalam paket secara satuan</string>
+    <string name="shop_page_product_bundle_failed_oos_dialog_title">Oops, paket yang kamu pilih\nhabis</string>
+    <string name="shop_page_product_bundle_failed_oos_dialog_desc_with_alt">Tenang kamu bisa coba lihat paket lain di\ntoko ini</string>
+    <string name="shop_page_product_bundle_failed_oos_dialog_desc_no_alt">Kamu tetap bisa beli barang dalam paket\nsecara satuan</string>
     <string name="shop_page_product_bundle_failed_oos_cta_text">Kembali</string>
     <string name="shop_page_product_bundle_failed_oos_cta_text_with_alt">Lihat Paket Lain</string>
 
