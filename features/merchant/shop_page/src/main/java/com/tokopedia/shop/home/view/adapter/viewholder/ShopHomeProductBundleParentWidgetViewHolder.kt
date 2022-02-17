@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
@@ -20,7 +20,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ShopHomeProductBundleParentWidgetViewHolder (
         itemView: View,
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
+        private val multipleProductBundleListener: MultipleProductBundleListener,
         private val singleProductBundleClickListener: SingleProductBundleClickListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
@@ -62,7 +62,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
 
     private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: ShopHomeProductBundleListUiModel) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
-                multipleProductBundleClickListener,
+                multipleProductBundleListener,
                 singleProductBundleClickListener,
                 bundleListSize,
                 bundleLayout.widgetId,

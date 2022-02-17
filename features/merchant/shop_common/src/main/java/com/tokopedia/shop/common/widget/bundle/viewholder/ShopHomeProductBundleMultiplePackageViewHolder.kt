@@ -19,7 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultiplePackageViewHolder(
         itemView: View,
-        private val itemListener: MultipleProductBundleClickListener,
+        private val itemListener: MultipleProductBundleListener,
         private val bundleProductsSize: Int
 ): RecyclerView.ViewHolder(itemView) {
 
@@ -78,7 +78,7 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
 
 }
 
-interface MultipleProductBundleClickListener {
+interface MultipleProductBundleListener {
     fun onMultipleBundleProductClicked(
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
@@ -91,5 +91,10 @@ interface MultipleProductBundleClickListener {
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
             widgetLayout: ShopHomeWidgetLayout
+    )
+    fun impressionProductBundleMultiple(
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int,
     )
 }

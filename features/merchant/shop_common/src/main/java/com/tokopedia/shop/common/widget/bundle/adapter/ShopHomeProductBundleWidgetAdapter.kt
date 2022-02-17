@@ -4,14 +4,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultipleViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSingleViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 
 class ShopHomeProductBundleWidgetAdapter(
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
+        private val multipleProductBundleListener: MultipleProductBundleListener,
         private val singleProductBundleClickListener: SingleProductBundleClickListener,
         private val bundleListSize: Int,
         private val widgetId: String,
@@ -45,7 +45,7 @@ class ShopHomeProductBundleWidgetAdapter(
         } else {
             ShopHomeProductBundleMultipleViewHolder(
                     View.inflate(parent.context, viewType, null),
-                    multipleProductBundleClickListener,
+                    multipleProductBundleListener,
                     bundleListSize,
                     widgetLayout
             )

@@ -2140,4 +2140,38 @@ class ShopPageHomeTracking(
         )
         sendDataLayerEvent(eventMap)
     }
+
+    fun impressionMultipleBundleWidget(
+            shopId: String,
+            userId: String,
+            bundleId: String,
+            bundleName: String,
+            bundlePriceCut: String,
+            bundlePrice: Long,
+            bundlePosition: Int,
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to PROMO_VIEW,
+                EVENT_ACTION to joinDash(IMPRESSION, MULTIPLE_BUNDLE_WIDGET),
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
+                        PROMOTIONS to listOf(mutableMapOf(
+                                DIMENSION_117 to MULTIPLE_BUNDLE_WIDGET,
+                                DIMENSION_118 to bundleId,
+                                NAME to bundleName,
+                                ID to bundleId,
+                                PRICE to bundlePrice,
+                                POSITION to bundlePosition,
+                        ))
+                )
+        )
+        sendDataLayerEvent(eventMap)
+    }
 }

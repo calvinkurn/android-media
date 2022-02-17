@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleMultipleWidgetBinding
@@ -23,7 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultipleViewHolder(
         itemView: View,
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
+        private val multipleProductBundleListener: MultipleProductBundleListener,
         private val bundleListSize: Int,
         private val widgetLayout: ShopHomeWidgetLayout
 ): RecyclerView.ViewHolder(itemView) {
@@ -89,9 +90,17 @@ class ShopHomeProductBundleMultipleViewHolder(
         )
 
         // bind listeners
+        itemView.addOnImpressionListener(bundle) {
+            multipleProductBundleListener.impressionProductBundleMultiple(
+                    selectedMultipleBundle = multipleBundleItem,
+                    bundleName = bundle.bundleName,
+                    bundlePosition = adapterPosition
+            )
+        }
+
         buttonAtc?.setOnClickListener {
             // add to cart bundle
-            multipleProductBundleClickListener.addMultipleBundleToCart(
+            multipleProductBundleListener.addMultipleBundleToCart(
                     multipleBundleItem,
                     bundleListSize,
                     bundle.bundleProducts,
@@ -105,7 +114,7 @@ class ShopHomeProductBundleMultipleViewHolder(
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
-            adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleClickListener)
+            adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleListener)
         }
 
         if (bundleListSize == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {

@@ -94,7 +94,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
@@ -157,7 +157,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeShowcaseListWidgetListener,
         InterfaceShopPageClickScrollToTop,
         ShopHomePlayWidgetListener,
-        MultipleProductBundleClickListener,
+        MultipleProductBundleListener,
         SingleProductBundleClickListener {
 
     companion object {
@@ -277,7 +277,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isShowTripleDot = !_isMyShop,
                 shopHomeShowcaseListWidgetListener = this,
                 this,
-                multipleProductBundleClickListener = this,
+                multipleProductBundleListener = this,
                 singleProductBundleClickListener = this
         )
     }
@@ -1318,6 +1318,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
                 0
+        )
+    }
+
+    override fun impressionProductBundleMultiple(
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    ) {
+        shopPageHomeTracking.impressionMultipleBundleWidget(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedMultipleBundle.bundleId.toString(),
+                bundleName = bundleName,
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                bundlePosition = bundlePosition
         )
     }
 
