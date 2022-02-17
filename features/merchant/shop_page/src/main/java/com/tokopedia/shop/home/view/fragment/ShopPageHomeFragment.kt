@@ -1340,6 +1340,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         goToPDP(selectedProduct.productId.toString())
     }
 
+    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
+        shopPageHomeTracking.onTrackSingleVariantChange(
+                shopId = shopId,
+                userId = userId,
+                productId = selectedProduct.productId.toString(),
+                bundleName = bundleName,
+                bundleId = selectedSingleBundle.bundleId.toString(),
+                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
+                selectedPackage = selectedSingleBundle.minOrderWording
+        )
+    }
+
     override fun onSingleBundleProductClicked(
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,

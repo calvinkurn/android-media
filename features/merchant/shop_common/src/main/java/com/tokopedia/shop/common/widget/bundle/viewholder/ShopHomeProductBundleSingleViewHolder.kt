@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
@@ -51,6 +50,8 @@ class ShopHomeProductBundleSingleViewHolder(
     private var rvBundleDetails: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
     private var selectedSingleBundle: ShopHomeProductBundleDetailUiModel = ShopHomeProductBundleDetailUiModel()
+    private var singleBundleProduct: ShopHomeBundleProductUiModel = ShopHomeBundleProductUiModel()
+    private var parentSingleBundle: ShopHomeProductBundleItemUiModel = ShopHomeProductBundleItemUiModel()
 
     init {
         viewBinding?.apply {
@@ -72,15 +73,21 @@ class ShopHomeProductBundleSingleViewHolder(
     override fun onSingleVariantSelected(selectedBundle: ShopHomeProductBundleDetailUiModel) {
         selectedSingleBundle = selectedBundle
         renderBundlePriceDetails(selectedBundle)
+        singleProductBundleClickListener.onTrackSingleVariantChange(
+                singleBundleProduct,
+                selectedSingleBundle,
+                parentSingleBundle.bundleName
+        )
     }
 
     fun bind(bundle: ShopHomeProductBundleItemUiModel) {
-        val singleBundleProduct = bundle.bundleProducts.firstOrNull() ?: ShopHomeBundleProductUiModel()
-        selectedSingleBundle = bundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
+        parentSingleBundle = bundle
+        singleBundleProduct = parentSingleBundle.bundleProducts.firstOrNull() ?: ShopHomeBundleProductUiModel()
+        selectedSingleBundle = parentSingleBundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
 
         // bundle card item details
         renderBundlePriceDetails(selectedSingleBundle)
-        typographyBundleName?.text = bundle.bundleName
+        typographyBundleName?.text = parentSingleBundle.bundleName
         typographyBundlePreOrder?.shouldShowWithAction(selectedSingleBundle.isPreOrder) {
             typographyBundlePreOrder?.text = selectedSingleBundle.preOrderInfo
         }
@@ -96,8 +103,8 @@ class ShopHomeProductBundleSingleViewHolder(
             singleProductBundleClickListener.onSingleBundleProductClicked(
                     singleBundleProduct,
                     selectedSingleBundle,
-                    bundle.bundleName,
-                    bundle.bundleProducts.indexOf(singleBundleProduct)
+                    parentSingleBundle.bundleName,
+                    parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
             )
         }
         typographyBundleProductName?.text = singleBundleProduct.productName
@@ -105,13 +112,13 @@ class ShopHomeProductBundleSingleViewHolder(
             singleProductBundleClickListener.onSingleBundleProductClicked(
                     singleBundleProduct,
                     selectedSingleBundle,
-                    bundle.bundleName,
-                    bundle.bundleProducts.indexOf(singleBundleProduct)
+                    parentSingleBundle.bundleName,
+                    parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
             )
         }
 
         // bundle variant package list
-        (rvBundleDetails?.adapter as ShopHomeProductBundleSingleAdapter).updateDataSet(bundle.bundleDetails)
+        (rvBundleDetails?.adapter as ShopHomeProductBundleSingleAdapter).updateDataSet(parentSingleBundle.bundleDetails)
 
         // bind listeners
         buttonAtc?.setOnClickListener {
@@ -119,7 +126,7 @@ class ShopHomeProductBundleSingleViewHolder(
                     selectedSingleBundle,
                     bundleListSize,
                     singleBundleProduct,
-                    bundle.bundleName,
+                    parentSingleBundle.bundleName,
                     widgetLayout
             )
         }
@@ -171,5 +178,10 @@ interface SingleProductBundleClickListener {
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
             widgetLayout: ShopHomeWidgetLayout
+    )
+    fun onTrackSingleVariantChange(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
     )
 }

@@ -2117,4 +2117,27 @@ class ShopPageHomeTracking(
         )
         sendDataLayerEvent(eventMap)
     }
+
+    fun onTrackSingleVariantChange(
+            shopId: String,
+            userId: String,
+            productId: String,
+            bundleName: String,
+            bundleId: String,
+            bundlePriceCut: String,
+            selectedPackage: String,
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to CLICK_PG,
+                EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, selectedPackage),
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage),
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                PRODUCT_ID to productId,
+                SHOP_ID to shopId,
+                USER_ID to userId
+        )
+        sendDataLayerEvent(eventMap)
+    }
 }
