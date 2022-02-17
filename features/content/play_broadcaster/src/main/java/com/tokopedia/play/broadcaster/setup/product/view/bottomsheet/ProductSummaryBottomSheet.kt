@@ -185,8 +185,9 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun showLoading(isShow: Boolean) {
-        if(isShow && !isLoadingDialogVisible()) {
-            loadingDialogFragment.show(childFragmentManager)
+        if(isShow) {
+            if(!isLoadingDialogVisible())
+                loadingDialogFragment.show(childFragmentManager)
         }
         else if(loadingDialogFragment.isAdded) {
             loadingDialogFragment.dismiss()
