@@ -46,6 +46,7 @@ import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
@@ -67,6 +68,8 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -411,8 +414,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     @Override
-    public void openAddOnBottomSheet(@NonNull CartItemModel cartItem) {
-        mActionListener.onOpenAddOnBottomSheet(cartItem);
+    public void openAddOnBottomSheet(@NotNull CartItemModel cartItem, @NotNull AddOnWordingModel addOnWordingModel) {
+        mActionListener.onOpenAddOnBottomSheet(cartItem, addOnWordingModel);
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
@@ -793,7 +796,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @SuppressLint("StringFormatInvalid")
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
         rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
-        initInnerRecyclerView(cartItemModels);
+        initInnerRecyclerView(cartItemModels, shipmentItem.getAddOnWordingModel());
         if (shipmentItem.isStateAllItemViewExpanded()) {
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
@@ -1924,14 +1927,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         return view -> cbDropshipper.setChecked(!cbDropshipper.isChecked());
     }
 
-    private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
+    private void initInnerRecyclerView(List<CartItemModel> cartItemList, AddOnWordingModel addOnWordingModel) {
         rvCartItem.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(rvCartItem.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvCartItem.setLayoutManager(layoutManager);
 
         ShipmentInnerProductListAdapter shipmentInnerProductListAdapter =
-                new ShipmentInnerProductListAdapter(cartItemList, this);
+                new ShipmentInnerProductListAdapter(cartItemList, addOnWordingModel, this);
         rvCartItem.setAdapter(shipmentInnerProductListAdapter);
     }
 

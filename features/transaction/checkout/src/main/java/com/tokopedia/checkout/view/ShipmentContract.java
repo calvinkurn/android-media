@@ -165,8 +165,6 @@ public interface ShipmentContract {
 
         void showPopUp(PopUpData popUpData);
 
-        void setAddOnWording(AddOnWordingData addOnWordingData);
-
         void updateAddOnsData(AddOnsDataModel addOnsDataModel);
     }
 

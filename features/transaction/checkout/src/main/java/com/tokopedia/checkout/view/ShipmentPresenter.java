@@ -14,7 +14,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnWordingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.PopUpData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -211,7 +210,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
-    private AddOnWordingData addOnWordingData;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -643,9 +641,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().showPopUp(popUpData);
                     }
                 }
-                if (cartShipmentAddressFormData.getAddOnWording() != null) {
-                    addOnWordingData = cartShipmentAddressFormData.getAddOnWording();
-                }
             }
 
         }
@@ -707,8 +702,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
-                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null,
-                getAddOnWording())
+                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
         );
 
         this.codData = cartShipmentAddressFormData.getCod();
@@ -2216,10 +2210,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setCheckoutData(CheckoutData checkoutData) {
         this.checkoutData = checkoutData;
-    }
-
-    public AddOnWordingData getAddOnWording() {
-        return addOnWordingData;
     }
 
     @Override

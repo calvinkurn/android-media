@@ -179,7 +179,7 @@ public class ShipmentDataConverter {
     }
 
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                        boolean hasTradeInDropOffAddress, AddOnWordingData addOnWording) {
+                                                        boolean hasTradeInDropOffAddress) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
         if (cartShipmentAddressFormData.getGroupAddress().isEmpty() || cartShipmentAddressFormData.getGroupAddress().get(0) == null) {
@@ -205,7 +205,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
             shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex, addOnWording);
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex, cartShipmentAddressFormData.getAddOnWording());
             if (groupShop.isFulfillment()) {
                 shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
             }
