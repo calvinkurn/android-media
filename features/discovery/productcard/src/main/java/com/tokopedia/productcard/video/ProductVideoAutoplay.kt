@@ -28,7 +28,7 @@ class ProductVideoAutoplay<T, R : T>(
         filter: (List<T>) -> List<R>
     ) {
         productVideoAutoPlayJob?.cancel()
-        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, true)
+        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
         val lastCompleteVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
         if (!itemList.isNullOrEmpty()
             && firstVisibleItemIndex != -1
