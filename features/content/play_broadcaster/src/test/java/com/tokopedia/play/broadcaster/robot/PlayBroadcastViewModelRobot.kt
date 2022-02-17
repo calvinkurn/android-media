@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractive
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.logger.PlayLoggerTest
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
@@ -46,6 +47,7 @@ internal class PlayBroadcastViewModelRobot(
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
+    productMapper: PlayBroProductUiMapper,
     channelInteractiveMapper: PlayChannelInteractiveMapper = mockk(relaxed = true),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
@@ -63,6 +65,7 @@ internal class PlayBroadcastViewModelRobot(
         userSession,
         playBroadcastWebSocket,
         playBroadcastMapper,
+        productMapper,
         channelInteractiveMapper,
         channelRepo,
         logger,
