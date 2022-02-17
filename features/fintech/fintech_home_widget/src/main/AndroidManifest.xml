@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tokopedia.gopayhomewidget">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.gopayhomewidget">
 
     <application>
+        <activity
+            android:name=".presentation.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
 
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
 
+            <data
+                android:host="@string/host_fintech"
+                android:path="@string/path_paylater"
+                android:scheme="@string/internal_scheme" />
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>
