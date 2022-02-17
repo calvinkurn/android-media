@@ -120,10 +120,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/pdp_shipping_other_courier_label"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_estimation"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        tools:text="Kurir lainnya:" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/pdp_shipment_courier_option_1"

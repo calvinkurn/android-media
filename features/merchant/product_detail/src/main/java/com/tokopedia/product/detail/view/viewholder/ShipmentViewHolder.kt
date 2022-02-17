@@ -171,6 +171,8 @@ class ShipmentViewHolder(
             else R.string.pdp_shipping_choose_courier_label
             pdpShipmentCourierLabel2.text = context.getString(labelStringId)
         } else {
+            pdpShipmentCourierLabel1.text = rates.subtitle
+
             pdpShipmentCourierLabel1.show()
             pdpShipmentCourierArrow.show()
             pdpShipmentCourierOption1.showIfWithBlock(instantLabel.isNotEmpty()) {
