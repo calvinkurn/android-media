@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".product.create.view.fragment.CouponSettingFragment">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerUnify"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:unify_header_title="@string/coupon_setting"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:layout_above="@id/divider"
+        android:layout_below="@id/headerUnify"
+        android:scrollbars="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16">
+
+            <!--Group Coupon Type-->
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/typography"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:text="@string/coupon_type"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipCashback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/mvc_cashback"
+                app:chipType="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/typography" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipFreeShipping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/mvc_free_shipping"
+                app:chipType="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/chipCashback"
+                app:layout_constraintTop_toBottomOf="@id/typography" />
+
+            <!--Group Coupon Discount -->
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgDiscountType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:text="@string/coupon_discount_type"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chipCashback"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipDiscountTypeNominal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/nominal"
+                app:chipType="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tpgDiscountType" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipDiscountTypePercentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/mvc_create_tips_subtitle_percentage"
+                app:chipType="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/chipDiscountTypeNominal"
+                app:layout_constraintTop_toBottomOf="@id/tpgDiscountType" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupNominalDiscountType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaDiscountAmount" />
+
+            <!-- Discount Minimal (Discount type : Nominal) -->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaDiscountAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipDiscountTypeNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/mvc_create_promo_type_cashback_textfield_discount_amount"
+                app:text_area_label_static="true"
+                app:text_area_message="@string/error_message_minimum_discount"/>
+
+            <!-- Discount Percentage (Discount type : Percentage) -->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaDiscountPercentage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipDiscountTypeNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/cashback_percentage"
+                app:text_area_label_static="true"
+                app:text_area_message="@string/error_message_discount_percentage_range"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupPercentageDiscountType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaDiscountPercentage,textAreaMaximumDiscount" />
+
+            <!-- Discount Maximum (Discount type : Percentage) -->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaMaximumDiscount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textAreaDiscountPercentage"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/max_discount"
+                app:text_area_label_static="true"
+                app:text_area_message="@string/error_message_maximum_price" />
+
+            <!-- Group Minimum Purchase -->
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgMinimumPurchase"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/minimum_purchase_type"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textAreaDiscountAmount"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipMinimumPurchaseNominal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                android:visibility="gone"
+                app:chipText="@string/nominal"
+                app:chipType="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tpgMinimumPurchase" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipMinimumPurchaseQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/quantity"
+                android:visibility="gone"
+                app:chipType="normal"
+                app:layout_constraintStart_toEndOf="@id/chipMinimumPurchaseNominal"
+                app:layout_constraintTop_toBottomOf="@id/tpgMinimumPurchase" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipMinimumPurchaseNothing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/nothing"
+                app:chipType="normal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/chipMinimumPurchaseQuantity"
+                app:layout_constraintTop_toBottomOf="@id/tpgMinimumPurchase" />
+
+            <!-- Minimal Purchase (Coupon Type: Cashback)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaMinimumPurchase"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/minimum_purchase"
+                app:text_area_message="@string/error_message_invalid_cashback_minimum_purchase_nominal" />
+
+            <!--Quota (Coupon Type: Cashback)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaQuota"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textAreaMinimumPurchase"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/quota" />
+
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaFreeShippingDiscountAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/shipping_cost_amount"
+                app:text_area_message="@string/error_message_minimum_discount"/>
+
+            <!-- Minimal Purchase (Coupon Type: Free Shipping)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaFreeShippingMinimumPurchase"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textAreaFreeShippingDiscountAmount"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/minimum_purchase"
+                app:text_area_message="@string/error_message_invalid_cashback_minimum_purchase_nominal" />
+
+            <!-- Quota (Coupon Type: Free Shipping)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaFreeShippingQuota"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textAreaFreeShippingMinimumPurchase"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/quota" />
+
+            <!--Max expense estimation-->
+            <RelativeLayout
+                android:id="@+id/layoutExpenseEstimation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+                android:padding="@dimen/unify_space_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/typography20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/maximum_expense_estimation"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_6" />
+
+                <ImageView
+                    android:id="@+id/imgExpenseEstimationDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_toEndOf="@id/typography20"
+                    android:contentDescription="@string/maximum_expense_estimation"
+                    android:src="@drawable/ic_info_outline" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/typography30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/typography20"
+                    android:layout_marginTop="@dimen/unify_space_2"
+                    android:text="@string/expense_description"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="body_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tpg_expense_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/typography20"
+                    android:layout_alignTop="@id/typography20"
+                    android:layout_alignBottom="@id/typography30"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/unify_space_2"
+                    android:gravity="center"
+                    android:text="@string/hyphen"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_5"
+                    tools:text="Rp 20.000" />
+
+
+            </RelativeLayout>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCashback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="tpgDiscountType,chipDiscountTypeNominal,chipDiscountTypePercentage,textAreaMinimumPurchase, textAreaQuota" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupFreeShipping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaFreeShippingQuota, textAreaFreeShippingDiscountAmount,textAreaFreeShippingMinimumPurchase" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCashbackMinimumPurchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaMinimumPurchase" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_above="@id/cardView" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingStart="@dimen/unify_space_16"
+        android:paddingTop="@dimen/unify_space_12"
+        android:paddingEnd="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:card_type="clear"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            app:unifyButtonSize="medium"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="@string/label_save"
+            android:enabled="false"
+            android:layout_height="wrap_content" />
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</RelativeLayout>
