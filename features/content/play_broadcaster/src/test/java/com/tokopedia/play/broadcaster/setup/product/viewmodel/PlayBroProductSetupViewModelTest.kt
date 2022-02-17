@@ -1,39 +1,26 @@
 package com.tokopedia.play.broadcaster.setup.product.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.assertType
-import com.tokopedia.play.broadcaster.util.isEqualTo
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
-
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 
 /**
  * Created By : Jonathan Darwin on February 17, 2022
@@ -41,9 +28,9 @@ import org.junit.jupiter.api.BeforeEach
 internal class PlayBroProductSetupViewModelTest {
 
     @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    private val testDispatcher = rule.dispatchers
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
     /** Mock Response */
@@ -61,17 +48,6 @@ internal class PlayBroProductSetupViewModelTest {
     }
     private val mockProductCount = mockProductTagSection.sumOf { it.products.size }
 
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
     /** Campaign & Etalase */
     @Test
     fun `when user firstly create viewmodel, it will emit uiState with campaign and etalase list`() {
@@ -79,24 +55,22 @@ internal class PlayBroProductSetupViewModelTest {
         coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
         coEvery { mockRepo.getCampaignList() } returns mockCampaignList
 
-        runBlockingTest {
-            val robot = PlayBroProductSetupViewModelRobot(
-                dispatchers = testDispatcher,
-                channelRepo = mockRepo
-            )
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
 
-            println("state : ${robot.getViewModel().uiState}")
-
-            val campaignAndEtalase = robot.getViewModel().uiState.value.campaignAndEtalase
+        robot.use {
+            val state = it.recordState {  }
+            val campaignAndEtalase = state.campaignAndEtalase
             campaignAndEtalase.etalaseList.assertEqualTo(mockEtalaseList)
             campaignAndEtalase.campaignList.assertEqualTo(mockCampaignList)
         }
-
     }
 
     @Test
     fun `when user set sorting, it will emit uiState with new loadParam`() {
-        val mockSort = ProductSetupAction.SetSort(SortUiModel(1, "Terbaru"))
+        val mockSort = SortUiModel(1, "Terbaru")
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
@@ -105,10 +79,8 @@ internal class PlayBroProductSetupViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(mockSort)
+                robot.submitAction(ProductSetupAction.SetSort(mockSort))
             }
-
-            println("state : $state")
 
             assertEquals(state.loadParam.sort, mockSort)
         }
