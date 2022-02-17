@@ -420,7 +420,7 @@ class CentralizedPromoViewModelTest {
                 "MVProductEntryPoint",
                 ""
             )
-        } returns "ON"
+        } returns "MVProductEntryPoint"
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -459,7 +459,7 @@ class CentralizedPromoViewModelTest {
                 "MVProductEntryPoint",
                 ""
             )
-        } returns "ON"
+        } returns "MVProductEntryPoint"
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)

@@ -44,7 +44,7 @@ class CentralizedPromoViewModel @Inject constructor(
         private const val BROADCAST_CHAT_PROMO_TYPE = 2
 
         private const val MVC_PRODUCT_ROLLENCE_KEY = "MVProductEntryPoint"
-        private const val MVC_PRODUCT_VARIANT_ON = "ON"
+        private const val MVC_PRODUCT_VARIANT_ON = "MVProductEntryPoint"
     }
 
     val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =

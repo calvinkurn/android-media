@@ -29,7 +29,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         private const val EXTRA_FEATURE_ACCESS = "extra_feature_access"
 
         private const val MVC_PRODUCT_ROLLENCE_KEY = "MVProductEntryPoint"
-        private const val MVC_PRODUCT_VARIANT_ON = "ON"
+        private const val MVC_PRODUCT_VARIANT_ON = "MVProductEntryPoint"
 
         fun createInstance(access: ProductManageAccess): ProductManageBottomSheet {
             return ProductManageBottomSheet().apply {
