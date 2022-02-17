@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.DateFilterAdapterFactory
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import kotlinx.parcelize.Parcelize
@@ -41,9 +42,10 @@ sealed class DateFilterItem(
         when (type) {
             TYPE_TODAY -> {
                 val startDateMillis = startDate?.time ?: return ""
-                val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
+                val dateStr = DateTimeUtil.format(startDateMillis, DateTimeUtil.FORMAT_DD_MMM)
                 val hourStr = DateTimeUtil.format(
-                    System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00"
+                    System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(ShcConst.INT_1.toLong())),
+                    DateTimeUtil.FORMAT_HOUR_24
                 )
                 return context.getString(R.string.shc_today_fmt, dateStr, hourStr)
             }
@@ -61,7 +63,9 @@ sealed class DateFilterItem(
             }
             TYPE_PER_DAY -> {
                 val startDateMillis = startDate?.time ?: return ""
-                val perDayFmt = DateTimeUtil.format(startDateMillis, "dd MMM yyyy")
+                val perDayFmt = DateTimeUtil.format(
+                    startDateMillis, DateTimeUtil.FORMAT_DD_MMM_YYYY
+                )
                 return context.getString(R.string.shc_per_day_fmt, perDayFmt)
             }
             TYPE_PER_WEEK -> {
@@ -72,7 +76,7 @@ sealed class DateFilterItem(
             }
             TYPE_PER_MONTH -> {
                 startDate?.let {
-                    val monthFmt = DateTimeUtil.format(it.time, "MMMM yyyy")
+                    val monthFmt = DateTimeUtil.format(it.time, DateTimeUtil.FORMAT_MMMM_YYYY)
                     return context.getString(R.string.shc_per_month_fmt, monthFmt)
                 }
                 return context.getString(R.string.shc_per_month)

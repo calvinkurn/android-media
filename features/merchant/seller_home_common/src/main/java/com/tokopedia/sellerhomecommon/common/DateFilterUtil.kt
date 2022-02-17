@@ -19,6 +19,7 @@ object DateFilterUtil {
     private const val PATTERN_MONTH_MMM = "MMM"
     private const val PATTERN_MONTH_MMMM = "MMMM"
     private const val PATTERN_YEAR = "yyyy"
+    private const val PATTERN_HOURS_24 = "HH:00"
 
     fun getDateRangeStr(startDate: Date, endDate: Date): String {
         val startMonth = DateTimeUtil.format(startDate.time, PATTERN_MONTH_MM)
@@ -29,7 +30,7 @@ object DateFilterUtil {
         if (areStartAndEndDateSame(startDate, endDate)) {
             val hourStr = DateTimeUtil.format(
                 System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)),
-                "HH:00"
+                PATTERN_HOURS_24
             )
             val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - $hourStr)"
             return DateTimeUtil.format(startDate.time, pattern = singleDayPattern)

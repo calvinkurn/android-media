@@ -149,7 +149,7 @@ class MonthPickerViewHolder(
 
     private fun showSelectedMonth(element: DateFilterItem.MonthPickerItem) {
         binding.edtStcPerMonth.label = itemView.context.getString(R.string.shc_month)
-        val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, "MMMM yyyy")
+        val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, DateTimeUtil.FORMAT_MMMM_YYYY)
         binding.edtStcPerMonth.valueStr = selectedMonthFmt
     }
 }

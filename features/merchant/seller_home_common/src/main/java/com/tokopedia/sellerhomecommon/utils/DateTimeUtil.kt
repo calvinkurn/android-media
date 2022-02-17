@@ -13,9 +13,12 @@ import java.util.concurrent.TimeUnit
 object DateTimeUtil {
 
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
+    const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
+    const val FORMAT_MMMM_YYYY = "MMMM yyyy"
     const val FORMAT_DD_MMM = "dd MMM"
     const val FORMAT_DD = "dd"
     const val FORMAT_MMM = "MMM"
+    const val FORMAT_HOUR_24 = "HH:00"
     private const val DEFAULT_TIME_MILLIS = 0L
 
     fun getLocale(): Locale {

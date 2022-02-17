@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetItemBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -19,10 +20,6 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 class CalendarEventAdapter(
     private val onItemClick: (CalendarEventUiModel) -> Unit
 ) : RecyclerView.Adapter<CalendarEventAdapter.ViewHolder>() {
-
-    companion object {
-        private const val ONE = 1
-    }
 
     private var items = listOf<CalendarEventUiModel>()
 
@@ -58,7 +55,7 @@ class CalendarEventAdapter(
                 tvShcCalendarEventTitle.text = item.eventName
                 tvShcCalendarEventDesc.text = item.description
 
-                if (adapterPosition < items.size.minus(ONE)) {
+                if (adapterPosition < items.size.minus(ShcConst.INT_1)) {
                     horLineShcCalendarEvent.visible()
                 } else {
                     horLineShcCalendarEvent.invisible()

@@ -128,6 +128,8 @@ class DateFilterPickViewHolder(
         } else {
             root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
         }
-        verLineShcCustom.setMargin(0, lineMarginTop.toInt(), 0, 0)
+        verLineShcCustom.setMargin(
+            ShcConst.INT_0, lineMarginTop.toInt(), ShcConst.INT_0, ShcConst.INT_0
+        )
     }
 }
