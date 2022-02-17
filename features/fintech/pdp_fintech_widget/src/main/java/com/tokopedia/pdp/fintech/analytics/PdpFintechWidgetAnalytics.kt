@@ -15,51 +15,14 @@ class PdpFintechWidgetAnalytics @Inject constructor(
 
     fun sendAnalyticsEvent(analyticsEvent: FintechWidgetAnalyticsEvent) {
         when (analyticsEvent) {
-            is FintechWidgetAnalyticsEvent.PdpWidgetImression ->
+            is FintechWidgetAnalyticsEvent.PdpWidgetImpression ->
                 sendPdpWidgetImpression(
                     analyticsEvent.partnerId,
                     analyticsEvent.productId, analyticsEvent.userStatus
                 )
-
-            is FintechWidgetAnalyticsEvent.PdpWidgetEligibleImression ->
-                sendEligibleWidgetImpression(
-                    analyticsEvent.partnerId, analyticsEvent.productId,
-                    analyticsEvent.userStatus
-                )
-
-            is FintechWidgetAnalyticsEvent.PdpWidgetScrollImpression ->
-                sendScrollWidgetDetail(
-                    analyticsEvent.partnerId, analyticsEvent.productId,
-                    analyticsEvent.userStatus
-                )
         }
     }
 
-    private fun sendScrollWidgetDetail(partnerId: String, productId: String, userStatus: String) {
-        val map = TrackAppUtils.gtmData(
-            clickEvent,
-            eventCategory,
-            pdpWidgetScrollEvent,
-            "$eventLable- $productId - $userStatus -$partnerId"
-
-        )
-        sendGeneralEvent(map)
-    }
-
-    private fun sendEligibleWidgetImpression(
-        partnerId: String,
-        productId: String,
-        userStatus: String
-    ) {
-        val map = TrackAppUtils.gtmData(
-            viewEvent,
-            eventCategory,
-            pdpBnplImpressionEligible,
-            "$eventLable- $productId - $userStatus -$partnerId"
-
-        )
-        sendGeneralEvent(map)
-    }
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
         map[KEY_USER_ID] = userSession.get().userId

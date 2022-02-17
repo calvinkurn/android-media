@@ -8,6 +8,5 @@ interface WidgetClickListner {
     fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand: String,
                       widgetBottomsheet: WidgetBottomsheet,gateWayID: Int,userStatus: String)
 
-    fun viewInflatedWidget(chipData: ChipsData)
 
 }

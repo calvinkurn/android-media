@@ -88,26 +88,10 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
 
     private fun setListener() {
         proceedButton.setOnClickListener {
-          //  sendCLickAnalytic()
            openRouteView(webUrl)
         }
     }
 
-//    private fun sendCLickAnalytic() {
-//        activationBottomSheetDetail?.userStatus?.let { userStatus ->
-//            activationBottomSheetDetail?.gatewayCode?.let { gatewayCode ->
-//                webUrl?.let { redirectionUrl->
-//                    activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText?.let { ctaWording->
-//                        ContentWidgetTracking.fintechActivationClickBottomSheet(userStatus,gatewayCode,userSession.userId,
-//                            redirectionUrl,
-//                            ctaWording
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//
-//    }
 
     private fun openRouteView(androidUrl: String?) {
 

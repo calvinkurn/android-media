@@ -20,7 +20,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name="com.tokopedia.pdpsimulation.activateCheckout.presentation.activity.OptimizedCheckoutActivity"
             android:screenOrientation="portrait"

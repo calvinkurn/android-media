@@ -2,11 +2,9 @@ package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -138,17 +136,6 @@ class PdpFintechWidget @JvmOverloads constructor(
 
             }
 
-            override fun viewInflatedWidget(chipData: ChipsData) {
-                chipData.userStatus?.let { userStatus ->
-                    chipData.productCode?.let { productCode->
-                        FintechWidgetAnalyticsEvent.PdpWidgetScrollImpression(productID,
-                            userStatus, productCode
-                        )
-                    }
-                }
-            }
-
-
         })
         recyclerView.adapter = fintechWidgetAdapter
     }
@@ -249,27 +236,13 @@ class PdpFintechWidget @JvmOverloads constructor(
         for(i in 0 until chipList.size) {
             chipList[i].userStatus?.let { userStatus->
                 chipList[i].productCode?.let { partnerName->
-                    pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImression(productID, userStatus,
+                    pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImpression(productID, userStatus,
                         partnerName
                     ))
                 }
             }
         }
 
-        for(i in 0 until chipList.size) {
-            chipList[i].userStatus?.let { userStatus->
-                chipList[i].productCode?.let { partnerName->
-                    if(chipList[i].userStatus.equals("ELIGIBLE")) {
-                        pdpWidgetAnalytics.get().sendAnalyticsEvent(
-                            FintechWidgetAnalyticsEvent.PdpWidgetEligibleImression(
-                                productID, userStatus,
-                                partnerName
-                            )
-                        )
-                    }
-                }
-            }
-        }
     }
 
     fun updateIdToPriceMap(

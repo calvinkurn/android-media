@@ -18,8 +18,6 @@ import com.tokopedia.utils.resources.isDarkMode
 class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) :
     RecyclerView.Adapter<MyViewHolder>() {
 
-    var inflatedWidgetPosition:HashSet<Int> = HashSet()
-
     private var chipsData: ArrayList<ChipsData> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -27,16 +25,6 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.fintech_invidual_whole_chip, parent, false)
         )
-    }
-
-    override fun onViewAttachedToWindow(holder: MyViewHolder) {
-
-
-       if( (holder.adapterPosition != RecyclerView.NO_POSITION) && (inflatedWidgetPosition.add(holder.adapterPosition )) )
-       {
-            widgetClickListner.viewInflatedWidget(chipsData[holder.adapterPosition])
-       }
-        super.onViewAttachedToWindow(holder)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
