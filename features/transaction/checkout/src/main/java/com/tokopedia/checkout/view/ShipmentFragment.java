@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -100,6 +101,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
@@ -813,6 +815,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentTracePerformance.stopTrace();
             isShipmentTraceStopped = true;
         }
+    }
+
+    @Override
+    public void stopEmbraceTrace() {
+        Map<String, Object> emptyMap = new HashMap<>();
+        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY, null, emptyMap);
     }
 
     @Override

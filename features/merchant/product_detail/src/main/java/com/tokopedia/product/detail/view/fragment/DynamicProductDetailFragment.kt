@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -42,6 +43,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
@@ -176,6 +178,7 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -1708,6 +1711,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
+            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
             hideProgressDialog()
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
@@ -2856,6 +2860,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun addToCartClick(buttonText: String) {
+        EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
         viewModel.buttonActionText = buttonText
         viewModel.getDynamicProductInfoP1?.let {
             doAtc(ProductDetailCommonConstant.ATC_BUTTON)
