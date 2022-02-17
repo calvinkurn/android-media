@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gifting.di.DaggerGiftingComponent
 import com.tokopedia.gifting.presentation.viewmodel.GiftingViewModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.BottomsheetGiftingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -18,11 +21,13 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
     @Inject
     lateinit var viewModel: GiftingViewModel
     private var binding by autoClearedNullable<BottomsheetGiftingBinding>()
-    private val titleAddOn by lazy { binding?.titleAddOn }
-    private val priceAddOn by lazy { binding?.priceAddOn }
-    private val textShopName by lazy { binding?.textShopName }
-    private val textShopLocation by lazy { binding?.textShopLocation }
-    private val iconShop by lazy { binding?.iconShop }
+    private val titleAddOn by lazy { binding?.layoutContent?.titleAddOn }
+    private val priceAddOn by lazy { binding?.layoutContent?.priceAddOn }
+    private val textShopName by lazy { binding?.layoutContent?.textShopName }
+    private val textShopLocation by lazy { binding?.layoutContent?.textShopLocation }
+    private val iconShop by lazy { binding?.layoutContent?.iconShop }
+    private val layoutContent by lazy { binding?.layoutContent?.root }
+    private val layoutShimmer by lazy { binding?.layoutShimmer?.root }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         clearContentPadding = true
@@ -37,12 +42,22 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
         setTitle(getString(R.string.gifting_title_bottomsheet))
         setTextShopLocationAction()
         initInjector()
+        setPageLoading(true)
+        bottomSheetHeader.postDelayed({
+            setPageLoading(false)
+        }, 5000)
         viewModel.dummy()
+    }
+
+    private fun setPageLoading(isLoading: Boolean) {
+        layoutContent?.isVisible = !isLoading
+        layoutShimmer?.isVisible = isLoading
+        bottomSheetHeader.isVisible = !isLoading
     }
 
     private fun setTextShopLocationAction() {
         textShopLocation?.setOnClickListener {
-            //TODO: redirect to location page in webview
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/help"))
         }
     }
 
