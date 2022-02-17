@@ -126,9 +126,8 @@ class TopAdsAssertion(val context: Context,
 
             val component = if (it.componentName.isEmpty()) it.sourceName else it.componentName
 
-            val list = this.filter { list -> list.eventStatus != "Match" }
             Assert.assertEquals(
-                    "Component $component ${list.size} ${list.forEach { data -> data.eventType }}",
+                    "Component $component",
                     STATUS_MATCH, it.eventStatus)
         }
     }
