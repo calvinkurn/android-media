@@ -17,9 +17,7 @@ import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.di.RecommendationModule
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
@@ -29,7 +27,7 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module (includes = [RecommendationModule::class, AffiliateCommonModule::class, PlayWidgetModule::class])
+@Module (includes = [RecommendationCoroutineModule::class, AffiliateCommonModule::class, PlayWidgetModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope
@@ -53,13 +51,6 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
-
-    @ProductDetailScope
-    @Provides
-    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository): GetRecommendationFilterChips {
-        val graphqlUseCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
-        return GetRecommendationFilterChips(graphqlUseCase)
-    }
 
     @ProductDetailScope
     @Provides
