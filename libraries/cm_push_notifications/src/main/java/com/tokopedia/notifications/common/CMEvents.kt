@@ -8,6 +8,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.notifications.model.PayloadExtra
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import timber.log.Timber
@@ -134,21 +135,7 @@ object IrisAnalyticsEvents {
             values[IS_SILENT] = false
         }
         values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
-
-        baseNotificationModel.payloadExtra?.let {
-            it.campaignName?.let {cmpName ->
-                values[CAMPAIGN_NAME] = cmpName
-            }
-
-            it.journeyId?.let {journeyId ->
-                values[JOURNEY_ID] = journeyId
-            }
-
-            it.journeyName?.let { journeyName ->
-                values[JOURNEY_NAME] = journeyName
-            }
-        }
-
+        addTrackingExtras(eventName, baseNotificationModel.payloadExtra, values)
         return values
 
     }
@@ -238,7 +225,16 @@ object IrisAnalyticsEvents {
         values[INAPP_TYPE] = cmInApp.type.let { cmInApp.type } ?: ""
         values[EVENT_MESSAGE_ID] = cmInApp.campaignUserToken?.let { it } ?: ""
 
-        cmInApp.payloadExtra?.let {
+        addTrackingExtras(eventName, cmInApp.payloadExtra, values)
+        return values
+
+    }
+
+
+    private fun addTrackingExtras(eventName: String,
+                                  payloadExtra: PayloadExtra?,
+                                  values: HashMap<String, Any>){
+        payloadExtra?.let {
             it.campaignName?.let {cmpName ->
                 values[CAMPAIGN_NAME] = cmpName
             }
@@ -251,9 +247,6 @@ object IrisAnalyticsEvents {
                 values[JOURNEY_NAME] = journeyName
             }
         }
-
-        return values
-
     }
 
     private fun checkEventAndAddShopId(
