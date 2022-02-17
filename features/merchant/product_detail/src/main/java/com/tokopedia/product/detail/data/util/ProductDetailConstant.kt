@@ -24,6 +24,8 @@ object ProductDetailConstant {
     const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
     const val PDP_RESULT_TRACE = "pdp_result_trace"
 
+    const val KEY_EMBRACE_MOMENT_ADD_TO_CART = "act_add_to_cart"
+
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
     const val PAYLOAD_TRADEIN_AND_BOE = 421321

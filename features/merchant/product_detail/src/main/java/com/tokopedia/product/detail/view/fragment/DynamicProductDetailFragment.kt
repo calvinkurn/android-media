@@ -42,6 +42,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
@@ -207,6 +208,7 @@ import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
+import io.embrace.android.embracesdk.Embrace
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -1708,6 +1710,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
+            Embrace.getInstance().endEvent(ProductDetailConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
             hideProgressDialog()
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
@@ -2856,6 +2859,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun addToCartClick(buttonText: String) {
+        Embrace.getInstance().startEvent(ProductDetailConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART, null, false)
         viewModel.buttonActionText = buttonText
         viewModel.getDynamicProductInfoP1?.let {
             doAtc(ProductDetailCommonConstant.ATC_BUTTON)
