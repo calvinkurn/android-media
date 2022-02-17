@@ -35,19 +35,13 @@ class CatalogProductComparisonViewModel @Inject constructor(
             removeShimmer()
             when(result){
                 is Success -> {
-                    when {
-                        result.data.catalogComparisonList == null -> {
-                            hasMoreItems.value = false
-                        }
-                        result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty() -> {
-                            dataList.value = masterDataList
-                            hasMoreItems.value = false
-                        }
-                        else -> {
-                            addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
-                            dataList.value = masterDataList
-                            hasMoreItems.value = true
-                        }
+                    if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
+                        dataList.value = masterDataList
+                        hasMoreItems.value = false
+                    }else {
+                        addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
+                        dataList.value = masterDataList
+                        hasMoreItems.value = true
                     }
                 }
 
