@@ -95,7 +95,7 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiMode
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
-import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
@@ -158,7 +158,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         InterfaceShopPageClickScrollToTop,
         ShopHomePlayWidgetListener,
         MultipleProductBundleListener,
-        SingleProductBundleClickListener {
+        SingleProductBundleListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -278,7 +278,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeShowcaseListWidgetListener = this,
                 this,
                 multipleProductBundleListener = this,
-                singleProductBundleClickListener = this
+                singleProductBundleListener = this
         )
     }
 
@@ -1365,6 +1365,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bundleId = selectedSingleBundle.bundleId.toString(),
                 bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
                 selectedPackage = selectedSingleBundle.minOrderWording
+        )
+    }
+
+    override fun impressionProductBundleSingle(
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            selectedProduct: ShopHomeBundleProductUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    ) {
+        shopPageHomeTracking.impressionSingleBundleWidget(
+                shopId = shopId,
+                userId = userId,
+                productId = selectedProduct.productId.toString(),
+                bundleId = selectedSingleBundle.bundleId.toString(),
+                bundleName = bundleName,
+                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
+                bundlePrice = selectedSingleBundle.displayPriceRaw,
+                bundlePosition = bundlePosition
         )
     }
 

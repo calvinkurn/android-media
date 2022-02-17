@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
-import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,7 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeProductBundleParentWidgetViewHolder (
         itemView: View,
         private val multipleProductBundleListener: MultipleProductBundleListener,
-        private val singleProductBundleClickListener: SingleProductBundleClickListener
+        private val singleProductBundleListener: SingleProductBundleListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
     companion object {
@@ -63,7 +63,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
     private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: ShopHomeProductBundleListUiModel) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
                 multipleProductBundleListener,
-                singleProductBundleClickListener,
+                singleProductBundleListener,
                 bundleListSize,
                 bundleLayout.widgetId,
                 bundleLayout.widgetMasterId,

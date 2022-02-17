@@ -7,12 +7,12 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultipleViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSingleViewHolder
-import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 
 class ShopHomeProductBundleWidgetAdapter(
         private val multipleProductBundleListener: MultipleProductBundleListener,
-        private val singleProductBundleClickListener: SingleProductBundleClickListener,
+        private val singleProductBundleListener: SingleProductBundleListener,
         private val bundleListSize: Int,
         private val widgetId: String,
         private val widgetMasterId: String,
@@ -38,7 +38,7 @@ class ShopHomeProductBundleWidgetAdapter(
         return if (viewType == ShopHomeProductBundleSingleViewHolder.LAYOUT) {
             ShopHomeProductBundleSingleViewHolder(
                     View.inflate(parent.context, viewType, null),
-                    singleProductBundleClickListener,
+                    singleProductBundleListener,
                     bundleListSize,
                     widgetLayout
             )

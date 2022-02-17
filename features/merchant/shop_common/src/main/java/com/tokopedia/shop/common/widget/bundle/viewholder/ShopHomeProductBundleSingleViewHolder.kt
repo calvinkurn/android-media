@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
@@ -27,7 +28,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleSingleViewHolder(
         itemView: View,
-        private val singleProductBundleClickListener: SingleProductBundleClickListener,
+        private val singleProductBundleListener: SingleProductBundleListener,
         private val bundleListSize: Int,
         private val widgetLayout: ShopHomeWidgetLayout
 ): RecyclerView.ViewHolder(itemView), SingleBundleVariantSelectedListener {
@@ -73,7 +74,7 @@ class ShopHomeProductBundleSingleViewHolder(
     override fun onSingleVariantSelected(selectedBundle: ShopHomeProductBundleDetailUiModel) {
         selectedSingleBundle = selectedBundle
         renderBundlePriceDetails(selectedBundle)
-        singleProductBundleClickListener.onTrackSingleVariantChange(
+        singleProductBundleListener.onTrackSingleVariantChange(
                 singleBundleProduct,
                 selectedSingleBundle,
                 parentSingleBundle.bundleName
@@ -100,7 +101,7 @@ class ShopHomeProductBundleSingleViewHolder(
         // single bundle product detail
         imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
         imageBundleProduct?.setOnClickListener {
-            singleProductBundleClickListener.onSingleBundleProductClicked(
+            singleProductBundleListener.onSingleBundleProductClicked(
                     singleBundleProduct,
                     selectedSingleBundle,
                     parentSingleBundle.bundleName,
@@ -109,7 +110,7 @@ class ShopHomeProductBundleSingleViewHolder(
         }
         typographyBundleProductName?.text = singleBundleProduct.productName
         typographyBundleProductName?.setOnClickListener {
-            singleProductBundleClickListener.onSingleBundleProductClicked(
+            singleProductBundleListener.onSingleBundleProductClicked(
                     singleBundleProduct,
                     selectedSingleBundle,
                     parentSingleBundle.bundleName,
@@ -121,8 +122,17 @@ class ShopHomeProductBundleSingleViewHolder(
         (rvBundleDetails?.adapter as ShopHomeProductBundleSingleAdapter).updateDataSet(parentSingleBundle.bundleDetails)
 
         // bind listeners
+        itemView.addOnImpressionListener(bundle) {
+            singleProductBundleListener.impressionProductBundleSingle(
+                    selectedSingleBundle,
+                    singleBundleProduct,
+                    bundle.bundleName,
+                    adapterPosition
+            )
+        }
+
         buttonAtc?.setOnClickListener {
-            singleProductBundleClickListener.addSingleBundleToCart(
+            singleProductBundleListener.addSingleBundleToCart(
                     selectedSingleBundle,
                     bundleListSize,
                     singleBundleProduct,
@@ -165,7 +175,7 @@ class ShopHomeProductBundleSingleViewHolder(
 
 }
 
-interface SingleProductBundleClickListener {
+interface SingleProductBundleListener {
     fun onSingleBundleProductClicked(
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
@@ -183,5 +193,11 @@ interface SingleProductBundleClickListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+    )
+    fun impressionProductBundleSingle(
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            selectedProduct: ShopHomeBundleProductUiModel,
+            bundleName: String,
+            bundlePosition: Int,
     )
 }
