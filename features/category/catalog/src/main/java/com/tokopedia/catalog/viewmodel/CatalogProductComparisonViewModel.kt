@@ -2,6 +2,7 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
@@ -30,7 +31,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : Int, name : String) {
         addShimmer(page)
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page.toString(),name)
             removeShimmer()

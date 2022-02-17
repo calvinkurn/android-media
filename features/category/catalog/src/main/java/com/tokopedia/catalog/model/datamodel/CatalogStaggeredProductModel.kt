@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 
-class CatalogStaggeredProductModel(val name : String = "", val type : String = "",
+data class CatalogStaggeredProductModel(val name : String = "", val type : String = "",
                                    val comparisonItem : CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison)
     : BaseCatalogDataModel {
 
