@@ -86,6 +86,7 @@ interface MultipleProductBundleClickListener {
     )
     fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
     )

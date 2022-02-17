@@ -115,6 +115,7 @@ class ShopHomeProductBundleSingleViewHolder(
         buttonAtc?.setOnClickListener {
             singleProductBundleClickListener.addSingleBundleToCart(
                     selectedSingleBundle,
+                    bundleListSize,
                     singleBundleProduct,
                     bundle.bundleName,
             )
@@ -163,6 +164,7 @@ interface SingleProductBundleClickListener {
     )
     fun addSingleBundleToCart(
             selectedBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
     )

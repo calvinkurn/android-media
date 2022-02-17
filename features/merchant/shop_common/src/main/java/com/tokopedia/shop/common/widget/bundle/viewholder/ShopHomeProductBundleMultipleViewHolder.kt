@@ -91,6 +91,7 @@ class ShopHomeProductBundleMultipleViewHolder(
             // add to cart bundle
             multipleProductBundleClickListener.addMultipleBundleToCart(
                     multipleBundleItem,
+                    bundleListSize,
                     bundle.bundleProducts,
                     bundle.bundleName
             )

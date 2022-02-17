@@ -39,6 +39,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -181,6 +182,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
+        private const val MIN_BUNDLE_SIZE = 1
 
         fun createInstance(
                 shopId: String,
@@ -1359,6 +1361,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String
     ) {
@@ -1376,7 +1379,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         userId = userId,
                         bundleId = selectedMultipleBundle.bundleId.toString(),
                         productDetails = productDetails,
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         bundleQuantity = selectedMultipleBundle.minOrder
                 )
@@ -1393,6 +1396,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun addSingleBundleToCart(
             selectedBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String
     ) {
@@ -1410,7 +1414,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         userId = userId,
                         bundleId = selectedBundle.bundleId.toString(),
                         productDetails = listOf(bundleProducts),
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         bundleQuantity = selectedBundle.minOrder
                 )
@@ -1427,7 +1431,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    private fun handleOnFinishAtcBundle(atcBundleModel: AddToCartBundleModel) {
+    private fun handleOnFinishAtcBundle(atcBundleModel: AddToCartBundleModel, bundleListSize: Int) {
         atcBundleModel.validateResponse(
                 onSuccess = {
                     showToastSuccess(
@@ -1438,7 +1442,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                 },
                 onFailedWithMessages = {
-                    showErrorToast(it.firstOrNull().orEmpty())
+                    val errorDialogCtaText: String
+                    val errorMessageDescription = if (bundleListSize > MIN_BUNDLE_SIZE) {
+                        errorDialogCtaText = getString(R.string.shop_page_product_bundle_failed_oos_cta_text_with_alt)
+                        getString(R.string.shop_page_product_bundle_failed_oos_dialog_desc_with_alt)
+                    } else {
+                        errorDialogCtaText = getString(R.string.shop_page_product_bundle_failed_oos_cta_text)
+                        getString(R.string.shop_page_product_bundle_failed_oos_dialog_desc_no_alt)
+                    }
+                    showErrorDialogAtcBundle(
+                            errorTitle = getString(R.string.shop_page_product_bundle_failed_oos_dialog_title),
+                            errorDescription = errorMessageDescription,
+                            ctaText = errorDialogCtaText
+                    )
                 },
                 onFailedWithException = {
                     showErrorToast(it.message.orEmpty())
@@ -1463,6 +1479,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         context?.let {
             val bspIntent = RouteManager.getIntent(it, bundleAppLinkWithParams)
             startActivity(bspIntent)
+        }
+    }
+
+    private fun showErrorDialogAtcBundle(
+            errorTitle: String,
+            errorDescription: String,
+            ctaText: String
+    ) {
+        context?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(errorTitle)
+                setDescription(errorDescription)
+                setPrimaryCTAText(ctaText)
+                setPrimaryCTAClickListener {
+                    loadInitialDataAfterOnViewCreated()
+                }
+            }.show()
         }
     }
 
