@@ -41,7 +41,6 @@ class ReminderWidgetViewHolder(
     override fun bind(element: ReminderWidgetModel) {
         if (!disableNetwork) {
             performanceMonitoring?.startTrace(performanceTraceName)
-            Embrace.getInstance().startEvent(performanceTraceName, null, false)
         }
         initView(element, itemView)
     }
@@ -57,7 +56,6 @@ class ReminderWidgetViewHolder(
                 if (!disableNetwork){
                     reminderWidgetListener?.getReminderWidgetData(element)
                     performanceMonitoring?.stopTrace()
-                    Embrace.getInstance().endEvent(performanceTraceName)
                 }
                 performanceMonitoring = null
             } else {
@@ -103,7 +101,6 @@ class ReminderWidgetViewHolder(
                 }
                 if (!disableNetwork) {
                     performanceMonitoring?.stopTrace()
-                    Embrace.getInstance().endEvent(performanceTraceName)
                 }
                 performanceMonitoring = null
             }

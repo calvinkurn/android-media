@@ -103,22 +103,18 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P1_TRACE)
     }
 
     fun stopMonitoringP2Data() {
         performanceMonitoringP2Data?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_DATA_TRACE)
     }
 
     fun stopMonitoringP2Other() {
         performanceMonitoringP2Other?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE)
     }
 
     fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
     }
 
     fun startMonitoringPltNetworkRequest() {
@@ -310,17 +306,13 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P1_TRACE, null, false)
 
         performanceMonitoringP2Data = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_DATA_TRACE)
-        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_DATA_TRACE, null, false)
 
         performanceMonitoringP2Other = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_OTHER_TRACE)
-        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE, null, false)
 
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE, null, false)
         }
     }
 

@@ -78,7 +78,6 @@ class PopularKeywordViewHolder (val view: View,
 
     override fun bind(element: PopularKeywordListDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
-        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
 
         initStub(element)
@@ -110,7 +109,6 @@ class PopularKeywordViewHolder (val view: View,
         else recyclerView.visible()
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
-        Embrace.getInstance().endEvent(performanceTraceName)
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {

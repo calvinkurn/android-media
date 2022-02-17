@@ -33,8 +33,6 @@ const val FPM_SEE_ALL_CARD_BACKGROUND = "home_see_all_card_background_image"
 const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
-val EXCLUDED_EMBRACE_FPM = arrayListOf(com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER)
-
 fun ImageView.loadGif(url: String) = loadAsGif(url)
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null){
@@ -118,9 +116,6 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
 
     if (fpmItemLabel.isNotEmpty()) {
-        if (!EXCLUDED_EMBRACE_FPM.contains(fpmItemLabel)) {
-            Embrace.getInstance().startEvent(fpmItemLabel, null, false)
-        }
         performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
     }
@@ -133,8 +128,5 @@ fun handleOnResourceReady(dataSource: MediaDataSource?,
                           fpmItemLabel: String) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
-        if (!EXCLUDED_EMBRACE_FPM.contains(fpmItemLabel)) {
-            Embrace.getInstance().endEvent(fpmItemLabel)
-        }
     }
 }

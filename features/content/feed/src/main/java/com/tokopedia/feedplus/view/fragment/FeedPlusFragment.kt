@@ -356,7 +356,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
-        Embrace.getInstance().startEvent(FEED_TRACE, null, false)
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -2892,7 +2891,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun stopTracePerformanceMon() {
         performanceMonitoring.stopTrace()
-        Embrace.getInstance().endEvent(FEED_TRACE)
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
