@@ -172,19 +172,49 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.limit,
                 pdpSimulationEvent.variant
             )
-            is PdpSimulationEvent.OccChangeVariantClicked -> sendOccChangeVariantImpression(
-                pdpSimulationEvent.emiAmount,
-                pdpSimulationEvent.limit,
+            is PdpSimulationEvent.OccChangeVariantClicked -> sendOccChangeVariantEvent (
+                pdpSimulationEvent.productId,
+                pdpSimulationEvent.userStatus,
                 pdpSimulationEvent.partnerName,
-                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.emiAmount,
                 pdpSimulationEvent.tenure,
-                pdpSimulationEvent.variant,
-                pdpSimulationEvent.userStatus
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.variantName,
             )
-            is PdpSimulationEvent.OccChangeVariantListener -> {}
+            is PdpSimulationEvent.OccChangePartnerClicked-> sendOccChangePartnerEvent(
+                pdpSimulationEvent.productId,
+                pdpSimulationEvent.userStatus,
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.emiAmount,
+                pdpSimulationEvent.tenure,
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.variantName,
+            )
 
             else -> {}
         }
+    }
+
+    private fun sendOccChangePartnerEvent(
+        productId: String,
+        userStatus: String,
+        partnerName: String,
+        emiAmount: String,
+        tenure: String,
+        quantity: String,
+        limit: String,
+        variantName: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            OCC_CHANGE_VARIANT_ACTION,
+            OCC_EVENT_CATEGORY,
+            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
+
+        )
+        sendGeneralEvent(map)
     }
 
     private fun sendOccChangePartnerCLickEvent(
@@ -205,20 +235,21 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
 
-    private fun sendOccChangeVariantImpression(
-        emiAmount: String,
-        limit: String,
+    private fun sendOccChangeVariantEvent(
+        productId: String,
+        userStatus: String,
         partnerName: String,
-        quantity: String,
+        emiAmount: String,
         tenure: String,
-        variant: String,
-        userStatus: String
+        quantity: String,
+        limit: String,
+        variantName: String
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_CHANGE_VARIANT_ACTION,
             OCC_EVENT_CATEGORY,
-            " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
+           " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)

@@ -89,7 +89,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     var isDisabled = false
     private var variantName = ""
     private var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
-    private var variantBottomSheetWatcher = false
 
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -194,8 +193,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                             productId,
                             payLaterActivationViewModel.price * quantity, gatewayCode
                         )
-                        if (variantBottomSheetWatcher)
-                            sendClickVariantAnalytic()
                     } catch (e: Exception) {
                         loaderhideOnCheckoutApi()
                         fullPageEmptyError()
@@ -214,9 +211,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    private fun sendClickVariantAnalytic() {
-
-    }
 
 
     private fun removeAllError() {
@@ -568,6 +562,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     )
                 }
 
+                sendChangePartnerClickEvent()
+
                 SelectGateWayBottomSheet.show(bundle, childFragmentManager).setOnDismissListener {
                     setTenureDetailData()
                 }
@@ -618,6 +614,31 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     }
 
+    private fun sendChangePartnerClickEvent() {
+        try {
+            gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
+                checkoutData.userAmount?.let { limit ->
+                    checkoutData.userState?.let { userState ->
+                        sendAnalyticEvent(
+                            PdpSimulationEvent.OccChangePartnerClicked(
+                                productId,userState,
+                                checkoutData.gateway_name,
+                                checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(), quantity.toString(),
+                                limit, variantName,
+                            )
+                        )
+                    }
+                }
+
+            }
+
+        } catch (e: Exception) {
+
+        }
+    }
+
+
     private fun sendVarintClickEvent() {
         try {
             gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
@@ -625,10 +646,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState?.let { userState ->
                         sendAnalyticEvent(
                             PdpSimulationEvent.OccChangeVariantClicked(
-                                checkoutData.gateway_name, quantity.toString(),
+                                productId,userState,
+                                checkoutData.gateway_name,
                                 checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                                limit, variantName, userState
+                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(), quantity.toString(),
+                                limit, variantName,
                             )
                         )
                     }
