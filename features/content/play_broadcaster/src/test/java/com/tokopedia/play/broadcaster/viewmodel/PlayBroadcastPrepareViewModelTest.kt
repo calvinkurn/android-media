@@ -15,17 +15,20 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,15 +58,12 @@ class PlayBroadcastPrepareViewModelTest {
     private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
-    private lateinit var getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase
 
     private lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
 
     private val modelBuilder = UiModelBuilder()
-
-    private val liveFollowerResponse = modelBuilder.buildGetLiveFollowers()
 
     @Before
     fun setUp() {
@@ -86,9 +86,6 @@ class PlayBroadcastPrepareViewModelTest {
         channelConfigStore.setChannelId("12345")
 
         createLiveStreamChannelUseCase = mockk(relaxed = true)
-        getLiveFollowersDataUseCase = mockk(relaxed = true)
-
-        coEvery { getLiveFollowersDataUseCase.executeOnBackground() } returns liveFollowerResponse
 
         viewModel = PlayBroadcastPrepareViewModel(
                 dispatcher = dispatcherProvider,
@@ -97,7 +94,6 @@ class PlayBroadcastPrepareViewModelTest {
                 userSession = userSession,
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
-                getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
                 mDataStore = dataStore,
                 playBroadcastMapper = playBroadcastMapper,
         )
@@ -189,51 +185,24 @@ class PlayBroadcastPrepareViewModelTest {
                 .isInstanceOf(NetworkResult.Success::class.java)
     }
 
+    /** Setup Title */
     @Test
-    fun `when get live followers failed, then it should return the mock follower`() {
-        coEvery { getLiveFollowersDataUseCase.executeOnBackground() } throws IllegalStateException()
-
+    fun `when user successfully upload title, it should emit network result success`() {
         viewModel = PlayBroadcastPrepareViewModel(
-                dispatcher = dispatcherProvider,
-                hydraConfigStore = mockHydraDataStore,
-                setupDataStore = mockBroadcastSetupDataStore,
-                userSession = userSession,
-                channelConfigStore = channelConfigStore,
-                createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
-                getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore,
-                playBroadcastMapper = playBroadcastMapper
+            dispatcher = dispatcherProvider,
+            hydraConfigStore = mockHydraDataStore,
+            setupDataStore = mockBroadcastSetupDataStore,
+            userSession = userSession,
+            channelConfigStore = channelConfigStore,
+            createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
+            mDataStore = dataStore,
+            playBroadcastMapper = playBroadcastMapper
         )
 
-        val result = viewModel.observableFollowers.getOrAwaitValue()
+        viewModel.uploadTitle("Test Title")
 
-        Assertions
-                .assertThat(result.totalFollowers)
-                .isEqualTo(0)
-    }
+        val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
 
-    @Test
-    fun `when get live followers success, then it should return the live followers`() {
-        coEvery { getLiveFollowersDataUseCase.executeOnBackground() } returns liveFollowerResponse
-
-        viewModel = PlayBroadcastPrepareViewModel(
-                dispatcher = dispatcherProvider,
-                hydraConfigStore = mockHydraDataStore,
-                setupDataStore = mockBroadcastSetupDataStore,
-                userSession = userSession,
-                channelConfigStore = channelConfigStore,
-                createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
-                getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore,
-                playBroadcastMapper = playBroadcastMapper
-        )
-
-        val result = viewModel.observableFollowers.getOrAwaitValue()
-
-        Assertions
-                .assertThat(result)
-                .isEqualTo(
-                        playBroadcastMapper.mapLiveFollowers(liveFollowerResponse)
-                )
+        result.getContentIfNotHandled()?.assertEqualTo(NetworkResult.Success(Unit))
     }
 }
