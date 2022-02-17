@@ -10,7 +10,8 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 object ProductDetailVariantLogic {
 
-    fun determineVariant(mapOfSelectedOptionIds: Map<String, String>, productVariant: ProductVariant?): VariantCategory? {
+    fun determineVariant(mapOfSelectedOptionIds: Map<String, String>,
+                         productVariant: ProductVariant?): VariantCategory? {
         val variantOptions = productVariant?.variants?.firstOrNull()?.options
 
         if (productVariant == null || variantOptions == null) return null

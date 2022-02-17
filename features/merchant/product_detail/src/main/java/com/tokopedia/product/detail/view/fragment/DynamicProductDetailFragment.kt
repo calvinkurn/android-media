@@ -514,27 +514,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
 
             if (data.isFollowShop) {
+                //vbs can only follow shop that NPL type
                 onSuccessFavoriteShop(true, true)
             }
 
-            val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(data.mapOfSelectedVariantOption?.values
-                    ?: mutableListOf())
-                    ?: false // means selected variant in bottom sheet is the same in pdp
-            val noNeedToUpdateVariant = pdpUiUpdater?.productSingleVariant == null ||
-                    pdpUiUpdater?.productSingleVariant?.isVariantError == true ||
-                    data.mapOfSelectedVariantOption == null ||
-                    isSelectedTheSame
-
-            if (noNeedToUpdateVariant) {
-                if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP) {
-                    onTradeinClickedAfter()
-                }
-                return
-            }
-
             pdpUiUpdater?.updateVariantSelected(data.mapOfSelectedVariantOption)
-            val variantLevelOne = ProductDetailVariantLogic.determineVariant(data.mapOfSelectedVariantOption
-                    ?: mapOf(), viewModel.variantData)
+            val variantLevelOne = ProductDetailVariantLogic.determineVariant(
+                    data.mapOfSelectedVariantOption ?: mapOf(),
+                    viewModel.variantData)
+
             updateVariantDataAndUi(if (variantLevelOne != null) listOf(variantLevelOne) else listOf()) {
                 if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP) {
                     onTradeinClickedAfter()
@@ -2276,22 +2264,28 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 pdpUiUpdater?.updateVariantError()
                 updateUi()
             } else {
-                val selectedOptionIds = autoSelectVariant(productId)
-                viewModel.processVariant(data, selectedOptionIds, shouldRenderNewVariant)
+                val selectedOptionIds = determineInitialOptionId(productId)
+                viewModel.processVariant(
+                        data,
+                        selectedOptionIds,
+                        shouldRenderNewVariant
+                )
             }
         }
     }
 
-    private fun autoSelectVariant(productId: String?): MutableMap<String, String> {
+    private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
         viewModel.variantData?.let {
-            //Auto select variant will be execute when there is only 1 child left
-            val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
 
             pdpUiUpdater?.productNewVariantDataModel?.apply {
                 mapOfSelectedVariant = AtcVariantMapper.mapVariantIdentifierToHashMap(it)
             }
             pdpUiUpdater?.productSingleVariant?.apply {
-                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
+                val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
+                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
+                        it,
+                        selectedChild
+                )
             }
         }
         return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
