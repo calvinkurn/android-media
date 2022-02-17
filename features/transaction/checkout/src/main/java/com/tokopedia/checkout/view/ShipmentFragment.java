@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -819,7 +820,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void stopEmbraceTrace() {
-        Embrace.getInstance().endEvent(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY);
+        Map<String, Object> emptyMap = new HashMap<>();
+        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY, null, emptyMap);
     }
 
     @Override
