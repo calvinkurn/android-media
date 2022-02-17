@@ -1,11 +1,7 @@
 package com.tkpd.atcvariant.util
 
 import android.content.Intent
-import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
-import com.tkpd.atcvariant.data.uidata.ProductHeaderData
-import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
-import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
-import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
+import com.tkpd.atcvariant.data.uidata.*
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -91,7 +87,6 @@ object AtcCommonMapper {
                                 }
                         ),
                         userId = userId,
-                        source = AddToCartOccMultiRequestParams.SOURCE_FINTECH,
                         atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                 )
             }
