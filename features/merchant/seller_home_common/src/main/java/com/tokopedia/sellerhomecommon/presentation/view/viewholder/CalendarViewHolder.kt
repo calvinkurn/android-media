@@ -195,7 +195,8 @@ class CalendarViewHolder(
     private fun scrollToClosestEvent(pages: List<CalendarEventGroupUiModel>) {
         val closestEventIndex = pages.indexOfFirst { it.autoScrollToHere }
         if (closestEventIndex != RecyclerView.NO_POSITION) {
-            binding.rvShcCalendar.smoothScrollToPosition(closestEventIndex)
+            binding.rvShcCalendar.scrollToPosition(closestEventIndex)
+            binding.pageControlShcCalendar.setCurrentIndicator(closestEventIndex)
         }
     }
 

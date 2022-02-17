@@ -474,7 +474,7 @@ class SellerHomeLayoutHelper @Inject constructor(
         return getMilestoneDataUseCase.get().executeOnBackground()
     }
 
-    private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel>? {
+    private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel> {
         widgets.forEach { it.isLoaded = true }
         val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>().map {
             CalendarFilterDataKeyUiModel(
