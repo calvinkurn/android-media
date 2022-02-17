@@ -17,7 +17,6 @@ import com.bumptech.glide.request.target.Target
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
-import io.embrace.android.embracesdk.Embrace
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr){
