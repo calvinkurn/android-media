@@ -42,42 +42,47 @@ data class VariantUiModel(
     }
 }
 
-data class ProductSectionUiModel(
-    val productList: List<PlayProductUiModel.Product>,
-    val config: ConfigUiModel
-) {
+sealed class ProductSectionUiModel {
 
-    data class ConfigUiModel(
-        val type: ProductSectionType,
-        val title: String,
-        val serverTime: String, // RFC3339
-        val startTime: String, // RFC3339
-        val endTime: String, // RFC3339
-        val timerInfo: String,
-        val background: BackgroundUiModel
-    )
+    data class Section(
+        val productList: List<PlayProductUiModel.Product>,
+        val config: ConfigUiModel
+    ): ProductSectionUiModel() {
 
-    data class BackgroundUiModel(
-        val gradients: List<String>,
-        val imageUrl: String
-    )
+        data class ConfigUiModel(
+            val type: ProductSectionType,
+            val title: String,
+            val serverTime: String, // RFC3339
+            val startTime: String, // RFC3339
+            val endTime: String, // RFC3339
+            val timerInfo: String,
+            val background: BackgroundUiModel
+        )
 
-    companion object{
-        val Empty: ProductSectionUiModel
-            get() = ProductSectionUiModel(
-                productList = emptyList(),
-                config = ConfigUiModel(
-                    type = ProductSectionType.Unknown,
-                    title = "",
-                    serverTime = "",
-                    startTime = "",
-                    endTime = "",
-                    timerInfo = "",
-                    background = BackgroundUiModel(
-                        emptyList(),
-                        ""
+        data class BackgroundUiModel(
+            val gradients: List<String>,
+            val imageUrl: String
+        )
+
+        companion object{
+            val Empty: Section
+                get() = Section(
+                    productList = emptyList(),
+                    config = ConfigUiModel(
+                        type = ProductSectionType.Unknown,
+                        title = "",
+                        serverTime = "",
+                        startTime = "",
+                        endTime = "",
+                        timerInfo = "",
+                        background = BackgroundUiModel(
+                            emptyList(),
+                            ""
+                        )
                     )
                 )
-            )
+        }
     }
+
+    object Placeholder: ProductSectionUiModel()
 }
