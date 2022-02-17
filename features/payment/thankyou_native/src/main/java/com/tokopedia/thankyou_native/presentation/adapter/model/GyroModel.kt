@@ -10,7 +10,8 @@ data class GyroRecommendation(
         var title : String,
         var description: String,
         var gyroVisitable : ArrayList<Visitable<*>>,
-        var gyroMembershipSuccessWidget : GyroTokomemberItem = GyroTokomemberItem()
+        var gyroMembershipSuccessWidget : GyroTokomemberItem = GyroTokomemberItem(),
+        var gyroMembershipFailWidget : GyroTokomemberItem = GyroTokomemberItem()
 )
 
 open class GyroModel {

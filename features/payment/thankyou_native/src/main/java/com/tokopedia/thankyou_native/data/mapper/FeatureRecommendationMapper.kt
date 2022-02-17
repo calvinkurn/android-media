@@ -48,10 +48,12 @@ object FeatureRecommendationMapper {
         return false
     }
 
-    fun getTokomemberRequestParams(thanksPageData: ThanksPageData): TokoMemberRequestParam {
+    fun getTokomemberRequestParams(thanksPageData: ThanksPageData, engineData: FeatureEngineData): TokoMemberRequestParam {
         var index = 0
         val shopParams = ArrayList<MembershipOrderData>()
-        var amount = 0F
+        var amount: Float
+        var sectionTitle = ""
+        var sectionSubTitle = ""
 
         thanksPageData.shopOrder.forEach {
             amount = 0F
@@ -61,12 +63,24 @@ object FeatureRecommendationMapper {
             shopParams.add(index, MembershipOrderData(it.storeId.toInt(), amount))
             index++
         }
-
+        if (!engineData.featureEngineItem.isNullOrEmpty()) {
+            engineData.featureEngineItem.forEach { featureEngineItem ->
+                try {
+                    val jsonObject = JSONObject(featureEngineItem.detail)
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                        sectionTitle = jsonObject[KEY_TITLE].toString()
+                        sectionSubTitle = jsonObject[KEY_SUBTITLE].toString()
+                    }
+                } catch (e: Exception) { }
+            }
+        }
         return TokoMemberRequestParam (
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
             paymentID = thanksPageData.paymentID,
-            orderData = shopParams
+            orderData = shopParams,
+            sectionSubtitle = sectionSubTitle,
+            sectionTitle = sectionTitle
         )
     }
 
@@ -116,6 +130,8 @@ object FeatureRecommendationMapper {
     }
 
     private const val KEY_TYPE = "type"
+    private const val KEY_TITLE = "section_title"
+    private const val KEY_SUBTITLE = "section_desc"
     private const val TYPE_LIST = "list"
     const val TYPE_TOKOMEMBER = "tokomember"
     private const val TYPE_TDN_USER = "tdn_user"

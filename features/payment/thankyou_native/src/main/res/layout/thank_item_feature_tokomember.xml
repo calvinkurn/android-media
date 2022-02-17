@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/unify_space_12"
     android:layout_marginEnd="@dimen/unify_space_12"
-    android:background="@drawable/thank_bg_tokomember_error"
-    android:padding="@dimen/spacing_lvl4"
+    android:layout_marginStart="@dimen/unify_space_12"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
     <ViewFlipper
         android:id="@+id/containerViewFlipper"
         android:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_height="wrap_content"
         android:measureAllChildren="false">
 
@@ -20,6 +20,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:padding="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/unify_space_12"
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -35,15 +37,28 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvFeatureItemTitleToko"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:textColor="@color/Unify_N700_96"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvFeatureItemIconToko"
                 app:layout_constraintStart_toEndOf="@id/ivFeatureItemToko"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 tools:text="Title" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/tvFeatureItemIconToko"
+                android:layout_width="@dimen/unify_space_16"
+                android:layout_height="@dimen/unify_space_16"
+                app:layout_constraintStart_toEndOf="@id/tvFeatureItemTitleToko"
+                app:layout_constraintTop_toTopOf="parent"
+                app:icon_name="STAR_FILLED"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/unify_space_2"
+                app:icon_color_light_enable="@color/Unify_Y300"
+                app:icon_color_night_enable="@color/Unify_Y300"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvFeatureItemDescriptionToko"

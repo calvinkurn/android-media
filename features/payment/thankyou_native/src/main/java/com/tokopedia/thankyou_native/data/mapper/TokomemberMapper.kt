@@ -9,8 +9,8 @@ import com.tokopedia.tokomember.model.WidgetContentItem
 
 object TokomemberMapper {
     var waitingWidgetData = WidgetContentItem()
-    var instantWidgetData = WidgetContentItem()
     var successWidgetData = WidgetContentItem()
+    var failWidgetData = WidgetContentItem()
     fun getGyroTokomemberItem(
         shopRegisterResponse: MembershipGetShopRegistrationWidget?,
         tokomemberRequestParam: TokoMemberRequestParam
@@ -23,7 +23,7 @@ object TokomemberMapper {
         }
         else if (membershipType ==  OPEN_MEMBERSHIP) {
             populateWidgetContent(shopRegisterResponse)
-            successWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
+            failWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
         }
         val bottomSheetContentItem = shopRegisterResponse?.bottomSheetContent?.getOrNull(TOKOMEMBER_SUCCESS_BOTTOMSHEET) ?: BottomSheetContentItem()
 
@@ -42,13 +42,13 @@ object TokomemberMapper {
                     cardId
                 ),
                 getWidgetData(
-                    instantWidgetData,
+                    successWidgetData,
                     membershipType,
                     bottomSheetContentItem,
                     cardId
                 ),
                 getWidgetData(
-                    successWidgetData,
+                    failWidgetData,
                     membershipType,
                     cardId = cardId
                 )
@@ -79,7 +79,7 @@ object TokomemberMapper {
 
     private fun populateWidgetContent(shopRegisterResponse: MembershipGetShopRegistrationWidget?){
         waitingWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_WAITING_WIDGET) ?: WidgetContentItem()
-        instantWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_INSTANT_WIDGET) ?: WidgetContentItem()
+        successWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
     }
 
 }

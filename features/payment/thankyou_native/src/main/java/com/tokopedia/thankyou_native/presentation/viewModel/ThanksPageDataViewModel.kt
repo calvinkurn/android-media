@@ -85,7 +85,7 @@ class ThanksPageDataViewModel @Inject constructor(
                     }
                     if (isTokomemberWidgetShow(it.engineData)) {
                         queryParamTokomember  =
-                            getTokomemberRequestParams(thanksPageData)
+                            getTokomemberRequestParams(thanksPageData , it.engineData)
                         queryParamTokomember?.pageType =
                             PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
                     }
@@ -117,8 +117,11 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.isTokomemberWidgetShow(engineData)
     }
 
-    private fun getTokomemberRequestParams(engineData: ThanksPageData): TokoMemberRequestParam {
-        return FeatureRecommendationMapper.getTokomemberRequestParams(engineData)
+    private fun getTokomemberRequestParams(
+        thanksPageData: ThanksPageData,
+        engineData: FeatureEngineData
+    ): TokoMemberRequestParam {
+        return FeatureRecommendationMapper.getTokomemberRequestParams(thanksPageData,engineData)
     }
 
     @VisibleForTesting
@@ -161,7 +164,6 @@ class ThanksPageDataViewModel @Inject constructor(
         })
     }
 
-    @VisibleForTesting
     fun registerTokomember(membershipCardID:String) {
         membershipRegisterUseCase.registerMembership(membershipCardID ,{
             it?.let {

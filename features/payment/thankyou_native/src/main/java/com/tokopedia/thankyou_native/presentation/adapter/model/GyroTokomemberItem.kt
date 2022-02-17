@@ -27,6 +27,8 @@ data class GyroTokomemberItem(
     val membershipType : Int = 0,
     @SerializedName("membershipCardId")
     val membershipCardId : String = "",
+    var successRegister : Boolean = false,
+    var failRegister : Boolean = false,
     val listOfBottomSheetContent: BottomSheetContentItem = BottomSheetContentItem()
 ) : Visitable<GyroRecommendationFactory>, GyroModel() {
 
@@ -40,6 +42,6 @@ data class TokomemberModel(
 )
 
 const val TOKOMEMBER_WAITING_WIDGET = 0
-const val TOKOMEMBER_INSTANT_WIDGET = 1
 const val TOKOMEMBER_SUCCESS_WIDGET = 1
+const val TOKOMEMBER_FAIL_WIDGET = 2
 const val TOKOMEMBER_SUCCESS_BOTTOMSHEET = 0

@@ -4,25 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_lvl4"
+    android:background="@drawable/thank_bg_tokomember_error"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Konten gagal dimuat"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:text="@string/thank_tokomember_konten_gagal_dimuat"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/Unify_N700"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSubtitleError"
         android:layout_width="216dp"
         android:layout_height="wrap_content"
-        android:text="Muat ulang dengan klik tombol di samping, ya!"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:text="@string/thank_tokomember_error_desc"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginTop="@dimen/unify_space_2"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleError"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/tvFeatureItemIconTokoError"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon_name="RELOAD"
+        android:padding="@dimen/unify_space_8"
+        android:background="@drawable/thank_bg_tokomember_error_reload"
+        android:layout_marginStart="@dimen/unify_space_2"
+        app:icon_color_light_enable="@color/Unify_Y300"
+        app:icon_color_night_enable="@color/Unify_Y300"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

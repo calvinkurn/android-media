@@ -24,6 +24,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.OPEN_MEMBERSHIP
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
@@ -104,7 +106,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private var membershipBottomSheetData: BottomSheetContentItem? = null
     private var mTokomemberItemPosition = -1
-    private var gyroTokomemberItem: GyroTokomemberItem? = null
+    private var gyroTokomemberItemSuccess: GyroTokomemberItem? = null
+    private var gyroTokomemberItemFail: GyroTokomemberItem? = null
     private var memberShipCardId: String = ""
 
     override fun initInjector() {
@@ -249,7 +252,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
         })
         thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
-            gyroTokomemberItem = it?.gyroMembershipSuccessWidget
+            gyroTokomemberItemSuccess = it?.gyroMembershipSuccessWidget
+            gyroTokomemberItemFail = it?.gyroMembershipFailWidget
             addDataToGyroRecommendationView(it)
         })
 
@@ -280,14 +284,23 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageDataViewModel.membershipRegisterData.observe(viewLifecycleOwner){
             when(it) {
                 is Success -> {
-                    view?.context?.apply {
-                        startActivityForResult(TokomemberActivity.getIntent(this,membershipBottomSheetData) , REQUEST_CODE_TOKOMEMBER)
-                    }
+                   openTokomemberBottomsheet()
                 }
                 is Fail -> {
-                    Toaster.build(requireView(), "Error message", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR , "Coba Lagi" , View.OnClickListener {
+                    gyroTokomemberItemFail?.failRegister = true
+                    getFeatureListingContainer()?.updateTokoMemberWidget(
+                        position = mTokomemberItemPosition,
+                        gyroTokomemberItemFail
+                    )
+                    Toaster.build(
+                        requireView(),
+                        getString(R.string.thank_tokomember_register_fail),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.thank_coba_lagi)
+                    ) {
                         thanksPageDataViewModel.registerTokomember(memberShipCardId)
-                    }).show()
+                    }.show()
                 }
             }
         }
@@ -544,9 +557,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         when (requestCode) {
             REQUEST_CODE_TOKOMEMBER -> context?.let {
+                if (membershipBottomSheetData?.membershipType == OPEN_MEMBERSHIP) {
+                    gyroTokomemberItemSuccess?.successRegister = true
+                }
                 getFeatureListingContainer()?.updateTokoMemberWidget(
                     mTokomemberItemPosition,
-                    gyroTokomemberItem
+                    gyroTokomemberItemSuccess
                 )
             }
         }
@@ -590,7 +606,20 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         mTokomemberItemPosition = position
         this.memberShipCardId = memberShipCardId
         this.membershipBottomSheetData = bottomSheetContentItem
-        thanksPageDataViewModel.registerTokomember(memberShipCardId)
+        if (bottomSheetContentItem.membershipType == OPEN_MEMBERSHIP) {
+            thanksPageDataViewModel.registerTokomember(memberShipCardId)
+        }else if (bottomSheetContentItem.membershipType == CLOSE_MEMBERSHIP){
+            openTokomemberBottomsheet()
+        }
+    }
+
+    private fun openTokomemberBottomsheet(){
+        view?.context?.apply {
+            startActivityForResult(
+                TokomemberActivity.getIntent(this, membershipBottomSheetData),
+                REQUEST_CODE_TOKOMEMBER
+            )
+        }
     }
 
     companion object {

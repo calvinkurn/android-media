@@ -11,5 +11,7 @@ data class TokoMemberRequestParam(
     var pageType: PageType?,
     var paymentID: String  = "",
     var source: Int = 0,
-    var orderData : List<MembershipOrderData> = arrayListOf()
+    var orderData : List<MembershipOrderData> = arrayListOf(),
+    var sectionTitle : String = "",
+    var sectionSubtitle : String = ""
 )

@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_lvl4"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerImage"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginEnd="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="rect" />
