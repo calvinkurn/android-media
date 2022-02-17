@@ -27,7 +27,7 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
     private val hiddenProducts: ArrayList<String> = arrayListOf()
 
     companion object {
-        const val MAX_CHECKED_DEFAULT = 3
+        const val MAX_CHECKED_DEFAULT = 8
         const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
         const val SOURCE_TALK = "talk"
     }
@@ -37,8 +37,8 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
             false)
         source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY)
                 ?: ""
-        maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
-            AttachProductActivity.MAX_CHECKED_DEFAULT)
+//        maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
+//            AttachProductActivity.MAX_CHECKED_DEFAULT)
         shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
                 ?: ""
         hiddenProducts.addAll(intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
