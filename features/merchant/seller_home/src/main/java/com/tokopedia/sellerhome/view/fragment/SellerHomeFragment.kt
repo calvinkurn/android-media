@@ -507,12 +507,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
             element.tableFilters
         ) {
+            SellerHomeTracking.sendTableFilterClickEvent(element)
             recyclerView?.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getTableData(listOf(element))
             }
-            SellerHomeTracking.sendTableFilterClickEvent(element)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
 
