@@ -71,7 +71,6 @@ import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
-import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -776,12 +775,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     )
             )
 
-            val updatedResponse = ProductRecommendationMapper.updateRecomWhenTokoNow(
-                    response,
-                    p2Data.value?.miniCart
-            )
-
-            _loadTopAdsProduct.value = updatedResponse.asSuccess()
+            _loadTopAdsProduct.value = response.asSuccess()
         }) {
             _loadTopAdsProduct.value = Throwable(pageName).asFail()
         }
