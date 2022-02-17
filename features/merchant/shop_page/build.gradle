@@ -149,7 +149,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 }
 
