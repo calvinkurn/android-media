@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
@@ -95,6 +96,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getScreenName() = SCREEN_NAME
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {}
+    override fun sendOtherAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
+
+    }
+
     override fun sendAnalytics(pdpSimulationEvent: PayLaterAnalyticsBase) {
         pdpSimulationEvent.productId = productId
         //send

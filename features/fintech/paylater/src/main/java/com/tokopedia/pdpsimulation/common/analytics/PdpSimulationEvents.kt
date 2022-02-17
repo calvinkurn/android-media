@@ -4,24 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 sealed class PdpSimulationEvent {
-    sealed class PayLater {
-
-        data class GopayBottomSheetImpression(
-            val productId: String,
-            val tenure: String,
-            val partnerName: String,
-            val emiAmount: String
-        ) : PdpSimulationEvent()
-
-        data class GopayBottomSheetButtonClick(
-            val productId: String,
-            val tenure: String,
-            val partnerName: String,
-            val emiAmount: String,
-            val url: String
-        ) : PdpSimulationEvent()
-    }
-
 
     data class OccImpressionEvent(
         val productId: String,
