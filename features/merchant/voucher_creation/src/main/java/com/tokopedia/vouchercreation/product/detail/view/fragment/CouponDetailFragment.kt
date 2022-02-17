@@ -57,9 +57,12 @@ import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
 import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
 import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_COUPON_SETTINGS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
 import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
+import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import javax.inject.Inject
@@ -173,15 +176,20 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
             }
             tpgViewProducts.setOnClickListener {
-                val manageProductIntent = Intent(requireContext(), ManageProductActivity::class.java).apply {
-                    putExtras(Bundle().apply {
-                        putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, viewModel.getMaxProductLimit())
-                        val selectedProducts = ArrayList<ProductId>()
-                        selectedProducts.addAll(viewModel.getCoupon()?.products ?: listOf())
-                        putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
-                    })
+                viewModel.getCoupon()?.run {
+                    val maxProductLimit = viewModel.getMaxProductLimit()
+                    val couponSettings = viewModel.getCouponSettings(this)
+                    val manageProductIntent = Intent(requireContext(), ManageProductActivity::class.java).apply {
+                        putExtras(Bundle().apply {
+                            putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                            putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                            val selectedProductIds = ArrayList<ProductId>()
+                            selectedProductIds.addAll(viewModel.getCoupon()?.products ?: listOf())
+                            putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+                        })
+                    }
+                    startActivity(manageProductIntent)
                 }
-                startActivity(manageProductIntent)
             }
             header.setNavigationOnClickListener { activity?.onBackPressed() }
         }

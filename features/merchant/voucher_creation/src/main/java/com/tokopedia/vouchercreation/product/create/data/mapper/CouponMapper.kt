@@ -60,7 +60,7 @@ class CouponMapper @Inject constructor() {
             maxExpense
         )
 
-        return Coupon(coupon.id.toLong(), information, setting, products)
+        return Coupon(coupon.id.toLong(), information, setting, products, coupon.products)
     }
 
 

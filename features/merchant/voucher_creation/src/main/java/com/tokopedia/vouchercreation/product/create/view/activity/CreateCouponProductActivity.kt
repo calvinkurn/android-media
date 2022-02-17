@@ -16,23 +16,24 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
+import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
-import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class CreateCouponProductActivity : AppCompatActivity() {
 
     companion object {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
         const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
-        const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
+        const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
         const val BUNDLE_KEY_COUPON = "coupon"
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         const val REQUEST_CODE_CREATE_COUPON = 100
         const val REQUEST_CODE_ADD_PRODUCT = 101
+        const val REQUEST_CODE_MANAGE_PRODUCT = 102
         private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
@@ -48,7 +49,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private val couponPreviewFragment = CouponPreviewFragment.newInstance(
         ::navigateToCouponInformationPage,
         ::navigateToCouponSettingPage,
-        ::navigateToProductListPage,
+        ::navigateToAddProductPage,
+        ::navigateToManageProductPage,
         ::onCreateCouponSuccess,
         {},
         {},
@@ -88,21 +90,35 @@ class CreateCouponProductActivity : AppCompatActivity() {
         router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, buildCouponSettingFragmentInstance())
     }
 
-    private fun navigateToProductListPage(coupon: Coupon) {
+    private fun navigateToAddProductPage(coupon: Coupon) {
         val couponSettings = coupon.settings
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
-                val selectedProductIds = ArrayList<String>()
-                selectedProductIds.addAll(couponPreviewFragment.getSelectedProductIds())
-                putStringArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+                val selectedProducts = arrayListOf<ProductUiModel>()
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
         startActivityForResult(addProductIntent, REQUEST_CODE_ADD_PRODUCT)
     }
 
+    private fun navigateToManageProductPage(coupon: Coupon) {
+        val couponSettings = coupon.settings
+        val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
+        val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProducts = ArrayList<ProductUiModel>()
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
+            })
+        }
+        startActivityForResult(manageProductIntent, REQUEST_CODE_MANAGE_PRODUCT)
+    }
 
     private fun onCreateCouponSuccess(coupon: Coupon) {
         redirectPage(coupon)
@@ -183,10 +199,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
-            if(resultCode == Activity.RESULT_OK) {
+        if(resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.addProducts(selectedProducts)
+            } else if (requestCode == REQUEST_CODE_MANAGE_PRODUCT) {
+                val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                couponPreviewFragment.setProducts(selectedProducts)
             }
         }
     }
