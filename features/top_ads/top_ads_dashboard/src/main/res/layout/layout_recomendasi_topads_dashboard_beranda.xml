@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/spacing_lvl3"
+    android:paddingVertical="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtRecommendasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:text="@string/topads_dash_recommend"
+        android:textSize="@dimen/fontSize_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivRecommendasiInfo"
+        android:layout_width="@dimen/top_ads_common_dp_20"
+        android:layout_height="@dimen/top_ads_common_dp_20"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        android:padding="@dimen/spacing_lvl1"
+        android:scrollbarSize="@dimen/unify_space_12"
+        android:src="@drawable/iconunify_information"
+        android:tint="@color/Unify_NN900"
+        app:layout_constraintBottom_toBottomOf="@id/txtRecommendasi"
+        app:layout_constraintStart_toEndOf="@id/txtRecommendasi" />
+
+    <include
+        android:id="@+id/layoutProdukBerpostensi"
+        layout="@layout/layout_recommendasi_sub_section_topads_dashboard_beranda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ivRecommendasiInfo" />
+
+    <include
+        android:id="@+id/layoutAnagranHarian"
+        layout="@layout/layout_recommendasi_sub_section_topads_dashboard_beranda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/layoutProdukBerpostensi" />
+
+    <include
+        android:id="@+id/layoutkataKunci"
+        layout="@layout/layout_recommendasi_sub_section_topads_dashboard_beranda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/layoutAnagranHarian" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

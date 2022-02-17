@@ -6,13 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.widget.NestedScrollView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.data.response.DepositAmount
@@ -24,10 +20,9 @@ import com.tokopedia.topads.dashboard.data.model.beranda.Chip
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
-import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
-import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
+import com.tokopedia.topads.dashboard.databinding.FragmentTopadsDashboardBerandaBaseBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
@@ -40,10 +35,6 @@ import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
-import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -51,28 +42,11 @@ import javax.inject.Inject
 /**
  * Created by Pika on 15/5/20.
  */
-open class BerandaTabFragment : BaseDaggerFragment() {
+open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
-    private lateinit var shimmerView: ConstraintLayout
-    private lateinit var scrollView: NestedScrollView
-    private lateinit var autoTopUp: Typography
-    private lateinit var creditAmount: Typography
-    private lateinit var txtLastUpdated: Typography
-    private lateinit var txtAdType: Typography
-    private lateinit var rvSummary: RecyclerView
-    private lateinit var rvLatestReading: RecyclerView
-    private lateinit var btnReadMore: UnifyButton
-    private lateinit var addCredit: UnifyButton
-    private lateinit var ivSummaryDropDown: ImageUnify
-    private lateinit var ivSummaryInformation: ImageUnify
-    private lateinit var creditHistoryImage: ImageUnify
-    private lateinit var btnRefreshCredits: ImageUnify
-    private lateinit var imgAutoDebit: ImageUnify
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var creditHistory: CardUnify
-    private lateinit var graphContainer: FrameLayout
+    private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
-    private val graphLayout by lazy { TopAdsMultiLineGraphFragment() }
+    private val graphLayoutFragment by lazy { TopAdsMultiLineGraphFragment() }
     private val checkResponse by lazy { CheckResponse() }
 
     private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
@@ -81,14 +55,15 @@ open class BerandaTabFragment : BaseDaggerFragment() {
         SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
     }
     private val summaryInformationBottomSheet by lazy { SummaryInformationBottomSheet.createInstance() }
+
     private val summaryRvAdapter by lazy { TopAdsBerandaSummaryRvAdapter.createInstance() }
     private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
 
-        fun createInstance(): BerandaTabFragment {
-            return BerandaTabFragment()
+        fun createInstance(): TopAdsDashboardBerandaFragment {
+            return TopAdsDashboardBerandaFragment()
         }
     }
 
@@ -98,41 +73,155 @@ open class BerandaTabFragment : BaseDaggerFragment() {
     @Inject
     lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding =
+            FragmentTopadsDashboardBerandaBaseBinding.inflate(layoutInflater, container, false)
+        initializeView()
+        return binding.root
+    }
+
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        val layout =
-            inflater.inflate(R.layout.fragment_topads_dashboard_beranda_base, container, false)
-        setUpView(layout)
-        return layout
+    override fun getScreenName(): String {
+        return TopAdsDashboardBerandaFragment::class.java.name
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        selectedAdType = summaryAdTypeList[0]
-        showShimmer()
-        creditHistoryImage.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
+    private fun initializeView() {
+        with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
+            this.txtTitle.text = resources.getString(R.string.topads_dashboard_produk_berpotensi)
+            this.layoutPotesiTampil.ivWallet.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
+                )
+            )
+            this.button.text = resources.getString(R.string.topads_dashboard_atur_iklannya)
+        }
 
-        observeLiveData()
-        setUpRecyclerView()
-        setUpClick()
-        loadData()
-        initializeGraph()
-        swipeRefreshLayout.setOnRefreshListener {
-            showShimmer()
+        with(binding.layoutRecommendasi.layoutAnagranHarian) {
+            this.txtTitle.text = resources.getString(R.string.topads_dash_anggaran_harian)
+            this.layoutPotesiTampil.ivWallet.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
+                )
+            )
+            this.button.text = resources.getString(R.string.topads_dashboard_atur_anggaran_harian)
+        }
+
+        with(binding.layoutRecommendasi.layoutkataKunci) {
+            this.txtTitle.text = resources.getString(R.string.label_top_ads_keyword)
+            this.layoutPotesiTampil.ivWallet.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
+                )
+            )
+            this.button.text = resources.getString(R.string.topads_dashboard_atur_kata_kunci)
+            this.chipsRecyclerView.show()
+        }
+    }
+
+    private fun initializeListener() {
+        binding.tambahKreditLayout.root.setOnClickListener {
+            goToCreditHistory(false)
+        }
+        binding.tambahKreditLayout.addCredit.setOnClickListener {
+            val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+            startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
+        }
+        binding.tambahKreditLayout.autoTopUp.setOnClickListener {
+            startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
+        }
+        binding.layoutRingkasan.ivSummaryDropDown.setOnClickListener {
+            summaryAdTypesBottomSheet.show(childFragmentManager, "")
+        }
+        binding.layoutRingkasan.ivSummaryInformation.setOnClickListener {
+            showInformationBottomSheet()
+        }
+        binding.tambahKreditLayout.btnRefreshCredits.setOnClickListener {
+            topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
+        }
+        binding.layoutLatestReading.btnReadMore.setOnClickListener {
+            requireContext().openWebView(READ_MORE_URL)
+        }
+        binding.swipeRefreshLayout.setOnRefreshListener {
             loadData()
         }
+        summaryRvAdapter.infoClicked = { showInformationBottomSheet() }
+        summaryRvAdapter.itemClicked = { onSummaryItemClicked() }
+    }
+
+    private fun setUpRecyclerView() {
+        binding.layoutRingkasan.rvSummary.adapter = summaryRvAdapter
+
+        binding.layoutLatestReading.rvLatestReading.adapter = latestReadingRvAdapter
+
+    }
+
+    private fun showInformationBottomSheet() {
+        summaryInformationBottomSheet.show(childFragmentManager, "")
+    }
+
+    private fun onSummaryItemClicked() {
+        if (summaryRvAdapter.selectedItems.size == 0) {
+            binding.layoutRingkasan.graphLayout.hide()
+            return
+        }
+        if (!binding.layoutRingkasan.graphLayout.isVisible) {
+            binding.layoutRingkasan.graphLayout.show()
+        }
+        val items = summaryRvAdapter.selectedItems.map {
+            TopAdsMultiLineGraphFragment.MultiLineGraph(it.id, it.selectedColor)
+        }
+        graphLayoutFragment.showLineGraph(items)
     }
 
     private fun initializeGraph() {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.graph_layout, graphLayout, "")
+            .replace(R.id.graph_layout, graphLayoutFragment, "")
             .commit()
+    }
+
+
+    private fun showFirstTimeDialog() {
+        requireActivity().showDialogWithCoachMark(
+            binding.scrollView, binding.layoutRingkasan.rvSummary,
+            requireView().findViewById(R.id.topads_content_statistics),
+            binding.layoutLatestReading.rvLatestReading,
+            (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
+        )
+    }
+
+    private fun hideShimmer() {
+        if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
+        binding.shimmerView.root.hide()
+        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
+        binding.swipeRefreshLayout.show()
+        showFirstTimeDialog()
+    }
+
+    private fun showShimmer() {
+        binding.shimmerView.root.show()
+        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(false)
+        binding.swipeRefreshLayout.hide()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        selectedAdType = summaryAdTypeList[0]
+
+        setUpRecyclerView()
+
+        observeLiveData()
+        initializeListener()
+        initializeGraph()
+        loadData()
     }
 
     private fun observeLiveData() {
@@ -140,9 +229,9 @@ open class BerandaTabFragment : BaseDaggerFragment() {
             checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    graphLayout.setValue(it.data.cells)
+                    graphLayoutFragment.setValue(it.data.cells)
                     summaryRvAdapter.addItems(it.data.summary.mapToSummary(requireContext()))
-                    txtLastUpdated.text = String.format(
+                    binding.layoutRingkasan.txtLastUpdated.text = String.format(
                         resources.getString(R.string.topads_dashboard_last_update_text),
                         it.data.summary.lastUpdate
                     )
@@ -175,7 +264,7 @@ open class BerandaTabFragment : BaseDaggerFragment() {
 
         chip.isSelected = true
         selectedAdType = chip
-        txtAdType.text = chip.title
+        binding.layoutRingkasan.txtAdType.text = chip.title
         loadSummaryStats()
         dismissBottomSheet()
     }
@@ -188,59 +277,9 @@ open class BerandaTabFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun setUpRecyclerView() {
-        rvSummary.layoutManager = GridLayoutManager(requireContext(), 2)
-        rvSummary.adapter = summaryRvAdapter
-
-        rvLatestReading.layoutManager = LinearLayoutManager(requireContext())
-        rvLatestReading.adapter = latestReadingRvAdapter
-
-        summaryRvAdapter.infoClicked = { showInformationBottomSheet() }
-        summaryRvAdapter.itemClicked = { onSummaryItemClicked() }
-    }
-
-    private fun onSummaryItemClicked() {
-        if (summaryRvAdapter.selectedItems.size == 0) {
-            graphContainer.hide()
-            return
-        }
-        if (!graphContainer.isVisible) {
-            graphContainer.show()
-        }
-        val items = summaryRvAdapter.selectedItems.map {
-            TopAdsMultiLineGraphFragment.MultiLineGraph(it.id, it.selectedColor)
-        }
-        graphLayout.showLineGraph(items)
-    }
-
-    private fun setUpClick() {
-        creditHistory.setOnClickListener {
-            goToCreditHistory(false)
-        }
-        addCredit.setOnClickListener {
-            val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
-            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-            startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
-        }
-        autoTopUp.setOnClickListener {
-            startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
-        }
-        ivSummaryDropDown.setOnClickListener {
-            summaryAdTypesBottomSheet.show(childFragmentManager, "")
-        }
-        ivSummaryInformation.setOnClickListener {
-            showInformationBottomSheet()
-        }
-        btnRefreshCredits.setOnClickListener { topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess) }
-        btnReadMore.setOnClickListener { requireContext().openWebView(READ_MORE_URL) }
-    }
-
-    private fun showInformationBottomSheet() {
-        summaryInformationBottomSheet.show(childFragmentManager, "")
-    }
-
     private fun loadData() {
-        swipeRefreshLayout.isEnabled = true
+        showShimmer()
+        binding.swipeRefreshLayout.isEnabled = true
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         adTypeChanged(selectedAdType)
@@ -248,22 +287,22 @@ open class BerandaTabFragment : BaseDaggerFragment() {
     }
 
     private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
-        swipeRefreshLayout.isRefreshing = false
-        creditAmount.text = dataDeposit.amountFmt
+        binding.swipeRefreshLayout.isRefreshing = false
+        binding.tambahKreditLayout.creditAmount.text = dataDeposit.amountFmt
     }
 
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         val isAutoTopUpActive =
             (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (isAutoTopUpActive) {
-            autoTopUp.visibility = View.VISIBLE
-            addCredit.visibility = View.GONE
-            imgAutoDebit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
-            imgAutoDebit.visibility = View.VISIBLE
+            binding.tambahKreditLayout.autoTopUp.visibility = View.VISIBLE
+            binding.tambahKreditLayout.addCredit.visibility = View.GONE
+            binding.tambahKreditLayout.imgAutoDebit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
+            binding.tambahKreditLayout.imgAutoDebit.visibility = View.VISIBLE
         } else {
-            autoTopUp.visibility = View.GONE
-            addCredit.visibility = View.VISIBLE
-            imgAutoDebit.visibility = View.GONE
+            binding.tambahKreditLayout.autoTopUp.visibility = View.GONE
+            binding.tambahKreditLayout.addCredit.visibility = View.VISIBLE
+            binding.tambahKreditLayout.imgAutoDebit.visibility = View.GONE
         }
     }
 
@@ -291,64 +330,13 @@ open class BerandaTabFragment : BaseDaggerFragment() {
         }
     }
 
-    interface GoToInsight {
-        fun gotToInsights()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         topAdsDashboardViewModel.summaryStatisticsLiveData.removeObservers(this)
     }
 
-    override fun getScreenName(): String {
-        return BerandaTabFragment::class.java.name
-    }
-
-    private fun setUpView(view: View) {
-        graphContainer = view.findViewById(R.id.graph_layout)
-        creditHistory = view.findViewById(R.id.credit_history)
-        txtAdType = view.findViewById(R.id.txtAdType)
-        ivSummaryDropDown = view.findViewById(R.id.ivSummaryDropDown)
-        txtLastUpdated = view.findViewById(R.id.txtLastUpdated)
-        creditAmount = view.findViewById(R.id.creditAmount)
-        ivSummaryInformation = view.findViewById(R.id.ivSummaryInformation)
-        rvSummary = view.findViewById(R.id.rvSummary)
-        rvLatestReading = view.findViewById(R.id.rvLatestReading)
-        btnReadMore = view.findViewById(R.id.btnReadMore)
-        scrollView = view.findViewById(R.id.scroll_view)
-        shimmerView = view.findViewById(R.id.shimmerView)
-        creditHistoryImage = view.findViewById(R.id.creditHistoryImage)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        btnRefreshCredits = view.findViewById(R.id.btnRefreshCredits)
-        imgAutoDebit = view.findViewById(R.id.imgAutoDebit)
-        addCredit = view.findViewById(R.id.addCredit)
-        autoTopUp = view.findViewById(R.id.autoTopUp)
-    }
-
-    private fun showFirstTimeDialog() {
-        if (!requireActivity().showBerandaDialog()) return
-        requireContext().showDialogWithCoachMark(
-            scrollView,
-            rvSummary,
-            requireView().findViewById(R.id.topads_content_statistics),
-            rvLatestReading,
-            (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
-        )
-        requireActivity().berandaDialogShown()
-    }
-
-    private fun hideShimmer() {
-        if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
-        shimmerView.hide()
-        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
-        swipeRefreshLayout.show()
-        showFirstTimeDialog()
-    }
-
-    private fun showShimmer() {
-        shimmerView.show()
-        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(false)
-        swipeRefreshLayout.hide()
+    interface GoToInsight {
+        fun gotToInsights()
     }
 
     //this class holds 3 boolean to keep track if all the 3 api's have been called successfully, as if all values are true will be hiding shimmer view and showing the actual view

@@ -54,7 +54,7 @@
         android:layout_height="@dimen/top_ads_common_dp_20"
         android:padding="@dimen/spacing_lvl1"
         android:src="@drawable/iconunify_information"
-        android:tint="@color/Unify_Static_Black"
+        android:tint="@color/Unify_NN900"
         app:layout_constraintBottom_toBottomOf="@id/txtLastUpdated"
         app:layout_constraintStart_toEndOf="@id/txtLastUpdated"
         app:layout_constraintTop_toTopOf="@id/txtLastUpdated" />
@@ -76,6 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_rv_ringkasan" />
 

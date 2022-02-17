@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.data.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
@@ -14,9 +15,29 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsSummaryType
 import com.tokopedia.topads.dashboard.data.model.beranda.Chip
 import com.tokopedia.topads.dashboard.data.model.beranda.SummaryBeranda
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
+import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
+import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
 import com.tokopedia.topads.dashboard.data.utils.Utils.asPercentage
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 
 object TopAdsDashboardBerandaUtils {
+
+    fun Activity.showDialogWithCoachMark(scrollView: NestedScrollView, vararg coachMarkViews: View) {
+        if(!showBerandaDialog()) return
+        DialogUnify(
+            this, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION
+        ).apply {
+            setTitle(resources.getString(R.string.topads_dashboard_home_dialog_title))
+            setDescription(resources.getString(R.string.topads_dashboard_home_dialog_description))
+            setPrimaryCTAText(resources.getString(R.string.topads_dashboard_home_dialog_button_text))
+            setImageDrawable(R.drawable.topads_dashboard_dialog_img)
+            setPrimaryCTAClickListener {
+                dismiss()
+                showCoachMark(scrollView, *coachMarkViews)
+            }
+        }.show()
+        berandaDialogShown()
+    }
 
     fun TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary.mapToSummary(
         context: Context
@@ -52,21 +73,6 @@ object TopAdsDashboardBerandaUtils {
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_T500)
         ),
     )
-
-    fun Context.showDialogWithCoachMark(scrollView: NestedScrollView, vararg views: View) {
-        DialogUnify(
-            this, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION
-        ).apply {
-            setTitle(resources.getString(R.string.topads_dashboard_home_dialog_title))
-            setDescription(resources.getString(R.string.topads_dashboard_home_dialog_description))
-            setPrimaryCTAText(resources.getString(R.string.topads_dashboard_home_dialog_button_text))
-            setImageDrawable(R.drawable.topads_dashboard_dialog_img)
-            setPrimaryCTAClickListener {
-                dismiss()
-                showCoachMark(scrollView, *views)
-            }
-        }.show()
-    }
 
     private fun Context.showCoachMark(scrollView: NestedScrollView, vararg views: View) {
         val coachMarkItems = arrayListOf(

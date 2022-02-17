@@ -45,7 +45,7 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/credit_history"
+        android:id="@+id/tambahKreditLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

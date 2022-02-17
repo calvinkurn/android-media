@@ -16,6 +16,7 @@
     <dimen name="topads_dashboard_dp_210">210dp</dimen>
     <dimen name="topads_dashboard_dp_140">140dp</dimen>
     <dimen name="topads_dashboard_dp_6">6dp</dimen>
+    <dimen name="topads_dashboard_dp_60">60dp</dimen>
     <dimen name="topads_dashboard_dp_56">56dp</dimen>
     <dimen name="topads_dashboard_dp_25">25dp</dimen>
 </resources>

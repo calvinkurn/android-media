@@ -53,7 +53,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
-import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
@@ -82,7 +82,7 @@ private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
-    TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
+    TopAdsProductIklanFragment.AppBarAction, TopAdsDashboardBerandaFragment.GoToInsight,
     TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline,
     CustomDatePicker.ActionListener {
 
@@ -348,7 +348,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tab_layout?.addNewTab(getString(R.string.topads_dash_headline_title))
         tab_layout?.addNewTab(getString(R.string.topads_dash_recommend))
         tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
-        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), TopAdsDashboardBerandaFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_headline_title), TopAdsHeadlineBaseFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance(btnHeight, redirectToTabInsight)))
@@ -515,7 +515,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
         for (frag in fragments) {
             when (frag.fragment) {
-                is BerandaTabFragment -> (frag.fragment as BerandaTabFragment).loadSummaryStats()
+                is TopAdsDashboardBerandaFragment -> (frag.fragment as TopAdsDashboardBerandaFragment).loadSummaryStats()
             }
         }
     }
