@@ -738,7 +738,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun loadRecommendation(pageName: String) {
-        if (!GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             return
         }
 
@@ -766,7 +766,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun recommendationChipClicked(recommendationDataModel: ProductRecommendationDataModel,
-                                  annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
+                                  annotationChip: AnnotationChip, filterPosition: Int) {
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
                 val requestParams = GetRecommendationRequestParam(

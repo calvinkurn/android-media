@@ -52,9 +52,9 @@ class GetProductRecommendationUseCase @Inject constructor(
 
     private var requestParams: RequestParams = RequestParams.EMPTY
 
-    fun executeOnBackground(requestParams: RequestParams): RecommendationWidget {
+    suspend fun executeOnBackground(requestParams: RequestParams): RecommendationWidget {
         this.requestParams = requestParams
-        return executeOnBackground(requestParams)
+        return executeOnBackground()
     }
 
     override suspend fun executeOnBackground(): RecommendationWidget {

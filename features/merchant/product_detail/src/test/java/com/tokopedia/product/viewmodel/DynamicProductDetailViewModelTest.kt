@@ -832,7 +832,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
-        viewModel.recommendationChipClicked(recomDataModel, AnnotationChip(), 1, 1)
+        viewModel.recommendationChipClicked(recomDataModel, AnnotationChip(), 1)
 
         coVerify {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -848,7 +848,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns emptyList()
 
-        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), 1)
 
         coVerify {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -864,7 +864,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } throws Throwable()
 
-        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), 1)
 
         coVerify {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
