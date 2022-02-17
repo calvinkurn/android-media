@@ -166,7 +166,6 @@ class DigitalPDPDataPlanFragment :
         observeData()
 
         getCatalogMenuDetail()
-        getPrefixOperatorData()
     }
 
     fun setupKeyboardWatcher() {

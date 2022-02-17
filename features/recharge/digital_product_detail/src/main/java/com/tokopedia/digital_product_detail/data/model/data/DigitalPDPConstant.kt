@@ -26,4 +26,10 @@ object DigitalPDPConstant {
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     const val REQUEST_CODE_LOGIN = 1010
     const val RESULT_CODE_QR_SCAN = 101
+
+    const val DELAY_PREFIX_TIME = 200L
+    const val VALIDATOR_DELAY_TIME = 3000L
+    const val DELAY_MULTI_TAB = 1000L
+
+    const val CHECKOUT_NO_PROMO = "0"
 }

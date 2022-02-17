@@ -587,12 +587,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun addToCart(){
-        viewModel.addToCart(
-            viewModel.digitalCheckoutPassData,
-            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+        viewModel.addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
             DigitalSubscriptionParams(),
-            userSession.userId
-        )
+            userSession.userId)
     }
 
     private fun navigateToLoginPage() {

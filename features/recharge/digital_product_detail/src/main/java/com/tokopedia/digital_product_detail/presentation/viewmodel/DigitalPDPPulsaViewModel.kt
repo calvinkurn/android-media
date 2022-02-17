@@ -2,8 +2,8 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
@@ -13,6 +13,10 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -20,11 +24,9 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -32,22 +34,18 @@ import javax.inject.Inject
 class DigitalPDPPulsaViewModel @Inject constructor(
     val repo: DigitalPDPTelcoRepository,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : ViewModel() {
 
     private var loadingJob: Job? = null
     private var catalogProductJob: Job? = null
 
-    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
-        RechargeCatalogPrefixSelect()
-    )
-
+    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
-
     var selectedGridProduct = SelectedProduct()
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-        .instantCheckout("0")
+        .instantCheckout(CHECKOUT_NO_PROMO)
         .utmContent(GlobalConfig.VERSION_NAME)
         .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
         .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
@@ -61,10 +59,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
-
-    private val _catalogProductInput = MutableLiveData<Result<List<DenomWidgetModel>>>()
-    val catalogProductInput: LiveData<Result<List<DenomWidgetModel>>>
-        get() = _catalogProductInput
 
     private val _catalogPrefixSelect = MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
@@ -83,49 +77,47 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         get() = _clientNumberValidatorMsg
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
-        _menuDetailData.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _menuDetailData.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
-            _menuDetailData.postValue(RechargeNetworkResult.Success(menuDetail))
+            _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
         }) {
-            _menuDetailData.postValue(RechargeNetworkResult.Fail(it))
+            _menuDetailData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         catalogProductJob?.cancel()
-        _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
-        catalogProductJob = viewModelScope.launch {
-            launchCatchError(block = {
-                delay(1000)
+        _observableDenomMCCMData.value = RechargeNetworkResult.Loading
+        catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+                delay(DELAY_MULTI_TAB)
                 val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
-                _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
+                _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
             }){
                 if (it !is CancellationException)
-                    _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+                    _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
             }
-        }
     }
 
     fun getFavoriteNumber(categoryIds: List<Int>) {
-        _favoriteNumberData.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _favoriteNumberData.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
-            _favoriteNumberData.postValue(RechargeNetworkResult.Success(
-                favoriteNumber.persoFavoriteNumber.items))
+            _favoriteNumberData.value = RechargeNetworkResult.Success(
+                favoriteNumber.persoFavoriteNumber.items)
         }) {
-            _favoriteNumberData.postValue(RechargeNetworkResult.Fail(it))
+            _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
     fun getPrefixOperator(menuId: Int) {
-        _catalogPrefixSelect.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _catalogPrefixSelect.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             operatorData = repo.getOperatorList(menuId)
-            delay(DELAY_TIME)
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success(operatorData))
+            delay(DELAY_PREFIX_TIME)
+            _catalogPrefixSelect.value = RechargeNetworkResult.Success(operatorData)
         }) {
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
+            _catalogPrefixSelect.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -133,20 +125,19 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
-    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
-                  digitalIdentifierParam: RequestBodyIdentifier,
+    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
                   digitalSubscriptionParams: DigitalSubscriptionParams,
                   userId: String
     ){
-        _addToCartResult.postValue(RechargeNetworkResult.Loading)
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        _addToCartResult.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
-            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+            _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
+                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
             } else {
-                _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
+                _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
         }
     }
@@ -194,7 +185,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             }
             isEligibleToBuy = errorMessage.isEmpty()
             delay(VALIDATOR_DELAY_TIME)
-            _clientNumberValidatorMsg.postValue(errorMessage)
+            _clientNumberValidatorMsg.value = errorMessage
         }
     }
 
@@ -214,12 +205,5 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun onResetSelectedProduct(){
         selectedGridProduct = SelectedProduct()
-    }
-
-    companion object {
-        const val DELAY_TIME = 200L
-        const val VALIDATOR_DELAY_TIME = 3000L
-
-        const val CHECKOUT_NO_PROMO = "0"
     }
 }
