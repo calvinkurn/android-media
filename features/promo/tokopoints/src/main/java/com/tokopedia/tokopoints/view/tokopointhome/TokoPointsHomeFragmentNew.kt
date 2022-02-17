@@ -376,11 +376,19 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
                     if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
 
-                        val sectionTopAdsViewBinder = SectionTopadsViewBinder()
-                        @Suppress("UNCHECKED_CAST")
+//                        val sectionTopAdsViewBinder = SectionTopadsViewBinder()
+//                        @Suppress("UNCHECKED_CAST")
+//                        viewBinders.put(
+//                                sectionContent.layoutType,
+//                                sectionTopAdsViewBinder as SectionItemBinder)
+//                        sectionList.add(sectionContent)
+
+                        val sectionTopQuestViewBinder = SectionTopQuestViewBinder(this)
+
                         viewBinders.put(
-                                sectionContent.layoutType,
-                                sectionTopAdsViewBinder as SectionItemBinder)
+                            sectionContent.layoutType,
+                            sectionTopQuestViewBinder as SectionItemBinder
+                        )
                         sectionList.add(sectionContent)
 
                     }
@@ -394,7 +402,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                                 merchantVoucherViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
-
                     if (sectionContent.layoutQuestWidgetAttr != null && !sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam.isNullOrEmpty()) {
                         // add Quest View binder here
                         val sectionTopQuestViewBinder = SectionTopQuestViewBinder(this)
