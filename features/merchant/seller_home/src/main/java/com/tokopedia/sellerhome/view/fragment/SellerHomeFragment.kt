@@ -677,10 +677,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
-        if (dateFilterBottomSheet == null) {
-            dateFilterBottomSheet = CalendarWidgetDateFilterBottomSheet.newInstance(requireContext())
+        context?.let {
+            if (dateFilterBottomSheet == null) {
+                dateFilterBottomSheet = CalendarWidgetDateFilterBottomSheet.newInstance(it)
+            }
+            showCalendarDateFilter(element)
         }
-        showCalendarDateFilter(element)
     }
 
     override fun reloadCalendarWidget(element: CalendarWidgetUiModel) {
@@ -710,10 +712,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendCalendarItemClickEvent(element, event)
     }
 
-    override fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel) {
-        SellerHomeTracking.sendCalendarFilterClickEvent(element)
-    }
-
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view
@@ -738,10 +736,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             return
         }
 
+        Int.ZERO
+
         dateFilterBottomSheet?.run {
             setFragmentManager(this@SellerHomeFragment.childFragmentManager)
             setOnApplyChanges {
                 this@SellerHomeFragment.applyCalendarFilter(element, it)
+                SellerHomeTracking.sendCalendarFilterClickEvent(element)
             }
             show()
         }

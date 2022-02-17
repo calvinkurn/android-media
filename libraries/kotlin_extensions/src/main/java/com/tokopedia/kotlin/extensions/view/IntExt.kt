@@ -50,4 +50,3 @@ fun Int.toAmountString(
 fun Int?.orZero(): Int = this ?: 0
 
 val Int.Companion.ZERO get() = 0
-val Int.Companion.ONE get() = 1

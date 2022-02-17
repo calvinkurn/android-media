@@ -894,10 +894,9 @@ object SellerHomeTracking {
                 element.dataKey,
                 emptyLabel,
                 dateRage,
-                event.label,
                 eventTitle
             ).joinToString(" - "),
-            businessUnit = TrackingConstant.PHYSICAL_GOODS.asCamelCase(),
+            businessUnit = TrackingConstant.PG,
             currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
         )
 
@@ -920,7 +919,7 @@ object SellerHomeTracking {
                 emptyLabel,
                 dateRage
             ).joinToString(" - "),
-            businessUnit = TrackingConstant.PHYSICAL_GOODS.asCamelCase(),
+            businessUnit = TrackingConstant.PG,
             currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
         )
 
@@ -929,7 +928,8 @@ object SellerHomeTracking {
 
     fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
         val isEmpty = element.data?.eventGroups.isNullOrEmpty()
-        val label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val emptyNotEmpty = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dateRage = "${element.filter.startDate} - ${element.filter.endDate}"
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
             category = arrayOf(
@@ -937,8 +937,8 @@ object SellerHomeTracking {
                 TrackingConstant.HOME
             ).joinDashSeparator(),
             action = TrackingConstant.IMPRESSION_WIDGET_CALENDAR,
-            label = arrayOf(element.dataKey, label).joinToString(" - "),
-            businessUnit = TrackingConstant.PHYSICAL_GOODS.asCamelCase(),
+            label = arrayOf(element.dataKey, emptyNotEmpty, dateRage).joinToString(" - "),
+            businessUnit = TrackingConstant.PG,
             currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
         )
 

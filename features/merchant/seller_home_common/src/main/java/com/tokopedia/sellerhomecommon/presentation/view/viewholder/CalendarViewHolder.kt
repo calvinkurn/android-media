@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventGroupUiModel
@@ -172,7 +172,7 @@ class CalendarViewHolder(
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                    if (currentPosition != RecyclerView.NO_POSITION && pages.size > Int.ONE) {
+                    if (currentPosition != RecyclerView.NO_POSITION && pages.size > ShcConst.INT_1) {
                         pageControlShcCalendar.setCurrentIndicator(currentPosition)
                         layoutManager.findViewByPosition(currentPosition)?.let { view ->
                             adjustEventsListViewHeight(view)
@@ -216,7 +216,6 @@ class CalendarViewHolder(
                 .forEach {
                     it.setOnClickListener {
                         listener.showCalendarWidgetDateFilter(element)
-                        listener.sendCalendarFilterClickEvent(element)
                     }
                 }
         }
@@ -269,7 +268,5 @@ class CalendarViewHolder(
             event: CalendarEventUiModel
         ) {
         }
-
-        fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel) {}
     }
 }

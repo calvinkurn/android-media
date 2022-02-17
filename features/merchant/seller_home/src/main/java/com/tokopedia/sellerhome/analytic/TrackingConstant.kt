@@ -106,6 +106,7 @@ object TrackingConstant {
     const val LOCKED = "locked"
     const val EMPTY_STRING = ""
     const val TOTAL_FINISHED_MISSION = "%d out of %d missions finished"
+    const val PG = "Physical Goods"
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"
