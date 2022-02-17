@@ -19,7 +19,7 @@ class ProductCardVideoView(
     defStyleAttr: Int
 ) : FrameLayout(context, attrs, defStyleAttr)  {
     companion object{
-        private val playerLayoutId = R.layout.`product_card_video_view.xml`
+        private val playerLayoutId = R.layout.product_card_video_view
 
         private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.12f
         private const val PIVOT_MULTIPLIER_FIT_CENTER = 0.5f

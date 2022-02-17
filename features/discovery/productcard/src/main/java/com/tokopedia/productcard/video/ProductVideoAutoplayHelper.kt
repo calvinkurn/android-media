@@ -58,24 +58,20 @@ class ProductVideoAutoplayHelper<T, R : T>(
     }
 
      fun resumeVideoAutoplay() {
-        synchronized(this) {
-            val visibleItemIterator = videoPlayerIterator ?: return
-            if(isPaused && visibleItemIterator.hasNext()) {
-                productVideoAutoPlayJob = launch {
-                    isPaused = false
-                    playNextVideo(visibleItemIterator)
-                }
+        val visibleItemIterator = videoPlayerIterator ?: return
+        if(isPaused && visibleItemIterator.hasNext()) {
+            productVideoAutoPlayJob = launch {
+                isPaused = false
+                playNextVideo(visibleItemIterator)
             }
         }
     }
 
     fun pauseVideoAutoplay() {
-        synchronized(this) {
-            if(!isPaused) {
-                isPaused = true
-                productVideoPlayer?.stopVideo()
-                productVideoAutoPlayJob?.cancel()
-            }
+        if(!isPaused) {
+            isPaused = true
+            productVideoPlayer?.stopVideo()
+            productVideoAutoPlayJob?.cancel()
         }
     }
 
@@ -120,9 +116,7 @@ class ProductVideoAutoplayHelper<T, R : T>(
     }
 
     private fun clearQueue() {
-        synchronized(this) {
-            visibleVideoPlayers = emptyList()
-            videoPlayerIterator = null
-        }
+        visibleVideoPlayers = emptyList()
+        videoPlayerIterator = null
     }
 }
