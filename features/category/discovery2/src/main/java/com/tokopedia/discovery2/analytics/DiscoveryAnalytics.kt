@@ -1844,4 +1844,57 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[USER_ID] = userID
         getTracker().sendEnhanceEcommerceEvent(map)
     }
+
+    override fun trackShopCardImpression(componentsItems: ComponentsItem, userID: String) {
+        val list = ArrayList<Map<String, Any>>()
+        val shopMap = HashMap<String, Any>()
+        componentsItems.data?.get(0)?.let {
+            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - - - shop_card_banner"
+            shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
+            shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
+            shopMap[KEY_CREATIVE] = (componentsItems.creativeName ?: EMPTY_STRING)
+            addSourceData(shopMap)
+        }
+        list.add(shopMap)
+
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                eventAction = ACTION_SHOP_CARD_VIEW, eventLabel = " ")
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = userID
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackEventClickShopCard(componentsItems: ComponentsItem, userID: String) {
+        val list = ArrayList<Map<String, Any>>()
+        val shopMap = HashMap<String, Any>()
+        componentsItems.data?.get(0)?.let {
+            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - - - shop_card_banner"
+            shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
+            shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
+            shopMap[KEY_CREATIVE] = (componentsItems.data?.firstOrNull()?.creativeName
+                    ?: EMPTY_STRING)
+            addSourceData(shopMap)
+        }
+        list.add(shopMap)
+
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+                eventAction = ACTION_SHOP_CARD_CLICK, eventLabel = "shop_card_banner - - ${componentsItems.data?.firstOrNull()?.shopId}")
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = userID
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
 }

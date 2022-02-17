@@ -118,21 +118,21 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         when (view) {
             parentCardView -> {
                 mShopCardItemViewModel.navigate(fragment.context, shopCardDataItem?.applinks)
-//                sendClickEvent()
+                sendClickEvent()
             }
         }
     }
 
-//    private fun sendClickEvent() {
-//        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-//                .trackProductCardClick(mShopCardItemViewModel.components,
-//                        mShopCardItemViewModel.isUserLoggedIn())
-//    }
+    private fun sendClickEvent() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .trackEventClickShopCard(mShopCardItemViewModel.components,
+                        mShopCardItemViewModel.getUserId())
+    }
 
-//    override fun onViewAttachedToWindow() {
-//        super.onViewAttachedToWindow()
-//        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(mShopCardItemViewModel.components, mShopCardItemViewModel.getUserId())
-//    }
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(mShopCardItemViewModel.components, mShopCardItemViewModel.getUserId())
+    }
 
 
 }

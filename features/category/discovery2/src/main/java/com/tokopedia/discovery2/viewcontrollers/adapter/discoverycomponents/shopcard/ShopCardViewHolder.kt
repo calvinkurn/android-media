@@ -29,6 +29,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private var mBgImage: ImageUnify = itemView.findViewById(R.id.bg_image)
     private var mShopCardRecyclerView: RecyclerView = itemView.findViewById(R.id.shop_card_rv)
     private var shopEmptyState: LocalLoad? = null
+    private val shopCardRecyclerViewDecorator = ShopCardItemDecorator()
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mShopCardViewModel: ShopCardViewModel
@@ -46,6 +47,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         getSubComponent().inject(mShopCardViewModel)
         mShopCardRecyclerView.show()
         shopEmptyState?.hide()
+        addDefaultItemDecorator()
         if (mShopCardViewModel.shouldShowShimmer()) {
             addShimmer()
         }
@@ -164,4 +166,11 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private fun hideShimmer() {
         mDiscoveryRecycleAdapter.setDataList(arrayListOf())
     }
+
+    private fun addDefaultItemDecorator() {
+        if (mShopCardRecyclerView.itemDecorationCount > 0)
+            mShopCardRecyclerView.removeItemDecorationAt(0)
+        mShopCardRecyclerView.addItemDecoration(shopCardRecyclerViewDecorator)
+    }
+
 }
