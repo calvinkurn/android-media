@@ -128,7 +128,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var selectedEndDate = Date()
     private var existingStartDate = Date()
     private var existingEndDate = Date()
-    private var sellerEducationUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -204,7 +203,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
                         if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
                             // no experiment / successfully deleted, by default render new page
-                            sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_production)
                             getInitialData()
                         }
                         else {
@@ -216,7 +214,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                             }
                             else {
                                 // user get new experiment
-                                sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_revamp)
                                 getInitialData()
                             }
                         }
@@ -360,7 +357,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             }
             rightIcons?.get(0)?.setOnClickListener {
                 // go to seller education page
-                RouteManager.route(context, String.format(WEBVIEW_APPLINK_FORMAT, ApplinkConst.WEBVIEW, sellerEducationUrl))
+                RouteManager.route(context, String.format(
+                        WEBVIEW_APPLINK_FORMAT,
+                        ApplinkConst.WEBVIEW,
+                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                ))
             }
             isShowShadow = false
         }

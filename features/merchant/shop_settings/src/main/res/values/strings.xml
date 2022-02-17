@@ -42,7 +42,6 @@
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
     <string name="shop_operational_hour_ops_hour_holiday_illustration">https://ecs7.tokopedia.net/img/android/shop/ops_hour_holiday_dialog_image.png</string>
-    <string name="shop_operational_hour_seller_edu_production">https://seller.tokopedia.com/edu/atur-jadwal-toko/</string>
     <string name="shop_operational_hour_seller_edu_revamp">https://seller.tokopedia.com/edu/jadwal-toko/</string>
     <string name="shop_operational_hour_title_set_hour">Atur jam operasional toko</string>
     <string name="shop_operational_hour_title_holiday">Atur tanggal toko libur</string>
