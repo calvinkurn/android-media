@@ -18,6 +18,9 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -57,6 +60,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
+        renderAddOn(binding, product, shop)
     }
 
     private fun renderDivider() {
@@ -373,6 +377,45 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
+    private fun renderAddOn(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
+        with(binding) {
+            val addOn: AddOnsDataModel = if (shop.isFulfillment) {
+                shop.addOn
+            } else {
+                product.addOn
+            }
+            when (addOn.status) {
+                AddOnsResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON -> {
+                    buttonGiftingAddon.apply {
+                        state = ButtonGiftingAddOnView.State.ACTIVE
+                        setAddOnButtonData(addOn)
+                        setOnButtonClickedListener {
+                            listener.onClickAddOnButton(addOn, product, shop)
+                        }
+                        show()
+                    }
+                }
+                AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON -> {
+                    buttonGiftingAddon.apply {
+                        state = ButtonGiftingAddOnView.State.INACTIVE
+                        setAddOnButtonData(addOn)
+                        show()
+                    }
+                }
+                else -> {
+                    buttonGiftingAddon.gone()
+                }
+            }
+        }
+    }
+
+    private fun ButtonGiftingAddOnView.setAddOnButtonData(addOn: AddOnsDataModel) {
+        title = addOn.addOnsButtonModel.title
+        desc = addOn.addOnsButtonModel.description
+        urlLeftIcon = addOn.addOnsButtonModel.leftIconUrl
+        urlRightIcon = addOn.addOnsButtonModel.rightIconUrl
+    }
+
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true)
@@ -384,6 +427,8 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long)
 
         fun getLastPurchaseProtectionCheckState(productId: Long): Int
+
+        fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop)
     }
 
     companion object {

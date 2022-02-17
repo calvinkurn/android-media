@@ -528,7 +528,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     // Todo : remove this before merge to release
     private fun tempInitializeAddOnNavigation() {
         binding?.goToCourierPageButton?.setOnClickListener {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             val addOnProductData = AddOnProductData().apply {
                 bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
                 bottomSheetTitle = "Judul Bottom Sheet"
@@ -579,9 +578,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartString = "123-456-789"
                     warehouseId = "111222"
                     shopName = "Tokoku"
-                    onlyGreetingCardInfo = "{{qty}} barang hanya dapat 1 kartu ucapan"
-                    packagingAndGreetingCardInfo = "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan"
-                    invoiceNotSentToRecipientInfo = "Invoice tidak dikirim ke penerima pesanan"
+                    addOnInfoWording = AddOnWordingData().apply {
+                        onlyGreetingCard = "{{qty}} barang hanya dapat 1 kartu ucapan"
+                        packagingAndGreetingCard = "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan"
+                        invoiceNotSendToRecipient = "Invoice tidak dikirim ke penerima pesanan"
+                    }
                     addOnSavedStates = listOf(AddOnData().apply {
                         addOnId = "898"
                         addOnMetadata = AddOnMetadata().apply {
@@ -595,6 +596,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     })
                 }
             }
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
             startActivityForResult(intent, 1999)
         }

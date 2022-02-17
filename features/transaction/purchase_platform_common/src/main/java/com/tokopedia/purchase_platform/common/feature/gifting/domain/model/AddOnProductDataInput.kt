@@ -36,9 +36,7 @@ data class Product(
 @Parcelize
 data class AvailableBottomSheetData(
         var isTokoCabang: Boolean = false,
-        var onlyGreetingCardInfo: String = "",
-        var packagingAndGreetingCardInfo: String = "",
-        var invoiceNotSentToRecipientInfo: String = "",
+        var addOnInfoWording: AddOnWordingData = AddOnWordingData(),
         var addOnSavedStates: List<AddOnData> = emptyList(),
         var products: List<Product> = emptyList(),
         var cartString: String = "",

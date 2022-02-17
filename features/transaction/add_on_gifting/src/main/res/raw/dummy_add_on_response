@@ -20,7 +20,7 @@
               "Name": "name of addon",
               "Rules": {
                 "MaxOrder": 10,
-                "CustomNotes": false
+                "CustomNotes": true
               },
               "Metadata": {
                 "Pictures": [

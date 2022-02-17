@@ -7,7 +7,7 @@ object AddOnResultMapper {
 
     fun mapResult(saveAddOnStateResponse: SaveAddOnStateResponse): SaveAddOnStateResult {
         return SaveAddOnStateResult().apply {
-            addOns = saveAddOnStateResponse.getAddOns.data.addOns.map {
+            addOns = saveAddOnStateResponse.saveAddOns.data.addOns.map {
                 mapAddOnResult(it)
             }
         }

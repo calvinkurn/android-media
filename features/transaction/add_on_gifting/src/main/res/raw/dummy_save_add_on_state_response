@@ -1,5 +1,5 @@
 {
-  "get_add_ons": {
+  "save_add_ons": {
     "error_message": [
       ""
     ],
@@ -8,7 +8,7 @@
       "add_ons": [
         {
           "add_on_key": "12345",
-          "add_on_level": "product",
+          "add_on_level": "order",
           "status": 1,
           "add_on_data": [
             {
