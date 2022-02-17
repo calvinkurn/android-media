@@ -49,7 +49,9 @@ class ProductSummaryBottomSheet @Inject constructor(
     private val loadingDialogFragment: LoadingDialogFragment by lazy(LazyThreadSafetyMode.NONE) {
         val setupClass = LoadingDialogFragment::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
-        fragmentFactory.instantiate(requireActivity().classLoader, setupClass.name) as LoadingDialogFragment
+        val fragment = fragmentFactory.instantiate(requireActivity().classLoader, setupClass.name) as LoadingDialogFragment
+        fragment.setLoaderType(LoadingDialogFragment.LoaderType.CIRCULAR)
+        fragment
     }
 
     private val productSummaryListView by viewComponent {
