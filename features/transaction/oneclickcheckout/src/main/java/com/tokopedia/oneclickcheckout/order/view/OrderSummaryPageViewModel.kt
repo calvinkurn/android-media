@@ -580,7 +580,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
+            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata, tenureType = 0, optionId = ""),
                     skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
                     source = SOURCE_UPDATE_OCC_PAYMENT)
             globalEvent.value = OccGlobalEvent.Loading

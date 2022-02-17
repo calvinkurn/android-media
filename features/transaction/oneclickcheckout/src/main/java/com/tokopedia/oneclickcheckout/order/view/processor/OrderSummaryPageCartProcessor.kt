@@ -114,14 +114,17 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 }
             }
             val realServiceId = orderShipment.getRealServiceId()
+            val selectedGoCicilTerm = orderPayment.walletData.goCicilData.selectedTerm
             val profile = UpdateCartOccProfileRequest(
-                    orderProfile.payment.gatewayCode,
-                    metadata,
-                    orderProfile.address.addressId.toString(),
-                    if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
-                    orderShipment.getRealShipperId(),
-                    orderShipment.getRealShipperProductId(),
-                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
+                    gatewayCode = orderProfile.payment.gatewayCode,
+                    metadata = metadata,
+                    addressId = orderProfile.address.addressId.toString(),
+                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
+                    shippingId = orderShipment.getRealShipperId(),
+                    spId = orderShipment.getRealShipperProductId(),
+                    isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
+                    tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
+                    optionId = selectedGoCicilTerm?.optionId ?: ""
             )
             return UpdateCartOccRequest(cart, profile)
         }
