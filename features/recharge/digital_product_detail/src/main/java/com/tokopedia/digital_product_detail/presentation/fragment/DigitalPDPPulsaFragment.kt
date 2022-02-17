@@ -158,7 +158,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         observeData()
 
         getCatalogMenuDetail()
-        getPrefixOperatorData()
     }
 
     fun setupKeyboardWatcher() {
