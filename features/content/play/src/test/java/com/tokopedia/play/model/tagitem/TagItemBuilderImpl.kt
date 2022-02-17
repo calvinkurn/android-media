@@ -86,4 +86,12 @@ class TagItemBuilderImpl : TagItemBuilder {
         voucherStock = voucherStock,
         expiredDate = expiredDate,
     )
+
+    override fun buildProductSection(
+        productList: List<PlayProductUiModel.Product>,
+        config: ProductSectionUiModel.ConfigUiModel
+    ) =  ProductSectionUiModel(
+        productList = productList,
+        config = config
+    )
 }

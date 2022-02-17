@@ -1,10 +1,6 @@
 package com.tokopedia.play.model.tagitem
 
-import com.tokopedia.play.view.type.MerchantVoucherType
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.ProductPrice
-import com.tokopedia.play.view.type.ProductStock
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -56,4 +52,13 @@ interface TagItemBuilder {
         voucherStock: Int = 1,
         expiredDate: String = "",
     ): MerchantVoucherUiModel
+
+    fun buildProductSection(
+        productList: List<PlayProductUiModel.Product> = emptyList(),
+        config: ProductSectionUiModel.ConfigUiModel = ProductSectionUiModel.ConfigUiModel(
+            type = ProductSectionType.Unknown,
+            title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
+            background = ProductSectionUiModel.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
+        )
+    ): ProductSectionUiModel
 }
