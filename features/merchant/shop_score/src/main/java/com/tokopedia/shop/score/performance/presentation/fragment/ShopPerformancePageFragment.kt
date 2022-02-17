@@ -1018,10 +1018,10 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ShopPerformancePageFragment {
-            return if (bundle != null) {
-                ShopPerformancePageFragment().apply { arguments = bundle }
-            } else {
+            return if (bundle == null) {
                 ShopPerformancePageFragment()
+            } else {
+                ShopPerformancePageFragment().apply { arguments = bundle }
             }
         }
     }
