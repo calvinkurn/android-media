@@ -460,6 +460,10 @@
     <string name="error_message_quota_is_zero">Min. 1 Kupon</string>
     <string name="mvc_placeholder_cancelled_at">Dibatalkan pada &lt;b>%s&lt;/b></string>
     <string name="mvc_total_expense">Total Pengeluaran</string>
+    <string name="mvc_no_access">Oops, kamu nggak punya izin untuk mengakses halaman ini</string>
+    <string name="mvc_no_access_description">Hubungi pemilik toko untuk mendapatkan akses halaman ini, ya.</string>
+    <string name="mvc_understand">Oke, Saya mengerti</string>
+    <string name="error_message_exceed_max_coupon">Kupon Aktif Maksimal 10</string>
 
     <!--create coupon-->
     <string name="mvc_coupon_information_title">Informasi Kupon</string>
