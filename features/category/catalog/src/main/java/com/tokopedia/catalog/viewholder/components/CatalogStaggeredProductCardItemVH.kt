@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListener: CatalogDetailListener?)
     : AbstractViewHolder<CatalogStaggeredProductModel>(itemView) {
@@ -23,10 +24,16 @@ class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListene
     }
 
     override fun bind(element: CatalogStaggeredProductModel?) {
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide("${element?.comparisonItem?.brand} pos : $adapterPosition" ?: "")
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(element?.comparisonItem?.name ?: "")
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).
-        displayTextOrHide("${element?.comparisonItem?.marketPrice?.firstOrNull()?.minFmt} - ${element?.comparisonItem?.marketPrice?.firstOrNull()?.maxFmt}")
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide("${element?.comparisonItem?.brand}")
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).apply {
+            displayTextOrHide(element?.comparisonItem?.name ?: "")
+            setWeight(Typography.BOLD)
+        }
+        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).apply {
+            displayTextOrHide("${element?.comparisonItem?.marketPrice?.firstOrNull()?.minFmt} - ${element?.comparisonItem?.marketPrice?.firstOrNull()?.maxFmt}")
+            setType(Typography.BODY_3)
+            setWeight(Typography.REGULAR)
+        }
         element?.comparisonItem?.catalogImage?.firstOrNull()?.let { image ->
             itemView.findViewById<ImageUnify>(R.id.catalog_comparison_image).loadImageWithoutPlaceholder(image.imageUrl ?: "")
         }

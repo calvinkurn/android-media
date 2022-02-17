@@ -17,6 +17,7 @@
         app:search_bar_placeholder="@string/catalog_search_product_hint"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toTopOf="@id/catalog_staggered_recycler_view"
         />
 
@@ -30,9 +31,9 @@
         app:layout_constraintTop_toBottomOf="@+id/catalog_product_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:paddingBottom="@dimen/unify_space_40"
         tools:visibility="visible"
         android:visibility="visible"

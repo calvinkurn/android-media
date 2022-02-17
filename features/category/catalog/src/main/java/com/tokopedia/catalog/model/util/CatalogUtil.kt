@@ -2,6 +2,8 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -73,15 +75,14 @@ object CatalogUtil {
         val searchTextField = searchbar?.searchBarTextField
         val searchClearButton = searchbar?.searchBarIcon
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    onSearchKeywordEntered.invoke()
-                    dismissKeyboard(context, view)
-                    return true
-                }
-                return false
+        searchTextField?.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                onSearchKeywordEntered.invoke()
             }
+
+            override fun afterTextChanged(s: Editable?) {}
         })
 
         searchTextField?.setOnFocusChangeListener { _, hasFocus ->
@@ -96,7 +97,7 @@ object CatalogUtil {
         }
     }
 
-    fun dismissKeyboard(context: Context?, view: View?) {
+    private fun dismissKeyboard(context: Context?, view: View?) {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (inputMethodManager?.isAcceptingText == true)
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
