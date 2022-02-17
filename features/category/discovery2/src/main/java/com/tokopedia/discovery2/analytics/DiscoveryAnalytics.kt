@@ -709,7 +709,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         viewedProductsSet.clear()
         if(isRefresh) {
             viewedCalendarSet.clear()
-            viewedCalendarSet.clear()
+            viewedAnchorTabsSet.clear()
         }
     }
 
