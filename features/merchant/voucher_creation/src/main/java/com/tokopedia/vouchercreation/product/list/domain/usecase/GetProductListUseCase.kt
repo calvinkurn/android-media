@@ -23,6 +23,7 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
         private const val KEY_SORT = "sort"
         private const val KEY_PAGE = "page"
         private const val KEY_PAGE_SIZE = "pageSize"
+        private const val KEY_PRODUCT_IDS = "productIDInclude"
         private const val PAGE_SIZE = "10"
 
         @JvmStatic
@@ -31,12 +32,14 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
                 keyword: String? = null,
                 shopId: String?,
                 warehouseId: String? = null,
+                productIds: List<String>? = null,
                 shopShowCaseIds: List<String>? = null,
                 categories: List<String>? = null,
                 sort: GoodsSortInput? = null): RequestParams {
 
             val filtersParams = mutableListOf<GoodsFilterInput>().apply {
                 keyword?.run { add(GoodsFilterInput(id = KEY_KEYWORD, value = listOf(this))) }
+                productIds?.run { add(GoodsFilterInput(id = KEY_PRODUCT_IDS, value = productIds)) }
                 shopShowCaseIds?.run { add(GoodsFilterInput(id = KEY_MENU, value = shopShowCaseIds)) }
                 categories?.run { add(GoodsFilterInput(id = KEY_CATEGORY, value = categories)) }
                 page?.run { add(GoodsFilterInput(id = KEY_PAGE, value = listOf(this.toString()))) }

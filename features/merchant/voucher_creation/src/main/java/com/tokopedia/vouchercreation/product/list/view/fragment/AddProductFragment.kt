@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -36,7 +35,6 @@ import com.tokopedia.vouchercreation.product.list.view.bottomsheet.SortBottomShe
 import com.tokopedia.vouchercreation.product.list.view.model.*
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.SELLER_LOCATION_ID
-import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import javax.inject.Inject
 
 class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiModel>(),
@@ -50,17 +48,17 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         private const val ZERO = 0
         private const val NO_BACKGROUND: Int = 0
         private const val PAGE_SIZE = 10
-        private const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
-        private const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
-        private const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
+        const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
+        const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
+        const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
         @JvmStatic
         fun createInstance(maxProductLimit: Int,
                            couponSettings: CouponSettings?,
-                           selectedProductIds: ArrayList<String>) = AddProductFragment().apply {
+                           selectedProducts: ArrayList<ProductUiModel>) = AddProductFragment().apply {
             this.arguments = Bundle().apply {
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
-                putStringArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             }
         }
     }
@@ -121,8 +119,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.setMaxProductLimit(maxProductLimit)
         val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
         viewModel.setCouponSettings(couponSettings)
-        val selectedProductIds = arguments?.getStringArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
-        viewModel.setSelectedProductIds(selectedProductIds ?: ArrayList())
+        val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
+        val selectedProductIds = viewModel.getSelectedProductIds(selectedProducts?: arrayListOf())
+        viewModel.setSelectedProductIds(selectedProductIds)
         val shopId = userSession.shopId
         // get initial product list
 //        viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
@@ -335,7 +334,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             validationResults = validationResults
                     )
                     renderList(updatedProductList, true)
-//                    adapter?.setProductList(updatedProductList)
                 }
                 is Fail -> {
                     // TODO : handle negative case

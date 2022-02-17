@@ -126,8 +126,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.libraries.tkpdabstraction)
-	implementation project(rootProject.ext.features.voucherCreation)
-	implementation project(rootProject.ext.libraries.applink)
-	implementation project(rootProject.ext.libraries.kotlinExtensions)
 }

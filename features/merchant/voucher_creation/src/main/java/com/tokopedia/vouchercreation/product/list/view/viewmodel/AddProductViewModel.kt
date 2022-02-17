@@ -43,7 +43,7 @@ class AddProductViewModel @Inject constructor(
     // VOUCHER VALIDATION PROPERTIES
     private var maxProductLimit = 0
     private var couponSettings: CouponSettings? = null
-    private var selectedProductIds = ArrayList<String>()
+    private var selectedProductIds = listOf<String>()
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
@@ -324,8 +324,12 @@ class AddProductViewModel @Inject constructor(
         return couponSettings
     }
 
-    fun setSelectedProductIds(selectedProductIds: ArrayList<String>) {
+    fun setSelectedProductIds(selectedProductIds: List<String>) {
         this.selectedProductIds = selectedProductIds
+    }
+
+    fun getSelectedProductIds(selectedProducts: ArrayList<ProductUiModel>): List<String> {
+        return selectedProducts.map { it.id }.toList()
     }
 
     fun getSelectedProductIds(): List<String> {
