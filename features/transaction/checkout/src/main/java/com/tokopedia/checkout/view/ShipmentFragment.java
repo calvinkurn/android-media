@@ -3253,7 +3253,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onOpenAddOnBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
+    public void openAddOnProductLevelBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
         if (getActivity() != null) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             AddOnProductData addOnProductData = new AddOnProductData();
@@ -3335,6 +3335,99 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 availableBottomSheetData.setTokoCabang(cartItemModel.isTokoCabang());
                 availableBottomSheetData.setWarehouseId(cartItemModel.getWarehouseId());
             }
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
+            startActivityForResult(intent, REQUEST_ADD_ON_BOTTOMSHEET);
+        }
+    }
+
+    @Override
+    public void openAddOnOrderLevelBottomSheet(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
+        if (getActivity() != null && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
+            AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            AddOnProductData addOnProductData = new AddOnProductData();
+            addOnProductData.setBottomSheetType(AddOnProductData.ADD_ON_BOTTOM_SHEET);
+            addOnProductData.setBottomSheetTitle(addOnBottomSheetModel.getHeaderTitle());
+            addOnProductData.setSource(AddOnProductData.SOURCE_NORMAL_CHECKOUT);
+
+            if (addOnsDataModel.getStatus() == 2) {
+                UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
+                unavailableBottomSheetData.setDescription(addOnBottomSheetModel.getDescription());
+                unavailableBottomSheetData.setTickerMessage(addOnBottomSheetModel.getTicker().getText());
+
+                List<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listUnavailableProduct = new ArrayList<>();
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
+                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
+                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
+                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
+                    product.setProductQuantity(cartItemModel.getQuantity());
+                    product.setProductName(cartItemModel.getName());
+                    product.setProductImageUrl(cartItemModel.getImageUrl());
+                    listUnavailableProduct.add(product);
+                }
+                unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
+            }
+
+            if (addOnsDataModel.getStatus() == 1) {
+                AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
+
+                AddOnWordingData addOnWordingData = new AddOnWordingData();
+                addOnWordingData.setOnlyGreetingCard(addOnWordingModel.getOnlyGreetingCard());
+                addOnWordingData.setPackagingAndGreetingCard(addOnWordingModel.getPackagingAndGreetingCard());
+                addOnWordingData.setInvoiceNotSendToRecipient(addOnWordingModel.getInvoiceNotSendToRecipient());
+                availableBottomSheetData.setAddOnInfoWording(addOnWordingData);
+
+                if (shipmentCartItemModel.getShopName() != null) {
+                    availableBottomSheetData.setShopName(shipmentCartItemModel.getShopName());
+                }
+
+                ArrayList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listProduct = new ArrayList<>();
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
+                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
+                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
+                    product.setProductName(cartItemModel.getName());
+                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
+                    product.setProductQuantity(cartItemModel.getQuantity());
+                    product.setProductImageUrl(cartItemModel.getImageUrl());
+                    listProduct.add(product);
+                }
+                availableBottomSheetData.setProducts(listProduct);
+
+                if (!addOnsDataModel.getAddOnsDataItemModelList().isEmpty()) {
+                    ArrayList<AddOnData> addOnDataList = new ArrayList<>();
+                    for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
+                        AddOnData addOnData = new AddOnData();
+                        addOnData.setAddOnId(addOnDataItemModel.getAddOnId());
+                        addOnData.setAddOnPrice((int) addOnDataItemModel.getAddOnPrice());
+                        addOnData.setAddOnQty((int) addOnDataItemModel.getAddOnQty());
+
+                        AddOnNote addOnNote = new AddOnNote();
+                        AddOnNoteItemModel addOnNoteItemModel = addOnDataItemModel.getAddOnMetadata().getAddOnNoteItemModel();
+                        addOnNote.setCustomNote(addOnNoteItemModel.isCustomNote());
+                        addOnNote.setNotes(addOnNoteItemModel.getNotes());
+                        addOnNote.setFrom(addOnNoteItemModel.getFrom());
+                        addOnNote.setTo(addOnNoteItemModel.getTo());
+
+                        AddOnMetadata addOnMetadata = new AddOnMetadata();
+                        addOnMetadata.setAddOnNote(addOnNote);
+
+                        addOnData.setAddOnMetadata(addOnMetadata);
+                        addOnDataList.add(addOnData);
+                    }
+                    availableBottomSheetData.setAddOnSavedStates(addOnDataList);
+                }
+
+                if (shipmentCartItemModel.getCartString() != null) {
+                    availableBottomSheetData.setCartString(shipmentCartItemModel.getCartString());
+                }
+                availableBottomSheetData.setTokoCabang(shipmentCartItemModel.isFulfillment());
+                availableBottomSheetData.setWarehouseId(String.valueOf(shipmentCartItemModel.getFulfillmentId()));
+            }
+
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
             startActivityForResult(intent, REQUEST_ADD_ON_BOTTOMSHEET);
         }

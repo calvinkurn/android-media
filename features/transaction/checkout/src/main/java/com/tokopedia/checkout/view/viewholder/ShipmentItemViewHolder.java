@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -414,8 +413,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     @Override
-    public void openAddOnBottomSheet(@NotNull CartItemModel cartItem, @NotNull AddOnWordingModel addOnWordingModel) {
-        mActionListener.onOpenAddOnBottomSheet(cartItem, addOnWordingModel);
+    public void openAddOnProductLevelBottomSheet(@NotNull CartItemModel cartItem, @NotNull AddOnWordingModel addOnWordingModel) {
+        mActionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWordingModel);
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
@@ -436,7 +435,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderErrorAndWarning(shipmentCartItemModel);
         renderCustomError(shipmentCartItemModel);
         renderShippingVibrationAnimation(shipmentCartItemModel);
-        renderAddOnOrderLevel(shipmentCartItemModel);
+        renderAddOnOrderLevel(shipmentCartItemModel, shipmentCartItemModel.getAddOnWordingModel());
     }
 
     public void unsubscribeDebouncer() {
@@ -1116,7 +1115,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         });
     }
 
-    private void renderAddOnOrderLevel(ShipmentCartItemModel shipmentCartItemModel) {
+    private void renderAddOnOrderLevel(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
         if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
             AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
             AddOnButtonModel addOnButtonModel = addOnsDataModel.getAddOnsButtonModel();
@@ -1135,8 +1134,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 buttonGiftingAddonOrderLevel.setDesc(addOnButtonModel.getDescription());
                 buttonGiftingAddonOrderLevel.setUrlLeftIcon(addOnButtonModel.getLeftIconUrl());
                 buttonGiftingAddonOrderLevel.setUrlRightIcon(addOnButtonModel.getRightIconUrl());
+                buttonGiftingAddonOrderLevel.setOnClickListener(openAddOnOrderLevelBottomSheet(shipmentCartItemModel, addOnWordingModel));
             }
         }
+    }
+
+    private View.OnClickListener openAddOnOrderLevelBottomSheet(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
+        return view -> {
+            mActionListener.openAddOnOrderLevelBottomSheet(shipmentCartItemModel, addOnWordingModel);
+        };
     }
 
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {

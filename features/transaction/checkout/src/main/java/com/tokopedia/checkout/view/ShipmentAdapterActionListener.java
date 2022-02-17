@@ -128,5 +128,7 @@ public interface ShipmentAdapterActionListener {
 
     void onClickSetPinpoint(int position);
 
-    void onOpenAddOnBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
+    void openAddOnProductLevelBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
+
+    void openAddOnOrderLevelBottomSheet(ShipmentCartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
 }
