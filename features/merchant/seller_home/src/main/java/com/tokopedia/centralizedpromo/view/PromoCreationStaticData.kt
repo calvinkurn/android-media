@@ -1,7 +1,9 @@
 package com.tokopedia.centralizedpromo.view
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
@@ -16,7 +18,9 @@ object PromoCreationStaticData {
         broadcastChatUrl: String,
         freeShippingEnabled: Boolean,
         isVoucherCashbackEligible: Boolean,
-        isTopAdsOnBoardingEnable: Boolean
+        isTopAdsOnBoardingEnable: Boolean,
+        isVoucherCashbackFirstTime: Boolean,
+        isProductCouponFirstTime: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
@@ -44,7 +48,13 @@ object PromoCreationStaticData {
                 resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
                 "",
                 if (isVoucherCashbackEligible) {
-                    ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                    if (isVoucherCashbackFirstTime) {
+                        Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
+                            .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_CASHBACK)
+                            .build().toString()
+                    } else {
+                        ApplinkConstInternalSellerapp.CREATE_VOUCHER
+                    }
                 } else {
                     ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
                 }
@@ -67,6 +77,24 @@ object PromoCreationStaticData {
                 )
             )
         }
+
+        val productCouponApplink =
+            if (isProductCouponFirstTime) {
+                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
+                    .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
+                    .build().toString()
+            } else {
+                ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
+            }
+        promoItems.add(
+            PromoCreationUiModel(
+                R.drawable.ic_sah_voucher_product,
+                resourceProvider.getPromoCreationTitleVoucherProduct(),
+                resourceProvider.getPromoCreationDescriptionVoucherProduct(),
+                "",
+                productCouponApplink
+            )
+        )
 
         return PromoCreationListUiModel(
             items = promoItems,

@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
-import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
-import com.tokopedia.vouchercreation.create.view.enums.CouponType
-import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
-import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.shop.create.view.enums.CouponType
+import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherreview.VoucherReviewUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 
 class UpdateVoucherParam (
         @SerializedName("voucher_id")

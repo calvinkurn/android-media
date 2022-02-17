@@ -35,6 +35,23 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_card_topads"
+            android:textColor="@color/Unify_N0"
+            android:visibility="visible"
+            android:shadowColor="@color/Unify_N700_32"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            app:layout_constraintBottom_toBottomOf="@id/carouselItemImageTwo"
+            app:layout_constraintEnd_toEndOf="@id/carouselItemImageTwo"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:visibility="visible"/>
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/brandIcon"
             android:layout_width="@dimen/dp_24"

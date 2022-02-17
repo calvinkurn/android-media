@@ -16,7 +16,6 @@ import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -376,11 +375,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop operational hourappLink then should return tokopedia internal shop operational hour in customerapp`() {
+    fun `check shop operational hour appLink then should return tokopedia internal shop operational hour in customerapp`() {
         val mockShopId = "12345"
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/widget/operational-hour/$mockShopId/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_OPERATIONAL_HOUR, mockShopId)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop mvc locked to product shop id then should return tokopedia internal mvc locked to product shop id in customerapp`() {
+        val mockShopId = "12345"
+        val mockVoucherId = "6789"
+        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
@@ -1215,6 +1223,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/tracking/123456"
         val appLink = UriUtil.buildUri(ApplinkConst.ORDER_TRACKING, "123456")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check address list appLink then should return tokopedia internal manage address in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ADDRESS, expectedDeepLink)
     }
 
     @Test

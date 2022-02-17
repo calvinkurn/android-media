@@ -425,10 +425,10 @@ class DiscoveryFragment :
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
+                            hideGlobalError()
                             scrollToPinnedComponent(listComponent)
                         }
                     }
-                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
@@ -869,7 +869,7 @@ class DiscoveryFragment :
                 globalError.setType(GlobalError.NO_CONNECTION)
             }
             is IllegalStateException -> {
-                globalError.setType(GlobalError.PAGE_FULL)
+                globalError.setType(GlobalError.PAGE_NOT_FOUND)
             }
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
@@ -977,7 +977,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
-    fun startMVCTransparentActivity(componentPosition: Int = -1, shopId:String, hashCodeForMVC:Int) {
+    fun startMVCTransparentActivity(
+        componentPosition: Int = -1,
+        shopId: String,
+        productId: String,
+        hashCodeForMVC: Int
+    ) {
         this.componentPosition =componentPosition
         context?.let {
             startActivityForResult(
@@ -986,7 +991,8 @@ class DiscoveryFragment :
                     shopId,
                     MvcSource.DISCO,
                     ApplinkConst.SHOP.replace("{shop_id}", shopId),
-                    hashCode = hashCodeForMVC
+                    hashCode = hashCodeForMVC,
+                    productId = productId
                 ),
                 MvcView.REQUEST_CODE
             )
