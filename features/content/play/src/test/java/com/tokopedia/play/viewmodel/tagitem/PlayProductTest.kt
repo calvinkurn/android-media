@@ -65,13 +65,13 @@ class PlayProductTest {
         val mockProductList = List(3) {
             modelBuilder.buildProductSection(
                 productList = listOf(),
-                config = ProductSectionUiModel.ConfigUiModel(
+                config = ProductSectionUiModel.Section.ConfigUiModel(
                     type = ProductSectionType.Upcoming,
                     startTime = "",
                     endTime = "",
                     serverTime = "",
                     timerInfo = "Dimulai dalam",
-                    background = ProductSectionUiModel.BackgroundUiModel(gradients = emptyList(),
+                    background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
                         imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch"
                 )
@@ -108,13 +108,13 @@ class PlayProductTest {
         val mockProductList = List(3) {
             modelBuilder.buildProductSection(
                 productList = listOf(),
-                config = ProductSectionUiModel.ConfigUiModel(
+                config = ProductSectionUiModel.Section.ConfigUiModel(
                     type = ProductSectionType.Upcoming,
                     startTime = "",
                     endTime = "",
                     serverTime = "",
                     timerInfo = "Dimulai dalam",
-                    background = ProductSectionUiModel.BackgroundUiModel(gradients = emptyList(),
+                    background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
                         imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch"
                 )
@@ -158,13 +158,13 @@ class PlayProductTest {
         val mockProductList = List(3) {
             modelBuilder.buildProductSection(
                 productList = listOf(),
-                config = ProductSectionUiModel.ConfigUiModel(
+                config = ProductSectionUiModel.Section.ConfigUiModel(
                     type = ProductSectionType.Upcoming,
                     startTime = "",
                     endTime = "",
                     serverTime = "",
                     timerInfo = "Dimulai dalam",
-                    background = ProductSectionUiModel.BackgroundUiModel(gradients = emptyList(),
+                    background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
                         imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch"
                 )
@@ -237,7 +237,7 @@ class PlayProductTest {
                 .size
                 .assertEqualTo(sectionSize)
 
-            state.tagItems.product.productSectionList
+            state.tagItems.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 .forEachIndexed { index, section ->
                     section.config.title.assertEqualTo("$sectionTitle ${index + 1}")
                 }

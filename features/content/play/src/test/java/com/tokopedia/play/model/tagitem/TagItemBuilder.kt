@@ -55,10 +55,10 @@ interface TagItemBuilder {
 
     fun buildProductSection(
         productList: List<PlayProductUiModel.Product> = emptyList(),
-        config: ProductSectionUiModel.ConfigUiModel = ProductSectionUiModel.ConfigUiModel(
+        config: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel(
             type = ProductSectionType.Unknown,
             title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
-            background = ProductSectionUiModel.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
+            background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
         )
     ): ProductSectionUiModel
 }

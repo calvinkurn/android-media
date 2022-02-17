@@ -89,8 +89,8 @@ class TagItemBuilderImpl : TagItemBuilder {
 
     override fun buildProductSection(
         productList: List<PlayProductUiModel.Product>,
-        config: ProductSectionUiModel.ConfigUiModel
-    ) =  ProductSectionUiModel(
+        config: ProductSectionUiModel.Section.ConfigUiModel
+    ) =  ProductSectionUiModel.Section(
         productList = productList,
         config = config
     )
