@@ -1,9 +1,14 @@
 package com.tokopedia.catalog.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +27,7 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogProductComparisonViewModel
@@ -54,6 +60,9 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var recyclerView : RecyclerView? = null
+    private var searchBarTextField : EditText? = null
+    private var searchHandler : Handler? = null
+    private var searchWorker : Runnable ? = null
 
     private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
     private val catalogDetailAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -113,7 +122,22 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun setUpSearchView(view : View){
+        searchHandler = Handler(Looper.getMainLooper())
+        searchBarTextField = view.findViewById<SearchBarUnify>(R.id.catalog_product_search)?.searchBarTextField
         CatalogUtil.setSearchListener(context,view, ::onSearchKeywordEntered , ::onClearSearch, ::onTapSearchBar)
+        searchBarTextField?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(searchWorker != null) {
+                    searchHandler?.removeCallbacks(searchWorker!!)
+                }
+                searchWorker = Runnable { onSearchKeywordEntered() }
+                if(searchWorker != null) {
+                    searchHandler?.postDelayed(searchWorker!!, CatalogConstant.DEBOUNCE_SEARCH)
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun setUpEmptyState(view : View){
@@ -195,8 +219,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private fun onSearchKeywordEntered(){
         resetPage()
-        val searchText = view?.findViewById<SearchBarUnify>(R.id.catalog_product_search)?.searchBarTextField?.text.toString()
-        searchKeyword = searchText
+        searchKeyword = searchBarTextField?.text.toString()
         makeApiCall(PAGE_FIRST)
     }
 

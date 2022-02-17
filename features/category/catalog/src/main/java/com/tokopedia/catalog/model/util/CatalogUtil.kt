@@ -2,9 +2,6 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -84,16 +81,6 @@ object CatalogUtil {
                 }
                 return false
             }
-        })
-
-        searchTextField?.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                onSearchKeywordEntered.invoke()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
         })
 
         searchTextField?.setOnFocusChangeListener { _, hasFocus ->

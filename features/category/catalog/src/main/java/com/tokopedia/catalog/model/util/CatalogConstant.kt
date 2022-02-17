@@ -56,4 +56,5 @@ object CatalogConstant {
     const val HTTPS_TEXT = "https://"
     const val HTTPS_WWW_DOT_TEXT = "https://www."
 
+    const val DEBOUNCE_SEARCH = 250L
 }
