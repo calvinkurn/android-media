@@ -30,17 +30,17 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickSaveButtonOnProductSetup(productId: String) {
+    override fun clickSaveButtonOnProductSetup() {
         sendEvent(
             "click - save product card",
-            "$shopId - $productId"
+            shopId
         )
     }
 
     override fun clickAddMoreProductOnProductSetup() {
         sendEvent(
             "click - add product card",
-            "$shopId"
+            shopId
         )
     }
 

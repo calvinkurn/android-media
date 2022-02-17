@@ -35,8 +35,7 @@ class ProductChooserAnalyticManager @Inject constructor(
             event.subscribe().collect {
                 when (it) {
                     SaveButtonViewComponent.Event.OnClicked -> {
-                        //TODO("Ask why need productId")
-                        analytic.clickSaveButtonOnProductSetup("")
+                        analytic.clickSaveButtonOnProductSetup()
                     }
                     is ProductListViewComponent.Event.OnSelected -> {
                         if (it.product.stock <= 0) return@collect
@@ -58,7 +57,6 @@ class ProductChooserAnalyticManager @Inject constructor(
                         analytic.clickCloseOnProductChooser(isProductSelected = false)
                     }
                     is ProductChooserBottomSheet.Event.SortChosen -> {
-                        //TODO("Ask whether this is every sort clicked or chosen")
                         analytic.clickProductSortingType(it.sort.text)
                     }
                 }
