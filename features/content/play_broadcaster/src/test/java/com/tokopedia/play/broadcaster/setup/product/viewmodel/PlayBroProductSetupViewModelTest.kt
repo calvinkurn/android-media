@@ -9,8 +9,13 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiMod
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.isEqualTo
@@ -18,6 +23,8 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
@@ -40,6 +47,13 @@ internal class PlayBroProductSetupViewModelTest {
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
     /** Mock Response */
+    private val mockCampaignList = List(5) {
+        CampaignUiModel("$it", "Campaign $it", "", "", "", CampaignStatusUiModel(CampaignStatus.Ongoing, "Berlangsung"), it)
+    }
+    private val mockEtalaseList = List(5) {
+        EtalaseUiModel("$it", "", "Etalase $it", it)
+    }
+
     private val mockProductTagSection = List(5) {
         ProductTagSectionUiModel("Test 1", CampaignStatus.Ongoing, List(3) {
             ProductUiModel("$it", "Product 1", "", 10, OriginalPrice("Rp 12.000", 12000.0))
@@ -56,6 +70,48 @@ internal class PlayBroProductSetupViewModelTest {
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    /** Campaign & Etalase */
+    @Test
+    fun `when user firstly create viewmodel, it will emit uiState with campaign and etalase list`() {
+
+        coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
+        coEvery { mockRepo.getCampaignList() } returns mockCampaignList
+
+        runBlockingTest {
+            val robot = PlayBroProductSetupViewModelRobot(
+                dispatchers = testDispatcher,
+                channelRepo = mockRepo
+            )
+
+            println("state : ${robot.getViewModel().uiState}")
+
+            val campaignAndEtalase = robot.getViewModel().uiState.value.campaignAndEtalase
+            campaignAndEtalase.etalaseList.assertEqualTo(mockEtalaseList)
+            campaignAndEtalase.campaignList.assertEqualTo(mockCampaignList)
+        }
+
+    }
+
+    @Test
+    fun `when user set sorting, it will emit uiState with new loadParam`() {
+        val mockSort = ProductSetupAction.SetSort(SortUiModel(1, "Terbaru"))
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(mockSort)
+            }
+
+            println("state : $state")
+
+            assertEquals(state.loadParam.sort, mockSort)
+        }
     }
 
     /** Summary Page */

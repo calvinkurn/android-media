@@ -167,6 +167,12 @@ internal class PlayBroProductSetupViewModelRobot(
         return field.get(viewModel) as T
     }
 
+    fun executeViewModelPrivateFunction(name: String) {
+        val method = viewModel.javaClass.getDeclaredMethod(name)
+        method.isAccessible = true
+        method.invoke(viewModel)
+    }
+
     override fun close() {
         cancelRemainingTasks()
     }
