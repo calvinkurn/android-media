@@ -17,5 +17,6 @@ data class ProductInfoParcelData(
         val data: List<ProductDetailInfoContent> = listOf(),
         val forceRefresh: Boolean = false,
         val isTokoNow: Boolean = false,
-        val isGiftable: Boolean = false
+        val isGiftable: Boolean = false,
+        val parentId: String = ""
 )

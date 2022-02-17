@@ -52,6 +52,7 @@ object ProductDetailInfoHelper {
         productInfoP1?.let {
             val data = it.data
             val basic = it.basic
+            val parentId = it.parentProductId
 
             return ProductInfoParcelData(
                     productId = basic.productID,
@@ -64,7 +65,8 @@ object ProductDetailInfoHelper {
                     data = productInfoContent,
                     forceRefresh = forceRefresh,
                     isTokoNow = productInfoP1.basic.isTokoNow,
-                    isGiftable = basic.isGiftable
+                    isGiftable = basic.isGiftable,
+                    parentId = parentId
             )
         } ?: return ProductInfoParcelData()
 
