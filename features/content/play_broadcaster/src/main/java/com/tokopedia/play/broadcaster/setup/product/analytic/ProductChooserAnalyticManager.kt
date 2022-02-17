@@ -58,6 +58,7 @@ class ProductChooserAnalyticManager @Inject constructor(
                         analytic.clickCloseOnProductChooser(isProductSelected = false)
                     }
                     is ProductChooserBottomSheet.Event.SortChosen -> {
+                        //TODO("Ask whether this is every sort clicked or chosen")
                         analytic.clickProductSortingType(it.sort.text)
                     }
                 }
