@@ -75,6 +75,17 @@ object CatalogUtil {
         val searchTextField = searchbar?.searchBarTextField
         val searchClearButton = searchbar?.searchBarIcon
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    onSearchKeywordEntered.invoke()
+                    dismissKeyboard(context, view)
+                    return true
+                }
+                return false
+            }
+        })
+
         searchTextField?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

@@ -9,12 +9,10 @@ import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredShimmerModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class CatalogProductComparisonViewModel @Inject constructor(
@@ -23,7 +21,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
 
     private var shimmerData = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
     private var dataList = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
-    var masterDataList = ArrayList<BaseCatalogDataModel>()
+    val masterDataList = ArrayList<BaseCatalogDataModel>()
     private var hasMoreItems = MutableLiveData<Boolean>()
     private var error = MutableLiveData<Throwable>()
     private val pageFirst = 1

@@ -7,7 +7,6 @@ import com.tokopedia.catalog.CatalogTestUtils
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
-import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
@@ -15,9 +14,6 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
@@ -69,8 +65,6 @@ class CatalogComparisonViewModelTest {
         val mockGqlResponse : GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_comparison_dummy_response.json"))
         val data = mockGqlResponse.getData<CatalogComparisonProductsResponse>(
             CatalogComparisonProductsResponse::class.java)
-        val arrayOfModel = arrayListOf<BaseCatalogDataModel>(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,CatalogConstant.COMPARISON_PRODUCT,
-            data.catalogComparisonList?.catalogComparisonList?.get(0)!!))
         runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
