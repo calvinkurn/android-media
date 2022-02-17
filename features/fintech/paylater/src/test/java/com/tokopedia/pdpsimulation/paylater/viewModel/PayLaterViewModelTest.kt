@@ -95,13 +95,13 @@ class PayLaterViewModelTest {
         }
 
         viewModel.getPayLaterAvailableDetail(10.0, "0")
-        coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), any()) }
+        coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
 
     private fun mockMapperResponse(list: ArrayList<SimulationUiModel>) {
         coEvery {
-            payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), any())
+            payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any())
         } coAnswers {
             firstArg<(ArrayList<SimulationUiModel>) -> Unit>().invoke(list)
         }
@@ -116,7 +116,7 @@ class PayLaterViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         viewModel.getPayLaterAvailableDetail(0.0, "0")
-        coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), any()) }
+        coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
 
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }

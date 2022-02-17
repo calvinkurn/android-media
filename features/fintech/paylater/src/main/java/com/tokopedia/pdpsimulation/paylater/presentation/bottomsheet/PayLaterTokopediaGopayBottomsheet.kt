@@ -8,8 +8,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
-import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -19,10 +17,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private lateinit var cta: Cta
     private var isWebLink = true
-    private var parterName: String? = ""
-    private var tenure: Int? = 0
-    private var montlyInstallment: Int? = 0
-    private var productId: String? = ""
 
     private val childLayoutRes = R.layout.paylater_gopay_activation_bottomsheet
 
@@ -33,21 +27,15 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         initBottomSheet()
     }
 
-
     private fun getArgumentData() {
         arguments?.let {
             cta = it.getParcelable<Cta>(GOPAY_BOTTOMSHEET_DETAIL) as Cta
-            parterName = it.getString(PARTER_NAME) ?: ""
-            tenure = it.getInt(TENURE)
-            montlyInstallment = it.getInt(EMI_AMOUNT)
-            productId = it.getString(PRODUCT_ID)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         renderUI()
         initListeners()
-        sendImpressionAnalytics()
     }
 
     private fun renderUI() {
@@ -61,23 +49,10 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         }
     }
 
-    private fun sendImpressionAnalytics() {
-        sendEvent(
-            PdpSimulationEvent.PayLater.GopayBottomSheetImpression(
-                productId ?: "",
-                tenure.toString(),
-                parterName ?: "",
-                montlyInstallment.toString()
-            )
-        )
-    }
-
     private fun initListeners() {
         btnRegister.setOnClickListener {
-            sendClickAnalytics()
             if (::cta.isInitialized)
                 openRouteView(cta.android_url)
-
         }
     }
 
@@ -90,24 +65,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         }
         dismiss()
 
-    }
-
-    private fun sendClickAnalytics() {
-        sendEvent(
-            PdpSimulationEvent.PayLater.GopayBottomSheetButtonClick(
-                productId ?: "",
-                tenure.toString(),
-                parterName ?: "",
-                montlyInstallment.toString(),
-                cta.android_url ?: ""
-            )
-        )
-    }
-
-    private fun sendEvent(event: PdpSimulationEvent) {
-        activity?.let {
-            (it as PdpSimulationCallback).sendGoPayAnalytics(event)
-        }
     }
 
     private fun initBottomSheet() {
@@ -130,11 +87,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterTokopediaGopayBottomsheet"
         const val GOPAY_BOTTOMSHEET_DETAIL = "gopayBottomsheetDetail"
-        const val PARTER_NAME = "partnerName"
-
-        const val TENURE = " tenure"
-        const val EMI_AMOUNT = "emiAmount"
-        const val PRODUCT_ID = "productID"
         const val REDIRECT_TOKO_ENV = 1
 
         fun show(

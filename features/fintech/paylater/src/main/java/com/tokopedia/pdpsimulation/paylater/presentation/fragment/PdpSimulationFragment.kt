@@ -41,7 +41,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
 class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
@@ -84,7 +83,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     )
 
     private fun handleAction(detail: Detail) {
-        PayLaterHelper.handleClickNavigation(context, detail, payLaterArgsDescriptor.productId,
+        PayLaterHelper.handleClickNavigation(context, detail,
             openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
             openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
         )
@@ -93,7 +92,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
-            PayLaterBundleGenerator.getInstallmentBundle(detail)
+            PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
         )
     }
 
@@ -172,13 +171,16 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendPayLaterImpression(data: ArrayList<SimulationUiModel>, defaultSelectedSimulation:Int) {
-        val firstDetail = data[defaultSelectedSimulation].simulationList?.getOrNull(0)
+        val simulationList = data[defaultSelectedSimulation].simulationList
+        val firstDetail = simulationList?.getOrNull(0)
         val userState: String = if (firstDetail is Detail) firstDetail.userState ?: "" else ""
 
+        val partnerList = if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
         PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation
             action = PdpSimulationAnalytics.IMPRESSION_PAYLATER
             userStatus = userState
+            payLaterPartnerName = partnerList
             sendEvent(this)
         }
     }

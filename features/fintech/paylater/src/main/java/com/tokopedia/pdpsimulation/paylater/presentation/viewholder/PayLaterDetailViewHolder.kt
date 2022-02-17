@@ -58,7 +58,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.payLaterActionCta.text = element.cta.name
         itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
         itemView.payLaterActionCta.setOnClickListener {
-            interaction.invokeAnalytics(getInstallmentInfoEvent(element, PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD, element.cta.android_url ?:""))
+            interaction.invokeAnalytics(getInstallmentInfoEvent(element, element.cta.android_url ?:""))
             interaction.onCtaClicked(element)
         }
     }
@@ -118,13 +118,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             }
             partnerTenureInfo.setOnClickListener {
                 if (element.installementDetails != null)
-                    interaction.invokeAnalytics(getInstallmentInfoEvent(element, PdpSimulationAnalytics.CLICK_INSTALLMENT_INFO))
                     interaction.installementDetails(element)
             }
         }
     }
 
-    private fun getInstallmentInfoEvent(detail: Detail, eventAction: String, link: String = "", ) = PayLaterCtaClick().apply {
+    private fun getInstallmentInfoEvent(detail: Detail, link: String = "") = PayLaterCtaClick().apply {
         tenureOption = detail.tenure ?: 0
         userStatus = detail.userState ?: ""
         payLaterPartnerName = detail.gatewayDetail?.name ?: ""
@@ -132,6 +131,6 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         limit = detail.limit ?: ""
         redirectLink = link
         ctaWording = detail.cta.name ?: ""
-        action = eventAction
+        action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
     }
 }

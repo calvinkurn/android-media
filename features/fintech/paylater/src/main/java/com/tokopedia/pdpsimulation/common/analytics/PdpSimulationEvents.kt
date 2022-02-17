@@ -3,26 +3,6 @@ package com.tokopedia.pdpsimulation.common.analytics
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-sealed class PdpSimulationEvent {
-    sealed class PayLater {
-
-        data class GopayBottomSheetImpression(
-            val productId: String,
-            val tenure: String,
-            val partnerName: String,
-            val emiAmount: String
-        ) : PdpSimulationEvent()
-
-        data class GopayBottomSheetButtonClick(
-            val productId: String,
-            val tenure: String,
-            val partnerName: String,
-            val emiAmount: String,
-            val url: String
-        ) : PdpSimulationEvent()
-    }
-}
-
 open class PayLaterAnalyticsBase {
     var productId: String = ""
     var userStatus: String = ""
@@ -31,17 +11,9 @@ open class PayLaterAnalyticsBase {
     var action: String = ""
 }
 
-open class PayLaterProductImpressionEvent: PayLaterAnalyticsBase() {
+class PayLaterCtaClick: PayLaterAnalyticsBase(){
     var emiAmount: String = ""
-}
-
-@Parcelize
-open class PayLaterBottomSheetImpression: PayLaterProductImpressionEvent(), Parcelable {
     var limit: String = ""
     var redirectLink: String = ""
-}
-
-@Parcelize
-class PayLaterCtaClick: PayLaterBottomSheetImpression(), Parcelable {
     var ctaWording: String = ""
 }
