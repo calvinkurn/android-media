@@ -247,12 +247,16 @@ object IrisAnalyticsEvents {
             it.journeyName?.let { journeyName ->
                 values[JOURNEY_NAME] = journeyName
             }
+            it.sessionId?.let { sessionId ->
+                setSessionId(eventName, values, sessionId)
+            }
         }
     }
 
     private fun setSessionId(eventName : String,
                              values : HashMap<String, Any>,
                              sessionId : String){
+
         val allowedEvents = listOf(
             INAPP_RECEIVED,
             INAPP_CLICKED,
