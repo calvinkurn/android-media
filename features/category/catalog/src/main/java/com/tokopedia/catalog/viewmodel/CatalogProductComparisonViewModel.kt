@@ -36,11 +36,11 @@ class CatalogProductComparisonViewModel @Inject constructor(
             when(result){
                 is Success -> {
                     when {
-                        result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty() -> {
-                            dataList.value = masterDataList
+                        result.data.catalogComparisonList == null -> {
                             hasMoreItems.value = false
                         }
-                        result.data.catalogComparisonList == null -> {
+                        result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty() -> {
+                            dataList.value = masterDataList
                             hasMoreItems.value = false
                         }
                         else -> {
