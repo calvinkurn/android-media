@@ -18,12 +18,7 @@ data class AddOnRequest(
         var cartProducts: List<CartProduct> = emptyList(),
         @SerializedName("add_on_data")
         var addOnData: List<AddOnDataRequest> = emptyList()
-) {
-    companion object {
-        const val ADD_ON_LEVEL_PRODUCT = "product"
-        const val ADD_ON_LEVEL_ORDER = "order"
-    }
-}
+)
 
 data class CartProduct(
         @SerializedName("cart_id")

@@ -6,6 +6,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import java.util.*
 
@@ -36,6 +37,7 @@ sealed class OccGlobalEvent {
     data class ToasterAction(val toast: OccToasterAction) : OccGlobalEvent()
     data class ForceOnboarding(val onboarding: OccOnboarding) : OccGlobalEvent()
     data class UpdateLocalCacheAddress(val addressModel: ChosenAddressModel) : OccGlobalEvent()
+    data class PopUp(val popUp: PopUpData) : OccGlobalEvent()
     object AdjustAdminFeeError : OccGlobalEvent()
 }
 

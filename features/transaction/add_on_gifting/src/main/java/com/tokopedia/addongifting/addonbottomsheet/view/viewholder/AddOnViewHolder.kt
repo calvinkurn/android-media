@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.BasicInfoResponse
@@ -17,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val listener: AddOnActionListener)
@@ -112,8 +114,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     element.addOnNoteTo = s.toString()
-                    textFieldAddOnTo.isInputError = false
-                    textFieldAddOnTo.setMessage("")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -138,8 +138,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     element.addOnNoteFrom = s.toString()
-                    textFieldAddOnFrom.isInputError = false
-                    textFieldAddOnFrom.setMessage("")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -155,7 +153,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 textFieldAddOnNote.editText.isEnabled = true
                 textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
             } else {
-                textFieldAddOnNote.editText.isEnabled = true
+                textFieldAddOnNote.editText.isEnabled = false
                 textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_pre_defined_note))
             }
 
@@ -178,10 +176,8 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    textFieldAddOnNote.isInputError = false
-                    textFieldAddOnNote.setMessage("")
                     element.addOnNote = s.toString()
-                    if (textFieldAddOnNote.editText.text.isNotEmpty()) {
+                    if (textFieldAddOnNote.editText.text.isNotEmpty() || textFieldAddOnNote.editText.isFocused) {
                         textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
                     } else {
                         textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_empty))
@@ -192,6 +188,17 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 }
             })
+
+            textFieldAddOnNote.editText.setOnFocusChangeListener { view, isFocussed ->
+                if (isFocussed) {
+                    textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
+                    Toaster.build(itemView.rootView, "Focus", Snackbar.LENGTH_SHORT).show()
+                    listener.onNeedToMakeEditTextFullyVisible(textFieldAddOnNote)
+                } else {
+                    textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_empty))
+                    Toaster.build(itemView.rootView, "Not Focus", Snackbar.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

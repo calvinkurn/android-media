@@ -23,8 +23,12 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECo
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -776,14 +780,38 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
         eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-            },
-            {
-                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
+                {
+                    eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+                },
+                {
+                    eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+                },
+                AddressConstant.ANA_REVAMP_FEATURE_ID
         )
+    }
+
+    fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
+        // Todo : set add on amount
+        // Todo : set param on afpb
+        // Todo : calculate total
+
+        // Add on currently only support single product on OCC
+        val orderProduct = orderProducts.value.firstOrNull()
+        val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
+        if (orderProduct != null) {
+            if (addOnResult != null) {
+                if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER /*&& addOnResult.addOnKey == "${orderCart.cartString}-0"*/) {
+                    orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                    orderProducts.value = listOf(orderProduct)
+                } else {
+                    orderProduct.addOn = AddOnsDataModel()
+                    orderProducts.value = listOf(orderProduct)
+                }
+            } else {
+                orderProduct.addOn = AddOnsDataModel()
+                orderProducts.value = listOf(orderProduct)
+            }
+        }
     }
 
     override fun onCleared() {

@@ -15,6 +15,7 @@ import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.TotalAmountUiModel
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -198,10 +199,10 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                     AddOnRequest().apply {
                         if (addOnProductData.availableBottomSheetData.isTokoCabang) {
                             addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-0"
-                            addOnLevel = AddOnRequest.ADD_ON_LEVEL_ORDER
+                            addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER
                         } else {
                             addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
-                            addOnLevel = AddOnRequest.ADD_ON_LEVEL_PRODUCT
+                            addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
                         }
                         cartProducts = addOnProductData.availableBottomSheetData.products.map {
                             CartProduct().apply {
@@ -239,8 +240,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     private fun handleOnSuccessSaveAddOnState(saveAddOnStateResponse: SaveAddOnStateResponse) {
         // Todo : adjust error validation, should be based on error code not error message
-        if (saveAddOnStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-            throw ResponseErrorException(saveAddOnStateResponse.getAddOns.errorMessage.joinToString(". "))
+        if (saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
+            throw ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.joinToString(". "))
         } else {
             launch {
                 _uiEvent.emit(

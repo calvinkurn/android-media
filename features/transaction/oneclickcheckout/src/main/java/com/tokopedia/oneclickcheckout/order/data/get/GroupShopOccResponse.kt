@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 
 class GroupShopOccResponse(
         @SerializedName("errors")
@@ -30,7 +31,9 @@ class GroupShopOccResponse(
         @SerializedName("toko_cabang")
         val tokoCabangInfo: TokoCabangInfo = TokoCabangInfo(),
         @SerializedName("warehouse")
-        val warehouse: WarehouseDataResponse = WarehouseDataResponse()
+        val warehouse: WarehouseDataResponse = WarehouseDataResponse(),
+        @SerializedName("add_ons")
+        val addOns: List<AddOnsResponse> = emptyList()
 )
 
 class CourierSelectionError(
