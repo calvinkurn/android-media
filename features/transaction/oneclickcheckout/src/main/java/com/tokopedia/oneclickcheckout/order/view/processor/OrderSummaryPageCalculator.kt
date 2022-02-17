@@ -146,7 +146,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
-            if (payment.walletData.isGoCicil && payment.maximumAmount > 0 && payment.maximumAmount < orderCost.totalPriceWithoutPaymentFees) {
+            if (payment.walletData.isGoCicil && payment.maximumAmount < orderCost.totalPriceWithoutPaymentFees) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.specificGatewayCampaignOnlyType > 0) {
                     currentState = disableButtonState(currentState)
