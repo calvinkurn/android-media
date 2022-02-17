@@ -180,22 +180,26 @@ class OSTopAdsVerificationTest {
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
             }
             is BestSellerViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
+                val recyclerView: View? = activityRule.activity.findViewById<View>(R.id.best_seller_recommendation_recycler_view)
+                recyclerView?.let {
+                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
+                }
             }
             is FeaturedShopViewHolder -> {
                 val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
                 checkLoadingView?.let { checkLoadingView.gone() }
-//                val recyclerView: View? = activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
-//                recyclerView?.let {
-//                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
-//                }
+                val recyclerView: View? = activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
+                recyclerView?.let {
+                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                }
+
 //                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
         }
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {

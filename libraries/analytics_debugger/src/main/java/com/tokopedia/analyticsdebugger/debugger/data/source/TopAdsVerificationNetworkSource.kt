@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class TopAdsVerificationNetworkSource @Inject
@@ -61,7 +62,11 @@ constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_topads_verificator),
                 TopAdsVerificationData::class.java
         )
-        val variables = createParametersForQuery(urlCheckList)
+        val urlCheckItemList = ArrayList<String>()
+        urlCheckMap.forEach {
+            urlCheckItemList.add(it.key)
+        }
+        val variables = createParametersForQuery(urlCheckItemList)
         graphqlRequest.variables = variables
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

@@ -286,14 +286,16 @@ class OfficialHomeMapper (
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newData.channelModel.channelHeader = it.channelModel.channelHeader
-                newList.add(newData)
+//                val isFeaturedShopEmpty = newList.filter { model -> model is FeaturedShopDataModel}.isEmpty()
+//                if (isFeaturedShopEmpty)
+                    newList.add(newData)
             }
             else {
                 newList.add(it)
             }
         }
         listOfficialStore = newList
-        action.invoke(listOfficialStore)
+        action.invoke(listOfficialStore.toMutableList())
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
@@ -304,7 +306,7 @@ class OfficialHomeMapper (
             }
         }
         listOfficialStore = newList
-        action.invoke(listOfficialStore)
+        action.invoke(listOfficialStore.toMutableList())
     }
 
     fun mappingRecomWidget(data: BestSellerDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
@@ -323,7 +325,7 @@ class OfficialHomeMapper (
             newList.add(RECOM_WIDGET_POSITION, data)
         }
         listOfficialStore = newList
-        action.invoke(listOfficialStore)
+        action.invoke(listOfficialStore.toMutableList())
     }
 
     fun removeRecomWidget(
@@ -336,6 +338,6 @@ class OfficialHomeMapper (
             }
         }
         listOfficialStore = newList
-        action.invoke(listOfficialStore)
+        action.invoke(listOfficialStore.toMutableList())
     }
 }
