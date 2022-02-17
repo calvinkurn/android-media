@@ -39,7 +39,6 @@ class CalendarViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_calendar_widget
-        private const val ONE = 1
     }
 
     private val binding by lazy { ShcCalendarWidgetBinding.bind(itemView) }
@@ -150,7 +149,7 @@ class CalendarViewHolder(
     private fun showEvents(element: CalendarWidgetUiModel) {
         with(binding) {
             val pages = element.data?.eventGroups.orEmpty()
-            if (pages.size > ONE) {
+            if (pages.size > ShcConst.INT_1) {
                 pageControlShcCalendar.visible()
                 pageControlShcCalendar.setIndicator(pages.size)
             } else {
@@ -196,7 +195,7 @@ class CalendarViewHolder(
     private fun scrollToClosestEvent(pages: List<CalendarEventGroupUiModel>) {
         val closestEventIndex = pages.indexOfFirst { it.autoScrollToHere }
         if (closestEventIndex != RecyclerView.NO_POSITION) {
-            binding.rvShcCalendar.scrollToPosition(closestEventIndex)
+            binding.rvShcCalendar.smoothScrollToPosition(closestEventIndex)
         }
     }
 
