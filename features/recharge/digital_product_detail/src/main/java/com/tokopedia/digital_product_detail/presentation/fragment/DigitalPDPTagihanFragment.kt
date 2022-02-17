@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -20,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
@@ -65,6 +65,9 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DigitalPDPTagihanFragment: BaseDaggerFragment(),
@@ -89,10 +92,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private var clientNumber = ""
     private var loyaltyStatus = ""
     private var productId =  0
-    private var operator = TelcoOperator()
     private var menuId = 0
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
     private var inputNumberActionType = InputNumberActionType.MANUAL
+    private var actionTypeTrackingJob: Job? = null
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -127,7 +130,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         onShowGreenBox()
     }
 
-    fun setupKeyboardWatcher() {
+    private fun setupKeyboardWatcher() {
         binding?.root?.let {
             keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
                 override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
@@ -163,8 +166,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
         viewModel.catalogSelectGroup.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
+                is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
                 is RechargeNetworkResult.Loading -> {}
             }
         })
@@ -229,13 +232,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             setListener(
                 inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.operatorData.attributes.prefix.isEmpty().let {
-                            if (it) {
-                                //getOperatorSelectGroup()
-                            } else {
-                                renderProduct()
-                            }
-                        }
+                        renderProduct()
                     }
 
                     override fun onClearInput() {
@@ -247,10 +244,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     }
 
                     override fun onClickNavigationIcon() {
-                        digitalPDPTelcoAnalytics.clickOnContactIcon(
-                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                            userSession.userId
-                        )
+                        // TODO: [Misael] analytics navigation icon (mgkn QR)
 
                         val intent = RouteManager.getIntent(context,
                             ApplinkConstInternalMarketplace.QR_SCANNEER,
@@ -277,14 +271,14 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         if (isFavoriteContact) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
+                                viewModel.operatorData.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId
                             )
                         } else {
                             digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
+                                viewModel.operatorData.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId
                             )
@@ -313,14 +307,14 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         if (isLabeled) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
+                                viewModel.operatorData.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId,
                             )
                         } else {
                             digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
+                                viewModel.operatorData.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId
                             )
@@ -329,6 +323,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
+                            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                                viewModel.operatorData.attributes.name,
+                                userSession.userId
+                            )
                             val clientNumber = rechargePdpTagihanListrikClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(categoryId.toString())
                             navigateToContact(
@@ -368,13 +367,12 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetPrefixOperator(operatorGroup: DigitalCatalogOperatorSelectGroup) {
+    private fun onSuccessGetOperatorSelectGroup(operatorGroup: DigitalCatalogOperatorSelectGroup) {
         viewModel.getDynamicInput(menuId, getString(R.string.selection_null_product_error))
         renderChipsAndTitle(operatorGroup)
-        renderProduct()
     }
 
-    private fun onFailedGetPrefixOperator(throwable: Throwable) {
+    private fun onFailedGetOperatorSelectGroup(throwable: Throwable) {
         showEmptyState()
         showErrorToaster(throwable)
     }
@@ -537,7 +535,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
                 /* validate client number */
                 viewModel.validateClientNumber(rechargePdpTagihanListrikClientNumberWidget.getInputNumber())
-                // TODO: [Misael] hit tracking if needed
+                hitTrackingForInputNumber(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    viewModel.operatorData.attributes.name
+                )
 
                 if (rechargePdpTagihanListrikClientNumberWidget.getInputNumber()
                         .length in DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH..DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
@@ -573,6 +574,37 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             if (rechargePdpTagihanListrikEmptyStateWidget.isVisible) {
                 rechargePdpTagihanListrikEmptyStateWidget.hide()
                 rechargePdpTickerWidgetProductDesc.show()
+            }
+        }
+    }
+
+    private fun hitTrackingForInputNumber(categoryName: String, operatorName: String) {
+        actionTypeTrackingJob?.cancel()
+        actionTypeTrackingJob = lifecycleScope.launch {
+            delay(DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY)
+            when (inputNumberActionType) {
+                InputNumberActionType.MANUAL -> {
+                    digitalPDPTelcoAnalytics.eventInputNumberManual(
+                        categoryName,
+                        operatorName,
+                        userSession.userId
+                    )
+                }
+                InputNumberActionType.CONTACT -> {
+                    digitalPDPTelcoAnalytics.eventInputNumberContact(
+                        categoryName,
+                        operatorName,
+                        userSession.userId
+                    )
+                }
+                InputNumberActionType.FAVORITE -> {
+                    digitalPDPTelcoAnalytics.eventInputNumberFavorite(
+                        categoryName,
+                        operatorName,
+                        userSession.userId
+                    )
+                }
+                else -> {}
             }
         }
     }
@@ -653,8 +685,13 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     /** DigitalHistoryIconListener */
-    override fun onClickDigitalIconHistory() {
 
+    override fun onClickDigitalIconHistory() {
+        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
     }
 
 
