@@ -24,6 +24,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -148,11 +149,10 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
-        val iconId = when (reminderType) {
-            PlayWidgetReminderType.Reminded -> IconUnify.BELL_FILLED
-            PlayWidgetReminderType.NotReminded -> IconUnify.BELL
+        when (reminderType) {
+            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = unifyR.color.Unify_GN500, newLightEnable = 0)
+            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL)
         }
-        ivReminder.setImage(newIconId = iconId)
     }
 
     private fun setPromoType(promoType: PlayWidgetPromoType) {

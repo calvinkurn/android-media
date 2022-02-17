@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -141,11 +142,10 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
-        val iconId = when (reminderType) {
-            PlayWidgetReminderType.Reminded -> IconUnify.BELL_FILLED
-            PlayWidgetReminderType.NotReminded -> IconUnify.BELL
+        when (reminderType) {
+            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = unifyR.color.Unify_GN500, newLightEnable = 0)
+            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL)
         }
-        ivReminder.setImage(newIconId = iconId)
     }
 
     private fun setPromoType(promoType: PlayWidgetPromoType) {
