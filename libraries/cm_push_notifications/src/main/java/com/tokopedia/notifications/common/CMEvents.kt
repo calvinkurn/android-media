@@ -62,6 +62,7 @@ object IrisAnalyticsEvents {
     private const val CAMPAIGN_NAME = "campaign_name"
     private const val JOURNEY_ID = "journey_id"
     private const val JOURNEY_NAME = "journey_name"
+    private const val SESSION_ID = "session_id"
 
     private const val AMPLIFICATION = "amplification"
 
@@ -254,6 +255,23 @@ object IrisAnalyticsEvents {
 
         return values
 
+    }
+
+    private fun setSessionId(eventName : String,
+                             values : HashMap<String, Any>,
+                             sessionId : String){
+        val allowedEvents = listOf(
+            INAPP_RECEIVED,
+            INAPP_CLICKED,
+            INAPP_DISMISSED,
+            PUSH_RECEIVED,
+            PUSH_CLICKED,
+            PUSH_DISMISSED
+        )
+
+        if (eventName in allowedEvents) {
+            values[SESSION_ID] = sessionId
+        }
     }
 
     private fun checkEventAndAddShopId(

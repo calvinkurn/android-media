@@ -169,6 +169,7 @@ object CmInAppBundleConvertor {
             campaignName = map[CMConstant.PayloadKeys.PayloadExtraDataKey.CAMPAIGN_NAME],
             journeyId = map[CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_ID],
             journeyName = map[CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_NAME],
+            sessionId = map[CMConstant.PayloadKeys.PayloadExtraDataKey.SESSION_ID],
         )
     }
 
@@ -177,6 +178,7 @@ object CmInAppBundleConvertor {
             campaignName = amplificationCMInApp.campaignName,
             journeyId = amplificationCMInApp.journeyId,
             journeyName = amplificationCMInApp.journeyName,
+            sessionId = amplificationCMInApp.sessionId,
         )
     }
 

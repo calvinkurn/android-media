@@ -145,6 +145,7 @@ public interface CMConstant {
             String CAMPAIGN_NAME = "cmpgnName";
             String JOURNEY_ID = "jrnId";
             String JOURNEY_NAME = "jrnName";
+            String SESSION_ID = "sesnId";
         }
 
     }

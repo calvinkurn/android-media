@@ -377,6 +377,7 @@ object PayloadConverter {
             campaignName = data.getString(PayloadExtraDataKey.CAMPAIGN_NAME, null),
             journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
+            sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
         )
     }
 
@@ -385,6 +386,7 @@ object PayloadConverter {
             campaignName = data.campaignName,
             journeyId = data.journeyId,
             journeyName = data.journeyName,
+            sessionId = data.sessionId,
         )
     }
 }

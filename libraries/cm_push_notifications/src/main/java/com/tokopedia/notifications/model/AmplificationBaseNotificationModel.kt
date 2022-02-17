@@ -206,6 +206,10 @@ data class AmplificationBaseNotificationModel(
     @SerializedName(PayloadExtraDataKey.JOURNEY_NAME)
     var journeyName: String?,
 
+    @Expose
+    @SerializedName(PayloadExtraDataKey.SESSION_ID)
+    var sessionId: String?,
+
 ) : Parcelable {
 
     fun webHookParamData(): String? {

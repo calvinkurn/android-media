@@ -92,5 +92,9 @@ data class AmplificationCMInApp (
     @SerializedName(CMConstant.PayloadKeys.PayloadExtraDataKey.JOURNEY_NAME)
     var journeyName: String?,
 
+    @Expose
+    @SerializedName(CMConstant.PayloadKeys.PayloadExtraDataKey.SESSION_ID)
+    var sessionId: String?,
+
 
 )
