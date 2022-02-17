@@ -35,9 +35,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var validators: List<Validation> = listOf()
     private var loadingJob: Job? = null
 
+    var validators: List<Validation> = listOf()
     var isEligibleToBuy = false
     var operatorData: CatalogOperator = CatalogOperator()
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()

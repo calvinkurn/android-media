@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -145,7 +146,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         observeData()
 
         getCatalogMenuDetail()
-        getPrefixOperatorData()
         onShowGreenBox()
     }
 
@@ -211,10 +211,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             }
         })
 
-        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
+        viewModel.catalogSelectGroup.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
-                is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
+                is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup()
+                is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
                 is RechargeNetworkResult.Loading -> {}
             }
         })
@@ -338,8 +338,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         viewModel.getMenuDetail(menuId)
     }
 
-    private fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(menuId)
+    private fun getOperatorSelectGroup() {
+        viewModel.getOperatorSelectGroup(menuId)
     }
 
     private fun getFavoriteNumber() {
@@ -459,11 +459,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetPrefixOperator() {
+    private fun onSuccessGetOperatorSelectGroup() {
         renderProduct()
     }
 
-    private fun onFailedGetPrefixOperator(throwable: Throwable) {
+    private fun onFailedGetOperatorSelectGroup(throwable: Throwable) {
+        binding?.rechargePdpTokenListrikClientNumberWidget?.setLoading(false)
         showEmptyState()
         showErrorToaster(throwable)
     }
@@ -495,14 +496,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
                 /* validate client number */
                 viewModel.validateClientNumber(rechargePdpTokenListrikClientNumberWidget.getInputNumber())
-                // TODO: [Misael] hit tracking if needed
+                hitTrackingForInputNumber(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    viewModel.operatorData.attributes.name
+                )
 
                 if (rechargePdpTokenListrikClientNumberWidget.getInputNumber()
                         .length in DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH..DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
                     getCatalogProductInput(operatorId)
                     hideEmptyState()
-
                 } else {
                     onHideBuyWidget()
                 }
@@ -629,9 +632,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             setListener(
                 inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
+                        viewModel.operatorData.id.isEmpty().let {
                             if (it) {
-                                getPrefixOperatorData()
+                                getOperatorSelectGroup()
                             } else {
                                 renderProduct()
                             }
@@ -754,7 +757,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, loyaltyStatus
+                it, clientNumber, dgCategoryIds, categoryName, loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER

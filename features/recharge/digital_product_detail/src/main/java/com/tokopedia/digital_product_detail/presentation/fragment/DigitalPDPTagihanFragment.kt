@@ -24,6 +24,7 @@ import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -126,7 +127,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         initEmptyState()
         observeData()
         getCatalogMenuDetail()
-        getOperatorSelectGroup()
         onShowGreenBox()
     }
 
@@ -232,7 +232,13 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             setListener(
                 inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        renderProduct()
+                        viewModel.validators.isEmpty().let {
+                            if (it) {
+                                getOperatorSelectGroup()
+                            } else {
+                                renderProduct()
+                            }
+                        }
                     }
 
                     override fun onClearInput() {
@@ -615,8 +621,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         categoryName: String
     ) {
         context?.let {
-            val intent = TopupBillsFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName
+            val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
+                it, clientNumber, dgCategoryIds, categoryName, loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER

@@ -22,7 +22,6 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     protected lateinit var number: String
     protected lateinit var dgCategoryIds: ArrayList<String>
     protected var currentCategoryName = ""
-    protected var operatorData: TelcoCatalogPrefixSelect? = null
     protected var isSwitchChecked = false
     protected var loyaltyStatus = ""
 
@@ -54,7 +53,6 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             this.number = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.currentCategoryName = extras.getString(EXTRA_DG_CATEGORY_NAME, "")
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
-            this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
             this.isSwitchChecked = extras.getBoolean(EXTRA_IS_SWITCH_CHECKED, false)
             this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
         }
@@ -70,7 +68,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DualTabSavedNumberFragment
-            .newInstance(clientNumberType, number, operatorData,
+            .newInstance(clientNumberType, number,
                 currentCategoryName, dgCategoryIds, isSwitchChecked, loyaltyStatus)
     }
 
@@ -96,7 +94,6 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
-            extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
             extras.putBoolean(EXTRA_IS_SWITCH_CHECKED, isSwitchChecked)
 
             intent.putExtras(extras)
@@ -106,7 +103,6 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
-        const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
         const val EXTRA_IS_SWITCH_CHECKED = "EXTRA_IS_SWITCH_CHECKED"
         const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
 
