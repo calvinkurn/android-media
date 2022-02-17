@@ -1,6 +1,5 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -71,7 +70,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private var productId: String = ""
     private var shopId: String = ""
-    private var tenureSelected:String = ""
+    private var tenureSelected: String = ""
 
     private val gatewayCode: String by lazy {
         arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
@@ -113,7 +112,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         super.onViewCreated(view, savedInstanceState)
         productId = arguments?.getString(PARAM_PRODUCT_ID, "").toString()
         gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
-        tenureSelected =  arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
+        tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
         observerProductData()
         observerOtherDetail()
         observeCartDetail()
@@ -131,10 +130,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     if (it.data.isStatusError()) {
                         showToaster(it.data.getAtcErrorMessage())
                     } else {
-                        sendOneClickAnalytics()
+
+                        val redirectionUrl =
+                            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${this.tenureSelected}" +
+                                    "&gateway_code=${gatewayToChipMap[gateWayId.toInt()]?.gateway_code ?: ""}" +
+                                    "&fintech"
                         RouteManager.route(
                             context,
-                            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
+                            redirectionUrl
                         )
                     }
                 }
@@ -145,29 +148,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    private fun sendOneClickAnalytics() {
-        try {
-            gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
-                checkoutData.userAmount?.let { limit ->
-                    checkoutData.userState?.let { userStatus ->
-                        sendAnalyticEvent(
-                            PdpSimulationEvent.OccProceedToCheckout(
-                                checkoutData.gateway_name, quantity.toString(),
-                                checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                                limit, variantName,userStatus
-                            )
-                        )
-                    }
-                }
-
-            }
-
-        } catch (e: Exception) {
-
-        }
-
-    }
 
     private fun showToaster(atcErrorMessage: String?) {
         atcErrorMessage?.let {
@@ -284,18 +264,23 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+
     private fun sendOccImpressionEvent() {
         try {
             gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
-                    checkoutData.userState?.let {userStatus ->
-                        if(!isDisabled) {
+                    checkoutData.userState?.let { userStatus ->
+                        if (!isDisabled) {
                             sendAnalyticEvent(
                                 PdpSimulationEvent.OccImpressionEvent(
-                                    checkoutData.gateway_name, quantity.toString(),
+                                    productId,
+                                    userStatus,
+                                    checkoutData.gateway_name,
                                     checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
                                     checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                                    limit, variantName, userStatus
+                                    quantity.toString(),
+                                    limit,
+                                    variantName
                                 )
                             )
                         }
@@ -410,19 +395,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 }
 
                 for (i in 0 until checkoutData.tenureDetail.size) {
-                    if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure)
-                    {
+                    if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
                         selectedTenurePosition = i
                         break
                     }
                 }
 
-                if(selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty())
-                {
+                if (selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty()) {
                     checkoutData.tenureDetail[0].isSelectedTenure = true
                     selectedTenurePosition = 0
-                }
-                else
+                } else
                     checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
 
 
@@ -460,18 +442,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             else
                 gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
 
-            if(it.tenureDetail.isNotEmpty())
-            {
+            if (it.tenureDetail.isNotEmpty()) {
                 gatewayDetailLayout.additionalDetail.text = data.footer
-            }
-            else
-            {
+            } else {
                 gatewayDetailLayout.additionalDetail.text = ""
                 removeBottomDetailForError()
             }
 
 
-            if(isDisabled)
+            if (isDisabled)
                 removeBottomDetailForError()
 
 
@@ -643,13 +622,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         try {
             gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
-                    checkoutData.userState?.let { userState->
-                        sendAnalyticEvent(PdpSimulationEvent.OccChangeVariantClicked(
-                            checkoutData.gateway_name, quantity.toString(),
-                            checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                            checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                            limit, variantName, userState
-                        ))
+                    checkoutData.userState?.let { userState ->
+                        sendAnalyticEvent(
+                            PdpSimulationEvent.OccChangeVariantClicked(
+                                checkoutData.gateway_name, quantity.toString(),
+                                checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                                limit, variantName, userState
+                            )
+                        )
                     }
                 }
 
@@ -665,8 +646,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun quantityTextWatcher() {
         detailHeader.quantityEditor.editText.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-                if(keyCode == KeyEvent.KEYCODE_ENTER)
-                {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     detailHeader.quantityEditor.editText.clearFocus()
                     return true
                 }

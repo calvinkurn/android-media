@@ -151,24 +151,20 @@ class PdpSimulationAnalytics @Inject constructor(
     fun sendOccEvent(pdpSimulationEvent: PdpSimulationEvent) {
         when (pdpSimulationEvent) {
 
-            is PdpSimulationEvent.OccImpressionEvent -> {
+
+        is PdpSimulationEvent.OccImpressionEvent -> {
                 sendOccImpressionEvent(
-                    pdpSimulationEvent.emiAmount,
-                    pdpSimulationEvent.limit,
+                    pdpSimulationEvent.productId,
+                    pdpSimulationEvent.userStatus,
                     pdpSimulationEvent.partnerName,
-                    pdpSimulationEvent.quantity,
+                    pdpSimulationEvent.emiAmount,
                     pdpSimulationEvent.tenure,
-                    pdpSimulationEvent.variant,
-                    pdpSimulationEvent.userStatus
+                    pdpSimulationEvent.quantity,
+                    pdpSimulationEvent.limit,
+                    pdpSimulationEvent.variantName,
                 )
             }
-            is PdpSimulationEvent.ChangePartnerImperssion -> sendOccChangePartnerImpressionEvent(
-                pdpSimulationEvent.userStatus,
-                pdpSimulationEvent.partnerName,
-                pdpSimulationEvent.quantity,
-                pdpSimulationEvent.limit,
-                pdpSimulationEvent.variant
-            )
+
             is PdpSimulationEvent.ClickChangePartnerEvent -> sendOccChangePartnerCLickEvent(
                 pdpSimulationEvent.userStatus,
                 pdpSimulationEvent.partnerName,
@@ -186,15 +182,7 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.userStatus
             )
             is PdpSimulationEvent.OccChangeVariantListener -> {}
-            is PdpSimulationEvent.OccProceedToCheckout -> sendToCheckoutPageClickImpression(
-                pdpSimulationEvent.emiAmount,
-                pdpSimulationEvent.limit,
-                pdpSimulationEvent.partnerName,
-                pdpSimulationEvent.quantity,
-                pdpSimulationEvent.tenure,
-                pdpSimulationEvent.variant,
-                pdpSimulationEvent.userStatus
-            )
+
             else -> {}
         }
     }
@@ -216,41 +204,6 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendOccChangePartnerImpressionEvent(
-        userStatus: String,
-        partnerName: String,
-        quantity: String,
-        limit: String,
-        variant: String
-    ) {
-        val map = TrackAppUtils.gtmData(
-            CLICK_EVENT_NAME_FIN_TECH_V3,
-            OCC_CHANGE_PARTNER_IMPRESSION_ACTION,
-            OCC_EVENT_CATEGORY,
-            " $userStatus -$partnerName  - $quantity - $limit- $variant"
-
-        )
-        sendGeneralEvent(map)
-    }
-
-    private fun sendToCheckoutPageClickImpression(
-        emiAmount: String,
-        limit: String,
-        partnerName: String,
-        quantity: String,
-        tenure: String,
-        variant: String,
-        userStatus: String
-    ) {
-        val map = TrackAppUtils.gtmData(
-            CLICK_EVENT_NAME_FIN_TECH_V3,
-            OCC_PROCEED_TO_CHECKOUT_ACTION,
-            OCC_EVENT_CATEGORY,
-            " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
-
-        )
-        sendGeneralEvent(map)
-    }
 
     private fun sendOccChangeVariantImpression(
         emiAmount: String,
@@ -273,19 +226,20 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendOccImpressionEvent(
-        emiAmount: String,
-        limit: String,
+        productId: String,
+        userStatus: String,
         partnerName: String,
-        quantity: String,
+        emiAmount: String,
         tenure: String,
-        variant: String,
-        userStatus: String
+        quantity: String,
+        limit: String,
+        variantName: String
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_EVENT_ACTION,
             OCC_EVENT_CATEGORY,
-            " $userStatus -$partnerName - $emiAmount - $tenure - $quantity - $limit- $variant"
+            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)
@@ -318,10 +272,6 @@ class PdpSimulationAnalytics @Inject constructor(
 
         const val OCC_EVENT_ACTION = "pre occ bnpl - activated buyer pre occ page impression"
         const val OCC_CHANGE_VARIANT_ACTION = "pre occ bnpl - activated buyer variant cta click"
-        const val OCC_PROCEED_TO_CHECKOUT_ACTION =
-            "pre occ bnpl - activated buyer click CTA beli langsung"
-        const val OCC_CHANGE_PARTNER_IMPRESSION_ACTION =
-            "pre occ bnpl - bottom sheet partner click"
         const val OCC_CHANGE_PARTNER_CLICK_ACTION =
             "pre occ bnpl - click partner option CTA"
         const val OCC_EVENT_CATEGORY = "fin - pre occ page"

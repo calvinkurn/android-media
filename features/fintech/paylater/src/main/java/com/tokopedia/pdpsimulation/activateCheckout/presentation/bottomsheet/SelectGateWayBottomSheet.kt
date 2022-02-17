@@ -60,7 +60,6 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                 break
             }
         }
-        sendAnalyticsImpression(gatewayList)
         listOfGateway = gatewayList
           gatewayListAdapter =
             context?.let { context->
@@ -104,21 +103,6 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                         checkoutData.gateway_name,
                         limit, quantitySelected.toString(), variantSelected, userState
                     ))
-                }
-            }
-        }
-    }
-
-    private fun sendAnalyticsImpression(gatewayList: List<CheckoutData>) {
-        for (i in gatewayList.indices) {
-            activity?.let {
-                gatewayList[i].userAmount?.let { limit ->
-                    gatewayList[i].userState?.let { userState ->
-                        sendAnalyticEvent(PdpSimulationEvent.ChangePartnerImperssion(
-                            gatewayList[i].gateway_name,
-                            limit, quantitySelected.toString(), variantSelected, userState
-                        ))
-                    }
                 }
             }
         }

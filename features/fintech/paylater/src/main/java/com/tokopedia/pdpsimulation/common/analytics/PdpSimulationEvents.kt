@@ -22,9 +22,16 @@ sealed class PdpSimulationEvent {
         ) : PdpSimulationEvent()
     }
 
+
     data class OccImpressionEvent(
-        val partnerName: String, val quantity: String, val emiAmount: String,
-        val tenure: String, val limit: String, val variant: String, val userStatus: String
+        val productId: String,
+        val userStatus: String,
+        val partnerName: String,
+        val emiAmount: String,
+        val tenure: String,
+        val quantity: String,
+        val limit: String,
+        val variantName: String
     ) : PdpSimulationEvent()
 
     data class OccChangeVariantClicked(
@@ -32,21 +39,8 @@ sealed class PdpSimulationEvent {
         val tenure: String, val limit: String, val variant: String, val userStatus: String
     ) : PdpSimulationEvent()
 
-    data class OccProceedToCheckout(
-        val partnerName: String, val quantity: String, val emiAmount: String,
-        val tenure: String, val limit: String, val variant: String, val userStatus: String
-    ) : PdpSimulationEvent()
-
     data class OccChangeVariantListener(val partnerName: String, val variant: String) :
         PdpSimulationEvent()
-
-    data class ChangePartnerImperssion(
-        val partnerName: String,
-        val limit: String,
-        val quantity: String,
-        val variant: String,
-        val userStatus: String
-    ) : PdpSimulationEvent()
 
     data class ClickChangePartnerEvent(
         val partnerName: String,
