@@ -62,7 +62,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.network)
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
         exclude group: "com.google.android.gms"
         exclude group: "com.google.firebase", module: "firebase-iid"

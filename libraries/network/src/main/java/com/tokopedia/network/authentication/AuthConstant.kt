@@ -1,5 +1,5 @@
 @file:JvmName("AuthConstant")
-package com.tokopedia.authentication
+package com.tokopedia.network.authentication
 
 const val CONTENT_TYPE = "application/x-www-form-urlencoded"
 const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
