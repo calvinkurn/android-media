@@ -106,6 +106,46 @@ internal class PlayBroProductSetupViewModelRobot(
         return uiEvents
     }
 
+    fun recordStateAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<PlayBroProductChooserUiState, List<PlayBroProductChooserEvent>> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var uiState: PlayBroProductChooserUiState
+        val uiEvents = mutableListOf<PlayBroProductChooserEvent>()
+        scope.launch {
+            viewModel.uiState.collect {
+                uiState = it
+            }
+        }
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiState to uiEvents
+    }
+
+    fun recordSummaryStateAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<PlayBroProductSummaryUiState, List<PlayBroProductChooserEvent>> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var uiState: PlayBroProductSummaryUiState
+        val uiEvents = mutableListOf<PlayBroProductChooserEvent>()
+        scope.launch {
+            viewModel.summaryUiState.collect {
+                uiState = it
+            }
+        }
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiState to uiEvents
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
