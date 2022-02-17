@@ -51,6 +51,7 @@ import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -238,7 +239,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         if (!TextUtils.isEmpty(logEmbraceConfigString)) {
             EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
 
-            EmbraceConfigObject.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
         }
     }
 

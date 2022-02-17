@@ -101,7 +101,6 @@ class ReminderWidgetViewHolder(
                 }
                 if (!disableNetwork) {
                     performanceMonitoring?.stopTrace()
-                    Embrace.getInstance().endEvent(performanceTraceName)
                 }
                 performanceMonitoring = null
             }
