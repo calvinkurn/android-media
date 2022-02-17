@@ -40,11 +40,12 @@ internal class PlayBroProductSetupViewModelTest {
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
     /** Mock Response */
-    val mockProduct = ProductUiModel("1", "Product 1", "", 10, OriginalPrice("Rp 12.000", 12000.0))
-    val mockProductTagSection = List(5) {
-        ProductTagSectionUiModel("Test 1", CampaignStatus.Ongoing, List(3) { mockProduct })
+    private val mockProductTagSection = List(5) {
+        ProductTagSectionUiModel("Test 1", CampaignStatus.Ongoing, List(3) {
+            ProductUiModel("$it", "Product 1", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+        })
     }
-    val mockProductCount = mockProductTagSection.sumOf { it.products.size }
+    private val mockProductCount = mockProductTagSection.sumOf { it.products.size }
 
 
     @BeforeEach
@@ -99,6 +100,50 @@ internal class PlayBroProductSetupViewModelTest {
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
             state.productTagSectionList.assertEqualTo(emptyList())
             assertTrue(event[0] is PlayBroProductChooserEvent.GetDataError)
+        }
+    }
+
+    @Test
+    fun `when user successfully delete product, it should emit success state`() {
+
+        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockRepo.setProductTags(any(), any()) } returns Unit
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val (state, event) = robot.recordSummaryStateAndEvent{
+                robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSection[0].products[0]))
+            }
+
+            state.productCount.assertEqualTo(mockProductCount)
+            state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Success)
+            state.productTagSectionList.assertEqualTo(mockProductTagSection)
+            event[0].assertEqualTo(PlayBroProductChooserEvent.DeleteProductSuccess(1))
+        }
+    }
+
+    @Test
+    fun `when user failed delete product, it should emit fail state`() {
+
+        val exception = Exception("Network Error")
+        coEvery { mockRepo.setProductTags(any(), any()) } throws exception
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val (state, event) = robot.recordSummaryStateAndEvent{
+                robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSection[0].products[0]))
+            }
+
+            state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
+            assertTrue(event[0] is PlayBroProductChooserEvent.DeleteProductError)
         }
     }
 }
