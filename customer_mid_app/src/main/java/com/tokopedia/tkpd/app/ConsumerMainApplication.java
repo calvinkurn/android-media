@@ -423,6 +423,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (!TextUtils.isEmpty(logEmbraceConfigString)) {
             EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
 
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
             EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
         }
     }
