@@ -25,13 +25,9 @@ class SearchResultStartupBenchmark(startupMode: StartupMode): BaseStartupBenchma
     override fun getIntent() = MacroIntent.SearchResult.getSearchResultIntent()
 
     override fun waitUntil() {
-        MacroInteration.waitUntilRecyclerViewExist(
-                MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.OfficialStore.RV_RESOURCE_ID,
-        )
         MacroInteration.waitForRecyclerViewContent(
-                MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.OfficialStore.RV_RESOURCE_ID,
+                MacroIntent.SearchResult.PACKAGE_NAME,
+                MacroIntent.SearchResult.RV_RESOURCE_ID,
         )
     }
 }

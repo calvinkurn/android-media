@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
-                MacroIntent.TKPD_PACKAGE_NAME,
+                MacroIntent.SearchResult.PACKAGE_NAME,
                 MacroIntent.SearchResult.RV_RESOURCE_ID
         )
     }
