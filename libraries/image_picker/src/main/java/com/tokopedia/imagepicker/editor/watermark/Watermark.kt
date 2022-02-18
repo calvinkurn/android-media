@@ -165,7 +165,7 @@ data class Watermark(
 
         if (!isDark) {
             watermarkBitmap = watermarkBitmap!!
-                .changeColor(MethodChecker.getColor(context, R.color.green_neutral_30))
+                .changeColor(MethodChecker.getColor(context, R.color.dms_green_neutral_30))
         }
 
         scaledWatermarkBitmap().apply {
@@ -267,15 +267,20 @@ data class Watermark(
     }
 
     private fun mapWatermarkType(type: Int): Bitmap {
-        val resultBitmap = backgroundImg!!.copy(Bitmap.Config.RGB_565, true)
-        return when (type) {
-            Constant.TYPE_WATERMARK_TOPED -> {
-                tileWatermarkBitmap(resultBitmap)
+        try {
+            val resultBitmap = backgroundImg!!.copy(Bitmap.Config.RGB_565, true)
+            return when (type) {
+                Constant.TYPE_WATERMARK_TOPED -> {
+                    tileWatermarkBitmap(resultBitmap)
+                }
+                Constant.TYPE_WATERMARK_CENTER_TOPED -> {
+                    centerWatermarkBitmap(resultBitmap)
+                }
+                else -> throw IllegalArgumentException()
             }
-            Constant.TYPE_WATERMARK_CENTER_TOPED -> {
-                centerWatermarkBitmap(resultBitmap)
-            }
-            else -> throw IllegalArgumentException()
+        } catch (e: Throwable) {
+            return backgroundImg!!
         }
+
     }
 }
