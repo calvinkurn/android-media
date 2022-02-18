@@ -24,6 +24,7 @@ const val GQL_GET_WALLET_BALANCE = """
        wallet_code
        amount
        active
+       whitelisted
      }
    }
  }

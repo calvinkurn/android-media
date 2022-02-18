@@ -64,7 +64,10 @@ class GyroEngineRequestUseCase @Inject constructor(
             val jsonObj = JSONObject(jsonStr)
             try {
                 val parameterObj = (jsonObj["parameters"] as JSONObject)
-                balance.balanceList.forEach { item -> parameterObj.put(item.walletCode, item.isActive) }
+                balance.balanceList.forEach { item ->
+                    if (item.whitelisted ==  true)
+                        parameterObj.put(item.walletCode, item.isActive.toString())
+                }
                 return mapOf(PARAM_REQUEST to jsonObj.toString())
             } catch (e: Exception) { }
         }

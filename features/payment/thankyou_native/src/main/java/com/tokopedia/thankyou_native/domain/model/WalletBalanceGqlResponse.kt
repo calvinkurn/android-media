@@ -21,4 +21,6 @@ data class WalletBalanceItem(
     val walletAmount: String,
     @SerializedName("active")
     val isActive: Boolean,
+    @SerializedName("whitelisted")
+    val whitelisted: Boolean?
 )
