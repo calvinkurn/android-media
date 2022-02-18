@@ -25,7 +25,7 @@ class PartialSomDetailAddOnSummaryViewHolder(
 ) {
 
     companion object {
-        private const val ITEM_DECORATION_VERTICAL_MARGIN = 16
+        private const val ITEM_DECORATION_VERTICAL_MARGIN = 12
     }
 
     private val typeFactory = AddOnAdapterFactory(somDetailAddOnListener)

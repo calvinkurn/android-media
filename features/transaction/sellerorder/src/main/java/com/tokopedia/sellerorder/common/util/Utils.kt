@@ -185,4 +185,8 @@ object Utils {
             performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
     }
+
+    fun String.stripLastDot(): String {
+        return removeSuffix(".")
+    }
 }

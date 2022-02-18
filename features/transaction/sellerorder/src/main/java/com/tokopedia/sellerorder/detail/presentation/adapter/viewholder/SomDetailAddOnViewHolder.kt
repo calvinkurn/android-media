@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.stripLastDot
 import com.tokopedia.sellerorder.databinding.ItemAddOnBinding
 import com.tokopedia.sellerorder.detail.data.model.AddOnSummary
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
@@ -84,7 +85,7 @@ class SomDetailAddOnViewHolder(
                 setIsCopyable(copyable = true)
                 setReceiverName(metadata.addOnNote.to)
                 setSenderName(metadata.addOnNote.from)
-                setDescription(metadata.addOnNote.notes, descriptionExpanded)
+                setDescription(metadata.addOnNote.notes.stripLastDot(), descriptionExpanded)
                 listener = this@SomDetailAddOnViewHolder
                 show()
             }
