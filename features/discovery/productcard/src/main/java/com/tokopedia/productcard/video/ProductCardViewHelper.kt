@@ -15,6 +15,8 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
@@ -31,6 +33,8 @@ class ProductCardViewHelper(
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f
         private const val DEFAULT_CLIP_DURATION = 5_000_000L // 5 second in microsecond
+
+        private const val MAXIMUM_VIDEO_BANDWIDTH = 600_000
     }
 
     private val contextReference: WeakReference<Context> = WeakReference(context)
@@ -70,9 +74,20 @@ class ProductCardViewHelper(
         }
     }
 
+    private fun initTrackSelector(context: Context) : TrackSelector {
+        val defaultTrackSelector = DefaultTrackSelector.ParametersBuilder(context)
+            .setMaxVideoBitrate(MAXIMUM_VIDEO_BANDWIDTH)
+            .build()
+        return DefaultTrackSelector(context).apply {
+            parameters = defaultTrackSelector
+        }
+    }
+
     private fun initVideoPlayer(context: Context) {
+        val trackSelector = initTrackSelector(context)
         videoPlayer = SimpleExoPlayer.Builder(context)
             .setLoadControl(DefaultLoadControl())
+            .setTrackSelector(trackSelector)
             .build()
             .apply {
                 addListener(playerEventListener)
