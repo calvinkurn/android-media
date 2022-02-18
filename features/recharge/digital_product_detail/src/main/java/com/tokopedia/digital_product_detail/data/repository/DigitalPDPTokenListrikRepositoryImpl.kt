@@ -6,7 +6,6 @@ import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMen
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogOperatorSelectGroupRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
-import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
 import javax.inject.Inject
 

@@ -6,16 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
-import com.tokopedia.digital_product_detail.data.model.data.Validation
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
@@ -38,7 +36,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     private var loadingJob: Job? = null
 
-    var validators: List<Validation> = listOf()
+    var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var operatorData: CatalogOperator = CatalogOperator()
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()

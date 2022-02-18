@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.data.model.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 
 data class DigitalCatalogOperatorSelectGroup(
@@ -26,7 +27,7 @@ data class DigitalOperatorCluster(
     var operatorGroups: List<DigitalOperatorGroup>? = listOf(),
     @SerializedName("validations")
     @Expose
-    var validations: List<Validation>? = listOf()
+    var validations: List<RechargeValidation>? = listOf()
 
 )
 
