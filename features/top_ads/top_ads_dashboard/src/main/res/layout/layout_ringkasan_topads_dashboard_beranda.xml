@@ -83,16 +83,10 @@
             <FrameLayout
                 android:id="@+id/graph_layout"
                 android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3" />
-
-            <include
-                layout="@layout/partial_top_ads_dashboard_statistics"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:visibility="gone" />
+                android:visibility="visible" />
+
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 </androidx.constraintlayout.widget.ConstraintLayout>

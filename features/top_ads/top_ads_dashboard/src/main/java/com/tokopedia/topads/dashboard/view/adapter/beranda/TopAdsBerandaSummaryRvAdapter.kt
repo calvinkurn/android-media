@@ -16,8 +16,8 @@ class TopAdsBerandaSummaryRvAdapter :
 
     private val list = mutableListOf<SummaryBeranda>()
     var infoClicked: (() -> Unit)? = null
-    var itemClicked: (() -> Unit)? = null
-    val selectedItems = mutableSetOf<SummaryBeranda>()
+    var itemClicked: ((Set<SummaryBeranda>) -> Unit)? = null
+    private val selectedItems = mutableSetOf<SummaryBeranda>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RingkasanViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -43,7 +43,7 @@ class TopAdsBerandaSummaryRvAdapter :
                     selectedItems.remove(item)
                     unSelectView(holder, item)
                 }
-                itemClicked?.invoke()
+                itemClicked?.invoke(selectedItems)
             }
         }
     }
@@ -71,8 +71,10 @@ class TopAdsBerandaSummaryRvAdapter :
     fun addItems(items: List<SummaryBeranda>) {
         list.clear()
         selectedItems.clear()
-        itemClicked?.invoke()
         list.addAll(items)
+
+        selectedItems.add(list[0].also { it.isSelected = true })  //by default 1st item will be selected
+        itemClicked?.invoke(selectedItems)
         notifyDataSetChanged()
     }
 

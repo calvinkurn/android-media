@@ -164,7 +164,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             loadData()
         }
         summaryRvAdapter.infoClicked = { showInformationBottomSheet() }
-        summaryRvAdapter.itemClicked = { onSummaryItemClicked() }
+        summaryRvAdapter.itemClicked = ::onSummaryItemClicked
 
         binding.layoutRecommendasi.apply {
             layoutkataKunci.button.setOnClickListener {
@@ -196,15 +196,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         summaryInformationBottomSheet.show(childFragmentManager, "")
     }
 
-    private fun onSummaryItemClicked() {
-        if (summaryRvAdapter.selectedItems.size == 0) {
+    private fun onSummaryItemClicked(selectedItems: Set<SummaryBeranda>) {
+        if (selectedItems.isEmpty()) {
             binding.layoutRingkasan.graphLayout.hide()
             return
         }
         if (!binding.layoutRingkasan.graphLayout.isVisible) {
             binding.layoutRingkasan.graphLayout.show()
         }
-        val items = summaryRvAdapter.selectedItems.map {
+        val items = selectedItems.map {
             TopAdsMultiLineGraphFragment.MultiLineGraph(it.id, it.selectedColor)
         }
         graphLayoutFragment.showLineGraph(items)
@@ -218,12 +218,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun showFirstTimeDialog() {
-        //
         requireActivity().showDialogWithCoachMark(
-            binding.scrollView, binding.layoutRingkasan.rvSummary,
-            requireView().findViewById(R.id.topads_content_statistics),
-            binding.layoutLatestReading.rvLatestReading,
-            (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
+            binding, (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
         )
     }
 
