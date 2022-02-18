@@ -2,10 +2,10 @@ package com.tokopedia.officialstore.official.data.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.*
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
@@ -22,8 +22,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import java.util.concurrent.atomic.AtomicBoolean
-
 
 class OfficialHomeMapper (
         private val context: Context,
@@ -282,57 +280,20 @@ class OfficialHomeMapper (
         actionOnFound.invoke(listFound)
     }
 
-    private var isRunningTest: AtomicBoolean? = null
-
-    @Synchronized
-    fun isRunningTest(): Boolean {
-        if (null == isRunningTest) {
-            val istest: Boolean
-            istest = try {
-                Class.forName("androidx.test.espresso.Espresso")
-                true
-            } catch (e: ClassNotFoundException) {
-                false
-            }
-            isRunningTest = AtomicBoolean(istest)
-        }
-        return isRunningTest!!.get()
-    }
-
-//    fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-//        val newList = mutableListOf<Visitable<*>>()
-//        listOfficialStore.toMutableList().forEach {
-//            if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
-//                newData.channelModel.verticalPosition = it.channelModel.verticalPosition
-//                newData.channelModel.channelHeader = it.channelModel.channelHeader
-////                if (isRunningTest()) {
-////                    val isNotContainsFeaturedShop = newList.indexOfFirst { visitable ->  visitable is FeaturedShopDataModel} == WIDGET_NOT_FOUND
-////                    if(isNotContainsFeaturedShop)
-////                    {
-////                        newList.add(newData)
-////                    }
-////                }
-////                else {
-//                    newList.add(newData)
-////                }
-//            }
-//            else {
-//                newList.add(it)
-//            }
-//        }
-//        listOfficialStore = newList
-//        action.invoke(newList.toMutableList())
-//    }
-
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-        listOfficialStore.forEachIndexed {index, it ->
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newData.channelModel.channelHeader = it.channelModel.channelHeader
-                listOfficialStore[index] = newData.copy()
+                newList.add(newData)
+            }
+            else {
+                newList.add(it)
             }
         }
-        action.invoke(listOfficialStore)
+        listOfficialStore = newList
+        action.invoke(newList.toMutableList())
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
@@ -346,35 +307,23 @@ class OfficialHomeMapper (
         action.invoke(newList.toMutableList())
     }
 
-//    fun mappingRecomWidget(data: BestSellerDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-//        val newList = mutableListOf<Visitable<*>>()
-//        val copyListOfficialStore = listOfficialStore.toMutableList()
-//        copyListOfficialStore.forEach {
-//            if (it is BestSellerDataModel && it.channelId == data.channelId) {
-//                newList.add(data)
-//            }
-//            else {
-//                newList.add(it)
-//            }
-//        }
-//        val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
-//        if (isBestSellerWidgetNotExist) {
-//            newList.add(RECOM_WIDGET_POSITION, data)
-//        }
-//        listOfficialStore = newList
-//        action.invoke(newList)
-//    }
-
     fun mappingRecomWidget(data: BestSellerDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is BestSellerDataModel }
-
-            removeAll{ it is BestSellerDataModel }
-            if(index == -1) add(RECOM_WIDGET_POSITION, data)
-            else set(index, data)
-
-            action.invoke(this.toMutableList())
+        val newList = mutableListOf<Visitable<*>>()
+        val copyListOfficialStore = listOfficialStore.toMutableList()
+        copyListOfficialStore.forEach {
+            if (it is BestSellerDataModel && it.channelId == data.channelId) {
+                newList.add(data)
+            }
+            else {
+                newList.add(it)
+            }
         }
+        val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
+        if (isBestSellerWidgetNotExist) {
+            newList.add(RECOM_WIDGET_POSITION, data)
+        }
+        listOfficialStore = newList
+        action.invoke(newList)
     }
 
     fun removeRecomWidget(
