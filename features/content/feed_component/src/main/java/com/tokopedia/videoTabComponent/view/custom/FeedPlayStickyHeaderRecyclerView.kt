@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.util.scrollLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
@@ -65,6 +66,10 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
             headerRecyclerView.visible()
     }
 
+    fun scrollToPosition(position: Int) {
+        if (shouldShowStickyHeader)
+            recyclerView.scrollLayout(position)
+    }
 
     fun setShouldShowStickyHeaderValue(shouldShow: Boolean) {
         this.shouldShowStickyHeader = shouldShow

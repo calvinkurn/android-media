@@ -1,5 +1,6 @@
 package com.tokopedia.videoTabComponent.viewmodel
 
+import android.app.Activity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
@@ -12,17 +13,18 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
  * Created by meyta.taliti on 28/01/22.
  */
 class VideoTabAdapter(
-    coordinator: PlayWidgetCoordinatorVideoTab, listener: PlaySlotTabCallback,
+    coordinator: PlayWidgetCoordinatorVideoTab, listener: PlaySlotTabCallback, activity: Activity
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
+    var slotPosition: Int? = null
 
     init {
         delegatesManager
             .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator))
-            .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener))
+            .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener, activity))
     }
 
     override fun areItemsTheSame(oldItem: PlayFeedUiModel, newItem: PlayFeedUiModel): Boolean {
@@ -36,7 +38,8 @@ class VideoTabAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
     }
-    fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
+
+    fun setCurrentHeader(currentHeader: Pair<Int, RecyclerView.ViewHolder>?) {
         mCurrentHeader = currentHeader
     }
 
@@ -50,10 +53,13 @@ class VideoTabAdapter(
         val newList = mutableListOf<PlayFeedUiModel>()
         for (item in itemList) {
             newList.add(item)
-            if(item is PlaySlotTabMenuUiModel) break
+            if (item is PlaySlotTabMenuUiModel) break
         }
+        if (slotPosition == null) slotPosition = newList.size - 1
         newList.addAll(mappedData)
-        setItemsAndAnimateChanges(newList)
+        setItems(newList)
+        notifyDataSetChanged()
+
         /*itemList.forEachIndexed { index, playFeedUiModel ->
             if (getItem(index) is PlayWidgetLargeUiModel && getItem(index - 1) is PlaySlotTabMenuUiModel) {
                 var item: PlayWidgetLargeUiModel ?= null
@@ -67,6 +73,7 @@ class VideoTabAdapter(
             }
         }*/
     }
+
     fun isStickyHeaderView(it: Int): Boolean {
         return getItem(it) is PlaySlotTabMenuUiModel
     }

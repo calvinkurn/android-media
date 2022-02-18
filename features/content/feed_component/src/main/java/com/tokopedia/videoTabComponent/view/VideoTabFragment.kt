@@ -32,6 +32,8 @@ import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
+import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.clearTabMenuPosition
+import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.getTabMenuPosition
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
@@ -50,7 +52,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private var selectedSlotTabMenu: Int = 0
 
     companion object {
 
@@ -118,7 +119,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 when (it) {
                     is Success -> {
                         setAdapter()
-                        playWidgetAnalyticsListenerImp.filterCategory = FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)[0].title
+                        playWidgetAnalyticsListenerImp.filterCategory =
+                            FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)[0].title
                         onSuccessPlayTabData(
                             it.data.playGetContentSlot,
                             it.data.playGetContentSlot.meta.next_cursor
@@ -131,12 +133,14 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 }
             })
             getPlayDataForSlotRsp.observe(lifecycleOwner) {
-                when(it) {
+                when (it) {
                     is Success -> {
-                        onSuccessPlayTabDataFromChipClick(it.data.playGetContentSlot,
-                            it.data.playGetContentSlot.meta.next_cursor)
+                        onSuccessPlayTabDataFromChipClick(
+                            it.data.playGetContentSlot,
+                            it.data.playGetContentSlot.meta.next_cursor
+                        )
                     }
-                    is Fail ->{
+                    is Fail -> {
 
                     }
                 }
@@ -144,10 +148,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             getPlayDataRsp.observe(lifecycleOwner, Observer {
                 when (it) {
                     is Success -> {
-                            onSuccessPlayTabData(
-                                    it.data.playGetContentSlot,
-                                    it.data.playGetContentSlot.meta.next_cursor
-                            )
+                        onSuccessPlayTabData(
+                            it.data.playGetContentSlot,
+                            it.data.playGetContentSlot.meta.next_cursor
+                        )
                     }
                     is Fail -> {
                         //TODO implement error case
@@ -169,7 +173,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun setupView(view: View) {
-        adapter = VideoTabAdapter(playWidgetCoordinator, this)
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             rvWidget?.addOnScrollListener(it)
@@ -181,7 +184,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     private fun setAdapter() {
         rvWidget?.apply {
-            adapter = VideoTabAdapter(playWidgetCoordinator, this@VideoTabFragment).also {
+            adapter = VideoTabAdapter(
+                playWidgetCoordinator, this@VideoTabFragment, requireActivity()
+            ).also {
                 setAdapter(it)
             }
         }
@@ -190,13 +195,22 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta))
+        adapter.addItemsAndAnimateChanges(
+            FeedPlayVideoTabMapper.map(
+                playDataResponse.data,
+                playDataResponse.meta
+            )
+        )
 
     }
-    private fun onSuccessPlayTabDataFromChipClick(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
+
+    private fun onSuccessPlayTabDataFromChipClick(
+        playDataResponse: PlayGetContentSlotResponse,
+        cursor: String
+    ) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, selectedSlotTabMenu)
+        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta)
 
         adapter.updateList(mappedData)
         //adapter.setItemsAndAnimateChanges(mappedData)
@@ -306,10 +320,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     //click listener for tab menu slot
     override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
-        selectedSlotTabMenu = position
         playWidgetAnalyticsListenerImp.filterCategory = item.label
         callAPiOnTabCLick(item)
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
+        adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
     }
 
     override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
@@ -338,5 +352,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         val videoPageParams = VideoPageParams(cursor = "" , sourceId = item.sourceId, sourceType = item.sourceType, group = item.group)
         playFeedVideoTabViewModel.getPlayData(isClickFromTabMenu = true, videoPageParams = videoPageParams)
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().clearTabMenuPosition()
     }
 }

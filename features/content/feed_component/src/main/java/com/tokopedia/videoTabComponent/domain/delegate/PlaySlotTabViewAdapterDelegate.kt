@@ -1,5 +1,6 @@
 package com.tokopedia.videoTabComponent.domain.delegate
 
+import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
@@ -14,7 +15,7 @@ import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
  */
 class PlaySlotTabViewAdapterDelegate private constructor() {
 
-    internal class SlotTab(private val listener: PlaySlotTabCallback) :
+    internal class SlotTab(private val listener: PlaySlotTabCallback,private val activity: Activity) :
         TypedAdapterDelegate<PlaySlotTabMenuUiModel, PlayFeedUiModel, PlayFeedSlotTabViewHolder.SlotTab>(
             R.layout.item_play_slot_tab
         ) {
@@ -28,7 +29,7 @@ class PlaySlotTabViewAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup, basicView: View
         ): PlayFeedSlotTabViewHolder.SlotTab {
-            return PlayFeedSlotTabViewHolder.SlotTab.create(basicView, listener)
+            return PlayFeedSlotTabViewHolder.SlotTab.create(basicView, listener,activity)
         }
     }
 }

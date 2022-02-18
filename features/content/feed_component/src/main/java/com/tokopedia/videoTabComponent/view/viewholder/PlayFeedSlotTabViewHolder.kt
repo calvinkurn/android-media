@@ -1,6 +1,7 @@
 package com.tokopedia.videoTabComponent.view.viewholder
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
+import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.getTabMenuPosition
+import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.saveTabMenuPosition
 
 /**
  * Created by meyta.taliti on 01/02/22.
@@ -18,19 +21,18 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 class PlayFeedSlotTabViewHolder private constructor() {
 
     internal class SlotTab private constructor(
-        itemView: View, private val tabClickListener: PlaySlotTabCallback
+        itemView: View, private val tabClickListener: PlaySlotTabCallback,
+        private val activity: Activity
     ) : RecyclerView.ViewHolder(itemView), PlaySlotTabCallback {
 
         private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_labels)
-        private val adapter = SlotTabViewAdapter(this)
+        private val adapter = SlotTabViewAdapter(this, activity)
 
         fun bind(item: PlaySlotTabMenuUiModel) {
             rvSlotTab.adapter = adapter
             adapter.setItems(item.items)
 
-            item.items.forEachIndexed { index, obj ->
-                if (obj.isSelected) rvSlotTab.scrollLayout(index)
-            }
+            rvSlotTab.scrollLayout(activity.getTabMenuPosition())
         }
 
         override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
@@ -43,10 +45,9 @@ class PlayFeedSlotTabViewHolder private constructor() {
         }
 
         class SlotTabViewAdapter(
-            private val listener: PlaySlotTabCallback?
+            private val listener: PlaySlotTabCallback?, private val activity: Activity
         ) : RecyclerView.Adapter<SlotTabViewHolder>() {
 
-            private var selectedTabMenuPosition: Int = 0
             private val mItems: MutableList<PlaySlotTabMenuUiModel.Item> = mutableListOf()
 
             @SuppressLint("NotifyDataSetChanged")
@@ -68,10 +69,11 @@ class PlayFeedSlotTabViewHolder private constructor() {
             ) {
                 val slot = mItems[holder.adapterPosition]
                 holder.bind(slot) {
+                    val selectedTabMenuPosition = activity.getTabMenuPosition()
                     mItems[selectedTabMenuPosition].isSelected = false
                     notifyItemChanged(selectedTabMenuPosition)
                     listener?.clickTabMenu(slot, holder.adapterPosition)
-                    selectedTabMenuPosition = holder.adapterPosition
+                    activity.saveTabMenuPosition(holder.adapterPosition)
                 }
                 holder.itemView.addOnImpressionListener(slot.impressHolder) {
                     listener?.impressTabMenu(slot)
@@ -107,8 +109,8 @@ class PlayFeedSlotTabViewHolder private constructor() {
         }
 
         companion object {
-            fun create(itemView: View, listener: PlaySlotTabCallback) =
-                SlotTab(itemView, listener)
+            fun create(itemView: View, listener: PlaySlotTabCallback,activity: Activity) =
+                SlotTab(itemView, listener,activity)
         }
 
     }
