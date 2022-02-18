@@ -74,6 +74,7 @@ class OSTopAdsVerificationTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var topAdsCount = 0
+    private var countFeaturedShop = 0
     private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
     private var osRecyclerViewIdlingResource: OSRecyclerViewIdlingResource? = null
 
@@ -186,14 +187,24 @@ class OSTopAdsVerificationTest {
                 }
             }
             is FeaturedShopViewHolder -> {
-                val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
-                checkLoadingView?.let { checkLoadingView.gone() }
-                val recyclerView: View? = activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
-                recyclerView?.let {
-                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                if (countFeaturedShop > 0) {
+                    val checkLoadingView: View? =
+                        activityRule.activity.findViewById<View>(R.id.loading_view)
+                    checkLoadingView?.let { checkLoadingView.gone() }
+                    val backgroundView: View? =
+                        activityRule.activity.findViewById<View>(R.id.featured_shop_background)
+                    backgroundView?.let { backgroundView.gone() }
+                    try {
+                        val recyclerView: View? =
+                            activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
+                        recyclerView?.let {
+                            clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
-
-//                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                countFeaturedShop++
             }
         }
     }
