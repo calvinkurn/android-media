@@ -69,16 +69,13 @@ class MerchantVoucherViewHolder(
                 visitables.add(
                     CarouselViewAllCardDataModel(
                         channel.channelHeader.applink,
-                        channel.channelViewAllCard.copy(title = "", description = channel.channelViewAllCard.title),
+                        channel.channelViewAllCard,
                         this,
                         channel.channelBanner.imageUrl,
                         channel.channelBanner.gradientColor,
                         channel.layout
                     )
                 )
-            }
-            else {
-                visitables.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
             }
         }
         return visitables
