@@ -52,6 +52,7 @@ object SaldoDetailsConstants {
             const val SALDO_PENGHASILAN_TAB_CLICK = "click saldo penghasilan tab"
             const val SALDO_REFUND_TAB_CLICK = "click saldo refund tab"
             const val SALDO_PENJUALAN_TAB_CLICK = "click tab penjualan"
+            const val SALDO_SEMUA_TAB_CLICK = "click tab semua"
             const val SALDO_PENGHASILAN_DETAIL_CLICK = "click detail penarikan saldo penghasilan"
             const val SALDO_REFUND_DETAIL_CLICK = "click detail penarikan saldo refund"
             const val SALDO_SALES_DETAIL_CLICK = "click detail hasil penjualan"

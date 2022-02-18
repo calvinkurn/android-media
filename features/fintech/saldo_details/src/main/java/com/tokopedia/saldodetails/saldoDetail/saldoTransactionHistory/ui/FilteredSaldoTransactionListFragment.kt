@@ -34,7 +34,9 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
     private fun generateSortFilter() {
         setFilterItem(filterTitleList, filterData)
         transactionFilter.addItem(filterData)
-        saldoDetailsAnalytics.sendTransactionHistoryEvents(filterTitleList[0])
+        transactionHistoryViewModel?.getEventLabelForTab(filterTitleList[0])?.let {
+            saldoDetailsAnalytics.sendTransactionHistoryEvents(it)
+        }
     }
 
     private fun setFilterItem(input: ArrayList<String>, filterList: ArrayList<SortFilterItem>) {
@@ -54,7 +56,9 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
         if (transactionHistoryViewModel?.preSelected?:0 >= 0)
             filterData[transactionHistoryViewModel?.preSelected ?: 0].type = ChipsUnify.TYPE_NORMAL
         transactionType = selectedTransactionType
-        saldoDetailsAnalytics.sendTransactionHistoryEvents(selectedTransactionType.title)
+        transactionHistoryViewModel?.getEventLabelForTab(transactionType.title)?.let {
+            saldoDetailsAnalytics.sendTransactionHistoryEvents(it)
+        }
     }
 
     companion object {
