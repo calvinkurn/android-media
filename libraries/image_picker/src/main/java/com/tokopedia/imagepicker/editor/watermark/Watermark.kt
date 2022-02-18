@@ -193,8 +193,6 @@ data class Watermark(
             val newBitmap = createBitmap(it.width, it.height, it.config)
             val canvas = Canvas(newBitmap)
 
-//            canvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
-
             if (isTitleMode) {
                 paint.shader = BitmapShader(
                     watermarkBitmap!!,
