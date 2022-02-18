@@ -34,7 +34,7 @@ import io.embrace.android.embracesdk.Embrace;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
-    private static final String SUFFIX_ALPHA = "-alpha"
+    private static final String SUFFIX_ALPHA = "-alpha";
 
     @Override
     public void initConfigValues() {
