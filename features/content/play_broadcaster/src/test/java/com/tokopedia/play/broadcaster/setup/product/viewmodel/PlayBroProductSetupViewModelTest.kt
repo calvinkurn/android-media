@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.viewmodel
 
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
@@ -33,6 +34,7 @@ internal class PlayBroProductSetupViewModelTest {
 
     private val testDispatcher = rule.dispatchers
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockHydraConfigStore: HydraConfigStore = mockk(relaxed = true)
 
     /** Mock Response */
     private val mockCampaign = CampaignUiModel("1", "Campaign 1", "", "", "", CampaignStatusUiModel(CampaignStatus.Ongoing, "Berlangsung"), 1)
@@ -44,12 +46,15 @@ internal class PlayBroProductSetupViewModelTest {
         EtalaseUiModel("$it", "", "Etalase $it", it)
     }
 
-    private val mockProductTagSection = List(5) {
-        ProductTagSectionUiModel("Test 1", CampaignStatus.Ongoing, List(3) {
-            ProductUiModel("$it", "Product 1", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+    private val sectionSize = 5
+    private val productSizePerSection = 3
+    private val mockProductTagSectionList = List(sectionSize) { sectionIdx ->
+        ProductTagSectionUiModel("Test 1", CampaignStatus.Ongoing, List(productSizePerSection) { productIdx ->
+            val idx = productSizePerSection * sectionIdx + productIdx
+            ProductUiModel("$idx", "Product $idx", "", 10, OriginalPrice("Rp 12.000", 12000.0))
         })
     }
-    private val mockProductCount = mockProductTagSection.sumOf { it.products.size }
+    private val mockProductCount = mockProductTagSectionList.sumOf { it.products.size }
 
     /** Campaign & Etalase */
     @Test
@@ -125,11 +130,91 @@ internal class PlayBroProductSetupViewModelTest {
         }
     }
 
+    @Test
+    fun `when user select product, it should emit uiState with new selected products`() {
+        val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+        val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
+        val mockNewProductList = mockNewProductTagSectionList.last().products.toMutableList()
+        val mockSection = mockNewProductTagSectionList.last()
+
+        mockNewProductTagSectionList.remove(mockSection)
+        mockNewProductTagSectionList.add(mockSection.copy(products = mockNewProductList + mockAddedProduct))
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+            }
+
+            assertEquals(state.selectedProductSectionList, mockNewProductTagSectionList)
+        }
+    }
+
+    @Test
+    fun `when user select product but exceed the max product allowed, it shouldnt change the selected products`() {
+        val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns sectionSize * productSizePerSection
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+            }
+
+            assertEquals(state.selectedProductSectionList, mockProductTagSectionList)
+        }
+    }
+
+    @Test
+    fun `when user unselect product, it should emit uiState with fewer selected product`() {
+        val mockUnselectedProduct = mockProductTagSectionList.last().products.last()
+
+        val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
+        val mockSection = mockProductTagSectionList.last()
+        val mockProductList = mockSection.products.toMutableList()
+        mockProductList.removeLast()
+
+        mockNewProductTagSectionList.remove(mockSection)
+        mockNewProductTagSectionList.add(mockSection.copy(products = mockProductList))
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockUnselectedProduct))
+            }
+
+            assertEquals(state.selectedProductSectionList, mockNewProductTagSectionList)
+        }
+    }
+
     /** Summary Page */
     @Test
     fun `when user successfully load product section, it should emit success state`() {
 
-        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
@@ -143,7 +228,7 @@ internal class PlayBroProductSetupViewModelTest {
 
             state.productCount.assertEqualTo(mockProductCount)
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Success)
-            state.productTagSectionList.assertEqualTo(mockProductTagSection)
+            state.productTagSectionList.assertEqualTo(mockProductTagSectionList)
         }
     }
 
@@ -173,7 +258,7 @@ internal class PlayBroProductSetupViewModelTest {
     @Test
     fun `when user successfully delete product, it should emit success state`() {
 
-        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
         coEvery { mockRepo.setProductTags(any(), any()) } returns Unit
 
         val robot = PlayBroProductSetupViewModelRobot(
@@ -183,12 +268,12 @@ internal class PlayBroProductSetupViewModelTest {
 
         robot.use {
             val (state, event) = robot.recordSummaryStateAndEvent{
-                robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSection[0].products[0]))
+                robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSectionList[0].products[0]))
             }
 
             state.productCount.assertEqualTo(mockProductCount)
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Success)
-            state.productTagSectionList.assertEqualTo(mockProductTagSection)
+            state.productTagSectionList.assertEqualTo(mockProductTagSectionList)
             event[0].assertEqualTo(PlayBroProductChooserEvent.DeleteProductSuccess(1))
         }
     }
@@ -206,7 +291,7 @@ internal class PlayBroProductSetupViewModelTest {
 
         robot.use {
             val (state, event) = robot.recordSummaryStateAndEvent{
-                robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSection[0].products[0]))
+                robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSectionList[0].products[0]))
             }
 
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
