@@ -20,7 +20,10 @@ class GetAddOnSavedStateUseCase @Inject constructor(@ApplicationContext private 
     private var params: Map<String, Any>? = null
 
     fun setParams(getAddOnSavedStateRequest: GetAddOnSavedStateRequest) {
-        params = mapOf("params" to getAddOnSavedStateRequest)
+        params = mapOf(
+                "add_on_keys" to getAddOnSavedStateRequest.addOnKeys,
+                "source" to getAddOnSavedStateRequest.source
+        )
     }
 
     override suspend fun executeOnBackground(): GetAddOnSavedStateResponse {
