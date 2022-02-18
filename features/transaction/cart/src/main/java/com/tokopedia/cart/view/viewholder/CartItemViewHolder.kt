@@ -385,6 +385,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 val productInfoWithIcon = createProductInfoTextWithIcon(it)
                 layoutProductInfo.addView(productInfoWithIcon)
             }
+            layoutProductInfo.show()
         }
 
         val productInformationList = data.productInformation
@@ -424,6 +425,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         return LinearLayout(itemView.context).apply {
             orientation = LinearLayout.HORIZONTAL
             val layoutParams = LinearLayout.LayoutParams(50, 50)
+            layoutParams.setMargins(0, 0, 10, 0)
             val iv = ImageView(itemView.context).apply {
                 ImageHandler.LoadImage(this, dataProduct.iconUrl)
                 setLayoutParams(layoutParams)
