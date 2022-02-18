@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.authentication.AuthKey
+import com.tokopedia.network.authentication.AuthKey
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.HomeResult
 import com.tokopedia.common_tradein.model.HomeResult.PriceState

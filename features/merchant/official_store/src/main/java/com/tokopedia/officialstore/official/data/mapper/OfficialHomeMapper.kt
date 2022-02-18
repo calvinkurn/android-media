@@ -185,12 +185,23 @@ class OfficialHomeMapper (
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
-    fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
-        productRecommendation.recommendationItemList.forEach {
-            listOfficialStore.add(ProductRecommendationDataModel(it, listener))
+    fun mappingProductRecommendation(
+        productRecommendationWithTopAdsHeadline: ProductRecommendationWithTopAdsHeadline,
+        adapter: OfficialHomeAdapter?,
+        listener: RecommendationListener
+    ) {
+        val newList = listOfficialStore.toMutableList()
+        val headlineIndex =
+            productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
+        productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
+            if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
+                newList.add(it)
+            }
+            newList.add(ProductRecommendationDataModel(recommendationItem, listener))
         }
-        listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
-        adapter?.submitList(listOfficialStore.toMutableList())
+        newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
@@ -338,4 +349,16 @@ class OfficialHomeMapper (
         listOfficialStore = newList
         action.invoke(newList)
     }
+
+    fun removeTopAdsHeadlineWidget(adapter: OfficialHomeAdapter?) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
+            if (it !is OfficialTopAdsHeadlineDataModel) {
+                newList.add(it)
+            }
+        }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
+    }
+
 }

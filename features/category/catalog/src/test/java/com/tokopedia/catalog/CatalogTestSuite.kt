@@ -2,6 +2,7 @@ package com.tokopedia.catalog
 
 import android.os.Build
 import com.tokopedia.catalog.utils.CatalogUtilsTestCase
+import com.tokopedia.catalog.viewmodel.CatalogComparisonViewModelTest
 import com.tokopedia.catalog.viewmodel.CatalogProductListingViewModelTest
 import com.tokopedia.catalog.viewmodel.CatalogViewModelTest
 import org.junit.runner.RunWith
@@ -13,7 +14,8 @@ import org.robolectric.annotation.Config
 @Suite.SuiteClasses(
         CatalogViewModelTest::class,
         CatalogProductListingViewModelTest::class,
-        CatalogUtilsTestCase::class
+        CatalogUtilsTestCase::class,
+        CatalogComparisonViewModelTest::class
 )
 class CatalogTestSuite
 {
