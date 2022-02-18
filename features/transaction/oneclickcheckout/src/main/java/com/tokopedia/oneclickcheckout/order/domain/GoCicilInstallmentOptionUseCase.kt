@@ -56,7 +56,7 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
                             first_installment_time
                             est_installment_end
                             first_due_message
-                            principle_amount
+                            principal_amount
                             interest_amount
                             fee_amount
                             total_amount

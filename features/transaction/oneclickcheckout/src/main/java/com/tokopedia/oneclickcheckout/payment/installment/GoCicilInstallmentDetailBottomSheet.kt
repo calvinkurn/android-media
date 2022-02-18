@@ -37,7 +37,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var binding: BottomSheetGocicilInstallmentBinding? = null
 
-    private var j: Job? = null
+    private var getAdminFeeJob: Job? = null
 
     fun show(fragment: OrderSummaryPageFragment, orderCart: OrderCart, orderPayment: OrderPayment,
              orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
@@ -70,7 +70,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         binding?.tvInstallmentMessage?.gone()
         binding?.loaderInstallment?.visible()
         if (orderPayment.walletData.goCicilData.availableTerms.isEmpty()) {
-            j = launch {
+            getAdminFeeJob = launch {
                 val result = paymentProcessor.getGopayAdminFee(orderPayment, userId, orderCost, orderCart)
                 if (result != null) {
                     listener.onSelectInstallment(result.first, result.second, isSilent = true)
@@ -92,11 +92,18 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         val selectedTerm = goCicilData.selectedTerm?.installmentTerm ?: -1
         for (installment in installmentDetails) {
             val viewInstallmentDetailItem = ItemGocicilInstallmentDetailBinding.inflate(inflater)
-            viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
-                    R.string.occ_lbl_gocicil_installment_title,
-                    installment.installmentTerm,
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
-            )
+            if (installment.installmentAmountPerPeriod > 0) {
+                viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
+                        R.string.occ_lbl_gocicil_installment_title,
+                        installment.installmentTerm,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
+                )
+            } else {
+                viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
+                        R.string.occ_lbl_gocicil_installment_title_without_price,
+                        installment.installmentTerm
+                )
+            }
             if (installment.description.isNotEmpty()) {
                 viewInstallmentDetailItem.tvInstallmentDetailDescription.text = installment.description
             } else {
@@ -117,6 +124,10 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 viewInstallmentDetailItem.tvInstallmentDetailDescription.setTextColor(
                         MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 )
+                if (installment.description.isEmpty()) {
+                    viewInstallmentDetailItem.tvInstallmentDetailDescription.setText(R.string.occ_lbl_gocicil_installment_inactive_description)
+                    viewInstallmentDetailItem.tvInstallmentDetailDescription.visible()
+                }
             } else if (installment.isActive && selectedTerm == installment.installmentTerm) {
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 viewInstallmentDetailItem.cardItemInstallmentDetail.setCardBackgroundColor(

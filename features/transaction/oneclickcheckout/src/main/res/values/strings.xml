@@ -91,6 +91,8 @@
     <string name="occ_lbl_installment_summary_last_date">Perkiraan Jatuh Tempo Terakhir</string>
     <string name="occ_lbl_gocicil_installment_detail">%1$d bulan x %2$s</string>
     <string name="occ_lbl_gocicil_installment_title">Cicil %1$dx %2$s</string>
+    <string name="occ_lbl_gocicil_installment_title_without_price">Cicil %1$dx</string>
+    <string name="occ_lbl_gocicil_installment_inactive_description">Periode cicilan tidak tersedia.</string>
     <string name="occ_lbl_gocicil_installment_bottom_sheet_message">%1$s (%2$s)</string>
     <string name="occ_lbl_gocicil_installment_period">%1$d months</string>
 </resources>
