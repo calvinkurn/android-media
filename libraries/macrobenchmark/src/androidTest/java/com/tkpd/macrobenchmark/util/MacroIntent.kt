@@ -84,7 +84,7 @@ object MacroIntent {
 
         fun getSearchResultIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://search?q=samsung")
+            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=samsung")
             return intent
         }
     }

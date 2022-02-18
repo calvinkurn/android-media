@@ -23,7 +23,7 @@ class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
                 MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.OfficialStore.RV_RESOURCE_ID
+                MacroIntent.SearchResult.RV_RESOURCE_ID
         )
     }
 
