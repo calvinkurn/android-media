@@ -51,6 +51,7 @@ class HotelEVoucherActivityTest {
 
     private fun clickShareButton() {
         onView(withId(R.id.action_share)).perform(click())
+        Thread.sleep(2000)
         onView(withText(R.string.hotel_share_as_image)).check(matches(isDisplayed()))
         onView(withText(R.string.hotel_share_as_pdf)).check(matches(isDisplayed()))
         onView(withText(R.string.hotel_save_as_image)).check(matches(isDisplayed()))
@@ -58,6 +59,7 @@ class HotelEVoucherActivityTest {
 
     private fun clickShareAsImagePopupShown() {
         onView(withText(R.string.hotel_save_as_image)).perform(click())
+        Thread.sleep(2000)
         onView(withText(R.string.hotel_save_as_image_success)).check(matches(isDisplayed()))
     }
 
