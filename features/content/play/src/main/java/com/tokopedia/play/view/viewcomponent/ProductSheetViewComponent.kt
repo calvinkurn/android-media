@@ -10,7 +10,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
@@ -76,28 +75,16 @@ class ProductSheetViewComponent(
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
         }
+
+        override fun onProductImpressed(
+            product: List<Pair<PlayProductUiModel.Product, Int>>,
+            config: ProductSectionUiModel.Section.ConfigUiModel
+        ) {
+            listener.onProductsImpressed(this@ProductSheetViewComponent, product, config)
+        }
     })
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
-
-    private val productScrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                //TODO() = tracker
-//                listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
-            }
-        }
-    }
-
-    private val layoutManagerProductList = object : LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            //TODO() = tracker
-//            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
-        }
-    }
-
-    private var isProductSheetsInitialized = false
 
     init {
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
@@ -106,13 +93,10 @@ class ProductSheetViewComponent(
                 }
 
         rvProductList.apply {
-            layoutManager = layoutManagerProductList
             adapter = productSectionAdapter
             addOnScrollListener(StopFlingScrollListener())
             addItemDecoration(ProductLineItemDecoration(context))
         }
-
-        rvProductList.addOnScrollListener(productScrollListener)
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
 
@@ -144,7 +128,6 @@ class ProductSheetViewComponent(
         }
 
         show()
-        sendImpression()
     }
 
     fun setProductSheet(
@@ -216,26 +199,12 @@ class ProductSheetViewComponent(
         }
     }
 
-    private fun sendImpression() {
-        if (isProductSheetsInitialized) {
-            //TODO() = tracker
-//            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
-        }
-        else isProductSheetsInitialized = true
-
-    }
-
     /**
      * Lifecycle Event
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         rootView.requestApplyInsetsWhenAttached()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        rvProductList.removeOnScrollListener(productScrollListener)
     }
 
     companion object {
@@ -248,7 +217,7 @@ class ProductSheetViewComponent(
         fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
-        fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
+        fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
     }

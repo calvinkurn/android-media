@@ -2,6 +2,7 @@ package com.tokopedia.play.analytic
 
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 
 /**
@@ -17,8 +18,13 @@ class ProductAnalyticHelper(
     @TrackingField
     private val impressedVouchers = mutableListOf<MerchantVoucherUiModel>()
 
-    fun trackImpressedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
-        if (products.isNotEmpty()) impressedProducts.addAll(products)
+    private var config: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel.Empty
+
+    fun trackImpressedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel.Empty) {
+        if (products.isNotEmpty()) {
+            impressedProducts.addAll(products)
+        }
+        config = configUiModel
     }
 
     fun trackImpressedVouchers(vouchers: List<MerchantVoucherUiModel>) {
@@ -36,7 +42,7 @@ class ProductAnalyticHelper(
     }
 
     private fun sendImpressedBottomSheetProducts() {
-        analytic.impressBottomSheetProducts(getFinalProducts())
+        analytic.impressBottomSheetProducts(getFinalProducts(), config)
         clearProducts()
     }
 

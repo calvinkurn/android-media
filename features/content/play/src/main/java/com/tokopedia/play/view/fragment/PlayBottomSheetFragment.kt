@@ -26,6 +26,7 @@ import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
@@ -195,9 +196,12 @@ class PlayBottomSheetFragment @Inject constructor(
         openShopPage(partnerId)
     }
 
-    //TODO() = tracker
-    override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
-//        trackImpressedProduct(products)
+    override fun onProductsImpressed(
+        view: ProductSheetViewComponent,
+        products: List<Pair<PlayProductUiModel.Product, Int>>,
+        configUiModel: ProductSectionUiModel.Section.ConfigUiModel
+    ) {
+        trackImpressedProduct(products, configUiModel)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -739,10 +743,9 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    //TODO() = tracker
-//    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
-//        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
-//    }
+    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel) {
+        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products, configUiModel)
+    }
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)

@@ -174,15 +174,20 @@ class PlayAnalytic(
         )
     }
 
-    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
+    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel) {
         if (products.isEmpty()) return
 
+        val (eventAction, eventLabel) = when(configUiModel.type){
+            ProductSectionType.Active -> Pair("impression - product in ongoing section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${configUiModel.id}")
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${configUiModel.id}")
+            else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
+        }
         trackingQueue.putEETracking(
                 EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "view product",
-                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(

@@ -41,8 +41,19 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    init {
-        rvProducts.layoutManager = LinearLayoutManager(itemView.context)
+    private fun productScrollListener(config: ProductSectionUiModel.Section.ConfigUiModel) = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                listener.onProductImpressed(getVisibleVouchers(layoutManagerProductList(config)), config)
+            }
+        }
+    }
+
+    private fun layoutManagerProductList(config: ProductSectionUiModel.Section.ConfigUiModel) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            listener.onProductImpressed(getVisibleVouchers(this), config)
+        }
     }
 
     private fun setupListener(config: ProductSectionUiModel.Section.ConfigUiModel) = object : ProductLineViewHolder.Listener {
@@ -62,7 +73,10 @@ class ProductSectionViewHolder(
 
     fun bind(item: ProductSectionUiModel.Section) {
         adapter = ProductLineAdapter(setupListener(item.config))
+        rvProducts.layoutManager = layoutManagerProductList(item.config)
+        rvProducts.addOnScrollListener(productScrollListener(item.config))
         rvProducts.adapter = adapter
+
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
             tvSectionTitle.text = item.config.title
         }
@@ -130,13 +144,23 @@ class ProductSectionViewHolder(
                 adapter.itemCount != productSize
     }
 
-    /***
-     * If server time ahead of device time, return device time.
-     * If device time ahead of server time, add the diff to current time.
-     */
     private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
         val diff = serverTime.time - currentTime.time
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
+    }
+
+    fun getVisibleVouchers(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
+        val products = adapter.getItems()
+        if (products.isNotEmpty()) {
+            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
+            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
+                .filterIsInstance<PlayProductUiModel.Product>()
+                .mapIndexed { index, item ->
+                    Pair(item, startPosition + index)
+                }
+        }
+        return emptyList()
     }
 
     companion object {
@@ -148,6 +172,7 @@ class ProductSectionViewHolder(
         fun onBuyProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
         fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
         fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
+        fun onProductImpressed(product: List<Pair<PlayProductUiModel.Product, Int>>, config: ProductSectionUiModel.Section.ConfigUiModel)
         fun onProductChanged()
     }
 }
