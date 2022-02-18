@@ -4,6 +4,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -197,19 +198,27 @@ class PlayAnalytic(
     }
 
     fun clickProduct(product: PlayProductUiModel.Product,
+                     configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
                      position: Int) {
+
+        val (eventAction, eventLabel) = when (configUiModel.type) {
+            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+            else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
+        }
+
         trackingQueue.putEETracking(
                 EventModel(
                         "productClick",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_TRACK_CLICK,
-                        "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf (
                     "ecommerce" to hashMapOf(
                         "click" to hashMapOf(
                             "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                            "products" to  listOf(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                            "products" to  listOf(convertProductToHashMapWithList(product, (position + 1), "bottom sheet"))
                         )
                     )
                 ),

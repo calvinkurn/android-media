@@ -21,7 +21,8 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.*
+import java.util.Date
+import java.util.Calendar
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -120,9 +121,6 @@ class ProductSectionViewHolder(
             }
             timerSection.pause()
             timerSection.targetDate = dt
-            timerSection.onFinish = {
-                listener.onTimerExpired(item)
-            }
             timerSection.resume()
     }
 
@@ -151,7 +149,6 @@ class ProductSectionViewHolder(
         fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
         fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
         fun onProductChanged()
-        fun onTimerExpired(product: ProductSectionUiModel.Section)
     }
 }
 

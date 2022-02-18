@@ -71,10 +71,7 @@ class ProductSheetViewComponent(
             config: ProductSectionUiModel.Section.ConfigUiModel,
             position: Int
         ) {
-            listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
-        }
-        override fun onTimerExpired(product: ProductSectionUiModel.Section) {
-//            TODO("Not yet implemented")
+            listener.onProductCardClicked(this@ProductSheetViewComponent, product, config, position)
         }
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
@@ -241,23 +238,6 @@ class ProductSheetViewComponent(
         rvProductList.removeOnScrollListener(productScrollListener)
     }
 
-    /**
-     * Analytic Helper
-     */
-//    fun getVisibleProducts(): List<Pair<PlayProductSectionUiModel.ProductSection, Int>> {
-//        val products = productSectionAdapter.getItems()
-//        if (products.isNotEmpty()) {
-//            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
-//            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
-//            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-//                    .filterIsInstance<PlayProductSectionUiModel.ProductSection>()
-//                    .mapIndexed { index, item ->
-//                        Pair(item, startPosition + index)
-//                    }
-//        }
-//        return emptyList()
-//    }
-
     companion object {
         private const val PLACEHOLDER_COUNT = 5
     }
@@ -266,7 +246,7 @@ class ProductSheetViewComponent(
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
         fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
         fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
-        fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int)
+        fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)

@@ -40,6 +40,7 @@ import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -173,8 +174,13 @@ class PlayBottomSheetFragment @Inject constructor(
         shouldCheckProductVariant(product, ProductAction.AddToCart)
     }
 
-    override fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int) {
-        shouldOpenProductDetail(product, position)
+    override fun onProductCardClicked(
+        view: ProductSheetViewComponent,
+        product: PlayProductUiModel.Product,
+        configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
+        position: Int
+    ) {
+        shouldOpenProductDetail(product, configUiModel, position)
     }
 
     override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long) {
@@ -422,8 +428,8 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
     }
 
-    private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
-        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+    private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, position: Int) {
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product = product, configUiModel = configUiModel, position = position))
     }
 
     private fun shouldOpenUserReport() {
@@ -495,14 +501,14 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.action, event.type)
-            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
+            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.configUiModel, event.position)
             is InteractionEvent.OpenUserReport -> doActionUserReport()
         }
     }
 
-    private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
+    private fun doOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            analytic.clickProduct(product, position)
+            analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
     }

@@ -32,6 +32,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             gradients = input.background.gradientList,
             imageUrl = input.background.imageUrl
         ),
+        id = input.id
     )
 
     private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {

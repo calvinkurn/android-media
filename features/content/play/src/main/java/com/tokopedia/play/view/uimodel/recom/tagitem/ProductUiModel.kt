@@ -56,8 +56,19 @@ sealed class ProductSectionUiModel {
             val startTime: String, // RFC3339
             val endTime: String, // RFC3339
             val timerInfo: String,
-            val background: BackgroundUiModel
-        )
+            val background: BackgroundUiModel,
+            val id: String
+        ){
+            companion object{
+                val Empty: ConfigUiModel
+                    get() = ConfigUiModel(
+                        type = ProductSectionType.Unknown, title = "", startTime = "", timerInfo = "", serverTime = "", background = BackgroundUiModel(
+                            gradients = emptyList(), imageUrl = ""
+                        ),
+                        id = "", endTime = ""
+                    )
+            }
+        }
 
         data class BackgroundUiModel(
             val gradients: List<String>,
@@ -78,7 +89,8 @@ sealed class ProductSectionUiModel {
                         background = BackgroundUiModel(
                             emptyList(),
                             ""
-                        )
+                        ),
+                        id = ""
                     )
                 )
         }
