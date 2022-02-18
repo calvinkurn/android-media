@@ -64,8 +64,6 @@ class CatalogProductComparisonViewModel @Inject constructor(
                         CatalogConstant.COMPARISON_PRODUCT,product))
                 }
             }
-        } ?: kotlin.run {
-            hasMoreItems.value = false
         }
     }
 
