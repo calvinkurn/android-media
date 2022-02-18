@@ -197,8 +197,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private var countFeaturedShop = 0
-
     private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
             getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
@@ -207,22 +205,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
             result.forEach {
                 //call external api
                 if (it.channel.layout == DynamicChannelLayout.LAYOUT_FEATURED_SHOP) {
-                    if(countFeaturedShop > 0) {
-                        getDisplayTopAdsHeader(FeaturedShopDataModel(
+                    getDisplayTopAdsHeader(FeaturedShopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
-                    }
-                    else {
-                        _featuredShopResult.value = Success(
-                            FeaturedShopDataModel(
-                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
-                                    it.channel,
-                                    0
-                                ),
-                                FeaturedShopDataModel.STATE_READY
-                            )
-                        )
-                    }
-                    countFeaturedShop++
                 }
                 if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
