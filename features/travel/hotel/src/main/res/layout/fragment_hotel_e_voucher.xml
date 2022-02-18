@@ -317,9 +317,12 @@
             app:typographyType="body_3" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_dynamic_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:srcCompat="@drawable/ic_hotel_booking_com_logo" />
 
     </LinearLayout>
     <include

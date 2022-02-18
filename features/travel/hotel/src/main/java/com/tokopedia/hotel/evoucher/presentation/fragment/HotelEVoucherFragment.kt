@@ -35,6 +35,8 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -374,6 +376,20 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         if (data.hotelTransportDetails.cancellation.cancellationPolicies.isNotEmpty()) {
             renderCancellationPolicies(data.hotelTransportDetails.cancellation.cancellationPolicies)
         }
+
+        if (data.agent.logo.isNotEmpty()){
+            binding?.ivDynamicLogo?.loadImage(data.agent.logo){
+                overrideSize(Resize(DYNAMIC_LOGO_WIDTH, DYNAMIC_LOGO_HEIGHT))
+                listener(
+                    onSuccess = { _, _ ->
+                        binding?.ivDynamicLogo?.show()
+                    },
+                    onError = {
+                        binding?.ivDynamicLogo?.hide()
+                    }
+                )
+            }
+        }
     }
 
     private fun renderCancellationPolicies(cancellationList: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
@@ -420,6 +436,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         const val FILENAME = "Tokopedia"
         const val CONVERT_TIME_MILLIS = 1000
         const val BITMAP_QUALITY = 100
+        private const val DYNAMIC_LOGO_WIDTH = 250
+        private const val DYNAMIC_LOGO_HEIGHT = 100
 
         fun getInstance(orderId: String): HotelEVoucherFragment = HotelEVoucherFragment().also {
             it.arguments = Bundle().apply {
