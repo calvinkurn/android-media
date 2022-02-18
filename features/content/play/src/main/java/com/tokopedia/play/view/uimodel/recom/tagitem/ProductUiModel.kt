@@ -42,10 +42,12 @@ data class VariantUiModel(
     }
 }
 
-data class ProductSectionUiModel(
-    val productList: List<PlayProductUiModel.Product>,
-    val config: ConfigUiModel
-) {
+sealed class ProductSectionUiModel {
+
+    data class Section(
+        val productList: List<PlayProductUiModel.Product>,
+        val config: ConfigUiModel
+    ): ProductSectionUiModel() {
 
     data class ConfigUiModel(
         val type: ProductSectionType,
@@ -58,28 +60,30 @@ data class ProductSectionUiModel(
         val hasReminder: Boolean
     )
 
-    data class BackgroundUiModel(
-        val gradients: List<String>,
-        val imageUrl: String
-    )
+        data class BackgroundUiModel(
+            val gradients: List<String>,
+            val imageUrl: String
+        )
 
     companion object{
-        val Empty: ProductSectionUiModel
-            get() = ProductSectionUiModel(
-                productList = emptyList(),
-                config = ConfigUiModel(
-                    type = ProductSectionType.Unknown,
-                    title = "",
-                    serverTime = "",
-                    startTime = "",
-                    endTime = "",
-                    timerInfo = "",
-                    background = BackgroundUiModel(
-                        emptyList(),
-                        ""
-                    ),
-                    hasReminder = false
+            val Empty: Section
+                get() = Section(
+                    productList = emptyList(),
+                    config = ConfigUiModel(
+                        type = ProductSectionType.Unknown,
+                        title = "",
+                        serverTime = "",
+                        startTime = "",
+                        endTime = "",
+                        timerInfo = "",
+                        background = BackgroundUiModel(
+                            emptyList(),
+                            ""
+                        ), hasReminder = false
+                    )
                 )
-            )
+        }
     }
+
+    object Placeholder: ProductSectionUiModel()
 }

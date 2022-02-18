@@ -3,11 +3,11 @@ package com.tokopedia.play.view.viewmodel
 import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -45,6 +45,7 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
@@ -74,7 +75,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.flow.collect
 import kotlin.math.max
 
 /**
@@ -988,7 +988,11 @@ class PlayViewModel @AssistedInject constructor(
      * then we don't need to retrieve the product.
      */
     private fun updateTagItems() {
-        if (!_tagItems.value.product.canShow) return
+        if (!_tagItems.value.product.canShow) {
+            _tagItems.update { it.copy(resultState = ResultState.Success) }
+            return
+        }
+
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val tagItem = repo.getTagItem(channelId)
@@ -1000,7 +1004,9 @@ class PlayViewModel @AssistedInject constructor(
             }
 
             sendProductTrackerToBro(
-                productList = tagItem.product.productSectionList.flatMap { it.productList } // todo: retest
+                productList = tagItem.product.productSectionList
+                    .filterIsInstance<ProductSectionUiModel.Section>()
+                    .flatMap { it.productList } // todo: retest
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }

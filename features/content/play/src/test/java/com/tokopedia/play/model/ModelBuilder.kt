@@ -520,65 +520,269 @@ class ModelBuilder {
     """.trimIndent()
 
     private val channelTagItemsJson = """
-    {
-      "products": [
         {
-          "id": "15240013",
-          "name": "Indomie Soto Lamongan",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-          "shop_id": "479887",
-          "original_price": 60000,
-          "original_price_formatted": "Rp 60.000",
-          "discount": 0,
-          "price": 0,
-          "price_formatted": "",
-          "quantity": 9988,
-          "is_variant": false,
-          "is_available": false,
-          "order": 0,
-          "app_link": "tokopedia://product/15240013",
-          "web_link": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-          "min_quantity": 1
+        "playGetTagsItemSection": {
+          "sections": [
+            {
+              "sourceID": "23676",
+              "type": "active",
+              "title": "RE ACTIVE",
+              "countdown": {
+                "copy": "Berakhir dalam"
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": "https://images.tokopedia.net/img/playasset/Ornament%20Left%20-%20420px.png"
+              },
+              "startTime": "2022-02-16T18:32:00+07:00",
+              "endTime": "2022-02-17T18:02:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14286844",
+                  "Name": "IBO3",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 11000,
+                  "OriginalPriceFormatted": "Rp 11.000",
+                  "Discount": 2,
+                  "Price": 10780,
+                  "PriceFormatted": "Rp 10.780",
+                  "Quantity": 100,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 2,
+                  "AppLink": "tokopedia://product/14286844",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/ibo3",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                },
+                {
+                  "ID": "14286886",
+                  "Name": "Amida's Hyakuren",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_d9d8103d-95b4-4cb7-96bd-485710f5e1e6_640_404.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 125000,
+                  "OriginalPriceFormatted": "Rp 125.000",
+                  "Discount": 3,
+                  "Price": 121250,
+                  "PriceFormatted": "Rp 121.250",
+                  "Quantity": 100,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 3,
+                  "AppLink": "tokopedia://product/14286886",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/amidas-hyakuren",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            },
+            {
+              "sourceID": "0",
+              "type": "other",
+              "title": "Produk Lainnya",
+              "countdown": {
+                "copy": ""
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": ""
+              },
+              "startTime": "1970-01-01T07:00:00+07:00",
+              "endTime": "1970-01-01T07:00:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14288512",
+                  "Name": "Gandum Bael",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/10/5510248/5510248_f43d3d8e-3a2a-4147-ba3c-a6b82c60e168_774_1200.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 123213,
+                  "OriginalPriceFormatted": "Rp 123.213",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 10000,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 0,
+                  "AppLink": "tokopedia://product/14288512",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/gandum-bael",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                },
+                {
+                  "ID": "14288322",
+                  "Name": "RECONGUISTA *6*",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/6/5510248/5510248_30997a9b-c6f8-40cf-885c-44ed2bfd2a8e_800_505.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 1111111,
+                  "OriginalPriceFormatted": "Rp 1.111.111",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 10000,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 1,
+                  "AppLink": "tokopedia://product/14288322",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/reconguista-6",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            },
+            {
+              "sourceID": "23674",
+              "type": "upcoming",
+              "title": "Rilisan Spesial",
+              "countdown": {
+                "copy": "Dimulai dalam"
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": ""
+              },
+              "startTime": "2022-02-19T18:25:00+07:00",
+              "endTime": "2022-02-19T18:55:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14286891",
+                  "Name": "Gusion",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_34dd0a6d-ea93-47ae-a04a-42a32752f138_2048_1291.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 100000,
+                  "OriginalPriceFormatted": "Rp 100.000",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 0,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": false,
+                  "Order": 5,
+                  "AppLink": "tokopedia://product/14286891",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/gusion",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                },
+                {
+                  "ID": "14286893",
+                  "Name": "Man Rodi",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_0533af43-539a-4445-b8f5-eb6c41aff395_2048_1292.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 80000,
+                  "OriginalPriceFormatted": "Rp 80.000",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 0,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": false,
+                  "Order": 6,
+                  "AppLink": "tokopedia://product/14286893",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/man-rodi",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            },
+            {
+              "sourceID": "0",
+              "type": "other",
+              "title": "Produk Habis",
+              "countdown": {
+                "copy": ""
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": ""
+              },
+              "startTime": "1970-01-01T07:00:00+07:00",
+              "endTime": "1970-01-01T07:00:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14286895",
+                  "Name": "Graze Custom",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_d0630ab7-4f66-45c6-be27-a1177ac72c66_1500_946.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 1212,
+                  "OriginalPriceFormatted": "Rp 1.212",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 0,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": false,
+                  "Order": 4,
+                  "AppLink": "tokopedia://product/14286895",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/graze-custom",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            }
+          ],
+          "vouchers": [
+            {
+              "ID": "9541",
+              "Name": "rintihanhatiini",
+              "ShopID": "479541",
+              "Title": "Cashback 20rb",
+              "Subtitle": "min. pembelian 100rb",
+              "VoucherType": 3,
+              "VoucherImage": "https://images-staging.tokopedia.net/img/BTJGre/2022/2/15/bf02129d-32f2-45aa-bedd-6fec960c950e.jpg",
+              "VoucherImageSquare": "https://images-staging.tokopedia.net/img/nNLhqY/2022/2/15/99a9866d-44eb-49ac-a4f1-79dbacaf6bc8.jpg",
+              "VoucherQuota": 25,
+              "VoucherFinishTime": "2022-03-16T00:30:00Z",
+              "VoucherCode": "ITUAL5I01B",
+              "IsHighlighted": false,
+              "IsVoucherCopyable": false,
+              "IsPrivate": false
+            }
+          ],
+          "config": {
+            "peek_product_count": 15,
+            "title_bottomsheet": "Promo dan Produk Lainnya"
+          }
         }
-      ],
-      "vouchers": [
-        {
-          "voucher_id": "12",
-          "voucher_name": "test date",
-          "shop_id": "105407",
-          "title": " ",
-          "subtitle": "min. pembelian ",
-          "voucher_type": 1,
-          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_4a86d259-d8ce-4501-a1d8-17803320bc35",
-          "voucher_image_square": "",
-          "voucher_quota": 100,
-          "voucher_finish_time": "2018-12-07T23:30:00Z"
-        },
-        {
-          "voucher_id": "1470",
-          "voucher_name": "VOUCHER 2020",
-          "shop_id": "478804",
-          "title": " ",
-          "subtitle": "min. pembelian ",
-          "voucher_type": 1,
-          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_eb6e74a3-1ad9-4fd8-a17f-19d3197bb869",
-          "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_c3171bd3-1b75-4b46-a451-9228273072ca",
-          "voucher_quota": 100,
-          "voucher_finish_time": "2020-03-17T00:30:00Z"
-        },
-        {
-          "voucher_id": "123",
-          "voucher_name": "ini cashback",
-          "shop_id": "479155",
-          "title": " ",
-          "subtitle": "min. pembelian ",
-          "voucher_type": 3,
-          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
-          "voucher_image_square": "",
-          "voucher_quota": 100,
-          "voucher_finish_time": "2018-12-05T23:30:00Z"
-        }
-      ]
     }
     """.trimIndent()
 
@@ -970,7 +1174,7 @@ class ModelBuilder {
 
     fun buildIsLike(): IsLikedContent.Data = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
-    fun buildProductTagging(): ProductTagging = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+    fun buildProductTagging(): ProductSection = gson.fromJson(channelTagItemsJson, ProductSection::class.java)
 
     fun buildProductVariant(): GetProductVariantResponse = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 

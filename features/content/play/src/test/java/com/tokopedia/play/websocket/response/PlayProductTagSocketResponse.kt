@@ -5,7 +5,7 @@ package com.tokopedia.play.websocket.response
  */
 object PlayProductTagSocketResponse {
 
-    fun generateResponse(
+    fun generateResponseSection(
         size: Int = 2,
         shopId: String = "123",
         imageUrl: String = "https://www.tokopedia.com",
@@ -16,7 +16,7 @@ object PlayProductTagSocketResponse {
         applink: String? = null
     ): String {
         var productList = ""
-        for(i in 1..size) {
+        for (i in 1..size) {
             productList += """
                 {
                     app_link: "$applink",
@@ -27,7 +27,7 @@ object PlayProductTagSocketResponse {
                     is_free_shipping: $isFreeShipping,
                     is_variant: $isVariantAvailable,
                     min_quantity: $minQty,
-                    name: "$title $i",
+                    name: "Barang $i",
                     order: 0,
                     original_price: 123,
                     original_price_formatted: "123",
@@ -38,21 +38,47 @@ object PlayProductTagSocketResponse {
                     web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
               }
             """.trimIndent()
-
-            if(i != size) productList += ","
+            if (i != size) productList += ","
         }
 
-        return """
-            {
-                "type": "PRODUCT_TAG",
-                "data": {
-                      "is_show_product_tagging" : true,
-                      "products" : [
-                            $productList      
-                      ]
+        var sectionList = ""
+        for (x in 1..size) {
+            sectionList += """{
+                type: "active",
+                title: "$title $x",
+                countdown: {
+                    copy: "Berakhir dalam"
+                },
+                background: {
+                    gradient: [
+                        "#ff23de",
+                        "#2244aa"
+                    ],
+                    image_url: "https://via.placeholder.com/150"
+                },
+                start_time: "2022-01-02T15:04:05Z07:00",
+                end_time: "2022-01-02T16:04:05Z07:00",
+                server_time: "2022-01-02T15:14:05Z07:00",
+                products : [
+                    $productList
+                 ]
                 }
-            }
-        """.trimIndent()
+            """.trimIndent()
+            if (x != size) sectionList += ","
+        }
+        return """
+             {
+                "type": "PRODUCT_TAG_UPDATE",
+                "data": {
+                      "sections" : [
+                        $sectionList
+                      ],
+                      "config" : {
+                        "peek_product_count" : 15,
+                        "title_bottomsheet" : "Promo dan Produk Lainnya"
+                      }
+                }
+             }
+            """.trimIndent()
     }
-
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.util.CPM
 import com.tokopedia.autocompletecomponent.util.CPM_ITEM_COUNT
 import com.tokopedia.autocompletecomponent.util.CPM_PAGE

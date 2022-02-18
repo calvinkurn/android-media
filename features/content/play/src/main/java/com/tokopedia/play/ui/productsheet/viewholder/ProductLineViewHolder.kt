@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify

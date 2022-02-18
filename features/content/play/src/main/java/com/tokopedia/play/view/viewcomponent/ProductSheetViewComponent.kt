@@ -55,25 +55,25 @@ class ProductSheetViewComponent(
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
             product: PlayProductUiModel.Product,
-            config: ProductSectionUiModel.ConfigUiModel
+            config: ProductSectionUiModel.Section.ConfigUiModel
         ) {
             listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
 
         }
         override fun onATCProduct(
             product: PlayProductUiModel.Product,
-            config: ProductSectionUiModel.ConfigUiModel
+            config: ProductSectionUiModel.Section.ConfigUiModel
         ) {
             listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
         }
         override fun onClickProductCard(
             product: PlayProductUiModel.Product,
-            config: ProductSectionUiModel.ConfigUiModel,
+            config: ProductSectionUiModel.Section.ConfigUiModel,
             position: Int
         ) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
-        override fun onTimerExpired(product: ProductSectionUiModel) {
+        override fun onTimerExpired(product: ProductSectionUiModel.Section) {
 //            TODO("Not yet implemented")
         }
         override fun onProductChanged() {
@@ -176,6 +176,9 @@ class ProductSheetViewComponent(
 
     fun showPlaceholder() {
         showContent(true)
+        productSectionAdapter.setItemsAndAnimateChanges(
+            List(PLACEHOLDER_COUNT) { ProductSectionUiModel.Placeholder }
+        )
     }
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
@@ -254,6 +257,10 @@ class ProductSheetViewComponent(
 //        }
 //        return emptyList()
 //    }
+
+    companion object {
+        private const val PLACEHOLDER_COUNT = 5
+    }
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
