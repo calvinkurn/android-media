@@ -17,16 +17,24 @@ class RechargeHomepageRecommendationBannerViewHolder(
 ) : AbstractViewHolder<RechargeHomepageRecommendationBannerModel>(binding.root) {
 
     override fun bind(element: RechargeHomepageRecommendationBannerModel) {
-        listener.loadRechargeSectionData(element.visitableId())
-
-        renderTitle(element)
-        renderSeeAllButton(element)
-        renderRecommendationBannerItems(element)
+        if (element.section.items.size >= GRID_COLUMN) {
+            renderTitle(element)
+            renderSeeAllButton(element)
+            renderRecommendationBannerItems(element)
+        } else {
+            with(binding) {
+                tvRechargeRecomBannerTitle.hide()
+                tvRechargeRecomBannerSeeAll.hide()
+                rvRechargeRecomBanner.hide()
+            }
+            listener.loadRechargeSectionData(element.visitableId())
+        }
     }
 
     private fun renderTitle(element: RechargeHomepageRecommendationBannerModel) {
         with(binding) {
             tvRechargeRecomBannerTitle.text = element.section.title
+            tvRechargeRecomBannerTitle.show()
         }
     }
 
@@ -51,6 +59,7 @@ class RechargeHomepageRecommendationBannerViewHolder(
 
             rvRechargeRecomBanner.layoutManager = layoutManager
             rvRechargeRecomBanner.adapter = adapter
+            rvRechargeRecomBanner.show()
         }
     }
 

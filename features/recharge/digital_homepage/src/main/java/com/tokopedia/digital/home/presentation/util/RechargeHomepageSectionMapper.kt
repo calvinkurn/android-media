@@ -260,8 +260,6 @@ object RechargeHomepageSectionMapper {
     }
 
     private fun getRecommendationBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageRecommendationBannerModel? {
-        if (section.items.size < RECOMMENDATION_BANNER_SIZE_2) return null
-
         val items: List<RechargeHomepageSections.Item> = when {
             section.items.size >= RECOMMENDATION_BANNER_SIZE_4 -> section.items.subList(
                 0,
