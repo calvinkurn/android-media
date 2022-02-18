@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.decorator
 import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
@@ -27,11 +28,14 @@ class HeaderItemDecoration(
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
-        val topChild = parent.getChildAt(0) ?: return
 
-        var topChildPosition = parent.getChildAdapterPosition(topChild)
+//        val topChild = parent.getChildAt(0) ?: return
+//Todo:: could add fallback mechanism as TopChild.
+        var topChildPosition = (parent.layoutManager as? StaggeredGridLayoutManager)?.findFirstVisibleItemPositions(null)?.get(0)  ?: return
+//        var topChildPosition = parent.getChildAdapterPosition(topChild)
+//        topChildPosition -= 1
 
-        if (topChildPosition == RecyclerView.NO_POSITION) {
+        if (topChildPosition <= RecyclerView.NO_POSITION) {
             return
         }
 

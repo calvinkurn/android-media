@@ -328,12 +328,12 @@ class DiscoveryFragment :
                 ) {
                     ivToTop.hide()
                 }
-                discoveryViewModel.updateScroll(dx, dy, newState)
                 if (scrollDist > MINIMUM) {
                     chooseAddressWidget?.hide()
                     chooseAddressWidgetDivider?.hide()
                     shouldShowChooseAddressWidget = false
                     scrollDist = 0
+                    discoveryViewModel.updateScroll(dx, dy, newState)
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
@@ -341,6 +341,7 @@ class DiscoveryFragment :
                         shouldShowChooseAddressWidget = true
                     }
                     scrollDist = 0
+                    discoveryViewModel.updateScroll(dx, dy, newState)
                 }
             }
         })

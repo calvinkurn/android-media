@@ -1,14 +1,18 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs
 
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+
 
 class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -16,6 +20,22 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+
+    private var smoothScroller: SmoothScroller = object : LinearSmoothScroller(itemView.context) {
+        override fun getHorizontalSnapPreference(): Int {
+            return SNAP_TO_START
+        }
+
+        override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+            return if (displayMetrics != null) {
+//                Todo:: convert to constant
+                return 200f/displayMetrics.densityDpi
+            } else
+                super.calculateSpeedPerPixel(displayMetrics)
+
+        }
+
+    }
 
     init {
         anchorRV.layoutManager = linearLayoutManager
@@ -35,13 +55,25 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         lifecycleOwner?.let {
             viewModel.getCarouselItemsListData().observe(it, { item ->
                 mDiscoveryRecycleAdapter.addDataList(item)
+                anchorRV.post {
+                    if (viewModel.selectedSectionPos < viewModel.getListSize()){
+                        smoothScroller.targetPosition = viewModel.selectedSectionPos
+                        linearLayoutManager.startSmoothScroll(smoothScroller)
+                    }
+                }
             })
             viewModel.getUpdatePositionsLD().observe(it, { (oldPos, newPos) ->
-                mDiscoveryRecycleAdapter.notifyItemChanged(oldPos)
-                mDiscoveryRecycleAdapter.notifyItemChanged(newPos)
+                if (oldPos < viewModel.getListSize())
+                    mDiscoveryRecycleAdapter.notifyItemChanged(oldPos)
+
+                if (newPos < viewModel.getListSize())
+                    mDiscoveryRecycleAdapter.notifyItemChanged(newPos)
+
                 anchorRV.post {
-                    anchorRV.smoothScrollToPosition(newPos)
-//                    linearLayoutManager.scrollToPositionWithOffset(newPos,0)
+                    if (newPos < viewModel.getListSize()) {
+                        smoothScroller.targetPosition = viewModel.selectedSectionPos
+                        linearLayoutManager.startSmoothScroll(smoothScroller)
+                    }
                 }
             })
         }

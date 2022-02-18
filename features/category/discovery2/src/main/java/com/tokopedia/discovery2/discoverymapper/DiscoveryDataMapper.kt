@@ -197,7 +197,7 @@ class DiscoveryDataMapper {
 
     fun mapAnchorListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
                                parentComponentName: String?,
-                               position: Int, design: String = "", compId : String = "",anchorMap: MutableMap<String,Int>): ArrayList<ComponentsItem> {
+                               position: Int, design: String = "", compId : String = "",anchorMap: MutableMap<String,Int>,selectedSectionID:String): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
@@ -213,8 +213,10 @@ class DiscoveryDataMapper {
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem
-            if (index == 0) {
-                it.isSelected = true
+            if(selectedSectionID.isEmpty()) {
+                it.isSelected = index == 0
+            }else{
+                it.isSelected = selectedSectionID == it.targetSectionID
             }
             it.targetSectionID?.let { targetId ->
                 anchorMap[targetId] = index

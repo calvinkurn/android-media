@@ -27,6 +27,7 @@ class AnchorTabsViewModel(
 
     private val sectionPositionMap: MutableMap<String, Int> = mutableMapOf()
     var selectedSectionPos = 0
+    var selectedSectionId = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -52,7 +53,8 @@ class AnchorTabsViewModel(
                     parentComponentName = ComponentNames.AnchorTabs.componentName,
                     position = position,
                     compId = components.id,
-                    anchorMap = sectionPositionMap
+                    anchorMap = sectionPositionMap,
+                    selectedSectionID = selectedSectionId
                 )
                 components.setComponentsItem(compList)
             }
@@ -65,15 +67,16 @@ class AnchorTabsViewModel(
 
     fun updateSelectedSection(sectionId: String) {
         val newPos = getPositionForSectionID(sectionId) ?: selectedSectionPos
-        if (newPos != selectedSectionPos && !components.getComponentsItem()
-                .isNullOrEmpty() && newPos < components.getComponentsItem()!!.size
-        ) {
+        if (newPos != selectedSectionPos && newPos >= 0 && newPos < getListSize()) {
             val newItem = components.getComponentsItem()?.get(newPos)
             newItem?.data?.firstOrNull()?.isSelected = true
-            val oldItem = components.getComponentsItem()?.get(selectedSectionPos)
-            oldItem?.data?.firstOrNull()?.isSelected = false
+            if(selectedSectionPos < getListSize()) {
+                val oldItem = components.getComponentsItem()?.get(selectedSectionPos)
+                oldItem?.data?.firstOrNull()?.isSelected = false
+            }
             updatePositions.value = Pair(selectedSectionPos, newPos)
             selectedSectionPos = newPos
+            selectedSectionId = sectionId
         }
     }
 
@@ -98,5 +101,10 @@ class AnchorTabsViewModel(
             }
         }
     }
+
+    fun getListSize(): Int {
+        return components.getComponentsItem()?.size ?: 0
+    }
+
 
 }
