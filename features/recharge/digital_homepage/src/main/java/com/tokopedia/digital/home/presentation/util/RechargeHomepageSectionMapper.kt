@@ -252,7 +252,7 @@ object RechargeHomepageSectionMapper {
                 section.id,
                 section.id,
                 channelConfig = ChannelConfig(layoutConfig),
-                channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle),
+                channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle, applink = section.applink),
                 channelGrids = section.items.take(imageCount).map { item ->
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
                 })
