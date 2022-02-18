@@ -895,7 +895,7 @@ object SellerHomeTracking {
                 emptyLabel,
                 dateRage,
                 eventTitle
-            ).joinToString(" - "),
+            ).joinDashSeparator(),
             businessUnit = TrackingConstant.PG,
             currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
         )
@@ -918,7 +918,7 @@ object SellerHomeTracking {
                 element.dataKey,
                 emptyLabel,
                 dateRage
-            ).joinToString(" - "),
+            ).joinDashSeparator(),
             businessUnit = TrackingConstant.PG,
             currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
         )
@@ -937,7 +937,7 @@ object SellerHomeTracking {
                 TrackingConstant.HOME
             ).joinDashSeparator(),
             action = TrackingConstant.IMPRESSION_WIDGET_CALENDAR,
-            label = arrayOf(element.dataKey, emptyNotEmpty, dateRage).joinToString(" - "),
+            label = arrayOf(element.dataKey, emptyNotEmpty, dateRage).joinDashSeparator(),
             businessUnit = TrackingConstant.PG,
             currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
         )
