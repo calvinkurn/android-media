@@ -96,7 +96,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Unit;
 
 /**

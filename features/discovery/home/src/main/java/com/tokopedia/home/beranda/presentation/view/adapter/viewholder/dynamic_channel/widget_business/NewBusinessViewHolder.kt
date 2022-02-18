@@ -31,7 +31,6 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.TabsUnify
-import io.embrace.android.embracesdk.Embrace
 import java.util.*
 
 @SuppressLint("SyntheticAccessor")

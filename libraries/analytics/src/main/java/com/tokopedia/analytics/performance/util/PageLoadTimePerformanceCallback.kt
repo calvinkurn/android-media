@@ -7,7 +7,6 @@ import android.util.Log
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
-import io.embrace.android.embracesdk.Embrace
 
 private const val COOKIE_PREPARE_PAGE = 11;
 private const val COOKIE_NETWORK_REQUEST = 22;

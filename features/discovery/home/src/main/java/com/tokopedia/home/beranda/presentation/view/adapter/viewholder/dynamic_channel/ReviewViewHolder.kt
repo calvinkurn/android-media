@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.utils.view.binding.viewBinding
-import io.embrace.android.embracesdk.Embrace
 
 class ReviewViewHolder(
         itemView: View,
