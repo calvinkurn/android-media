@@ -14,9 +14,7 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -36,6 +34,7 @@ class CatalogComparisonViewModelTest {
     private var catalogDetailObserver = mockk<Observer<ArrayList<BaseCatalogDataModel>>>(relaxed = true)
     private var catalogDetailObserverHasMoreItems = mockk<Observer<Boolean>>(relaxed = true)
     private var catalogDetailObserverError= mockk<Observer<Throwable>>(relaxed = true)
+    private var catalogDetailObserverShimmer= mockk<Observer<ArrayList<BaseCatalogDataModel>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -43,6 +42,8 @@ class CatalogComparisonViewModelTest {
         viewModel.getDataItems().observeForever(catalogDetailObserver)
         viewModel.getHasMoreItems().observeForever(catalogDetailObserverHasMoreItems)
         viewModel.getError().observeForever(catalogDetailObserverError)
+        viewModel.getShimmerData().observeForever(catalogDetailObserverShimmer)
+
     }
 
     @Test
@@ -57,6 +58,22 @@ class CatalogComparisonViewModelTest {
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
             assertEquals(viewModel.getDataItems().value?.get(0).toString(), arrayOfModel[0].toString())
             assertEquals(viewModel.getHasMoreItems().value , true)
+            every {
+                viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
+            }.just(Runs)
+        }
+    }
+
+    @Test
+    fun `Get Catalog Comparison Response Success IsNullOrEmpty`() {
+        val mockGqlResponse : GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_comparison_dummy_response.json"))
+        val data = mockGqlResponse.getData<CatalogComparisonProductsResponse>(
+            CatalogComparisonProductsResponse::class.java)
+        data.catalogComparisonList?.catalogComparisonList = null
+       runBlocking {
+            coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
+            viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
+            assertEquals(viewModel.getHasMoreItems().value , false)
         }
     }
 

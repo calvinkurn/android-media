@@ -12,6 +12,7 @@ import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -33,26 +34,30 @@ class CatalogProductComparisonViewModel @Inject constructor(
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page.toString(),name)
             removeShimmer()
-            when(result){
-                is Success -> {
-                    if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
-                        dataList.value = masterDataList
-                        hasMoreItems.value = false
-                    }else {
-                        addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
-                        dataList.value = masterDataList
-                        hasMoreItems.value = true
-                    }
-                }
-
-                is Fail -> {
-                    hasMoreItems.value = false
-                }
-            }
+            processResult(recommendedCatalogId, result)
         }, onError = {
             it.printStackTrace()
             error.value = it
         })
+    }
+
+    private fun processResult(recommendedCatalogId : String, result: Result<CatalogComparisonProductsResponse>) {
+        when(result){
+            is Success -> {
+                if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
+                    dataList.value = masterDataList
+                    hasMoreItems.value = false
+                }else {
+                    addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
+                    dataList.value = masterDataList
+                    hasMoreItems.value = true
+                }
+            }
+
+            is Fail -> {
+                hasMoreItems.value = false
+            }
+        }
     }
 
     private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
