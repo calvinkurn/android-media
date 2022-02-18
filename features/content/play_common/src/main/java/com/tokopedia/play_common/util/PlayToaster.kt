@@ -64,7 +64,7 @@ class PlayToaster(
             )
             context?.getString(
                 R.string.play_custom_error_handler_msg,
-                customErrMessage,
+                customErrMessage.removeSuffix("."),
                 errCode
             ).orEmpty()
         }

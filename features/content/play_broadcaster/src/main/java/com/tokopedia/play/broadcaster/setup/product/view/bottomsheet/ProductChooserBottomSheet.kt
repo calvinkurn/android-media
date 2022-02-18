@@ -205,12 +205,10 @@ class ProductChooserBottomSheet @Inject constructor(
                 renderBottomSheetTitle(
                     prevState?.selectedProductSectionList,
                     state.selectedProductSectionList,
+                    prevState?.config,
                     state.config
                 )
-                renderSaveButton(
-                    isSelectedProductsChanged,
-                    state.saveState
-                )
+                renderSaveButton(isSelectedProductsChanged, state.saveState)
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
                 renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
             }
@@ -237,7 +235,12 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
-                        toaster.showError(it.error)
+                        toaster.showError(
+                            err = it.error,
+                            customErrMessage = getString(
+                                R.string.play_bro_product_chooser_error_save
+                            )
+                        )
                     }
                     else -> {}
                 }
@@ -326,9 +329,11 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderBottomSheetTitle(
         prevSelectedProducts: List<ProductTagSectionUiModel>?,
         selectedProducts: List<ProductTagSectionUiModel>,
+        prevConfig: ProductSetupConfig?,
         config: ProductSetupConfig,
     ) {
-        if (prevSelectedProducts == selectedProducts) return
+        if (prevSelectedProducts == selectedProducts &&
+            prevConfig?.maxProduct == config.maxProduct) return
 
         setTitle(
             getString(

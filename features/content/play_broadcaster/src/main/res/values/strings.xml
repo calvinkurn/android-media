@@ -231,7 +231,8 @@
     <string name="play_bro_etalase">Etalase</string>
     <string name="play_bro_upcoming_campaign">Mendatang</string>
     <string name="play_bro_ongoing_campaign">Berlangsung</string>
-    <string name="play_bro_etalase_product_stock">%d Produk</string>
+    <string name="play_bro_campaign_product_stock">%d Produk</string>
+    <string name="play_bro_etalase_product_stock">%d Barang</string>
     <string name="play_bro_campaign_date_start_end">%s s.d.\n%s</string>
     <string name="play_bro_etalase_sort">Urutkan</string>
     <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
@@ -240,10 +241,11 @@
     <string name="play_bro_product_chooser_exit_dialog_title">Yakin ingin keluar?</string>
     <string name="play_bro_product_chooser_exit_dialog_desc">Semua produk yang kamu pilih akan hilang jika keluar dari halaman ini.</string>
     <string name="play_bro_product_chooser_stock">Stok %d</string>
+    <string name="play_bro_product_chooser_error_save">Produk gagal disimpan.</string>
 
     <!-- Product Tag Summary -->
-    <string name="play_bro_product_summary_title">Product terpilih</string>
-    <string name="play_bro_product_summary_title_with_count">Product terpilih (%d/%d)</string>
+    <string name="play_bro_product_summary_title">Produk terpilih</string>
+    <string name="play_bro_product_summary_title_with_count">Produk terpilih (%d/%d)</string>
     <string name="play_bro_product_add_more">Tambah</string>
     <string name="play_bro_product_summary_done">Selesai</string>
     <string name="play_bro_product_summary_empty_title">Oops, kamu belum punya produk terpilih</string>
