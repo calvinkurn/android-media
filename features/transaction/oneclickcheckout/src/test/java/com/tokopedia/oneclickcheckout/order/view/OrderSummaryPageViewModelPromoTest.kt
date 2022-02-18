@@ -162,18 +162,25 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
-            // Then
-            assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occ", state = "checkout",
-                    orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
-                            codes = mutableListOf(helper.logisticPromo.promoCode),
-                            productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
-            assertEquals(PromoRequest(cartType = "occ", state = "checkout",
-                    orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
-                            codes = mutableListOf(helper.logisticPromo.promoCode),
-                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
-            assertEquals(1, bboCodes.size)
+        var validateUsePromoRequest = ValidateUsePromoRequest()
+        var promoRequest = PromoRequest()
+        var bboCodes = emptyList<String>()
+        orderSummaryPageViewModel.updateCartPromo { resultValidateUsePromoRequest, resultPromoRequest, resultBboCodes ->
+            validateUsePromoRequest = resultValidateUsePromoRequest
+            promoRequest = resultPromoRequest
+            bboCodes = resultBboCodes
         }
+
+        // Then
+        assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
+                orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
+                        codes = mutableListOf(helper.logisticPromo.promoCode),
+                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
+        assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
+                orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
+                        codes = mutableListOf(helper.logisticPromo.promoCode),
+                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+        assertEquals(1, bboCodes.size)
     }
 
     @Test
