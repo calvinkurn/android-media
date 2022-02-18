@@ -5,12 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/unify_space_8">
+    android:layout_margin="8dp">
 
     <FrameLayout
         android:id="@+id/selection_container"
-        android:layout_width="@dimen/image_editor_main_height"
-        android:layout_height="@dimen/image_editor_main_height"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_margin="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
             android:id="@+id/img_item_selection"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp_2"
+            android:layout_margin="2dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/thumbnail_image_watermark_preview"
             tools:src="@tools:sample/avatars" />
@@ -35,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:layout_margin="@dimen/dp_1"
-            app:cardCornerRadius="@dimen/unify_space_8">
+            android:layout_margin="1dp"
+            app:cardCornerRadius="8dp">
 
             <ImageView
                 android:id="@+id/img_item_placeholder"
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:maxWidth="@dimen/unify_space_64"
+        android:maxWidth="64dp"
         android:maxLength="10"
         android:ellipsize="end"
         android:textColor="@color/Unify_N0"
@@ -77,7 +77,7 @@
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginTop="4dp"
         android:gravity="center_horizontal"
         android:textColor="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="parent"
