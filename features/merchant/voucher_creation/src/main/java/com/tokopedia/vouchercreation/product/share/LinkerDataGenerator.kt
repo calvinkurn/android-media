@@ -4,11 +4,13 @@ import android.text.TextUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
 import javax.inject.Inject
 
 class LinkerDataGenerator @Inject constructor() {
 
     fun generate(
+        couponId: Long,
         shopId : String,
         shopDomain : String,
         shareModel: ShareModel,
@@ -20,10 +22,10 @@ class LinkerDataGenerator @Inject constructor() {
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            id = shopId
+            id = "${shopId}/voucher/${couponId}?page_source=${ShareComponentConstant.VOUCHER_PRODUCT_FEATURE}"
             linkerData.type = LinkerData.SHOP_TYPE
             name = title
-            uri = "https://www.tokopedia.com/${shopDomain}"
+            uri = "https://www.tokopedia.com/${shopDomain}/voucher/${couponId}?page_source=${ShareComponentConstant.VOUCHER_PRODUCT_FEATURE}"
             ogTitle = title
             ogDescription = outgoingDescription
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
