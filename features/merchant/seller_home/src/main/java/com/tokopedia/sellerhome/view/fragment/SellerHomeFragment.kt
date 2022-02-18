@@ -736,13 +736,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             return
         }
 
-        Int.ZERO
-
         dateFilterBottomSheet?.run {
             setFragmentManager(this@SellerHomeFragment.childFragmentManager)
             setOnApplyChanges {
-                this@SellerHomeFragment.applyCalendarFilter(element, it)
                 SellerHomeTracking.sendCalendarFilterClickEvent(element)
+                this@SellerHomeFragment.applyCalendarFilter(element, it)
             }
             show()
         }
