@@ -13,7 +13,9 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -46,6 +48,7 @@ internal class PlayBroProductSetupViewModelTest {
         EtalaseUiModel("$it", "", "Etalase $it", it)
     }
 
+    private val mockProduct = ProductUiModel("1", "Product 1", "", 10, OriginalPrice("Rp 12.000", 12000.0))
     private val sectionSize = 5
     private val productSizePerSection = 3
     private val mockProductTagSectionList = List(sectionSize) { sectionIdx ->
@@ -282,6 +285,157 @@ internal class PlayBroProductSetupViewModelTest {
             }
 
             assertEquals(state.saveState.canSave, false)
+        }
+    }
+
+    @Test
+    fun `when user change keyword, it should trigger load product and emit new product list`() {
+        val keyword = mockProduct.name
+
+        val mockEtalasePagedDataResponse = PagedDataUiModel(
+            dataList = listOf(mockProduct),
+            hasNextPage = false,
+        )
+
+        coEvery { mockRepo.getProductsInEtalase(any(), any(), keyword, any()) } returns mockEtalasePagedDataResponse
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SearchProduct(keyword))
+            }
+
+            state.focusedProductList.apply {
+                productList.assertEqualTo(mockEtalasePagedDataResponse.dataList)
+                resultState.assertEqualTo(PageResultState.Success(false))
+                page.assertEqualTo(1)
+            }
+        }
+    }
+
+    @Test
+    fun `when user search product and wants load more product, it should trigger load product and emit more product list`() {
+        val keyword = mockProduct.name
+
+        val mockEtalasePagedDataResponseWhenSearch = PagedDataUiModel(
+            dataList = listOf(mockProduct),
+            hasNextPage = true,
+        )
+
+        val mockEtalasePagedDataResponseWhenScrollDown = PagedDataUiModel(
+            dataList = listOf(mockProduct),
+            hasNextPage = false,
+        )
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            coEvery { mockRepo.getProductsInEtalase(any(), any(), keyword, any()) } returns mockEtalasePagedDataResponseWhenSearch
+
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SearchProduct(keyword))
+            }
+
+            state.focusedProductList.apply {
+                productList.assertEqualTo(mockEtalasePagedDataResponseWhenSearch.dataList)
+                resultState.assertEqualTo(PageResultState.Success(true))
+                page.assertEqualTo(1)
+            }
+
+            coEvery { mockRepo.getProductsInEtalase(any(), any(), keyword, any()) } returns mockEtalasePagedDataResponseWhenScrollDown
+
+            val stateAfterScrollDown = robot.recordState {
+                robot.submitAction(ProductSetupAction.LoadProductList(keyword))
+            }
+
+            stateAfterScrollDown.focusedProductList.apply {
+                productList.assertEqualTo(mockEtalasePagedDataResponseWhenSearch.dataList + mockEtalasePagedDataResponseWhenScrollDown.dataList)
+                resultState.assertEqualTo(PageResultState.Success(false))
+                page.assertEqualTo(2)
+            }
+        }
+    }
+
+    @Test
+    fun `when user select campaign and wants load more product, it should trigger load product and emit more product list`() {
+        val mockCampaignPagedDataResponseWhenSelectCampaign = PagedDataUiModel(
+            dataList = listOf(mockProduct),
+            hasNextPage = true,
+        )
+
+        val mockCampaignPagedDataResponseWhenScrollDown = PagedDataUiModel(
+            dataList = listOf(mockProduct),
+            hasNextPage = false,
+        )
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            coEvery { mockRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenSelectCampaign
+
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectCampaign(mockCampaign))
+            }
+
+            state.focusedProductList.apply {
+                productList.assertEqualTo(mockCampaignPagedDataResponseWhenSelectCampaign.dataList)
+                resultState.assertEqualTo(PageResultState.Success(true))
+                page.assertEqualTo(1)
+            }
+
+            coEvery { mockRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenScrollDown
+
+            val stateAfterScrollDown = robot.recordState {
+                robot.submitAction(ProductSetupAction.LoadProductList(""))
+            }
+
+            stateAfterScrollDown.focusedProductList.apply {
+                productList.assertEqualTo(mockCampaignPagedDataResponseWhenSelectCampaign.dataList + mockCampaignPagedDataResponseWhenScrollDown.dataList)
+                resultState.assertEqualTo(PageResultState.Success(false))
+                page.assertEqualTo(2)
+            }
+        }
+    }
+
+    @Test
+    fun `when user wants load more etalase product and error happens, it should trigger error state`() {
+        val exception = Exception("Network Error")
+
+        coEvery { mockRepo.getProductsInEtalase(any(), any(), any(), any()) } throws exception
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.LoadProductList(""))
+            }
+
+            state.focusedProductList.apply {
+                productList.assertEqualTo(emptyList())
+                resultState.assertEqualTo(PageResultState.Fail(exception))
+                page.assertEqualTo(0)
+            }
         }
     }
 
