@@ -527,9 +527,22 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaUsage(coupon: CouponUiModel) {
-        val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
-        binding.progressBarQuotaUsage.setValue(progressBarValue, true)
-        binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+        if (viewModel.isOngoingCoupon(coupon.status)) {
+
+            val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
+            binding.progressBarQuotaUsage.setValue(progressBarValue, true)
+            binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+
+            binding.progressBarQuotaUsage.visible()
+            binding.tpgTickerUsage.visible()
+            binding.tpgTickerUsage.text = String.format(
+                getString(R.string.placeholder_quota_usage),
+                coupon.bookedQuota.toString()
+            ).parseAsHtml()
+        } else {
+            binding.progressBarQuotaUsage.gone()
+            binding.tpgTickerUsage.gone()
+        }
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
         binding.tpgTotalQuota.text = String.format(
@@ -538,16 +551,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
         )
 
         binding.tpgTickerUsage.setOnClickListener { displayExpenseEstimationDescription() }
-
-        if (coupon.isPublic && coupon.status == VoucherStatusConst.ONGOING) {
-            binding.tpgTickerUsage.visible()
-            binding.tpgTickerUsage.text = String.format(
-                getString(R.string.placeholder_quota_usage),
-                coupon.bookedQuota.toString()
-            ).parseAsHtml()
-        } else {
-            binding.tpgTickerUsage.gone()
-        }
     }
 
     private fun displayExpenseEstimationDescription() {
