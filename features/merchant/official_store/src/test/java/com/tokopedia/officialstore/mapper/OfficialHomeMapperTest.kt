@@ -504,4 +504,12 @@ class OfficialHomeMapperTest {
         val featuredShopAfter = officialHomeMapper.listOfficialStore.find { it is OfficialFeaturedShopDataModel }
         Assert.assertNotEquals(featuredShopBefore, featuredShopAfter)
     }
+
+    @Test
+    fun `given empty list official store when mapping official featured shop then benefit will be added to the list`() {
+        `given empty list official store`()
+        officialHomeMapper.mappingFeaturedShop(mockOfficialStoreFeaturedShop, mockOfficialHomeAdapter, mockCategory, mockFeaturedShopListener)
+        val isOfficialFeaturedShopExisted = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialFeaturedShopDataModel } != WIDGET_NOT_FOUND
+        Assert.assertTrue(isOfficialFeaturedShopExisted)
+    }
 }
