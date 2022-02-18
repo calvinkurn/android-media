@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.adapter
+package com.tokopedia.digital.home.presentation.adapter.decoration
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
