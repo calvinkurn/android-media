@@ -618,6 +618,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
                     || it.startsWith(SHOP_SCORE_DETAIL)
+                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
                     || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
                     || it.startsWith(SHOP_PENALTY)
                     || it.startsWith(SHOP_PENALTY_DETAIL)
