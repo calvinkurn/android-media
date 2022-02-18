@@ -24,8 +24,9 @@ import java.util.concurrent.TimeUnit
 class DynamicHeaderCustomView: FrameLayout {
 
     companion object {
-        private const val H24 = 24
-        private const val D6 = 6
+        private const val Hour24 = 24
+        private const val Day6 = 6
+        private const val Day1 = 1L
         private const val MIN_TOTAL_PRODUCT = 10
     }
 
@@ -131,10 +132,10 @@ class DynamicHeaderCustomView: FrameLayout {
         val calendar = Calendar.getInstance()
         var endDateMillis = DateHelper.getDateFromString(endDate).time
         val currentMillis = System.currentTimeMillis()
-        val isMoreOrEqualThan1Day = getDateHours(endDateMillis - currentMillis) >= H24
+        val isMoreOrEqualThan1Day = getDateHours(endDateMillis - currentMillis) >= Hour24
         if (isMoreOrEqualThan1Day) {
-            val isMoreThan7Days = getDateDays(endDateMillis - currentMillis) > D6
-            endDateMillis += TimeUnit.DAYS.toMillis(1)
+            val isMoreThan7Days = getDateDays(endDateMillis - currentMillis) > Day6
+            endDateMillis += TimeUnit.DAYS.toMillis(Day1)
             if (isMoreThan7Days) {
                 tusCountDown?.gone()
                 tpSubtitle?.gone()
