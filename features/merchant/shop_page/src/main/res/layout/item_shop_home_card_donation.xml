@@ -5,7 +5,7 @@
     android:id="@+id/shop_home_card_donation_card_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/unify_space_4"
+    android:layout_marginVertical="4dp"
     app:card_background_color="@color/Unify_Background"
     app:card_type="border">
 
@@ -14,9 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
         android:paddingTop="8dp"
-        android:paddingRight="12dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
