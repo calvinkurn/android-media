@@ -19,10 +19,7 @@ import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
-import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
@@ -167,22 +164,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             )
         }
         if (data.isNotEmpty())
-            sendPayLaterImpression(data, defaultSelectedSimulation)
-    }
-
-    private fun sendPayLaterImpression(data: ArrayList<SimulationUiModel>, defaultSelectedSimulation:Int) {
-        val simulationList = data[defaultSelectedSimulation].simulationList
-        val firstDetail = simulationList?.getOrNull(0)
-        val userState: String = if (firstDetail is Detail) firstDetail.userState ?: "" else ""
-
-        val partnerList = if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
-        PayLaterAnalyticsBase().apply {
-            tenureOption = defaultSelectedSimulation
-            action = PdpSimulationAnalytics.IMPRESSION_PAYLATER
-            userStatus = userState
-            payLaterPartnerName = partnerList
-            sendEvent(this)
-        }
+            sendEvent(PayLaterBundleGenerator.getPayLaterImpressionEvent(data, defaultSelectedSimulation))
     }
 
     private fun simulationFailed(throwable: Throwable) {

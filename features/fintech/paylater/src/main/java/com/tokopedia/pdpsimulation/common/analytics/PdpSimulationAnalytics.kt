@@ -21,7 +21,7 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
-        val label = computeLabel(event.productId, event.userStatus,
+        val label = computeLabel(event.productId, event.linkingStatus, event.userStatus,
             event.tenureOption.toString(), event.payLaterPartnerName)
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
@@ -33,7 +33,7 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendClickCtaEvent(event: PayLaterCtaClick) {
-        val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
+        val label = computeLabel(event.productId, event.linkingStatus, event.userStatus, event.tenureOption.toString(),
             event.emiAmount, event.limit, event.redirectLink, event.payLaterPartnerName, event.ctaWording)
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,

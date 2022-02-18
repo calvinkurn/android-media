@@ -33,6 +33,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
             benefits
             user_state
             user_balance_amt
+            linking_status
             tenure_header
             disable {
               status

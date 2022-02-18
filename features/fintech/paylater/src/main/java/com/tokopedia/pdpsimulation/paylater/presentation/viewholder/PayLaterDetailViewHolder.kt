@@ -131,6 +131,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         limit = detail.limit ?: ""
         redirectLink = link
         ctaWording = detail.cta.name ?: ""
+        linkingStatus = detail.linkingStatus ?: ""
         action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
     }
 }
