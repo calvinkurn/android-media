@@ -210,6 +210,63 @@ internal class PlayBroProductSetupViewModelTest {
         }
     }
 
+    @Test
+    fun `when user select product, it should emit saveState with canSave is true`() {
+        val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+        val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
+        val mockNewProductList = mockNewProductTagSectionList.last().products.toMutableList()
+        val mockSection = mockNewProductTagSectionList.last()
+
+        mockNewProductTagSectionList.remove(mockSection)
+        mockNewProductTagSectionList.add(mockSection.copy(products = mockNewProductList + mockAddedProduct))
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+            }
+
+            assertEquals(state.saveState.canSave, true)
+        }
+    }
+
+    @Test
+    fun `when user unselect all product, it should emit saveState with canSave is false`() {
+        val mockProduct = ProductUiModel("1", "", "", 1, OriginalPrice("Rp 12.000", 12_000.0))
+        val mockInitialProductTagSectionList = listOf(
+            ProductTagSectionUiModel(
+                name = "Test 1",
+                campaignStatus = CampaignStatus.Ongoing,
+                products = listOf(mockProduct)
+            )
+        )
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockInitialProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+            }
+
+            assertEquals(state.saveState.canSave, false)
+        }
+    }
+
     /** Summary Page */
     @Test
     fun `when user successfully load product section, it should emit success state`() {
