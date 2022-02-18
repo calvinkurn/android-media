@@ -16,7 +16,7 @@
             android:id="@+id/btn_add_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mau kasih Feedback "
+            android:text="@string/give_feedback"
             android:textStyle="bold"
             android:textSize="14sp"
             android:layout_marginTop="@dimen/dp_18"
