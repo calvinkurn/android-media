@@ -39,18 +39,31 @@ class DigitalDenomMapper @Inject constructor() {
         )
     }
 
-    private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
+    fun mapTokenListrikDenom(inputMultiTab: DigitalCatalogProductInputMultiTab): DenomWidgetModel {
         val productsDenom = inputMultiTab.multitabData.productInputs.firstOrNull()?.product
-        val dataCollections = productsDenom?.dataCollections
+        return getDenomGridMapper(productsDenom?.text, getProductDataCollection(productsDenom?.dataCollections))
+    }
 
-        val dataCollectionMCCM = dataCollections?.filter {
+    fun mapTagihanListrikProduct(inputMultiTab: DigitalCatalogProductInputMultiTab): RechargeProduct? {
+        val product = inputMultiTab.multitabData.productInputs.firstOrNull()?.product
+        return getProductDataCollection(product?.dataCollections)?.firstOrNull()?.products?.firstOrNull()
+    }
+
+    private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
+        val dataCollections = inputMultiTab.multitabData.productInputs.firstOrNull()?.product?.dataCollections
+        return Pair(getProductDataCollection(dataCollections), getMCCMDataCollection(dataCollections))
+    }
+
+    private fun getProductDataCollection(dataCollections: List<RechargeCatalogDataCollection>?): List<RechargeCatalogDataCollection>? {
+       return dataCollections?.filterNot {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
         }
+    }
 
-        val dataCollectionProduct = dataCollections?.filterNot {
+    private fun getMCCMDataCollection(dataCollections: List<RechargeCatalogDataCollection>?): List<RechargeCatalogDataCollection>? {
+        return dataCollections?.filter {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
         }
-        return Pair(dataCollectionProduct, dataCollectionMCCM)
     }
 
     private fun getDenomGridMapper(title: String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?, isMCCM: Boolean = false): DenomWidgetModel {

@@ -17,6 +17,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperat
 import com.tokopedia.digital_product_detail.data.model.data.Validation
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -63,9 +64,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
-    private val _dynamicInput = MutableLiveData<RechargeNetworkResult<CatalogProduct>>()
-    val dynamicInput: LiveData<RechargeNetworkResult<CatalogProduct>>
-        get() = _dynamicInput
+    private val _tagihanProduct = MutableLiveData<RechargeNetworkResult<RechargeProduct>>()
+    val tagihanProduct: LiveData<RechargeNetworkResult<RechargeProduct>>
+        get() = _tagihanProduct
 
     private val _inquiry = MutableLiveData<RechargeNetworkResult<TopupBillsEnquiryData>>()
     val inquiry: LiveData<RechargeNetworkResult<TopupBillsEnquiryData>>
@@ -116,15 +117,17 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicInput(menuID: Int, nullErrorMessage: String) {
-        _dynamicInput.value = RechargeNetworkResult.Loading
+    fun getTagihanProduct(menuID: Int, clientNumber: String, nullErrorMessage: String) {
+        _tagihanProduct.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val data = repo.getDynamicInputTagihanListrik(menuID, operatorData.id)
+            val data = repo.getProductTagihanListrik(menuID, operatorData.id, clientNumber)
             if (data == null) {
                 throw MessageErrorException(nullErrorMessage)
-            } else _dynamicInput.value = RechargeNetworkResult.Success(data)
+            } else {
+                _tagihanProduct.value = RechargeNetworkResult.Success(data)
+            }
         }) {
-            _dynamicInput.value = RechargeNetworkResult.Fail(it)
+            _tagihanProduct.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -196,13 +199,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     }
 
     fun updateCheckoutPassData(idemPotencyKeyActive: String, clientNumberActive: String) {
-        dynamicInput.value?.let {
+        tagihanProduct.value?.let {
             if (it is RechargeNetworkResult.Success) {
                 val product = it.data
                 digitalCheckoutPassData.apply {
                     categoryId = product.attributes.categoryId
                     clientNumber = clientNumberActive
-                    isPromo = if (product.attributes.promo != null) "1" else "0"
+                    isPromo = if (product.attributes.productPromo != null) "1" else "0"
                     operatorId = product.attributes.operatorId
                     productId = product.id
                     utmCampaign = product.attributes.categoryId

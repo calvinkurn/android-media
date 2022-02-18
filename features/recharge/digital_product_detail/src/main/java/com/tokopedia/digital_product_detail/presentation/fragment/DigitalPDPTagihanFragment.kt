@@ -172,7 +172,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             }
         })
 
-        viewModel.dynamicInput.observe(viewLifecycleOwner, {
+        viewModel.tagihanProduct.observe(viewLifecycleOwner, {
             when(it) {
                 is RechargeNetworkResult.Success -> {
                     productId = it.data.id.toIntOrZero()
@@ -346,7 +346,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 sortFilterListener = object : ClientNumberSortFilterListener {
                     override fun getSelectedChipOperator(operator: CatalogOperator) {
                         viewModel.operatorData = operator
-                        viewModel.getDynamicInput(menuId, getString(R.string.selection_null_product_error))
+                        viewModel.getTagihanProduct(menuId,
+                            binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
+                            getString(R.string.selection_null_product_error)
+                        )
                     }
                 }
             )
@@ -374,7 +377,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun onSuccessGetOperatorSelectGroup(operatorGroup: DigitalCatalogOperatorSelectGroup) {
-        viewModel.getDynamicInput(menuId, getString(R.string.selection_null_product_error))
+        viewModel.getTagihanProduct(menuId,
+            binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
+            getString(R.string.selection_null_product_error)
+        )
         renderChipsAndTitle(operatorGroup)
     }
 

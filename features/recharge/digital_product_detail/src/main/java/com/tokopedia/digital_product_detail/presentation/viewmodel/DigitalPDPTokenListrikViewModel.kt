@@ -27,6 +27,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -67,8 +68,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
-    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomMCCMModel>>()
-    val observableDenomData: LiveData<RechargeNetworkResult<DenomMCCMModel>>
+    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+    val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
         get() = _observableDenomData
 
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
@@ -94,13 +95,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeCatalogInput(menuId: Int, operator: String){
+    fun getRechargeCatalogInput(menuId: Int, operator: String, clientNumber: String){
         catalogProductJob?.cancel()
         _observableDenomData.value = RechargeNetworkResult.Loading
         catalogProductJob = viewModelScope.launch {
             launchCatchError(block = {
                 delay(DELAY_MULTI_TAB)
-                val denomGrid = repo.getDenomGridList(menuId, operator)
+                val denomGrid = repo.getProductTokenListrikDenomGrid(menuId, operator, clientNumber)
                 _observableDenomData.value = RechargeNetworkResult.Success(denomGrid)
             }){
                 if (it !is CancellationException)
