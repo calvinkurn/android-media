@@ -12,7 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 class LatestReadingTopAdsDashboardRvAdapter :
     RecyclerView.Adapter<LatestReadingTopAdsDashboardRvAdapter.LatestReadingViewHolder>() {
 
-    private val list = mutableListOf<TopAdsLatestReading.CategoryTree.Data.Category>()
+    private val list = mutableListOf<TopAdsLatestReading.TopAdsLatestReadingItem.Article>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LatestReadingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -25,11 +25,11 @@ class LatestReadingTopAdsDashboardRvAdapter :
         with(holder) {
             txtTitle.text = item.title
             txtDescription.text = item.description
-            creditHistoryImage.setImageUrl(item.icon.url)
+            creditHistoryImage.setImageUrl(item.thumbnail)
         }
     }
 
-    fun addItems(data: List<TopAdsLatestReading.CategoryTree.Data.Category>) {
+    fun addItems(data: List<TopAdsLatestReading.TopAdsLatestReadingItem.Article>) {
         list.addAll(data)
         notifyDataSetChanged()
     }

@@ -196,6 +196,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         binding.layoutRecommendasi.layoutkataKunci.recyclerView.adapter = kataKunciChipsRvAdapter
         binding.layoutRecommendasi.layoutkataKunci.rvVertical.adapter =
             kataKunciChipsDetailRvAdapter
+        latestReadingRvAdapter.addItems(topAdsDashboardViewModel.getLatestReadings())
     }
 
     private fun showInformationBottomSheet() {
@@ -271,14 +272,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                         it.data.summary.lastUpdate
                     )
                 }
-                is Fail -> {}
-            }
-        }
-
-        topAdsDashboardViewModel.latestReadingLiveData.observe(viewLifecycleOwner) {
-            checkResponse.latestReading = true
-            when (it) {
-                is Success -> latestReadingRvAdapter.addItems(it.data)
                 is Fail -> {}
             }
         }
@@ -415,7 +408,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         adTypeChanged(selectedAdType)
-        topAdsDashboardViewModel.fetchLatestReading()
         topAdsDashboardViewModel.fetchRecommendationStatistics()
     }
 
@@ -484,7 +476,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 field = value
                 hideShimmer()
             }
-        var latestReading: Boolean = false
+        var latestReading: Boolean = true
             set(value) {
                 field = value
                 hideShimmer()

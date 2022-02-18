@@ -3,50 +3,26 @@ package com.tokopedia.topads.dashboard.data.model.beranda
 
 import com.google.gson.annotations.SerializedName
 
-data class TopAdsLatestReading(
-    @SerializedName("categoryTree")
-    val categoryTree: CategoryTree
-) {
-    data class CategoryTree(
-        @SerializedName("data")
-        val `data`: Data
+class TopAdsLatestReading : ArrayList<TopAdsLatestReading.TopAdsLatestReadingItem>(){
+    data class TopAdsLatestReadingItem(
+        @SerializedName("articles")
+        val articles: List<Article>,
+        @SerializedName("categoryName")
+        val categoryName: String,
+        @SerializedName("description")
+        val description: String,
+        @SerializedName("unifyIcon")
+        val unifyIcon: String
     ) {
-        data class Data(
-            @SerializedName("categories")
-            val categories: List<Category>,
-            @SerializedName("status")
-            val status: String
-        ) {
-            data class Category(
-                @SerializedName("children")
-                val children: List<Children>,
-                @SerializedName("description")
-                val description: String,
-                @SerializedName("icon")
-                val icon: Icon,
-                @SerializedName("id")
-                val id: String,
-                @SerializedName("title")
-                val title: String,
-                @SerializedName("url")
-                val url: String
-            ) {
-                data class Children(
-                    @SerializedName("description")
-                    val description: String,
-                    @SerializedName("id")
-                    val id: String,
-                    @SerializedName("title")
-                    val title: String,
-                    @SerializedName("url")
-                    val url: String
-                )
-
-                data class Icon(
-                    @SerializedName("url")
-                    val url: String
-                )
-            }
-        }
+        data class Article(
+            @SerializedName("description")
+            val description: String,
+            @SerializedName("slug")
+            val slug: String,
+            @SerializedName("thumbnail")
+            val thumbnail: String,
+            @SerializedName("title")
+            val title: String
+        )
     }
 }

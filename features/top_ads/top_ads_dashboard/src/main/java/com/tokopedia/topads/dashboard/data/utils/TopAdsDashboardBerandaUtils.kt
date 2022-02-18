@@ -18,9 +18,10 @@ import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStat
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
 import com.tokopedia.topads.dashboard.data.utils.Utils.asPercentage
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 
 internal object TopAdsDashboardBerandaUtils {
+
+    private const val BERANDA_DIALOG_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/topads_dashboard_dialog_img.png"
 
     fun Activity.showDialogWithCoachMark(scrollView: NestedScrollView, vararg coachMarkViews: View) {
         if(!showBerandaDialog()) return
@@ -30,7 +31,7 @@ internal object TopAdsDashboardBerandaUtils {
             setTitle(resources.getString(R.string.topads_dashboard_home_dialog_title))
             setDescription(resources.getString(R.string.topads_dashboard_home_dialog_description))
             setPrimaryCTAText(resources.getString(R.string.topads_dashboard_home_dialog_button_text))
-            setImageDrawable(R.drawable.topads_dashboard_dialog_img)
+            setImageUrl(BERANDA_DIALOG_IMAGE)
             setPrimaryCTAClickListener {
                 dismiss()
                 showCoachMark(scrollView, *coachMarkViews)

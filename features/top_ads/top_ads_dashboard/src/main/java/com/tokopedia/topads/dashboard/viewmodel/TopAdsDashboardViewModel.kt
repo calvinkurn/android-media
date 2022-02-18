@@ -2,12 +2,13 @@ package com.tokopedia.topads.dashboard.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsLatestReadingUseCase
+import com.tokopedia.topads.dashboard.data.raw.topAdsHomepageLatestReadingJson
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,17 +19,12 @@ import javax.inject.Inject
 
 class TopAdsDashboardViewModel @Inject constructor(
     private val summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase,
-    private val topAdsLatestReadingUseCase: TopAdsLatestReadingUseCase,
     private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val _summaryStatisticsLiveData =
         MutableLiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics>>()
     val summaryStatisticsLiveData: LiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics>> get() = _summaryStatisticsLiveData
-
-    private val _latestReadingLiveData =
-        MutableLiveData<Result<List<TopAdsLatestReading.CategoryTree.Data.Category>>>()
-    val latestReadingLiveData: LiveData<Result<List<TopAdsLatestReading.CategoryTree.Data.Category>>> get() = _latestReadingLiveData
 
     private val _recommendationStatsLiveData =
         MutableLiveData<Result<RecommendationStatistics.Statistics.Data>>()
@@ -49,19 +45,6 @@ class TopAdsDashboardViewModel @Inject constructor(
         })
     }
 
-    fun fetchLatestReading() {
-        launchCatchError(block = {
-            val data = topAdsLatestReadingUseCase.getLatestReading()
-            _latestReadingLiveData.value =
-                if (data?.categoryTree?.data == null)
-                    Fail(Throwable())
-                else
-                    Success(data.categoryTree.data.categories)
-        }, onError = {
-            _latestReadingLiveData.value = Fail(it)
-        })
-    }
-
     fun fetchSummaryStatistics(startDate: String, endDate: String, adTypes: String) {
         launchCatchError(block = {
             val data =
@@ -74,5 +57,10 @@ class TopAdsDashboardViewModel @Inject constructor(
         }, onError = {
             _summaryStatisticsLiveData.postValue(Fail(it))
         })
+    }
+
+    fun getLatestReadings(): List<TopAdsLatestReading.TopAdsLatestReadingItem.Article> {
+        val data = Gson().fromJson(topAdsHomepageLatestReadingJson,TopAdsLatestReading::class.java)
+        return data[0].articles
     }
 }
