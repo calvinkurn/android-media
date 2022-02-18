@@ -9,6 +9,7 @@ import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder.OnProductItemClickListener
 
+@SuppressLint("NotifyDataSetChanged")
 class ProductListAdapter(private val listener: OnProductItemClickListener)
     : RecyclerView.Adapter<ProductItemViewHolder>(), OnProductItemClickListener {
 
@@ -37,13 +38,11 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun setProductList(productUiModelList: List<ProductUiModel>) {
         this.productUiModelList = productUiModelList.toMutableList()
         notifyDataSetChanged()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateAllProductSelections(isSelectAll: Boolean) {
         this.productUiModelList.forEach {
             it.isSelectAll = isSelectAll
@@ -52,7 +51,6 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         notifyDataSetChanged()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun isProductListEnabled(isEnabled: Boolean) {
         this.productUiModelList.forEach {
             it.isEnabled = isEnabled
@@ -60,15 +58,18 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         notifyDataSetChanged()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun addProducts(products : List<ProductUiModel>) {
         this.productUiModelList.addAll(products)
         notifyDataSetChanged()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         this.productUiModelList = mutableListOf()
+        notifyDataSetChanged()
+    }
+
+    fun deleteSelectedProducts() {
+        productUiModelList.removeAll { it.isSelected }
         notifyDataSetChanged()
     }
 

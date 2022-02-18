@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.product.list.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.vouchercreation.R
@@ -39,5 +40,16 @@ class ProductItemVariantViewHolder(
             binding.tpgVariantError.text = productVariant.errorMessage
             binding.tpgVariantError.show()
         } else binding.tpgVariantError.hide()
+        // view mode
+        val isViewing = productVariant.isViewing
+        if (isViewing) {
+            binding.cbuVariantItem.invisible()
+            binding.iuRemoveVariant.hide()
+        }
+        // edit mode
+        val isEditing = productVariant.isEditing
+        if (isEditing) {
+            binding.iuRemoveVariant.show()
+        }
     }
 }

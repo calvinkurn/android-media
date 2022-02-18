@@ -16,6 +16,7 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_IS_EDITING
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import javax.inject.Inject
@@ -105,6 +106,7 @@ class UpdateCouponActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putBoolean(BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProductIds = ArrayList<ProductId>()
@@ -115,7 +117,7 @@ class UpdateCouponActivity : AppCompatActivity() {
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
-        startActivityForResult(manageProductIntent, CreateCouponProductActivity.REQUEST_CODE_MANAGE_PRODUCT)
+        startActivityForResult(manageProductIntent, REQUEST_CODE_MANAGE_PRODUCT)
     }
 
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {

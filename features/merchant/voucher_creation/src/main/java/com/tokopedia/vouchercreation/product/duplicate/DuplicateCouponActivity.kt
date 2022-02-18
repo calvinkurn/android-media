@@ -12,18 +12,22 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
+import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
+import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
-import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import javax.inject.Inject
 
 class DuplicateCouponActivity : AppCompatActivity() {
 
     companion object {
         private const val BUNDLE_KEY_COUPON_ID = "coupon-id"
+        const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
+        const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
+        const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
 
         @JvmStatic
         fun start(context: Context, couponId : Long) {
@@ -42,7 +46,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
         CouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,
             ::navigateToCouponSettingPage,
-            ::navigateToProductListPage,
+            ::navigateToManageProductPage,
             {},
             {},
             {},
@@ -95,8 +99,20 @@ class DuplicateCouponActivity : AppCompatActivity() {
         )
     }
 
-    private fun navigateToProductListPage(coupon: Coupon) {
-        startActivity(Intent(this, AddProductActivity::class.java))
+    private fun navigateToManageProductPage(coupon: Coupon) {
+        val couponSettings = coupon.settings
+        val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
+        val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putBoolean(ManageProductFragment.BUNDLE_KEY_IS_VIEWING, true)
+                putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProductIds = ArrayList<ProductId>()
+                selectedProductIds.addAll(couponPreviewFragment.getSelectedProductIds())
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+            })
+        }
+        startActivity(manageProductIntent)
     }
 
     private fun onDuplicateCouponSuccess() {
@@ -124,38 +140,9 @@ class DuplicateCouponActivity : AppCompatActivity() {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
         fragment.setOnCouponSaved {
-
-            //Stub the products data for testing purpose
-            couponPreviewFragment.setCouponProductsData(buildDummyProducts())
             router.popFragment(supportFragmentManager)
             couponPreviewFragment.setCouponSettingsData(it)
         }
         return fragment
-    }
-
-    private fun buildDummyProducts() : List<CouponProduct> {
-        return listOf(
-            CouponProduct(
-                "2147956088",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                19
-            ),
-            CouponProduct(
-                "15455652",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                1000
-            ),
-            CouponProduct(
-                "15429644",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                2100
-            ),
-            CouponProduct(
-                "15409031",
-                "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                31000
-            )
-        )
-
     }
 }
