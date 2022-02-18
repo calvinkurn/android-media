@@ -41,6 +41,7 @@ data class ChipsData(
     @SerializedName("tenure") var tenure: Int? = null,
     @SerializedName("header") var header: String? = null,
     @SerializedName("subheader") var subheader: String? = null,
+    @SerializedName("linking_status") var linkingStatus: String? = null,
     @SerializedName("subheader_color") var subheaderColor: String? = null,
     @SerializedName("product_icon_light") var productIconLight: String? = null,
     @SerializedName("product_icon_dark") var productIconDark: String? = null,

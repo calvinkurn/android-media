@@ -14,6 +14,7 @@ const val GQL_GET_WIDGET_DETAIL_V2 =
           is_active
           is_disabled
           tenure
+          linking_status
           header
           subheader
           subheader_color

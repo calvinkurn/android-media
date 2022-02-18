@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
@@ -156,17 +157,23 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 chipsData[adapterPosition].cta?.bottomsheet,
                 chipsData[adapterPosition].gatewayId,
                 chipsData[adapterPosition].name,
-                chipsData[adapterPosition].userStatus
-            ) { url, ctaType, tenure, productName, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName ->
+                chipsData[adapterPosition].userStatus,
+                chipsData[adapterPosition].linkingStatus
+            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName,linkingStatus ->
+
                 widgetClickListner.clickedWidget(
-                    ctaType,
-                    url,
-                    tenure,
-                    productName,
-                    bottomSheetWidgetDetail,
-                    gatewayId,
-                    userStatus,
-                    partnerName
+                    FintechRedirectionWidgetDataClass(
+                        cta = ctaType,
+                        redirectionUrl = url,
+                        tenure = tenure,
+                        gatewayId = gatewayId,
+                        productUrl = null,
+                        gatewayCode = gatewayCode,
+                        widgetBottomSheet = bottomSheetWidgetDetail,
+                        userStatus = userStatus,
+                        linkingStatus = linkingStatus,
+                        gatewayPartnerName = partnerName
+                    )
                 )
             }
         }
@@ -175,7 +182,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
     // Null Checker
-    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any, R : Any> safeLet(
+    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any,  T9 : Any, R : Any> safeLet(
         p1: T1?,
         p2: T2?,
         p3: T3?,
@@ -184,9 +191,10 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         p6: T6?,
         p7: T7?,
         p8: T8?,
-        block: (T1, T2, T3, T4, T5, T6, T7, T8) -> R?
+        p9: T9?,
+        block: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R?
     ): R? {
-        return if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null) block(
+        return if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null && p9 != null) block(
             p1,
             p2,
             p3,
@@ -194,7 +202,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
             p5,
             p6,
             p7,
-            p8
+            p8,
+            p9
         ) else null
     }
 }

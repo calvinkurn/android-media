@@ -17,24 +17,30 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         when (analyticsEvent) {
             is FintechWidgetAnalyticsEvent.PdpWidgetImpression ->
                 sendPdpWidgetImpression(
-                    analyticsEvent.partnerId,
+                    analyticsEvent.partnerId,analyticsEvent.linkingStatus,
                     analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType
                 )
 
             is FintechWidgetAnalyticsEvent.ActivationBottomSheetClick -> sendActivationClick(
                 analyticsEvent.userStatus,
+                analyticsEvent.linkingStatus,
                 analyticsEvent.partner,
                 analyticsEvent.ctaWording
             )
         }
     }
 
-    private fun sendActivationClick(userStatus: String, partner: String, ctaWording: String) {
+    private fun sendActivationClick(
+        userStatus: String,
+        linkingStatus: String,
+        partner: String,
+        ctaWording: String
+    ) {
         val map = TrackAppUtils.gtmData(
             clickEvent,
             clickActivationAction,
             eventCategoryBottomSheet,
-            "$userStatus - $partner - $userStatus - $ctaWording"
+            "$userStatus - $linkingStatus - $partner - $userStatus - $ctaWording"
 
         )
         sendGeneralEvent(map)
@@ -51,6 +57,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
 
     private fun sendPdpWidgetImpression(
         partnerId: String,
+        linkingStatus: String,
         productId: String,
         userStatus: String,
         chipType: String
@@ -59,7 +66,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
             viewEvent,
             pdpBnplImpression,
             eventCategory,
-            "$productId - Yes - ${userSession.get().userId} - $userStatus - $chipType - $partnerId"
+            "$productId - Yes - ${linkingStatus} - ${userSession.get().userId} - $userStatus - $chipType - $partnerId"
 
         )
         sendGeneralEvent(map)

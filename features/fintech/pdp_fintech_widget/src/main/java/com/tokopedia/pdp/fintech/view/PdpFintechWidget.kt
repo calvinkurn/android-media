@@ -120,28 +120,11 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
             override fun clickedWidget(
-                cta: Int,
-                url: String,
-                tenure: Int,
-                gatewayBrand:
-                String,
-                widgetBottomsheet: WidgetBottomsheet,
-                gateWayID: Int,
-                userStatus: String,
-                gatewayPartnerName: String
+               fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
             ) {
+                fintechRedirectionWidgetDataClass.productUrl = idToPriceUrlMap[productID]?.url
                 customRouter(
-                    FintechRedirectionWidgetDataClass(
-                        cta = cta,
-                        redirectionUrl = url,
-                        tenure = tenure,
-                        gatewayId = gateWayID,
-                        productUrl = idToPriceUrlMap[productID]?.url,
-                        gatewayCode = gatewayBrand,
-                        widgetBottomSheet = widgetBottomsheet,
-                        userStatus = userStatus,
-                        gatewayPartnerName = gatewayPartnerName
-                    )
+                    fintechRedirectionWidgetDataClass
                 )
 
             }
@@ -247,20 +230,26 @@ class PdpFintechWidget @JvmOverloads constructor(
         for (i in 0 until chipList.size) {
             chipList[i].userStatus?.let { userStatus ->
                 chipList[i].productCode?.let { partnerName ->
-                    if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
-                        pdpWidgetAnalytics.get().sendAnalyticsEvent(
-                            FintechWidgetAnalyticsEvent.PdpWidgetImpression(
-                                productID, userStatus, "not branded chips ",
-                                partnerName
+                    chipList[i].linkingStatus?.let { linkedStatus ->
+                        if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
+                            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                                FintechWidgetAnalyticsEvent.PdpWidgetImpression(
+                                    productID,
+                                    linkedStatus,
+                                    userStatus,
+                                    "not branded chips ",
+                                    partnerName
+                                )
                             )
-                        )
-                    else
-                        pdpWidgetAnalytics.get().sendAnalyticsEvent(
-                            FintechWidgetAnalyticsEvent.PdpWidgetImpression(
-                                productID, userStatus, "branded chips",
-                                partnerName
+                        else
+                            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                                FintechWidgetAnalyticsEvent.PdpWidgetImpression(
+                                    productID,linkedStatus
+                                    ,userStatus, "branded chips",
+                                    partnerName
+                                )
                             )
-                        )
+                    }
                 }
             }
         }

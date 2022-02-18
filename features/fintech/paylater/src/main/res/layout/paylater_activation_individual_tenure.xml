@@ -18,9 +18,9 @@
         android:paddingBottom="8dp"
         android:paddingTop="@dimen/unify_space_4"
         android:elevation="1dp"
-        android:paddingRight="@dimen/unify_space_4"
+        android:paddingRight="@dimen/unify_space_2"
         android:visibility="gone"
-        android:paddingLeft="@dimen/unify_space_4"
+        android:paddingLeft="@dimen/unify_space_2"
         android:background="@drawable/bg_occ_tenure_recommended"
         tools:text="sfgvdfgs dfvsdf sdfavsdv"
         />

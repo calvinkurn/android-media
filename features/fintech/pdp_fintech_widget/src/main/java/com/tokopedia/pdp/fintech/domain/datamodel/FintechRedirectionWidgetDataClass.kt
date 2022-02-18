@@ -13,6 +13,7 @@ data class FintechRedirectionWidgetDataClass(
     var gatewayCode: String? = null,
     var gatewayPartnerName: String? = null,
     var gatewayId: Int,
-    var userStatus: String,
+    var userStatus: String? = null,
+    var linkingStatus: String? = null,
     var widgetBottomSheet: WidgetBottomsheet? = null
 ) : Parcelable
