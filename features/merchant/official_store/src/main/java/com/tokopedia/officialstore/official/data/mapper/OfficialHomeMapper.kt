@@ -87,25 +87,6 @@ class OfficialHomeMapper (
     //this is old featured brand from external api
     //now doubles with featured brand on dynamic channel
     fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialFeaturedShopDataModel }
-
-            val officialFeaturedShop = OfficialFeaturedShopDataModel(
-                    featuredShop.featuredShops,
-                    featuredShop.header,
-                    categoryName.toEmptyStringIfNull(),
-                    listener
-            )
-            if(index == -1) {
-                if(size < FEATURE_SHOP_POSITION) add(officialFeaturedShop)
-                else add(FEATURE_SHOP_POSITION, officialFeaturedShop)
-            } else {
-                set(index, officialFeaturedShop)
-            }
-
-            adapter?.submitList(this.toMutableList())
-        }
-
         val newList = mutableListOf<Visitable<*>>()
         val officialFeaturedShop = OfficialFeaturedShopDataModel(
             featuredShop.featuredShops,
@@ -122,9 +103,13 @@ class OfficialHomeMapper (
             }
         }
         val isOfficialFeaturedShopNotExisted = newList.indexOfFirst { it is OfficialFeaturedShopDataModel } == WIDGET_NOT_FOUND
-        if (isOfficialFeaturedShopNotExisted) {
-
+        if (isOfficialFeaturedShopNotExisted && newList.size > FEATURE_SHOP_POSITION) {
+            newList.add(FEATURE_SHOP_POSITION, officialFeaturedShop)
         }
+        else {
+            newList.add(officialFeaturedShop)
+        }
+        listOfficialStore = newList
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
@@ -346,8 +331,11 @@ class OfficialHomeMapper (
             }
         }
         val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
-        if (isBestSellerWidgetNotExist) {
+        if (isBestSellerWidgetNotExist && newList.size > RECOM_WIDGET_POSITION) {
             newList.add(RECOM_WIDGET_POSITION, data)
+        }
+        else {
+            newList.add(data)
         }
         listOfficialStore = newList
         action.invoke(newList)
