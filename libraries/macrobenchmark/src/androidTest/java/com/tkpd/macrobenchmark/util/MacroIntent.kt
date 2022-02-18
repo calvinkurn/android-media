@@ -74,4 +74,18 @@ object MacroIntent {
             return intent
         }
     }
+
+    object SearchResult {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID = "recyclerview"
+
+        fun getSearchResultIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://search?q=samsung")
+            return intent
+        }
+    }
 }
