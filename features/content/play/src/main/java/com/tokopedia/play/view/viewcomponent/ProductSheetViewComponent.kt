@@ -55,23 +55,23 @@ class ProductSheetViewComponent(
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
             product: PlayProductUiModel.Product,
-            config: ProductSectionUiModel.Section.ConfigUiModel
+            sectionInfo: ProductSectionUiModel.Section
         ) {
-            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product, config)
+            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product, sectionInfo)
 
         }
         override fun onATCProduct(
             product: PlayProductUiModel.Product,
-            config: ProductSectionUiModel.Section.ConfigUiModel
+            sectionInfo: ProductSectionUiModel.Section
         ) {
-            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product, config)
+            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product, sectionInfo)
         }
         override fun onClickProductCard(
             product: PlayProductUiModel.Product,
-            config: ProductSectionUiModel.Section.ConfigUiModel,
+            sectionInfo: ProductSectionUiModel.Section,
             position: Int
         ) {
-            listener.onProductCardClicked(this@ProductSheetViewComponent, product, config, position)
+            listener.onProductCardClicked(this@ProductSheetViewComponent, product, sectionInfo, position)
         }
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
@@ -79,9 +79,9 @@ class ProductSheetViewComponent(
 
         override fun onProductImpressed(
             product: List<Pair<PlayProductUiModel.Product, Int>>,
-            config: ProductSectionUiModel.Section.ConfigUiModel
+            sectionInfo: ProductSectionUiModel.Section
         ) {
-            listener.onProductsImpressed(this@ProductSheetViewComponent, product, config)
+            listener.onProductsImpressed(this@ProductSheetViewComponent, product, sectionInfo)
         }
     })
 
@@ -215,11 +215,11 @@ class ProductSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
-        fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
+        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
-        fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
+        fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
     }

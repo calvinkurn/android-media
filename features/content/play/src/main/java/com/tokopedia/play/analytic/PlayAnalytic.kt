@@ -174,12 +174,12 @@ class PlayAnalytic(
         )
     }
 
-    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel) {
+    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
         if (products.isEmpty()) return
 
-        val (eventAction, eventLabel) = when(configUiModel.type){
-            ProductSectionType.Active -> Pair("impression - product in ongoing section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${configUiModel.id}")
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${configUiModel.id}")
+        val (eventAction, eventLabel) = when(sectionInfo.config.type){
+            ProductSectionType.Active -> Pair("impression - product in ongoing section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${sectionInfo.id}")
             else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
         }
         trackingQueue.putEETracking(
@@ -203,12 +203,12 @@ class PlayAnalytic(
     }
 
     fun clickProduct(product: PlayProductUiModel.Product,
-                     configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
+                     sectionInfo: ProductSectionUiModel.Section,
                      position: Int) {
 
-        val (eventAction, eventLabel) = when (configUiModel.type) {
-            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
             else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
         }
 
@@ -259,7 +259,7 @@ class PlayAnalytic(
     }
 
     fun clickProductAction(product: PlayProductUiModel.Product,
-                           configUiModel: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel.Empty,
+                           sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
                            cartId: String,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType,
@@ -268,12 +268,12 @@ class PlayAnalytic(
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, configUiModel, cartId, shopInfo)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, configUiModel, cartId, shopInfo)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             }
         }
@@ -628,11 +628,11 @@ class PlayAnalytic(
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
-                                                    configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
+                                                    sectionInfo: ProductSectionUiModel.Section,
                                                     cartId: String,
                                                     shopInfo: PlayPartnerInfo) {
-        val (eventAction, eventLabel) = when (configUiModel.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
             else -> Pair(KEY_TRACK_CLICK + "buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
         }
         trackingQueue.putEETracking(
@@ -666,11 +666,11 @@ class PlayAnalytic(
 
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                    product: PlayProductUiModel.Product,
-                                                   configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
+                                                   sectionInfo: ProductSectionUiModel.Section,
                                                    cartId: String,
                                                    shopInfo: PlayPartnerInfo) {
-        val (eventAction, eventLabel) = when (configUiModel.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - - atc in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - - atc in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
             else -> Pair(KEY_TRACK_CLICK + "atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
         }
         trackingQueue.putEETracking(

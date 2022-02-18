@@ -41,40 +41,40 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    private fun productScrollListener(config: ProductSectionUiModel.Section.ConfigUiModel) = object: RecyclerView.OnScrollListener(){
+    private fun productScrollListener(sectionInfo: ProductSectionUiModel.Section) = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                listener.onProductImpressed(getVisibleVouchers(layoutManagerProductList(config)), config)
+                listener.onProductImpressed(getVisibleVouchers(layoutManagerProductList(sectionInfo)), sectionInfo)
             }
         }
     }
 
-    private fun layoutManagerProductList(config: ProductSectionUiModel.Section.ConfigUiModel) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
+    private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
-            listener.onProductImpressed(getVisibleVouchers(this), config)
+            listener.onProductImpressed(getVisibleVouchers(this), sectionInfo)
         }
     }
 
-    private fun setupListener(config: ProductSectionUiModel.Section.ConfigUiModel) = object : ProductLineViewHolder.Listener {
+    private fun setupListener(sectionInfo: ProductSectionUiModel.Section) = object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
-            listener.onBuyProduct(product, config)
+            listener.onBuyProduct(product, sectionInfo)
         }
 
         override fun onAtcProduct(product: PlayProductUiModel.Product) {
-            listener.onATCProduct(product, config)
+            listener.onATCProduct(product, sectionInfo)
         }
 
         override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-            listener.onClickProductCard(product, config, position)
+            listener.onClickProductCard(product, sectionInfo, position)
         }
 
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
-        adapter = ProductLineAdapter(setupListener(item.config))
-        rvProducts.layoutManager = layoutManagerProductList(item.config)
-        rvProducts.addOnScrollListener(productScrollListener(item.config))
+        adapter = ProductLineAdapter(setupListener(item))
+        rvProducts.layoutManager = layoutManagerProductList(item)
+        rvProducts.addOnScrollListener(productScrollListener(item))
         rvProducts.adapter = adapter
 
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
@@ -169,10 +169,10 @@ class ProductSectionViewHolder(
     }
 
     interface Listener {
-        fun onBuyProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
-        fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
-        fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
-        fun onProductImpressed(product: List<Pair<PlayProductUiModel.Product, Int>>, config: ProductSectionUiModel.Section.ConfigUiModel)
+        fun onBuyProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onATCProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onClickProductCard(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
+        fun onProductImpressed(product: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onProductChanged()
     }
 }

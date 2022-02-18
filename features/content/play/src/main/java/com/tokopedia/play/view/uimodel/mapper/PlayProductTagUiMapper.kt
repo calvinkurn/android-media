@@ -18,7 +18,8 @@ class PlayProductTagUiMapper @Inject constructor() {
         productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
-        config = mapConfig(input)
+        config = mapConfig(input),
+        id = input.id
     )
 
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
@@ -31,8 +32,7 @@ class PlayProductTagUiMapper @Inject constructor() {
         background = ProductSectionUiModel.Section.BackgroundUiModel(
             gradients = input.background.gradientList,
             imageUrl = input.background.imageUrl
-        ),
-        id = input.id
+        )
     )
 
     private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {

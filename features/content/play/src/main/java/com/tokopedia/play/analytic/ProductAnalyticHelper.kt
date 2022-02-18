@@ -18,13 +18,13 @@ class ProductAnalyticHelper(
     @TrackingField
     private val impressedVouchers = mutableListOf<MerchantVoucherUiModel>()
 
-    private var config: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel.Empty
+    private var sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
-    fun trackImpressedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, configUiModel: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel.Empty) {
+    fun trackImpressedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, section: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty) {
         if (products.isNotEmpty()) {
             impressedProducts.addAll(products)
         }
-        config = configUiModel
+        sectionInfo = section
     }
 
     fun trackImpressedVouchers(vouchers: List<MerchantVoucherUiModel>) {
@@ -42,7 +42,7 @@ class ProductAnalyticHelper(
     }
 
     private fun sendImpressedBottomSheetProducts() {
-        analytic.impressBottomSheetProducts(getFinalProducts(), config)
+        analytic.impressBottomSheetProducts(getFinalProducts(), sectionInfo)
         clearProducts()
     }
 

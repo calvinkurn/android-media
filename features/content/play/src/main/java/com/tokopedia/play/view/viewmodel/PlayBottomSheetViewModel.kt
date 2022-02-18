@@ -38,7 +38,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     private val repo: PlayViewerRepository,
 ) : ViewModel() {
 
-    private val _observableAddToCart = MutableLiveData<PlayResult<Pair<Event<CartFeedbackUiModel>, ProductSectionUiModel.Section.ConfigUiModel>>>()
+    private val _observableAddToCart = MutableLiveData<PlayResult<Pair<Event<CartFeedbackUiModel>, ProductSectionUiModel.Section>>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
     private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
     private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
@@ -46,7 +46,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
-    val observableAddToCart: LiveData<PlayResult<Pair<Event<CartFeedbackUiModel>, ProductSectionUiModel.Section.ConfigUiModel>>> = _observableAddToCart
+    val observableAddToCart: LiveData<PlayResult<Pair<Event<CartFeedbackUiModel>, ProductSectionUiModel.Section>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
     val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>> = _observableUserReportSubmission
@@ -84,7 +84,7 @@ class PlayBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
+    fun addToCart(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, notes: String = "", action: ProductAction, type: BottomInsetsType) {
         _observableAddToCart.value = PlayResult.Loading(false)
 
         //TODO(If isSuccess = false, treat that as Failure instead of Success(isSuccess=true))
@@ -103,7 +103,7 @@ class PlayBottomSheetViewModel @Inject constructor(
             }
 
             _observableAddToCart.value = PlayResult.Success(Pair(
-                Event(mappingResponseCart(responseCart, product, action, type)), configUiModel)
+                Event(mappingResponseCart(responseCart, product, action, type)), sectionInfo)
             )
         }) {
             _observableAddToCart.value = PlayResult.Success(
@@ -116,7 +116,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                         action = action,
                         bottomInsetsType = type
                     )
-                ), configUiModel)
+                ), sectionInfo)
             )
         }
     }
