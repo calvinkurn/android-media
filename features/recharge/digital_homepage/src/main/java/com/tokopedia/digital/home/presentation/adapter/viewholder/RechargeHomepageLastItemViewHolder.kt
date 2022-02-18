@@ -20,10 +20,6 @@ class RechargeHomepageLastItemViewHolder(
     override fun bind(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         renderView(element)
         applyCarousel()
-
-        binding.root.setOnClickListener {
-            listener.onRechargeBannerAllItemClicked(element.section)
-        }
     }
 
     private fun renderView(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
@@ -34,7 +30,7 @@ class RechargeHomepageLastItemViewHolder(
             cardViewRechargeHomepageLastItem.description = item.subtitle
             cardViewRechargeHomepageLastItem.ctaIconView.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
             cardViewRechargeHomepageLastItem.setCta(getString(R.string.recharge_home_banner_see_all_label)) {
-                listener.onRechargeBannerAllItemClicked(element.section)
+                listener.onRechargeSectionItemClicked(item)
             }
         }
     }
