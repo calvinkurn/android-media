@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -539,9 +540,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 getString(R.string.placeholder_quota_usage),
                 coupon.bookedQuota.toString()
             ).parseAsHtml()
+            anchorQuotaCounterToQuotaProgressBar()
         } else {
             binding.progressBarQuotaUsage.gone()
             binding.tpgTickerUsage.gone()
+            anchorQuotaCounterToQuotaLabel()
         }
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
@@ -810,5 +813,41 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 shareCallback
             )
         )
+    }
+
+    private fun anchorQuotaCounterToQuotaLabel() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.TOP,
+            binding.typographyQuota.id,
+            ConstraintSet.TOP
+        )
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.BOTTOM,
+            binding.typographyQuota.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.layout)
+    }
+
+    private fun anchorQuotaCounterToQuotaProgressBar() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.TOP,
+            binding.progressBarQuotaUsage.id,
+            ConstraintSet.TOP
+        )
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.BOTTOM,
+            binding.progressBarQuotaUsage.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.layout)
     }
 }

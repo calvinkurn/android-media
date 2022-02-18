@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/used_coupon"
-                android:layout_marginTop="@dimen/unify_space_32"
+                android:layout_marginTop="@dimen/unify_space_24"
                 app:layout_constraintStart_toStartOf="@+id/imgCoupon"
                 app:layout_constraintTop_toBottomOf="@+id/imgCoupon"
                 app:typographyType="body_3"
@@ -142,7 +142,7 @@
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginEnd="@dimen/mvc_dimen_12dp"
                 android:visibility="gone"
-                tools:visibility="gone"
+                tools:visibility="visible"
                 app:layout_constraintEnd_toStartOf="@+id/tpgUsedQuota"
                 app:layout_constraintStart_toStartOf="@+id/imgCoupon"
                 app:layout_constraintTop_toBottomOf="@+id/typographyQuota" />
@@ -156,7 +156,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/progressBarQuotaUsage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tpgTotalQuota"
-                app:layout_constraintTop_toTopOf="@+id/typographyQuota"
+                app:layout_constraintTop_toTopOf="@+id/progressBarQuotaUsage"
                 app:layout_constraintVertical_bias="0.6"
                 app:typographyType="heading_3"
                 tools:text="30" />
