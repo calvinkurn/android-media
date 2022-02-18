@@ -169,7 +169,6 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
             affiliate_login_card.hide()
 
         } else {
-
             affiliateLoginSharedViewModel.getAffiliateValidateUser()
 
             affiliate_login_text.isVisible = true
@@ -206,6 +205,11 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                     showFraudTicker()
                 }
                 else -> {}
+            }
+        })
+        affiliateLoginSharedViewModel.getProgressBar().observe(viewLifecycleOwner,{
+            it?.let {
+                login_progress.isVisible = it
             }
         })
     }

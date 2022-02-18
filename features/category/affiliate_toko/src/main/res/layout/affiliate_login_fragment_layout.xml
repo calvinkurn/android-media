@@ -6,7 +6,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_Background"
     >
-
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/login_progress"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/affiliate_login_toolbar"
         android:layout_width="match_parent"

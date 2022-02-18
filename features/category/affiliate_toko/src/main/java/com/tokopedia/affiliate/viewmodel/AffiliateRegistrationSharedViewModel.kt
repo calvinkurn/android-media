@@ -19,14 +19,18 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
 
     private var userActionLiveData = MutableLiveData<UserAction>()
     private var errorMessage = MutableLiveData<Throwable>()
+    private var progressBar = MutableLiveData<Boolean>()
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     var isFieldError = MutableLiveData<Boolean>()
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
+            progressBar.value = true
             val response = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
             onGetResult(response)
+            progressBar.value = false
         }, onError = {
+            progressBar.value = false
             it.printStackTrace()
             errorMessage.value = it
         })
@@ -77,6 +81,7 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
 
     fun getUserAction(): LiveData<UserAction> = userActionLiveData
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
+    fun getProgressBar(): LiveData<Boolean> = progressBar
 
 
 
