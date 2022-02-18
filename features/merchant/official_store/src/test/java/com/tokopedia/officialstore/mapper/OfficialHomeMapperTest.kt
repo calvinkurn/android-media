@@ -8,6 +8,7 @@ import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.RECOM_WIDGET_POSITION
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.WIDGET_NOT_FOUND
 import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
@@ -113,6 +114,16 @@ class OfficialHomeMapperTest {
         )
     }
 
+    private fun dynamicChannelDataNotContainsBestSellerLessThanDefaultSize() {
+        officialHomeMapper.mappingDynamicChannel(
+            listOf(
+                OfficialStoreChannel(Channel(layout = DynamicChannelLayout.LAYOUT_MIX_LEFT)),
+                ),
+            mockOfficialHomeAdapter,
+            mockRemoteConfig
+        )
+    }
+
     private fun dynamicChannelDataContainsDifferentIdFeaturedShop() {
         officialHomeMapper.mappingDynamicChannel(
             listOf(
@@ -179,6 +190,10 @@ class OfficialHomeMapperTest {
 
     private fun `given list official store not contains best seller` () {
         dynamicChannelDataNotContainsBestSeller()
+    }
+
+    private fun `given list official store not contains best seller less than default size` () {
+        dynamicChannelDataNotContainsBestSellerLessThanDefaultSize()
     }
 
     @Before
@@ -319,6 +334,14 @@ class OfficialHomeMapperTest {
         `given list official store not contains best seller`()
         officialHomeMapper.mappingRecomWidget(data = mockBestSellerDataModel) {}
         Assert.assertEquals(officialHomeMapper.listOfficialStore[OfficialHomeMapper.RECOM_WIDGET_POSITION], mockBestSellerDataModel)
+    }
+
+    @Test
+    fun `given list official store not contains best seller with size less than default when mapping recom widget then recom widget position will top of the list`() {
+        `given list official store not contains best seller less than default size`()
+        officialHomeMapper.mappingRecomWidget(data = mockBestSellerDataModel) {}
+        val indexBestSellerWidgetInList = officialHomeMapper.listOfficialStore.indexOfFirst { it is BestSellerDataModel }
+        Assert.assertTrue(indexBestSellerWidgetInList < RECOM_WIDGET_POSITION)
     }
 
     @Test
