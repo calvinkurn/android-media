@@ -164,7 +164,7 @@ class ShipmentViewHolder(
         element: ProductShipmentDataModel,
         rates: P2RatesEstimateData
     ) = with(viewMain) {
-        val labels = rates.chipsLabel.take(2)
+        val labels = rates.chipsLabel
 
         if (labels.isEmpty()) {
             pdpShipmentCourierLabel2.show()
@@ -177,7 +177,7 @@ class ShipmentViewHolder(
                 pdpShipmentCourierOption1,
                 pdpShipmentCourierOption2
             )
-            labels.forEachIndexed { index, label ->
+            labels.take(chipViews.size).forEachIndexed { index, label ->
                 chipViews[index].showIfWithBlock(label.isNotEmpty()) {
                     setLabel(label)
                 }

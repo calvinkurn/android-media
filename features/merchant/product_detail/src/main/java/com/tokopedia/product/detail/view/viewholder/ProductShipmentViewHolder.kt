@@ -14,8 +14,9 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.rates.FulfillmentData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
@@ -46,7 +47,9 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
     private val shipmentEstimation: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_estimation)
+    private val shipmentFulfillmentLabel: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_khusus)
     private val shipmentFullfillmentImg: ImageView? = itemView.findViewById(R.id.img_ic_fullfillment)
+    private val shipmentFulfillmentText: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_fullfillment)
     private val otherCourierTxt: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_other_courier)
     private val shipmentLabelCod: Label? = itemView.findViewById(R.id.label_pdp_shipment_cod)
     private val shipmentLabelInstant: Label? = itemView.findViewById(R.id.label_pdp_shipment_instant)
@@ -111,14 +114,16 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private fun renderShipmentSuccess(element: ProductShipmentDataModel) = with(itemView) {
         hideShipmentLoading()
         renderText(element.rates, element.localDestination)
-        renderTokoCabang(element.isFullfillment, element.tokoCabangIconUrl)
+        renderTokoCabang(element.isFullfillment, element.rates.fulfillmentData)
         renderOtherSection(element)
     }
 
     private fun renderOtherSection(element: ProductShipmentDataModel) = with(itemView) {
         val rates = element.rates
         adjustUiSuccess(rates.title, rates.instanLabel, element.isCod)
-        if (rates.instanLabel.isEmpty() && !element.isCod) {
+
+        val labels = element.rates.chipsLabel
+        if (labels.isEmpty()) {
             renderSubtitleGreen(element.isTokoNow)
             hideLabelAndBo()
             shipmentArrow?.hide()
@@ -126,9 +131,13 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         }
 
         renderSubtitleNormal(rates.subtitle)
-        shipmentLabelCod?.showWithCondition(element.isCod)
-        shipmentLabelInstant?.shouldShowWithAction(rates.instanLabel.isNotEmpty()) {
-            shipmentLabelInstant.setLabel(rates.instanLabel)
+
+        val labelViews = listOf(shipmentLabelInstant, shipmentLabelCod)
+        labelViews.forEachIndexed { index, view ->
+            val label = labels.getOrElse(index) { "" }
+            view?.showIfWithBlock(label.isNotEmpty()) {
+                setLabel(label)
+            }
         }
     }
 
@@ -150,8 +159,10 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         otherCourierTxt?.show()
     }
 
-    private fun renderTokoCabang(isFullfillment: Boolean, tokoCabangIconUrl: String) = if (isFullfillment) {
-        shipmentFullfillmentImg?.loadImage(tokoCabangIconUrl)
+    private fun renderTokoCabang(isFullfillment: Boolean, fulfillmentData: FulfillmentData) = if (isFullfillment) {
+        shipmentFulfillmentLabel?.text = fulfillmentData.prefix
+        shipmentFullfillmentImg?.loadImage(fulfillmentData.icon)
+        shipmentFulfillmentText?.text = fulfillmentData.description
         shipmentTokoCabangGroup?.show()
     } else {
         shipmentTokoCabangGroup?.gone()
