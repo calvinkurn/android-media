@@ -169,7 +169,7 @@
             android:id="@+id/dateIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/chatbot_color_date"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:paddingTop="@dimen/spacing_lvl1"

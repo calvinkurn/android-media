@@ -21,6 +21,7 @@ import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -43,20 +44,8 @@ class HomeVisitableFactoryImpl(
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object{
-        private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
-        private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
-        private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
-        private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
-        private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
-        private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
-        private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
-        private const val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
-        private const val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
-        private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
-        private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
-
-        private const val VALUE_BANNER_UNKNOWN = "banner unknown"
-        private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+        private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
+        private const val VALUE_BANNER_DEFAULT = "default"
 
         private const val LAYOUT_FLOATING = "floating"
         private const val BE_TICKER_ANNOUNCEMENT = 0
@@ -97,7 +86,7 @@ class HomeVisitableFactoryImpl(
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
 
-        val homeHeader = HomeHeaderOvoDataModel(needToShowUserWallet = needToShowUserWallet)
+        val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
         homeHeader.headerDataModel = headerViewModel
@@ -278,8 +267,8 @@ class HomeVisitableFactoryImpl(
 
                         TYPE_BANNER -> {
                             data.atfStatusCondition (
-                                    onSuccess = {
-                                        addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>())
+                                    onLoading = {
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
                                     },
                                     onError = {
                                         when(channelPosition) {
@@ -287,6 +276,9 @@ class HomeVisitableFactoryImpl(
                                             1 -> visitableList.add(ErrorStateChannelTwoModel())
                                             2 -> visitableList.add(ErrorStateChannelThreeModel())
                                         }
+                                    },
+                                    onSuccess = {
+                                        addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
                                     }
                             )
                             channelPosition++
@@ -344,7 +336,7 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    private fun addHomePageBannerData(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?) {
+    private fun addHomePageBannerData(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?, index: Int) {
         if (!isCache) {
             bannerDataModel?.let {
                 val channelModel = ChannelModel(
@@ -354,7 +346,6 @@ class HomeVisitableFactoryImpl(
                                     campaignCode = it.campaignCode,
                                     id = it.id.toString(),
                                     imageUrl = it.imageUrl,
-                                    name = it.title,
                                     attribution = it.creativeName,
                                     persona = it.persona,
                                     categoryPersona = it.categoryPersona,
@@ -363,7 +354,12 @@ class HomeVisitableFactoryImpl(
                             )
                         }?: listOf(),
                         groupId = "",
-                        id = ""
+                        id = "",
+                    trackingAttributionModel = TrackingAttributionModel(
+                        promoName = String.format(
+                            PROMO_NAME_BANNER_CAROUSEL, (index+1).toString(),VALUE_BANNER_DEFAULT
+                        )
+                    )
                 )
                 visitableList.add(BannerDataModel(channelModel = channelModel, isCache = isCache))
             }

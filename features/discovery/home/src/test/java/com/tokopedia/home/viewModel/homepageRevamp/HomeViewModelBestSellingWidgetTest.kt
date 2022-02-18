@@ -1,23 +1,19 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUseCase
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.TimeoutException
 
 /**
  * Created by Lukas on 06/11/20.
@@ -26,144 +22,65 @@ class HomeViewModelBestSellingWidgetTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
-    private val getRecommendationUsecase = mockk<GetRecommendationUseCase> (relaxed = true)
-    private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips> (relaxed = true)
-    private val bestSellerMapper = mockk<BestSellerMapper> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
+    private val getHomeRecommendationUseCase = mockk<HomeRecommendationUseCase> (relaxed = true)
 
+    private val mockInitialBestSellerDataModel = BestSellerDataModel()
+    private val mockSuccessBestSellerDataModel = BestSellerDataModel(
+        recommendationItemList = listOf(
+            RecommendationItem(),
+            RecommendationItem()
+        )
+    )
+
+    @ExperimentalCoroutinesApi
     private lateinit var homeViewModel: HomeRevampViewModel
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun `success get best selling widget from recommendation data and chip data`() = runBlocking{
-        val recomItem = RecommendationItem()
-        val bestSellerDataModel = BestSellerDataModel(
-                recommendationItemList = listOf(recomItem)
-        )
-        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
-        coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
-
+    fun `when homeRecommendationUseCase success on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking{
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(bestSellerDataModel)
-                )
+            HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
+        )
+        getHomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(
+            mockSuccessBestSellerDataModel
         )
 
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            homeRecommendationUseCase = getHomeRecommendationUseCase
+        )
+        homeViewModel.getRecommendationWidget(
+            filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
+            bestSellerDataModel = mockInitialBestSellerDataModel,
+            selectedChipsPosition = 0
+        )
+        Assert.assertTrue(
+            (homeViewModel.homeDataModel.list[0] as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true
+        )
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun `error get best selling widget from recommendation data and chip data`() = runBlocking{
-        val recomItem = RecommendationItem()
-        val bestSellerDataModel = BestSellerDataModel(
-                recommendationItemList = listOf(recomItem)
-        )
-        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
-        coEvery { getRecommendationUsecase.getData(any()) } throws TimeoutException()
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
-
+    fun `when homeRecommendationUseCase failed on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking{
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(bestSellerDataModel),
-                        isProcessingAtf = false
-                )
+            HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
+        )
+        getHomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(
+            mockInitialBestSellerDataModel
         )
 
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
-    }
-
-    @Test
-    fun `success get best selling widget but empty from recom and filter chip`() = runBlocking{
-        val recomItem = RecommendationItem()
-        val bestSellerDataModel = BestSellerDataModel(
-                recommendationItemList = listOf(recomItem)
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            homeRecommendationUseCase = getHomeRecommendationUseCase
         )
-        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
-        coEvery { getRecommendationUsecase.getData(any()) } returns listOf()
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
-
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(bestSellerDataModel),
-                        isProcessingAtf = false
-                )
+        homeViewModel.getRecommendationWidget(
+            filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
+            bestSellerDataModel = mockInitialBestSellerDataModel,
+            selectedChipsPosition = 0
         )
-
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
-    }
-
-    @Test
-    fun `success get recommendation filtering best selling widget`() = runBlocking{
-        val recomItem = RecommendationItem()
-        val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip()
-        val bestSellerDataModel = BestSellerDataModel(
-                recommendationItemList = listOf(recomItem)
+        Assert.assertTrue(
+            (homeViewModel.homeDataModel.list[0] as? BestSellerDataModel)?.recommendationItemList?.isEmpty() == true
         )
-        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
-        coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
-
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(bestSellerDataModel)
-                )
-        )
-
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
-
-        homeViewModel.getRecommendationWidget(recomFilterChip, bestSellerDataModel, 1)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
-    }
-
-    @Test
-    fun `no slotting data best selling widget`() = runBlocking{
-        val recomItem = RecommendationItem()
-        val bestSellerDataModel = BestSellerDataModel(
-                recommendationItemList = listOf(recomItem)
-        )
-        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
-        coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
-
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf()
-                )
-        )
-
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
-    }
-
-    @Test
-    fun `null data best selling widget`() = runBlocking{
-        val recomItem = RecommendationItem()
-        val bestSellerDataModel = BestSellerDataModel(
-                recommendationItemList = listOf(recomItem)
-        )
-        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
-        coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
-
-        coEvery { getHomeUseCase.getHomeData() } returns flow{
-            emit(null)
-        }
-
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
-
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
     }
 }

@@ -254,6 +254,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/verify-fingerprint
     const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
 
+    // RegisterFingerprintActivity
+    // tokopedia-android-internal://global/register-fingerprint
+    const val REGISTER_BIOMETRIC = "$INTERNAL_GLOBAL/register-fingerprint"
+
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
     @JvmField
@@ -502,6 +506,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
+    // LinkAccountReminderActivity
+    // tokopedia-android-internal://global/link-acc-reminder
+    const val LINK_ACC_REMINDER = "$INTERNAL_GLOBAL/link-acc-reminder"
 
     // LinkAccountWebViewActivity
     // tokopedia-android-internal://global/link-account-webview

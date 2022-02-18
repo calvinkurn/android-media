@@ -158,7 +158,7 @@ class SellerHomeLayoutHelper @Inject constructor(
         val newWidgetList = loadedWidgetList.toMutableList()
         loadedWidgetList.filter { it.widgetType == WidgetType.SECTION }.forEach { section ->
             newWidgetList.indexOf(section).let { index ->
-                newWidgetList[index] = section.copy().apply { isLoaded = true }
+                newWidgetList[index] = section.copyWidget().apply { isLoaded = true }
             }
         }
         return getWidgetsData(newWidgetList)
@@ -277,7 +277,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    val copiedWidget = widget.copy()
+                    val copiedWidget = widget.copyWidget()
                     copiedWidget.data = widgetData
                     if (shouldRemoveWidgetInitially(widget, widgetData)) {
                         copiedWidget.isNeedToBeRemoved = true

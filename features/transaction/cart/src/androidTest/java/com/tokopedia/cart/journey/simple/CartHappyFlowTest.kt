@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.CartActivity
+import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
