@@ -77,6 +77,7 @@ class ProductCardViewHelper(
     private fun initTrackSelector(context: Context) : TrackSelector {
         val defaultTrackSelector = DefaultTrackSelector.ParametersBuilder(context)
             .setMaxVideoBitrate(MAXIMUM_VIDEO_BANDWIDTH)
+            .setExceedVideoConstraintsIfNecessary(true)
             .build()
         return DefaultTrackSelector(context).apply {
             parameters = defaultTrackSelector
