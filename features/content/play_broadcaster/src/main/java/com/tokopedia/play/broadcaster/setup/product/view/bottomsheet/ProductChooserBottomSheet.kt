@@ -37,6 +37,7 @@ import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
@@ -103,6 +104,9 @@ class ProductChooserBottomSheet @Inject constructor(
         onLifecycle = whenLifecycle {
             onDestroy { it.dismiss() }
         }
+    )
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
     private var isSelectedProductsChanged = false
@@ -231,7 +235,7 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
-                        //TODO("Show Error")
+                        toaster.showError(it.error)
                     }
                     else -> {}
                 }
@@ -422,6 +426,8 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun closeBottomSheet() {
+        if (viewModel.uiState.value.saveState.isLoading) return
+
         if (saveButtonView.isEnabled()) exitConfirmationDialog.show()
         else mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
     }

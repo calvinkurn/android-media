@@ -50,16 +50,4 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/iv_loading"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
