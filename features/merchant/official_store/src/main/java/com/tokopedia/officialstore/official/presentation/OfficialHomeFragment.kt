@@ -192,11 +192,16 @@ class OfficialHomeFragment :
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
                 OSFeaturedShopDCCallback(this),
-                recyclerView?.recycledViewPool)
+                recyclerView?.recycledViewPool,
+                onTopAdsHeadlineClicked)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
         officialHomeMapper.resetState(adapter)
         return view
+    }
+
+    private val onTopAdsHeadlineClicked: (applink: String) -> Unit = {
+        RouteManager.route(context, it)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -710,6 +715,8 @@ class OfficialHomeFragment :
                         userId = userSession.userId
                 ) as HashMap<String, Any>
         )
+
+        viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
     }
 
     override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
@@ -887,11 +894,11 @@ class OfficialHomeFragment :
         viewModel.productRecommendation.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
+                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.recommendationWidget.title
                     endlessScrollListener.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
                     if (counterTitleShouldBeRendered == 1) {
-                        officialHomeMapper.mappingProductRecommendationTitle(it.data.title, adapter)
+                        officialHomeMapper.mappingProductRecommendationTitle(it.data.recommendationWidget.title, adapter)
                     }
                     officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
@@ -954,7 +961,11 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
             removeRecomWidget()
+            officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
             loadData(true)
+            viewModel.resetShopWidgetImpressionCount()
+            viewModel.resetIsFeatureShopAllowed()
+            resetData()
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
