@@ -6,9 +6,11 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.BENEFIT_POSITION
+import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.FEATURE_SHOP_POSITION
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.RECOM_WIDGET_POSITION
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.WIDGET_NOT_FOUND
 import com.tokopedia.officialstore.official.data.model.*
@@ -16,6 +18,7 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -51,10 +54,13 @@ class OfficialHomeMapperTest {
     private val mockOfficialStoreBanners = OfficialStoreBanners(
                 banners = defaultBanner
             )
-    private val listBenefit = mutableListOf<Benefit>(Benefit())
-    private val listBenefit2 = mutableListOf<Benefit>(Benefit(), Benefit())
+    private val listBenefit = mutableListOf(Benefit())
+    private val listBenefit2 = mutableListOf(Benefit(), Benefit())
     private val mockBenefit = OfficialStoreBenefits(listBenefit)
     private val mockBenefit2 = OfficialStoreBenefits(listBenefit2)
+    private val mockOfficialStoreFeaturedShop = OfficialStoreFeaturedShop(mutableListOf(Shop()))
+    private val mockCategory = "category1"
+    private val mockFeaturedShopListener = mockk<FeaturedShopListener>(relaxed = true)
 
     private fun addDefaultDynamicChannel() {
         officialHomeMapper.mappingDynamicChannel(
@@ -155,6 +161,19 @@ class OfficialHomeMapperTest {
         )
     }
 
+    private fun dynamicChannelDataNotContainsFeaturedShopDataModel() {
+        officialHomeMapper.mappingDynamicChannel(
+            listOf(
+                OfficialStoreChannel(Channel(layout = DynamicChannelLayout.LAYOUT_MIX_LEFT)),
+                OfficialStoreChannel(Channel(layout = DynamicChannelLayout.LAYOUT_MIX_LEFT)),
+                OfficialStoreChannel(Channel(layout = DynamicChannelLayout.LAYOUT_MIX_LEFT)),
+                OfficialStoreChannel(Channel(layout = DynamicChannelLayout.LAYOUT_MIX_LEFT)),
+                ),
+            mockOfficialHomeAdapter,
+            mockRemoteConfig
+        )
+    }
+
     private fun dynamicChannelDataContainsFeaturedShop() {
         officialHomeMapper.mappingDynamicChannel(
             listOf(
@@ -206,6 +225,10 @@ class OfficialHomeMapperTest {
 
     private fun `given list official store not contains benefit data`() {
         dynamicChannelDataNotContainsBenefitDataModel()
+    }
+
+    private fun `given list official store not contains featured shop data`() {
+        dynamicChannelDataNotContainsFeaturedShopDataModel()
     }
 
     @Before
@@ -457,5 +480,18 @@ class OfficialHomeMapperTest {
         officialHomeMapper.mappingBenefit(mockBenefit, mockOfficialHomeAdapter)
         val isBenefitExisted = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialBenefitDataModel } != WIDGET_NOT_FOUND
         Assert.assertTrue(isBenefitExisted)
+    }
+
+    private fun `mapping featured shop first time`() {
+        `given list official store not contains featured shop data`()
+        officialHomeMapper.mappingFeaturedShop(mockOfficialStoreFeaturedShop, mockOfficialHomeAdapter, mockCategory, mockFeaturedShopListener)
+    }
+
+    @Test
+    fun `give list official store not contains featured shop data when mapping featured shop then featured shop data in list official store with default position`() {
+        `mapping featured shop first time`()
+        val indexFeaturedShop = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialFeaturedShopDataModel }
+        Assert.assertNotEquals(WIDGET_NOT_FOUND, indexFeaturedShop)
+        Assert.assertEquals(indexFeaturedShop, FEATURE_SHOP_POSITION)
     }
 }
