@@ -9,7 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-data class PlayBroProductChooserUiState(
+data class ProductChooserUiState(
     val campaignAndEtalase: CampaignAndEtalaseUiModel,
     val focusedProductList: ProductListPaging,
     val selectedProductSectionList: List<ProductTagSectionUiModel>,
@@ -19,8 +19,8 @@ data class PlayBroProductChooserUiState(
 ) {
 
     companion object {
-        val Empty: PlayBroProductChooserUiState
-            get() = PlayBroProductChooserUiState(
+        val Empty: ProductChooserUiState
+            get() = ProductChooserUiState(
                 campaignAndEtalase = CampaignAndEtalaseUiModel.Empty,
                 focusedProductList = ProductListPaging.Empty,
                 selectedProductSectionList = emptyList(),

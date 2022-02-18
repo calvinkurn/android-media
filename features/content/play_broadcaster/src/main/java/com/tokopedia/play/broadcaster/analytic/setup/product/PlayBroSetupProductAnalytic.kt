@@ -7,7 +7,7 @@ interface PlayBroSetupProductAnalytic {
 
     fun clickSearchBarOnProductSetup(search: String)
 
-    fun clickSaveButtonOnProductSetup(productId: String)
+    fun clickSaveButtonOnProductSetup()
 
     fun clickAddMoreProductOnProductSetup()
 

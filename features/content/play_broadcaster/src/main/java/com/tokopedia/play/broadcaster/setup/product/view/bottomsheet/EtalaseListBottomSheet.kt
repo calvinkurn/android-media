@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
+import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
@@ -30,6 +31,7 @@ import javax.inject.Inject
 class EtalaseListBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val analyticManager: EtalaseListAnalyticManager,
 ) : BaseProductSetupBottomSheet() {
 
     private var _binding: BottomSheetPlayBroEtalaseListBinding? = null
@@ -105,6 +107,8 @@ class EtalaseListBottomSheet @Inject constructor(
                 }
             }
         }
+
+        analyticManager.observe(viewLifecycleOwner.lifecycleScope, eventBus)
     }
 
     private fun renderBottomSheetTitle(
