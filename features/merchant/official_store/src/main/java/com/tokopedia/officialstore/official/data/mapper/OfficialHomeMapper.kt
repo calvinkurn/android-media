@@ -325,17 +325,18 @@ class OfficialHomeMapper (
         copyListOfficialStore.forEach {
             if (it is BestSellerDataModel && it.channelId == data.channelId) {
                 newList.add(data)
-            }
-            else {
+            } else {
                 newList.add(it)
             }
         }
-        val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
-        if (isBestSellerWidgetNotExist && newList.size > RECOM_WIDGET_POSITION) {
-            newList.add(RECOM_WIDGET_POSITION, data)
-        }
-        else {
-            newList.add(data)
+        val isBestSellerWidgetNotExist =
+            copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
+        if (isBestSellerWidgetNotExist) {
+            if (newList.size > RECOM_WIDGET_POSITION) {
+                newList.add(RECOM_WIDGET_POSITION, data)
+            } else {
+                newList.add(data)
+            }
         }
         listOfficialStore = newList
         action.invoke(newList)
