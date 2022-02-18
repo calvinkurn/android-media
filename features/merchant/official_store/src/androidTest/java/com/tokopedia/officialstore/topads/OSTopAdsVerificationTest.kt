@@ -4,19 +4,19 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -30,11 +30,10 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
@@ -45,11 +44,13 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 
 /**
  * Created by DevAra
@@ -187,30 +188,63 @@ class OSTopAdsVerificationTest {
                 }
             }
             is FeaturedShopViewHolder -> {
-                if (countFeaturedShop > 0) {
-                    val checkLoadingView: View? =
-                        activityRule.activity.findViewById<View>(R.id.loading_view)
-                    checkLoadingView?.let { checkLoadingView.gone() }
-                    val backgroundView: View? =
-                        activityRule.activity.findViewById<View>(R.id.featured_shop_background)
-                    backgroundView?.let { backgroundView.gone() }
-                    try {
-                        val recyclerView: View? =
-                            activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
-                        recyclerView?.let {
-                            clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                val checkLoadingView: View? =
+                    activityRule.activity.findViewById<View>(R.id.loading_view)
+                checkLoadingView?.let { checkLoadingView.gone() }
+                val backgroundView: View? =
+                    activityRule.activity.findViewById<View>(R.id.featured_shop_background)
+                backgroundView?.let { backgroundView.gone() }
+                try {
+                    val recyclerView: View? =
+                        activityRule.activity.findViewById<View>(R.id.dc_banner_rv)
+//                    Espresso.onView(withRecyclerView(R.id.dc_banner_rv)?.atPosition(atPosition3)).perform(click())
+//                        .perform(RecyclerViewActions.actionOnItemAtPosition(9, click()))
+//                    Espresso.onView(withRecyclerView(R.id.dc_banner_rv)?.atPosition(0)).perform(click())
+//                    Espresso.onView(withId(R.id.dc_banner_rv))
+//                        .perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+
+                    tapRecyclerViewItem(R.id.dc_banner_rv,0)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,1)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,2)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,3)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,4)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,5)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,6)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,7)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,8)
+                    waitForData()
+                    tapRecyclerViewItem(R.id.dc_banner_rv,9)
+                    waitForData()
+
+//                    recyclerView?.let {
+//                        clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+//                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                countFeaturedShop++
             }
         }
     }
 
+    fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher? {
+        return RecyclerViewMatcher(recyclerViewId)
+    }
+
+    fun tapRecyclerViewItem(recyclerViewId: Int, position: Int) {
+        onView(withId(recyclerViewId)).perform(scrollToPosition<RecyclerView.ViewHolder>(position))
+        onView(withRecyclerView(recyclerViewId)!!.atPosition(position)).perform(click())
+    }
+
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(5000)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
