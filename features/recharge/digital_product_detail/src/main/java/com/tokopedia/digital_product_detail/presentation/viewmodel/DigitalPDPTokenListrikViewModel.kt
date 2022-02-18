@@ -6,8 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -16,17 +15,14 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.digital_product_detail.data.model.data.Validation
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -45,7 +41,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     private var loadingJob: Job? = null
     private var catalogProductJob: Job? = null
 
-    var validators: List<Validation> = listOf()
+    var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
     var operatorData: CatalogOperator = CatalogOperator()
@@ -67,8 +63,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
-    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomMCCMModel>>()
-    val observableDenomData: LiveData<RechargeNetworkResult<DenomMCCMModel>>
+    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+    val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
         get() = _observableDenomData
 
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
@@ -94,13 +90,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeCatalogInput(menuId: Int, operator: String){
+    fun getRechargeCatalogInput(menuId: Int, operator: String, clientNumber: String){
         catalogProductJob?.cancel()
         _observableDenomData.value = RechargeNetworkResult.Loading
         catalogProductJob = viewModelScope.launch {
             launchCatchError(block = {
                 delay(DELAY_MULTI_TAB)
-                val denomGrid = repo.getDenomGridList(menuId, operator)
+                val denomGrid = repo.getProductTokenListrikDenomGrid(menuId, operator, clientNumber)
                 _observableDenomData.value = RechargeNetworkResult.Success(denomGrid)
             }){
                 if (it !is CancellationException)

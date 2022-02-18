@@ -4,5 +4,5 @@ interface DigitalPDPTagihanListrikRepository : RechargeFavoriteNumberRepository,
     RechargeCatalogMenuDetailRepository,
     RechargeAddToCartRepository,
     RechargeCatalogOperatorSelectGroupRepository,
-    RechargeCatalogDynamicInputRepository,
+    RechargeCatalogProductInputMultiTabRepository,
     RechargeInquiryRepository
