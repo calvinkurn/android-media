@@ -222,7 +222,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
     private fun onRenewShipping(shippingDurationUiModels: List<ShippingDurationUiModel>, shipping: OrderShipment, shippingRecommendationData: ShippingRecommendationData): Pair<OrderShipment, String?> {
         shippingDurationUiModels.forEach {
-            it.isSelected = it.serviceData.serviceId == shipping.serviceId
+            it.isSelected = it.serviceData.serviceId == shipping.serviceId && !it.serviceData.isUiRatesHidden
         }
         val selectedShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected }
         if (selectedShippingDurationUiModel == null) {
@@ -295,7 +295,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
     private fun onRevampNewShipping(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
         shippingDurationUiModels.forEach {
-            it.isSelected = it.serviceData.serviceId == profileShipment.serviceId
+            it.isSelected = it.serviceData.serviceId == profileShipment.serviceId && !it.serviceData.isUiRatesHidden
         }
         val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected }
                 ?: return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
@@ -345,7 +345,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
         for (shippingDurationUiModel in shippingDurationUiModels) {
             val shippingCourierViewModelList = shippingDurationUiModel.shippingCourierViewModelList
-            shippingDurationUiModel.isSelected = shippingDurationUiModel.serviceData.serviceId == profileShipment.recommendationServiceId
+            shippingDurationUiModel.isSelected = shippingDurationUiModel.serviceData.serviceId == profileShipment.recommendationServiceId && !shippingDurationUiModel.serviceData.isUiRatesHidden
             if (shippingDurationUiModel.isSelected) {
                 for (shippingCourierUiModel in shippingCourierViewModelList) {
                     shippingCourierUiModel.isSelected = false
