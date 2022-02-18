@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
-import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
@@ -10,7 +9,7 @@ import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class GetCouponDetailFacadeUseCase @Inject constructor(
-    private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val initiateCouponUseCase: InitiateCouponUseCase,
     private val getCouponDetailUseCase: GetCouponDetailUseCase
 ) {
 
@@ -35,9 +34,9 @@ class GetCouponDetailFacadeUseCase @Inject constructor(
     }
 
     private suspend fun initiateVoucher(isUpdateMode: Boolean): InitiateVoucherUiModel {
-        initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
-        initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
-        return initiateVoucherUseCase.executeOnBackground()
+        initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
+        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdateMode, false)
+        return initiateCouponUseCase.executeOnBackground()
     }
 
 }

@@ -56,8 +56,10 @@ class DuplicateCouponActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
         setContentView(R.layout.activity_mvc_coupon_list)
-        showToaster(getString(R.string.coupon_duplicated))
         displayPage()
+        couponPreviewFragment.setOnCouponDuplicated {
+            showToaster(getString(R.string.coupon_duplicated))
+        }
     }
 
     private fun setupDependencyInjection() {

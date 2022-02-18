@@ -93,17 +93,24 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         }
 
         val symbol = when {
-            couponSettings.discountAmount < THOUSAND -> EMPTY_STRING
+            couponSettings.discountAmount < THOUSAND -> "rb"
             couponSettings.discountAmount >= MILLION -> "jt"
             couponSettings.discountAmount >= THOUSAND -> "rb"
             else -> EMPTY_STRING
         }
 
+        val amount = when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> couponSettings.discountAmount
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> couponSettings.discountAmount
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> couponSettings.maxDiscount
+            else -> couponSettings.discountAmount
+        }
+
         val formattedDiscountAmount : Float = when {
-            couponSettings.discountAmount < THOUSAND -> couponSettings.discountAmount.toFloat()
-            couponSettings.discountAmount >= MILLION -> (couponSettings.discountAmount / MILLION)
-            couponSettings.discountAmount >= THOUSAND -> (couponSettings.discountAmount / THOUSAND)
-            else -> couponSettings.discountAmount.toFloat()
+            amount < THOUSAND -> amount.toFloat()
+            amount >= MILLION -> (amount / MILLION)
+            amount >= THOUSAND -> (amount / THOUSAND)
+            else -> amount.toFloat()
         }
 
         val nominalAmount = if (isInteger(formattedDiscountAmount)) {

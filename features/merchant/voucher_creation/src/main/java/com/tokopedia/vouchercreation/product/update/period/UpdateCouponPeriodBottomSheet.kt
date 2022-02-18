@@ -112,18 +112,18 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
 
             when(result) {
                 is Success -> {
-                    viewModel.setCurrentlySelectedStartDate(result.data.information.period.startDate)
-                    viewModel.setCurrentlySelectedEndDate(result.data.information.period.endDate)
-                    viewModel.setCouponData(result.data)
+                    viewModel.setCurrentlySelectedStartDate(result.data.coupon.information.period.startDate)
+                    viewModel.setCurrentlySelectedEndDate(result.data.coupon.information.period.endDate)
+                    viewModel.setCouponData(result.data.coupon)
 
                     displayCouponInformation(
-                        result.data.information.period.startDate,
-                        result.data.information.period.endDate,
-                        result.data.information.name
+                        result.data.coupon.information.period.startDate,
+                        result.data.coupon.information.period.endDate,
+                        result.data.coupon.information.name
                     )
                     displayCouponImage(
-                        result.data.information.target,
-                        result.data.settings.type
+                        result.data.coupon.information.target,
+                        result.data.coupon.settings.type
                     )
 
                     binding.groupContent.visible()
