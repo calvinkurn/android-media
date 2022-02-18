@@ -921,13 +921,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
             val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
-            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId)
-                    ?: ""
 
             if (isTokoNow) {
                 RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
-                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
+                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, uspImageUrl)
                 bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
             }
 

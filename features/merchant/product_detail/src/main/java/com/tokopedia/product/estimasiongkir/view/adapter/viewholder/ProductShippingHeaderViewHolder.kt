@@ -71,7 +71,7 @@ class ProductShippingHeaderViewHolder(view: View,
             renderGeneralContentTokoCabang(element.tokoCabangContent)
         } else if (element.isFulfillment && element.boType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
-            renderGeneralContentTokoCabang(element.tokoCabangContent, element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
+            renderGeneralContentTokoCabang(element.tokoCabangContent, element.uspTokoCabangImgUrl)
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
             icTokoCabang?.loadImage(element.tokoCabangIcon)
         } else {
@@ -82,13 +82,13 @@ class ProductShippingHeaderViewHolder(view: View,
         }
     }
 
-    private fun renderGeneralContentTokoCabang(tokoCabangContent: String, freeOngkirImageUrl: String = "", uspTokoCabangImgUrl: String = "") = with(itemView) {
+    private fun renderGeneralContentTokoCabang(tokoCabangContent: String, uspTokoCabangImgUrl: String = "") = with(itemView) {
         txtTokoCabang?.shouldShowWithAction(tokoCabangContent.isNotEmpty()) {
             val linkHelper = HtmlLinkHelper(context, tokoCabangContent)
             txtTokoCabang.text = linkHelper.spannedString
             txtTokoCabang.movementMethod = LinkMovementMethod.getInstance()
             linkHelper.urlList.getOrNull(0)?.onClick = {
-                listener.openUspBottomSheet(freeOngkirImageUrl, uspTokoCabangImgUrl)
+                listener.openUspBottomSheet(uspTokoCabangImgUrl)
             }
         }
     }

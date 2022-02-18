@@ -53,7 +53,7 @@ object ProductDetailCommonBottomSheetBuilder {
     }
 
 
-    fun getUspBottomSheet(context: Context, freeOngkirUrl: String, uspTokoCabangImgUrl: String): BottomSheetUnify {
+    fun getUspBottomSheet(context: Context, uspTokoCabangImgUrl: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.bs_product_usp, null)
 
@@ -63,11 +63,9 @@ object ProductDetailCommonBottomSheetBuilder {
             isSkipCollapseState = true
             setTitle(context.getString(R.string.pdp_usp_static_title))
             setChild(view)
-            val imgFreeOngkir = view.findViewById<ImageView>(R.id.pdp_usp_static_free_ongkir)
             val imgUsp = view.findViewById<ImageView>(R.id.usp_pdp_img)
 
             imgUsp.loadImage(uspTokoCabangImgUrl)
-            imgFreeOngkir.loadImage(freeOngkirUrl)
         }
 
         return bottomSheetUnify
