@@ -130,10 +130,9 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
             source = addOnProductData.source
             addOnKeys = listOf(
                     if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                        addOnProductData.availableBottomSheetData.cartString
+                        "${addOnProductData.availableBottomSheetData.cartString}-0"
                     } else {
-                        addOnProductData.availableBottomSheetData.products.firstOrNull()?.productId
-                                ?: ""
+                        "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId ?: ""}"
                     }
             )
         }
