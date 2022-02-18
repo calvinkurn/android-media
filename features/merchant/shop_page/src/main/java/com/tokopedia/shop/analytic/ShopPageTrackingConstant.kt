@@ -24,10 +24,13 @@ object ShopPageTrackingConstant {
     const val ADD_TO_CART = "addToCart"
     const val CLICK_MEMBERSHIP_EVENT = "click tokomember"
     const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
+    const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+    const val CLICK_DIGITAL = "clickDigital"
 
     //category
     const val SHOP_PAGE_SELLER = "shop page - seller"
     const val SHOP_PAGE_BUYER = "shop page - buyer"
+    const val SHOP_PAGE_DONATION_BY_SELLER = "shop page - donation by seller"
     const val SHOP_PAGE = "shop page"
     const val TOP_NAV = "top nav - %s"
     const val CATEGORY_TOP_NAV = "top nav"
@@ -134,6 +137,9 @@ object ShopPageTrackingConstant {
     const val ACTION_SHOP_DECOR_IMPRESSION = "shop decor impression"
     const val ACTION_SHOP_DECOR_CLICK = "click shop decor"
     const val ACTION_HOME_TAB_IMPRESSION = "home tab impression"
+    const val IMPRESSION_DONATION_BY_SELLER = "impression donation by seller"
+    const val CLICK_DONATION_BY_SELLER = "click donation by seller"
+    const val CLICK_BACK_BUTTON = "click back button"
 
     //label
     const val CLICK_SHARE = "click share"

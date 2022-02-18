@@ -62,6 +62,13 @@ object TrackingPageQuery {
                   url_text
                 }
               }
+              last_driver {
+                photo
+                name
+                phone
+                license_number
+                is_changed
+              }
               tipping {
                 status
                 status_title

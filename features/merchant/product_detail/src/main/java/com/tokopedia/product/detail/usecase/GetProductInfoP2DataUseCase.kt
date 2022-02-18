@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -34,7 +35,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?, tokonow: TokoNowParam): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
@@ -42,10 +43,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                     if(affiliateUUIDRequest!=null)
                         putObject(ProductDetailCommonConstant.PARAM_AFFILIATE_UUID, affiliateUUIDRequest)
+                    putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
                 }
 
-        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: pdpAffiliate) {
-          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, affiliate: ${'$'}affiliate) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: pdpAffiliate, ${'$'}tokonow: pdpTokoNow) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, affiliate: ${'$'}affiliate, tokonow: ${'$'}tokonow) {
             error {
               Code
               Message
