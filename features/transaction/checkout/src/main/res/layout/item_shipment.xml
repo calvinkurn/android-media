@@ -85,28 +85,40 @@
             layout="@layout/item_shipment_seller_info"
             tools:visibility="visible" />
 
-            <include
-                layout="@layout/item_shipment_product"
-                tools:visibility="visible" />
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_warning_closable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:closeButtonVisibility="visible"
+            app:tickerShapeType="loose"
+            app:tickerType="warning" />
 
-            <include
-                layout="@layout/item_shipment_other_product"
-                tools:visibility="gone" />
+        <include
+            layout="@layout/item_shipment_product"
+            tools:visibility="visible" />
 
-            <!--Shipping: Shipping Experience-->
-            <include
-                layout="@layout/item_shipment_shipping_experience"
-                tools:visibility="visible" />
+        <include
+            layout="@layout/item_shipment_other_product"
+            tools:visibility="gone" />
 
-            <!--Shipping: Option (Insurance, dropshipper, etc)-->
-            <include
-                layout="@layout/item_shipment_shipping_options"
-                tools:visibility="gone" />
+        <!--Shipping: Shipping Experience-->
+        <include
+            layout="@layout/item_shipment_shipping_experience"
+            tools:visibility="visible" />
 
-            <include
-                layout="@layout/item_shipment_subtotal"
-                tools:visibility="visible" />
+        <!--Shipping: Option (Insurance, dropshipper, etc)-->
+        <include
+            layout="@layout/item_shipment_shipping_options"
+            tools:visibility="gone" />
 
-        </LinearLayout>
+        <include
+            layout="@layout/item_shipment_subtotal"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
 </LinearLayout>

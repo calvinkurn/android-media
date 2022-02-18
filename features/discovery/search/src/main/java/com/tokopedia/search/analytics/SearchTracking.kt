@@ -2,8 +2,8 @@ package com.tokopedia.search.analytics
 
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
@@ -35,7 +35,6 @@ object SearchTracking {
     private const val ORGANIC_ADS = "organic ads"
     private const val ECOMMERCE = "ecommerce"
     private const val EVENT_CATEGORY_EMPTY_SEARCH = "empty search"
-    private const val EVENT_CATEGORY_SEARCH_RESULT = "search result"
     private const val PROMOTIONS = "promotions"
     const val EVENT_CLICK_SEARCH_RESULT = "clickSearchResult"
     private const val EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru"
@@ -274,16 +273,6 @@ object SearchTracking {
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH, String.format(Locale.getDefault(),"tab: %s", screenName))
-    }
-
-    @JvmStatic
-    fun eventUserClickNewSearchOnEmptySearchProduct(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENT_CATEGORY_SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_CHANGE_KEYWORD,
-                keyword
-        )
     }
 
     @JvmStatic
@@ -754,16 +743,6 @@ object SearchTracking {
             BROADMATCH_LIST_NAME,
             organicStatus,
             componentId
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCardOption(label: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
-                label
         )
     }
 

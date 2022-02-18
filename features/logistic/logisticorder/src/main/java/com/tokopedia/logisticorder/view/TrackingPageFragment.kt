@@ -1,5 +1,7 @@
 package com.tokopedia.logisticorder.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateUtils
@@ -27,6 +29,7 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
@@ -171,7 +174,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
         setEtaDetail(model.detail.eta)
-        populateTipping(trackingDataModel)
+        setDriverInfo(trackingDataModel)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -180,13 +183,41 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     }
 
-    private fun populateTipping(data: TrackingDataModel) {
+    private fun setDriverInfo(data: TrackingDataModel) {
         val tippingData = data.tipping
         if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+            binding?.dividerTippingGojek?.visibility = View.VISIBLE
+        } else if (data.lastDriver.name.isNotEmpty()) {
+            setLastDriverData(data.lastDriver)
+            binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+            binding?.dividerTippingGojek?.visibility = View.VISIBLE
         } else {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
+        }
+    }
+
+    private fun setLastDriverData(lastDriver: LastDriverModel) {
+        binding?.tippingGojekLayout?.run {
+            driverLayout.visibility = View.GONE
+            imgFindDriver.visibility = View.VISIBLE
+            btnInformation.visibility = View.GONE
+
+            tippingText.text = lastDriver.name
+            tippingDescription.text = lastDriver.licenseNumber
+            if (lastDriver.photo.isNotEmpty()) {
+                imgFindDriver.setImageUrl(lastDriver.photo)
+            }
+            btnTipping.let {
+                it.text = getString(R.string.last_driver_button)
+                it.setOnClickListener {
+                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:${lastDriver.phone}")
+                    }
+                    startActivity(callIntent)
+                }
+            }
         }
     }
 
@@ -194,15 +225,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
 
-            if (tippingData.lastDriver.name.isEmpty()) {
+            if (tippingData.tippingLastDriver.name.isEmpty()) {
                 driverLayout.visibility = View.GONE
                 imgFindDriver.visibility = View.VISIBLE
             } else {
                 driverLayout.visibility = View.VISIBLE
-                imgDriver.setImageUrl(tippingData.lastDriver.photo)
+                imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
 
-                driverName.text = tippingData.lastDriver.name
-                driverPhone.text = getString(R.string.driver_description_template, tippingData.lastDriver.phone, tippingData.lastDriver.licenseNumber)
+                driverName.text = tippingData.tippingLastDriver.name
+                driverPhone.text = getString(R.string.driver_description_template, tippingData.tippingLastDriver.phone, tippingData.tippingLastDriver.licenseNumber)
             }
 
             btnTipping.text = when (tippingData.status) {

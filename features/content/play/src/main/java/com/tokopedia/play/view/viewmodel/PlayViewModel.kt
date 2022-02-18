@@ -995,7 +995,11 @@ class PlayViewModel @AssistedInject constructor(
      * then we don't need to retrieve the product.
      */
     private fun updateTagItems() {
-        if (!_tagItems.value.product.canShow) return
+        if (!_tagItems.value.product.canShow) {
+            _tagItems.update { it.copy(resultState = ResultState.Success) }
+            return
+        }
+
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val tagItem = repo.getTagItem(channelId)
@@ -1025,6 +1029,9 @@ class PlayViewModel @AssistedInject constructor(
      * Updating channel status
      */
     private fun updateChannelStatus() {
+        val currentStatus = _status.value.channelStatus.statusType
+        if (currentStatus.isFreeze || currentStatus.isBanned) return
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val channelStatus = repo.getChannelStatus(channelId)
             _status.update {

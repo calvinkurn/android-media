@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -13,6 +14,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
@@ -22,7 +24,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SH
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
@@ -41,11 +43,14 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.MixLeftCarouselMapper.mapToMixLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.createSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -64,7 +69,8 @@ object HomeLayoutMapper {
         REPURCHASE_PRODUCT,
         EDUCATIONAL_INFORMATION,
         SHARING_EDUCATION,
-        MAIN_QUEST
+        MAIN_QUEST,
+        MIX_LEFT_CAROUSEL
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -72,13 +78,23 @@ object HomeLayoutMapper {
         add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addEmptyStateIntoList(id: String) {
+    fun MutableList<HomeLayoutItemUiModel>.addEmptyStateIntoList(
+        @HomeStaticLayoutId id: String,
+        serviceType: String
+    ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         when (id) {
-            EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id, hostSource = SOURCE), HomeLayoutItemState.LOADED))
-            EMPTY_STATE_FAILED_TO_FETCH_DATA -> add(HomeLayoutItemUiModel(TokoNowServerErrorUiModel, HomeLayoutItemState.LOADED))
-            else -> add(HomeLayoutItemUiModel(HomeEmptyStateUiModel(id = id), HomeLayoutItemState.LOADED))
+            EMPTY_STATE_OUT_OF_COVERAGE -> {
+                val layout = TokoNowEmptyStateOocUiModel(id, SOURCE, serviceType)
+                add(HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED))
+            }
+            EMPTY_STATE_FAILED_TO_FETCH_DATA -> {
+                add(HomeLayoutItemUiModel(TokoNowServerErrorUiModel, HomeLayoutItemState.LOADED))
+            }
+            else -> {
+                add(HomeLayoutItemUiModel(HomeEmptyStateUiModel(id), HomeLayoutItemState.LOADED))
+            }
         }
     }
 
@@ -91,7 +107,9 @@ object HomeLayoutMapper {
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        localCacheModel: LocalCacheModel,
+        isLoggedIn: Boolean
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -103,21 +121,38 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData = miniCartData)?.let { item ->
+                val state = HomeLayoutItemState.NOT_LOADED
+                val serviceType = localCacheModel.service_type
+
+                mapToHomeUiModel(layoutResponse, state, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
+
+                addSwitcherUiModel(layoutResponse, localCacheModel, isLoggedIn)
             }
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel>.addSwitcherUiModel(
+        response: HomeLayoutResponse,
+        localCacheModel: LocalCacheModel,
+        isLoggedIn: Boolean
+    ) {
+        if (response.layout == EDUCATIONAL_INFORMATION && isLoggedIn) {
+            val switcherUiModel = createSwitcherUiModel(localCacheModel)
+            switcherUiModel?.let { uiModel -> add(uiModel) }
         }
     }
 
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        serviceType: String
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
+                mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
             }
@@ -407,17 +442,21 @@ object HomeLayoutMapper {
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        serviceType: String
     ): HomeLayoutItemUiModel? {
+        val loadedState = HomeLayoutItemState.LOADED
+
         return when (response.layout) {
             CATEGORY -> mapToCategoryLayout(response, state)
-            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, HomeLayoutItemState.LOADED)
-            BANNER_CAROUSEL -> mapSliderBannerModel(response, HomeLayoutItemState.LOADED)
-            PRODUCT_RECOM -> mapProductRecomDataModel(response, HomeLayoutItemState.LOADED, miniCartData)
+            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
+            BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
+            PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, state)
-            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED)
-            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
+            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
+            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state, serviceType)
             MAIN_QUEST -> mapQuestUiModel(response, state)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, state)
             else -> null
         }
     }

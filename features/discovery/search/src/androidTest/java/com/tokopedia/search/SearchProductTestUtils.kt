@@ -19,8 +19,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
@@ -30,13 +28,15 @@ import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
@@ -152,11 +152,9 @@ internal fun createSuggestionListener(): SuggestionListener {
 
 internal fun createEmptyStateListener(): EmptyStateListener {
     return object: EmptyStateListener {
-        override fun getUserId(): String { return "" }
         override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
         override fun onSelectedFilterRemoved(uniqueId: String?) {}
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
-        override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
     }
 }
@@ -199,7 +197,7 @@ internal fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
 }
 
 internal fun List<Visitable<*>>.getEmptySearchProductViewModelPosition(): Int {
-    return indexOfFirst { it is EmptySearchProductDataView }
+    return indexOfFirst { it is EmptyStateDataView }
 }
 
 internal fun List<Visitable<*>>.getRecommendationTitleViewModelPosition(): Int {
