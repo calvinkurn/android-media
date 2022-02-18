@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -74,7 +75,13 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         try {
             imageShop.loadImage(dataItem.products?.firstOrNull()?.imageURL)
             shopLogo.loadImage(dataItem.shopLogo)
-            shopSubLogo.loadImage(dataItem.shopBadgeImageUrl)
+            if(!dataItem.shopBadgeImageUrl.isNullOrEmpty()){
+                shopSubLogo.show()
+                shopSubLogo.loadImageWithoutPlaceholder(dataItem.shopBadgeImageUrl)
+            }else{
+                shopSubLogo.invisible()
+            }
+
             if (!dataItem.shopName.isNullOrEmpty()) {
                 shopNameTextView.show()
                 shopNameTextView.text = dataItem.shopName
@@ -99,7 +106,12 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
             } else {
                 benefitAmount.hide()
             }
-            benefitSymbolImage.loadImage(dataItem.benefitSymbolImageUrl)
+            if(!dataItem.benefitSymbolImageUrl.isNullOrEmpty()) {
+                benefitSymbolImage.show()
+                benefitSymbolImage.loadImageWithoutPlaceholder(dataItem.benefitSymbolImageUrl)
+            }else{
+                benefitSymbolImage.hide()
+            }
             if (dataItem.showTimer == true) {
                 timerLogo.show()
                 timerTextView.show()
