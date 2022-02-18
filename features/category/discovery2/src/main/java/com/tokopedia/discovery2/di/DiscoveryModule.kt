@@ -22,6 +22,8 @@ import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigation
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
+import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
+import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
@@ -178,6 +180,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideSectionRepository():SectionRepository{
         return SectionGQLRepository()
+    }
+
+    @Provides
+    fun provideMyCouponRepository(): MyCouponRepository {
+        return MyCouponGQLRepository()
     }
 
     @DiscoveryScope

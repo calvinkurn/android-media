@@ -101,6 +101,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merc
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewHolder
@@ -218,6 +220,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.CalendarWidgetItem, ::CalendarWidgetItemViewHolder, ::CalendarWidgetItemViewModel)
             initializeComponent(ComponentsList.ShimmerCalendarWidget, ::ShimmerCalendarViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.TopQuestWidget, ::TopQuestViewHolder, ::TopQuestViewModel)
+            initializeComponent(ComponentsList.MyCoupon, ::MyCouponViewHolder, ::MyCouponViewModel)
 
         }
 

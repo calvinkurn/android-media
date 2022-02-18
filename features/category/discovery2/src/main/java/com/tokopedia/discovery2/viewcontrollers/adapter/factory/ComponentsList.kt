@@ -106,4 +106,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ShimmerCalendarWidget(R.layout.discovery_shimmer_calendar_layout, ComponentNames.ShimmerCalendarWidget.componentName),
     TopQuestWidget(R.layout.disco_top_quest,ComponentNames.TopQuestWidget.componentName),
 
+    MyCoupon(R.layout.component_claim_coupon_layout,ComponentNames.MyCoupon.componentName),
+
 }
