@@ -119,21 +119,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             } else {
                 tvBomDetailAddonsMessageValue.run {
                     show()
-                    setAddonMessageFormatted(message)
-                }
-            }
-        }
-
-        private fun setAddonMessageFormatted(
-            message: String
-        ) {
-            with(binding) {
-                tvBomDetailAddonsMessageValue.apply {
-                    if (ellipsize == TextUtils.TruncateAt.END && lineCount == Int.ONE) {
-                        expandAddonMessage(message)
-                    } else {
-                        initCollapseAddonMessage(message)
-                    }
+                    initCollapseAddonMessage(message)
                 }
             }
         }
