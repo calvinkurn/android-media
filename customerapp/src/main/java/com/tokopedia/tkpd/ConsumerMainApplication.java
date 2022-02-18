@@ -34,6 +34,8 @@ import io.embrace.android.embracesdk.Embrace;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
+    private static final String SUFFIX_ALPHA = "-alpha"
+
     @Override
     public void initConfigValues() {
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
@@ -142,7 +144,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     private void setupAlphaObserver() {
         String versionName = BuildConfig.VERSION_NAME;
-        if (versionName.endsWith("-alpha") && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
+        if (versionName.endsWith(SUFFIX_ALPHA) && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             registerActivityLifecycleCallbacks(new AlphaObserver());
             registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
                 @Override

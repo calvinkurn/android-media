@@ -67,7 +67,7 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
     }
 
     private fun setWindowAlpha(activity: Activity) {
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val decorView = activity.window.decorView as ViewGroup
             val layoutWrapper = LinearLayout(activity)
 
