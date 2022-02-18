@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
-import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,8 +20,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ShopHomeProductBundleParentWidgetViewHolder (
         itemView: View,
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener,
-        private val singleProductBundleClickListener: SingleProductBundleClickListener
+        private val multipleProductBundleListener: MultipleProductBundleListener,
+        private val singleProductBundleListener: SingleProductBundleListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
     companion object {
@@ -36,6 +36,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
     private var tvWidgetTitle : TextView? = null
     private var rvBundleList : RecyclerView? = null
     private var rvBundleAdapter : ShopHomeProductBundleWidgetAdapter? = null
+    private var bundleListSize = 0
 
     init {
         initView()
@@ -43,12 +44,13 @@ class ShopHomeProductBundleParentWidgetViewHolder (
 
     override fun bind(element: ShopHomeProductBundleListUiModel) {
         tvWidgetTitle?.text = element.header.title
-        val bundleLayoutManager = if (element.productBundleList.size >= BUNDLE_MULTIPLE_ITEM_SIZE) {
+        bundleListSize = element.productBundleList.size
+        val bundleLayoutManager = if (bundleListSize >= BUNDLE_MULTIPLE_ITEM_SIZE) {
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         } else {
             GridLayoutManager(itemView.context, BUNDLE_SINGLE_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
         }
-        initRecyclerView(bundleLayoutManager)
+        initRecyclerView(bundleLayoutManager, element)
         rvBundleAdapter?.updateDataSet(element.productBundleList)
         rvBundleAdapter?.setParentPosition(adapterPosition)
     }
@@ -58,10 +60,15 @@ class ShopHomeProductBundleParentWidgetViewHolder (
         rvBundleList = viewBinding?.rvProductBundleList
     }
 
-    private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager) {
+    private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: ShopHomeProductBundleListUiModel) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
-                multipleProductBundleClickListener,
-                singleProductBundleClickListener
+                multipleProductBundleListener,
+                singleProductBundleListener,
+                bundleListSize,
+                bundleLayout.widgetId,
+                bundleLayout.widgetMasterId,
+                bundleLayout.type,
+                bundleLayout.name
         )
         rvBundleList?.apply {
             setHasFixedSize(true)

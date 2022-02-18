@@ -9,6 +9,7 @@
     android:paddingTop="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bundle_widget_container"
         android:layout_width="300dp"
         android:layout_height="225dp">
 
@@ -24,10 +25,24 @@
             android:layout_marginStart="14dp"
             />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_preorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tv_bundle_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_bundle_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:layout_marginEnd="14dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_multiple_bundle_products"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_bundle_name"
             />

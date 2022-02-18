@@ -297,7 +297,11 @@ class ShopHomeViewModel @Inject constructor(
                     productDetails = bundleProductDetails
             )
 
-            onFinishAddToCart(submitAddBundleToCart(atcBundleParams))
+            val atcBundleResult = withContext(dispatcherProvider.io) {
+                submitAddBundleToCart(atcBundleParams)
+            }
+
+            onFinishAddToCart(atcBundleResult)
 
         }) {
             onErrorAddBundleToCart(it)

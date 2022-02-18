@@ -3,13 +3,19 @@ package com.tokopedia.shop.common.widget.bundle.viewholder
 import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleMultipleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleMultipleAdapter
+import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
@@ -18,7 +24,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultipleViewHolder(
         itemView: View,
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener
+        private val multipleProductBundleListener: MultipleProductBundleListener,
+        private val bundleListSize: Int,
+        private val widgetLayout: ShopHomeWidgetLayout
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -31,19 +39,23 @@ class ShopHomeProductBundleMultipleViewHolder(
     private var typographyBundleProductDisplayPrice: Typography? = null
     private var typographyBundleProductOriginalPrice: Typography? = null
     private var typographyBundleProductSavingAmount: Typography? = null
+    private var typographyBundlePreOrder: Typography? = null
     private var buttonAtc: UnifyButton? = null
     private var labelBundleDiscount: Label? = null
     private var rvBundleProducts: RecyclerView? = null
+    private var widgetContainer: ConstraintLayout? = null
 
     init {
         viewBinding?.apply {
             typographyBundleName = tvBundleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
+            typographyBundlePreOrder = tvBundlePreorder
             labelBundleDiscount = labelDiscountBundle
             typographyBundleProductSavingAmount = tvSavingAmountPriceWording
             buttonAtc = btnBundleAtc
             rvBundleProducts = rvMultipleBundleProducts
+            widgetContainer = bundleWidgetContainer
         }
     }
 
@@ -60,6 +72,14 @@ class ShopHomeProductBundleMultipleViewHolder(
             paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
         typographyBundleProductSavingAmount?.text = HtmlLinkHelper(itemView.context, multipleBundleItem.savingAmountWording).spannedString
+        typographyBundlePreOrder?.shouldShowWithAction(multipleBundleItem.isPreOrder) {
+            typographyBundlePreOrder?.text = multipleBundleItem.preOrderInfo
+        }
+        buttonAtc?.text = if (multipleBundleItem.isPreOrder) {
+            itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
+        } else {
+            itemView.context.getString(R.string.shop_page_product_bundle_atc_button_text)
+        }
 
         // bundle products list
         initBundleProductsRecyclerView(spanSize = bundle.bundleProducts.size)
@@ -70,12 +90,22 @@ class ShopHomeProductBundleMultipleViewHolder(
         )
 
         // bind listeners
+        itemView.addOnImpressionListener(bundle) {
+            multipleProductBundleListener.impressionProductBundleMultiple(
+                    selectedMultipleBundle = multipleBundleItem,
+                    bundleName = bundle.bundleName,
+                    bundlePosition = adapterPosition
+            )
+        }
+
         buttonAtc?.setOnClickListener {
             // add to cart bundle
-            multipleProductBundleClickListener.addMultipleBundleToCart(
+            multipleProductBundleListener.addMultipleBundleToCart(
                     multipleBundleItem,
+                    bundleListSize,
                     bundle.bundleProducts,
-                    bundle.bundleName
+                    bundle.bundleName,
+                    widgetLayout
             )
         }
     }
@@ -84,7 +114,16 @@ class ShopHomeProductBundleMultipleViewHolder(
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
-            adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleClickListener)
+            adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleListener)
+        }
+
+        if (bundleListSize == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
+            // change widget container width to match parent
+            val constraintSet = ConstraintSet()
+            val params = ConstraintLayout.LayoutParams.MATCH_PARENT
+            widgetContainer?.layoutParams?.width = params
+            constraintSet.clone(widgetContainer)
+            constraintSet.applyTo(widgetContainer)
         }
     }
 

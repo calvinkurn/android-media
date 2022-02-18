@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleClickListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultiplePackageViewHolder
 
 class ShopHomeProductBundleMultipleAdapter(
-        private val multipleProductBundleClickListener: MultipleProductBundleClickListener
+        private val multipleProductBundleListener: MultipleProductBundleListener
 ): RecyclerView.Adapter<ShopHomeProductBundleMultiplePackageViewHolder>() {
 
     private var bundleProducts: List<ShopHomeBundleProductUiModel> = listOf()
@@ -24,7 +24,8 @@ class ShopHomeProductBundleMultipleAdapter(
                         parent,
                         false
                 ),
-                multipleProductBundleClickListener
+                multipleProductBundleListener,
+                itemCount
         )
     }
 
