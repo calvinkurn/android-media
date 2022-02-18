@@ -831,11 +831,13 @@ class OfficialHomeFragment :
     }
 
     private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingBenefit(it.data, adapter)
+                    if(!isEligibleForDisableMappingBenefit()) {
+                        officialHomeMapper.mappingBenefit(it.data, adapter)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -843,7 +845,7 @@ class OfficialHomeFragment :
                 }
 
             }
-        })
+        }
     }
 
     private fun observeFeaturedShop() {
@@ -1148,6 +1150,15 @@ class OfficialHomeFragment :
     private fun isEligibleForDisableRemoveShopWidget(): Boolean {
         return try {
             return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingBenefit(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT)
                 ?: false
         } catch (e: Exception) {
             false

@@ -66,16 +66,22 @@ class OfficialHomeMapper (
     }
 
     fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialBenefitDataModel }
-
-            val benefit = OfficialBenefitDataModel(benefits.benefits)
-
-            if(index == -1) add(BENEFIT_POSITION, benefit)
-            else set(index, benefit)
-
-            adapter?.submitList(this.toMutableList())
+        val newList = mutableListOf<Visitable<*>>()
+        val benefit = OfficialBenefitDataModel(benefits.benefits)
+        listOfficialStore.toMutableList().forEach {
+            if(it is OfficialBannerDataModel) {
+                newList.add(benefit)
+            }
+            else {
+                newList.add(it)
+            }
         }
+        val isBenefitNotExisted = newList.indexOfFirst { it is OfficialBenefitDataModel } == WIDGET_NOT_FOUND
+        if(isBenefitNotExisted && newList.size > BENEFIT_POSITION) {
+            newList.add(BENEFIT_POSITION, benefit)
+        }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
     }
 
     //this is old featured brand from external api
@@ -99,6 +105,27 @@ class OfficialHomeMapper (
 
             adapter?.submitList(this.toMutableList())
         }
+
+        val newList = mutableListOf<Visitable<*>>()
+        val officialFeaturedShop = OfficialFeaturedShopDataModel(
+            featuredShop.featuredShops,
+            featuredShop.header,
+            categoryName.toEmptyStringIfNull(),
+            listener
+        )
+        listOfficialStore.toMutableList().forEach {
+            if(it is OfficialFeaturedShopDataModel) {
+                newList.add(officialFeaturedShop)
+            }
+            else {
+                newList.add(it)
+            }
+        }
+        val isOfficialFeaturedShopNotExisted = newList.indexOfFirst { it is OfficialFeaturedShopDataModel } == WIDGET_NOT_FOUND
+        if (isOfficialFeaturedShopNotExisted) {
+
+        }
+        adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
