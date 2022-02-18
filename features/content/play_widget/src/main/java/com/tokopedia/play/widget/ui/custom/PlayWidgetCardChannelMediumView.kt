@@ -163,8 +163,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
         when (reminderType) {
-            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = unifyR.color.Unify_GN500, newLightEnable = 0)
-            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL)
+            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = unifyR.color.Unify_GN500, newLightEnable = unifyR.color.Unify_GN500)
+            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = unifyR.color.Unify_Static_White, newLightEnable = unifyR.color.Unify_Static_White)
         }
     }
 
