@@ -11,7 +11,7 @@
         android:id="@+id/selection_container"
         android:layout_width="@dimen/image_editor_main_height"
         android:layout_height="@dimen/image_editor_main_height"
-        android:layout_margin="@dimen/dp_1"
+        android:layout_margin="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

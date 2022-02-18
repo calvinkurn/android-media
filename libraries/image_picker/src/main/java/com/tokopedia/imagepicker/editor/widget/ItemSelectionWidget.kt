@@ -64,7 +64,6 @@ class ItemSelectionWidget : FrameLayout {
     }
 
     fun clearData() {
-        adapter.removeListener()
         adapter.clear()
     }
 

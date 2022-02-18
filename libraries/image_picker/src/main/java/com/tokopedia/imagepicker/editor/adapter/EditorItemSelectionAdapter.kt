@@ -50,10 +50,6 @@ class EditorItemSelectionAdapter constructor(
         listener =  listenerItem
     }
 
-    fun removeListener() {
-        listener = null
-    }
-
     fun clear() {
         items.forEach {
             it.placeholderBitmap?.recycle()
@@ -65,6 +61,7 @@ class EditorItemSelectionAdapter constructor(
         listViewHolder.clear()
         items.clear()
         selectedPosition = 0
+        listener = null
         notifyDataSetChanged()
     }
 

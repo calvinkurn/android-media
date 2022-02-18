@@ -510,9 +510,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         onImageEditPreviewFragmentListener.onSuccessSaveWatermarkImage();
         if (listOutputWatermark != null)
         for(Bitmap bitmap: listOutputWatermark) {
-            if (!bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
+            if (!bitmap.isRecycled()) bitmap.recycle();
             listOutputWatermark = null;
         }
     }

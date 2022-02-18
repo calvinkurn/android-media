@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.changeColor
+import timber.log.Timber
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -336,11 +337,7 @@ object BitmapHelper {
      */
     fun Bitmap.downscaleToAllowedDimension(type: Int): Bitmap? {
         try {
-            val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
-                1.0f
-            } else {
-                2.0f
-            }
+            val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) 1.0f else 2.0f
 
             val inWidth = this.width
             val inHeight = this.height
@@ -357,6 +354,7 @@ object BitmapHelper {
 
             return Bitmap.createBitmap(this, 0, 0, inWidth, inHeight, matrix, false)
         } catch (e: Throwable) {
+            Timber.e(e)
             return this
         }
     }
