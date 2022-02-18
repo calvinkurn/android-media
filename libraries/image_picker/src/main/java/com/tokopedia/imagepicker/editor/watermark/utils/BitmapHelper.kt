@@ -115,11 +115,10 @@ object BitmapHelper {
             )
         }
 
-        val bitmapResult: Bitmap = if (boundWidth > 0 && boundHeight > 0) {
+        val bitmapResult: Bitmap = if (boundWidth > 0 && boundHeight > 0)
             Bitmap.createBitmap(boundWidth, height, Bitmap.Config.ARGB_8888)
-        } else {
-            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        }
+        else Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+
 
         // create the bitmap canvas
         val canvas = Canvas(bitmapResult)
