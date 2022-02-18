@@ -32,7 +32,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val setupDataStore: PlayBroadcastSetupDataStore,
     private val channelConfigStore: ChannelConfigStore,
     private val dispatcher: CoroutineDispatchers,
-    private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
     private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
     private val userSession: UserSessionInterface,
     private val playBroadcastMapper: PlayBroadcastMapper
@@ -49,10 +48,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     val maxTitleChars: Int
         get() = hydraConfigStore.getMaxTitleChars()
-
-    val observableFollowers: LiveData<FollowerDataUiModel>
-        get() = _observableFollowers
-    private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()
 
     val observableUploadTitleEvent: LiveData<Event<NetworkResult<Unit>>>
         get() = _observableUploadTitleEvent
@@ -72,10 +67,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     }
 
     init {
-        _observableFollowers.value = FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
-        scope.launch {
-            _observableFollowers.value = getLiveFollowers()
-        }
         _observableIngestUrl.observeForever(ingestUrlObserver)
     }
 
@@ -134,15 +125,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
             }.executeOnBackground())
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
-        }
-    }
-
-    private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(dispatcher.io) {
-        getLiveFollowersDataUseCase.params = GetLiveFollowersDataUseCase.createParams(userSession.shopId, MAX_FOLLOWERS_PREVIEW)
-        return@withContext try {
-            playBroadcastMapper.mapLiveFollowers(getLiveFollowersDataUseCase.executeOnBackground())
-        } catch (e: Throwable) {
-            FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
         }
     }
 
