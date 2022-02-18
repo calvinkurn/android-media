@@ -83,6 +83,25 @@ internal class PlayBroProductSetupViewModelTest {
     }
 
     @Test
+    fun `when user firstly create viewmodel and theres an error when loading campaign and etalase list, it will emit uiState with empty campaign and etalase`() {
+
+        coEvery { mockRepo.getEtalaseList() } throws exception
+        coEvery { mockRepo.getCampaignList() } throws exception
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = it.recordState {  }
+            val campaignAndEtalase = state.campaignAndEtalase
+            campaignAndEtalase.etalaseList.assertEqualTo(emptyList())
+            campaignAndEtalase.campaignList.assertEqualTo(emptyList())
+        }
+    }
+
+    @Test
     fun `when user set sorting, it will emit uiState with new loadParam`() {
         val mockSort = SortUiModel(1, "Terbaru")
 
