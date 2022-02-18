@@ -46,7 +46,7 @@ internal class EtalaseListViewHolder private constructor() {
             binding.ivEtalase.loadImage(item.campaignUiModel.imageUrl)
             binding.tvEtalaseTitle.text = item.campaignUiModel.title
             binding.tvTotalProduct.text = itemView.context.getString(
-                R.string.play_bro_etalase_product_stock,
+                R.string.play_bro_campaign_product_stock,
                 item.campaignUiModel.totalProduct
             )
             binding.tvDateDesc.text = itemView.context.getString(

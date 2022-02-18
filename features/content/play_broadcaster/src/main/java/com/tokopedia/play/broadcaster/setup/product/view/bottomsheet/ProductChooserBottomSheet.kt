@@ -235,7 +235,12 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
-                        toaster.showError(it.error)
+                        toaster.showError(
+                            err = it.error,
+                            customErrMessage = getString(
+                                R.string.play_bro_product_chooser_error_save
+                            )
+                        )
                     }
                     else -> {}
                 }
