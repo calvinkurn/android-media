@@ -45,7 +45,6 @@ class OfficialHomeMapperTest {
     private val mockBestSellerDataModel = BestSellerDataModel(title = bestSellerTitle, channelId = channelId)
     private val listChannelGrid = listOf(ChannelGrid(id = "136040973", name = "tokomawar"))
     private val mockFeaturedShopDataModel = FeaturedShopDataModel(ChannelModel(channelId, "", channelGrids = listChannelGrid))
-    private val defaultOfficialBannerDataModel = OfficialBannerDataModel(mutableListOf(),"")
     private val defaultBanner = mutableListOf(
         Banner(),
     )
@@ -450,5 +449,13 @@ class OfficialHomeMapperTest {
         officialHomeMapper.mappingBenefit(mockBenefit2, mockOfficialHomeAdapter)
         val benefitAfter = officialHomeMapper.listOfficialStore.find { it is OfficialBenefitDataModel }
         Assert.assertNotEquals(benefitBefore, benefitAfter)
+    }
+
+    @Test
+    fun `given empty list official store when mapping benefit then benefit will be added to the list`() {
+        `given empty list official store`()
+        officialHomeMapper.mappingBenefit(mockBenefit, mockOfficialHomeAdapter)
+        val isBenefitExisted = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialBenefitDataModel } != WIDGET_NOT_FOUND
+        Assert.assertTrue(isBenefitExisted)
     }
 }
