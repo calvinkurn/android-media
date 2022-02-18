@@ -3,10 +3,7 @@ package com.tokopedia.play.broadcaster.robot
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.play.broadcaster.setup.product.model.*
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -36,9 +33,9 @@ internal class PlayBroProductSetupViewModelRobot(
         dispatchers,
     )
 
-    fun recordState(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): PlayBroProductChooserUiState {
+    fun recordState(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): ProductChooserUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        lateinit var uiState: PlayBroProductChooserUiState
+        lateinit var uiState: ProductChooserUiState
         scope.launch {
             viewModel.uiState.collect {
                 uiState = it
@@ -50,9 +47,9 @@ internal class PlayBroProductSetupViewModelRobot(
         return uiState
     }
 
-    fun recordStateAsList(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): List<PlayBroProductChooserUiState> {
+    fun recordStateAsList(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): List<ProductChooserUiState> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        val uiStateList = mutableListOf<PlayBroProductChooserUiState>()
+        val uiStateList = mutableListOf<ProductChooserUiState>()
         scope.launch {
             viewModel.uiState.collect {
                 uiStateList.add(it)
@@ -106,9 +103,9 @@ internal class PlayBroProductSetupViewModelRobot(
         return uiEvents
     }
 
-    fun recordStateAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<PlayBroProductChooserUiState, List<PlayBroProductChooserEvent>> {
+    fun recordStateAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<ProductChooserUiState, List<PlayBroProductChooserEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        lateinit var uiState: PlayBroProductChooserUiState
+        lateinit var uiState: ProductChooserUiState
         val uiEvents = mutableListOf<PlayBroProductChooserEvent>()
         scope.launch {
             viewModel.uiState.collect {
@@ -126,9 +123,9 @@ internal class PlayBroProductSetupViewModelRobot(
         return uiState to uiEvents
     }
 
-    fun recordStateAsListAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<List<PlayBroProductChooserUiState>, List<PlayBroProductChooserEvent>> {
+    fun recordStateAsListAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<List<ProductChooserUiState>, List<PlayBroProductChooserEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        var uiStates = mutableListOf<PlayBroProductChooserUiState>()
+        var uiStates = mutableListOf<ProductChooserUiState>()
         val uiEvents = mutableListOf<PlayBroProductChooserEvent>()
         scope.launch {
             viewModel.uiState.collect {
