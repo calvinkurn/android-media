@@ -396,7 +396,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_first_date_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_per_period_value"
             app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_installment_last_date_label"
@@ -422,7 +422,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_last_date_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_first_date_value"
             app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:typographyWeight="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

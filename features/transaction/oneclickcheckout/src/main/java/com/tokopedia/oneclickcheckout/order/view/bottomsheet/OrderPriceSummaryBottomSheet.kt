@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -124,7 +125,7 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalInstallmentFeePriceValue.visible()
             binding.tvTotalInstallmentFeePriceLabel.visible()
 
-            binding.tvTotalInstallmentTermValue.text = "${orderCost.installmentData.installmentTerm}"
+            binding.tvTotalInstallmentTermValue.text = binding.root.context.getString(R.string.occ_lbl_gocicil_installment_period, orderCost.installmentData.installmentTerm)
             binding.tvTotalInstallmentTermValue.visible()
             binding.tvTotalInstallmentTermLabel.visible()
 
