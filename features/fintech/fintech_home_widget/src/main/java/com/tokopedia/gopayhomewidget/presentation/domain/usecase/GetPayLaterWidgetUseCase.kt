@@ -1,6 +1,7 @@
 package com.tokopedia.gopayhomewidget.presentation.domain.usecase
 
 import com.tokopedia.gopayhomewidget.presentation.domain.data.GetPayLaterWidgetDataGqlResponse
+import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
 import com.tokopedia.gopayhomewidget.presentation.domain.query.GQL_QUERY_PAYLATER_WIDGET_DATA
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,7 +13,7 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
     GraphqlUseCase<GetPayLaterWidgetDataGqlResponse>(graphqlRepository) {
 
     fun getPayLaterWidgetData(
-        onSuccess: (GetPayLaterWidgetDataGqlResponse) -> Unit,
+        onSuccess: (PayLaterWidgetData) -> Unit,
         onError: (Throwable) -> Unit,
         isForceRefresh: Boolean
     ) {
