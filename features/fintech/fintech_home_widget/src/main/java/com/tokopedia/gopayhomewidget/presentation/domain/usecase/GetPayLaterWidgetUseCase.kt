@@ -14,8 +14,7 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     fun getPayLaterWidgetData(
         onSuccess: (PayLaterWidgetData) -> Unit,
-        onError: (Throwable) -> Unit,
-        isForceRefresh: Boolean
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(GetPayLaterWidgetDataGqlResponse::class.java)

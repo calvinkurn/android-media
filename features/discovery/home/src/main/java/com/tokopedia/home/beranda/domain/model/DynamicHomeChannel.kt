@@ -319,6 +319,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
             const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
+            const val LAYOUT_PAYLATER_CICIL: String = "gpl_cicil"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0

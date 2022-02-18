@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
 import com.tokopedia.gopayhomewidget.R
+import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class PayLaterWidget @JvmOverloads constructor(
@@ -21,6 +22,10 @@ class PayLaterWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.layout_gopay_home_widget, this)
+    }
+
+    fun setData(payLaterWidgetData: PayLaterWidgetData) {
+
     }
 
 

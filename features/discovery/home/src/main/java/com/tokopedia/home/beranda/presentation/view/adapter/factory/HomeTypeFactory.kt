@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
@@ -78,4 +79,6 @@ interface HomeTypeFactory {
     fun type(errorStateAtfModel: ErrorStateAtfModel): Int
 
     fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int
+
+    fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int
 }

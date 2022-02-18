@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class HomePayLaterWidgetDataModel (
+data class HomePayLaterWidgetDataModel (
     var payLaterWidgetData: PayLaterWidgetData?,
     val channel: DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
 ) : HomeVisitable, ImpressHolder() {
