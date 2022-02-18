@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -537,9 +538,24 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaUsage(coupon: CouponUiModel) {
-        val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
-        binding.progressBarQuotaUsage.setValue(progressBarValue, true)
-        binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+        if (viewModel.isOngoingCoupon(coupon.status)) {
+
+            val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
+            binding.progressBarQuotaUsage.setValue(progressBarValue, true)
+            binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+
+            binding.progressBarQuotaUsage.visible()
+            binding.tpgTickerUsage.visible()
+            binding.tpgTickerUsage.text = String.format(
+                getString(R.string.placeholder_quota_usage),
+                coupon.bookedQuota.toString()
+            ).parseAsHtml()
+            anchorQuotaCounterToQuotaProgressBar()
+        } else {
+            binding.progressBarQuotaUsage.gone()
+            binding.tpgTickerUsage.gone()
+            anchorQuotaCounterToQuotaLabel()
+        }
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
         binding.tpgTotalQuota.text = String.format(
@@ -548,16 +564,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
         )
 
         binding.tpgTickerUsage.setOnClickListener { displayExpenseEstimationDescription() }
-
-        if (coupon.isPublic && coupon.status == VoucherStatusConst.ONGOING) {
-            binding.tpgTickerUsage.visible()
-            binding.tpgTickerUsage.text = String.format(
-                getString(R.string.placeholder_quota_usage),
-                coupon.bookedQuota.toString()
-            ).parseAsHtml()
-        } else {
-            binding.tpgTickerUsage.gone()
-        }
     }
 
     private fun displayExpenseEstimationDescription() {
@@ -817,5 +823,41 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 shareCallback
             )
         )
+    }
+
+    private fun anchorQuotaCounterToQuotaLabel() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.TOP,
+            binding.typographyQuota.id,
+            ConstraintSet.TOP
+        )
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.BOTTOM,
+            binding.typographyQuota.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.layout)
+    }
+
+    private fun anchorQuotaCounterToQuotaProgressBar() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.TOP,
+            binding.progressBarQuotaUsage.id,
+            ConstraintSet.TOP
+        )
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.BOTTOM,
+            binding.progressBarQuotaUsage.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.layout)
     }
 }

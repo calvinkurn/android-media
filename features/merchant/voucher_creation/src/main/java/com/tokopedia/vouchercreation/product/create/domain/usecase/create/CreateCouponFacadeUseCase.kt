@@ -3,13 +3,13 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
-import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.data.request.GenerateImageParams
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GenerateImageUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.util.GenerateImageParamsBuilder
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
@@ -20,13 +20,14 @@ import javax.inject.Inject
 
 class CreateCouponFacadeUseCase @Inject constructor(
     private val createCouponProductUseCase: CreateCouponProductUseCase,
-    private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val initiateCouponUseCase: InitiateCouponUseCase,
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
     private val imageBuilder: GenerateImageParamsBuilder
 ) {
 
     companion object {
         private const val IS_UPDATE_MODE = false
+        private const val IS_COUPON_PRODUCT = true
     }
 
     suspend fun execute(
@@ -154,8 +155,9 @@ class CreateCouponFacadeUseCase @Inject constructor(
     }
 
     private suspend fun initiateVoucher(isUpdateMode: Boolean): InitiateVoucherUiModel {
-        initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
-        initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
-        return initiateVoucherUseCase.executeOnBackground()
+        initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
+        initiateCouponUseCase.params =
+            InitiateCouponUseCase.createRequestParam(isUpdateMode, IS_COUPON_PRODUCT)
+        return initiateCouponUseCase.executeOnBackground()
     }
 }

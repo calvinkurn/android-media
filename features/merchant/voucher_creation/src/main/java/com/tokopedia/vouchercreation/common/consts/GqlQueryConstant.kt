@@ -64,4 +64,31 @@ object GqlQueryConstant {
                 }
             }
         """
+
+    const val INITIATE_COUPON_PRODUCT_QUERY = "query InitiateVoucher(\$action: String, \$targetBuyer: Int, \$couponType: String, \$isVoucherProduct: Int){\n" +
+            "\tgetInitiateVoucherPage(Action: \$action, TargetBuyer: \$targetBuyer ,CouponType: \$couponType, IsVoucherProduct: \$isVoucherProduct){\n" +
+            "\t\theader{\n" +
+            "          process_time\n" +
+            "          messages\n" +
+            "          reason\n" +
+            "          error_code\n" +
+            "        }\n" +
+            "        data{\n" +
+            "          shop_id\n" +
+            "          token\n" +
+            "          user_id\n" +
+            "          access_token\n" +
+            "          upload_app_url\n" +
+            "          img_banner_base\n" +
+            "          img_banner_ig_post\n" +
+            "          img_banner_ig_story\n" +
+            "          img_banner_label_gratis_ongkir\n" +
+            "          img_banner_label_cashback\n" +
+            "          img_banner_label_cashback_hingga\n" +
+            "          prefix_voucher_code\n" +
+            "          is_eligible\n" +
+            "          max_product\n" +
+            "        }\n" +
+            "    }\n" +
+            "}"
 }

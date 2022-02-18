@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
@@ -72,6 +74,12 @@ class SellerHomeModule {
     @Provides
     fun provideVoucherCreationSharedPref(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences(VOUCHER_CREATION_PREF_NAME, Context.MODE_PRIVATE)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideAbTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
 }

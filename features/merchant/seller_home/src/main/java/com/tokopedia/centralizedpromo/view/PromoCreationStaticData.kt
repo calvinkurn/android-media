@@ -20,7 +20,8 @@ object PromoCreationStaticData {
         isVoucherCashbackEligible: Boolean,
         isTopAdsOnBoardingEnable: Boolean,
         isVoucherCashbackFirstTime: Boolean,
-        isProductCouponFirstTime: Boolean
+        isProductCouponFirstTime: Boolean,
+        isProductCouponEnabled: Boolean,
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
@@ -78,23 +79,25 @@ object PromoCreationStaticData {
             )
         }
 
-        val productCouponApplink =
-            if (isProductCouponFirstTime) {
-                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
-                    .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
-                    .build().toString()
-            } else {
-                ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
-            }
-        promoItems.add(
-            PromoCreationUiModel(
-                R.drawable.ic_sah_voucher_product,
-                resourceProvider.getPromoCreationTitleVoucherProduct(),
-                resourceProvider.getPromoCreationDescriptionVoucherProduct(),
-                "",
-                productCouponApplink
+        if (isProductCouponEnabled) {
+            val productCouponApplink =
+                if (isProductCouponFirstTime) {
+                    Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
+                        .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
+                        .build().toString()
+                } else {
+                    ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
+                }
+            promoItems.add(
+                PromoCreationUiModel(
+                    R.drawable.ic_sah_voucher_product,
+                    resourceProvider.getPromoCreationTitleVoucherProduct(),
+                    resourceProvider.getPromoCreationDescriptionVoucherProduct(),
+                    "",
+                    productCouponApplink
+                )
             )
-        )
+        }
 
         return PromoCreationListUiModel(
             items = promoItems,

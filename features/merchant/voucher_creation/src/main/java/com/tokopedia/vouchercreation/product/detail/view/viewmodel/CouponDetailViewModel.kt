@@ -9,9 +9,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
-import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
-import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailFacadeUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.CouponImageWithShop
 import com.tokopedia.vouchercreation.product.share.domain.usecase.GenerateImageWithStatisticsFacadeUseCase
@@ -85,5 +87,9 @@ class CouponDetailViewModel @Inject constructor(
 
     fun getCouponSettings(coupon: CouponUiModel): CouponSettings {
         return mapper.map(coupon).settings
+    }
+
+    fun isOngoingCoupon(@VoucherStatusConst couponStatus : Int) : Boolean {
+        return couponStatus == VoucherStatusConst.ONGOING
     }
 }

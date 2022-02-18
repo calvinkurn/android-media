@@ -13,7 +13,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -60,6 +62,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         const val COUPON_ID_NOT_YET_CREATED : Long = -1
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
         private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
+        private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
+        private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "kuota voucher aktif penuh"
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -117,6 +121,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
     private var couponId : Long = -1
     private var maxAllowedProduct = 0
+    private var showCouponDuplicatedToaster : () -> Unit = {}
 
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
@@ -172,9 +177,13 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (viewModel.isUpdateMode(pageMode)|| viewModel.isDuplicateMode(pageMode)) {
-            viewModel.getCouponDetail(couponId)
+
+        if (viewModel.isCreateMode(pageMode)){
+            viewModel.checkCouponCreationEligibility()
+        } else {
+            viewModel.getCouponDetail(couponId, pageMode)
         }
+
     }
 
     override fun onCreateView(
@@ -190,14 +199,33 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupViews()
+        observeCouponCreationEligibility()
         observeCouponDetail()
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
-        observeMaxAllowedProductResult()
-        viewModel.getMaxAllowedProducts(pageMode)
         handlePageMode()
         refreshCouponDetail()
+    }
+
+    private fun observeCouponCreationEligibility() {
+        viewModel.couponCreationEligibility.observe(viewLifecycleOwner, { result ->
+            hideLoading()
+            when(result) {
+                is Success -> {
+                    this.maxAllowedProduct = result.data
+                    binding.tpgMaxProduct.text = String.format(
+                        getString(R.string.placeholder_max_product),
+                        result.data
+                    )
+                    showContent()
+                }
+                is Fail -> {
+                    hideContent()
+                    showError(result.throwable)
+                }
+            }
+        })
     }
 
     private fun observeCouponDetail() {
@@ -205,10 +233,12 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             hideLoading()
             when(result) {
                 is Success -> {
-                    this.couponInformation = result.data.information
-                    this.couponProducts = result.data.products.toMutableList()
-                    this.selectedProductIds = result.data.productIds.toMutableList()
-                    this.couponSettings = result.data.settings
+                    this.couponInformation = result.data.coupon.information
+                    this.couponProducts = result.data.coupon.products.toMutableList()
+                    this.couponSettings = result.data.coupon.settings
+                    this.selectedProductIds = result.data.coupon.productIds.toMutableList()
+                    this.maxAllowedProduct = result.data.maxProduct
+
                     adjustCouponDefaultCouponStartEndDate(
                         pageMode,
                         couponInformation ?: return@observe
@@ -216,8 +246,15 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
 
-                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.products)
+                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
                     refreshProductsSection(selectedProducts)
+
+                    binding.tpgMaxProduct.text = String.format(
+                        getString(R.string.placeholder_max_product),
+                        result.data.maxProduct
+                    )
+
+                    displayToasterIfDuplicateMode()
                     showContent()
                 }
                 is Fail -> {
@@ -323,28 +360,13 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         })
     }
 
-    private fun observeMaxAllowedProductResult() {
-        viewModel.maxAllowedProductCount.observe(viewLifecycleOwner, { result ->
-            binding.loader.gone()
-            when (result) {
-                is Success -> {
-                    binding.content.visible()
-                    binding.tpgMaxProduct.text = String.format(getString(R.string.placeholder_max_product), result.data)
-                    this.maxAllowedProduct = result.data
-                }
-                is Fail -> {
-                    binding.content.gone()
-                    showError(result.throwable)
-                }
-            }
-        })
-    }
-
     private fun refreshCouponDetail() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(selectedProducts)
         viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
+        hideLoading()
+        showContent()
     }
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
@@ -707,8 +729,14 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
 
     private fun showError(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
-        Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        val actionText = context?.getString(R.string.coupon_toaster_cta_oke).orEmpty()
+        if (throwable is MessageErrorException && throwable.message == ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT) {
+            Toaster.build(binding.root, getString(R.string.error_message_exceed_max_coupon), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
+            showEmptyState()
+        } else {
+            val message = ErrorHandler.getErrorMessage(requireActivity(), throwable)
+            Toaster.build(binding.root, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
+        }
     }
 
     private fun navigateToAddProductPage() {
@@ -733,6 +761,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         onNavigateToManageProductPage(coupon)
     }
 
+
+    private fun showLoading() {
+        binding.loader.visible()
+    }
 
     private fun hideLoading() {
         binding.loader.gone()
@@ -799,6 +831,29 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
         return calendar.time
+    }
+
+    private fun showEmptyState() {
+        binding.emptyState.visible()
+        binding.emptyState.apply {
+            setImageUrl(EMPTY_STATE_REMOTE_IMAGE_URL)
+            setTitle(getString(R.string.mvc_no_access))
+            setDescription(getString(R.string.mvc_no_access_description))
+            setPrimaryCTAText(getString(R.string.mvc_understand))
+            setPrimaryCTAClickListener { activity?.onBackPressed() }
+            setOrientation(EmptyStateUnify.Orientation.VERTICAL)
+        }
+    }
+
+    fun setOnCouponDuplicated(showCouponDuplicatedToaster : () -> Unit) {
+        this.showCouponDuplicatedToaster = showCouponDuplicatedToaster
+    }
+
+    private fun displayToasterIfDuplicateMode() {
+        if (viewModel.isDuplicateMode(pageMode)) {
+            showCouponDuplicatedToaster()
+        }
+
     }
 
 }
