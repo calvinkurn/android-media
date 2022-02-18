@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.common
 
 import android.content.Context
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -14,16 +15,22 @@ import javax.inject.Inject
 
 @Parcelize
 data class ChosenAddress(
+    @Expose
     @SerializedName("mode")
     val mode: Int = 0,
+    @Expose
     @SerializedName("address_id")
     val addressId: String = "",
+    @Expose
     @SerializedName("district_id")
     val districtId: String = "",
+    @Expose
     @SerializedName("postal_code")
     val postalCode: String = "",
+    @Expose
     @SerializedName("geolocation")
     val geolocation: String = "",
+    @Expose
     @SerializedName("tokonow")
     val tokonow: ChosenAddressTokonow = ChosenAddressTokonow()
 ) : Parcelable {
@@ -36,12 +43,16 @@ data class ChosenAddress(
 
 @Parcelize
 data class ChosenAddressTokonow(
+    @Expose
     @SerializedName("shop_id")
     val shopId: String = "",
+    @Expose
     @SerializedName("warehouse_id")
     val warehouseId: String = "",
+    @Expose
     @SerializedName("warehouses")
     val warehouses: List<LocalWarehouseModel> = emptyList(),
+    @Expose
     @SerializedName("service_type")
     val serviceType: String = ""
 ) : Parcelable
