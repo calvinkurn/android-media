@@ -22,13 +22,12 @@ object SaldoDetailsConstants {
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val VALUE_BUSINESS_UNIT = "Payment"
     const val KEY_USER_ID = "userId"
-    const val KEY_SCREEN_NAME = "screenName"
-    const val KEY_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     internal interface Event {
         companion object {
             const val EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite"
             const val EVENT_CLICK_SALDO = "clickSaldo"
+            const val EVENT_CLICK_PAYMENT = "clickPayment"
             const val EVENT_SALDO_IMPRESSION = "viewSaldoIris"
             const val EVENT_SALDO_OPEN_SCREEN= "openScreen"
             const val EVENT= "event"
@@ -46,13 +45,17 @@ object SaldoDetailsConstants {
     internal interface Action {
         companion object {
             const val SALDO_ANCHOR_EVENT_ACTION = "sal - %s click"
+            const val SALDO_HOLD_STATUS_CLICK = "click status on hold"
+            const val SALDO_HELP_HOLD_CLICK = "click bantuan on hold page"
+            const val SALDO_WITHDRAWAL_CLICK = "click tarik saldo"
             const val SALDO_MODAL_TOKO_IMP = "saldo - modaltoko impression"
             const val SALDO_MODAL_TOKO_CLICK = "saldo - modaltoko click"
             const val SALDO_MODAL_TOKO_ACTION_CLICK = "saldo - modaltoko %s click"
             const val SALDO_PENGHASILAN_TAB_CLICK = "click saldo penghasilan tab"
             const val SALDO_REFUND_TAB_CLICK = "click saldo refund tab"
             const val SALDO_PENJUALAN_TAB_CLICK = "click tab penjualan"
-            const val SALDO_SEMUA_TAB_CLICK = "click tab semua"
+            const val SALDO_SEMUA_FILTER_CLICK = "click sub tab semua"
+            const val SALDO_SEMUA_TAB_CLICK = "click tab semua transaksi"
             const val SALDO_PENGHASILAN_DETAIL_CLICK = "click detail penarikan saldo penghasilan"
             const val SALDO_REFUND_DETAIL_CLICK = "click detail penarikan saldo refund"
             const val SALDO_SALES_DETAIL_CLICK = "click detail hasil penjualan"

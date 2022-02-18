@@ -143,10 +143,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             openCalender()
         }
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
-            // @Todo do we need Semua Transkasi Hit
             transactionHistoryViewModel.getEventLabelForTab(it.getCustomText())
                 .also { actionLabel ->
-                    analytics.sendTransactionHistoryEvents(actionLabel)
+                    analytics.sendClickPaymentEvents(actionLabel)
                 }
         }
     }

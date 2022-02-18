@@ -284,7 +284,8 @@ class TransactionHistoryViewModel @Inject constructor(
             TransactionTitle.SALDO_REFUND -> SaldoDetailsConstants.Action.SALDO_REFUND_TAB_CLICK
             TransactionTitle.SALDO_INCOME -> SaldoDetailsConstants.Action.SALDO_PENGHASILAN_TAB_CLICK
             TransactionTitle.SALDO_SALES -> SaldoDetailsConstants.Action.SALDO_PENJUALAN_TAB_CLICK
-            TransactionTitle.ALL_TRANSACTION -> SaldoDetailsConstants.Action.SALDO_SEMUA_TAB_CLICK
+            TransactionTitle.ALL_TRANSACTION -> SaldoDetailsConstants.Action.SALDO_SEMUA_FILTER_CLICK
+            TransactionTitle.ALL_TAB -> SaldoDetailsConstants.Action.SALDO_SEMUA_TAB_CLICK
             else -> ""
         }
     }
