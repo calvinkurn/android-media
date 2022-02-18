@@ -44,7 +44,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
     private val graphLayoutFragment by lazy { TopAdsMultiLineGraphFragment() }
-    private val checkResponse by lazy { CheckResponse() }
 
     private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
     private lateinit var selectedAdType: Chip
@@ -67,9 +66,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             return TopAdsDashboardBerandaFragment()
         }
     }
-
-    @Inject
-    lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     @Inject
     lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
@@ -152,9 +148,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
-        binding.tambahKreditLayout.autoTopUp.setOnClickListener {
-            startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
-        }
         binding.layoutRingkasan.ivSummaryDropDown.setOnClickListener {
             summaryAdTypesBottomSheet.show(childFragmentManager, "")
         }
@@ -162,7 +155,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             showInformationBottomSheet()
         }
         binding.tambahKreditLayout.btnRefreshCredits.setOnClickListener {
-            topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
+            topAdsDashboardViewModel.fetchShopDeposit()
         }
         binding.layoutLatestReading.btnReadMore.setOnClickListener {
             requireContext().openWebView(READ_MORE_URL)
@@ -225,6 +218,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun showFirstTimeDialog() {
+        //
         requireActivity().showDialogWithCoachMark(
             binding.scrollView, binding.layoutRingkasan.rvSummary,
             requireView().findViewById(R.id.topads_content_statistics),
@@ -234,7 +228,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun hideShimmer() {
-        if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats || !checkResponse.recommendation) return
+        if (!binding.shimmerView.root.isVisible) return
         binding.shimmerView.root.hide()
         (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
         binding.swipeRefreshLayout.show()
@@ -253,7 +247,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         selectedAdType = summaryAdTypeList[0]
 
         setUpRecyclerView()
-
         observeLiveData()
         initializeListener()
         initializeGraph()
@@ -261,8 +254,18 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun observeLiveData() {
+        topAdsDashboardViewModel.shopDepositLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    binding.tambahKreditLayout.creditAmount.text = it.data.amountFmt
+                }
+                is Fail -> {}
+            }
+        }
+
         topAdsDashboardViewModel.summaryStatisticsLiveData.observe(viewLifecycleOwner) {
-            checkResponse.summaryStats = true
+            hideShimmer()
             when (it) {
                 is Success -> {
                     graphLayoutFragment.setValue(it.data.cells)
@@ -277,7 +280,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         }
 
         topAdsDashboardViewModel.recommendationStatsLiveData.observe(viewLifecycleOwner) {
-            checkResponse.recommendation = true
+            hideShimmer()
             when (it) {
                 is Success -> {
                     setRecommendationProdukBerpostensi(it.data.productRecommendationStats)
@@ -298,12 +301,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             txtDescription.text = String.format(
                 resources.getString(R.string.topads_dashboard_produk_berpostensi_desc), item.count
             )
-            /*val it = listOf(
-                ImageModel("https://images-staging.tokopedia.net/img/jJtrdn/2021/7/29/5d358149-b754-4b5e-80a6-badeba45462e.jpg"),
-                ImageModel("https://images-staging.tokopedia.net/img/jJtrdn/2021/7/29/5d358149-b754-4b5e-80a6-badeba45462e.jpg"),
-                ImageModel("https://images-staging.tokopedia.net/img/jJtrdn/2021/7/29/5d358149-b754-4b5e-80a6-badeba45462e.jpg"),
-            )*/
-            //item.productList
             produkBerpotensiAdapter.addItems(item.productList)
         }
     }
@@ -317,12 +314,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 resources.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
             )
             val list = item.groupList
-            /*val list = listOf(
-                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
-                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
-                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
-                RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats.GroupInfo("A"),
-            )*/
             if (list.isNotEmpty()) {
                 val items = mutableListOf<String>()
                 items.add(list[0].groupName)
@@ -352,25 +343,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 item.topGroups,
                 binding.root.resources.getString(R.string.topads_dashboard_lihat_semua)
             )
-            /*kataKunciChipsRvAdapter.addItems(
-                listOf(
-                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
-                        groupName = "ankit"
-                    ),
-                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
-                        groupName = "ankit"
-                    ),
-                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
-                        groupName = "ankit"
-                    ),
-                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
-                        groupName = "ankit"
-                    ),
-                    RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup(
-                        groupName = "ankit"
-                    )
-                ), "Lihat Semua'"
-            )*/
         }
     }
 
@@ -405,45 +377,19 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun loadData() {
         showShimmer()
         binding.swipeRefreshLayout.isEnabled = true
-        getAutoTopUpStatus()
-        topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
+        topAdsDashboardViewModel.fetchShopDeposit()
         adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchRecommendationStatistics()
-    }
-
-    private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
-        binding.swipeRefreshLayout.isRefreshing = false
-        binding.tambahKreditLayout.creditAmount.text = dataDeposit.amountFmt
-    }
-
-    private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
-        val isAutoTopUpActive =
-            (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
-        if (isAutoTopUpActive) {
-            binding.tambahKreditLayout.autoTopUp.visibility = View.VISIBLE
-            binding.tambahKreditLayout.addCredit.visibility = View.GONE
-            binding.tambahKreditLayout.imgAutoDebit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
-            binding.tambahKreditLayout.imgAutoDebit.visibility = View.VISIBLE
-        } else {
-            binding.tambahKreditLayout.autoTopUp.visibility = View.GONE
-            binding.tambahKreditLayout.addCredit.visibility = View.VISIBLE
-            binding.tambahKreditLayout.imgAutoDebit.visibility = View.GONE
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_CREDIT) {
-            topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
+            topAdsDashboardViewModel.fetchShopDeposit()
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
-            getAutoTopUpStatus()
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
         }
-    }
-
-    private fun getAutoTopUpStatus() {
-        topAdsDashboardPresenter.getAutoTopUpStatus(resources, this::onSuccessGetAutoTopUpStatus)
     }
 
     private fun goToCreditHistory(isFromSelection: Boolean = false) {
@@ -462,29 +408,5 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     interface GoToInsight {
         fun gotToInsights()
-    }
-
-    //this class holds 3 boolean to keep track if all the 3 api's have been called successfully, as if all values are true will be hiding shimmer view and showing the actual view
-    inner class CheckResponse {
-        var creditHistory: Boolean = true
-            set(value) {
-                field = value
-                hideShimmer()
-            }
-        var summaryStats: Boolean = false
-            set(value) {
-                field = value
-                hideShimmer()
-            }
-        var latestReading: Boolean = true
-            set(value) {
-                field = value
-                hideShimmer()
-            }
-        var recommendation: Boolean = false
-            set(value) {
-                field = value
-                hideShimmer()
-            }
     }
 }
