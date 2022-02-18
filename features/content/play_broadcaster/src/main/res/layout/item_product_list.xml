@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     app:cardCornerRadius="@dimen/play_product_preview_radius"
+    app:cardUseCompatPadding="true"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
