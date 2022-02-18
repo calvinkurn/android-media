@@ -745,7 +745,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
             title,
             coupon.id.toLong(),
             onShareOptionsClicked = { shareModel ->
-                handleShareOptionSelection(shareModel, title, description, shop.shopDomain)
+                handleShareOptionSelection(coupon.id.toLong(), shareModel, title, description, shop.shopDomain)
             }, onCloseOptionClicked = {}
         )
         shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
@@ -787,6 +787,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun handleShareOptionSelection(
+        couponId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -810,6 +811,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
         val outgoingDescription = getString(R.string.share_component_outgoing_text_description)
         val linkerShareData = linkerDataGenerator.generate(
+            couponId,
             userSession.shopId,
             shopDomain,
             shareModel,
