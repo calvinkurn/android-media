@@ -5,8 +5,7 @@
     android:id="@+id/shop_home_card_donation_card_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/unify_space_4"
-    android:layout_marginBottom="@dimen/unify_space_8"
+    android:layout_marginVertical="@dimen/unify_space_4"
     app:card_background_color="@color/Unify_Background"
     app:card_type="border">
 
