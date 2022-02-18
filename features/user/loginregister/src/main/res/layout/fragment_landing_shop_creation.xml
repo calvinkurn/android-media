@@ -67,17 +67,42 @@
             app:unifyButtonSize="large"
             app:unifyButtonType="main" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btnDeletedShopInfo"
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutDeletedShopInfo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_margin="@dimen/layout_lvl2"
-            tools:text="Tokomu hilang ?"
-            app:typographyType="body_3"
             app:layout_constraintTop_toBottomOf="@id/btn_continue"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/deletedShopInfo1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:text="@string/deleted_shop_info"
+                android:textColor="@color/Neutral_N400"
+                app:typographyType="body_3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/deletedShopInfo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:textColor="@color/Unify_GN500"
+                android:text="@string/deleted_shop_info_clickable"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/deletedShopInfo1"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/landing_shop_creation_image"
@@ -92,7 +117,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnDeletedShopInfo" />
+            app:layout_constraintTop_toBottomOf="@+id/layoutDeletedShopInfo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

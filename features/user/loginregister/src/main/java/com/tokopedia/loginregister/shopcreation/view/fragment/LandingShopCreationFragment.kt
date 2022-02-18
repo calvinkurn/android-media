@@ -5,14 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -27,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
@@ -86,7 +80,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         landingImage = view.findViewById(R.id.landing_shop_creation_image)
         loading = view.findViewById(R.id.loading)
         mainView = view.findViewById(R.id.main_view)
-        btnDeletedShop = view.findViewById(R.id.btnDeletedShopInfo)
+        btnDeletedShop = view.findViewById(R.id.deletedShopInfo2)
         activity?.let {
             baseView = it.findViewById(R.id.base_view)
         }
@@ -159,7 +153,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
-        setupViewDeletedShopInfo()
+
+        btnDeletedShop?.setOnClickListener {
+            RouteManager.route(context, URL_DELETED_SHOP)
+        }
     }
 
     private fun initButtonListener() {
@@ -340,41 +337,6 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
                     KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
-        }
-    }
-
-    private fun setupViewDeletedShopInfo() {
-        val clickableMessage = getString(R.string.deleted_shop_info_clickable)
-        val message = MethodChecker.fromHtml(getString(R.string.deleted_shop_info))
-        val spannable = SpannableString(message).apply {
-            setSpan(
-                    clickableSpan { RouteManager.route(context, URL_DELETED_SHOP) },
-                    message.indexOf(clickableMessage),
-                    message.indexOf(clickableMessage) + clickableMessage.length,
-                    0
-            )
-        }
-
-        btnDeletedShop?.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            setText(spannable, TextView.BufferType.SPANNABLE)
-            movementMethod = LinkMovementMethod.getInstance()
-        }
-    }
-
-    private fun clickableSpan(callback: () -> Unit): ClickableSpan {
-        return object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                callback.invoke()
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                context?.let {
-                    ds.isUnderlineText = false
-                    ds.color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400)
-                }
-            }
         }
     }
 
