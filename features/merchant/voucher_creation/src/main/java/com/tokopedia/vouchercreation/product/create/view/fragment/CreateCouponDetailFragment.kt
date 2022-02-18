@@ -15,6 +15,7 @@ import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -39,6 +40,7 @@ class CreateCouponDetailFragment(
 
     companion object {
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
+        private const val COUPON_PREFIX_LENGTH = 4
     }
 
     private var binding by autoClearedNullable<FragmentMvcCreateCouponDetailBinding>()
@@ -100,8 +102,8 @@ class CreateCouponDetailFragment(
 
         if (couponInformationData != null) {
             viewModel.setCouponInformation(couponInformationData)
+            tfuFillCouponCode?.setCouponText(couponInformationData.code)
             tfuFillCouponName?.textFieldInput?.setText(couponInformationData.name)
-            tfuFillCouponCode?.textFieldInput?.setText(couponInformationData.code)
         }
     }
 
@@ -203,7 +205,7 @@ class CreateCouponDetailFragment(
                     CouponInformation(
                         viewModel.selectedCouponTarget.value.convertToCouponInformationTarget(),
                         tfuFillCouponName?.textFieldInput?.text.toString(),
-                        tfuFillCouponCode?.textFieldInput?.text.toString(),
+                        tfuFillCouponCode?.getCouponText().orEmpty(),
                         CouponInformation.Period(
                             viewModel.startDateCalendarLiveData.value?.time ?: Date(),
                             viewModel.endDateCalendarLiveData.value?.time ?: Date()
@@ -291,6 +293,33 @@ class CreateCouponDetailFragment(
 
     private fun RecyclerView.setRecyclerViewToVertical() {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun TextFieldUnify.setCouponText(text: String) {
+        val maxLength = textFieldWrapper.counterMaxLength
+        if (text.length <= maxLength) {
+            tfuFillCouponCode?.textFieldInput?.setText(text)
+        } else {
+            val couponPrefix = text.substring(Int.ZERO, COUPON_PREFIX_LENGTH)
+            val couponText = text.substring(COUPON_PREFIX_LENGTH)
+            tfuFillCouponCode?.prependText(couponPrefix)
+            tfuFillCouponCode?.tag = couponPrefix
+            tfuFillCouponCode?.textFieldInput?.setText(couponText)
+        }
+    }
+
+    private fun TextFieldUnify.getCouponText(): String {
+        val result = if (tag is String) {
+            val prefix = tag as String
+            if (prefix.isNotEmpty()) {
+                prefix + textFieldInput.text
+            } else {
+                textFieldInput.text
+            }
+        } else {
+            textFieldInput.text
+        }
+        return result.toString()
     }
 
     fun setOnCouponSaved(onCouponSaved: (CouponInformation) -> Unit) {
