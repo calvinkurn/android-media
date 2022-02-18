@@ -106,6 +106,27 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             adapter = affiliateAdapter
         }
         setDataToRV(createListForTermsAndCondition(context))
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        val loginText = if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            "${AffiliateAnalytics.ScreenKeys.AFFILIATE_TERMS_AND_CONDITION}$loginText",
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
+    }
+
+    private fun sendButtonClick(eventAction: String) {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_REG_T_ANC_C,
+            if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN,
+            userSessionInterface.userId
+        )
     }
 
     private fun initClickListener() {
@@ -113,20 +134,13 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
                 view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.isEnabled = isChecked
         }
         view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.setOnClickListener {
-            sendTracker()
+            sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
             affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
         }
         view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
+            sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SYARAT)
             AffiliateWebViewBottomSheet.newInstance(getString(R.string.terms_and_condition_upper), AFFILIATE_TANDC_URL).show(childFragmentManager,"")
         }
-    }
-
-    private fun sendTracker() {
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
-                AffiliateAnalytics.ActionKeys.CLICK_DAFTAR,
-                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                "", userSessionInterface.userId)
     }
 
     private fun setUpNavBar() {
@@ -139,6 +153,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_terms_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_BACK)
                 activity?.onBackPressed()
             }
         }

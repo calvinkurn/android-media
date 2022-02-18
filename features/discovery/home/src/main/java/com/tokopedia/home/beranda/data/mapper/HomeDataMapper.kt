@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL_R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDataMapper(
@@ -41,23 +42,35 @@ class HomeDataMapper(
             if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
                 throw IllegalStateException(DC_ERROR_MESSAGE)
             }
+            var isDynamicChannelContainsBeautyFest = false
+            var isAtfChannelContainsBeautyFest = false
+
+            val beautyFestChannelId = arrayOf("129362",
+                "129363",
+                "129364",
+                "129365",
+                "129366",
+                "129367",
+                "129368",
+                "129369",
+                "129370",
+                "129371")
+
             for (channel in homeData.dynamicHomeChannel.channels) {
-                isChannelBeautyFest = when(channel.id) {
-                    //hardcoded channel id as beauty fest channel id
-                    "129362",
-                    "129363",
-                    "129364",
-                    "129365",
-                    "129366",
-                    "129367",
-                    "129368",
-                    "129369",
-                    "129370",
-                    "129371" -> HomeRevampFragment.BEAUTY_FEST_TRUE
-                    else -> HomeRevampFragment.BEAUTY_FEST_FALSE
-                }
-                if(isChannelBeautyFest == HomeRevampFragment.BEAUTY_FEST_TRUE)
+                isDynamicChannelContainsBeautyFest = channel.id in beautyFestChannelId
+                if(isDynamicChannelContainsBeautyFest)
                     break
+            }
+            for (atfChannel in homeData.atfData?.dataList?: listOf()) {
+                if (atfChannel.component == AtfKey.TYPE_CHANNEL) {
+                    isAtfChannelContainsBeautyFest = beautyFestChannelId.filter {
+                        atfChannel.content?.contains(it)?:false }.isNotEmpty()
+                }
+            }
+            isChannelBeautyFest = if (isAtfChannelContainsBeautyFest || isDynamicChannelContainsBeautyFest) {
+                HomeRevampFragment.BEAUTY_FEST_TRUE
+            } else {
+                HomeRevampFragment.BEAUTY_FEST_FALSE
             }
         }
         val firstPage = homeData.token.isNotEmpty()

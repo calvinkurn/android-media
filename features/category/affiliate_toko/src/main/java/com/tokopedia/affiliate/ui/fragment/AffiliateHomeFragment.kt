@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -105,6 +106,16 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            "${AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_FRAGMENT}register",
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun afterViewCreated() {
@@ -141,10 +152,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
         }
         if(!CoachMarkPreference.hasShown(requireContext(), COACHMARK_TAG)) affiliateActitvityInterface?.showCoachMarker()
-        sendScreenEvent()
         setUserDetails()
     }
     private fun openHistoryActivity() {
+        sendHomeEvent(AffiliateAnalytics.ActionKeys.CLICK_GENERATED_LINK_HISTORY,"",AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE)
         val intent = Intent(context,AffiliateComponentActivity::class.java)
         intent.putExtra("isUserBlackListed",isUserBlackListed)
         startActivityForResult(intent,LINK_HISTORY_BUTTON_CLICKED)
@@ -414,14 +425,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
     }
 
-    private fun sendScreenEvent() {
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL,
-                AffiliateAnalytics.CategoryKeys.HOME_PORTAL,
-                "",userSessionInterface.userId)
-    }
-
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
             AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
@@ -433,11 +436,23 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
    override fun rangeChanged(range: AffiliateDatePickerData) {
+        sendHomeEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,range.value,AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_FILTER)
         affiliateHomeViewModel.onRangeChanged(range)
     }
 
     override fun onRangeSelectionButtonClicked() {
+        sendHomeEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,"",AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE)
         AffiliateBottomDatePicker.newInstance(affiliateHomeViewModel.getSelectedDate(),this,IDENTIFIER_HOME).show(childFragmentManager, "")
+    }
+
+    private fun sendHomeEvent(eventAction :String,eventLabel: String,eventCategory: String) {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            eventCategory,
+            eventLabel,
+            userSessionInterface.userId
+        )
     }
 
     override fun onInfoClick(title: String?, desc: String?) {

@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -39,6 +40,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
@@ -99,6 +101,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
@@ -140,6 +143,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -296,7 +300,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
                 savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
-                savedListShipmentCrossSellModel = saveInstanceCacheManager.get(ShipmentCrossSellModel.class.getSimpleName(), (new TypeToken<ArrayList<ShipmentCrossSellModel>>() {}).getType());
+                savedListShipmentCrossSellModel = saveInstanceCacheManager.get(ShipmentCrossSellModel.class.getSimpleName(), (new TypeToken<ArrayList<ShipmentCrossSellModel>>() {
+                }).getType());
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
             }
@@ -523,7 +528,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (!shipmentCrossSellModelList.isEmpty()) {
             shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList);
-            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+            for (int i = 0; i < shipmentCrossSellModelList.size(); i++) {
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
                 String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
                 String digitalProductId = crossSellModel.getId();
@@ -531,7 +536,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 String digitalProductName = crossSellModel.getInfo().getTitle();
 
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
-                        String.valueOf(i+1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
+                        String.valueOf(i + 1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
             }
         }
 
@@ -813,6 +818,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void stopEmbraceTrace() {
+        Map<String, Object> emptyMap = new HashMap<>();
+        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY, null, emptyMap);
+    }
+
+    @Override
     public void renderDataChanged() {
         initRecyclerViewData(
                 shipmentPresenter.getShipmentTickerErrorModel(),
@@ -911,6 +922,30 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (message.contains("Pre Order") && message.contains("Corner"))
             mTrackerCorner.sendViewCornerPoError();
         showToastError(message);
+    }
+
+    @Override
+    public void renderPrompt(Prompt prompt) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            DialogUnify promptDialog = new DialogUnify(activity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            promptDialog.setTitle(prompt.getTitle());
+            promptDialog.setDescription(prompt.getDescription());
+            promptDialog.setPrimaryCTAText(prompt.getButton().getText());
+            promptDialog.setPrimaryCTAClickListener(() -> {
+                Activity mActivity = getActivity();
+                if (mActivity != null) {
+                    if (!TextUtils.isEmpty(prompt.getButton().getLink())) {
+                        RouteManager.route(mActivity, prompt.getButton().getLink());
+                    }
+                    mActivity.finish();
+                }
+                return Unit.INSTANCE;
+            });
+            promptDialog.setOverlayClose(false);
+            promptDialog.setCancelable(false);
+            promptDialog.show();
+        }
     }
 
     @Override
