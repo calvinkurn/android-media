@@ -257,7 +257,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onLikeButtonClicked(
         reviewId: String,
-        shopId: String,
         likeStatus: Int,
         index: Int
     ) {
@@ -270,7 +269,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             isLiked(likeStatus),
             viewModel.getProductId()
         )
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
+        viewModel.toggleLikeReview(reviewId, likeStatus, index)
     }
 
     override fun onShopReviewLikeButtonClicked(
@@ -289,7 +288,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             isLiked(likeStatus),
             shopId
         )
-        viewModel.toggleLikeShopReview(reviewId, shopId, productId, likeStatus, index)
+        viewModel.toggleLikeShopReview(reviewId, likeStatus, index)
     }
 
     override fun onItemImpressed(

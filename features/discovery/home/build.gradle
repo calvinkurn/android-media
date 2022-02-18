@@ -78,6 +78,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playWidget)
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
     implementation projectOrAar(rootProject.ext.features.questWidget)
+    implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -102,9 +103,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
-
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
@@ -120,14 +118,16 @@ dependencies {
     // Tkpd internal
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.miscDependencies.traceroute
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

@@ -27,24 +27,42 @@ class OfficialHomeMapper (
         private val context: Context,
         private val dispatchers: CoroutineDispatchers
 ){
-    val listOfficialStore = mutableListOf<Visitable<*>>()
+    var listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
         private const val BENEFIT_POSITION = 1
         private const val FEATURE_SHOP_POSITION = 2
-        private const val RECOM_WIDGET_POSITION = 3
+        const val RECOM_WIDGET_POSITION = 3
+        const val WIDGET_NOT_FOUND = -1
     }
 
-    fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialBannerDataModel }
-            val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
-            removeAll { it is OfficialLoadingMoreDataModel || it is OfficialLoadingDataModel}
-
-            if(index == -1) add(officialBanner)
-            else set(index, officialBanner)
-            adapter?.submitList(this.toMutableList())
+    fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?, isDisableForMappingBanner: Boolean) {
+        val newList = mutableListOf<Visitable<*>>()
+        if (isDisableForMappingBanner) {
+            listOfficialStore.toMutableList().forEach {
+                if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel && it !is OfficialBannerDataModel){
+                    newList.add(it)
+                }
+            }
+            newList.add(OfficialBannerDataModel(mutableListOf(), categoryName.toEmptyStringIfNull()))
         }
+        else {
+            val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
+            listOfficialStore.toMutableList().forEach {
+                if (it is OfficialBannerDataModel) {
+                    newList.add(officialBanner)
+                }
+                else if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel){
+                    newList.add(it)
+                }
+            }
+            val isOfficialBannerDataNotExist = listOfficialStore.indexOfFirst { it is OfficialBannerDataModel } == WIDGET_NOT_FOUND
+            if (isOfficialBannerDataNotExist) {
+                newList.add(officialBanner)
+            }
+        }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
     }
 
     fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
@@ -121,7 +139,7 @@ class OfficialHomeMapper (
                     DynamicChannelLayout.LAYOUT_FEATURED_SHOP -> {
                         views.add(
                             FeaturedShopDataModel(
-                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponentBannerToHeader(
                                     officialStore.channel,
                                     position
                                 ),
@@ -134,7 +152,7 @@ class OfficialHomeMapper (
                         val channel = officialStore.channel
                         views.add(
                             BestSellerDataModel(
-                                id = channel.id,
+                                channelId = channel.id,
                                 widgetParam = channel.widgetParam,
                                 pageName = channel.pageName
                             )
@@ -167,12 +185,23 @@ class OfficialHomeMapper (
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
-    fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
-        productRecommendation.recommendationItemList.forEach {
-            listOfficialStore.add(ProductRecommendationDataModel(it, listener))
+    fun mappingProductRecommendation(
+        productRecommendationWithTopAdsHeadline: ProductRecommendationWithTopAdsHeadline,
+        adapter: OfficialHomeAdapter?,
+        listener: RecommendationListener
+    ) {
+        val newList = listOfficialStore.toMutableList()
+        val headlineIndex =
+            productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
+        productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
+            if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
+                newList.add(it)
+            }
+            newList.add(ProductRecommendationDataModel(recommendationItem, listener))
         }
-        listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
-        adapter?.submitList(listOfficialStore.toMutableList())
+        newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
@@ -263,41 +292,73 @@ class OfficialHomeMapper (
     }
 
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-        listOfficialStore.forEachIndexed {index, it ->
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
-                listOfficialStore[index] = newData.copy()
+                newData.channelModel.channelHeader = it.channelModel.channelHeader
+                newList.add(newData)
+            }
+            else {
+                newList.add(it)
             }
         }
-        action.invoke(listOfficialStore)
+        listOfficialStore = newList
+        action.invoke(newList.toMutableList())
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
-        listOfficialStore.forEach {
+        listOfficialStore.toMutableList().forEach {
             if (it !is FeaturedShopDataModel || ((it is FeaturedShopDataModel && it.channelModel.id != newData.channelModel.id)))  {
                 newList.add(it)
             }
         }
+        listOfficialStore = newList
         action.invoke(newList.toMutableList())
     }
 
-    fun mappingRecomWidget(data: BestSellerDataModel, adapter: OfficialHomeAdapter?) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is BestSellerDataModel }
-
-            removeAll{ it is BestSellerDataModel }
-            if(index == -1) add(RECOM_WIDGET_POSITION, data)
-            else set(index, data)
-
-            adapter?.submitList(this.toMutableList())
+    fun mappingRecomWidget(data: BestSellerDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
+        val newList = mutableListOf<Visitable<*>>()
+        val copyListOfficialStore = listOfficialStore.toMutableList()
+        copyListOfficialStore.forEach {
+            if (it is BestSellerDataModel && it.channelId == data.channelId) {
+                newList.add(data)
+            }
+            else {
+                newList.add(it)
+            }
         }
+        val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
+        if (isBestSellerWidgetNotExist) {
+            newList.add(RECOM_WIDGET_POSITION, data)
+        }
+        listOfficialStore = newList
+        action.invoke(newList)
     }
 
-    fun removeRecomWidget(adapter: OfficialHomeAdapter?){
-        listOfficialStore.run {
-            removeAll { it is BestSellerDataModel}
-            adapter?.submitList(this.toMutableList())
+    fun removeRecomWidget(
+        action: (listSubmitted: MutableList<Visitable<*>>) -> Unit
+    ) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
+            if (it !is BestSellerDataModel) {
+                newList.add(it)
+            }
         }
+        listOfficialStore = newList
+        action.invoke(newList)
     }
+
+    fun removeTopAdsHeadlineWidget(adapter: OfficialHomeAdapter?) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
+            if (it !is OfficialTopAdsHeadlineDataModel) {
+                newList.add(it)
+            }
+        }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
+    }
+
 }

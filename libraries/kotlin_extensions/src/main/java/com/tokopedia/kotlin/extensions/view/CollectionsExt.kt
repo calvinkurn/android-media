@@ -1,15 +1,36 @@
 package com.tokopedia.kotlin.extensions.view
 
-fun <T> Iterable<T>.joinToStringWithLast(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
-                                         transform: ((T) -> CharSequence)? = null,
-                                         lastSeparator: String? = null): String {
-    return joinToLastSeparator(StringBuilder(), separator, prefix, postfix, limit, truncated, transform, lastSeparator).toString()
+fun <T> Iterable<T>.joinToStringWithLast(
+    separator: CharSequence = ", ",
+    prefix: CharSequence = "",
+    postfix: CharSequence = "",
+    limit: Int = -1,
+    truncated: CharSequence = "...",
+    transform: ((T) -> CharSequence)? = null,
+    lastSeparator: String? = null
+): String {
+    return joinToLastSeparator(
+        StringBuilder(),
+        separator,
+        prefix,
+        postfix,
+        limit,
+        truncated,
+        transform,
+        lastSeparator
+    ).toString()
 }
 
-fun <T, A : Appendable> Iterable<T>.joinToLastSeparator(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: Int = -1,
-                                                        truncated: CharSequence = "...",
-                                                        transform: ((T) -> CharSequence)? = null,
-                                                        lastSeparator: String? = null): A {
+fun <T, A : Appendable> Iterable<T>.joinToLastSeparator(
+    buffer: A,
+    separator: CharSequence = ", ",
+    prefix: CharSequence = "",
+    postfix: CharSequence = "",
+    limit: Int = -1,
+    truncated: CharSequence = "...",
+    transform: ((T) -> CharSequence)? = null,
+    lastSeparator: String? = null
+): A {
     buffer.append(prefix)
     var count = 0
     var size = 0
@@ -64,7 +85,17 @@ fun <T> MutableList<T>.goToFirst(index: Int) {
 }
 
 fun <T> MutableList<T>.moveTo(fromPosition: Int, toPosition: Int) {
+    if (size == 0 ||
+        fromPosition < 0 || fromPosition >= size ||
+        toPosition < 0 || toPosition >= size) {
+        return
+    }
     val tmp = this[fromPosition]
     this.removeAt(fromPosition)
-    this.add(toPosition, tmp)
+    if (toPosition < this.size) {
+        this.add(toPosition, tmp)
+    } else {
+        this.add(tmp)
+    }
+
 }

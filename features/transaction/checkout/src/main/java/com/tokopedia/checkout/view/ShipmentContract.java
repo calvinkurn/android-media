@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -69,7 +70,7 @@ public interface ShipmentContract {
 
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
-        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isEligibleForRevampAna);
 
         void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
 
@@ -80,6 +81,8 @@ public interface ShipmentContract {
         void renderCheckoutCartError(String message);
 
         void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
+
+        void renderPrompt(Prompt prompt);
 
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
@@ -111,6 +114,8 @@ public interface ShipmentContract {
         void setCourierPromoApplied(int itemPosition);
 
         void stopTrace();
+
+        void stopEmbraceTrace();
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 

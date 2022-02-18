@@ -3,8 +3,9 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
+import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
-import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
@@ -19,7 +20,9 @@ import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import javax.crypto.Cipher
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 
 class KycUploadViewModelTest {
     @get:Rule
@@ -29,7 +32,10 @@ class KycUploadViewModelTest {
     private lateinit var useCase: KycUploadUseCase
 
     @RelaxedMockK
-    private lateinit var sharedPreference: KycSharedPreference
+    private lateinit var sharedPreference: KycSharedPreferenceImpl
+
+    @RelaxedMockK
+    private lateinit var cipherProviderImpl: CipherProviderImpl
 
     private lateinit var viewModel : KycUploadViewModel
 
@@ -43,7 +49,7 @@ class KycUploadViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewModel = spyk(KycUploadViewModel(
-            useCase, CoroutineTestDispatchersProvider, sharedPreference))
+            useCase, CoroutineTestDispatchersProvider, sharedPreference, cipherProviderImpl))
     }
 
     private fun provideEveryUseCase(kycData: KycData) {
@@ -62,10 +68,24 @@ class KycUploadViewModelTest {
         }
     }
 
+    private fun provideEverySuccessDecrypted(filePath: String) {
+        coEvery {
+            viewModel.decryptImage(any(), any(), any())
+        } answers {
+            filePath
+        }
+    }
+
     private fun uploadWithEncrypt() {
         viewModel.encryptImage(originalImagePath, KYC_IV_KTP_CACHE)
         viewModel.encryptImage(originalImagePath, KYC_IV_FACE_CACHE)
-        viewModel.uploadImages(ktpPath, facePath, projectId, true)
+        viewModel.uploadImages(
+                ktpPath,
+                facePath,
+                projectId,
+                isKtpFileUsingEncryption = true,
+                isFaceFileUsingEncryption = true
+        )
     }
 
     private fun assertResult(result: Result<KycData>?, kycData: KycData) {
@@ -83,13 +103,19 @@ class KycUploadViewModelTest {
         val kycData = KycData(isSuccessRegister = true)
         provideEveryUseCase(kycData)
 
-        every {
+        coEvery {
             sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
 
-        viewModel.uploadImages(ktpPath, facePath, projectId, false)
+        viewModel.uploadImages(
+                ktpPath,
+                facePath,
+                projectId,
+                isKtpFileUsingEncryption = false,
+                isFaceFileUsingEncryption = false
+        )
         val result = viewModel.kycResponseLiveData.value
         assertResult(result, kycData)
     }
@@ -99,8 +125,9 @@ class KycUploadViewModelTest {
         val kycData = KycData(isSuccessRegister = true)
         provideEveryUseCase(kycData)
         provideEverySuccessEncrypt()
+        provideEverySuccessDecrypted(originalImagePath)
 
-        every {
+        coEvery {
             sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
@@ -116,7 +143,13 @@ class KycUploadViewModelTest {
         val kycData = KycData(isSuccessRegister = false)
         provideEveryUseCase(kycData)
 
-        viewModel.uploadImages(ktpPath, facePath, projectId, false)
+        viewModel.uploadImages(
+                ktpPath,
+                facePath,
+                projectId,
+                isKtpFileUsingEncryption = false,
+                isFaceFileUsingEncryption = false
+        )
         val result = viewModel.kycResponseLiveData.value
         assertResultFail(result, kycData)
     }
@@ -126,8 +159,9 @@ class KycUploadViewModelTest {
         val kycData = KycData(isSuccessRegister = false)
         provideEveryUseCase(kycData)
         provideEverySuccessEncrypt()
+        provideEverySuccessDecrypted(originalImagePath)
 
-        every {
+        coEvery {
             sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
@@ -140,29 +174,20 @@ class KycUploadViewModelTest {
 
     @Test
     fun `API - get error response`() {
-        val viewModelMock = mockk<KycUploadViewModel>(relaxed = true)
         val exceptionMock = Exception("Oops!")
 
         coEvery {
-            viewModelMock.uploadImages(any(), any(), any(), any())
+            viewModel.uploadImages(any(), any(), any(), any(), any())
         } throws exceptionMock
 
         assertFailsWith<Exception> {
-            viewModelMock.uploadImages(ktpPath, facePath, projectId, true)
-        }
-    }
-
-    @Test
-    fun `API - get error response with empty params`() {
-        val viewModelMock = mockk<KycUploadViewModel>(relaxed = true)
-        val exceptionMock = Exception("Oops!")
-
-        coEvery {
-            viewModelMock.uploadImages(any(), any(), any(), any())
-        } throws exceptionMock
-
-        assertFailsWith<Exception> {
-            viewModelMock.uploadImages("", "", "", true)
+            viewModel.uploadImages(
+                    ktpPath,
+                    facePath,
+                    projectId,
+                    isKtpFileUsingEncryption = true,
+                    isFaceFileUsingEncryption = true
+            )
         }
     }
 
@@ -185,7 +210,13 @@ class KycUploadViewModelTest {
         val exceptionMock = mockk<Exception>(relaxed = true)
         provideEveryUseCaseThrow(exceptionMock)
 
-        viewModel.uploadImages(ktpPath, facePath, projectId, false)
+        viewModel.uploadImages(
+                ktpPath,
+                facePath,
+                projectId,
+                isKtpFileUsingEncryption = false,
+                isFaceFileUsingEncryption = false
+        )
 
         val result = viewModel.kycResponseLiveData.value
         Assert.assertTrue(result is Fail)
@@ -197,7 +228,13 @@ class KycUploadViewModelTest {
         provideEveryUseCaseThrow(exceptionMock)
         provideEveryEncryptFail(exceptionMock)
 
-        viewModel.uploadImages(ktpPath, facePath, projectId, true)
+        viewModel.uploadImages(
+                ktpPath,
+                facePath,
+                projectId,
+                isKtpFileUsingEncryption = true,
+                isFaceFileUsingEncryption = true
+        )
 
         val result = viewModel.kycResponseLiveData.value
         Assert.assertTrue(result is Fail)
@@ -221,37 +258,37 @@ class KycUploadViewModelTest {
 
     private fun mockEncryptionUtil() {
         val cipherMock: Cipher = mockk(relaxed = true)
-        every {
+        coEvery {
             ImageEncryptionUtil.writeDecryptedImage(any(), any(), any())
         } answers {
             Unit
         }
 
-        every {
+        coEvery {
             ImageEncryptionUtil.writeEncryptedImage(any(), any(), any())
         } answers {
             Unit
         }
 
-        every {
-            ImageEncryptionUtil.initAesEncrypt()
+        coEvery {
+            cipherProviderImpl.initAesEncrypt()
         } answers {
             cipherMock
         }
 
-        every {
-            ImageEncryptionUtil.initAesDecrypt(any())
+        coEvery {
+            cipherProviderImpl.initAesDecrypt(any())
         } answers {
             cipherMock
         }
 
-        every {
+        coEvery {
             ImageEncryptionUtil.renameImageToOriginalFileName(any())
         } answers {
             encryptedImagePath
         }
 
-        every {
+        coEvery {
             ImageEncryptionUtil.createCopyOfOriginalFile(any())
         } answers {
             encryptedImagePath
@@ -288,7 +325,7 @@ class KycUploadViewModelTest {
         mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
-        every {
+        coEvery {
             sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
@@ -296,19 +333,54 @@ class KycUploadViewModelTest {
 
         provideEveryUseCase(kycData)
         provideEverySuccessEncrypt()
+        provideEverySuccessDecrypted(originalImagePath)
 
         uploadWithEncrypt()
 
         val result = viewModel.kycResponseLiveData.value
 
-        Assert.assertEquals(result, Success(kycData))
-        Assert.assertFalse((result as Success).data.isSuccessRegister)
+        assert(result is Success)
+        assertEquals(Success(kycData), result)
+        assertFalse { (result as Success).data.isSuccessRegister }
     }
 
     @Test
     fun `Failed to decrypt Image`() {
-        viewModel.uploadImages(ktpPath, facePath, projectId, true)
+        viewModel.uploadImages(
+                ktpPath,
+                facePath,
+                projectId,
+                isKtpFileUsingEncryption = true,
+                isFaceFileUsingEncryption = true
+        )
+
         val result = viewModel.kycResponseLiveData.value
         Assert.assertTrue(result is Fail)
+    }
+
+    @Test
+    fun `failed file path krp empty`() {
+        mockkObject(ImageEncryptionUtil)
+        mockEncryptionUtil()
+
+        coEvery { viewModel.decryptImage(ktpPath, any(), any()) } returns ""
+
+        uploadWithEncrypt()
+
+        val result = viewModel.kycResponseLiveData.value
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `failed file path face empty`() {
+        mockkObject(ImageEncryptionUtil)
+        mockEncryptionUtil()
+
+        coEvery { viewModel.decryptImage(facePath, any(), any()) } returns ""
+
+        uploadWithEncrypt()
+
+        val result = viewModel.kycResponseLiveData.value
+        assert(result is Fail)
     }
 }

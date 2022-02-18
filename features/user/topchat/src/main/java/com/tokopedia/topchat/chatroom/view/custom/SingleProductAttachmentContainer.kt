@@ -376,7 +376,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerRemainingStock(product: ProductAttachmentUiModel) {
-        if (commonListener?.isSeller() == true) {
+        if (commonListener?.isSeller() == true && !product.isUpcomingCampaign) {
             sellerStockContainer?.show()
             bindSellerStockCount(product)
             bindSellerStockType(product)

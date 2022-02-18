@@ -1,14 +1,13 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationDetailDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendReplyReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendSmileyReputationDomain
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 import rx.observers.TestSubscriber
 
 class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFixture() {
@@ -141,132 +140,6 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
     }
 
     @Test
-    fun `when deleteReviewResponse success should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<DeleteReviewResponseDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<DeleteReviewResponseDomain> = TestSubscriber()
-
-        every {
-            deleteReviewResponseUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedResponse)
-        }
-
-        presenter.deleteReviewResponse(anyString(), anyString(), anyString(), anyString())
-
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertValue(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifyDeleteReviewResponseUseCaseCalled()
-    }
-
-    @Test
-    fun `when deleteReviewResponse but view is not attached success should execute expected usecase`() {
-        val expectedResponse = mockk<DeleteReviewResponseDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<DeleteReviewResponseDomain> = TestSubscriber()
-
-        every {
-            deleteReviewResponseUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedResponse)
-        }
-
-        presenter.attachView(null)
-        presenter.deleteReviewResponse(anyString(), anyString(), anyString(), anyString())
-
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertValue(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifyDeleteReviewResponseUseCaseCalled()
-    }
-
-    @Test
-    fun `when deleteReviewResponse fail should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<DeleteReviewResponseDomain> = TestSubscriber()
-
-        every {
-            deleteReviewResponseUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onError(expectedResponse)
-        }
-
-        presenter.deleteReviewResponse(anyString(), anyString(), anyString(), anyString())
-
-        testSubscriber.assertError(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifyDeleteReviewResponseUseCaseCalled()
-    }
-
-    @Test
-    fun `when sendReplyReview success should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<SendReplyReviewDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<SendReplyReviewDomain> = TestSubscriber()
-
-        every {
-            sendReplyReviewUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedResponse)
-        }
-
-        presenter.sendReplyReview(anyLong(), anyString(), anyLong(), anyString(), anyString())
-
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertValue(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifySendReplyReviewUseCaseCalled()
-    }
-
-    @Test
-    fun `when sendReplyReview but view is not attached success should execute expected usecase`() {
-        val expectedResponse = mockk<SendReplyReviewDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<SendReplyReviewDomain> = TestSubscriber()
-
-        every {
-            sendReplyReviewUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedResponse)
-        }
-
-        presenter.attachView(null)
-        presenter.sendReplyReview(anyLong(), anyString(), anyLong(), anyString(), anyString())
-
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertValue(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifySendReplyReviewUseCaseCalled()
-    }
-
-    @Test
-    fun `when sendReplyReview fail should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<SendReplyReviewDomain> = TestSubscriber()
-
-        every {
-            sendReplyReviewUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onError(expectedResponse)
-        }
-
-        presenter.sendReplyReview(anyLong(), anyString(), anyLong(), anyString(), anyString())
-
-        testSubscriber.assertError(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifySendReplyReviewUseCaseCalled()
-    }
-
-    @Test
     fun `when refreshPage success should execute expected usecase and perform expected view actions`() {
         val expectedResponse = mockk<InboxReputationDetailDomain>(relaxed = true)
         val testSubscriber: TestSubscriber<InboxReputationDetailDomain> = TestSubscriber()
@@ -335,13 +208,5 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
 
     private fun verifySendSmileyReputationUseCaseCalled() {
         verify { sendSmileyReputationUseCase.execute(any(), any()) }
-    }
-
-    private fun verifyDeleteReviewResponseUseCaseCalled() {
-        verify { deleteReviewResponseUseCase.execute(any(), any()) }
-    }
-
-    private fun verifySendReplyReviewUseCaseCalled() {
-        verify { sendReplyReviewUseCase.execute(any(), any()) }
     }
 }

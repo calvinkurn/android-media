@@ -2593,7 +2593,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopId,
                     ShopUtil.getActualPositionFromIndex(position),
                     isSeeCampaign,
-                    selectedBanner?.imageId.toString(),
+                    selectedBanner?.imageId.orEmpty(),
                     selectedBanner?.imageUrl ?: "",
                     customDimensionShopPage,
                     isOwner
@@ -2691,7 +2691,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ))
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData)
+        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
             refreshProductList()
     }
 

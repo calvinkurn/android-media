@@ -6,6 +6,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.*
@@ -135,7 +136,12 @@ open class ShopScoreMapper @Inject constructor(
         } else {
             shopInfoPeriodUiModel.shopAge
         } ?: 0
-        val isNewSeller = shopInfoPeriodUiModel.isNewSeller
+
+        val isNewSeller = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
+            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isNewSeller.orFalse()
+        } else {
+            shopInfoPeriodUiModel.isNewSeller
+        }
 
         val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
 
@@ -150,10 +156,13 @@ open class ShopScoreMapper @Inject constructor(
         shopScoreVisitableList.apply {
             when {
                 isNewSeller || shopAge < NEW_SELLER_DAYS -> {
+                    val isEndTenureNewSeller = GoldMerchantUtil.isTenureNewSeller(
+                        shopAge
+                    )
                     val mapTimerNewSeller =
                         mapToTimerNewSellerUiModel(
                             shopAge,
-                            shopInfoPeriodUiModel.isEndTenureNewSeller, shopScore.toInt()
+                            isEndTenureNewSeller, shopScore.toInt()
                         )
                     if (mapTimerNewSeller.second) {
                         add(mapTimerNewSeller.first)
@@ -451,7 +460,8 @@ open class ShopScoreMapper @Inject constructor(
                             titleHeaderShopService = R.string.title_tenure_new_seller_score_under_60
                         }
                         shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
-                            titleHeaderShopService = R.string.title_tenure_new_seller_score_between_60_to_79
+                            titleHeaderShopService =
+                                R.string.title_tenure_new_seller_score_between_60_to_79
                         }
                         shopScore >= SHOP_SCORE_EIGHTY -> {
                             titleHeaderShopService = R.string.title_tenure_new_seller_score_more_80
