@@ -12,6 +12,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import kotlinx.coroutines.withContext
@@ -24,12 +25,16 @@ class UpdateCouponPeriodViewModel @Inject constructor(
     private val getCouponDetailUseCase: GetCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val IS_TO_CREATE_NEW_COUPON = false
+    }
+
     private val _updateCouponResult = SingleLiveEvent<Result<Boolean>>()
     val updateCouponResult: LiveData<Result<Boolean>>
         get() = _updateCouponResult
 
-    private val _couponDetail = MutableLiveData<Result<Coupon>>()
-    val couponDetail: LiveData<Result<Coupon>>
+    private val _couponDetail = MutableLiveData<Result<CouponWithMetadata>>()
+    val couponDetail: LiveData<Result<CouponWithMetadata>>
         get() = _couponDetail
 
     private val _startDate = SingleLiveEvent<Date>()
@@ -100,7 +105,7 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.execute(this, couponId)
+                    getCouponDetailUseCase.execute(this, couponId, IS_TO_CREATE_NEW_COUPON)
                 }
                 _couponDetail.value = Success(result)
             },

@@ -177,7 +177,13 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getMaxAllowedProducts(pageMode)
+
+        if (viewModel.isCreateMode(pageMode)){
+            viewModel.checkCouponCreationEligibility()
+        } else {
+            viewModel.getCouponDetail(couponId, pageMode)
+        }
+
     }
 
     override fun onCreateView(
@@ -193,13 +199,33 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupViews()
+        observeCouponCreationEligibility()
         observeCouponDetail()
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
-        observeMaxAllowedProductResult()
         handlePageMode()
         refreshCouponDetail()
+    }
+
+    private fun observeCouponCreationEligibility() {
+        viewModel.couponCreationEligibility.observe(viewLifecycleOwner, { result ->
+            hideLoading()
+            when(result) {
+                is Success -> {
+                    this.maxAllowedProduct = result.data
+                    binding.tpgMaxProduct.text = String.format(
+                        getString(R.string.placeholder_max_product),
+                        result.data
+                    )
+                    showContent()
+                }
+                is Fail -> {
+                    hideContent()
+                    showError(result.throwable)
+                }
+            }
+        })
     }
 
     private fun observeCouponDetail() {
@@ -207,18 +233,29 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             hideLoading()
             when(result) {
                 is Success -> {
-                    this.couponInformation = result.data.information
-                    this.couponProducts = result.data.products.toMutableList()
-                    this.couponSettings = result.data.settings
+                    this.couponInformation = result.data.coupon.information
+                    this.couponProducts = result.data.coupon.products.toMutableList()
+                    this.couponSettings = result.data.coupon.settings
+                    this.maxAllowedProduct = result.data.maxProduct
+
                     adjustCouponDefaultCouponStartEndDate(
                         pageMode,
                         couponInformation ?: return@observe
                     )
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
-                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.products)
+
+
+                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
                     this.selectedProducts.addAll(selectedProducts)
                     refreshProductsSection(selectedProducts)
+
+                    binding.tpgMaxProduct.text = String.format(
+                        getString(R.string.placeholder_max_product),
+                        result.data.maxProduct
+                    )
+
+                    displayToasterIfDuplicateMode()
                     showContent()
                 }
                 is Fail -> {
@@ -335,34 +372,13 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         })
     }
 
-    private fun observeMaxAllowedProductResult() {
-        viewModel.maxAllowedProductCount.observe(viewLifecycleOwner, { result ->
-            binding.loader.gone()
-            when (result) {
-                is Success -> {
-                    if (viewModel.isUpdateMode(pageMode)|| viewModel.isDuplicateMode(pageMode)) {
-                        viewModel.getCouponDetail(couponId)
-                    }
-
-                    displayCouponDuplicatedToaster()
-
-                    binding.content.visible()
-                    binding.tpgMaxProduct.text = String.format(getString(R.string.placeholder_max_product), result.data)
-                    this.maxAllowedProduct = result.data
-                }
-                is Fail -> {
-                    binding.content.gone()
-                    showError(result.throwable)
-                }
-            }
-        })
-    }
-
     private fun refreshCouponDetail() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(selectedProducts)
         viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
+        hideLoading()
+        showContent()
     }
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
@@ -734,6 +750,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     }
 
 
+    private fun showLoading() {
+        binding.loader.visible()
+    }
+
     private fun hideLoading() {
         binding.loader.gone()
     }
@@ -817,7 +837,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         this.showCouponDuplicatedToaster = showCouponDuplicatedToaster
     }
 
-    private fun displayCouponDuplicatedToaster() {
+    private fun displayToasterIfDuplicateMode() {
         if (viewModel.isDuplicateMode(pageMode)) {
             showCouponDuplicatedToaster()
         }
