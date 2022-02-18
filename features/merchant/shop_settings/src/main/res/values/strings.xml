@@ -226,7 +226,7 @@
     <string name="shop_page_setting_profile">Profil Toko</string>
     <string name="shop_page_setting_action_change_profile">Ubah profil toko</string>
     <string name="shop_page_setting_action_change_note">Ubah catatan toko</string>
-    <string name="shop_page_setting_action_manage_opening_time">Atur jam buka toko</string>
+    <string name="shop_page_setting_action_manage_opening_time">Atur jadwal operasional toko</string>
 <!--    <string name="shop_page_setting_shop_status">Status Toko</string>-->
     <!-- shipping -->
     <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
