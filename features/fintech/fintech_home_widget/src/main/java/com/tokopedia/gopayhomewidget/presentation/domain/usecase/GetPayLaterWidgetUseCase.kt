@@ -13,6 +13,7 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
     GraphqlUseCase<GetPayLaterWidgetDataGqlResponse>(graphqlRepository) {
 
     fun getPayLaterWidgetData(
+        backURL: String?,
         onSuccess: (PayLaterWidgetData) -> Unit,
         onError: (Throwable) -> Unit
     ) {

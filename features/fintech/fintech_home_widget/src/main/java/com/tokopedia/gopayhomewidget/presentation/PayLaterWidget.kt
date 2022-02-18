@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.AttrRes
 import com.tokopedia.gopayhomewidget.R
 import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
+import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class PayLaterWidget @JvmOverloads constructor(
@@ -14,7 +15,8 @@ class PayLaterWidget @JvmOverloads constructor(
     @AttrRes defStyleAttr: Int = 0,
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private lateinit var baseView: View
+    private var payLaterWidgetListener: PayLaterWidgetListener? = null
+    private var baseView: View? =null
 
     init {
         initView()
@@ -22,6 +24,10 @@ class PayLaterWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.layout_gopay_home_widget, this)
+    }
+
+    fun setPayLaterWidgetListener(payLaterWidgetListener: PayLaterWidgetListener){
+        this.payLaterWidgetListener =  payLaterWidgetListener
     }
 
     fun setData(payLaterWidgetData: PayLaterWidgetData) {

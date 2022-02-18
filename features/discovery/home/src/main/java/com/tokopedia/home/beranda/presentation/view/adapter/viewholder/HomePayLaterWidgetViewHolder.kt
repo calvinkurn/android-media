@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
@@ -13,14 +14,16 @@ import kotlinx.android.synthetic.main.home_dc_paylater_widget.view.*
 class HomePayLaterWidgetViewHolder (
     val view: View,
     private val callback: HomePayLaterWidgetListener
-) : AbstractViewHolder<HomePayLaterWidgetDataModel>(view) {
+) : AbstractViewHolder<HomePayLaterWidgetDataModel>(view), PayLaterWidgetListener {
 
     override fun bind(dataModel: HomePayLaterWidgetDataModel) {
         dataModel.payLaterWidgetData?.let { payLaterWidgetData ->
             itemView.paylater_home_widget.setData(payLaterWidgetData)
+            itemView.paylater_home_widget.setPayLaterWidgetListener(this)
             setChannelDivider(dataModel.channel)
         } ?: run {
-            callback.getPayLaterWidgetData()
+            //todo pass desired param to call payLater widget
+            callback.getPayLaterWidgetData("")
         }
     }
 
@@ -36,8 +39,13 @@ class HomePayLaterWidgetViewHolder (
         )
     }
 
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_dc_paylater_widget
+    }
+
+    override fun onClosePayLaterWidget() {
+        callback.deletePayLaterWidget()
     }
 }

@@ -612,10 +612,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getPayLaterWidgetData() {
+    fun getPayLaterWidgetData(backUrl : String?) {
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             launchCatchError(coroutineContext, {
-                getPayLaterWidgetUseCase.get().getPayLaterWidgetData(
+                getPayLaterWidgetUseCase.get().getPayLaterWidgetData(backUrl,
                     {
                         val newPaylaterHomeWidgetDataModel =
                             homePayLaterWidgetDataModel.copy(payLaterWidgetData = it)
@@ -627,6 +627,12 @@ open class HomeRevampViewModel @Inject constructor(
             }){
                 deleteWidget(homePayLaterWidgetDataModel, index)
             }
+        }
+    }
+
+    fun deletePayLaterWidgetLocally() {
+        findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
+            deleteWidget(homePayLaterWidgetDataModel, index)
         }
     }
 }
