@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -150,8 +151,8 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
         when (reminderType) {
-            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = unifyR.color.Unify_GN500, newLightEnable = unifyR.color.Unify_GN500)
-            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = unifyR.color.Unify_Static_White, newLightEnable = unifyR.color.Unify_Static_White)
+            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_GN500), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_GN500))
+            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
         }
     }
 
