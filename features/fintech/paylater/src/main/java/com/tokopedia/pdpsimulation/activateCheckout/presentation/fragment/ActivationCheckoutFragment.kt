@@ -242,7 +242,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         paylaterGetOptimizedModel = it.data
                         removeErrorInTenure()
                         setTenureDetailData()
-                        sendOccImpressionEvent()
+
                     } else {
                         loaderhideOnCheckoutApi()
                         showEmptyErrorInTenureDetail()
@@ -303,6 +303,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun setTenureDetailData() {
         gatewayToChipMap[gateWayId.toInt()]?.let {
             checkDisableLogic(it.disable)
+            sendOccImpressionEvent()
             listOfGateway = paylaterGetOptimizedModel
             setSelectedTenure()
             setTenureOptionsData(paylaterGetOptimizedModel)

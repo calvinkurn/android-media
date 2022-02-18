@@ -18,7 +18,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
             is FintechWidgetAnalyticsEvent.PdpWidgetImpression ->
                 sendPdpWidgetImpression(
                     analyticsEvent.partnerId,
-                    analyticsEvent.productId, analyticsEvent.userStatus
+                    analyticsEvent.productId, analyticsEvent.userStatus,analyticsEvent.chipType
                 )
         }
     }
@@ -31,12 +31,17 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun sendPdpWidgetImpression(partnerId: String, productId: String, userStatus: String) {
+    private fun sendPdpWidgetImpression(
+        partnerId: String,
+        productId: String,
+        userStatus: String,
+        chipType: String
+    ) {
         val map = TrackAppUtils.gtmData(
             viewEvent,
             pdpBnplImpression,
             eventCategory,
-            "$eventLable- $productId - $userStatus -$partnerId"
+            "$productId - Yes - ${userSession.get().userId} - $userStatus - $chipType - $partnerId"
 
         )
         sendGeneralEvent(map)
@@ -48,7 +53,6 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         const val viewEvent = "viewFintechIris"
         const val pdpBnplImpression = "pdp page - impression bnpl widget"
         const val eventCategory = "fin - pdp page"
-        const val eventLable = "eventLabel"
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"

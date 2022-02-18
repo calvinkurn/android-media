@@ -236,9 +236,14 @@ class PdpFintechWidget @JvmOverloads constructor(
         for(i in 0 until chipList.size) {
             chipList[i].userStatus?.let { userStatus->
                 chipList[i].productCode?.let { partnerName->
-                    pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImpression(productID, userStatus,
+                    if(chipList[i].productIconLight.isNullOrBlank() &&  chipList[i].productIconDark.isNullOrBlank())
+                    pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImpression(productID, userStatus,"not branded chips ",
                         partnerName
                     ))
+                    else
+                        pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImpression(productID, userStatus,"branded chips",
+                            partnerName
+                        ))
                 }
             }
         }

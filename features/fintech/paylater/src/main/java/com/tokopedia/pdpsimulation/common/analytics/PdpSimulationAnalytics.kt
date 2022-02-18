@@ -121,7 +121,7 @@ class PdpSimulationAnalytics @Inject constructor(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_CHANGE_VARIANT_ACTION,
             OCC_EVENT_CATEGORY,
-            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
+            " $productId -$userStatus -LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)
@@ -141,7 +141,7 @@ class PdpSimulationAnalytics @Inject constructor(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_CHANGE_PARTNER_CLICK_ACTION,
             OCC_EVENT_CATEGORY,
-            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
+            " $productId -$userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)
@@ -162,7 +162,7 @@ class PdpSimulationAnalytics @Inject constructor(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_CHANGE_VARIANT_ACTION,
             OCC_EVENT_CATEGORY,
-            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
+            " $productId - $userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)
@@ -183,7 +183,7 @@ class PdpSimulationAnalytics @Inject constructor(
             IRIS_EVENT_NAME_FIN_TECH_V3,
             OCC_EVENT_ACTION,
             OCC_EVENT_CATEGORY,
-            " $productId -$userStatus - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
+            " $productId -$userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
         sendGeneralEvent(map)
