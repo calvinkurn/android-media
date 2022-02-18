@@ -59,6 +59,7 @@ class OfficialHomeMapperTest {
     private val mockBenefit = OfficialStoreBenefits(listBenefit)
     private val mockBenefit2 = OfficialStoreBenefits(listBenefit2)
     private val mockOfficialStoreFeaturedShop = OfficialStoreFeaturedShop(mutableListOf(Shop()))
+    private val mockOfficialStoreFeaturedShop2 = OfficialStoreFeaturedShop(mutableListOf(Shop(), Shop()))
     private val mockCategory = "category1"
     private val mockFeaturedShopListener = mockk<FeaturedShopListener>(relaxed = true)
 
@@ -493,5 +494,14 @@ class OfficialHomeMapperTest {
         val indexFeaturedShop = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialFeaturedShopDataModel }
         Assert.assertNotEquals(WIDGET_NOT_FOUND, indexFeaturedShop)
         Assert.assertEquals(indexFeaturedShop, FEATURE_SHOP_POSITION)
+    }
+
+    @Test
+    fun `given list official store when mapping feature shop second time then value of benefit will repaced`() {
+        `mapping featured shop first time`()
+        val featuredShopBefore = officialHomeMapper.listOfficialStore.find { it is OfficialFeaturedShopDataModel }
+        officialHomeMapper.mappingFeaturedShop(mockOfficialStoreFeaturedShop2, mockOfficialHomeAdapter, mockCategory, mockFeaturedShopListener)
+        val featuredShopAfter = officialHomeMapper.listOfficialStore.find { it is OfficialFeaturedShopDataModel }
+        Assert.assertNotEquals(featuredShopBefore, featuredShopAfter)
     }
 }
