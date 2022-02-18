@@ -999,9 +999,7 @@ class PlayViewModel @AssistedInject constructor(
             _tagItems.value = tagItem
 
             //TODO () = check reminder
-            tagItem.product.productSectionList.filter {
-                it.config.hasReminder
-            }
+
 
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList

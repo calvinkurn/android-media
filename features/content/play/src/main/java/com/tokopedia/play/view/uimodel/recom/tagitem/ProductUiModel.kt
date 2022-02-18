@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.play.view.type.CampaignReminderType
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -46,7 +47,8 @@ sealed class ProductSectionUiModel {
 
     data class Section(
         val productList: List<PlayProductUiModel.Product>,
-        val config: ConfigUiModel
+        val config: ConfigUiModel,
+        val id: String
     ): ProductSectionUiModel() {
 
     data class ConfigUiModel(
@@ -57,12 +59,17 @@ sealed class ProductSectionUiModel {
         val endTime: String, // RFC3339
         val timerInfo: String,
         val background: BackgroundUiModel,
-        val hasReminder: Boolean
+        val reminder: ReminderUiModel
     )
 
         data class BackgroundUiModel(
             val gradients: List<String>,
             val imageUrl: String
+        )
+
+        data class ReminderUiModel(
+            val hasReminder: Boolean,
+            val reminderType: CampaignReminderType
         )
 
     companion object{
@@ -79,8 +86,10 @@ sealed class ProductSectionUiModel {
                         background = BackgroundUiModel(
                             emptyList(),
                             ""
-                        ), hasReminder = false
-                    )
+                        ),
+                        reminder = ReminderUiModel(hasReminder = false, CampaignReminderType.NotAvailable)
+                    ),
+                    id = ""
                 )
         }
     }

@@ -7,19 +7,20 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
+import com.tokopedia.play.view.type.CampaignReminderType
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -69,7 +70,15 @@ class ProductSectionViewHolder(
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
             tvSectionTitle.text = item.config.title
         }
-        btnReminder.showWithCondition(item.config.hasReminder)
+        btnReminder.shouldShowWithAction(item.config.reminder.hasReminder){
+            val color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
+            when(item.config.reminder.reminderType){
+                CampaignReminderType.ON -> btnReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = color, newLightEnable = color)
+                CampaignReminderType.OFF -> btnReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = color, newLightEnable = color)
+                else -> btnReminder.hide()
+            }
+
+        }
         tvTimerInfo.text = item.config.timerInfo
 
         when (item.config.type) {

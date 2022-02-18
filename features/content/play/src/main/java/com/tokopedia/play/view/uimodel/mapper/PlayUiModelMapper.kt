@@ -73,4 +73,6 @@ class PlayUiModelMapper @Inject constructor(
     fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
         return input.status == "success"
     }
+
+    //TOD0() = map upcoming campaign
 }
