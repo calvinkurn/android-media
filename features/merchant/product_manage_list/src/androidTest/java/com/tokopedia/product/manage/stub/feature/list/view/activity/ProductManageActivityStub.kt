@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity
-import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
 import com.tokopedia.product.manage.stub.feature.list.di.ProductManageListStubInstance
 import com.tokopedia.product.manage.stub.feature.list.view.fragment.ProductManageSellerFragmentStub
 
@@ -41,6 +40,7 @@ class ProductManageActivityStub: ProductManageActivity() {
     override fun getComponent(): ProductManageListComponent {
         return ProductManageListStubInstance.getComponent(this)
     }
+
 
     override fun getNewFragment(): Fragment {
         return if(filterId.isBlank() && searchKeyword.isBlank()){

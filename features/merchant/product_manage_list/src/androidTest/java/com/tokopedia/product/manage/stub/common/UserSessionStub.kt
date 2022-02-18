@@ -19,4 +19,17 @@ class UserSessionStub @Inject constructor(
     override fun getShopId(): String {
         return mockShopId
     }
+
+    override fun isShopOwner(): Boolean {
+        return true
+    }
+
+    override fun isLoggedIn(): Boolean {
+        return true
+    }
+
+    override fun hasShop(): Boolean {
+        return true
+    }
+
 }

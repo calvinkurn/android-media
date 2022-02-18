@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.stub.feature.list.view.fragment
 
 import android.os.Bundle
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
+import com.tokopedia.product.manage.stub.feature.list.di.ProductManageListComponentStub
 import java.util.ArrayList
 
 class ProductManageSellerFragmentStub: ProductManageSellerFragment() {
@@ -19,6 +20,10 @@ class ProductManageSellerFragmentStub: ProductManageSellerFragment() {
                 }
             }
         }
+    }
+
+    override fun initInjector() {
+        getComponent(ProductManageListComponentStub::class.java).inject(this)
     }
 
 }

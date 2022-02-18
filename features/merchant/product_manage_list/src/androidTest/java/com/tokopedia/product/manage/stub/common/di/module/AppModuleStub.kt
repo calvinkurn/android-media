@@ -9,11 +9,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
-import com.tokopedia.product.manage.stub.common.GraphqlRepositoryStub
 import dagger.Module
 import dagger.Provides
 
@@ -52,7 +50,7 @@ class AppModuleStub(private val context: Context) {
     @ApplicationScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlRepositoryStub()
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @Provides
