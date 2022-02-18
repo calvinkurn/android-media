@@ -2,6 +2,10 @@ package com.tokopedia.topads.dashboard.data.model.beranda
 
 import com.google.gson.annotations.SerializedName
 
+sealed class KataKunciHomePageBase
+
+data class KataKunciSimpleButton(val label: String) : KataKunciHomePageBase()
+
 data class ImageModel(
     @SerializedName("ImageURL")
     val imageUrl: String
@@ -64,7 +68,9 @@ data class RecommendationStatistics(
                     val newKeywordCount: Int = 0,
                     @SerializedName("NewKeywordTotalImpression")
                     val newKeywordTotalImpression: Int = 0
-                )
+                ) : KataKunciHomePageBase() {
+                    var isSelected = false
+                }
             }
 
             data class ProductRecommendationStats(

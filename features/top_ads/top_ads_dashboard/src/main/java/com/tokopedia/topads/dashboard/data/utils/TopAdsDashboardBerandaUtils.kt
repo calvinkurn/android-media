@@ -20,7 +20,7 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDial
 import com.tokopedia.topads.dashboard.data.utils.Utils.asPercentage
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 
-object TopAdsDashboardBerandaUtils {
+internal object TopAdsDashboardBerandaUtils {
 
     fun Activity.showDialogWithCoachMark(scrollView: NestedScrollView, vararg coachMarkViews: View) {
         if(!showBerandaDialog()) return

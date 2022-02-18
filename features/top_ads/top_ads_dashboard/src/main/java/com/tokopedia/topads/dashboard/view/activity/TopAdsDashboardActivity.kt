@@ -162,48 +162,59 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             }
         }
         setPadding()
-        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(p0: TabLayout.Tab?) {}
+        tab_layout?.getUnifyTabLayout()
+            ?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(p0: TabLayout.Tab?) {}
 
-            override fun onTabUnselected(p0: TabLayout.Tab?) {}
+                override fun onTabUnselected(p0: TabLayout.Tab?) {}
 
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                ivCalendarTopAdsActionBar.hide()
-                when (tab?.position) {
-                    CONST_0 -> {
-                        ivCalendarTopAdsActionBar.show()
-                        bottom?.visible()
-                        multiActionBtn.buttonSize = UnifyButton.Size.LARGE
-                        multiActionBtn?.text = getString(R.string.topads_dash_button_submit_beranda)
-                        setPadding()
-                    }
-                    IKLANKAN_PRODUK_TAB -> {
-                        removeBtn()
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
-                            VIEW_IKLAN_PRODUK, "")
-                    }
-                    INSIGHT_PAGE -> {
-                        if (TopAdsInsightShopKeywordRecommendationFragment.expandedPosi != TopAdsInsightShopKeywordRecommendationFragment.NOT_EXPANDED) {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    ivCalendarTopAdsActionBar.hide()
+                    when (tab?.position) {
+                        CONST_0 -> {
+                            ivCalendarTopAdsActionBar.show()
                             bottom?.visible()
-                        } else {
-                            bottom?.gone()
-                            multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
+                            multiActionBtn.buttonSize = UnifyButton.Size.LARGE
                             multiActionBtn?.text =
-                                getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
-                            checkVisibility()
+                                getString(R.string.topads_dash_button_submit_beranda)
+                            setPadding()
+                        }
+                        IKLANKAN_PRODUK_TAB -> {
+                            removeBtn()
+                            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
+                                VIEW_IKLAN_PRODUK, ""
+                            )
+                        }
+                        INSIGHT_PAGE -> {
+                            if (TopAdsInsightShopKeywordRecommendationFragment.expandedPosi != TopAdsInsightShopKeywordRecommendationFragment.NOT_EXPANDED) {
+                                bottom?.visible()
+                            } else {
+                                bottom?.gone()
+                                multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
+                                multiActionBtn?.text =
+                                    getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
+                                checkVisibility()
+                            }
+                        }
+                        HEADLINE_ADS_TAB -> {
+                            removeBtn()
+                            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(
+                                CLICK_IKLAN_TOKO,
+                                "{${userSession.shopId}",
+                                userSession.userId
+                            )
+                            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsViewEvent(
+                                VIEW_HEADLINE_EVENT,
+                                "{${userSession.shopId}}",
+                                userSession.userId
+                            )
+                        }
+                        else -> {
+                            removeBtn()
                         }
                     }
-                    HEADLINE_ADS_TAB -> {
-                        removeBtn()
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_IKLAN_TOKO, "{${userSession.shopId}", userSession.userId)
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsViewEvent(VIEW_HEADLINE_EVENT, "{${userSession.shopId}}", userSession.userId)
-                    }
-                    else -> {
-                        removeBtn()
-                    }
                 }
-            }
-        })
+            })
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
         setToast()
     }
@@ -234,8 +245,17 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun setToast() {
         val bundle = intent.extras
-        if (bundle?.getInt(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, 0) == PARAM_AUTOADS_BUDGET) {
-            Toaster.build(this.findViewById(android.R.id.content), getString(R.string.topads_dashboard_updated_daily_budget), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL).show()
+        if (bundle?.getInt(
+                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
+                0
+            ) == PARAM_AUTOADS_BUDGET
+        ) {
+            Toaster.build(
+                this.findViewById(android.R.id.content),
+                getString(R.string.topads_dashboard_updated_daily_budget),
+                TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
@@ -273,7 +293,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AUTO_ADS_DISABLED || requestCode == TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE || intent.getBooleanExtra(IS_CHANGED, false)) {
+        if (requestCode == AUTO_ADS_DISABLED || requestCode == TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE || intent.getBooleanExtra(
+                IS_CHANGED,
+                false
+            )
+        ) {
             if (resultCode == Activity.RESULT_OK)
                 renderTabAndViewPager()
         }
@@ -308,7 +332,12 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
 
             override fun onPageSelected(position: Int) {
                 val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
@@ -348,10 +377,30 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tab_layout?.addNewTab(getString(R.string.topads_dash_headline_title))
         tab_layout?.addNewTab(getString(R.string.topads_dash_recommend))
         tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
-        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), TopAdsDashboardBerandaFragment.createInstance()))
-        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
-        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_headline_title), TopAdsHeadlineBaseFragment.createInstance()))
-        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance(btnHeight, redirectToTabInsight)))
+        list.add(
+            FragmentTabItem(
+                resources.getString(R.string.topads_dash_beranda),
+                TopAdsDashboardBerandaFragment.createInstance()
+            )
+        )
+        list.add(
+            FragmentTabItem(
+                resources.getString(R.string.topads_dash_iklan_produck),
+                TopAdsProductIklanFragment.createInstance()
+            )
+        )
+        list.add(
+            FragmentTabItem(
+                resources.getString(R.string.topads_dash_headline_title),
+                TopAdsHeadlineBaseFragment.createInstance()
+            )
+        )
+        list.add(
+            FragmentTabItem(
+                resources.getString(R.string.topads_dash_recommend),
+                TopAdsRecommendationFragment.createInstance(btnHeight, redirectToTabInsight)
+            )
+        )
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter
@@ -359,7 +408,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun initInjector() {
         DaggerTopAdsDashboardComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+            .inject(this)
     }
 
 
@@ -374,13 +424,19 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
     }
 
-    override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): TopAdsDashboardComponent =
+        DaggerTopAdsDashboardComponent.builder().baseAppComponent(
+            (application as BaseMainApplication).baseAppComponent
+        ).build()
 
     override fun onBackPressed() {
         if (!moveToPdpIfFromPdpSellerMigration() && isTaskRoot) {
             val applinkConst = ApplinkConst.HOME
-            if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
+            if (intent.extras?.getBoolean(
+                    TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH,
+                    false
+                ) == true
+            ) {
                 val homeIntent = RouteManager.getIntent(this, applinkConst)
                 startActivity(homeIntent)
                 finish()
@@ -443,18 +499,26 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             val noProductBottomSheet = NoProductBottomSheet.newInstance()
             noProductBottomSheet.show(supportFragmentManager, "")
         } else {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_BUAT_IKLAN, "{${userSession.shopId}}", userSession.userId)
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(
+                VIEW_BUAT_IKLAN,
+                "{${userSession.shopId}}",
+                userSession.userId
+            )
+            val intent =
+                RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
             startActivityForResult(intent, AUTO_ADS_DISABLED)
         }
     }
 
     fun switchTab(index: Int) {
-        tab_layout?.getUnifyTabLayout()?.getTabAt(index)?.select()
+        try {
+            tab_layout?.getUnifyTabLayout()?.getTabAt(index)?.select()
+        } catch (e: Exception) {
+        }
     }
 
     fun toggleMultiActionButton(show: Boolean) {
-        if(show) bottom.show()
+        if (show) bottom.show()
         else bottom.hide()
     }
 
