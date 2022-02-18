@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -34,6 +35,8 @@ internal class PlayBroProductSetupViewModelTest {
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
     /** Mock Response */
+    private val mockCampaign = CampaignUiModel("1", "Campaign 1", "", "", "", CampaignStatusUiModel(CampaignStatus.Ongoing, "Berlangsung"), 1)
+    private val mockEtalase = EtalaseUiModel("1", "", "Etalase 1", 1)
     private val mockCampaignList = List(5) {
         CampaignUiModel("$it", "Campaign $it", "", "", "", CampaignStatusUiModel(CampaignStatus.Ongoing, "Berlangsung"), it)
     }
@@ -83,6 +86,42 @@ internal class PlayBroProductSetupViewModelTest {
             }
 
             assertEquals(state.loadParam.sort, mockSort)
+        }
+    }
+
+    @Test
+    fun `when user select etalase, it should emit uiState with new selected etalase`() {
+        val mockSelectedEtalase = SelectedEtalaseModel.Etalase(mockEtalase)
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectEtalase(mockEtalase))
+            }
+
+            assertEquals(state.loadParam.etalase, mockSelectedEtalase)
+        }
+    }
+
+    @Test
+    fun `when user select campaign, it should emit uiState with new selected campaign`() {
+        val mockSelectedCampaign = SelectedEtalaseModel.Campaign(mockCampaign)
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SelectCampaign(mockCampaign))
+            }
+
+            assertEquals(state.loadParam.etalase, mockSelectedCampaign)
         }
     }
 
