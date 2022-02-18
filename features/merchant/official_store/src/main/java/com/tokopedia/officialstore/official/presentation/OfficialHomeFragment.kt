@@ -849,11 +849,13 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                    if(!isEligibleForDisableMappingOfficialFeaturedShop()) {
+                        officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -862,7 +864,7 @@ class OfficialHomeFragment :
 
             }
             shopPerformanceMonitoring.stopTrace()
-        })
+        }
     }
 
     private fun observeDynamicChannel() {
@@ -1159,6 +1161,15 @@ class OfficialHomeFragment :
     private fun isEligibleForDisableMappingBenefit(): Boolean {
         return try {
             return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingOfficialFeaturedShop(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP)
                 ?: false
         } catch (e: Exception) {
             false
