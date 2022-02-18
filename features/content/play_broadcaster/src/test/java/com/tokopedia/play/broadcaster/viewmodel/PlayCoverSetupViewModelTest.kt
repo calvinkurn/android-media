@@ -140,19 +140,6 @@ class PlayCoverSetupViewModelTest {
     }
 
     @Test
-    fun `when observe selected products, it should return the correct products`() {
-        /** TODO: fix this */
-        val productList = listOf(modelBuilder.buildProductData())
-//        productDataStore.setSelectedProducts(productList)
-
-//        val actual = viewModel.observableSelectedProducts.getOrAwaitValue()
-
-//        Assertions
-//                .assertThat(actual)
-//                .isEqualTo(productList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) })
-    }
-
-    @Test
     fun `when get max title character allowed for cover, it should return the correct length`() {
         val maxChar = 5
         titleConfigStore.setMaxTitleChars(maxChar)
