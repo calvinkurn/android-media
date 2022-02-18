@@ -30,7 +30,6 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
                 PARAM_PROFILE_CODE to param.profileCode,
                 PARAM_USER_DEFINED_VALUE to param.userDefinedValue,
                 PARAM_PAYMENT_AMOUNT to param.paymentAmount,
-                PARAM_SIGNATURE to param.signature,
                 PARAM_ORDER_METADATA to param.orderMetadata,
         )
     }
@@ -46,8 +45,8 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"
         private const val QUERY = """
-            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}signature: String, ${'$'}orderMetadata: String) {
-                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, signature: ${'$'}signature, orderMetadata: ${'$'}orderMetadata) {
+            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String) {
+                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata) {
                     success
                     data {
                         installment_options {
