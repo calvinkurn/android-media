@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
-<com.tokopedia.gopayhomewidget.presentation.GopayHomeWidget
+<com.tokopedia.gopayhomewidget.presentation.PayLaterWidget
      android:layout_height="wrap_content"
     android:layout_width="match_parent"
     app:layout_constraintTop_toTopOf="parent"

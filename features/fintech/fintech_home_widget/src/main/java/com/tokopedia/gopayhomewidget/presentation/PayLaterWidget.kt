@@ -7,7 +7,7 @@ import androidx.annotation.AttrRes
 import com.tokopedia.gopayhomewidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class GopayHomeWidget @JvmOverloads constructor(
+class PayLaterWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0,

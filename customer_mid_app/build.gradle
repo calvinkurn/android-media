@@ -149,7 +149,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonTravel)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
-    implementation projectOrAar(rootProject.ext.features.fintechHomeWidget)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)

@@ -79,6 +79,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
+    implementation projectOrAar(rootProject.ext.features.fintechHomeWidget)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
