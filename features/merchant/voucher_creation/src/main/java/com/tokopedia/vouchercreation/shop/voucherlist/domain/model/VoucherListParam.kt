@@ -139,12 +139,13 @@ annotation class VoucherTargetBuyer {
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherSort.CREATE_TIME, VoucherSort.START_TIME, VoucherSort.FINISH_TIME)
+@StringDef(VoucherSort.CREATE_TIME, VoucherSort.START_TIME, VoucherSort.FINISH_TIME, VoucherSort.VOUCHER_STATUS)
 annotation class VoucherSort {
     companion object {
         const val CREATE_TIME = "create_time"
         const val START_TIME = "voucher_start_time"
         const val FINISH_TIME = "voucher_finish_time"
+        const val VOUCHER_STATUS = "voucher_status"
     }
 }
 
