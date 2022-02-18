@@ -4,29 +4,26 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.*
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -424,20 +421,17 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private fun createProductInfoTextWithIcon(dataProduct: ProductInformationWithIcon): LinearLayout {
         return LinearLayout(itemView.context).apply {
             orientation = LinearLayout.HORIZONTAL
-            val layoutParams = LinearLayout.LayoutParams(50, 50)
-            layoutParams.setMargins(0, 0, 10, 0)
-            val iv = ImageView(itemView.context).apply {
-                ImageHandler.LoadImage(this, dataProduct.iconUrl)
-                setLayoutParams(layoutParams)
-            }
-            this.addView(iv)
+            val viewIdentifier = LayoutInflater.from(itemView.context).inflate(
+                    R.layout.item_addon_cart_identifier,
+                    this,
+                    false
+            )
+            val iconIdentifier = viewIdentifier.findViewById<ImageUnify>(R.id.iv_identifier)
+            iconIdentifier.loadIcon(dataProduct.iconUrl)
 
-            val label = Typography(itemView.context).apply {
-                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                setType(Typography.BODY_3)
-                text = dataProduct.text
-            }
-            this.addView(label)
+            val labelIdentifier = viewIdentifier.findViewById<Typography>(R.id.label_identifier)
+            labelIdentifier.text = dataProduct.text
+            this.addView(viewIdentifier)
         }
     }
 
