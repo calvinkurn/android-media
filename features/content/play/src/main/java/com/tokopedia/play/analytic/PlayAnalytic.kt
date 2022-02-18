@@ -254,6 +254,7 @@ class PlayAnalytic(
     }
 
     fun clickProductAction(product: PlayProductUiModel.Product,
+                           configUiModel: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel.Empty,
                            cartId: String,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType,
@@ -262,12 +263,12 @@ class PlayAnalytic(
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, cartId, shopInfo)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, configUiModel, cartId, shopInfo)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, cartId, shopInfo)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, configUiModel, cartId, shopInfo)
                 }
             }
         }
@@ -622,14 +623,19 @@ class PlayAnalytic(
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
+                                                    configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
                                                     cartId: String,
                                                     shopInfo: PlayPartnerInfo) {
+        val (eventAction, eventLabel) = when (configUiModel.type) {
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+            else -> Pair(KEY_TRACK_CLICK + "buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
+        }
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK buy in bottom sheet",
-                        "$mChannelId - ${product.id} - ${mChannelType.value}"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(
@@ -655,14 +661,19 @@ class PlayAnalytic(
 
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                    product: PlayProductUiModel.Product,
+                                                   configUiModel: ProductSectionUiModel.Section.ConfigUiModel,
                                                    cartId: String,
                                                    shopInfo: PlayPartnerInfo) {
+        val (eventAction, eventLabel) = when (configUiModel.type) {
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - - atc in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${configUiModel.id}")
+            else -> Pair(KEY_TRACK_CLICK + "atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
+        }
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK atc in bottom sheet",
-                        "$mChannelId - ${product.id} - ${mChannelType.value}"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(

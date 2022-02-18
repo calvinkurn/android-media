@@ -15,7 +15,7 @@ sealed class InteractionEvent {
     object SendChat : InteractionEvent() {
         override val needLogin: Boolean = true
     }
-    data class DoActionProduct(val product: PlayProductUiModel.Product, val action: ProductAction, val type: BottomInsetsType) : InteractionEvent() {
+    data class DoActionProduct(val product: PlayProductUiModel.Product, val configUiModel: ProductSectionUiModel.Section.ConfigUiModel, val action: ProductAction, val type: BottomInsetsType) : InteractionEvent() {
         override val needLogin: Boolean = true
     }
     data class OpenProductDetail(val product: PlayProductUiModel.Product, val configUiModel: ProductSectionUiModel.Section.ConfigUiModel, val position: Int) : InteractionEvent() {

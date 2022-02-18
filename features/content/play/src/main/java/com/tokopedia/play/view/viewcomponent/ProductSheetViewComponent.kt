@@ -57,14 +57,14 @@ class ProductSheetViewComponent(
             product: PlayProductUiModel.Product,
             config: ProductSectionUiModel.Section.ConfigUiModel
         ) {
-            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
+            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product, config)
 
         }
         override fun onATCProduct(
             product: PlayProductUiModel.Product,
             config: ProductSectionUiModel.Section.ConfigUiModel
         ) {
-            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
+            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product, config)
         }
         override fun onClickProductCard(
             product: PlayProductUiModel.Product,
@@ -244,8 +244,8 @@ class ProductSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
+        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
+        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
