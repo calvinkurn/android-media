@@ -8,14 +8,14 @@ import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.BENEFIT_POSITION
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.RECOM_WIDGET_POSITION
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.WIDGET_NOT_FOUND
-import com.tokopedia.officialstore.official.data.model.Banner
-import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
-import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
+import com.tokopedia.officialstore.official.data.model.*
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -52,6 +52,8 @@ class OfficialHomeMapperTest {
     private val mockOfficialStoreBanners = OfficialStoreBanners(
                 banners = defaultBanner
             )
+    private val listBenefit = mutableListOf<Benefit>(Benefit())
+    private val mockBenefit = OfficialStoreBenefits(listBenefit)
 
     private fun addDefaultDynamicChannel() {
         officialHomeMapper.mappingDynamicChannel(
@@ -142,6 +144,16 @@ class OfficialHomeMapperTest {
         )
     }
 
+    private fun dynamicChannelDataNotContainsBenefitDataModel() {
+        officialHomeMapper.mappingDynamicChannel(
+            listOf(
+                OfficialStoreChannel(Channel(layout = DynamicChannelLayout.LAYOUT_MIX_LEFT)),
+                ),
+            mockOfficialHomeAdapter,
+            mockRemoteConfig
+        )
+    }
+
     private fun dynamicChannelDataContainsFeaturedShop() {
         officialHomeMapper.mappingDynamicChannel(
             listOf(
@@ -167,11 +179,6 @@ class OfficialHomeMapperTest {
         addDynamicChannelEmpty()
     }
 
-    private fun `given list official store with banner data`() {
-        addDynamicChannelEmpty()
-        officialHomeMapper.listOfficialStore.add(defaultOfficialBannerDataModel)
-    }
-
     private fun `given list official store contains best seller` () {
         addDefaultDynamicChannel()
     }
@@ -194,6 +201,10 @@ class OfficialHomeMapperTest {
 
     private fun `given list official store not contains best seller less than default size` () {
         dynamicChannelDataNotContainsBestSellerLessThanDefaultSize()
+    }
+
+    private fun `given list official store not contains benefit data`() {
+        dynamicChannelDataNotContainsBenefitDataModel()
     }
 
     @Before
@@ -227,34 +238,6 @@ class OfficialHomeMapperTest {
         Assert.assertTrue(
             officialHomeMapper.listOfficialStore.find { it is OfficialBannerDataModel } != null
         )
-    }
-
-    @Test
-    fun `given list official store banner when mapping banner with disable from remote config then banner result value will be not equals with given data`() {
-        `given list official store with banner data`()
-        officialHomeMapper.mappingBanners(
-            mockOfficialStoreBanners,
-            mockOfficialHomeAdapter,
-            "",
-            true
-        )
-
-        val bannerModel = officialHomeMapper.listOfficialStore.find { it is OfficialBannerDataModel } as OfficialBannerDataModel
-        Assert.assertNotEquals(bannerModel.banner.size, defaultBanner.size)
-    }
-
-    @Test
-    fun `given list official store banner when mapping banner then banner result value will be equals with given data`() {
-        `given list official store with banner data`()
-        officialHomeMapper.mappingBanners(
-            mockOfficialStoreBanners,
-            mockOfficialHomeAdapter,
-            "",
-            false
-        )
-
-        val bannerModel = officialHomeMapper.listOfficialStore.find { it is OfficialBannerDataModel } as OfficialBannerDataModel
-        Assert.assertEquals(bannerModel.banner, defaultBanner)
     }
 
     @Test
@@ -405,5 +388,13 @@ class OfficialHomeMapperTest {
         officialHomeMapper.removeFeaturedShopDC(newData = mockFeaturedShopDataModel) {}
         val totalAfterRemoveShopWidget = officialHomeMapper.listOfficialStore.toMutableList().size
         Assert.assertTrue(totalPreviousData == totalAfterRemoveShopWidget)
+    }
+
+    @Test
+    fun `given list official store not contains benefit data when mapping benefit then contains benefit data with default position`() {
+        `given list official store not contains benefit data`()
+        officialHomeMapper.mappingBenefit(mockBenefit, mockOfficialHomeAdapter)
+        val indexBenefit = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialBenefitDataModel }
+        Assert.assertEquals(BENEFIT_POSITION, indexBenefit)
     }
 }
