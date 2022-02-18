@@ -205,12 +205,10 @@ class ProductChooserBottomSheet @Inject constructor(
                 renderBottomSheetTitle(
                     prevState?.selectedProductSectionList,
                     state.selectedProductSectionList,
+                    prevState?.config,
                     state.config
                 )
-                renderSaveButton(
-                    isSelectedProductsChanged,
-                    state.saveState
-                )
+                renderSaveButton(isSelectedProductsChanged, state.saveState)
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
                 renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
             }
@@ -326,9 +324,11 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderBottomSheetTitle(
         prevSelectedProducts: List<ProductTagSectionUiModel>?,
         selectedProducts: List<ProductTagSectionUiModel>,
+        prevConfig: ProductSetupConfig?,
         config: ProductSetupConfig,
     ) {
-        if (prevSelectedProducts == selectedProducts) return
+        if (prevSelectedProducts == selectedProducts &&
+            prevConfig?.maxProduct == config.maxProduct) return
 
         setTitle(
             getString(
