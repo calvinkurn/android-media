@@ -9,6 +9,7 @@
         android:id="@+id/ivAddOn"
         android:layout_width="46dp"
         android:layout_height="46dp"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/iconunify_image_broken" />
