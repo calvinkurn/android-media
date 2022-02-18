@@ -96,6 +96,14 @@
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"/>
 
+                                <com.tokopedia.recharge_component.widget.MCCMFlashSaleFullWidget
+                                    android:id="@+id/recharge_pdp_paket_data_promo_widget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_recommendation_widget"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
                                 <com.tokopedia.sortfilter.SortFilter
                                     android:id="@+id/sort_filter_paket_data"
                                     android:layout_width="@dimen/unify_space_0"
@@ -104,25 +112,17 @@
                                     android:layout_marginTop="@dimen/unify_space_12"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_recommendation_widget"
+                                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_promo_widget"
                                     android:visibility="gone"
                                     app:sort_filter_relationship="AND"
                                     app:sort_filter_type="advanced"
                                     tools:visibility="visible" />
 
-                                <com.tokopedia.recharge_component.widget.MCCMFlashSaleFullWidget
-                                    android:id="@+id/recharge_pdp_paket_data_promo_widget"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:layout_constraintTop_toBottomOf="@id/sort_filter_paket_data"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"/>
-
                                 <com.tokopedia.recharge_component.widget.DenomFullWidget
                                     android:id="@+id/recharge_pdp_paket_data_denom_full_widget"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_promo_widget"
+                                    app:layout_constraintTop_toBottomOf="@id/sort_filter_paket_data"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent" />
 

@@ -223,8 +223,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
-                    onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
+                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.listDenomData)
+                    onSuccessDenomGrid(denomData.data, selectedPositionDenom)
 
                     if (selectedPositionDenom == null) {
                         onHideBuyWidget()
@@ -559,7 +559,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
-        viewModel.getRechargeCatalogInput(menuId, selectedOperatorKey)
+        viewModel.getRechargeCatalogInput(menuId, selectedOperatorKey,
+            binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
     }
 
     private fun showEmptyState() {
