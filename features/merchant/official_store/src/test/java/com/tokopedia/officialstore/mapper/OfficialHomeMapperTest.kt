@@ -53,7 +53,9 @@ class OfficialHomeMapperTest {
                 banners = defaultBanner
             )
     private val listBenefit = mutableListOf<Benefit>(Benefit())
+    private val listBenefit2 = mutableListOf<Benefit>(Benefit(), Benefit())
     private val mockBenefit = OfficialStoreBenefits(listBenefit)
+    private val mockBenefit2 = OfficialStoreBenefits(listBenefit2)
 
     private fun addDefaultDynamicChannel() {
         officialHomeMapper.mappingDynamicChannel(
@@ -240,6 +242,44 @@ class OfficialHomeMapperTest {
         )
     }
 
+    private fun `mapping banner first time`() {
+        `given list official store not contains banner`()
+        officialHomeMapper.mappingBanners(
+            OfficialStoreBanners(),
+            mockOfficialHomeAdapter,
+            "",
+            true
+        )
+    }
+
+    @Test
+    fun `given list official store banner when mapping banner second time with disable from remote config then banner result value will be not equals with given data`() {
+        `mapping banner first time`()
+        officialHomeMapper.mappingBanners(
+            mockOfficialStoreBanners,
+            mockOfficialHomeAdapter,
+            "",
+            true
+        )
+
+        val bannerModel = officialHomeMapper.listOfficialStore.find { it is OfficialBannerDataModel } as OfficialBannerDataModel
+        Assert.assertNotEquals(bannerModel.banner.size, defaultBanner.size)
+    }
+
+    @Test
+    fun `given list official store banner when mapping banner second time then banner result value will be equals with given data`() {
+        `mapping banner first time`()
+        officialHomeMapper.mappingBanners(
+            mockOfficialStoreBanners,
+            mockOfficialHomeAdapter,
+            "",
+            false
+        )
+
+        val bannerModel = officialHomeMapper.listOfficialStore.find { it is OfficialBannerDataModel } as OfficialBannerDataModel
+        Assert.assertEquals(bannerModel.banner, defaultBanner)
+    }
+
     @Test
     fun `given empty list official store show loading when mapping banner with new banner and remote config false then loading will be gone and banner added to the list`() {
         `given empty list official store`()
@@ -396,5 +436,19 @@ class OfficialHomeMapperTest {
         officialHomeMapper.mappingBenefit(mockBenefit, mockOfficialHomeAdapter)
         val indexBenefit = officialHomeMapper.listOfficialStore.indexOfFirst { it is OfficialBenefitDataModel }
         Assert.assertEquals(BENEFIT_POSITION, indexBenefit)
+    }
+
+    private fun `mapping benefit first time`() {
+        `given list official store not contains benefit data`()
+        officialHomeMapper.mappingBenefit(mockBenefit, mockOfficialHomeAdapter)
+    }
+
+    @Test
+    fun `given list official store when mapping benefit second time then value of benefit will repaced`() {
+        `mapping benefit first time`()
+        val benefitBefore = officialHomeMapper.listOfficialStore.find { it is OfficialBenefitDataModel }
+        officialHomeMapper.mappingBenefit(mockBenefit2, mockOfficialHomeAdapter)
+        val benefitAfter = officialHomeMapper.listOfficialStore.find { it is OfficialBenefitDataModel }
+        Assert.assertNotEquals(benefitBefore, benefitAfter)
     }
 }
