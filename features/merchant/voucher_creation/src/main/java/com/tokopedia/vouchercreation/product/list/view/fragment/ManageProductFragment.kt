@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -40,6 +41,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
         private const val ZERO = 0
         private const val NO_BACKGROUND: Int = 0
+        const val BUNDLE_KEY_IS_VIEWING = "isViewing"
         const val BUNDLE_KEY_IS_EDITING = "isEditing"
         const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
@@ -48,6 +50,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
         @JvmStatic
         fun createInstance(
+                isViewing: Boolean,
                 isEditing: Boolean,
                 maxProductLimit: Int,
                 couponSettings: CouponSettings?,
@@ -55,6 +58,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 selectedProductIds: ArrayList<ProductId>?,
         ) = ManageProductFragment().apply {
             this.arguments = Bundle().apply {
+                putBoolean(BUNDLE_KEY_IS_VIEWING, isViewing)
                 putBoolean(BUNDLE_KEY_IS_EDITING, isEditing)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
@@ -107,25 +111,26 @@ class ManageProductFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
-        setupView(binding)
+        setupViews(binding)
         observeLiveData()
 
-        val isEditing = arguments?.getBoolean(BUNDLE_KEY_IS_EDITING, true) ?: true
-
+        val shopId = userSession.shopId
+        val isViewing = arguments?.getBoolean(BUNDLE_KEY_IS_VIEWING, false) ?: false
+        val isEditing = arguments?.getBoolean(BUNDLE_KEY_IS_EDITING, false) ?: false
         val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
-        viewModel.setMaxProductLimit(maxProductLimit)
 
+        viewModel.setIsViewing(isViewing)
+        viewModel.setIsEditing(isEditing)
+        viewModel.setMaxProductLimit(maxProductLimit)
         val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
         viewModel.setCouponSettings(couponSettings)
-
-        val shopId = userSession.shopId
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
-        var selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
+        val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
 
         // always render ui model rather than product ids
         if (!selectedProducts.isNullOrEmpty()) {
             viewModel.setSetSelectedProducts(selectedProducts.toList())
-            val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isEditing, selectedProducts)
+            val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
             adapter?.setProductList(updatedProductList)
         } else {
             if (!selectedProductIds.isNullOrEmpty()) {
@@ -139,10 +144,18 @@ class ManageProductFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setupView(binding: FragmentMvcManageProductBinding?) {
+    private fun setupViews(binding: FragmentMvcManageProductBinding?) {
+        binding?.duTop?.isVisible = viewModel.getIsEditing()
+        setupDeleteProductButton(binding)
         setupSelectionBar(binding)
         setupProductListView(binding)
         setupAddProductButton(binding)
+    }
+
+    private fun setupDeleteProductButton(binding: FragmentMvcManageProductBinding?) {
+        binding?.tpgDeleteProduct?.setOnClickListener {
+            adapter?.deleteSelectedProducts()
+        }
     }
 
     private fun setupProductListView(binding: FragmentMvcManageProductBinding?) {
@@ -154,6 +167,7 @@ class ManageProductFragment : BaseDaggerFragment(),
     }
 
     private fun setupSelectionBar(binding: FragmentMvcManageProductBinding?) {
+        binding?.selectionBar?.isVisible = viewModel.getIsEditing()
         binding?.cbuSelectAllProduct?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // ignore checkbox click when single selection mode
@@ -170,6 +184,7 @@ class ManageProductFragment : BaseDaggerFragment(),
     }
 
     private fun setupAddProductButton(binding: FragmentMvcManageProductBinding?) {
+        binding?.tpgAddProduct?.isVisible = viewModel.getIsEditing()
         binding?.tpgAddProduct?.setOnClickListener {
             navigateToAddProductPage()
         }
@@ -210,10 +225,13 @@ class ManageProductFragment : BaseDaggerFragment(),
             when (result) {
                 is Success -> {
                     val productData = result.data.productList.data
-                    val productUiModels = viewModel.mapProductDataToProductUiModel(productData)
+                    val productUiModels = viewModel.mapProductDataToProductUiModel(
+                            isViewing = viewModel.getIsViewing(),
+                            isEditing = viewModel.getIsEditing(),
+                            productDataList = productData)
                     viewModel.setProductUiModels(productUiModels)
                     if (productUiModels.isNotEmpty()) {
-                        binding?.selectionBar?.show()
+                        binding?.selectionBar?.isVisible = viewModel.getIsEditing()
                         binding?.emptyProductsLayout?.hide()
                         viewModel.getCouponSettings()?.run {
                             viewModel.validateProductList(

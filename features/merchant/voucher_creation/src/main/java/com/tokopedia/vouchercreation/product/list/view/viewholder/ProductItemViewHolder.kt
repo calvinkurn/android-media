@@ -64,12 +64,24 @@ class ProductItemViewHolder(
         // product list item views
         binding.root.setTag(R.id.product, productUiModel)
         binding.cbuProductItem.isChecked = productUiModel.isSelected
-        binding.iuRemoveProduct.isVisible = productUiModel.isEditing
+
         binding.iuProductImage.loadImage(productUiModel.imageUrl)
         binding.tpgProductName.text = productUiModel.productName
         binding.tpgSku.text = productUiModel.sku
         binding.tpgProductPrice.text = productUiModel.price
         binding.tpgSoldAndStock.text = productUiModel.soldNStock
+
+        // view mode
+        val isViewing = productUiModel.isViewing
+        if (isViewing) {
+            binding.cbuProductItem.invisible()
+            binding.iuRemoveProduct.hide()
+        }
+        // edit mode
+        val isEditing = productUiModel.isEditing
+        if (isEditing) {
+            binding.iuRemoveProduct.show()
+        }
 
         // variant layout
         if (productUiModel.hasVariant && !productUiModel.isError) {

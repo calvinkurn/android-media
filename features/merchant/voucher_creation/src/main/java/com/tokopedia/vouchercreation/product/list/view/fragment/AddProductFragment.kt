@@ -34,7 +34,6 @@ import com.tokopedia.vouchercreation.product.list.view.bottomsheet.ShowCaseBotto
 import com.tokopedia.vouchercreation.product.list.view.bottomsheet.SortBottomSheet
 import com.tokopedia.vouchercreation.product.list.view.model.*
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
-import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.SELLER_LOCATION_ID
 import javax.inject.Inject
 
 class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiModel>(),
@@ -123,16 +122,11 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         val selectedProductIds = viewModel.getSelectedProductIds(selectedProducts?: arrayListOf())
         viewModel.setSelectedProductIds(selectedProductIds)
         val shopId = userSession.shopId
-        // get initial product list
-//        viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
-//        viewModel.getProductList(shopId = shopId, warehouseLocationId = SELLER_LOCATION_ID)
         // get warehouse locations
         val shopIdInt = shopId.toIntOrNull()
         shopIdInt?.run { viewModel.getWarehouseLocations(this) }
         // get shop showcases
         viewModel.getShopShowCases(shopId)
-        // get sort and categories
-        viewModel.getProductListMetaData(shopId = shopId, warehouseLocationId = SELLER_LOCATION_ID)
     }
 
     private fun setupView(binding: FragmentMvcAddProductBinding?) {
@@ -214,11 +208,11 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         binding?.sfProductList?.dismissListener = {
             // reset all search criteria
             viewModel.setSearchKeyword("")
-            viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
+            viewModel.setWarehouseLocationId(viewModel.getSellerWarehouseId())
             viewModel.setSelectedShowCases(listOf())
             viewModel.getProductList(
                     shopId = userSession.shopId,
-                    warehouseLocationId = viewModel.getWarehouseLocationId()
+                    warehouseLocationId = viewModel.getSellerWarehouseId()
             )
         }
     }
@@ -239,8 +233,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         sortBottomSheet = SortBottomSheet.createInstance(sortSelections, this)
     }
 
-    private fun setupSellerLocationTicker(binding: FragmentMvcAddProductBinding?) {
-//        binding?.tickerSeller
+    private fun setupSellerLocationTicker(binding: FragmentMvcAddProductBinding?, warehouseName: String, productSize: Int) {
+        val description = getString(R.string.mvc_product_seller_location_warning_message, warehouseName, productSize.toString())
+        binding?.tickerSellerLocationChange?.setTextDescription(description)
     }
 
     private fun setupSelectionBar(binding: FragmentMvcAddProductBinding?) {
@@ -317,6 +312,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                                     productIds = viewModel.getIdsFromProductList(productList)
                             )
                         }
+                    } else {
+                        binding?.selectionBar?.hide()
+                        binding?.rvProductList?.hide()
+                        binding?.emptyProductsLayout?.show()
                     }
                 }
                 is Fail -> {
@@ -346,6 +345,11 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     val warehouseLocations = result.data.ShopLocGetWarehouseByShopIDs.warehouses
                     val locationSelections = viewModel.mapWarehouseLocationToSelections(warehouseLocations)
                     setupWarehouseLocationBottomSheet(locationSelections)
+                    val sellerWarehouseId = viewModel.getSellerWarehouseId(warehouseLocations)
+                    viewModel.setSellerWarehouseId(sellerWarehouseId)
+                    loadInitialData()
+                    // get sort and categories
+                    viewModel.getProductListMetaData(shopId = userSession.shopId, warehouseLocationId = sellerWarehouseId)
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -393,15 +397,24 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
-        viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
-        viewModel.getProductList(
-                keyword = viewModel.getSearchKeyWord(),
-                shopId = userSession.shopId,
-                warehouseLocationId = viewModel.getWarehouseLocationId(),
-                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                categoryList = viewModel.getSelectedCategoryIds(),
-                sort = viewModel.getSelectedSort()
-        )
+//        val isSelectionChanged = viewModel.getWarehouseLocationId() != selectedWarehouseLocation.warehouseId
+//        if (viewModel.getSelectedProducts().isNotEmpty() && isSelectionChanged) {
+//            val warehouseName = selectedWarehouseLocation.warehouseName
+//            val productSize = viewModel.getSelectedProducts().size
+//            setupSellerLocationTicker(binding, warehouseName, productSize)
+//            binding?.tickerSellerLocationChange?.show()
+//        } else {
+//            binding?.tickerSellerLocationChange?.hide()
+            viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
+            viewModel.getProductList(
+                    keyword = viewModel.getSearchKeyWord(),
+                    shopId = userSession.shopId,
+                    warehouseLocationId = viewModel.getWarehouseLocationId(),
+                    shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                    categoryList = viewModel.getSelectedCategoryIds(),
+                    sort = viewModel.getSelectedSort()
+            )
+//        }
     }
 
     override fun onApplyShowCaseFilter(selectedShowCases: List<ShowCaseSelection>) {
@@ -459,15 +472,17 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun loadData(page: Int) {
-        viewModel.getProductList(
-                page = page,
-                keyword = viewModel.getSearchKeyWord(),
-                shopId = userSession.shopId,
-                warehouseLocationId = viewModel.getWarehouseLocationId(),
-                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                categoryList = viewModel.getSelectedCategoryIds(),
-                sort = viewModel.getSelectedSort()
-        )
+        viewModel.getSellerWarehouseId()?.run {
+            viewModel.getProductList(
+                    page = page,
+                    keyword = viewModel.getSearchKeyWord(),
+                    shopId = userSession.shopId,
+                    warehouseLocationId = viewModel.getWarehouseLocationId(),
+                    shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                    categoryList = viewModel.getSelectedCategoryIds(),
+                    sort = viewModel.getSelectedSort()
+            )
+        }
     }
 
     override fun clearAdapterData() {
@@ -484,6 +499,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     override fun onDataEmpty() {
         binding?.selectionBar?.hide()
+        binding?.rvProductList?.hide()
         binding?.emptyProductsLayout?.show()
     }
 

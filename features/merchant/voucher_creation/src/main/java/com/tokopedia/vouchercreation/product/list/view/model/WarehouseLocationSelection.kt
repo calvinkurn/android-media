@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class WarehouseLocationSelection(
         val warehouseId: Int = 0,
+        val warehouseType: Int = 0,
         val warehouseName: String = "",
         var isSelected: Boolean = false
 ) : Parcelable

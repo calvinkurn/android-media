@@ -43,6 +43,7 @@ class GetWarehouseLocationsUseCase @Inject constructor(@ApplicationContext repos
                warehouses {
                   warehouse_id
                   warehouse_name
+                  warehouse_type
                 }                
             }
         }
