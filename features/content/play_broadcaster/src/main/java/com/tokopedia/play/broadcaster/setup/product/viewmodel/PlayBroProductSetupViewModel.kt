@@ -200,6 +200,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSearchProduct(keyword: String) {
+        searchQuery.value = keyword
+    }
+
     private fun handleSelectEtalase(etalase: EtalaseUiModel) {
         _loadParam.update {
             it.copy(
@@ -319,6 +323,29 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSaveProducts() {
+        _saveState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            repo.setProductTags(
+                channelId = configStore.getChannelId(),
+                productIds = _selectedProductSectionList.value.flatMap { section ->
+                    section.products.map { it.id }
+                },
+            )
+            _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
+        }) {
+            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
+        }.apply {
+            invokeOnCompletion {
+                _saveState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
     /** Product Summary */
     private fun handleLoadProductSummary() {
         viewModelScope.launchCatchError(dispatchers.io, block = {
@@ -363,32 +390,5 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         _productTagSectionList.value = response
         _selectedProductSectionList.value = response
         _productTagSummary.value = ProductTagSummaryUiModel.Success
-    }
-
-    private fun handleSearchProduct(keyword: String) {
-        searchQuery.value = keyword
-    }
-
-    private fun handleSaveProducts() {
-        _saveState.update {
-            it.copy(isLoading = true)
-        }
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            repo.setProductTags(
-                channelId = configStore.getChannelId(),
-                productIds = _selectedProductSectionList.value.flatMap { section ->
-                    section.products.map { it.id }
-                },
-            )
-            _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
-        }) {
-            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
-        }.apply {
-            invokeOnCompletion {
-                _saveState.update {
-                    it.copy(isLoading = false)
-                }
-            }
-        }
     }
 }

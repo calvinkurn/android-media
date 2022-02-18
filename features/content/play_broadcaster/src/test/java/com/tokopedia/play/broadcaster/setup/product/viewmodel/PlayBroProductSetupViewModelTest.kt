@@ -95,6 +95,24 @@ internal class PlayBroProductSetupViewModelTest {
     }
 
     @Test
+    fun `when user search product with keyword, it should emit uiState with newest keyword`() {
+        val keyword = "piring cantik"
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SearchProduct(keyword))
+            }
+
+            assertEquals(state.loadParam.keyword, keyword)
+        }
+    }
+
+    @Test
     fun `when user select etalase, it should emit uiState with new selected etalase`() {
         val mockSelectedEtalase = SelectedEtalaseModel.Etalase(mockEtalase)
 
