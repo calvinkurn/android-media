@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -58,6 +59,8 @@ internal class PlayBroProductSetupViewModelTest {
         })
     }
     private val mockProductCount = mockProductTagSectionList.sumOf { it.products.size }
+
+    private val exception = Exception("Network Error")
 
     /** Campaign & Etalase */
     @Test
@@ -415,7 +418,6 @@ internal class PlayBroProductSetupViewModelTest {
 
     @Test
     fun `when user wants load more etalase product and error happens, it should trigger error state`() {
-        val exception = Exception("Network Error")
 
         coEvery { mockRepo.getProductsInEtalase(any(), any(), any(), any()) } throws exception
 
@@ -436,6 +438,57 @@ internal class PlayBroProductSetupViewModelTest {
                 resultState.assertEqualTo(PageResultState.Fail(exception))
                 page.assertEqualTo(0)
             }
+        }
+    }
+
+    @Test
+    fun `when user wants to save products and success, it should trigger trigger event success`() {
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            runBlockingTest {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+            }
+
+            val (state, event) = robot.recordStateAsListAndEvent {
+                robot.submitAction(ProductSetupAction.SaveProducts)
+            }
+
+            state[1].saveState.isLoading.assertEqualTo(true)
+            state[2].saveState.isLoading.assertEqualTo(false)
+            event.last().assertEqualTo(PlayBroProductChooserEvent.SaveProductSuccess)
+        }
+    }
+
+    @Test
+    fun `when user wants to save products and failed, it should trigger trigger event error`() {
+
+        coEvery { mockRepo.setProductTags(any(), any()) } throws exception
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            runBlockingTest {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+            }
+
+            val (state, event) = robot.recordStateAsListAndEvent {
+                robot.submitAction(ProductSetupAction.SaveProducts)
+            }
+
+            state[1].saveState.isLoading.assertEqualTo(true)
+            state[2].saveState.isLoading.assertEqualTo(false)
+            event.last().assertEqualTo(PlayBroProductChooserEvent.ShowError(exception))
         }
     }
 
@@ -464,7 +517,6 @@ internal class PlayBroProductSetupViewModelTest {
     @Test
     fun `when user failed load product section, it should emit error state`() {
 
-        val exception = Exception("Network Error")
         coEvery { mockRepo.getProductTagSummarySection(any()) } throws exception
 
         val robot = PlayBroProductSetupViewModelRobot(
@@ -510,7 +562,6 @@ internal class PlayBroProductSetupViewModelTest {
     @Test
     fun `when user failed delete product, it should emit fail state`() {
 
-        val exception = Exception("Network Error")
         coEvery { mockRepo.setProductTags(any(), any()) } throws exception
 
         val robot = PlayBroProductSetupViewModelRobot(

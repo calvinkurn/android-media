@@ -126,6 +126,26 @@ internal class PlayBroProductSetupViewModelRobot(
         return uiState to uiEvents
     }
 
+    fun recordStateAsListAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<List<PlayBroProductChooserUiState>, List<PlayBroProductChooserEvent>> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        var uiStates = mutableListOf<PlayBroProductChooserUiState>()
+        val uiEvents = mutableListOf<PlayBroProductChooserEvent>()
+        scope.launch {
+            viewModel.uiState.collect {
+                uiStates.add(it)
+            }
+        }
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiStates to uiEvents
+    }
+
     fun recordSummaryStateAndEvent(fn: suspend PlayBroProductSetupViewModelRobot.() -> Unit): Pair<PlayBroProductSummaryUiState, List<PlayBroProductChooserEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayBroProductSummaryUiState
