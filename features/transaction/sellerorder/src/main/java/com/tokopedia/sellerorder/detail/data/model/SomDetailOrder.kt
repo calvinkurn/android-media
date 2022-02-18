@@ -137,12 +137,12 @@ data class SomDetailOrder(
         ) {
 
             fun getFirstProduct(): Details.Product? {
-                return details.nonBundle.firstOrNull()
-                    ?: details.bundle.firstOrNull()?.orderDetail?.firstOrNull()
+                return details.nonBundle?.firstOrNull()
+                    ?: details.bundle?.firstOrNull()?.orderDetail?.firstOrNull()
             }
 
             fun getProductList(): List<Details.Product> {
-                return details.nonBundle.plus(details.bundle.flatMap { it.orderDetail }).distinctBy {
+                return details.nonBundle.orEmpty().plus(details.bundle?.flatMap { it.orderDetail }.orEmpty()).distinctBy {
                     it.id
                 }
             }
@@ -178,12 +178,12 @@ data class SomDetailOrder(
             )
 
             data class Details(
-                @SerializedName("bundle")
+                @SerializedName("bundles")
                 @Expose
-                val bundle: List<Bundle> = listOf(),
-                @SerializedName("non_bundle")
+                val bundle: List<Bundle>? = null,
+                @SerializedName("non_bundles")
                 @Expose
-                val nonBundle: List<Product> = listOf(),
+                val nonBundle: List<Product>? = null,
                 @SerializedName("bundle_icon")
                 @Expose
                 val bundleIcon: String = "",

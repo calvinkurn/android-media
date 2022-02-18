@@ -16,10 +16,10 @@ import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 object SomGetOrderDetailResponseMapper {
 
     private fun getProductBundleList(
-        bundleList: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>,
+        bundleList: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>?,
         bundleIcon: String
     ): List<ProductBundleUiModel> {
-        return bundleList.map { bundle ->
+        return bundleList?.map { bundle ->
             ProductBundleUiModel(
                 bundleId = bundle.bundleId,
                 bundleIcon = bundleIcon,
@@ -38,11 +38,11 @@ object SomGetOrderDetailResponseMapper {
                     )
                 }
             )
-        }
+        }.orEmpty()
     }
 
     private fun getProductNonBundleList(
-        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
+        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>?,
         addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?,
         addOnIcon: String,
         addOnLabel: String
@@ -54,14 +54,14 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun MutableList<BaseProductUiModel>.includeProductBundles(
-        bundle: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>,
+        bundle: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>?,
         bundleIcon: String
     ) {
         addAll(getProductBundleList(bundle, bundleIcon))
     }
 
     private fun MutableList<BaseProductUiModel>.includeProductNonBundles(
-        nonBundle: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
+        nonBundle: List<SomDetailOrder.Data.GetSomDetail.Details.Product>?,
         addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?,
         addOnIcon: String,
         addOnLabel: String
@@ -70,11 +70,11 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun ArrayList<BaseProductUiModel>.includeProducts(
-        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
+        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>?,
         addOnIcon: String,
         addOnLabel: String
     ) {
-        products.forEach { product ->
+        products?.forEach { product ->
             add(
                 NonProductBundleUiModel(
                     product = product,

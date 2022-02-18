@@ -235,7 +235,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_url
                 }
                 details {
-                  bundle {
+                  bundles {
                     bundle_id
                     bundle_name
                     bundle_price
@@ -263,9 +263,11 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
-                            from
-                            notes
-                            to
+                            add_on_note {
+                              from
+                              notes
+                              to
+                            }
                           }
                           create_time
                         }
@@ -276,7 +278,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       }
                     }
                   }
-                  non_bundle {
+                  non_bundles {
                     order_detail_id
                     id
                     name
@@ -299,9 +301,11 @@ class SomGetOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
-                          from
-                          message
-                          to
+                          add_on_note {
+                            from
+                            notes
+                            to
+                          }
                         }
                         create_time
                       }
@@ -331,9 +335,11 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
-                        from
-                        message
-                        to
+                        add_on_note {
+                          from
+                          notes
+                          to
+                        }
                       }
                       create_time
                     }
@@ -343,7 +349,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     total_quantity
                   }
                   label
-                  addon_icon
+                  icon_url
                 }
               }
             }

@@ -68,17 +68,23 @@ data class AddOnSummary(
         val type: String = ""
     ) {
         data class Metadata(
-            @SerializedName("from")
+            @SerializedName("add_on_note")
             @Expose
-            val from: String = "",
-            @SerializedName("notes")
-            @Expose
-            val notes: String = "",
-            @SerializedName("to")
-            @Expose
-            val to: String = ""
+            val addOnNote: AddOnNote? = null,
         ) {
-            fun isEmpty(): Boolean = from.isBlank() && to.isBlank() && notes.isBlank()
+            data class AddOnNote(
+                @SerializedName("from")
+                @Expose
+                val from: String = "",
+                @SerializedName("notes")
+                @Expose
+                val notes: String = "",
+                @SerializedName("to")
+                @Expose
+                val to: String = ""
+            ) {
+                fun isEmpty(): Boolean = from.isBlank() && to.isBlank() && notes.isBlank()
+            }
         }
     }
 }

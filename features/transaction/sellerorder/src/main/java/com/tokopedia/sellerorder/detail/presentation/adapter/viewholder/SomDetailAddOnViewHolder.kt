@@ -78,13 +78,13 @@ class SomDetailAddOnViewHolder(
         descriptionExpanded: Boolean
     ) {
         layoutAddOnDescription.run {
-            if (metadata == null || metadata.isEmpty()) {
+            if (metadata?.addOnNote == null || metadata.addOnNote.isEmpty()) {
                 gone()
             } else {
                 setIsCopyable(copyable = true)
-                setReceiverName(metadata.to)
-                setSenderName(metadata.from)
-                setDescription(metadata.notes, descriptionExpanded)
+                setReceiverName(metadata.addOnNote.to)
+                setSenderName(metadata.addOnNote.from)
+                setDescription(metadata.addOnNote.notes, descriptionExpanded)
                 listener = this@SomDetailAddOnViewHolder
                 show()
             }
