@@ -33,6 +33,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
@@ -145,13 +146,13 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     }
 
     private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
-        return title.isNotEmpty() && message.isNotEmpty()
+        return !(title.isEmpty() && message.isEmpty())
     }
 
     private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean = false) {
         tickerShopStatus?.show()
         tickerShopStatus?.tickerType = Ticker.TYPE_ANNOUNCEMENT
-        tickerShopStatus?.tickerTitle = shopOperationalHourStatus.tickerTitle
+        tickerShopStatus?.tickerTitle = HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
         tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         if (isMyShop) {
             tickerShopStatus?.closeButtonVisibility = View.GONE
