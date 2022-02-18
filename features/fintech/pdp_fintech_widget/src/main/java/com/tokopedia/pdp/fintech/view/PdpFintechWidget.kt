@@ -35,8 +35,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class PdpFintechWidget @JvmOverloads constructor(
     context: Context,
@@ -89,8 +87,8 @@ class PdpFintechWidget @JvmOverloads constructor(
             when (it) {
                 is Success -> {
                     setPriceToChipMap(it.data)
-                     it.data.baseWidgetResponse?.baseData?.let { baseChipResponse->
-                         if(baseChipResponse.list.size>0)
+                    it.data.baseWidgetResponse?.baseData?.let { baseChipResponse ->
+                        if (baseChipResponse.list.size > 0)
                             titleTextView.text = baseChipResponse.list[0].title
                     }
                     getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
@@ -121,18 +119,30 @@ class PdpFintechWidget @JvmOverloads constructor(
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
-            override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand:
-            String,widgetBottomsheet: WidgetBottomsheet,gateWayID:Int,userStatus:String) {
-                customRouter( FintechRedirectionWidgetDataClass(
-                    cta =  cta,
-                    redirectionUrl =  url,
-                    tenure= tenure,
-                    gatewayId= gateWayID,
-                    productUrl =  idToPriceUrlMap[productID]?.url,
-                    gatewayCode =  gatewayBrand,
-                    widgetBottomSheet = widgetBottomsheet,
-                    userStatus =  userStatus
-                ))
+            override fun clickedWidget(
+                cta: Int,
+                url: String,
+                tenure: Int,
+                gatewayBrand:
+                String,
+                widgetBottomsheet: WidgetBottomsheet,
+                gateWayID: Int,
+                userStatus: String,
+                gatewayPartnerName: String
+            ) {
+                customRouter(
+                    FintechRedirectionWidgetDataClass(
+                        cta = cta,
+                        redirectionUrl = url,
+                        tenure = tenure,
+                        gatewayId = gateWayID,
+                        productUrl = idToPriceUrlMap[productID]?.url,
+                        gatewayCode = gatewayBrand,
+                        widgetBottomSheet = widgetBottomsheet,
+                        userStatus = userStatus,
+                        gatewayPartnerName = gatewayPartnerName
+                    )
+                )
 
             }
 
@@ -150,26 +160,26 @@ class PdpFintechWidget @JvmOverloads constructor(
                     "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
 
             if (fintechRedirectionWidgetDataClass.cta == 2 &&
-                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false) {
+                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false
+            ) {
                 openWebViewUrl(url = rediretionLink, false)
             } else if (fintechRedirectionWidgetDataClass.cta == 2 &&
-                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true) {
-                val intent = Intent(context,ActivationBottomSheetActivity::class.java)
+                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true
+            ) {
+                val intent = Intent(context, ActivationBottomSheetActivity::class.java)
                 intent.putExtra(ACTIVATION_BOTTOMSHEET_DETAIl, fintechRedirectionWidgetDataClass)
-                intent.putExtra(ACTIVATION_WEBVIEW_LINK,rediretionLink)
-                startActivity(context,intent,null)
-            }
+                intent.putExtra(ACTIVATION_WEBVIEW_LINK, rediretionLink)
+                startActivity(context, intent, null)
+            } else {
 
-            else {
-
-                 RouteManager.route(context, rediretionLink)
+                RouteManager.route(context, rediretionLink)
 
             }
         }
     }
 
 
-    private fun openWebViewUrl(url: String,showTitleBar:Boolean = false) {
+    private fun openWebViewUrl(url: String, showTitleBar: Boolean = false) {
         val webViewUrl = String.format(
             Locale.getDefault(),
             "%s?titlebar=${showTitleBar}&url=%s",
@@ -182,7 +192,8 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
-        titleTextView = baseView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.quickText)
+        titleTextView =
+            baseView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.quickText)
     }
 
 
@@ -233,17 +244,23 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
-        for(i in 0 until chipList.size) {
-            chipList[i].userStatus?.let { userStatus->
-                chipList[i].productCode?.let { partnerName->
-                    if(chipList[i].productIconLight.isNullOrBlank() &&  chipList[i].productIconDark.isNullOrBlank())
-                    pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImpression(productID, userStatus,"not branded chips ",
-                        partnerName
-                    ))
+        for (i in 0 until chipList.size) {
+            chipList[i].userStatus?.let { userStatus ->
+                chipList[i].productCode?.let { partnerName ->
+                    if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
+                        pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                            FintechWidgetAnalyticsEvent.PdpWidgetImpression(
+                                productID, userStatus, "not branded chips ",
+                                partnerName
+                            )
+                        )
                     else
-                        pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImpression(productID, userStatus,"branded chips",
-                            partnerName
-                        ))
+                        pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                            FintechWidgetAnalyticsEvent.PdpWidgetImpression(
+                                productID, userStatus, "branded chips",
+                                partnerName
+                            )
+                        )
                 }
             }
         }
@@ -261,6 +278,6 @@ class PdpFintechWidget @JvmOverloads constructor(
 }
 
 data class FintechPriceUrlDataModel(
-    var url:String? = null,
-    var price:String? = null
+    var url: String? = null,
+    var price: String? = null
 )

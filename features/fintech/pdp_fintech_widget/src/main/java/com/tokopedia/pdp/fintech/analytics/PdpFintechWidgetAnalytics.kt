@@ -18,9 +18,27 @@ class PdpFintechWidgetAnalytics @Inject constructor(
             is FintechWidgetAnalyticsEvent.PdpWidgetImpression ->
                 sendPdpWidgetImpression(
                     analyticsEvent.partnerId,
-                    analyticsEvent.productId, analyticsEvent.userStatus,analyticsEvent.chipType
+                    analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType
                 )
+
+            is FintechWidgetAnalyticsEvent.ActivationBottomSheetClick -> sendActivationClick(
+                analyticsEvent.userStatus,
+                analyticsEvent.partner,
+                analyticsEvent.ctaWording
+            )
         }
+    }
+
+    private fun sendActivationClick(userStatus: String, partner: String, ctaWording: String) {
+        val map = TrackAppUtils.gtmData(
+            clickEvent,
+            clickActivationAction,
+            eventCategoryBottomSheet,
+            "$userStatus - $partner - $userStatus - $ctaWording"
+
+        )
+        sendGeneralEvent(map)
+
     }
 
 
@@ -51,7 +69,10 @@ class PdpFintechWidgetAnalytics @Inject constructor(
 
     companion object {
         const val viewEvent = "viewFintechIris"
+        const val clickEvent = "clickFintech"
+        const val eventCategoryBottomSheet = "fin - activation bottom sheet"
         const val pdpBnplImpression = "pdp page - impression bnpl widget"
+        const val clickActivationAction = "activation bnpl - click tanda tangan untuk aktifkan"
         const val eventCategory = "fin - pdp page"
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"

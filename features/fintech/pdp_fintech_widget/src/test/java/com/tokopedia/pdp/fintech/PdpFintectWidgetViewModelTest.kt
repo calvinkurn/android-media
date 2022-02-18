@@ -17,7 +17,7 @@ import org.junit.Test
 
 
 @ExperimentalCoroutinesApi
- class PdpFintectWidgetViewModelTest {
+class PdpFintectWidgetViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -39,9 +39,8 @@ import org.junit.Test
     }
 
     @Test
-    fun successFintechWidget()
-    {
-        val widgetDetail = mockk< WidgetDetail>(relaxed = true)
+    fun successFintechWidget() {
+        val widgetDetail = mockk<WidgetDetail>(relaxed = true)
         coEvery {
             fintechWidgetUseCase.getWidgetData(any(), any(), "", hashMapOf())
         } coAnswers {
@@ -50,13 +49,12 @@ import org.junit.Test
         viewModel.getWidgetData("", hashMapOf())
         Assert.assertEquals(
             (viewModel.widgetDetailLiveData.value as Success).data,
-           widgetDetail
+            widgetDetail
         )
     }
 
     @Test
-    fun failFintechWidget()
-    {
+    fun failFintechWidget() {
 
         coEvery {
             fintechWidgetUseCase.getWidgetData(any(), any(), "", hashMapOf())

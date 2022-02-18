@@ -1,6 +1,5 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -31,14 +30,12 @@
         android:id="@+id/recycler_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/pdp_fintech_16_dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/pdp_fintech_16_dp"
         android:layout_marginBottom="@dimen/pdp_fintech_12_dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/quickText" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

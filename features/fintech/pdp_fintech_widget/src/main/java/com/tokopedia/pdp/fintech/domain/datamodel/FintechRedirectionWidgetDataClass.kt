@@ -8,10 +8,11 @@ import kotlinx.android.parcel.Parcelize
 data class FintechRedirectionWidgetDataClass(
     var cta: Int = 0,
     var redirectionUrl: String? = null,
-    var tenure:Int = 1,
-    var productUrl:String? = null,
-    var gatewayCode:String? = null,
+    var tenure: Int = 1,
+    var productUrl: String? = null,
+    var gatewayCode: String? = null,
+    var gatewayPartnerName: String? = null,
     var gatewayId: Int,
-    var userStatus:String,
+    var userStatus: String,
     var widgetBottomSheet: WidgetBottomsheet? = null
-): Parcelable
+) : Parcelable

@@ -53,7 +53,12 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     ): MutableList<WidgetRequestModel> {
         val listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
         listofAmountandUrls.forEach { (key, value) ->
-            listOfVariantDetail.add(WidgetRequestModel(amount = value.price?.toDouble()?:0.0, redirectionUrl = value.url))
+            listOfVariantDetail.add(
+                WidgetRequestModel(
+                    amount = value.price?.toDouble() ?: 0.0,
+                    redirectionUrl = value.url
+                )
+            )
         }
         return listOfVariantDetail
     }

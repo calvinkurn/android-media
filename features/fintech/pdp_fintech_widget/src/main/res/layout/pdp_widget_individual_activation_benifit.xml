@@ -14,7 +14,6 @@
         tools:srcCompat="@drawable/ic_ticker_action_close_12dp" />
 
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/activationGopayBenefit"
         android:layout_width="@dimen/unify_space_0"
@@ -26,7 +25,6 @@
         app:layout_constraintTop_toTopOf="@+id/greenTickActivationPage"
         app:typographyType="body_2"
         tools:text="Pengajuanmu akan diverifikasi selama maks. 24 jam. Setelah disetujui, kamu bisa langsung gunakan untuk belanja!" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

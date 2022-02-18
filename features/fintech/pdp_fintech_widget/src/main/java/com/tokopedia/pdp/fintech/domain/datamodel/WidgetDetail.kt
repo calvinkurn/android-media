@@ -7,18 +7,18 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class WidgetDetail(
     @SerializedName("paylater_getPDPWidgetV2") var baseWidgetResponse: BaseDataResponse? = null
-): Parcelable
+) : Parcelable
 
 
 @Parcelize
 data class BaseDataResponse(
     @SerializedName("data") var baseData: BaseChipResponse? = null
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class BaseChipResponse(
     @SerializedName("list") var list: ArrayList<ChipList> = arrayListOf()
-): Parcelable
+) : Parcelable
 
 
 @Parcelize
@@ -28,7 +28,7 @@ data class ChipList(
     @SerializedName("title") var title: String? = null,
     @SerializedName("chips") var chips: ArrayList<ChipsData> = arrayListOf()
 
-): Parcelable
+) : Parcelable
 
 
 @Parcelize
@@ -44,11 +44,11 @@ data class ChipsData(
     @SerializedName("subheader_color") var subheaderColor: String? = null,
     @SerializedName("product_icon_light") var productIconLight: String? = null,
     @SerializedName("product_icon_dark") var productIconDark: String? = null,
-    @SerializedName("user_state") var userStatus :String? = null,
+    @SerializedName("user_state") var userStatus: String? = null,
     @SerializedName("user_balance_amt") var userBalanceAmount: String? = null,
     @SerializedName("installment_amt") var installmentAmount: String? = null,
     @SerializedName("cta") var cta: Cta? = Cta()
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Cta(
@@ -57,7 +57,7 @@ data class Cta(
     @SerializedName("android_url") var androidUrl: String? = null,
     @SerializedName("ios_url") var iosUrl: String? = null,
     @SerializedName("bottomsheet") var bottomsheet: WidgetBottomsheet? = WidgetBottomsheet()
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class WidgetBottomsheet(
@@ -73,7 +73,7 @@ data class WidgetBottomsheet(
     @SerializedName("footnote") var footnote: String? = null,
     @SerializedName("footnote_icon_light") var footnoteIconLight: String? = null,
     @SerializedName("footnote_icon_dark") var footnoteIconDark: String? = null
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class ActivationBottomSheetButtons(
@@ -81,11 +81,11 @@ data class ActivationBottomSheetButtons(
     @SerializedName("button_text_color") var buttonTextColor: String? = null,
     @SerializedName("button_color") var buttonColor: String? = null,
     @SerializedName("button_url") var buttonUrl: String? = null
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class ActivationBottomSheetDescriptions(
     @SerializedName("line_icon_dark") var lineIconDark: String? = null,
     @SerializedName("line_icon_light") var lineIconLight: String? = null,
     @SerializedName("text") var text: String? = null
-): Parcelable
+) : Parcelable

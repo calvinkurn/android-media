@@ -1,22 +1,26 @@
-package com.tokopedia.pdp.fintech.view.adapter
+package com.tokopedia.pdp.fintech.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.pdp.fintech.adapter.GopayLinkBenefitAdapter.BenefitTextViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ActivationBottomSheetDescriptions
-import com.tokopedia.pdp.fintech.view.adapter.GopayLinkBenefitAdapter.*
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 
 
-class GopayLinkBenefitAdapter(private var arrayOfFeatures: ArrayList<ActivationBottomSheetDescriptions>,val context: Context) :
+class GopayLinkBenefitAdapter(
+    private var arrayOfFeatures: ArrayList<ActivationBottomSheetDescriptions>,
+    val context: Context
+) :
     RecyclerView.Adapter<BenefitTextViewHolder>() {
-    inner class BenefitTextViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView) {
-        val greenTickActivationPage = itemView.findViewById<ImageUnify>(R.id.greenTickActivationPage)
+    inner class BenefitTextViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val greenTickActivationPage =
+            itemView.findViewById<ImageUnify>(R.id.greenTickActivationPage)
         val benifitsText = itemView.findViewById<Typography>(R.id.activationGopayBenefit)
 
     }
@@ -52,7 +56,7 @@ class GopayLinkBenefitAdapter(private var arrayOfFeatures: ArrayList<ActivationB
     }
 
     override fun getItemCount(): Int {
-       return arrayOfFeatures.size
+        return arrayOfFeatures.size
     }
 
     fun updateData(descriptions: ArrayList<ActivationBottomSheetDescriptions>) {

@@ -63,10 +63,10 @@
         android:id="@+id/findayaContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/unify_space_16"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/supervisedContainer"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -85,9 +85,9 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/findayaIcon"
             android:layout_width="51dp"
-            android:padding="5dp"
             android:layout_height="30dp"
-            android:layout_marginStart="4dp" />
+            android:layout_marginStart="4dp"
+            android:padding="5dp" />
 
     </LinearLayout>
 
@@ -96,11 +96,11 @@
         android:id="@+id/supervisedContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="@dimen/unify_space_16"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/findayaContainer"
         app:layout_constraintTop_toBottomOf="@id/btnRegister">
@@ -117,9 +117,9 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/supervisedIcon"
             android:layout_width="51dp"
-            android:padding="5dp"
             android:layout_height="30dp"
-            android:layout_marginStart="4dp" />
+            android:layout_marginStart="4dp"
+            android:padding="5dp" />
 
     </LinearLayout>
 

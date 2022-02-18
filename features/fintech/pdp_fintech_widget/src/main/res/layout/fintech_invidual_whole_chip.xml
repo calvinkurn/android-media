@@ -21,10 +21,10 @@
                 android:id="@+id/partnerIcon"
                 android:layout_width="44dp"
                 android:layout_height="26dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="8dp"
                 android:layout_marginTop="@dimen/pdp_fintech_16_dp"
                 android:layout_marginBottom="@dimen/pdp_fintech_16_dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -42,8 +42,8 @@
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginBottom="@dimen/dp_10"
-                app:typographyType="body_3"
                 app:layout_goneMarginLeft="10dp"
+                app:typographyType="body_3"
                 tools:text="Rp1.dsf250*10." />
 
             <com.tokopedia.unifyprinciples.Typography

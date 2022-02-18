@@ -1,30 +1,33 @@
 package com.tokopedia.pdp.fintech.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
+import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.di.components.FintechWidgetComponent
-import com.tokopedia.pdp.fintech.view.adapter.GopayLinkBenefitAdapter
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet
-import com.tokopedia.product.detail.common.ProductTrackingConstant
-import com.tokopedia.track.TrackApp
+import javax.inject.Inject
 
 
-class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<FintechWidgetComponent>{
+class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<FintechWidgetComponent> {
 
-    private val pdpSimulationComponent: FintechWidgetComponent by lazy { initInjector() }
+    private val fintechWidgetComponent: FintechWidgetComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
+
+    @Inject
+    lateinit var pdpWidgetAnalytics: PdpFintechWidgetAnalytics
+
 
     override fun getNewFragment(): Fragment? = null
-    lateinit var  bundle: Bundle
+    lateinit var bundle: Bundle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent.extras?.let{
+        fintechWidgetComponent.inject(this)
+        intent.extras?.let {
             bundle = it
         }
         hideTitleAndHomeButton()
@@ -39,12 +42,13 @@ class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<Fintech
 
     private fun openChooseBankBottomSheet() {
 
-        GopayLinkBenefitBottomSheet().showBottomSheet( supportFragmentManager, bundle).setOnDismissListener {
-            finish()
-        }
+        GopayLinkBenefitBottomSheet().showBottomSheet(supportFragmentManager, bundle)
+            .setOnDismissListener {
+                finish()
+            }
     }
 
-    override fun getComponent() = pdpSimulationComponent
+    override fun getComponent() = fintechWidgetComponent
 
 
     private fun initInjector() =
@@ -54,54 +58,9 @@ class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<Fintech
                     .baseAppComponent
             ).build()
 
+
+    fun sendAnalytic(bottomSheetClickEvent: FintechWidgetAnalyticsEvent.ActivationBottomSheetClick) {
+        pdpWidgetAnalytics.sendAnalyticsEvent(bottomSheetClickEvent)
+    }
+
 }
-
-
-//object Fintech{
-//    const val FINTECH_CURRENT_SITE  = "TokopediaFintech"
-//    const val FINTECH_BOTTOMSHEET_BUSINESS = "fintechPaylater"
-//    const val EVENT_VIEW_BOTTOMSHEET = "viewFintechIris"
-//    const val ACTION_VIEW_BOTTOMSHEET = "bottom sheet bnpl - impression"
-//    const val EVENT_CLICK_BOTTOMSHEET = "clickFintech"
-//    const val ACTION_CLICK_BOTTOMSHEET =   "bottom sheet bnpl - click"
-//    const val EVENT_FINTECH_BOTTOMSHEET_CATEGORY = "fin - activation bottom sheet"
-//
-//}
-
-
-//fun fintechActivationBottomSheetImpression(
-//    userStatus: String,
-//    gatewayCode: String,
-//    userId:String,
-//    ctaWording:String
-//)
-//{
-//    val mapEvent = hashMapOf<String, Any>(
-//        "event" to ProductTrackingConstant.Fintech.EVENT_VIEW_BOTTOMSHEET,
-//        "eventAction" to ProductTrackingConstant.Fintech.ACTION_VIEW_BOTTOMSHEET,
-//        "eventCategory" to ProductTrackingConstant.Fintech.EVENT_FINTECH_BOTTOMSHEET_CATEGORY,
-//        "eventLabel" to "$userStatus - $gatewayCode - $ctaWording - $userId",
-//        "businessUnit" to ProductTrackingConstant.Fintech.FINTECH_BOTTOMSHEET_BUSINESS,
-//        "currentSite" to ProductTrackingConstant.Fintech.FINTECH_CURRENT_SITE
-//    )
-//    TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-//}
-//
-//fun fintechActivationClickBottomSheet(
-//    userStatus: String,
-//    gatewayCode: String,
-//    userId:String,
-//    redirectionUrl: String,
-//    ctaWording:String
-//)
-//{
-//    val mapEvent = hashMapOf<String, Any>(
-//        "event" to ProductTrackingConstant.Fintech.EVENT_CLICK_BOTTOMSHEET,
-//        "eventAction" to ProductTrackingConstant.Fintech.ACTION_CLICK_BOTTOMSHEET,
-//        "eventCategory" to ProductTrackingConstant.Fintech.EVENT_FINTECH_BOTTOMSHEET_CATEGORY,
-//        "eventLabel" to "$userStatus - $gatewayCode - $redirectionUrl - $ctaWording - $userId",
-//        "businessUnit" to ProductTrackingConstant.Fintech.FINTECH_BOTTOMSHEET_BUSINESS,
-//        "currentSite" to ProductTrackingConstant.Fintech.FINTECH_CURRENT_SITE
-//    )
-//    TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-//}
