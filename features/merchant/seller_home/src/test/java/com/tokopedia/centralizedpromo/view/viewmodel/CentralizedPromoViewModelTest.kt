@@ -18,6 +18,7 @@ import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,6 +67,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
+    @RelaxedMockK
+    lateinit var abTestPlatform: AbTestPlatform
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -118,6 +122,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase,
             remoteConfig,
             sharedPref,
+            abTestPlatform,
             coroutineTestRule.dispatchers
         )
     }
@@ -410,6 +415,12 @@ class CentralizedPromoViewModelTest {
         coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns true
+        coEvery {
+            abTestPlatform.getString(
+                "MVProductEntryPoint",
+                ""
+            )
+        } returns "MVProductEntryPoint"
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -443,6 +454,12 @@ class CentralizedPromoViewModelTest {
         coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
+        coEvery {
+            abTestPlatform.getString(
+                "MVProductEntryPoint",
+                ""
+            )
+        } returns "MVProductEntryPoint"
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -453,6 +470,82 @@ class CentralizedPromoViewModelTest {
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "sellerapp://create-voucher-product"
         assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink == expectedApplink)
+    }
+
+    @Test
+    fun `When voucher product is disabled, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            abTestPlatform.getString(
+                "MVProductEntryPoint",
+                ""
+            )
+        } returns ""
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(5) == false)
+    }
+
+    @Test
+    fun `When voucher product isEnabled key throw exception, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            abTestPlatform.getString(
+                "MVProductEntryPoint",
+                ""
+            )
+        } throws MessageErrorException()
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(5) == false)
     }
 
     @Test

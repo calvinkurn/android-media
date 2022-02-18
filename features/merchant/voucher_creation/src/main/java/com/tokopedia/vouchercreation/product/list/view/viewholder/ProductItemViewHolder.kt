@@ -17,6 +17,7 @@ class ProductItemViewHolder(
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int)
+        fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int)
         fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int
         fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int)
     }
@@ -30,6 +31,10 @@ class ProductItemViewHolder(
             val product = binding.root.getTag(R.id.product) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             if (!product.isSelectAll) productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
+        }
+        binding.iuRemoveProduct.setOnClickListener {
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            productItemClickListener.onRemoveProductButtonClicked(adapterPosition, dataSetPosition)
         }
         binding.variantHeader.setOnClickListener {
             val product = binding.root.getTag(R.id.product) as ProductUiModel

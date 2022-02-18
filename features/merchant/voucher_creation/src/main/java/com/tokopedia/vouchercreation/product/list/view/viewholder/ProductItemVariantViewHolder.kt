@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.product.list.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemProductListVariantLayoutBinding
@@ -29,6 +30,7 @@ class ProductItemVariantViewHolder(
         this.variantIndex = variantIndex
         binding.root.setTag(R.id.product_variant, productVariant)
         binding.cbuVariantItem.isChecked = productVariant.isSelected
+        binding.iuRemoveVariant.isVisible = productVariant.isEditing
         binding.tpgVariantName.text = productVariant.variantName
         binding.tpgSku.text = productVariant.sku
         binding.tpgProductPrice.text = productVariant.priceTxt

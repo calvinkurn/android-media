@@ -77,6 +77,11 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         listener.onProductCheckBoxClicked(isSelected)
     }
 
+    override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
+        productUiModelList.removeAt(dataSetPosition)
+        notifyItemRemoved(adapterPosition)
+    }
+
     override fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int {
         productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
         return productUiModelList[dataSetPosition].getSelectedVariants().size

@@ -16,6 +16,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -26,6 +27,9 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         private val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
 
         private const val EXTRA_FEATURE_ACCESS = "extra_feature_access"
+
+        private const val MVC_PRODUCT_ROLLENCE_KEY = "MVProductEntryPoint"
+        private const val MVC_PRODUCT_VARIANT_ON = "MVProductEntryPoint"
 
         fun createInstance(access: ProductManageAccess): ProductManageBottomSheet {
             return ProductManageBottomSheet().apply {
@@ -75,7 +79,11 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
         product?.let { product ->
-            val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
+            val menu = createProductManageMenu(
+                product,
+                isPowerMerchantOrOfficialStore,
+                getIsProductCouponEnabled()
+            )
             
             if (!GlobalConfig.isSellerApp()) {
                 val sellerFeatureList = createSellerFeatureList(product)
@@ -112,7 +120,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
     private fun createProductManageMenu(
         product: ProductUiModel,
-        isPowerMerchantOrOfficialStore: Boolean
+        isPowerMerchantOrOfficialStore: Boolean,
+        isProductCouponEnabled: Boolean
     ): List<Visitable<*>> {
         val menuList = mutableListOf<Visitable<*>>()
 
@@ -144,7 +153,9 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         }
                     }
 
-                    add(CreateProductCoupon(product))
+                    if (isProductCouponEnabled) {
+                        add(CreateProductCoupon(product))
+                    }
 
                     if(broadcastChat) {
                         add(CreateBroadcastChat(product))
@@ -200,6 +211,17 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
         return featureList
+    }
+
+    private fun getIsProductCouponEnabled(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                MVC_PRODUCT_ROLLENCE_KEY,
+                ""
+            ) == MVC_PRODUCT_VARIANT_ON
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     fun init(

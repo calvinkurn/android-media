@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.product.list.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -17,12 +23,18 @@ import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentMvcManageProductBinding
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
+import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
+import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
 import com.tokopedia.vouchercreation.product.list.view.adapter.ProductListAdapter
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.ManageProductViewModel
+import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
 import javax.inject.Inject
 
-class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProductItemClickListener {
+class ManageProductFragment : BaseDaggerFragment(),
+        ProductListAdapter.OnProductItemClickListener,
+        ManageProductActivity.OnBackPressedListener {
 
     companion object {
 
@@ -96,34 +108,41 @@ class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProduct
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupView(binding)
+        observeLiveData()
 
         val isEditing = arguments?.getBoolean(BUNDLE_KEY_IS_EDITING, true) ?: true
-//        val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
-//        viewModel.setMaxProductLimit(maxProductLimit)
 
-//        val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
-//        viewModel.setCouponSettings(couponSettings)
-//        val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
-//        viewModel.setSelectedProductIds(selectedProductIds ?: ArrayList())
-//        val shopId = userSession.shopId
+        val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
+        viewModel.setMaxProductLimit(maxProductLimit)
 
-        // render selected products from voucher creation process
-//        val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
-//        selectedProducts?.run {
-//            if (selectedProducts.isNotEmpty()) {
-//                val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isEditing, selectedProducts)
-//                adapter?.setProductList(updatedProductList)
-//            }
-//            viewModel.setSetSelectedProducts(selectedProducts.toList())
-//        }
-        // TODO : if only product ids available => hit product list => impl lazy variant load => match variant selection manually
+        val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
+        viewModel.setCouponSettings(couponSettings)
 
-//        observeLiveData()
+        val shopId = userSession.shopId
+        val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
+        var selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
+
+        // always render ui model rather than product ids
+        if (!selectedProducts.isNullOrEmpty()) {
+            viewModel.setSetSelectedProducts(selectedProducts.toList())
+            val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isEditing, selectedProducts)
+            adapter?.setProductList(updatedProductList)
+        } else {
+            if (!selectedProductIds.isNullOrEmpty()) {
+                viewModel.setSelectedProductIds(selectedProductIds)
+                val selectedParentProductIds = viewModel.getSelectedParentProductIds()
+                viewModel.getProductList(
+                        shopId = shopId,
+                        selectedProductIds = selectedParentProductIds
+                )
+            }
+        }
     }
 
     private fun setupView(binding: FragmentMvcManageProductBinding?) {
         setupSelectionBar(binding)
         setupProductListView(binding)
+        setupAddProductButton(binding)
     }
 
     private fun setupProductListView(binding: FragmentMvcManageProductBinding?) {
@@ -150,11 +169,21 @@ class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProduct
         }
     }
 
+    private fun setupAddProductButton(binding: FragmentMvcManageProductBinding?) {
+        binding?.tpgAddProduct?.setOnClickListener {
+            navigateToAddProductPage()
+        }
+        binding?.buttonAddProduct?.setOnClickListener {
+            navigateToAddProductPage()
+        }
+    }
+
     private fun observeLiveData() {
         viewModel.selectedProductListLiveData.observe(viewLifecycleOwner, { selectedProducts ->
             when {
                 selectedProducts.isEmpty() -> {
                     binding?.tpgAddProduct?.isEnabled = true
+                    binding?.tpgAddProduct?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
                     viewModel.isSelectAllMode = false
                     binding?.cbuSelectAllProduct?.isChecked = false
                     val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
@@ -164,9 +193,11 @@ class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProduct
                 }
                 selectedProducts.size == viewModel.getMaxProductLimit() -> {
                     binding?.tpgAddProduct?.isEnabled = false
+                    binding?.tpgAddProduct?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 }
                 else -> {
                     binding?.tpgAddProduct?.isEnabled = true
+                    binding?.tpgAddProduct?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
                     val size = selectedProducts.size
                     binding?.tpgSelectAll?.text = "$size Produk dipilih"
                     binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
@@ -175,6 +206,71 @@ class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProduct
             val maxProductLimit = viewModel.getMaxProductLimit()
             binding?.tpgSelectedProductCounter?.text = "Jumlah Produk (${selectedProducts.size}/$maxProductLimit)"
         })
+        viewModel.getProductListResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    val productData = result.data.productList.data
+                    val productUiModels = viewModel.mapProductDataToProductUiModel(productData)
+                    viewModel.setProductUiModels(productUiModels)
+                    if (productUiModels.isNotEmpty()) {
+                        binding?.selectionBar?.show()
+                        binding?.emptyProductsLayout?.hide()
+                        viewModel.getCouponSettings()?.run {
+                            viewModel.validateProductList(
+                                    benefitType = viewModel.getBenefitType(this),
+                                    couponType = viewModel.getCouponType(this),
+                                    benefitIdr = viewModel.getBenefitIdr(this),
+                                    benefitMax = viewModel.getBenefitMax(this),
+                                    benefitPercent = viewModel.getBenefitPercent(this),
+                                    minPurchase = viewModel.getMinimumPurchase(this),
+                                    productIds = viewModel.getIdsFromProductList(productUiModels)
+                            )
+                        }
+                    } else {
+                        binding?.selectionBar?.hide()
+                        binding?.emptyProductsLayout?.show()
+                    }
+                }
+                is Fail -> {
+                    // TODO : handle negative case
+                }
+            }
+        })
+        viewModel.validateVoucherResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    val validationResults = result.data.response.voucherValidationData.validationPartial
+                    val productList = viewModel.getProductUiModels()
+                    // add variants and error message (if any)
+                    val updatedProductList = viewModel.applyValidationResult(
+                            productList = productList,
+                            validationResults = validationResults
+                    )
+                    // set product variant selection
+                    val selectedProductIds = viewModel.getSelectedProductIds()
+                    val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds)
+                    adapter?.setProductList(finalProductList)
+                }
+                is Fail -> {
+                    // TODO : handle negative case
+                }
+            }
+        })
+    }
+
+    private fun navigateToAddProductPage() {
+        val couponSettings = viewModel.getCouponSettings()
+        val maxProductLimit = viewModel.getMaxProductLimit()
+        val addProductIntent = Intent(requireContext(), AddProductActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putInt(UpdateCouponActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(UpdateCouponActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProducts = arrayListOf<ProductUiModel>()
+                selectedProducts.addAll(adapter?.getSelectedProducts() ?: listOf())
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
+            })
+        }
+        activity?.startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean) {
@@ -186,5 +282,20 @@ class ManageProductFragment : BaseDaggerFragment(), ProductListAdapter.OnProduct
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
         viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+    }
+
+    override fun onBackPressed() {
+        val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
+        val extraSelectedProducts = ArrayList<ProductUiModel>()
+        extraSelectedProducts.addAll(selectedProducts)
+        val resultIntent = Intent().apply {
+            putParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS, extraSelectedProducts)
+        }
+        this.activity?.setResult(Activity.RESULT_OK, resultIntent)
+        this.activity?.finish()
+    }
+
+    fun addProducts(selectedProducts: List<ProductUiModel>) {
+        adapter?.addProducts(selectedProducts)
     }
 }

@@ -60,7 +60,7 @@ class CouponMapper @Inject constructor() {
 
         val products = coupon.productIds.map { productId -> CouponProduct(productId.toString(), EMPTY_STRING, NumberConstant.ZERO) }
 
-        return Coupon(coupon.id.toLong(), information, setting, products)
+        return Coupon(coupon.id.toLong(), information, setting, products, coupon.products)
     }
 
 }

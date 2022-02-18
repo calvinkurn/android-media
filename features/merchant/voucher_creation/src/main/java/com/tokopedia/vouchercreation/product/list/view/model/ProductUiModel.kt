@@ -5,8 +5,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ProductUiModel(
-        var isEditing:Boolean = false,
-        var isEnabled:Boolean = true,
+        var isAdding: Boolean = false,
+        var isEditing: Boolean = false,
+        var isViewing: Boolean = false,
+        var isEnabled: Boolean = true,
         var isSelectAll: Boolean = false,
         var isSelected: Boolean = false,
         var isVariantSelected: Boolean = false,

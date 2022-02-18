@@ -11,7 +11,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
-import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -21,7 +21,7 @@ import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCoupo
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
-import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -245,6 +245,20 @@ class CouponPreviewViewModel @Inject constructor(
                     id = couponProduct.id,
                     imageUrl = couponProduct.imageUrl,
                     sold = couponProduct.soldCount
+            )
+        }
+    }
+
+    fun mapSelectedProductIdsToProductUiModels(selectedProductIds: List<ProductId>): List<ProductUiModel> {
+        return selectedProductIds.map { productId ->
+            ProductUiModel(
+                    id = productId.parentProductId.toString(),
+                    variants = productId.childProductId.map { variantId ->
+                        VariantUiModel(
+                                isSelected = true,
+                                variantId = variantId.toString()
+                        )
+                    }
             )
         }
     }

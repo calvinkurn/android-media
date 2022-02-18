@@ -45,6 +45,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
             ::navigateToProductListPage,
             {},
             {},
+            {},
             ::onDuplicateCouponSuccess,
             couponId,
             CouponPreviewFragment.Mode.DUPLICATE
