@@ -242,8 +242,8 @@
     <string name="play_bro_product_chooser_stock">Stok %d</string>
 
     <!-- Product Tag Summary -->
-    <string name="play_bro_product_summary_title">Product terpilih</string>
-    <string name="play_bro_product_summary_title_with_count">Product terpilih (%d/%d)</string>
+    <string name="play_bro_product_summary_title">Produk terpilih</string>
+    <string name="play_bro_product_summary_title_with_count">Produk terpilih (%d/%d)</string>
     <string name="play_bro_product_add_more">Tambah</string>
     <string name="play_bro_product_summary_done">Selesai</string>
     <string name="play_bro_product_summary_empty_title">Oops, kamu belum punya produk terpilih</string>
