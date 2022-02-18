@@ -389,7 +389,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     buttonGiftingAddon.apply {
                         state = ButtonGiftingAddOnView.State.ACTIVE
                         setAddOnButtonData(addOn)
-                        setOnButtonClickedListener {
+                        setOnClickListener {
                             listener.onClickAddOnButton(addOn, product, shop)
                         }
                         show()
