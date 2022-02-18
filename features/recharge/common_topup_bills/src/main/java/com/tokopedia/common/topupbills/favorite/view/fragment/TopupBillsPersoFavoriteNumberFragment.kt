@@ -114,7 +114,6 @@ class TopupBillsPersoFavoriteNumberFragment :
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentFavoriteNumberBinding? = null
-    private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var clientNumbers: List<TopupBillsPersoFavNumberDataView> = listOf()
 
@@ -148,12 +147,9 @@ class TopupBillsPersoFavoriteNumberFragment :
             number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds =
                 arguments.getIntegerArrayList(ARG_PARAM_DG_CATEGORY_IDS)?.toList() ?: listOf()
-            operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
-
-        operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -718,7 +714,6 @@ class TopupBillsPersoFavoriteNumberFragment :
     companion object {
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
-        const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
@@ -731,7 +726,6 @@ class TopupBillsPersoFavoriteNumberFragment :
 
         fun newInstance(
             clientNumberType: String, number: String,
-            operatorData: TelcoCatalogPrefixSelect?,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
             loyaltyStatus: String
         ): Fragment {
@@ -742,7 +736,6 @@ class TopupBillsPersoFavoriteNumberFragment :
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
             bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
-            bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
             fragment.arguments = bundle
             return fragment
         }

@@ -13,19 +13,15 @@ import javax.inject.Inject
 
 class DigitalPDPTagihanListrikRepositoryImpl @Inject constructor(
     private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
-    private val rechargeCatalogPrefixSelectRepo: RechargeCatalogPrefixSelectRepository,
     private val rechargeCatalogMenuDetailRepo: RechargeCatalogMenuDetailRepository,
     private val rechargeAddToCardRepo: RechargeAddToCartRepository,
-    private val rechargeCatalogProduct: RechargeCatalogRepository,
     private val rechargeSelectGroup: RechargeCatalogOperatorSelectGroupRepository,
     private val rechargeCatalogDynamicInputRepository: RechargeCatalogDynamicInputRepository,
     private val rechargeInquiryRepository: RechargeInquiryRepository
 ): DigitalPDPTagihanListrikRepository,
     RechargeFavoriteNumberRepository by rechargeFavoriteNumberRepo,
-    RechargeCatalogPrefixSelectRepository by rechargeCatalogPrefixSelectRepo,
     RechargeCatalogMenuDetailRepository by rechargeCatalogMenuDetailRepo,
     RechargeAddToCartRepository by rechargeAddToCardRepo,
-    RechargeCatalogRepository by rechargeCatalogProduct,
     RechargeCatalogOperatorSelectGroupRepository by rechargeSelectGroup,
     RechargeCatalogDynamicInputRepository by rechargeCatalogDynamicInputRepository,
     RechargeInquiryRepository by rechargeInquiryRepository
