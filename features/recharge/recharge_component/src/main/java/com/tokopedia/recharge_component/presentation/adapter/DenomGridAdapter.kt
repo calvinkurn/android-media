@@ -70,8 +70,4 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
     fun clearDenomGridData(){
         this.listDenom.clear()
     }
-
-    companion object{
-        const val MIN_SIZE = 1
-    }
 }

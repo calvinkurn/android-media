@@ -143,10 +143,8 @@ class DenomFullViewHolder(
                     else CardUnify.TYPE_BORDER
 
                 if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE && isOnlyOneSize){
-                    setMargin(0, 0,
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-                            .toInt()
-                        , 0)
+                    setMargin(0, 0, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                            .toInt(), 0)
                 }
             }
 
