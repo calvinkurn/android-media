@@ -156,4 +156,6 @@ class UiModelBuilder {
         isActive = isActive,
         editStatus = editStatus,
     )
+
+    fun buildException(message: String = "Network Error") = Exception(message)
 }
