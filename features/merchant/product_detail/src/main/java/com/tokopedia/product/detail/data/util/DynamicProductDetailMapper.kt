@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import android.os.Build
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -185,7 +186,9 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.AR_BUTTON -> {
-                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
+                    }
                 }
             }
         }
