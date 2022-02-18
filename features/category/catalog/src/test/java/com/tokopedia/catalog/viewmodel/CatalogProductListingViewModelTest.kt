@@ -98,6 +98,15 @@ class CatalogProductListingViewModelTest {
     }
 
     @Test
+    fun `Get Catalog Product Response Fail`() {
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onError(Throwable("No Data"))
+        }
+        viewModel.fetchProductListing(RequestParams())
+        if(viewModel.mProductList.value is Fail) { assert(true) }else { assert(false) }
+    }
+
+    @Test
     fun `Get Catalog Product Quick Filter Response Success`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_quick_filter_response.json"),SearchFilterResponse().javaClass)
         val data = mockGqlResponse.getData(SearchFilterResponse::class.java) as SearchFilterResponse

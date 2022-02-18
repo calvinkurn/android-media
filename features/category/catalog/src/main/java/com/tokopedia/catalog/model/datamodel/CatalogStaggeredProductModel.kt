@@ -2,9 +2,10 @@ package com.tokopedia.catalog.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 
-data class CatalogProductsContainerDataModel (val name : String = "", val type : String = "",
-                                    val catalogId: String, val catalogUrl : String?)
+data class CatalogStaggeredProductModel(val name : String = "", val type : String = "",
+                                   val comparisonItem : CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison)
     : BaseCatalogDataModel {
 
     override fun name(): String = name
@@ -16,12 +17,10 @@ data class CatalogProductsContainerDataModel (val name : String = "", val type :
     }
 
     override fun equalsWith(newData: BaseCatalogDataModel): Boolean {
-        return true
+        return newData === this
     }
 
     override fun getChangePayload(newData: BaseCatalogDataModel): Bundle? {
         return null
     }
-
 }
-
