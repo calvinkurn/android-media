@@ -28,6 +28,7 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
             listDenom[position],
             denomWidgetType,
             position == selectedProductIndex,
+            listDenom.size == MIN_SIZE,
             position
         )
     }
@@ -84,5 +85,9 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
 
     fun clearDenomFullData() {
         this.listDenom.clear()
+    }
+
+    companion object{
+        const val MIN_SIZE = 1
     }
 }

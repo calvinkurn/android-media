@@ -20,7 +20,7 @@ class DigitalDenomMapper @Inject constructor() {
 
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomFullMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
+            getDenomFullMapper(dataCollectionMCCM?.firstOrNull()?.name,
                 dataCollectionMCCM, true),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
             isRefresheedFilter
@@ -34,7 +34,7 @@ class DigitalDenomMapper @Inject constructor() {
 
         return DenomMCCMModel(
             getDenomGridMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomGridMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
+            getDenomGridMapper(dataCollectionMCCM?.firstOrNull()?.name,
                 dataCollectionMCCM, true)
         )
     }
@@ -141,12 +141,6 @@ class DigitalDenomMapper @Inject constructor() {
                 productDescriptions = it.attributes.productDescriptions
             )
         }
-    }
-
-    private fun mappingMCCMTitle(mccmTitle: String?): String {
-        return if (!mccmTitle.isNullOrEmpty())
-            mccmTitle.split(MCCM_LIMITER).get(1)
-        else ""
     }
 
     companion object {

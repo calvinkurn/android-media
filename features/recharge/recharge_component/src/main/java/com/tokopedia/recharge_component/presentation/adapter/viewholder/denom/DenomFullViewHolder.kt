@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
@@ -22,7 +23,7 @@ class DenomFullViewHolder(
 ): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(denomFull: DenomData, denomType: DenomWidgetEnum,
-             isSelectedItem: Boolean, position: Int){
+             isSelectedItem: Boolean, isOnlyOneSize: Boolean, position: Int){
 
         with(binding){
             tgDenomFullTitle.run {
@@ -125,7 +126,7 @@ class DenomFullViewHolder(
             }
 
             cardDenomFull.run {
-                layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE){
+                layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || isOnlyOneSize){
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_full_width).toInt()
 
@@ -140,6 +141,13 @@ class DenomFullViewHolder(
                 cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
                     if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) CardUnify.TYPE_SHADOW
                     else CardUnify.TYPE_BORDER
+
+                if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE && isOnlyOneSize){
+                    setMargin(0, 0,
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                            .toInt()
+                        , 0)
+                }
             }
 
             root.setOnClickListener {
