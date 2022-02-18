@@ -44,7 +44,7 @@ class ProductCardVideoView(
 
         // Content frame.
         contentFrame = findViewById(R.id.exo_content_frame)
-        contentFrame?.resizeMode = resizeMode
+        updateResizeModeBasedOnScaleType(scaleType)
 
         surfaceView = TextureView(context)
         surfaceView?.id = R.id.product_video_texture
@@ -58,11 +58,29 @@ class ProductCardVideoView(
 
     fun setScaleType(@ScaleType scaleType: Int) {
         this.scaleType = scaleType
+        updateResizeModeBasedOnScaleType(scaleType)
     }
 
     @ScaleType
     fun getScaleType() : Int {
         return this.scaleType
+    }
+
+    private fun updateResizeModeBasedOnScaleType(@ScaleType scaleType: Int) {
+        when(scaleType) {
+            ScaleType.TYPE_CENTER_CROP -> setResizeModeZoom()
+            ScaleType.TYPE_FIT_CENTER -> setResizeModeFit()
+        }
+    }
+
+    private fun setResizeModeZoom() {
+        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        contentFrame?.resizeMode = resizeMode
+    }
+
+    private fun setResizeModeFit() {
+        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        contentFrame?.resizeMode = resizeMode
     }
 
     private fun applyStyledAttributes(
