@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -53,6 +54,11 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
         section: RechargeHomepageSections.Section
     ){
         with(bind){
+            try {
+                contentContainer.setCardBackgroundColor(Color.parseColor(section.label2))
+            }catch (e: Throwable){
+                e.printStackTrace()
+            }
             parallaxImage.loadImage(section.mediaUrl)
             tvSectionTitle.text = section.title
             tvSectionSeeAll.text = section.textLink
