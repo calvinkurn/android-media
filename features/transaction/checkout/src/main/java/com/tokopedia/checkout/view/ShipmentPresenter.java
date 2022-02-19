@@ -153,8 +153,6 @@ import timber.log.Timber;
 
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.ADD_ON_ORDER_LEVEL;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.ADD_ON_PRODUCT_LEVEL;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -2213,32 +2211,40 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void updateAddOnsData(SaveAddOnStateResult saveAddOnStateResult) {
+    public void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult) {
         for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
-            if (addOnResult.getAddOnLevel().equalsIgnoreCase(ADD_ON_ORDER_LEVEL)) {
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                    if ((shipmentCartItemModel.getCartString()+"-0").equalsIgnoreCase(addOnResult.getAddOnKey())) {
-                        AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
-                        setAddOnsData(addOnsDataModel, addOnResult);
-                    }
-                }
-            } else if (addOnResult.getAddOnLevel().equalsIgnoreCase(ADD_ON_PRODUCT_LEVEL)) {
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                    List<CartItemModel> cartItemModelList = shipmentCartItemModel.getCartItemModels();
-                    for (int i=0; i<cartItemModelList.size(); i++) {
-                        CartItemModel cartItemModel = cartItemModelList.get(i);
-                        String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
-                        if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
-                            AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
-                            setAddOnsData(addOnsDataModel, addOnResult);
-                        }
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                List<CartItemModel> cartItemModelList = shipmentCartItemModel.getCartItemModels();
+                for (int i=0; i<cartItemModelList.size(); i++) {
+                    CartItemModel cartItemModel = cartItemModelList.get(i);
+                    String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
+                    if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
+                    // TODO : delete after get real response
+                    // if (addOnResult.getAddOnKey().equalsIgnoreCase("12345")) {
+                        AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
+                        setAddOnsData(addOnsDataModel, addOnResult, 0);
                     }
                 }
             }
         }
     }
 
-    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult) {
+    @Override
+    public void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult) {
+        for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if ((shipmentCartItemModel.getCartString()+"-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                // TODO : delete after get real response
+                // if (addOnResult.getAddOnKey().equalsIgnoreCase("12345")) {
+                    AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
+                    setAddOnsData(addOnsDataModel, addOnResult, 1);
+                }
+            }
+        }
+    }
+
+    // identifier : 0 = product level, 1  = order level
+    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier) {
         addOnsDataModel.setStatus(addOnResult.getStatus());
 
         AddOnButtonResult addOnButtonResult = addOnResult.getAddOnButton();
@@ -2289,5 +2295,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             listAddOnDataItem.add(addOnDataItemModel);
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
+        getView().updateAddOnsData(addOnsDataModel, identifier);
     }
 }

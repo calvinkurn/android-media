@@ -164,7 +164,7 @@ public interface ShipmentContract {
 
         void showPopUp(PopUpData popUpData);
 
-        void updateAddOnsData(AddOnsDataModel addOnsDataModel);
+        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
     }
 
     interface AnalyticsActionListener {
@@ -363,7 +363,9 @@ public interface ShipmentContract {
 
         void setCheckoutData(CheckoutData checkoutData);
 
-        void updateAddOnsData(SaveAddOnStateResult saveAddOnStateResult);
+        void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
+
+        void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
     }
 
 }
