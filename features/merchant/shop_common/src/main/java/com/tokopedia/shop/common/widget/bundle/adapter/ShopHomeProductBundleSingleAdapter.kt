@@ -24,12 +24,13 @@ class ShopHomeProductBundleSingleAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopHomeProductBundleSinglePackageViewHolder, position: Int) {
-        val currentBundle = bundleDetails[position]
+        val currentBundle = bundleDetails.getOrNull(position) ?: ShopHomeProductBundleDetailUiModel()
         holder.bind(currentBundle)
         holder.itemView.apply {
             setOnClickListener {
                 // deselect last selected bundle
-                bundleDetails[lastSelectedPosition].isSelected = false
+                val lastSelectedBundle = bundleDetails.getOrNull(lastSelectedPosition) ?: ShopHomeProductBundleDetailUiModel()
+                lastSelectedBundle.isSelected = false
                 notifyItemChanged(lastSelectedPosition)
 
                 // select new bundle
@@ -50,7 +51,7 @@ class ShopHomeProductBundleSingleAdapter(
 
         // set first bundle as default selected
         if (bundleDetails.isNotEmpty()) {
-            bundleDetails.first().isSelected = true
+            bundleDetails.firstOrNull()?.isSelected = true
         }
         notifyDataSetChanged()
     }

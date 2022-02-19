@@ -30,8 +30,9 @@ class ShopHomeProductBundleMultipleAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopHomeProductBundleMultiplePackageViewHolder, position: Int) {
+        val bundleProduct = bundleProducts.getOrNull(position) ?: ShopHomeBundleProductUiModel()
         holder.bind(
-                bundleProducts[position],
+                bundleProduct,
                 multipleBundleDetail,
                 multipleBundleParent,
                 position

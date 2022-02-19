@@ -14,10 +14,10 @@ class ShopHomeProductBundleWidgetAdapter(
         private val multipleProductBundleListener: MultipleProductBundleListener,
         private val singleProductBundleListener: SingleProductBundleListener,
         private val bundleListSize: Int,
-        private val widgetId: String,
-        private val widgetMasterId: String,
-        private val widgetType: String,
-        private val widgetName: String,
+        widgetId: String,
+        widgetMasterId: String,
+        widgetType: String,
+        widgetName: String,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -53,9 +53,10 @@ class ShopHomeProductBundleWidgetAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val bundleItem = bundleListItem.getOrNull(position) ?: ShopHomeProductBundleItemUiModel()
         when (holder) {
-            is ShopHomeProductBundleSingleViewHolder -> holder.bind(bundleListItem[position])
-            is ShopHomeProductBundleMultipleViewHolder -> holder.bind(bundleListItem[position])
+            is ShopHomeProductBundleSingleViewHolder -> holder.bind(bundleItem)
+            is ShopHomeProductBundleMultipleViewHolder -> holder.bind(bundleItem)
         }
     }
 
@@ -64,7 +65,8 @@ class ShopHomeProductBundleWidgetAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (bundleListItem[position].bundleType == PRODUCT_BUNDLE_SINGLE) {
+        val bundleItem = bundleListItem.getOrNull(position) ?: ShopHomeProductBundleItemUiModel()
+        return if (bundleItem.bundleType == PRODUCT_BUNDLE_SINGLE) {
             ShopHomeProductBundleSingleViewHolder.LAYOUT
         } else {
             ShopHomeProductBundleMultipleViewHolder.LAYOUT
