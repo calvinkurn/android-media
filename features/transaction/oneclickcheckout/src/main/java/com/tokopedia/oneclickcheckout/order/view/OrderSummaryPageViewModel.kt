@@ -792,9 +792,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
-        // Todo : set add on amount
         // Todo : set param on afpb
-        // Todo : calculate total
 
         // Add on currently only support single product on OCC
         val orderProduct = orderProducts.value.firstOrNull()
@@ -811,7 +809,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                             ?: 0.0
                             )
                     )
-
                 } else {
                     orderProduct.addOn = AddOnsDataModel()
                     orderProducts.value = listOf(orderProduct)

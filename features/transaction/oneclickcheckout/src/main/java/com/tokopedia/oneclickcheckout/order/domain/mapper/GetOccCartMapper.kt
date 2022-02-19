@@ -191,7 +191,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
 //            addOn = mapAddOns(product.addOns.firstOrNull())
-            addOn = mapAddOns(AddOnsResponse())
+//            addOn = mapAddOns(AddOnsResponse())
         }
         return orderProduct
     }
@@ -449,7 +449,8 @@ class GetOccCartMapper @Inject constructor() {
             AddOnsDataModel(
 //                    status = addOnsResponse.status,
                     status = 1,
-                    addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
+                    addOnsDataItemModelList = listOf(mapAddOnDataItem(AddOnsResponse.AddOnDataItem())),
+//                    addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
                     addOnsButtonModel = mapAddOnButton(addOnsResponse.addOnButton),
                     addOnsBottomSheetModel = mapAddOnBottomSheet(addOnsResponse.addOnBottomsheet),
             )
@@ -499,7 +500,7 @@ class GetOccCartMapper @Inject constructor() {
                 leftIconUrl = "https://fashionsista.co/downloadpng/png/20201006/discount-coupon-line-icon-e-commerce-royalty-free-vector.jpg",
 //                rightIconUrl = addOnButton.rightIconUrl,
                 description = "Kemasan & Kartu Ucapan",
-                action = addOnButton.action,
+                action = 1,
                 title = "Pelengkap Hadiah (Rp5.000)"
         )
     }

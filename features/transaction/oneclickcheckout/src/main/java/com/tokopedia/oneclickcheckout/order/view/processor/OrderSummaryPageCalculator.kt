@@ -196,6 +196,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val updatedProductIndex = arrayListOf<Int>()
             var totalPurchaseProtectionPrice = 0
             var totalAddOnPrice = 0.0
+            // This is for add on shop level
+            totalAddOnPrice += (orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice?.toDouble() ?: 0.0)
             for (productIndex in orderCart.products.indices) {
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
@@ -234,6 +236,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         purchaseProtectionPriceMultiplier = 1
                     }
                     totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
+                    // This is for add on product level
                     totalAddOnPrice += (product.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice?.toDouble() ?: 0.0)
                 }
             }
