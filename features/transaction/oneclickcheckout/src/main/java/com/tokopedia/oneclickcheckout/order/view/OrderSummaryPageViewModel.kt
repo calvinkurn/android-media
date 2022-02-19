@@ -120,7 +120,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             updateOrderProducts.value = emptyList()
             orderProfile.value = result.orderProfile
             orderPreferenceData = result.orderPreference
-            orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderProfile, result.addressState)) {
+            val isValidAddressState = !isInvalidAddressState(result.orderProfile, result.addressState)
+            orderPreference.value = if (result.throwable == null && isValidAddressState) {
                 OccState.FirstLoad(result.orderPreference)
             } else {
                 OccState.Failed(Failure(result.throwable))
@@ -803,6 +804,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER /*&& addOnResult.addOnKey == "${orderCart.cartString}-0"*/) {
                     orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
                     orderProducts.value = listOf(orderProduct)
+
+                    orderTotal.value = orderTotal.value.copy(
+                            orderCost = orderTotal.value.orderCost.copy(
+                                    addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                            ?: 0.0
+                            )
+                    )
+
                 } else {
                     orderProduct.addOn = AddOnsDataModel()
                     orderProducts.value = listOf(orderProduct)
@@ -812,6 +821,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderProducts.value = listOf(orderProduct)
             }
         }
+        calculateTotal()
     }
 
     override fun onCleared() {

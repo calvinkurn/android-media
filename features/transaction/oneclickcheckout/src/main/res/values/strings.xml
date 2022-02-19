@@ -31,6 +31,7 @@
     <string name="lbl_change_template">Ubah</string>
     <string name="lbl_order_summary">Ringkasan Belanja</string>
     <string name="lbl_total_item_price">Total Harga Barang</string>
+    <string name="lbl_total_add_on_price">Total Pelengkap Produk</string>
     <string name="lbl_purchase_protection_price">Total Proteksi Produk</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
 
