@@ -51,7 +51,6 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationChooseAddress
-import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
@@ -2735,7 +2734,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          isMoveToWishlist: Boolean,
                                          isFromGlobalCheckbox: Boolean,
-                                         isFromEditBundle: Boolean) {
+                                         isFromEditBundle: Boolean,
+                                         hasAddOns: Boolean) {
         var message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
 
         if (isMoveToWishlist) {
@@ -2759,7 +2759,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setTopLayoutVisibility()
 
         when {
-            removeAllItems -> {
+            removeAllItems || hasAddOns -> {
                 refreshCartWithSwipeToRefresh()
             }
             isFromEditBundle -> {

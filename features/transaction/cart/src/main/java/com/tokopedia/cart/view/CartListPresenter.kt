@@ -201,16 +201,20 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         view?.let {
             it.showProgressLoading()
 
+            var hasAddOns = false
             val removeAllItems = allCartItemData.size == removedCartItems.size
             val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
                 toBeDeletedCartIds.add(cartItemData.cartId)
+                for (addOnInfo in cartItemData.productInformationWithIcon) {
+                    if (addOnInfo.text.isNotEmpty()) hasAddOns = true
+                }
             }
 
             deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
             deleteCartUseCase.execute(
                     onSuccess = {
-                        onSuccessDeleteCartItems(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, isFromEditBundle)
+                        onSuccessDeleteCartItems(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, isFromEditBundle, hasAddOns)
                     },
                     onError = {
                         onErrorDeleteCartItems(forceExpandCollapsedUnavailableItems, it)
@@ -235,10 +239,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          addWishList: Boolean,
                                          isFromGlobalCheckbox: Boolean,
-                                         isFromEditBundle: Boolean) {
+                                         isFromEditBundle: Boolean,
+                                         hasAddOns: Boolean) {
         view?.let { view ->
             view.renderLoadGetCartDataFinish()
-            view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, isFromEditBundle)
+            view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, isFromEditBundle, hasAddOns)
 
             val params = view.generateGeneralParamValidateUse()
             if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
