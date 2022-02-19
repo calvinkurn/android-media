@@ -50,21 +50,9 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
             bundleParent: ShopHomeProductBundleItemUiModel,
             bundlePosition: Int
     ) {
+        setupContainerWidth()
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
-
-        if (bundleProductsSize == MIN_BUNDLE_PRODUCTS_SIZE) {
-            // change widget container width if bundle products size is 2
-            val constraintSet = ConstraintSet()
-            val params = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    WIDTH_FOR_MIN_BUNDLE_PRODUCTS_SIZE,
-                    itemView.resources.displayMetrics
-            ).toInt()
-            bundleProductsContainer?.layoutParams?.width = params
-            constraintSet.clone(bundleProductsContainer)
-            constraintSet.applyTo(bundleProductsContainer)
-        }
 
         itemView.setOnClickListener {
             itemListener.onMultipleBundleProductClicked(
@@ -76,6 +64,21 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         }
     }
 
+    private fun setupContainerWidth() {
+        val constraintSet = ConstraintSet()
+        val containerWidthParams = if (bundleProductsSize == MIN_BUNDLE_PRODUCTS_SIZE) {
+            TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    WIDTH_FOR_MIN_BUNDLE_PRODUCTS_SIZE,
+                    itemView.resources.displayMetrics
+            ).toInt()
+        } else {
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
+        }
+        bundleProductsContainer?.layoutParams?.width = containerWidthParams
+        constraintSet.clone(bundleProductsContainer)
+        constraintSet.applyTo(bundleProductsContainer)
+    }
 }
 
 interface MultipleProductBundleListener {

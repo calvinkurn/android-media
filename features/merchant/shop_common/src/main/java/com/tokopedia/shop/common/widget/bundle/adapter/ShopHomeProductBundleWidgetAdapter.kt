@@ -23,6 +23,7 @@ class ShopHomeProductBundleWidgetAdapter(
     companion object {
         const val PRODUCT_BUNDLE_SINGLE = "single_bundling"
         const val SINGLE_SIZE_WIDGET = 1
+        const val BUNDLE_WIDGET_DEFAULT_WIDTH = 300f
     }
 
     private var bundleListItem: List<ShopHomeProductBundleItemUiModel> = listOf()

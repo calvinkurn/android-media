@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.widget.bundle.viewholder
 
 import android.graphics.Paint
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -117,14 +118,18 @@ class ShopHomeProductBundleMultipleViewHolder(
             adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleListener)
         }
 
-        if (bundleListSize == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
-            // change widget container width to match parent
-            val constraintSet = ConstraintSet()
-            val params = ConstraintLayout.LayoutParams.MATCH_PARENT
-            widgetContainer?.layoutParams?.width = params
-            constraintSet.clone(widgetContainer)
-            constraintSet.applyTo(widgetContainer)
+        val constraintSet = ConstraintSet()
+        val containerWidgetParams = if (bundleListSize == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
+            ConstraintLayout.LayoutParams.MATCH_PARENT
+        } else {
+            TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    ShopHomeProductBundleWidgetAdapter.BUNDLE_WIDGET_DEFAULT_WIDTH,
+                    itemView.resources.displayMetrics
+            ).toInt()
         }
+        widgetContainer?.layoutParams?.width = containerWidgetParams
+        constraintSet.clone(widgetContainer)
+        constraintSet.applyTo(widgetContainer)
     }
-
 }
