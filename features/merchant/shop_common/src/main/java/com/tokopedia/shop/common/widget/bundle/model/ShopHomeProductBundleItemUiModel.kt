@@ -3,7 +3,7 @@ package com.tokopedia.shop.common.widget.bundle.model
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ShopHomeProductBundleItemUiModel(
-        var bundleGroupId: Long = 0,
+        var bundleGroupId: String = "0",
         var bundleType: String = "",
         var bundleName: String = "",
         var bundleDetails: List<ShopHomeProductBundleDetailUiModel> = listOf(),

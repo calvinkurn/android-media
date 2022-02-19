@@ -2147,7 +2147,7 @@ class ShopPageHomeTracking(
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 SHOP_ID to shopId,
                 USER_ID to userId,
-                PRODUCT_ID to clickedProduct.productId.toString()
+                PRODUCT_ID to clickedProduct.productId
         )
         eventMap[ECOMMERCE] = mutableMapOf(
                 CLICK to mutableMapOf(

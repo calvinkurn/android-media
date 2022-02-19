@@ -62,7 +62,7 @@ data class ShopLayoutWidget(
 
         data class Data(
                 @SerializedName("bundleGroupID")
-                val bundleGroupId: Long = 0,
+                val bundleGroupId: String = "0",
                 @SerializedName("bundleName")
                 val bundleName: String = "",
                 @SerializedName("bundleDetails")
@@ -149,7 +149,7 @@ data class ShopLayoutWidget(
         ) {
             data class ProductBundleDetailsItem(
                     @SerializedName("bundleID")
-                    val bundleId: Long = 0,
+                    val bundleId: String = "0",
                     @SerializedName("originalPrice")
                     val originalPrice: String = "0",
                     @SerializedName("displayPrice")
@@ -174,7 +174,7 @@ data class ShopLayoutWidget(
 
             data class BundleProduct(
                     @SerializedName("productID")
-                    val productId: Long = 0,
+                    val productId: String = "0",
                     @SerializedName("productName")
                     val productName: String = "",
                     @SerializedName("imageUrl")

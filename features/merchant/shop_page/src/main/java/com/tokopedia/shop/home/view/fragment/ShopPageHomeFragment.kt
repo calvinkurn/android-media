@@ -1418,7 +1418,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.impressionMultipleBundleWidget(
                 shopId = shopId,
                 userId = userId,
-                bundleId = selectedMultipleBundle.bundleId.toString(),
+                bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
                 bundlePrice = selectedMultipleBundle.displayPriceRaw,
@@ -1435,23 +1435,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickOnMultipleBundleProduct(
                 shopId = shopId,
                 userId = userId,
-                bundleId = selectedMultipleBundle.bundleId.toString(),
+                bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
                 bundlePrice = selectedMultipleBundle.displayPriceRaw,
                 bundlePosition = bundlePosition,
                 clickedProduct = selectedProduct
         )
-        goToPDP(selectedProduct.productId.toString())
+        goToPDP(selectedProduct.productId)
     }
 
     override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
         shopPageHomeTracking.onTrackSingleVariantChange(
                 shopId = shopId,
                 userId = userId,
-                productId = selectedProduct.productId.toString(),
+                productId = selectedProduct.productId,
                 bundleName = bundleName,
-                bundleId = selectedSingleBundle.bundleId.toString(),
+                bundleId = selectedSingleBundle.bundleId,
                 bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
                 selectedPackage = selectedSingleBundle.minOrderWording
         )
@@ -1466,8 +1466,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.impressionSingleBundleWidget(
                 shopId = shopId,
                 userId = userId,
-                productId = selectedProduct.productId.toString(),
-                bundleId = selectedSingleBundle.bundleId.toString(),
+                productId = selectedProduct.productId,
+                bundleId = selectedSingleBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
                 bundlePrice = selectedSingleBundle.displayPriceRaw,
@@ -1484,7 +1484,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickOnSingleBundleProduct(
                 shopId = shopId,
                 userId = userId,
-                bundleId = selectedSingleBundle.bundleId.toString(),
+                bundleId = selectedSingleBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
                 bundlePrice = selectedSingleBundle.displayPriceRaw,
@@ -1492,7 +1492,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 clickedProduct = selectedProduct,
                 selectedPackage = selectedSingleBundle.minOrderWording
         )
-        goToPDP(selectedProduct.productId.toString())
+        goToPDP(selectedProduct.productId)
     }
 
     override fun addMultipleBundleToCart(
@@ -1508,7 +1508,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         } else {
             if (selectedMultipleBundle.isProductsHaveVariant) {
                 // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId.toString())
+                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
             } else {
                 // atc bundle directly from shop page home
                 val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
@@ -1520,7 +1520,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
-                        bundleId = selectedMultipleBundle.bundleId.toString(),
+                        bundleId = selectedMultipleBundle.bundleId,
                         productDetails = productDetails,
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
@@ -1531,7 +1531,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickAtcProductBundleMultiple(
                 shopId = shopId,
                 userId = userId,
-                bundleId = selectedMultipleBundle.bundleId.toString(),
+                bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedMultipleBundle.discountPercentage.toString()
         )
@@ -1550,7 +1550,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         } else {
             if (selectedBundle.isProductsHaveVariant) {
                 // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId.toString())
+                goToBundlingSelectionPage(selectedBundle.bundleId)
             } else {
                 // atc bundle directly from shop page home
                 val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
@@ -1562,7 +1562,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
-                        bundleId = selectedBundle.bundleId.toString(),
+                        bundleId = selectedBundle.bundleId,
                         productDetails = listOf(bundleProducts),
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
@@ -1573,11 +1573,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickAtcProductBundleSingle(
                 shopId = shopId,
                 userId = userId,
-                bundleId = selectedBundle.bundleId.toString(),
+                bundleId = selectedBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedBundle.discountPercentage.toString(),
                 selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId.toString()
+                productId = bundleProducts.productId
         )
     }
 

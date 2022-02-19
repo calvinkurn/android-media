@@ -282,7 +282,7 @@ class ShopHomeViewModel @Inject constructor(
 
             val bundleProductDetails = productDetails.map {
                 ProductDetail(
-                        productId = it.productId.toString(),
+                        productId = it.productId,
                         quantity = bundleQuantity,
                         shopId = shopId,
                         customerId = userId

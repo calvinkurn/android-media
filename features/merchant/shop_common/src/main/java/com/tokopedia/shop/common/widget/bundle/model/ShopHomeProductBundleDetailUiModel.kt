@@ -1,7 +1,7 @@
 package com.tokopedia.shop.common.widget.bundle.model
 
 data class ShopHomeProductBundleDetailUiModel(
-    var bundleId: Long = 0,
+    var bundleId: String = "0",
     var originalPrice: String = "0",
     var displayPrice: String = "0",
     var displayPriceRaw: Long = 0,
