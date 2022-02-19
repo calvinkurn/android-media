@@ -41,7 +41,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = paymentAmount)
         cartDetailsItemList.add(cartDetailsItem)
         val totalDiscount = orderCost.productDiscountAmount + orderCost.shippingDiscountAmount
-        val totalOtherAmount = orderCost.purchaseProtectionPrice + orderCost.insuranceFee
+        val totalOtherAmount = orderCost.purchaseProtectionPrice + orderCost.insuranceFee + orderCost.addOnPrice
 
         return CreditCardTenorListRequest(
                 tokenId = orderPaymentCreditCard.tokenId,
