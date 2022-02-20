@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.Provides
 
 /**
- * @author by milhamj on 9/26/18.
+ * @author by milhamj on 9/266/18.
  */
 @Module(includes = [CreatePostCommonModule::class, ShopCommonModule::class])
 class CreatePostModule(private val context: Context) {
