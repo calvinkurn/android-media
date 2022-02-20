@@ -123,7 +123,7 @@ class GetOccCartMapper @Inject constructor() {
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
 //            addOn = mapAddOns(groupShop.addOns.firstOrNull())
-            addOn = mapAddOns(AddOnsResponse())
+//            addOn = mapAddOns(AddOnsResponse())
         }
     }
 
@@ -191,7 +191,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
 //            addOn = mapAddOns(product.addOns.firstOrNull())
-//            addOn = mapAddOns(AddOnsResponse())
+            addOn = mapAddOns(AddOnsResponse())
         }
         return orderProduct
     }

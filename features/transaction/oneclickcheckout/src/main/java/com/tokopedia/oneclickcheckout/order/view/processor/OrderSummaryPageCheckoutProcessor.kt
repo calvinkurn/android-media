@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -12,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.withContext
@@ -62,14 +64,37 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val checkoutProducts: ArrayList<ProductData> = ArrayList()
             products.forEach {
                 if (!it.isError) {
+                    val addOnProductLevelItems = mutableListOf<AddOnItem>()
+                    val addOnItemModel = it.addOn.addOnsDataItemModelList.firstOrNull()
+                    if (it.addOn.status == 1 && addOnItemModel != null) {
+                        addOnProductLevelItems.add(AddOnItem(
+                                itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                                itemId = addOnItemModel.addOnId,
+                                itemQty = addOnItemModel.addOnQty,
+                                itemMetadata = Gson().toJson(addOnItemModel.addOnMetadata)
+                        ))
+                    }
                     checkoutProducts.add(ProductData(
-                            it.productId.toString(),
-                            it.orderQuantity,
-                            it.notes,
-                            it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+                            productId = it.productId.toString(),
+                            productQuantity = it.orderQuantity,
+                            productNotes = it.notes,
+                            isPPP = it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
+                            items = addOnProductLevelItems
                     ))
                 }
             }
+
+            val addOnShopLevelItems = mutableListOf<AddOnItem>()
+            val addOnItemModel = shop.addOn.addOnsDataItemModelList.firstOrNull()
+            if (shop.addOn.status == 1 && addOnItemModel != null) {
+                addOnShopLevelItems.add(AddOnItem(
+                        itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                        itemId = addOnItemModel.addOnId,
+                        itemQty = addOnItemModel.addOnQty,
+                        itemMetadata = Gson().toJson(addOnItemModel.addOnMetadata)
+                ))
+            }
+
             val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
                     profile.address.addressId,
                     listOf(
@@ -86,7 +111,8 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                             orderShipment.getRealUt(),
                                             orderShipment.getRealChecksum()
                                     ),
-                                    promos = shopPromos
+                                    promos = shopPromos,
+                                    items = addOnShopLevelItems
                             )
                     )
             )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = if (shop.isTokoNow) ParamCart.FEATURE_TYPE_TOKONOW else ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW))
