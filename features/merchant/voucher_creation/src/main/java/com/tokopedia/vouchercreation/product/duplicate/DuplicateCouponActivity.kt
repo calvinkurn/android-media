@@ -131,7 +131,8 @@ class DuplicateCouponActivity : AppCompatActivity() {
 
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
-        val couponInfoFragment = CreateCouponDetailFragment(couponInformationData)
+        val couponInfoFragment = CreateCouponDetailFragment(couponInformationData,
+            CreateCouponDetailFragment.PageMode.DUPLICATE)
         couponInfoFragment.setOnCouponSaved { coupon ->
             router.popFragment(supportFragmentManager)
             couponPreviewFragment.setCouponInformationData(coupon)

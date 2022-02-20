@@ -35,8 +35,15 @@ import java.util.*
 import javax.inject.Inject
 
 class CreateCouponDetailFragment(
-    private val couponInformationData: CouponInformation? = null
+    private val couponInformationData: CouponInformation? = null,
+    private val pageMode: PageMode = PageMode.ADD
 ) : BaseDaggerFragment(){
+
+    enum class PageMode{
+        ADD,
+        UPDATE,
+        DUPLICATE
+    }
 
     companion object {
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
@@ -296,15 +303,15 @@ class CreateCouponDetailFragment(
     }
 
     private fun TextFieldUnify.setCouponText(text: String) {
-        val maxLength = textFieldWrapper.counterMaxLength
-        if (text.length <= maxLength) {
-            tfuFillCouponCode?.textFieldInput?.setText(text)
-        } else {
+        if (pageMode == PageMode.UPDATE) {
             val couponPrefix = text.substring(Int.ZERO, COUPON_PREFIX_LENGTH)
             val couponText = text.substring(COUPON_PREFIX_LENGTH)
             tfuFillCouponCode?.prependText(couponPrefix)
             tfuFillCouponCode?.tag = couponPrefix
             tfuFillCouponCode?.textFieldInput?.setText(couponText)
+            tfuFillCouponCode?.textFieldInput?.isEnabled = false
+        } else {
+            tfuFillCouponCode?.textFieldInput?.setText(text)
         }
     }
 
