@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common.customview
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -26,6 +27,15 @@ open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initParentLayout()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        initParentLayout()
+    }
+
+    private fun initParentLayout() {
         try {
             val bsLayout = view as LinearLayout
             val isTablet = DeviceScreenInfo.isTablet(requireContext())
@@ -35,7 +45,6 @@ open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
             }
             changeTitleLayout(isTablet)
         } catch (e: Exception) { /* no-op */ }
-
     }
 
     private fun setAlignToCenter(bsLayout: LinearLayout) {

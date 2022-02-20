@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_NEW_USER_SPECIFICATION
 import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
@@ -39,17 +39,17 @@ class NewUserSpecificationBottomSheet: TabletAdaptiveBottomSheet() {
         ivNewUser?.loadImage(PHOTO_NEW_USER_SPECIFICATION)
     }
 
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this , TAG)
-        }
-    }
-
     private fun initChildLayout() {
         overlayClickDismiss = true
         val contentView: View? = View.inflate(context,
                 R.layout.add_edit_product_specification_new_user_bottom_sheet_content, null)
         ivNewUser = contentView?.findViewById(R.id.ivNewUser)
         setChild(contentView)
+    }
+
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this , TAG)
+        }
     }
 }
