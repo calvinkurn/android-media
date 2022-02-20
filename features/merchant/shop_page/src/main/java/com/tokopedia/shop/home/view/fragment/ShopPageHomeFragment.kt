@@ -32,11 +32,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -88,6 +91,12 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -135,20 +144,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
-    ShopHomeDisplayWidgetListener,
-    ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-    ShopHomeEndlessProductListener,
-    ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
-    ShopHomeCarouselProductListener,
-    ShopHomeCampaignNplWidgetListener,
-    ShopHomeFlashSaleWidgetListener,
-    ShopProductChangeGridSectionListener,
-    SortFilterBottomSheet.Callback,
-    PlayWidgetListener,
-    ShopHomeShowcaseListWidgetListener,
-    InterfaceShopPageClickScrollToTop,
-    ShopHomePlayWidgetListener,
-    ShopHomeCardDonationListener {
+        ShopHomeDisplayWidgetListener,
+        ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
+        ShopHomeEndlessProductListener,
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
+        ShopHomeCarouselProductListener,
+        ShopHomeCampaignNplWidgetListener,
+        ShopHomeFlashSaleWidgetListener,
+        ShopProductChangeGridSectionListener,
+        SortFilterBottomSheet.Callback,
+        PlayWidgetListener,
+        ShopHomeShowcaseListWidgetListener,
+        InterfaceShopPageClickScrollToTop,
+        ShopHomePlayWidgetListener,
+        ShopHomeCardDonationListener,
+        MultipleProductBundleListener,
+        SingleProductBundleListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -174,6 +185,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
+        private const val MIN_BUNDLE_SIZE = 1
 
         fun createInstance(
             shopId: String,
@@ -267,7 +279,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             isShowTripleDot = !_isMyShop,
             shopHomeShowcaseListWidgetListener = this,
             shopHomePlayWidgetListener = this,
-            shopHomeCardDonationListener = this
+            shopHomeCardDonationListener = this,
+                multipleProductBundleListener = this,
+            singleProductBundleListener = this
         )
     }
 
@@ -1396,10 +1410,253 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onShowcaseListWidgetImpression(
-        model: ShopHomeShowcaseListSliderUiModel,
-        position: Int
+    override fun impressionProductBundleMultiple(
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int
     ) {
+        shopPageHomeTracking.impressionMultipleBundleWidget(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                bundlePosition = bundlePosition
+        )
+    }
+
+    override fun onMultipleBundleProductClicked(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    ) {
+        shopPageHomeTracking.clickOnMultipleBundleProduct(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                bundlePosition = bundlePosition,
+                clickedProduct = selectedProduct
+        )
+        goToPDP(selectedProduct.productId)
+    }
+
+    override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
+        shopPageHomeTracking.onTrackSingleVariantChange(
+                shopId = shopId,
+                userId = userId,
+                productId = selectedProduct.productId,
+                bundleName = bundleName,
+                bundleId = selectedSingleBundle.bundleId,
+                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
+                selectedPackage = selectedSingleBundle.minOrderWording
+        )
+    }
+
+    override fun impressionProductBundleSingle(
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            selectedProduct: ShopHomeBundleProductUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    ) {
+        shopPageHomeTracking.impressionSingleBundleWidget(
+                shopId = shopId,
+                userId = userId,
+                productId = selectedProduct.productId,
+                bundleId = selectedSingleBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
+                bundlePrice = selectedSingleBundle.displayPriceRaw,
+                bundlePosition = bundlePosition
+        )
+    }
+
+    override fun onSingleBundleProductClicked(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int
+    ) {
+        shopPageHomeTracking.clickOnSingleBundleProduct(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedSingleBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
+                bundlePrice = selectedSingleBundle.displayPriceRaw,
+                bundlePosition = bundlePosition,
+                clickedProduct = selectedProduct,
+                selectedPackage = selectedSingleBundle.minOrderWording
+        )
+        goToPDP(selectedProduct.productId)
+    }
+
+    override fun addMultipleBundleToCart(
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
+            productDetails: List<ShopHomeBundleProductUiModel>,
+            bundleName: String,
+            widgetLayout: ShopHomeWidgetLayout
+    ) {
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
+        } else {
+            if (selectedMultipleBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+            } else {
+                // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = widgetLayout.widgetId,
+                        widgetMasterId = widgetLayout.widgetMasterId,
+                        widgetType = widgetLayout.widgetType,
+                        widgetName = widgetLayout.widgetName
+                )
+                viewModel?.addBundleToCart(
+                        shopId = shopId,
+                        userId = userId,
+                        bundleId = selectedMultipleBundle.bundleId,
+                        productDetails = productDetails,
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                        bundleQuantity = selectedMultipleBundle.minOrder
+                )
+            }
+        }
+        shopPageHomeTracking.clickAtcProductBundleMultiple(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString()
+        )
+    }
+
+    override fun addSingleBundleToCart(
+            selectedBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
+            bundleProducts: ShopHomeBundleProductUiModel,
+            bundleName: String,
+            widgetLayout: ShopHomeWidgetLayout
+    ) {
+        if (isOwner) {
+            // disable owner add their own bundle to cart
+            showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
+        } else {
+            if (selectedBundle.isProductsHaveVariant) {
+                // go to bundling selection page
+                goToBundlingSelectionPage(selectedBundle.bundleId)
+            } else {
+                // atc bundle directly from shop page home
+                val widgetLayoutParams = ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = widgetLayout.widgetId,
+                        widgetMasterId = widgetLayout.widgetMasterId,
+                        widgetType = widgetLayout.widgetType,
+                        widgetName = widgetLayout.widgetName
+                )
+                viewModel?.addBundleToCart(
+                        shopId = shopId,
+                        userId = userId,
+                        bundleId = selectedBundle.bundleId,
+                        productDetails = listOf(bundleProducts),
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                        bundleQuantity = selectedBundle.minOrder
+                )
+            }
+        }
+        shopPageHomeTracking.clickAtcProductBundleSingle(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                selectedPackage = selectedBundle.minOrderWording,
+                productId = bundleProducts.productId
+        )
+    }
+
+    private fun handleOnFinishAtcBundle(
+            atcBundleModel: AddToCartBundleModel,
+            bundleListSize: Int,
+            widgetLayout: ShopPageHomeWidgetLayoutUiModel.WidgetLayout
+    ) {
+        atcBundleModel.validateResponse(
+                onSuccess = {
+                    showToastSuccess(
+                            getString(R.string.shop_page_product_bundle_success_atc_text),
+                            getString(R.string.see_label)
+                    ) {
+                        goToCart()
+                    }
+                },
+                onFailedWithMessages = {
+                    val errorDialogCtaText: String
+                    val errorMessageDescription = if (bundleListSize > MIN_BUNDLE_SIZE) {
+                        errorDialogCtaText = getString(R.string.shop_page_product_bundle_failed_oos_cta_text_with_alt)
+                        getString(R.string.shop_page_product_bundle_failed_oos_dialog_desc_with_alt)
+                    } else {
+                        errorDialogCtaText = getString(R.string.shop_page_product_bundle_failed_oos_cta_text)
+                        getString(R.string.shop_page_product_bundle_failed_oos_dialog_desc_no_alt)
+                    }
+                    showErrorDialogAtcBundle(
+                            errorTitle = getString(R.string.shop_page_product_bundle_failed_oos_dialog_title),
+                            errorDescription = errorMessageDescription,
+                            ctaText = errorDialogCtaText,
+                            widgetLayoutParams = widgetLayout
+                    )
+                },
+                onFailedWithException = {
+                    showErrorToast(it.message.orEmpty())
+                }
+        )
+    }
+
+    private fun handleOnErrorAtcBundle(throwable: Throwable) {
+        showErrorToast(throwable.message.orEmpty())
+    }
+
+    private fun goToBundlingSelectionPage(bundleId: String) {
+        val bundlingSelectionPageAppLink = UriUtil.buildUri(
+                ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE,
+                ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID
+        )
+        val bundleAppLinkWithParams = Uri.parse(bundlingSelectionPageAppLink).buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_SHOP_PAGE)
+                .build()
+                .toString()
+        context?.let {
+            val bspIntent = RouteManager.getIntent(it, bundleAppLinkWithParams)
+            startActivity(bspIntent)
+        }
+    }
+
+    private fun showErrorDialogAtcBundle(
+            errorTitle: String,
+            errorDescription: String,
+            ctaText: String,
+            widgetLayoutParams: ShopPageHomeWidgetLayoutUiModel.WidgetLayout
+    ) {
+        context?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(errorTitle)
+                setDescription(errorDescription)
+                setPrimaryCTAText(ctaText)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    getWidgetContentData(mutableListOf(widgetLayoutParams))
+                }
+            }.show()
+        }
+    }
+
+    override fun onShowcaseListWidgetImpression(model: ShopHomeShowcaseListSliderUiModel, position: Int) {
         sendShopHomeWidgetImpressionTracker(
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
             model.name,
@@ -2277,6 +2534,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun goToWishlist() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+    }
+
+    private fun goToCart() {
+        RouteManager.route(context, ApplinkConst.CART)
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {
