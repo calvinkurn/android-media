@@ -8,7 +8,7 @@ data class ItemSelection(
     val previewWithResId: Int = 0,
     val placeholderText: String = "",
     val placeholderResId: Int = 0,
-    val placeholderBitmap: Bitmap? = null,
+    var placeholderBitmap: Bitmap? = null,
     val itemType: Int = 0,
     val isSingleLabel: Boolean = false,
     var isSelected: Boolean = false
