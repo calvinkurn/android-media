@@ -21,7 +21,8 @@ import javax.inject.Inject
 
 class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkoutOccUseCase: CheckoutOccUseCase,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                            private val executorDispatchers: CoroutineDispatchers) {
+                                                            private val executorDispatchers: CoroutineDispatchers,
+                                                            private val gson: Gson) {
 
     private fun generateShopPromos(finalPromo: ValidateUsePromoRevampUiModel?, orderCart: OrderCart): List<PromoRequest> {
         if (finalPromo != null) {
@@ -71,7 +72,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                 itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                                 itemId = addOnItemModel.addOnId,
                                 itemQty = addOnItemModel.addOnQty,
-                                itemMetadata = Gson().toJson(addOnItemModel.addOnMetadata)
+                                itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
                         ))
                     }
                     checkoutProducts.add(ProductData(
@@ -91,7 +92,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                         itemId = addOnItemModel.addOnId,
                         itemQty = addOnItemModel.addOnQty,
-                        itemMetadata = Gson().toJson(addOnItemModel.addOnMetadata)
+                        itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
                 ))
             }
 
