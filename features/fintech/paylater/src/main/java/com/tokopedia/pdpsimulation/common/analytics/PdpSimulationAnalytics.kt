@@ -119,7 +119,7 @@ class PdpSimulationAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
-            OCC_CHANGE_VARIANT_ACTION,
+            OCC_CHANGE_PARTNER_ACTION,
             OCC_EVENT_CATEGORY,
             " $productId -$userStatus -LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
@@ -139,7 +139,7 @@ class PdpSimulationAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
-            OCC_CHANGE_PARTNER_CLICK_ACTION,
+            BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION,
             OCC_EVENT_CATEGORY,
             " $productId -$userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
@@ -204,8 +204,9 @@ class PdpSimulationAnalytics @Inject constructor(
         const val IMPRESSION_PAYLATER = "sim bnpl - impression status buyers"
 
         const val OCC_EVENT_ACTION = "pre occ page - impression activated buyer"
-        const val OCC_CHANGE_VARIANT_ACTION = "pre occ bnpl - activated buyer variant cta click"
-        const val OCC_CHANGE_PARTNER_CLICK_ACTION =
+        const val OCC_CHANGE_VARIANT_ACTION = "variant cta - clicked activated buyer"
+        const val OCC_CHANGE_PARTNER_ACTION = "change partner cta - clicked activated buyer"
+        const val BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION =
             "partner option cta - click activated buyer"
         const val OCC_EVENT_CATEGORY = "fin - optimize occ page"
     }
