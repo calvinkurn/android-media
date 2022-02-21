@@ -61,6 +61,7 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
         val mBuilder =
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setCustomContentView(remoteView)
+                .setSmallIcon(R.drawable.ic_alpha)
                 .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
 
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
