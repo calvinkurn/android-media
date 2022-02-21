@@ -59,7 +59,7 @@ class PdpSimulationAnalytics @Inject constructor(
         const val KEY_CURRENT_SITE = "currentSite"
         const val BUSINESS_UNIT_FINTECH = "fintechPayLater"
         const val CURRENT_SITE_FINTECH = "TokopediaFintech"
-        const val EVENT_NAME_FIN_TECH = "clickFintechMicrosite"
+        const val EVENT_NAME_FIN_TECH = "clickFintech"
         const val IRIS_EVENT_NAME_FIN_TECH_V3 = "viewFintechIris"
         const val EVENT_CATEGORY_FIN_TECH = "fin - info page"
 
