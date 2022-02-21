@@ -393,7 +393,7 @@ class DigitalRecommendationUseCaseTest {
             val DGExpectedData = mockResponse.personalizedItems.recommendationItems[0]
 
             assertEquals(DGExpectedData.appLink, DGActualData.actionButton.applink)
-            assertEquals(DGExpectedData.title, DGActualData.title)
+            assertEquals(DGExpectedData.title.uppercase(), DGActualData.title)
             assertEquals(DGExpectedData.mediaURL, DGActualData.mediaUrl)
             assertEquals(mockResponse.personalizedItems.mediaUrlType, DGActualData.mediaType)
             assertEquals(DGExpectedData.iconURL, DGActualData.iconUrl)
@@ -405,7 +405,7 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(DGExpectedData.productInfo1.color, DGActualData.productInfoLeft.textColor)
             assertEquals(DGExpectedData.productInfo2.color, DGActualData.productInfoRight.textColor)
             assertEquals(DGExpectedData.productInfo2.text, DGActualData.productInfoRight.text)
-            assertEquals(DGExpectedData.title, DGActualData.title)
+            assertEquals(DGExpectedData.title.uppercase(), DGActualData.title)
             assertEquals(DGExpectedData.ratingType, DGActualData.rating.ratingType)
             assertEquals(DGExpectedData.rating, DGActualData.rating.rating, ASSERT_DELTA)
             assertEquals(DGExpectedData.review, DGActualData.rating.review)
@@ -446,7 +446,7 @@ class DigitalRecommendationUseCaseTest {
             val PGExpectedData = mockResponse.personalizedItems.recommendationItems[0]
 
             assertEquals(PGExpectedData.appLink, PGActualData.actionButton.applink)
-            assertEquals(PGExpectedData.title, PGActualData.title)
+            assertEquals(PGExpectedData.title.uppercase(), PGActualData.title)
             assertEquals(PGExpectedData.mediaURL, PGActualData.mediaUrl)
             assertEquals(mockResponse.personalizedItems.mediaUrlType, PGActualData.mediaType)
             assertEquals(PGExpectedData.iconURL, PGActualData.iconUrl)
@@ -458,7 +458,7 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(PGExpectedData.productInfo1.color, PGActualData.productInfoLeft.textColor)
             assertEquals(PGExpectedData.productInfo2.color, PGActualData.productInfoRight.textColor)
             assertEquals(PGExpectedData.productInfo2.text, PGActualData.productInfoRight.text)
-            assertEquals(PGExpectedData.title, PGActualData.title)
+            assertEquals(PGExpectedData.title.uppercase(), PGActualData.title)
             assertEquals(PGExpectedData.ratingType, PGActualData.rating.ratingType)
             assertEquals(PGExpectedData.rating, PGActualData.rating.rating, ASSERT_DELTA)
             assertEquals(PGExpectedData.review, PGActualData.rating.review)
