@@ -1026,8 +1026,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
-        binding?.coordinatorLayout?.let { view ->
+        view?.let { view ->
             if (message.isNotBlank()) {
+                Toaster.toasterCustomBottomHeight = miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toInt()
                 val toaster = Toaster.build(
                     view = view,
                     text = message,
