@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
 import com.tokopedia.sellerorder.databinding.PartialAddOnSummaryBinding
@@ -55,7 +54,6 @@ class PartialSomDetailAddOnSummaryViewHolder(
             } else {
                 root.show()
                 setupAddOnTips(element.providedByBranchShop)
-                setupAddOnSummaryIcon(element.iconUrl)
                 setupAddOnSummaryLabel(element.label)
                 setupAddOnSummaryAddOns(element.addons)
             }
@@ -64,10 +62,6 @@ class PartialSomDetailAddOnSummaryViewHolder(
 
     private fun PartialAddOnSummaryBinding.setupAddOnTips(providedByBranchShop: Boolean) {
         labelAddOn.showWithCondition(providedByBranchShop)
-    }
-
-    private fun PartialAddOnSummaryBinding.setupAddOnSummaryIcon(iconUrl: String) {
-        ivAddOnIcon.loadImage(iconUrl)
     }
 
     private fun PartialAddOnSummaryBinding.setupAddOnSummaryLabel(label: String) {

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivAddOnIcon"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icAddOn"
         android:layout_width="16dp"
         android:layout_height="16dp"
         app:layout_constraintBottom_toBottomOf="@id/tvAddOnLabel"
@@ -15,7 +15,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvAddOnLabel"
-        app:srcCompat="@drawable/ic_loading_image" />
+        app:icon_name="ADD_ON"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddOnLabel"
@@ -25,7 +25,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivAddOnIcon"
+        app:layout_constraintStart_toEndOf="@id/icAddOn"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
