@@ -50,20 +50,14 @@ class DigitalRecommendationMapper {
                         backgroundUrl = it.campaignLabelBackgroundUrl
                     ),
                     productInfoLeft = DigitalCardInfoModel(
-                        text = it.productInfo1.text,
+                        text = it.productInfo1.text.uppercase(),
                         textColor = it.productInfo1.color
                     ),
                     productInfoRight = DigitalCardInfoModel(
-                        text = it.productInfo2.text,
+                        text = it.productInfo2.text.uppercase(),
                         textColor = it.productInfo2.color
                     ),
-                    title = if (it.trackingData.itemLabel.isNotEmpty()) {
-                        when (it.trackingData.itemLabel) {
-                                                TYPE_PRODUCT_RECOMMENDATION -> it.title
-                                                TYPE_CATEGORY -> it.trackingData.categoryName
-                                                else -> it.title
-                                            }.uppercase(Locale.getDefault())
-                    } else it.title.uppercase(Locale.getDefault()),
+                    title = it.title,
                     rating = DigitalCardRatingModel(
                         ratingType = it.ratingType,
                         rating = it.rating,
