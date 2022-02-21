@@ -89,7 +89,11 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.addOnImpressionListener(impressHolder) {
-            CentralizedPromoTracking.sendFirstVoucherBottomSheetImpression(userSession.userId)
+            if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+                CentralizedPromoTracking.sendFirstVoucherProductBottomSheetImpression(userSession.shopId)
+            } else {
+                CentralizedPromoTracking.sendFirstVoucherBottomSheetImpression(userSession.userId)
+            }
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -160,9 +164,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     private fun setupButtonClick() {
         binding?.firstVoucherButton?.setOnClickListener {
-            CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
             val voucherApplink =
                 if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+                    CentralizedPromoTracking.sendFirstVoucherProductBottomSheetClick(userSession.shopId)
                     setVoucherProductSharedPrefValue()
                     if (productId == null) {
                         ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
@@ -170,6 +174,10 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
                         "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/$productId"
                     }
                 } else {
+                    CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(
+                        userSession.userId,
+                        false
+                    )
                     ApplinkConstInternalSellerapp.CREATE_VOUCHER
                 }
             RouteManager.route(context, voucherApplink)
