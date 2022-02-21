@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 
 data class UserAddress(
         @SerializedName("address_id")
@@ -50,8 +51,14 @@ data class UserAddress(
 )
 
 data class UserAddressTokoNow(
+        @SerializedName("is_modified")
+        val isModified: Boolean = false,
         @SerializedName("shop_id")
         val shopId: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String = ""
+        val warehouseId: String = "",
+        @SerializedName("warehouses")
+        val warehouses: List<WarehouseDataModel> = emptyList(),
+        @SerializedName("service_type")
+        val serviceType: String = ""
 )
