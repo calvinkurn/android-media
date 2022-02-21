@@ -78,6 +78,7 @@ class TopAdsCreditHistoryFragment :
             startDate = Date(dateList[datePickerIndex].startDate)
             endDate = Date(dateList[datePickerIndex].endDate)
         }
+        setDateRangeText(datePickerIndex)
         loadData(0)
     }
 
