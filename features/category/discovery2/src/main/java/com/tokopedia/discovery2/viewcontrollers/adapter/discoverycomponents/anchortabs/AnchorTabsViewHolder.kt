@@ -4,14 +4,17 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 
 class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
@@ -20,6 +23,18 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private lateinit var viewModel: AnchorTabsViewModel
+
+    val observer = Observer<ScrollData> { data ->
+        data?.let {
+            if(::viewModel.isInitialized){
+                if (viewModel.isClickNotify) {
+                    viewModel.isClickNotify = false
+                    viewModel.updateSelectedSection(viewModel.selectedSectionId,false)
+                }
+            }
+        }
+    }
 
     private var smoothScroller: SmoothScroller = object : LinearSmoothScroller(itemView.context) {
         override fun getHorizontalSnapPreference(): Int {
@@ -44,8 +59,6 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         anchorRV.adapter = mDiscoveryRecycleAdapter
     }
 
-    private lateinit var viewModel: AnchorTabsViewModel
-
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as AnchorTabsViewModel
     }
@@ -67,19 +80,10 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
                 }
             })
             viewModel.getUpdatePositionsLD().observe(it, { (oldPos, newPos) ->
-                if (oldPos < viewModel.getListSize())
-                    mDiscoveryRecycleAdapter.notifyItemChanged(oldPos)
-
-                if (newPos < viewModel.getListSize())
-                    mDiscoveryRecycleAdapter.notifyItemChanged(newPos)
-
-                anchorRV.post {
-                    if (newPos < viewModel.getListSize()) {
-                        smoothScroller.targetPosition = newPos
-                        linearLayoutManager.startSmoothScroll(smoothScroller)
-                    }
-                }
+                updatePositionChanged(oldPos,newPos)
             })
+            (fragment as DiscoveryFragment).getScrollLiveData().observe(it,observer)
+
         }
     }
 
@@ -88,6 +92,22 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         lifecycleOwner?.let {
             viewModel.getCarouselItemsListData().removeObservers(it)
             viewModel.getUpdatePositionsLD().removeObservers(it)
+            (fragment as DiscoveryFragment).getScrollLiveData().removeObserver(observer)
+        }
+    }
+
+    private fun updatePositionChanged(oldPos:Int, newPos:Int){
+        if (oldPos < viewModel.getListSize())
+            mDiscoveryRecycleAdapter.notifyItemChanged(oldPos)
+
+        if (newPos < viewModel.getListSize())
+            mDiscoveryRecycleAdapter.notifyItemChanged(newPos)
+
+        anchorRV.post {
+            if (newPos < viewModel.getListSize()) {
+                smoothScroller.targetPosition = newPos
+                linearLayoutManager.startSmoothScroll(smoothScroller)
+            }
         }
     }
 

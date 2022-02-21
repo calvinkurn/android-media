@@ -1557,7 +1557,7 @@ class DiscoveryFragment :
             it[sectionID]?.let { position ->
                 if (position >= 0) {
                     discoveryAdapter.getViewModelAtPosition(parentPosition)?.let { vm ->
-                        (vm as? AnchorTabsViewModel)?.updateSelectedSection(sectionID)
+                        (vm as? AnchorTabsViewModel)?.updateSelectedSection(sectionID,true)
                     }
 //                    Todo:: Scroll with offset equal to size of anchor tabs.
                     recyclerView.smoothScrollToPosition(position)
@@ -1572,7 +1572,7 @@ class DiscoveryFragment :
                 val anchorPos = it[ComponentNames.AnchorTabs.componentName] ?: -1
                 if (position >= 0 && anchorPos >= 0) {
                     discoveryAdapter.getViewModelAtPosition(anchorPos)?.let { vm ->
-                        (vm as? AnchorTabsViewModel)?.updateSelectedSection(sectionID)
+                        (vm as? AnchorTabsViewModel)?.updateSelectedSection(sectionID,false)
                     }
                 }
             }

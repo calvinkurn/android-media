@@ -26,6 +26,7 @@ class AnchorTabsViewModel(
     fun getUpdatePositionsLD(): LiveData<Pair<Int, Int>> = updatePositions
 
     private val sectionPositionMap: MutableMap<String, Int> = mutableMapOf()
+    var isClickNotify = false
     var selectedSectionPos = 0
     var selectedSectionId = ""
     private var sectionDeleted = false
@@ -66,7 +67,7 @@ class AnchorTabsViewModel(
         return sectionPositionMap[id]
     }
 
-    fun updateSelectedSection(sectionId: String) {
+    fun updateSelectedSection(sectionId: String, isClickNotify: Boolean) {
         val newPos = getPositionForSectionID(sectionId) ?: selectedSectionPos
         if (newPos != selectedSectionPos && newPos >= 0 && newPos < getListSize()) {
             val newItem = components.getComponentsItem()?.get(newPos)
@@ -75,8 +76,12 @@ class AnchorTabsViewModel(
                 val oldItem = components.getComponentsItem()?.get(selectedSectionPos)
                 oldItem?.data?.firstOrNull()?.isSelected = false
             }
-            updatePositions.value = Pair(selectedSectionPos, newPos)
-            selectedSectionPos = newPos
+            if (isClickNotify || !this.isClickNotify) {
+                updatePositions.value = Pair(selectedSectionPos, newPos)
+                selectedSectionPos = newPos
+            }
+            if(isClickNotify)
+                this.isClickNotify = true
             selectedSectionId = sectionId
         }
     }
