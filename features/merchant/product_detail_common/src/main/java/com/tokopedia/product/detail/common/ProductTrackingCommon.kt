@@ -181,7 +181,7 @@ object ProductTrackingCommon {
             shopType: String = "", shopName: String = "",
             categoryName: String = "", categoryId: String = "", bebasOngkirType: String = "", pageSource: String = "",
             cdListName: String = "", isCod: Boolean, ratesEstimateData: P2RatesEstimateData?,
-            buyerDistrictId: String, sellerDistrictId: String
+            buyerDistrictId: String, sellerDistrictId: String, lcaWarehouseId: String
     ) {
         val generateButtonActionString = when (buttonAction) {
             ProductDetailCommonConstant.OCS_BUTTON -> "$buttonText ocs"
@@ -194,7 +194,8 @@ object ProductTrackingCommon {
             else -> "regular"
         }
 
-        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString()
+                ?: ""
         val shippingCourier = ratesEstimateData?.title ?: ""
         val shippingEta = ratesEstimateData?.etaText ?: ""
         val buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
@@ -206,6 +207,7 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Tracking.KEY_LABEL, if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                 KEY_PRODUCT_ID, productId,
                 ProductTrackingConstant.Tracking.KEY_HIT_USER_ID, userId,
+                ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID, lcaWarehouseId,
                 ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
                 KEY_BUSINESS_UNIT, generateBusinessUnit(pageSource),
                 KEY_CURRENT_SITE, CURRENT_SITE,

@@ -29,4 +29,9 @@
     <string name="catalog_highlighted_reviews">dari %s rating produk</string>
     <string name="catalog_numbering_images">%s/%s</string>
     <string name="catalog_rating_total">/5,0</string>
+    <string name="catalog_perbandingan_produk">Perbandingan produk</string>
+    <string name="catalog_ganti_perbandingan">Ganti Perbandingan</string>
+    <string name="catalog_bandingkan">Bandingkan</string>
+    <string name="catalog_search_product_hint">Cari produk di sini..</string>
+    <string name="catalog_cobi_cari_katalog_lain">Coba cari katalog lain,  ya</string>
 </resources>
