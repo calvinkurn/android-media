@@ -126,7 +126,7 @@ class RechargeOrderDetailActivityTest {
     companion object {
         private const val KEY_CONTAINS_ORDER_DETAILS = "orderDetails"
         private const val KEY_CONTAINS_RECOMMENDATION_SKELETON = "\"channelName\": \"dg_od_skeleton\""
-        private const val KEY_CONTAINS_DIGITAL_RECOMMENDATION = "\"channelName\": \"dg_order_detail\""
+        private const val KEY_CONTAINS_DIGITAL_RECOMMENDATION = "\"channelName\": \"dg_order_detail_dgu\""
 
         private const val CASSAVA_ORDER_DETAIL_QUERY = "tracker/recharge/order_detail/recharge_order_detail.json"
     }
