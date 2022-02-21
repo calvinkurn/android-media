@@ -105,6 +105,10 @@ class ProductSectionViewHolder(
         setupBackground(item.config.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
+
+        btnReminder.setOnClickListener {
+            listener.onReminderClicked(item)
+        }
     }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
@@ -134,9 +138,6 @@ class ProductSectionViewHolder(
             }
             timerSection.pause()
             timerSection.targetDate = dt
-            timerSection.onFinish = {
-                listener.onTimerExpired(item)
-            }
             timerSection.resume()
     }
 
@@ -165,7 +166,7 @@ class ProductSectionViewHolder(
         fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
         fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
         fun onProductChanged()
-        fun onTimerExpired(product: ProductSectionUiModel.Section)
+        fun onReminderClicked(product: ProductSectionUiModel.Section)
     }
 }
 

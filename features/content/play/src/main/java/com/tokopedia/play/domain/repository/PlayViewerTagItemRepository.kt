@@ -17,4 +17,8 @@ interface PlayViewerTagItemRepository {
         minQty: Int,
         price: Double,
     ): String
+
+    suspend fun checkUpcomingCampaign(campaignId: Long): Boolean
+
+    suspend fun subscribeUpcomingCampaign(campaignId: Long): Boolean
 }

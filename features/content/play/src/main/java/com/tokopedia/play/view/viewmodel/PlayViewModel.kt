@@ -2019,6 +2019,30 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    fun sendReminder(productUiModel: ProductSectionUiModel.Section){
+        viewModelScope.launchCatchError(block = {
+            val data = withContext(dispatchers.io) {
+                repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
+            }
+            updateReminderUi(CampaignReminderType.OFF) // TODO() = should be reversed based on current state
+        }){
+        }
+    }
+
+    private fun updateReminderUi(reminderType: CampaignReminderType){
+        _tagItems.update { tagItemUiModel ->
+            tagItemUiModel.copy(
+                product = tagItemUiModel.product.copy(
+                    productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().map {
+                        it.copy(
+                            config = it.config.copy(reminder = ProductSectionUiModel.Section.ReminderUiModel(hasReminder = true, reminderType = reminderType))
+                        )
+                    }
+                )
+            )
+        }
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"

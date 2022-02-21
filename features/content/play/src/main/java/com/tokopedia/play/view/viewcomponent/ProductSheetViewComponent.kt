@@ -73,8 +73,9 @@ class ProductSheetViewComponent(
         ) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
-        override fun onTimerExpired(product: ProductSectionUiModel.Section) {
-//            TODO("Not yet implemented")
+
+        override fun onReminderClicked(product: ProductSectionUiModel.Section) {
+            listener.onReminderClicked(this@ProductSheetViewComponent, product)
         }
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
@@ -271,5 +272,6 @@ class ProductSheetViewComponent(
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
+        fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
     }
 }

@@ -44,7 +44,7 @@ class PostUpcomingCampaignReminderUseCase@Inject constructor(
             }
         """
 
-        fun createParam(campaignId: String): RequestParams {
+        fun createParam(campaignId: Long): RequestParams {
             val params = mapOf(
                 CAMPAIGN_ID to campaignId,
                 ACTION_PARAM to ACTION_PARAM_VALUE,

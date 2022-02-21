@@ -20,7 +20,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
         config = mapConfig(input),
-        id = input.sourceId
+        id = input.sourceId,
     )
 
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
@@ -39,7 +39,7 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     private fun mapReminder(hasReminder: Boolean) = ProductSectionUiModel.Section.ReminderUiModel(
         hasReminder = hasReminder,
-        reminderType = CampaignReminderType.NotAvailable
+        reminderType = if(hasReminder) CampaignReminderType.OFF else CampaignReminderType.NotAvailable //TODO = shud be Not Available /
     )
 
     private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {

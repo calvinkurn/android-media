@@ -48,7 +48,7 @@ sealed class ProductSectionUiModel {
     data class Section(
         val productList: List<PlayProductUiModel.Product>,
         val config: ConfigUiModel,
-        val id: String
+        val id: String,
     ): ProductSectionUiModel() {
 
     data class ConfigUiModel(
@@ -89,7 +89,7 @@ sealed class ProductSectionUiModel {
                         ),
                         reminder = ReminderUiModel(hasReminder = false, CampaignReminderType.NotAvailable)
                     ),
-                    id = ""
+                    id = "",
                 )
         }
     }

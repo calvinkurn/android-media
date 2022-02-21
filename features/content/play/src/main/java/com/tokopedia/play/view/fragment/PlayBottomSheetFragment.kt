@@ -40,6 +40,7 @@ import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -729,6 +730,13 @@ class PlayBottomSheetFragment @Inject constructor(
 //    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
 //        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
 //    }
+
+    override fun onReminderClicked(
+        view: ProductSheetViewComponent,
+        productSectionUiModel: ProductSectionUiModel.Section
+    ) {
+        playViewModel.sendReminder(productSectionUiModel)
+    }
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)

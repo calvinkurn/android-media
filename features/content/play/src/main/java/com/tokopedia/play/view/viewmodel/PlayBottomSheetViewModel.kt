@@ -8,10 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.CartFeedbackResponseModel
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
