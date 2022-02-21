@@ -26,7 +26,7 @@
 
             <include
                 layout="@layout/attached_invoice_float_chat_item"
-                android:layout_width="220dp"
+                android:layout_width="@dimen/dp_chatbot_220"
                 android:layout_height="wrap_content">
 
             </include>
@@ -109,21 +109,21 @@
 
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="@dimen/unify_space_40"
+                    android:layout_height="@dimen/unify_space_40"
                     android:layout_alignEnd="@+id/new_comment_container"
                     android:layout_alignRight="@+id/new_comment_container"
                     android:layout_alignBottom="@+id/new_comment_container"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    android:layout_marginRight="@dimen/unify_space_8"
                     android:background="@drawable/bg_oval_transparent">
 
                     <ImageView
                         android:id="@+id/iv_chat_menu"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="@dimen/unify_space_40"
+                        android:layout_height="@dimen/unify_space_40"
                         android:contentDescription="@null"
-                        android:padding="8dp"
+                        android:padding="@dimen/unify_space_8"
                         app:srcCompat="@drawable/ic_add_attachment_chatbot" />
                 </FrameLayout>
             </RelativeLayout>

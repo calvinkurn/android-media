@@ -43,6 +43,17 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.EVENT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.FALSE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
@@ -66,7 +77,6 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleView
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
@@ -167,7 +177,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isChatRefreshed = false
     private var isFirstPage = true
     private var isArticleEntry = false
-    private var hashMap: HashMap<String,String> = HashMap<String,String>()
+    private var hashMap: Map<String,String> = HashMap<String,String>()
     var isAttached : Boolean = false
     private lateinit var invoiceLabel: Label
     private lateinit var invoiceName : Typography
@@ -266,31 +276,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             val intentData = bundle.getString(DEEP_LINK_URI, "")
             var uri: Uri = Uri.parse(intentData)
 
-            if (uri.getQueryParameter("is_attached") != null) {
-                isAttached = uri.getQueryParameter("is_attached") != "false"
-            }
+            isAttached = checkForIsAttachedInvoice(uri)
+            hashMap = presenter.getValuesForArticleEntry(uri)
+            isArticleEntry = checkForArticleEntry(uri)
 
-            hashMap.put("articleId", uri.getQueryParameter("articleId").toBlankOrString())
-            hashMap.put("articleTitle", uri.getQueryParameter("articleTitle").toBlankOrString())
-            hashMap.put("code", uri.getQueryParameter("code").toBlankOrString())
-            hashMap.put("create_time", uri.getQueryParameter("create_time").toBlankOrString())
-            hashMap.put("description", uri.getQueryParameter("description").toBlankOrString())
-            hashMap.put("event", uri.getQueryParameter("event").toBlankOrString())
-            hashMap.put("id", uri.getQueryParameter("id").toBlankOrString())
-            hashMap.put("image_url", uri.getQueryParameter("image_url").toBlankOrString())
-            hashMap.put("is_attached", uri.getQueryParameter("is_attached").toBlankOrString())
-            hashMap.put("status", uri.getQueryParameter("status").toBlankOrString())
-            hashMap.put("status_color", uri.getQueryParameter("status_color").toBlankOrString())
-            hashMap.put("status_id", uri.getQueryParameter("status_id").toBlankOrString())
-            hashMap.put("title", uri.getQueryParameter("title").toBlankOrString())
-            hashMap.put("total_amount", uri.getQueryParameter("total_amount").toBlankOrString())
-            hashMap.put("used_by", uri.getQueryParameter("used_by").toBlankOrString())
-
-            if (uri.getQueryParameter("used_by") != null && uri.getQueryParameter("used_by") == "article_entry") {
-                isArticleEntry = true
-            }
         }
-
 
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
@@ -311,12 +301,27 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         return view
     }
+
+    private fun checkForArticleEntry(uri: Uri): Boolean {
+        if (uri.getQueryParameter(USED_BY) != null && uri.getQueryParameter(USED_BY) == ARTICLE_ENTRY) {
+            return true
+        }
+        return false
+    }
+
+    private fun checkForIsAttachedInvoice(uri: Uri): Boolean {
+        if (uri.getQueryParameter(IS_ATTACHED) != null) {
+            return uri.getQueryParameter(IS_ATTACHED) != FALSE
+        }
+        return false
+    }
+
     override fun sendInvoiceForArticle() {
         if (isArticleEntry) {
             if (!isAttached) {
 
-                if (hashMap.get("code")?.isNotEmpty() == true) {
-                    val attachInvoiceSingleViewModel = createAttachInvoiceSingleViewModel()
+                if (hashMap.get(CODE)?.isNotEmpty() == true) {
+                    val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
                     var invoice: InvoiceLinkPojo =
                         AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
                             attachInvoiceSingleViewModel
@@ -325,12 +330,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     getViewState()?.onShowInvoiceToChat(generatedInvoice)
                     presenter.sendInvoiceAttachment(
                         messageId, invoice, generatedInvoice.startTime,
-                        opponentId, isArticleEntry,hashMap.get("used_by").toBlankOrString()
+                        opponentId, isArticleEntry,hashMap.get(USED_BY).toBlankOrString()
                     )
                 }
-                if (hashMap.get("articleId")?.isNotEmpty() == true) {
+                if (hashMap.get(ARTICLE_ID)?.isNotEmpty() == true) {
                     val startTime = SendableUiModel.generateStartTime()
-                    val msg = hashMap.get("articleTitle").toBlankOrString()
+                    val msg = hashMap.get(ARTICLE_TITLE).toBlankOrString()
                     var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
 
                     presenter.sendQuickReplyInvoice(
@@ -338,8 +343,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         quickReplyViewModel,
                         startTime,
                         opponentId,
-                        hashMap.get("event").toBlankOrString(),
-                        hashMap.get("used_by").toBlankOrString()
+                        hashMap.get(EVENT).toBlankOrString(),
+                        hashMap.get(USED_BY).toBlankOrString()
                     )
                 }
                 enableTyping()
@@ -349,17 +354,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 isFloatingSendButton = true
                 sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
 
-                invoiceLabel.text = hashMap.get("status").toBlankOrString()
-                val labelType = getLabelType(hashMap.get("status_id").toIntOrZero())
+                invoiceLabel.text = hashMap.get(STATUS).toBlankOrString()
+                val labelType = getLabelType(hashMap.get(STATUS_ID).toIntOrZero())
                 invoiceLabel?.setLabelType(labelType)
 
 
-                invoiceName.setText(hashMap.get("code").toBlankOrString())
-                if (hashMap.get("image_url")?.isNotEmpty() == true)
+                invoiceName.setText(hashMap.get(CODE).toBlankOrString())
+                if (hashMap.get(IMAGE_URL)?.isNotEmpty() == true)
                     ImageHandler.loadImage(
                         context,
                         invoiceImage,
-                        hashMap.get("image_url")!!.toBlankOrString(),
+                        hashMap.get(IMAGE_URL)!!.toBlankOrString(),
                         R.drawable.ic_retry_image_send
                     )
                 invoiceCancel.setOnClickListener {
@@ -418,7 +423,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         if(!isFloatingInvoiceCancelled) {
 
-            val attachInvoiceSingleViewModel = createAttachInvoiceSingleViewModel()
+            val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
             var invoice: InvoiceLinkPojo =
                 AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
                     attachInvoiceSingleViewModel
@@ -427,7 +432,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             getViewState()?.onShowInvoiceToChat(generatedInvoice)
             presenter.sendInvoiceAttachment(
                 messageId, invoice, generatedInvoice.startTime,
-                opponentId, isArticleEntry, hashMap.get("used_by").toBlankOrString()
+                opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
             )
         }
 
@@ -440,28 +445,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             quickReplyViewModel,
             startTime,
             opponentId,
-            hashMap.get("event").toString(),
-            hashMap.get("used_by").toString()
+            hashMap.get(EVENT).toString(),
+            hashMap.get(USED_BY).toString()
         )
-        replyEditText.setText("")
+        emptyReplyEditText()
         isFloatingSendButton = false
     }
 
-    private fun createAttachInvoiceSingleViewModel(): AttachInvoiceSingleViewModel {
-        return AttachInvoiceSingleViewModel(
-            typeString = "",
-            type = 0,
-            code = hashMap["code"] ?: "",
-            createdTime = SendableUiModel.generateStartTime(),
-            description = hashMap["description"] ?: "",
-            url = hashMap["image_url"] ?: "",
-            id = hashMap.get("id")!!.toLongOrZero(),
-            imageUrl = hashMap["image_url"] ?: "",
-            status = hashMap["status"] ?: "",
-            statusId = hashMap.get("status_id")!!.toIntOrZero(),
-            title = hashMap["title"] ?: "",
-            amount = hashMap["total_amount"] ?: ""
-        )
+    private fun emptyReplyEditText(){
+        replyEditText.setText("")
     }
 
     private fun getLabelType(statusId: Int?): Int {
