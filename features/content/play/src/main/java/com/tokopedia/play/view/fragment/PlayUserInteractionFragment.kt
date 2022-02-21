@@ -62,6 +62,7 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
@@ -1535,7 +1536,11 @@ class PlayUserInteractionFragment @Inject constructor(
         if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
-        productSeeMoreView?.setTotalProduct(tagItem.product.productSectionList.size)
+        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().map {
+             it.productList.size
+        }.sum()
+
+        productSeeMoreView?.setTotalProduct(productListSize)
     }
 
     private fun renderFeaturedProductView(
