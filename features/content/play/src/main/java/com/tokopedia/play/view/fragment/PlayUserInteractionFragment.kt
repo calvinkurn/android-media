@@ -1536,9 +1536,9 @@ class PlayUserInteractionFragment @Inject constructor(
         if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
-        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().map {
-             it.productList.size
-        }.sum()
+        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
+            it.productList.size
+        }
 
         productSeeMoreView?.setTotalProduct(productListSize)
     }
