@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_cm_home_widget_view_all_card_shimmer"
+    android:layout_width="@dimen/cm_home_widget_dp_144"
+    android:layout_height="match_parent"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/cm_home_widget_dp_10">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tv_cm_home_widget_view_all_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tv_cm_home_widget_view_all_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:loader_type="line" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

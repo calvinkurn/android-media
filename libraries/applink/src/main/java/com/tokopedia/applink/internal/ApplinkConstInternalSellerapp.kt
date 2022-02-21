@@ -46,6 +46,8 @@ object ApplinkConstInternalSellerapp {
 
     //CentralizedPromoActivity
     const val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+
+    //FirstVoucherActivity
     const val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
 
     //MenuSettingActivity
@@ -54,16 +56,19 @@ object ApplinkConstInternalSellerapp {
     //SellerSeamlessLoginFragment
     const val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
-
     //CreateMerchantVoucherStepsActivity
     const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
 
     //VoucherListActivity
     const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
     const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
     const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
 
+    //VoucherDetailActivity
     const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+    const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
 
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
