@@ -288,7 +288,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CMHomeWidgetViewHolder.LAYOUT
     }
 
-    override fun type(payLaterWidgetData: PayLaterWidgetData): Int {
+    override fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int {
         return HomePayLaterWidgetViewHolder.LAYOUT
     }
 
