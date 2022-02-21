@@ -532,7 +532,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         presenter.checkForSession(messageId)
-
         showTicker()
 
         if (savedInstanceState != null)
@@ -779,7 +778,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
-                opponentId,isArticleEntry,hashMap.get("used_by").toBlankOrString())
+                opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
         enableTyping()
     }
 
@@ -787,7 +786,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
-                opponentId,isArticleEntry,hashMap.get("used_by").toBlankOrString())
+                opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
     }
 
     fun showSearchInvoiceScreen() {
@@ -1155,7 +1154,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
         getViewState()?.showErrorWebSocket(isWebSocketError)
     }
-
 
     override fun chatOptionListSelected(selected: ChatOptionListViewModel, model: HelpFullQuestionsViewModel?) {
         model?.let { getViewState()?.hideOptionList(it) }
