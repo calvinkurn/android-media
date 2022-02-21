@@ -1,10 +1,10 @@
-package com.tokopedia.shop_widget.common.viewholder
+package com.tokopedia.shop_widget.thematicwidget.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop_widget.R
-import com.tokopedia.shop_widget.common.uimodel.ProductCardSpaceUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSpaceUiModel
 
 class ProductCardSpaceViewHolder(
     itemView: View

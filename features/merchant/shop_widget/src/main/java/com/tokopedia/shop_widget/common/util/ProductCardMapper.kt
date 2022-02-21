@@ -1,8 +1,8 @@
 package com.tokopedia.shop_widget.common.util
 
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.shop_widget.common.uimodel.LabelGroupUiModel
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.LabelGroupUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 object ProductCardMapper {

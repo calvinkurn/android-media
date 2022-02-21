@@ -1,8 +1,8 @@
-package com.tokopedia.shop_widget.common.uimodel
+package com.tokopedia.shop_widget.thematicwidget.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactory
+import com.tokopedia.shop_widget.thematicwidget.typefactory.ProductCardTypeFactory
 
 data class ProductCardUiModel(
     var id: String? = null,

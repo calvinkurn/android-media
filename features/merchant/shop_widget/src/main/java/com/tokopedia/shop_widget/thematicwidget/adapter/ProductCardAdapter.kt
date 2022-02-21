@@ -1,9 +1,9 @@
-package com.tokopedia.shop_widget.common.adapter
+package com.tokopedia.shop_widget.thematicwidget.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactoryImpl
+import com.tokopedia.shop_widget.thematicwidget.typefactory.ProductCardTypeFactoryImpl
 
 open class ProductCardAdapter(
     baseListAdapterTypeFactory: ProductCardTypeFactoryImpl,

@@ -120,7 +120,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.unifycomponents.Toaster

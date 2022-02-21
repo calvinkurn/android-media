@@ -1,15 +1,15 @@
-package com.tokopedia.shop_widget.common.typefactory
+package com.tokopedia.shop_widget.thematicwidget.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
-import com.tokopedia.shop_widget.common.uimodel.ProductCardSpaceUiModel
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.common.viewholder.ProductCardSeeAllViewHolder
-import com.tokopedia.shop_widget.common.viewholder.ProductCardSpaceViewHolder
-import com.tokopedia.shop_widget.common.viewholder.ProductCardViewHolder
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSeeAllUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSpaceUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardSeeAllViewHolder
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardSpaceViewHolder
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardViewHolder
 
 class ProductCardTypeFactoryImpl(
     private val productCardListener: ProductCardViewHolder.ProductCardListener,

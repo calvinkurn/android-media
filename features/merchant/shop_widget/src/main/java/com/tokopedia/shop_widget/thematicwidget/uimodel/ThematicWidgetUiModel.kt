@@ -2,7 +2,6 @@ package com.tokopedia.shop_widget.thematicwidget.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFactory
 

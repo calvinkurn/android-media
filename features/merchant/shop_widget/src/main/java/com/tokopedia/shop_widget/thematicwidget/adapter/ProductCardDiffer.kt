@@ -1,9 +1,9 @@
-package com.tokopedia.shop_widget.common.adapter
+package com.tokopedia.shop_widget.thematicwidget.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSeeAllUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 
 class ProductCardDiffer: DiffUtil.Callback() {
     private var oldList: List<Visitable<*>> = emptyList()

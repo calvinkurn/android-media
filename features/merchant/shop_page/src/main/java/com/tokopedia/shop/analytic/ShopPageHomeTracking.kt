@@ -165,7 +165,7 @@ import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue

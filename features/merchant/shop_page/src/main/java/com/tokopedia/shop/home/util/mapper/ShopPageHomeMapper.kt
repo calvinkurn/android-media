@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
@@ -29,7 +28,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
-import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
