@@ -1,0 +1,98 @@
+{
+  "readme": "Home merchant voucher view, click shop, click product, and view all",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "merchant voucher multiple - view coupon",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".* - .* - .*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/ - p.* - merchant_voucher_multiple - banner - .*",
+          "creative_url": ""
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "merchant voucher multiple - click shop",
+      "eventCategory": "homepage",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "shop detail - .*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/ - p.* - merchant_voucher_multiple - banner - .*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "merchant voucher multiple - click product detail",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - p.* - merchant_voucher_multiple - product - .* - .* - .* - .* - .* - .*",
+      "items": [
+        {
+          "dimension83": "bebas ongkir",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".* / .* / .*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "merchant voucher multiple - click voucher detail",
+      "eventCategory": "homepage",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "voucher detail - .* - .* - .*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/ - p.* - merchant_voucher_multiple - banner - .*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "merchant voucher multiple - click view all card",
+      "eventCategory": "homepage",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "clientId": ".*",
+      "userId": ".*"
+    }
+  ]
+}

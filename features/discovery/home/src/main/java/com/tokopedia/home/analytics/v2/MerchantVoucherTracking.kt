@@ -18,7 +18,9 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val MERCHANT_VOUCHER_MULTIPLE_FORMAT = "merchant voucher multiple - %s"
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
-            const val CLICK_VIEW_ALL = "click view all"
+            const val CLICK_VOUCHER_DETAIL = "click voucher detail"
+            const val CLICK_PRODUCT_DETAIL = "click product detail"
+            const val CLICK_VIEW_ALL = "click view all card"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
@@ -62,7 +64,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
             Action.KEY,
-            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_SHOP)
+            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VOUCHER_DETAIL)
         )
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, merchantVoucherDetailClicked.shopId)
@@ -103,7 +105,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
             Action.KEY,
-            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_SHOP)
+            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_PRODUCT_DETAIL)
         )
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, CustomAction.CREATIVE_NAME_FORMAT.format(merchantVoucherProductClicked.productId, merchantVoucherProductClicked.shopId))
