@@ -1,5 +1,8 @@
 package com.tokopedia.productcard.video
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.utils.LayoutManagerUtil
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +16,7 @@ import timber.log.Timber
 
 class ProductVideoAutoplay<T, R : T>(
     scope: CoroutineScope
-) : CoroutineScope by scope {
+) : CoroutineScope by scope, LifecycleObserver {
     private var productVideoAutoPlayJob: Job? = null
     private var productVideoPlayer: ProductVideoPlayer? = null
 
@@ -57,6 +60,7 @@ class ProductVideoAutoplay<T, R : T>(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
      fun resumeVideoAutoplay() {
         val visibleItemIterator = videoPlayerIterator ?: return
         if(isPaused && visibleItemIterator.hasNext()) {
@@ -67,6 +71,7 @@ class ProductVideoAutoplay<T, R : T>(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun pauseVideoAutoplay() {
         if(!isPaused) {
             isPaused = true
@@ -74,7 +79,7 @@ class ProductVideoAutoplay<T, R : T>(
             productVideoAutoPlayJob?.cancel()
         }
     }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun stopVideoAutoplay() {
         productVideoPlayer?.stopVideo()
         productVideoPlayer = null

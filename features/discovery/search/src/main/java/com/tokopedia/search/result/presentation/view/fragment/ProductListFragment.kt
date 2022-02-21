@@ -304,6 +304,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
+        viewLifecycleOwner.lifecycle.addObserver(productVideoAutoplay)
 
         presenter?.onViewCreated()
     }
@@ -535,18 +536,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 }
         }
     }
-
-    private fun resumeVideoAutoplay() {
-        productVideoAutoplay.resumeVideoAutoplay()
-    }
-
-    private fun pauseVideoAutoplay() {
-        productVideoAutoplay.pauseVideoAutoplay()
-    }
-
-    private fun stopVideoAutoplay() {
-        productVideoAutoplay.stopVideoAutoplay()
-    }
     //endregion
 
     //region onAttach
@@ -574,7 +563,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
 
-        resumeVideoAutoplay()
         presenter?.onViewResumed()
     }
 
@@ -786,7 +774,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        pauseVideoAutoplay()
 
         trackingQueue?.sendAll()
     }
@@ -1250,7 +1237,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onDestroyView() {
         unregisterVideoAutoplayAdapterObserver()
         masterJob.cancelChildren()
-        stopVideoAutoplay()
         super.onDestroyView()
         presenter?.detachView()
     }
