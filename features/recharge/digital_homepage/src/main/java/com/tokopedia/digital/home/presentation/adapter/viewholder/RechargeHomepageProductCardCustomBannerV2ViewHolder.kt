@@ -135,5 +135,9 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                 if (section.items.size > index)
                     listener.onRechargeSectionItemClicked(section.items[index])
             }
+
+            override fun onItemImpression(item: DigitalUnifyModel, index: Int) {
+
+            }
         }
 }
