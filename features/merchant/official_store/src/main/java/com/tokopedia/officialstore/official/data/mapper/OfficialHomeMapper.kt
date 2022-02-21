@@ -218,7 +218,7 @@ class OfficialHomeMapper (
         }
         newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
         _listOfficialStore = newList
-        adapter?.submitList(newList)
+        adapter?.submitList(newList)        
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
@@ -380,6 +380,7 @@ class OfficialHomeMapper (
         }
         _listOfficialStore = newList
         adapter?.submitList(newList)
+        
     }
 
 }
