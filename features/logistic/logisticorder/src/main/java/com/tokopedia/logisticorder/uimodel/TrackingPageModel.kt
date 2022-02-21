@@ -44,7 +44,8 @@ data class DetailModel(
 
 @Parcelize
 data class ProofModel(
-    var imageId: String = ""
+    var imageId: String = "",
+    var description: String = ""
 ) : Parcelable
 
 @Parcelize
