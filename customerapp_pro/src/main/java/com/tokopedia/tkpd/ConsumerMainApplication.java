@@ -12,7 +12,7 @@ import androidx.work.Configuration;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
