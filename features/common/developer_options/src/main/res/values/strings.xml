@@ -99,4 +99,10 @@
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
     <string name="view_websocket_logging">View Web Socket Logging</string>
 
+    <string name="applink_list">Applink List</string>
+    <string name="tokopedia_name">Tokopedia</string>
+    <string name="search_applink_here">search applink here or input applink here</string>
+    <string name="applink_no_data">No Data</string>
+    <string name="route_to_applink">Route to Applink</string>
+
 </resources>

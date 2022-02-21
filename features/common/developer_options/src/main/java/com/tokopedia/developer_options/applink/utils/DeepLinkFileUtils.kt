@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.deeplink.utils
+package com.tokopedia.developer_options.applink.utils
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
