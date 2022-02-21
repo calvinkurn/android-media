@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.model.websocket
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created By : Jonathan Darwin on February 21, 2022
@@ -97,5 +98,47 @@ class WebSocketUiModelBuilder {
         totalLikeFmt: String = "1",
     ) = TotalLikeUiModel(
         totalLike = totalLikeFmt,
+    )
+
+    /** MESG */
+    fun buildChatString(
+        channelId: Int = 1,
+        messageId: Int = 1,
+        id: Int = 1,
+        userId: Int = 1,
+        name: String = "",
+        image: String = "",
+        message: String = "",
+        timestamp: Long = 1579064126000,
+    ) = """
+        {
+            "type": "MESG",
+            "data": {
+              "channel_id": $channelId,
+              "msg_id": "$messageId",
+              "user": {
+                "id": $id,
+                "user_id": $userId,
+                "name": "$name",
+                "image": "$image"
+              },
+              "message": "$message",
+              "timestamp": $timestamp
+            }
+        }
+    """.trimIndent()
+
+    fun buildChatModel(
+        messageId: String = "1",
+        userId: String = "1",
+        name: String = "",
+        message: String = "",
+        isSelfMessage: Boolean = false
+    ) = PlayChatUiModel(
+        messageId = messageId,
+        userId = userId,
+        name = name,
+        message = message,
+        isSelfMessage = isSelfMessage,
     )
 }

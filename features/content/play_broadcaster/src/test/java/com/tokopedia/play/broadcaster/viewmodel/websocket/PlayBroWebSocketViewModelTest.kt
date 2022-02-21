@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockk
@@ -69,6 +70,25 @@ class PlayBroWebSocketViewModelTest {
             val result = robot.getViewModel().observableTotalLike.getOrAwaitValue()
 
             result.assertEqualTo(mockTotalLike)
+        }
+    }
+
+    @Test
+    fun `when user received chat event, then it should emit chat data`() {
+        val mockChatString = webSocketUiModelBuilder.buildChatString()
+        val mockChat = webSocketUiModelBuilder.buildChatModel()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            robot.executeViewModelPrivateFunction("startWebSocket")
+            fakePlayWebSocket.fakeEmitMessage(mockChatString)
+            val result = robot.getViewModel().observableChatList.getOrAwaitValue()
+
+            result.assertEqualTo(listOf(mockChat))
         }
     }
 }
