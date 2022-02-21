@@ -35,6 +35,7 @@ object MacroInteration {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
+        device.wait(Until.findObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
         val recycler = device.findObject(By.res(packageName, rvResourceId))
 
         recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)

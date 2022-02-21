@@ -154,7 +154,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
 
     fun setReviewerImage(imageUrl: String) {
         profilePicture?.apply {
-            if (listener?.shouldShowCredibilityComponent() == true && isProductReview) {
+            if (isProductReview) {
                 loadImage(imageUrl)
                 show()
                 if (!isAnonymous) {
@@ -208,6 +208,6 @@ class ReviewBasicInfoWidget : BaseCustomView {
     }
 
     fun shouldShowCredibility(): Boolean {
-        return listener?.shouldShowCredibilityComponent() == true && isProductReview && !isAnonymous
+        return isProductReview && !isAnonymous
     }
 }
