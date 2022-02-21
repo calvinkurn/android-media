@@ -68,10 +68,20 @@ private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (In
             continue
         }
 
-        count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
+        count(getOptionCount(entry))
     }
 
     return this
+}
+
+private fun getOptionCount(mapEntry: Map.Entry<String, Any>): Int {
+    return try {
+        val optionValue = mapEntry.value.toString()
+        val optionList = optionValue.split(OptionHelper.OPTION_SEPARATOR)
+        optionList.size
+    } catch (throwable: Throwable) {
+        0
+    }
 }
 
 private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
