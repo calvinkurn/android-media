@@ -7,7 +7,13 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_DESCRIPTION_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_PRIMARY_BUTTON_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_SECONDARY_BUTTON_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_TITLE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowEmptyStateOocBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -27,18 +33,61 @@ class TokoNowEmptyStateOocViewHolder(
     private var hostSource = ""
 
     override fun bind(element: TokoNowEmptyStateOocUiModel) {
+        val eventCategory = listener?.onGetEventCategory().orEmpty()
+        val serviceType = element.serviceType
         hostSource = element.hostSource
-        showEmptyStateNoAddress(listener?.onGetEventCategory().orEmpty())
+
+        showEmptyStateTitle(serviceType)
+        showEmptyStateDescription(serviceType)
+        showPrimaryBtnText(serviceType)
+        showSecondaryBtnText(serviceType)
+        setActionListener(eventCategory, serviceType)
     }
 
-    private fun showEmptyStateNoAddress(eventCategory: String) {
+    private fun showEmptyStateTitle(serviceType: String) {
+        getServiceTypeRes(OUT_OF_COVERAGE_TITLE_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setTitle(getString(it))
+        }
+    }
+
+    private fun showEmptyStateDescription(serviceType: String) {
+        getServiceTypeRes(OUT_OF_COVERAGE_DESCRIPTION_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setDescription(getString(it))
+        }
+    }
+
+    private fun showPrimaryBtnText(serviceType: String) {
+        getServiceTypeRes(OUT_OF_COVERAGE_PRIMARY_BUTTON_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setPrimaryBtnText(getString(it))
+        }
+    }
+
+    private fun showSecondaryBtnText(serviceType: String) {
+        getServiceTypeRes(OUT_OF_COVERAGE_SECONDARY_BUTTON_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setSecondaryBtnText(getString(it))
+        }
+    }
+
+    private fun setActionListener(eventCategory: String, serviceType: String) {
         binding?.emptyStateOcc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
-            override fun onChangeAddressClicked() {
-                showBottomSheetChooseAddress()
+            override fun onPrimaryBtnClicked() {
+                if (serviceType == ServiceType.NOW_2H ||
+                    serviceType == ServiceType.NOW_OOC
+                ) {
+                    showBottomSheetChooseAddress()
+                } else {
+                    listener?.onSwitchService()
+                }
             }
 
-            override fun onReturnClick() {
-                (itemView.context as? Activity)?.finish()
+            override fun onSecondaryBtnClicked() {
+                if (serviceType == ServiceType.NOW_2H ||
+                    serviceType == ServiceType.NOW_OOC
+                ) {
+                    (itemView.context as? Activity)?.finish()
+                } else {
+                    showBottomSheetChooseAddress()
+                }
             }
 
             override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
@@ -71,5 +120,6 @@ class TokoNowEmptyStateOocViewHolder(
         fun onRefreshLayoutPage()
         fun onGetFragmentManager(): FragmentManager
         fun onGetEventCategory(): String
+        fun onSwitchService()
     }
 }

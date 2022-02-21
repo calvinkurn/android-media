@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IDENTIFIER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
@@ -282,6 +282,8 @@ class ProductListPresenter @Inject constructor(
 
             if (isViewAdded && !hasLoadData)
                 onViewFirstTimeLaunch()
+
+            reCheckChooseAddressData()
         }
     }
 
@@ -2247,6 +2249,10 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    override fun onViewResumed() {
+        reCheckChooseAddressData()
+    }
+
     private fun switchToBigGridView(position: Int) {
         view.switchSearchNavigationLayoutTypeToBigGridView(position)
         view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID)
@@ -2272,9 +2278,8 @@ class ProductListPresenter @Inject constructor(
 
         view.reloadData()
     }
-    //endregion
 
-    override fun onViewResumed() {
+    private fun reCheckChooseAddressData() {
         if (isViewNotAttached) return
         val chooseAddressData = chooseAddressData ?: return
         val isAddressDataUpdated = view.getIsLocalizingAddressHasUpdated(chooseAddressData)
@@ -2282,6 +2287,7 @@ class ProductListPresenter @Inject constructor(
         if (isAddressDataUpdated)
             onLocalizingAddressSelected()
     }
+    //endregion
 
     //region Inspiration Carousel Chips
     override fun onInspirationCarouselChipsClick(
