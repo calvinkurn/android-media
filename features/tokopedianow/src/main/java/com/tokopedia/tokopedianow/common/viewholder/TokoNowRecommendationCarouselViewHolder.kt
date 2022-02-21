@@ -54,13 +54,15 @@ class TokoNowRecommendationCarouselViewHolder(
                 element.isFirstLoad = false
             }
         } else {
-            binding?.tokoNowSearchCategoryRecomCarousel?.bind(
-                carouselData = element.carouselData,
-                adapterPosition = adapterPosition,
-                basicListener = this,
-                tokonowListener = this,
-                scrollToPosition = scrollToPosition.orZero()
-            )
+            if(element.carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
+                binding?.tokoNowSearchCategoryRecomCarousel?.bind(
+                    carouselData = element.carouselData,
+                    adapterPosition = adapterPosition,
+                    basicListener = this,
+                    tokonowListener = this,
+                    scrollToPosition = scrollToPosition.orZero()
+                )
+            }
             recommendationCarouselListener?.onBindRecommendationCarousel(
                 element,
                 adapterPosition
