@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.settingprofile.domain
+package com.tokopedia.profilecompletion.profileinfo.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
