@@ -188,6 +188,7 @@ class TransactionHistoryViewModel @Inject constructor(
         allTransactionLiveData.value = InitialLoadingError(throwable)
         refundTransactionLiveData.value = InitialLoadingError(throwable)
         incomeTransactionLiveData.value = InitialLoadingError(throwable)
+        masterLiveData.postValue(InitialLoadingError(throwable))
     }
 
     fun loadMoreTransaction(transactionType: TransactionType) {
