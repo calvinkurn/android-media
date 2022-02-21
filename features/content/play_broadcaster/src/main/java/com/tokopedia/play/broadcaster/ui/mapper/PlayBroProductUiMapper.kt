@@ -166,34 +166,10 @@ class PlayBroProductUiMapper @Inject constructor() {
         }
     }
 
-
-    /** TODO: gonna remove this annotation */
-    @OptIn(ExperimentalStdlibApi::class)
-    fun mapProductTagSection(): List<ProductTagSectionUiModel> {
-        return buildList {
-            for(i in 1..3) {
-                add(ProductTagSectionUiModel(
-                    name = "Sale $i",
-                    campaignStatus = when(i) {
-                        1 -> CampaignStatus.Ongoing
-                        2 -> CampaignStatus.Unknown
-                        else -> CampaignStatus.Ready
-                    },
-                    products = buildList {
-                        add(ProductUiModel(
-                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
-                        ))
-                    }
-                ))
-            }
-        }
-    }
-
     private fun mapCampaignStatusFromType(type: String): CampaignStatus {
-        return when(type) {
-            "Mendatang" -> CampaignStatus.Ready
-            "Berlangsung" -> CampaignStatus.Ongoing
+        return when(type.lowercase()) {
+            "mendatang", "upcoming" -> CampaignStatus.Ready
+            "berlangsung", "active" -> CampaignStatus.Ongoing
             else -> CampaignStatus.Unknown
         }
     }
