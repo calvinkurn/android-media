@@ -577,7 +577,6 @@ class ChatbotPresenter @Inject constructor(
             title = hashMap[TITLE] ?: "",
             amount = hashMap[TOTAL_AMOUNT] ?: ""
         )
-
     }
 
     override fun getValuesForArticleEntry(uri: Uri): Map<String, String> {
@@ -601,7 +600,7 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
-    private fun getQueryParam(uri: Uri, key: String):String {
+    private fun getQueryParam(uri: Uri, key: String): String {
         return uri.getQueryParameter(key).toBlankOrString()
     }
 
