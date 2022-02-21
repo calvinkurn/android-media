@@ -7,14 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.*
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
@@ -25,13 +27,10 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.beranda.*
 import com.tokopedia.topads.dashboard.view.fragment.education.READ_MORE_URL
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
-import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
-import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -225,6 +224,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun hideShimmer() {
         if (!binding.shimmerView.root.isVisible) return
+        binding.swipeRefreshLayout.isRefreshing = false
         binding.shimmerView.root.hide()
         (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
         binding.swipeRefreshLayout.show()
@@ -253,7 +253,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.shopDepositLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
                     binding.tambahKreditLayout.creditAmount.text = it.data.amountFmt
                 }
                 is Fail -> {}
@@ -290,24 +289,33 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun setRecommendationProdukBerpostensi(item: RecommendationStatistics.Statistics.Data.ProductRecommendationStats) {
         with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
-            layoutRoundedView.txtSubTitle.text = String.format(
-                resources.getString(R.string.topads_dashboard_kali_hari_value),
-                item.totalSearchCount
+            layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
+                String.format(
+                    resources.getString(R.string.topads_dashboard_kali_hari_value),
+                    item.totalSearchCount
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            txtDescription.text = String.format(
-                resources.getString(R.string.topads_dashboard_produk_berpostensi_desc), item.count
+            txtDescription.text = HtmlCompat.fromHtml(
+                String.format(
+                    resources.getString(R.string.topads_dashboard_produk_berpostensi_desc),
+                    item.count
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            produkBerpotensiAdapter.addItems(item.productList)
+            produkBerpotensiAdapter.addItems(TopAdsDashboardBerandaUtils.mapImageModel(item.productList))
         }
     }
 
     private fun setRecommendationAnggaranHarian(item: RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats) {
         with(binding.layoutRecommendasi.layoutAnggaranHarian) {
-            layoutRoundedView.txtSubTitle.text = String.format(
-                resources.getString(R.string.topads_dashboard_kali_hari_value), item.totalClicks
+            layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
+                String.format(
+                    resources.getString(R.string.topads_dashboard_kali_hari_value), item.totalClicks
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            txtDescription.text = String.format(
-                resources.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
+            txtDescription.text = HtmlCompat.fromHtml(
+                String.format(
+                    resources.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             val list = item.groupList
             if (list.isNotEmpty()) {
@@ -329,11 +337,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun setRecommendationKataKunci(item: RecommendationStatistics.Statistics.Data.KeywordRecommendationStats) {
         with(binding.layoutRecommendasi.layoutkataKunci) {
-            layoutRoundedView.txtSubTitle.text = String.format(
-                resources.getString(R.string.topads_dashboard_n_grup_iklanmu), item.groupCount
+            layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
+                String.format(
+                    resources.getString(R.string.topads_dashboard_n_grup_iklanmu), item.groupCount
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            txtDescription.text = String.format(
-                resources.getString(R.string.topads_dashboard_kata_kunci_desc), item.groupCount
+            txtDescription.text = HtmlCompat.fromHtml(
+                String.format(
+                    resources.getString(R.string.topads_dashboard_kata_kunci_desc), item.groupCount
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             kataKunciChipsRvAdapter.addItems(
                 item.topGroups,
@@ -391,7 +403,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun goToCreditHistory(isFromSelection: Boolean = false) {
         context?.let {
             startActivityForResult(
-                TopAdsCreditHistoryActivity.createInstance(it, isFromSelection),
+                TopAdsCreditHistoryActivity.createInstance(it, isFromSelection,(requireActivity() as TopAdsDashboardActivity).datePickerIndex),
                 REQUEST_CODE_SET_AUTO_TOPUP
             )
         }

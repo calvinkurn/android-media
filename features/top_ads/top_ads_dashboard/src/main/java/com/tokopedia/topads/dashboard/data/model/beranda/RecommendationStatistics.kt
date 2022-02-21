@@ -9,7 +9,9 @@ data class KataKunciSimpleButton(val label: String) : KataKunciHomePageBase()
 data class ImageModel(
     @SerializedName("ImageURL")
     val imageUrl: String
-)
+) {
+    var overLappingText: String? = ""
+}
 
 data class RecommendationStatistics(
     @SerializedName("topadsWidgetRecommendationStatistics")

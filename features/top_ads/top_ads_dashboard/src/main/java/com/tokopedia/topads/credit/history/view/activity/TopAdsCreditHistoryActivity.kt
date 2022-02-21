@@ -9,15 +9,26 @@ import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFrag
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 
-class TopAdsCreditHistoryActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
-    override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent).build()
+const val PARAM_DATE_PICKER_INDEX = "picker_index"
 
-    override fun getNewFragment() = TopAdsCreditHistoryFragment.createInstance(intent.getBooleanExtra(PARAM_IS_FROM_SELECTION, false))
+class TopAdsCreditHistoryActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
+    override fun getComponent(): TopAdsDashboardComponent =
+        DaggerTopAdsDashboardComponent.builder().baseAppComponent(
+            (application as BaseMainApplication).baseAppComponent
+        ).build()
+
+    override fun getNewFragment() = TopAdsCreditHistoryFragment.createInstance(
+        intent.getBooleanExtra(PARAM_IS_FROM_SELECTION, false),
+        intent.getIntExtra(PARAM_DATE_PICKER_INDEX, 0)
+    )
 
     companion object {
         private const val PARAM_IS_FROM_SELECTION = "is_from_selection"
-        fun createInstance(context: Context, isFromSelection: Boolean = false) = Intent(context, TopAdsCreditHistoryActivity::class.java)
+        fun createInstance(
+            context: Context, isFromSelection: Boolean = false, datePickerIndex: Int
+        ) =
+            Intent(context, TopAdsCreditHistoryActivity::class.java)
                 .putExtra(PARAM_IS_FROM_SELECTION, isFromSelection)
+                .putExtra(PARAM_DATE_PICKER_INDEX, datePickerIndex)
     }
 }

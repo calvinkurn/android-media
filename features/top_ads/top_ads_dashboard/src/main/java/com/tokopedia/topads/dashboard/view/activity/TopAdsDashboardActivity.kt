@@ -95,7 +95,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     internal var startDate = Utils.getStartDate()
     internal var endDate = Utils.getEndDate()
     private var datePickerSheet: DatePickerSheet? = null
-    private var datePickerIndex = 2
+    var datePickerIndex = 2
+        private set
 
     private val headerToolbarRight by lazy {
         layoutInflater.inflate(

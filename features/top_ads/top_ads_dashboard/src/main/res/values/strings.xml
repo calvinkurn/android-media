@@ -405,7 +405,7 @@
     <string name="sampai_dengan">Sampai dengan</string>
     <string name="topads_headline_recom_grp_bs_title">Iklankan Produk Dengan Grup</string>
     <string name="topads_dash_text_ringkasan">Ringkasan:</string>
-    <string name="topads_dash_from_last_week">dari minggu lalu</string>
+    <string name="topads_dash_from_last_week"><![CDATA[<font color="#03AC0E" size="17"><b>%s </b></font>dari minggu lalu]]></string>
     <string name="topads_dash_text_bacaan_terbaru_untukmu">Bacaan terbaru untukmu</string>
     <string name="topads_dash_read_more">Selengkapnya</string>
     <string name="topads_dashboard_last_update_text">Update terakhir %s WIB</string>
@@ -445,7 +445,7 @@
     <string name="topads_education_tips_lainnya_topads">Tips Lainnya</string>
     <string name="topads_education_article_frag_title">Ayo kenalan lebih dekat dengan TopAds dan pelajari cara beriklan yang efektif di TopAds.</string>
 
-    <string name="topads_dashboard_potensi_tampil_str">Potensi tampil <font color="#F531353B" size="14"><b>%s kali/hari</b></font></string>
+    <string name="topads_dashboard_potensi_tampil_str"><![CDATA[Potensi tampil <font color="#03AC0E" size="14"><b>%s kali/hari</b></font>]]></string>
     <string name="topads_dashboard_kata_kunci_neg">Kata Kunci Negatif</string>
     <string name="topads_dashboard_kata_kunci_baru">Kata kunci baru</string>
     <string name="topads_dashboard_lihat_semua">Lihat Semua</string>
@@ -456,10 +456,10 @@
     <string name="topads_dashboard_atur_iklannya">Atur Iklannya</string>
     <string name="topads_dashboard_produk_berpotensi">Produk Berpotensi</string>
     <string name="topads_dashboard_potensi_tampil">Potensi Tampil</string>
-    <string name="topads_dashboard_kali_hari_value"><b><font color="#F531353B" size="14">+%d</font></b> kali/hari</string>
-    <string name="topads_dashboard_produk_berpostensi_desc"><b><font color="#F531353B">%d produkmu</font></b> lagi banyak dicari, nih! Yuk, ikuti trennya dan iklankan produkmu.</string>
-    <string name="topads_dashboard_anggaran_harian_desc">Wah, <b><font color="#F531353B">%d grup iklanmu</font></b> tidak tampil karena Anggaran Hariannya habis. Atur anggarannya yuk!</string>
-    <string name="topads_dashboard_kata_kunci_desc">Ada <b><font color="#F531353B">%d grup iklanmu</font></b> yang bisa dimaksimalkan. Yuk, pakai rekomendasi kata kunci di bawah ini!</string>
-    <string name="topads_dashboard_n_grup_iklanmu">Ada <b><font color="#F531353B">%d</font></b>grup iklanmu</string>
+    <string name="topads_dashboard_kali_hari_value"><![CDATA[<b><font size="17">+%d</font></b> kali/hari]]></string>
+    <string name="topads_dashboard_produk_berpostensi_desc"><![CDATA[<b><font size=17">%d produkmu</font></b> lagi banyak dicari, nih! Yuk, ikuti trennya dan iklankan produkmu.]]></string>
+    <string name="topads_dashboard_anggaran_harian_desc"><![CDATA[Wah, <b><font size=17">%d grup iklanmu</font></b> tidak tampil karena Anggaran Hariannya habis. Atur anggarannya yuk!]]></string>
+    <string name="topads_dashboard_kata_kunci_desc"><![CDATA[Ada <b><font size=17">%d grup iklanmu</font></b> yang bisa dimaksimalkan. Yuk, pakai rekomendasi kata kunci di bawah ini!]]></string>
+    <string name="topads_dashboard_n_grup_iklanmu"><![CDATA[Ada<b><font size=17"> %d </font></b>grup iklanmu]]></string>
 </resources>
 

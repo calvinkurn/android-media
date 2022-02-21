@@ -1,11 +1,15 @@
 package com.tokopedia.topads.dashboard.data.utils
 
 import android.content.Context
+import android.content.res.Resources
+import android.os.Build
+import android.text.Html
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -33,6 +37,18 @@ object Utils {
 
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
+
+    fun Resources.getFormattedTextFromHtml(stringId: Int, vararg params: Any?): String {
+        return HtmlCompat.fromHtml(
+            String.format(getString(stringId), *params), HtmlCompat.FROM_HTML_MODE_LEGACY
+        ).toString()
+    }
+
+    fun getFormattedTextFromHtml(string: String): String {
+        return HtmlCompat.fromHtml(
+            string, HtmlCompat.FROM_HTML_MODE_LEGACY
+        ).toString()
+    }
 
     internal suspend fun <T : Any> executeQuery(
         query: String, responseClass: Class<T>, params: Map<String, Any?>

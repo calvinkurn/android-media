@@ -12,18 +12,59 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsSummaryType
-import com.tokopedia.topads.dashboard.data.model.beranda.Chip
-import com.tokopedia.topads.dashboard.data.model.beranda.SummaryBeranda
-import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
+import com.tokopedia.topads.dashboard.data.model.beranda.*
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
 import com.tokopedia.topads.dashboard.data.utils.Utils.asPercentage
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsDashboardBerandaBaseBinding
+import com.tokopedia.topads.dashboard.view.adapter.beranda.TopAdsBerandsKataKunciChipsDetailRvAdapter
 
 internal object TopAdsDashboardBerandaUtils {
 
     private const val BERANDA_DIALOG_IMAGE =
         "https://images.tokopedia.net/img/android/res/singleDpi/topads_dashboard_dialog_img.png"
+    private const val PRODUK_BERPOTENSI_LIMIT_IMAGE = 5
+
+    fun mapImageModel(items: List<ImageModel>): MutableList<ImageModel> {
+        val list = mutableListOf<ImageModel>()
+        items.forEach {
+            if (list.size >= PRODUK_BERPOTENSI_LIMIT_IMAGE) return@forEach
+            list.add(it)
+        }
+        if (items.size - list.size > 0)
+            list[list.size - 1].overLappingText = "+${items.size - list.size + 1}"
+        return list
+    }
+
+    fun mapChipDetailToKataKunci(
+        item: RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup,
+        resources: Resources
+    ) = listOf(
+        TopAdsBerandsKataKunciChipsDetailRvAdapter.KataKunciDetail(
+            resources.getString(R.string.topads_dashboard_kata_kunci_baru),
+            item.newKeywordCount,
+            String.format(
+                resources.getString(R.string.topads_dashboard_potensi_tampil_str),
+                item.newKeywordTotalImpression
+            )
+        ),
+        TopAdsBerandsKataKunciChipsDetailRvAdapter.KataKunciDetail(
+            resources.getString(R.string.new_keyword_subtitle2),
+            item.bidCount,
+            String.format(
+                resources.getString(R.string.topads_dashboard_potensi_tampil_str),
+                item.bidTotalImpression
+            )
+        ),
+        TopAdsBerandsKataKunciChipsDetailRvAdapter.KataKunciDetail(
+            resources.getString(R.string.topads_dashboard_kata_kunci_neg),
+            item.negativeKeywordCount,
+            String.format(
+                resources.getString(R.string.topads_dashboard_potensi_tampil_str),
+                item.newKeywordTotalImpression
+            )
+        )
+    )
 
     fun TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary.mapToSummary(
         context: Context

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.beranda.SummaryBeranda
@@ -31,7 +32,12 @@ class TopAdsBerandaSummaryRvAdapter :
         with(holder) {
             title.text = item.title
             txtValue.text = item.count.toString()
-            txtPercentageChange.text = item.percentCount
+            txtPercentageChange.text = HtmlCompat.fromHtml(
+                String.format(
+                    txtPercentageChange.context.resources.getString(R.string.topads_dash_from_last_week),
+                    item.percentCount
+                ),HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
             if (item.isSelected) selectView(holder, item) else unSelectView(holder, item)
 
             rootLayout.setOnClickListener {
@@ -73,7 +79,9 @@ class TopAdsBerandaSummaryRvAdapter :
         selectedItems.clear()
         list.addAll(items)
 
-        selectedItems.add(list[0].also { it.isSelected = true })  //by default 1st item will be selected
+        selectedItems.add(list[0].also {
+            it.isSelected = true
+        })  //by default 1st item will be selected
         itemClicked?.invoke(selectedItems)
         notifyDataSetChanged()
     }

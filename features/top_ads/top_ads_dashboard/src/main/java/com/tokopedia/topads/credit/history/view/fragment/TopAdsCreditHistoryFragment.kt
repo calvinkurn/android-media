@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.credit.history.view.activity.PARAM_DATE_PICKER_INDEX
 import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
 import com.tokopedia.topads.dashboard.R
@@ -38,7 +39,9 @@ import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.util.*
 import javax.inject.Inject
 
-class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCreditHistoryTypeFactory>(), CustomDatePicker.ActionListener {
+class TopAdsCreditHistoryFragment :
+    BaseListFragment<CreditHistory, TopAdsCreditHistoryTypeFactory>(),
+    CustomDatePicker.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,13 +49,18 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
     private var datePickerSheet: DatePickerSheet? = null
     internal var startDate: Date? = null
     internal var endDate: Date? = null
+    private var datePickerIndex = 2
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 1
         private const val PARAM_IS_FROM_SELECTION = "is_from_selection"
-        fun createInstance(isFromSelection: Boolean = false) = TopAdsCreditHistoryFragment().apply {
-            arguments = Bundle().also { it.putBoolean(PARAM_IS_FROM_SELECTION, isFromSelection) }
-        }
+        fun createInstance(isFromSelection: Boolean = false, datePickerIndex: Int) =
+            TopAdsCreditHistoryFragment().apply {
+                arguments = Bundle().also {
+                    it.putBoolean(PARAM_IS_FROM_SELECTION, isFromSelection)
+                    it.putInt(PARAM_DATE_PICKER_INDEX, datePickerIndex)
+                }
+            }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +69,16 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(TopAdsCreditHistoryViewModel::class.java)
         }
+    }
+
+    private fun initialDateSetup() {
+        datePickerIndex = arguments?.getInt(PARAM_DATE_PICKER_INDEX) ?: 2
+        val dateList = Utils.getPeriodRangeList(requireContext())
+        if (datePickerIndex < dateList.size) {
+            startDate = Date(dateList[datePickerIndex].startDate)
+            endDate = Date(dateList[datePickerIndex].endDate)
+        }
+        loadData(0)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,12 +120,15 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
         return R.id.swipe_refresh_layout
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_topads_credit_history, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initialDateSetup()
         card_auto_topup_status.setOnClickListener { gotoAutoTopUp() }
         hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
@@ -116,27 +137,34 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
         }
         viewModel.getShopDeposit()
 
-        viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+        viewModel.getAutoTopUpStatus(
+            GraphqlHelper.loadRawString(
+                resources,
+                R.raw.gql_query_get_status_auto_topup
+            )
+        )
         addCredit?.setOnClickListener {
-            startActivityForResult(Intent(context, TopAdsAddCreditActivity::class.java), REQUEST_CODE_ADD_CREDIT)
+            startActivityForResult(
+                Intent(context, TopAdsAddCreditActivity::class.java),
+                REQUEST_CODE_ADD_CREDIT
+            )
         }
 
     }
 
     private fun showBottomSheet() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        val index = sharedPref?.getInt(TopAdsDashboardConstant.DATE_RANGE_BERANDA, 2)
         val customStartDate = sharedPref?.getString(TopAdsDashboardConstant.START_DATE_BERANDA, "")
         val customEndDate = sharedPref?.getString(TopAdsDashboardConstant.END_DATE_BERANDA, "")
-        val dateRange: String
-        dateRange = if (customStartDate?.isNotEmpty()!!) {
+        val dateRange = if (customStartDate?.isNotEmpty()!!) {
             "$customStartDate - $customEndDate"
         } else
             context?.getString(R.string.topads_dash_custom_date_desc) ?: ""
         context?.let {
-            datePickerSheet = DatePickerSheet.newInstance(it, index ?: 2, dateRange)
+            datePickerSheet = DatePickerSheet.newInstance(it, datePickerIndex, dateRange)
             datePickerSheet?.show()
             datePickerSheet?.onItemClick = { date1, date2, position ->
+                datePickerIndex = position
                 handleDate(date1, date2, position)
                 loadData(0)
             }
@@ -144,7 +172,6 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
                 startCustomDatePicker()
             }
         }
-
     }
 
     private fun startCustomDatePicker() {
@@ -167,11 +194,14 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
 
     private fun setDateRangeText(position: Int) {
         when (position) {
-            1 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
+            1 -> current_date.text =
+                context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
             0 -> current_date.text = context?.getString(R.string.topads_dash_hari_ini)
-            2 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+            2 -> current_date.text =
+                context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
-                val text = Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
+                val text =
+                    Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
                 current_date.text = text
             }
         }
@@ -180,7 +210,10 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
 
     private fun gotoAutoTopUp() {
         activity?.let {
-            startActivityForResult(Intent(it, TopAdsEditAutoTopUpActivity::class.java), REQUEST_CODE_SET_AUTO_TOPUP)
+            startActivityForResult(
+                Intent(it, TopAdsEditAutoTopUpActivity::class.java),
+                REQUEST_CODE_SET_AUTO_TOPUP
+            )
         }
     }
 
@@ -200,10 +233,16 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+        viewModel.getAutoTopUpStatus(
+            GraphqlHelper.loadRawString(
+                resources,
+                R.raw.gql_query_get_status_auto_topup
+            )
+        )
     }
 
-    override fun getEmptyDataViewModel() = EmptyModel().apply { contentRes = R.string.top_ads_no_credit_history }
+    override fun getEmptyDataViewModel() =
+        EmptyModel().apply { contentRes = R.string.top_ads_no_credit_history }
 
     override fun getAdapterTypeFactory() = TopAdsCreditHistoryTypeFactory()
 
@@ -217,14 +256,21 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
             viewModel.getShopDeposit()
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
             sendResultIntentOk()
-            viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+            viewModel.getAutoTopUpStatus(
+                GraphqlHelper.loadRawString(
+                    resources,
+                    R.raw.gql_query_get_status_auto_topup
+                )
+            )
         }
     }
 
     override fun loadData(page: Int) {
         adapter.clearAllElements()
-        viewModel.getCreditHistory(GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
-                startDate, endDate)
+        viewModel.getCreditHistory(
+            GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
+            startDate, endDate
+        )
     }
 
     override fun getScreenName(): String? = null
@@ -256,7 +302,10 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
         }
         startDate = dateSelected
         with(sharedPref.edit()) {
-            putString(TopAdsDashboardConstant.START_DATE_BERANDA, Utils.outputFormat.format(startDate))
+            putString(
+                TopAdsDashboardConstant.START_DATE_BERANDA,
+                Utils.outputFormat.format(startDate)
+            )
             commit()
         }
         endDate = dateEnd

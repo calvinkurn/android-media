@@ -3,6 +3,9 @@ package com.tokopedia.topads.dashboard.view.adapter.beranda
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.dashboard.data.model.beranda.ImageModel
 import com.tokopedia.topads.dashboard.databinding.ItemSingleImageTopadsBinding
 
@@ -33,6 +36,12 @@ class TopadsImageRvAdapter : RecyclerView.Adapter<TopadsImageRvAdapter.ViewHolde
 
         fun bind(item: ImageModel) {
             binding.image.setImageUrl(item.imageUrl)
+            if (item.overLappingText.isNullOrBlank())
+                binding.txtOverlappingText.hide()
+            else {
+                binding.txtOverlappingText.show()
+                binding.txtOverlappingText.text = item.overLappingText
+            }
         }
     }
 
