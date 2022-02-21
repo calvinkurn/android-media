@@ -1026,14 +1026,15 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
-        view?.let { view ->
+        binding?.coordinatorLayout?.let { view ->
             if (message.isNotBlank()) {
-                Toaster.build(
+                val toaster = Toaster.build(
                     view = view,
                     text = message,
                     duration = duration,
                     type = type
-                ).show()
+                )
+                toaster.show()
             }
         }
     }
@@ -1067,7 +1068,7 @@ class TokoNowHomeFragment: Fragment(),
         miniCartWidget?.post {
             val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
             val paddingBottom = if (isShowMiniCartWidget && !outOfCoverage) {
-                miniCartWidget?.height.orZero()
+                miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toInt()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
