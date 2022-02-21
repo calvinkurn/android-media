@@ -12,13 +12,20 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
-import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -302,6 +309,29 @@ class OrderSummaryPageRobot {
         Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
+    }
+
+    fun clickChangeGoCicilInstallment(func: GoCicilInstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change installment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_installment_detail_wrap).performClick()
+            }
+        }))
+        Thread.sleep(1000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        GoCicilInstallmentDetailBottomSheetRobot().apply(func)
     }
 
     fun clickInstallmentErrorActionRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
@@ -904,7 +934,7 @@ class OrderSummaryPageRobot {
             override fun perform(uiController: UiController?, view: View) {
                 if (detail == null) {
                     assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_type).visibility)
-                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_type).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_detail).visibility)
                 } else {
                     assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_type).visibility)
                     assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_detail).visibility)
@@ -933,6 +963,33 @@ class OrderSummaryPageRobot {
                 assertEquals("Cicilan tidak tersedia.", view.findViewById<Typography>(R.id.tv_installment_error_message).text.toString())
                 assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_error_action).visibility)
                 assertEquals("Ubah", view.findViewById<Typography>(R.id.tv_installment_error_action).text.toString())
+            }
+        }))
+    }
+
+    fun assertGoCicilInstallment(detail: String?) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert installment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (detail == null) {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_type).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_detail_wrap).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_type).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_detail_wrap).visibility)
+                    assertEquals(detail, view.findViewById<Typography>(R.id.tv_installment_detail_wrap).text.toString())
+                }
             }
         }))
     }

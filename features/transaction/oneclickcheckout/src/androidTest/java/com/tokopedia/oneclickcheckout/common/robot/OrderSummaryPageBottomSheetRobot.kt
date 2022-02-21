@@ -14,6 +14,8 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 
@@ -75,6 +77,18 @@ class OrderPriceSummaryBottomSheetRobot {
         onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
     }
 
+    fun assertInstallmentSummary(installmentFee: String,
+                                 installmentTerm: String,
+                                 installmentPerPeriod: String,
+                                 installmentFirstDate: String,
+                                 installmentLastDate: String) {
+        onView(withId(R.id.tv_total_installment_fee_price_value)).check(matches(withText(installmentFee)))
+        onView(withId(R.id.tv_total_installment_term_value)).check(matches(withText(installmentTerm)))
+        onView(withId(R.id.tv_total_installment_per_period_value)).check(matches(withText(installmentPerPeriod)))
+        onView(withId(R.id.tv_total_installment_first_date_value)).check(matches(withText(installmentFirstDate)))
+        onView(withId(R.id.tv_total_installment_last_date_value)).check(matches(withText(installmentLastDate)))
+    }
+
     fun closeBottomSheet() {
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(object : ViewAction {
             override fun getConstraints(): Matcher<View> = ViewMatchers.isClickable()
@@ -101,6 +115,31 @@ class InstallmentDetailBottomSheetRobot {
             radioButtonUnify.performClick()
             // Wait for bottom sheet to close
             Thread.sleep(1000)
+        }
+    }
+}
+
+class GoCicilInstallmentDetailBottomSheetRobot {
+
+    fun chooseInstallment(term: Int) {
+        onView(withText(object : BaseMatcher<String>() {
+            override fun describeTo(description: Description?) {
+                description?.appendText("match Cicil $term")
+            }
+
+            override fun matches(item: Any?): Boolean {
+                if (item is String) {
+                    return item.startsWith("Cicil $term")
+                }
+                return false
+            }
+        })).perform(scrollTo()).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            val parent = view.parent as ViewGroup
+            val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
+            radioButtonUnify.performClick()
+            // Wait for bottom sheet to close
+//            Thread.sleep(1000)
         }
     }
 }

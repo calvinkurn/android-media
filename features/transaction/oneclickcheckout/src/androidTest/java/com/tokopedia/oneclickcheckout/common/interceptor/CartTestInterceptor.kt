@@ -106,5 +106,7 @@ const val GET_OCC_CART_PAGE_MULTI_PRODUCT_ORDER_ERROR_RESPONSE_PATH = "cart/get_
 const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_tokonow_response.json"
 const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_tokonow_near_overweight_response.json"
 
+const val GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_default_response.json"
+
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"

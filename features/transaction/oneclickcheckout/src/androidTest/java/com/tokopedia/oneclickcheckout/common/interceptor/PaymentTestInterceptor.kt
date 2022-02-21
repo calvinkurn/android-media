@@ -36,6 +36,9 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
             }
             return mockResponse(copy, getJsonFromResource(CREDIT_CARD_TENOR_LIST_DEFAULT_RESPONSE_PATH))
         }
+        if (requestString.contains(GOCICIL_INSTALLMENT_OPTION_QUERY)) {
+            return mockResponse(copy, getJsonFromResource(GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH))
+        }
         return chain.proceed(chain.request())
     }
 
@@ -59,3 +62,7 @@ const val CREDIT_CARD_TENOR_LIST_QUERY = "creditCardTenorList"
 
 const val CREDIT_CARD_TENOR_LIST_DEFAULT_RESPONSE_PATH = "payment/credit_card_tenor_list_default_response.json"
 const val CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH = "payment/credit_card_tenor_list_all_enabled_response.json"
+
+const val GOCICIL_INSTALLMENT_OPTION_QUERY = "getInstallmentInfo"
+
+const val GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH = "payment/gocicil_installment_option_default_response.json"
