@@ -342,6 +342,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun removeErrorInTenure() {
         gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.VISIBLE
+        gatewayDetailLayout.changePayLaterPartner.visibility = View.VISIBLE
         gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
     }
@@ -356,6 +357,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun showEmptyErrorInTenureDetail() {
         gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.VISIBLE
         gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
+        gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
         gatewayDetailLayout.errorTicker.visibility = View.GONE
 
@@ -365,6 +367,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun showGlobalErrorInTenureDetail() {
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.VISIBLE
         gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
+        gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
         gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
         gatewayDetailLayout.errorTicker.visibility = View.GONE
     }
@@ -449,6 +452,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
             if (isDisabled)
                 removeBottomDetailForError()
+
+            if(gatewayToChipMap.size  <= 1)
+                gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
+            else
+                gatewayDetailLayout.changePayLaterPartner.visibility = View.VISIBLE
 
 
             setTenureDetail(it.tenureDetail)
