@@ -1000,6 +1000,10 @@ class PlayViewModel @AssistedInject constructor(
 
             //TODO () = check reminder
 
+            if(userSession.isLoggedIn)
+                _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().forEach {
+                    if(it.config.type == ProductSectionType.Upcoming) checkUpcomingCampaignSub(it)
+                }
 
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList
@@ -2024,7 +2028,19 @@ class PlayViewModel @AssistedInject constructor(
             val data = withContext(dispatchers.io) {
                 repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
             }
-            updateReminderUi(productUiModel.config.reminder.reminderType.reversed()) // TODO() = should be reversed based on current state
+            if(data)
+                updateReminderUi(productUiModel.config.reminder.reminderType.reversed()) // TODO() = should be reversed based on current state
+        }){
+        }
+    }
+
+    private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
+        viewModelScope.launchCatchError(block = {
+            val data = withContext(dispatchers.io) {
+                repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
+            }
+            if (data)
+                updateReminderUi(productUiModel.config.reminder.reminderType.reversed()) // TODO() = should be reversed based on current state
         }){
         }
     }
