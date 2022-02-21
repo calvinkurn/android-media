@@ -11,6 +11,7 @@ import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponPr
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_COUPON_SETTINGS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_IS_EDITING
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_IS_VIEWING
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
@@ -23,7 +24,8 @@ class ManageProductActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        private const val IS_EDITING_DEFAULT_VALUE = true
+        private const val IS_VIEWING_DEFAULT_VALUE = false
+        private const val IS_EDITING_DEFAULT_VALUE = false
         private const val MAX_PRODUCT_LIMIT_DEFAULT_VALUE = 0
     }
 
@@ -36,6 +38,7 @@ class ManageProductActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         fragment = ManageProductFragment.createInstance(
+                isViewing = intent.getBooleanExtra(BUNDLE_KEY_IS_VIEWING, IS_VIEWING_DEFAULT_VALUE),
                 isEditing = intent.getBooleanExtra(BUNDLE_KEY_IS_EDITING, IS_EDITING_DEFAULT_VALUE),
                 maxProductLimit = intent.getIntExtra(BUNDLE_KEY_MAX_PRODUCT_LIMIT, MAX_PRODUCT_LIMIT_DEFAULT_VALUE),
                 couponSettings = intent.getParcelableExtra(BUNDLE_KEY_COUPON_SETTINGS),

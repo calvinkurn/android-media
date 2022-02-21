@@ -19,5 +19,7 @@ data class Warehouses(
         @SerializedName("warehouse_id")
         @Expose val warehouseId: Int,
         @SerializedName("warehouse_name")
-        @Expose val warehouseName: String
+        @Expose val warehouseName: String,
+        @SerializedName("warehouse_type")
+        @Expose val warehouseType: Int,
 )

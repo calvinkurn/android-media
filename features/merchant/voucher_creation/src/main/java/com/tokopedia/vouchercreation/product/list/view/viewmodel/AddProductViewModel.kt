@@ -30,7 +30,7 @@ class AddProductViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        const val SELLER_LOCATION_ID = 340735
+        const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
         const val BENEFIT_TYPE_PERCENT = "percent"
@@ -47,7 +47,8 @@ class AddProductViewModel @Inject constructor(
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
-    private var warehouseLocationId: Int = SELLER_LOCATION_ID
+    private var warehouseLocationId: Int? = null
+    private var sellerWarehouseId: Int? = null
     private var showCaseSelections = listOf<ShowCaseSelection>()
     private var categorySelections = listOf<CategorySelection>()
     private var selectedSort: GoodsSortInput? = null
@@ -184,10 +185,15 @@ class AddProductViewModel @Inject constructor(
         return warehouses.map { warehouse ->
             WarehouseLocationSelection(
                     warehouseId = warehouse.warehouseId,
+                    warehouseType = warehouse.warehouseType,
                     warehouseName = warehouse.warehouseName,
-                    isSelected = false
+                    isSelected = warehouse.warehouseType == SELLER_WAREHOUSE_TYPE
             )
         }
+    }
+
+    fun getSellerWarehouseId(warehouses: List<Warehouses>): Int {
+        return warehouses.first { it.warehouseType == SELLER_WAREHOUSE_TYPE }.warehouseId
     }
 
     fun mapShopShowCasesToSelections(shopShowcases: List<ShopShowcase>): List<ShowCaseSelection> {
@@ -249,6 +255,10 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun setSellerWarehouseId(warehouseId: Int) {
+        this.sellerWarehouseId = warehouseId
+    }
+
     fun setProductUiModels(productUiModels: List<ProductUiModel>) {
         this.productUiModels = productUiModels
     }
@@ -274,12 +284,16 @@ class AddProductViewModel @Inject constructor(
         return searchKeyWord
     }
 
-    fun setWarehouseLocationId(warehouseLocation: Int) {
+    fun setWarehouseLocationId(warehouseLocation: Int?) {
         this.warehouseLocationId = warehouseLocation
     }
 
-    fun getWarehouseLocationId(): Int {
+    fun getWarehouseLocationId(): Int? {
         return warehouseLocationId
+    }
+
+    fun getSellerWarehouseId(): Int? {
+        return sellerWarehouseId
     }
 
     fun setSelectedShowCases(showCaseSelections: List<ShowCaseSelection>) {

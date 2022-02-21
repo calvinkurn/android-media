@@ -11,13 +11,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
-import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
@@ -27,9 +27,9 @@ import javax.inject.Inject
 
 class CouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
+    private val initiateCouponUseCase: InitiateCouponUseCase,
     private val createCouponUseCase: CreateCouponFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase,
-    private val initiateVoucherUseCase: InitiateVoucherUseCase,
     private val getCouponDetailUseCase: GetCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -49,13 +49,13 @@ class CouponPreviewViewModel @Inject constructor(
     val updateCouponResult: LiveData<Result<Boolean>>
         get() = _updateCouponResult
 
-    private val _maxAllowedProductCount = MutableLiveData<Result<Int>>()
-    val maxAllowedProductCount: LiveData<Result<Int>>
-        get() = _maxAllowedProductCount
-
-    private val _couponDetail = SingleLiveEvent<Result<Coupon>>()
-    val couponDetail: LiveData<Result<Coupon>>
+    private val _couponDetail = SingleLiveEvent<Result<CouponWithMetadata>>()
+    val couponDetail: LiveData<Result<CouponWithMetadata>>
         get() = _couponDetail
+
+    private val _couponCreationEligibility = MutableLiveData<Result<Int>>()
+    val couponCreationEligibility: LiveData<Result<Int>>
+        get() = _couponCreationEligibility
 
     fun validateCoupon(
         pageMode : CouponPreviewFragment.Mode,
@@ -152,21 +152,6 @@ class CouponPreviewViewModel @Inject constructor(
         return imageUrls
     }
 
-    fun getMaxAllowedProducts(mode : CouponPreviewFragment.Mode) {
-        val isUpdateMode = mode == CouponPreviewFragment.Mode.UPDATE
-
-        launchCatchError(block = {
-            initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
-            initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
-            val result = withContext(dispatchers.io) {
-                initiateVoucherUseCase.executeOnBackground()
-            }
-            _maxAllowedProductCount.value = Success(result.maxProducts)
-        }, onError = {
-            _maxAllowedProductCount.value = Fail(it)
-        })
-    }
-
     fun isCouponInformationValid(couponInformation: CouponInformation): Boolean {
         if (couponInformation.target == CouponInformation.Target.NOT_SELECTED) {
             return false
@@ -183,12 +168,28 @@ class CouponPreviewViewModel @Inject constructor(
         return true
     }
 
+    fun checkCouponCreationEligibility() {
+        launchCatchError(block = {
+            initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
+            initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(
+                isUpdate = false,
+                isToCreateNewCoupon = true
+            )
+            val result = withContext(dispatchers.io) {
+                initiateCouponUseCase.executeOnBackground()
+            }
+            _couponCreationEligibility.value = Success(result.maxProducts)
+        }, onError = {
+            _couponCreationEligibility.value = Fail(it)
+        })
+    }
 
-    fun getCouponDetail(couponId: Long) {
+    fun getCouponDetail(couponId: Long, pageMode: CouponPreviewFragment.Mode) {
         launchCatchError(
             block = {
+                val isToCreateNewCoupon = isCreateMode(pageMode) || isDuplicateMode(pageMode)
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.execute(this, couponId)
+                    getCouponDetailUseCase.execute(this, couponId, isToCreateNewCoupon)
                 }
                 _couponDetail.value = Success(result)
             },
@@ -214,24 +215,26 @@ class CouponPreviewViewModel @Inject constructor(
         val couponProductData = mutableListOf<CouponProduct>()
         selectedProducts.forEach { selectedProduct ->
             val isParentProductSelected = selectedProduct.isSelected
+
             if (isParentProductSelected) {
-                couponProductData.add(CouponProduct(
-                        id = selectedProduct.id,
-                        imageUrl = selectedProduct.imageUrl,
-                        soldCount = selectedProduct.sold
-                ))
-            }
-            if (selectedProduct.hasVariant) {
                 val variants = selectedProduct.variants
-                variants.forEach { variant ->
-                    val isVariantSelected = variant.isSelected
-                    if (isVariantSelected) {
-                        couponProductData.add(CouponProduct(
-                                id = variant.variantId,
-                                imageUrl = selectedProduct.imageUrl,
-                                soldCount = selectedProduct.sold
-                        ))
+                if (variants.isNotEmpty()) {
+                    variants.forEach { variant ->
+                        val isVariantSelected = variant.isSelected
+                        if (isVariantSelected) {
+                            couponProductData.add(CouponProduct(
+                                    id = variant.variantId,
+                                    imageUrl = selectedProduct.imageUrl,
+                                    soldCount = selectedProduct.sold
+                            ))
+                        }
                     }
+                } else {
+                    couponProductData.add(CouponProduct(
+                            id = selectedProduct.id,
+                            imageUrl = selectedProduct.imageUrl,
+                            soldCount = selectedProduct.sold
+                    ))
                 }
             }
         }

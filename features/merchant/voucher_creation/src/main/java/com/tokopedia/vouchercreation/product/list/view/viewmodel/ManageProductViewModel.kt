@@ -29,6 +29,8 @@ class ManageProductViewModel @Inject constructor(
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
 
+    private var isViewing = false
+    private var isEditing = false
     private var maxProductLimit = 0
     private var couponSettings: CouponSettings? = null
     private var selectedProductIds = ArrayList<ProductId>()
@@ -88,9 +90,14 @@ class ManageProductViewModel @Inject constructor(
         })
     }
 
-    fun updateProductUiModelsDisplayMode(isEditing: Boolean, productList: List<ProductUiModel>): List<ProductUiModel> {
+    fun updateProductUiModelsDisplayMode(
+            isViewing: Boolean,
+            isEditing: Boolean,
+            productList: List<ProductUiModel>
+    ): List<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         mutableProductList.forEach { productUiModel ->
+            productUiModel.isViewing = isViewing
             productUiModel.isEditing = isEditing
         }
         return mutableProductList.toList()
@@ -105,10 +112,12 @@ class ManageProductViewModel @Inject constructor(
         return sb.toString().trim()
     }
 
-    fun mapProductDataToProductUiModel(productDataList: List<ProductData>): List<ProductUiModel> {
+    fun mapProductDataToProductUiModel(isViewing: Boolean, isEditing: Boolean, productDataList: List<ProductData>): List<ProductUiModel> {
         return productDataList.map { productData ->
             // TODO: implement proper string formatting
             ProductUiModel(
+                    isViewing = isViewing,
+                    isEditing = isEditing,
                     isSelected = true,
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
@@ -132,33 +141,26 @@ class ManageProductViewModel @Inject constructor(
             productUiModel.isError = !validationResult.isEligible
             productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
-            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold)
+            productUiModel.variants = mapVariantDataToUiModel(
+                    isViewing = productUiModel.isViewing,
+                    isEditing = productUiModel.isEditing,
+                    variantValidationData = validationResult.variants,
+                    sold = productUiModel.sold
+            )
         }
         return mutableProductList.toList()
     }
 
-    fun setVariantSelection(productList: List<ProductUiModel>,
-                            selectedProductIds: List<ProductId>): List<ProductUiModel> {
-        val mutableProductList = productList.toMutableList()
-        selectedProductIds.forEach { productId ->
-            val productUiModel = mutableProductList.first { productUiModel ->
-                productUiModel.id == productId.parentProductId.toString()
-            }
-            val mutableVariantList = productUiModel.variants
-            productId.childProductId.forEach { variantId ->
-                val variantUiModel = mutableVariantList.first { variantUiModel ->
-                    variantUiModel.variantId == variantId.toString()
-                }
-                variantUiModel.isSelected = true
-            }
-        }
-        return mutableProductList.toList()
-    }
-
-    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
+    private fun mapVariantDataToUiModel(
+            isViewing: Boolean,
+            isEditing: Boolean,
+            variantValidationData: List<VariantValidationData>,
+            sold: Int
+    ): List<VariantUiModel> {
         return variantValidationData.map { data ->
             VariantUiModel(
-                    isEditing = true,
+                    isViewing = isViewing,
+                    isEditing = isEditing,
                     variantId = data.productId.toString(),
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
@@ -169,6 +171,26 @@ class ManageProductViewModel @Inject constructor(
                     errorMessage = data.reason
             )
         }
+    }
+
+    fun setVariantSelection(productList: List<ProductUiModel>,
+                            selectedProductIds: List<ProductId>): List<ProductUiModel> {
+        val mutableProductList = productList.toMutableList()
+        selectedProductIds.forEach { productId ->
+            val productUiModel = mutableProductList.firstOrNull() { productUiModel ->
+                productUiModel.id == productId.parentProductId.toString()
+            }
+            val mutableVariantList = productUiModel?.variants
+            mutableVariantList?.run {
+                productId.childProductId.forEach { variantId ->
+                    val variantUiModel = mutableVariantList.first { variantUiModel ->
+                        variantUiModel.variantId == variantId.toString()
+                    }
+                    variantUiModel.isSelected = true
+                }
+            }
+        }
+        return mutableProductList.toList()
     }
 
     fun setProductUiModels(productUiModels: List<ProductUiModel>) {
@@ -185,6 +207,14 @@ class ManageProductViewModel @Inject constructor(
         }
     }
 
+    fun setIsViewing(isViewing: Boolean) {
+        this.isViewing = isViewing
+    }
+
+    fun setIsEditing(isEditing: Boolean) {
+        this.isEditing = isEditing
+    }
+
     fun setMaxProductLimit(maxProductLimit: Int) {
         this.maxProductLimit = maxProductLimit
     }
@@ -199,6 +229,14 @@ class ManageProductViewModel @Inject constructor(
 
     fun setSetSelectedProducts(productList: List<ProductUiModel>) {
         this.selectedProductListLiveData.value = productList
+    }
+
+    fun getIsViewing(): Boolean {
+        return isViewing
+    }
+
+    fun getIsEditing(): Boolean {
+        return isEditing
     }
 
     fun getMaxProductLimit(): Int {

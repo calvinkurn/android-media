@@ -460,6 +460,11 @@
     <string name="error_message_quota_is_zero">Min. 1 Kupon</string>
     <string name="mvc_placeholder_cancelled_at">Dibatalkan pada &lt;b>%s&lt;/b></string>
     <string name="mvc_total_expense">Total Pengeluaran</string>
+    <string name="mvc_no_access">Oops, kamu nggak punya izin untuk mengakses halaman ini</string>
+    <string name="mvc_no_access_description">Hubungi pemilik toko untuk mendapatkan akses halaman ini, ya.</string>
+    <string name="mvc_understand">Oke, Saya mengerti</string>
+    <string name="error_message_exceed_max_coupon">Kupon Aktif Maksimal 10</string>
+    <string name="mvc_free_shipping_coming_soon">Gratis Ongkir (Akan Datang)</string>
 
     <!--create coupon-->
     <string name="mvc_coupon_information_title">Informasi Kupon</string>
@@ -495,6 +500,8 @@
     <string name="mvc_max_product_limit_reached_message">Kamu tidak bisa tambah produk lagi, ya</string>
     <string name="mvc_no_products">Nggak ada Produk</string>
     <string name="mvc_add_coupon_product">Yuk, mulai tambah produk untuk kuponmu</string>
+    <string name="mvc_product_seller_location_warning_title">Kupon hanya bisa dipasang ke produk\ndari satu lokasi</string>
+    <string name="mvc_product_seller_location_warning_message">%s produk sudah ditambahkan dari\n %s. Hapus dulu produk yang\nterdaftar untuk mengubah lokasi,ya.</string>
 
     <!-- more menu bottom sheet -->
     <string name="coupon_toaster_cta_oke">Oke</string>

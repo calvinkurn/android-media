@@ -41,19 +41,24 @@ class CouponListActivity : BaseSimpleActivity() {
         }
     }
 
+    private val couponListFragment by lazy {
+        CouponListFragment.newInstance(
+            getPageModeDataFromApplink(),
+            ::navigateToCreateCouponPage,
+            ::navigateToUpdateCouponPage,
+            ::navigateToDuplicateCouponPage,
+            ::navigateToCouponDetail
+        )
+    }
+
+
     @Inject
     lateinit var userSession: UserSessionInterface
     private val coupon by lazy { intent.extras?.getParcelable<Coupon>(INTENT_KEY_COUPON) }
 
     override fun getLayoutRes() = R.layout.activity_mvc_coupon_list
 
-    override fun getNewFragment() = CouponListFragment.newInstance(
-        getPageModeDataFromApplink(),
-        ::navigateToCreateCouponPage,
-        ::navigateToUpdateCouponPage,
-        ::navigateToDuplicateCouponPage,
-        ::navigateToCouponDetail
-    )
+    override fun getNewFragment() = couponListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,14 +120,14 @@ class CouponListActivity : BaseSimpleActivity() {
             val coupon = data?.getParcelableExtra<Coupon>(CreateCouponProductActivity.BUNDLE_KEY_COUPON)
                 ?: return
             showBroadCastVoucherBottomSheet(coupon)
-            newFragment.loadInitialData()
+            couponListFragment.loadInitialData()
         }
     }
 
     private fun handleUpdateCouponResult(resultCode: Int) {
         if (resultCode == Activity.RESULT_OK) {
             showToaster(getString(R.string.coupon_updated))
-            newFragment.loadInitialData()
+            couponListFragment.loadInitialData()
         }
     }
 

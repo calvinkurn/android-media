@@ -4,6 +4,7 @@ import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import javax.inject.Inject
 
 class GenerateImageParamsBuilder @Inject constructor() {
@@ -53,17 +54,24 @@ class GenerateImageParamsBuilder @Inject constructor() {
         }
 
         val symbol = when {
-            couponSettings.discountAmount < THOUSAND -> EMPTY_STRING
+            couponSettings.discountAmount < THOUSAND -> "rb"
             couponSettings.discountAmount >= MILLION -> "jt"
             couponSettings.discountAmount >= THOUSAND -> "rb"
             else -> EMPTY_STRING
         }
 
-        val formattedDiscountAmount: Float = when {
-            couponSettings.discountAmount < THOUSAND -> couponSettings.discountAmount.toFloat()
-            couponSettings.discountAmount >= MILLION -> (couponSettings.discountAmount / MILLION)
-            couponSettings.discountAmount >= THOUSAND -> (couponSettings.discountAmount / THOUSAND)
-            else -> couponSettings.discountAmount.toFloat()
+        val amount = when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> couponSettings.discountAmount
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> couponSettings.discountAmount
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> couponSettings.maxDiscount
+            else -> couponSettings.discountAmount
+        }
+
+        val formattedDiscountAmount : Float = when {
+            amount < THOUSAND -> amount.toFloat()
+            amount >= MILLION -> (amount / MILLION)
+            amount >= THOUSAND -> (amount / THOUSAND)
+            else -> amount.toFloat()
         }
 
         val nominalAmount = if (isInteger(formattedDiscountAmount)) {

@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
+import kotlinx.android.synthetic.main.bottomsheet_download_coupon_image.*
 
 
 class DownloadCouponImageBottomSheet : BottomSheetUnify() {
@@ -85,7 +85,7 @@ class DownloadCouponImageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(child: View) = with(child) view@{
-        mAdapter.addElement(getDownloadItems())
+        mAdapter.setData(getDownloadItems())
         rvMvcVouchers.run {
             layoutManager = LinearLayoutManager(this@view.context)
             adapter = mAdapter
@@ -93,7 +93,7 @@ class DownloadCouponImageBottomSheet : BottomSheetUnify() {
         }
 
         btnMvcDownloadVoucher.setOnClickListener {
-            onDownloadClick(mAdapter.items.filter { it.isSelected })
+            onDownloadClick(mAdapter.getSelection().filter { it.isSelected })
             dismiss()
         }
     }
@@ -175,7 +175,7 @@ class DownloadCouponImageBottomSheet : BottomSheetUnify() {
 
     private fun onImageExpanded(openedIndex: Int) {
         var notifiedIndex = -1
-        mAdapter.items.forEachIndexed { index, downloadVoucherUiModel ->
+        mAdapter.getSelection().forEachIndexed { index, downloadVoucherUiModel ->
             if (openedIndex != index && downloadVoucherUiModel.isExpanded) {
                 downloadVoucherUiModel.isExpanded = false
                 notifiedIndex = index
@@ -187,6 +187,10 @@ class DownloadCouponImageBottomSheet : BottomSheetUnify() {
     }
 
     private fun onCheckBoxClicked(imageType: ImageType) {
+        val items = mAdapter.getSelection()
+        val hasSelection = items.filter { it.isSelected } .size > 0
+        btnMvcDownloadVoucher.isEnabled = hasSelection
+
         VoucherCreationTracking.sendVoucherListClickTracking(
             action =
             when (imageType) {

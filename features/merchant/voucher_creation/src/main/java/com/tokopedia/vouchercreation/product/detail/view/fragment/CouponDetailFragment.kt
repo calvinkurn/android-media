@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -58,6 +59,7 @@ import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomS
 import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_COUPON_SETTINGS
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_IS_VIEWING
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
@@ -181,6 +183,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                     val couponSettings = viewModel.getCouponSettings(this)
                     val manageProductIntent = Intent(requireContext(), ManageProductActivity::class.java).apply {
                         putExtras(Bundle().apply {
+                            putBoolean(BUNDLE_KEY_IS_VIEWING, true)
                             putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                             putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                             val selectedProductIds = ArrayList<ProductId>()
@@ -535,9 +538,24 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaUsage(coupon: CouponUiModel) {
-        val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
-        binding.progressBarQuotaUsage.setValue(progressBarValue, true)
-        binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+        if (viewModel.isOngoingCoupon(coupon.status)) {
+
+            val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
+            binding.progressBarQuotaUsage.setValue(progressBarValue, true)
+            binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+
+            binding.progressBarQuotaUsage.visible()
+            binding.tpgTickerUsage.visible()
+            binding.tpgTickerUsage.text = String.format(
+                getString(R.string.placeholder_quota_usage),
+                coupon.bookedQuota.toString()
+            ).parseAsHtml()
+            anchorQuotaCounterToQuotaProgressBar()
+        } else {
+            binding.progressBarQuotaUsage.gone()
+            binding.tpgTickerUsage.gone()
+            anchorQuotaCounterToQuotaLabel()
+        }
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
         binding.tpgTotalQuota.text = String.format(
@@ -546,16 +564,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
         )
 
         binding.tpgTickerUsage.setOnClickListener { displayExpenseEstimationDescription() }
-
-        if (coupon.isPublic && coupon.status == VoucherStatusConst.ONGOING) {
-            binding.tpgTickerUsage.visible()
-            binding.tpgTickerUsage.text = String.format(
-                getString(R.string.placeholder_quota_usage),
-                coupon.bookedQuota.toString()
-            ).parseAsHtml()
-        } else {
-            binding.tpgTickerUsage.gone()
-        }
     }
 
     private fun displayExpenseEstimationDescription() {
@@ -737,7 +745,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
             title,
             coupon.id.toLong(),
             onShareOptionsClicked = { shareModel ->
-                handleShareOptionSelection(shareModel, title, description, shop.shopDomain)
+                handleShareOptionSelection(coupon.id.toLong(), shareModel, title, description, shop.shopDomain)
             }, onCloseOptionClicked = {}
         )
         shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
@@ -779,6 +787,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun handleShareOptionSelection(
+        couponId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -802,6 +811,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
         val outgoingDescription = getString(R.string.share_component_outgoing_text_description)
         val linkerShareData = linkerDataGenerator.generate(
+            couponId,
             userSession.shopId,
             shopDomain,
             shareModel,
@@ -815,5 +825,41 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 shareCallback
             )
         )
+    }
+
+    private fun anchorQuotaCounterToQuotaLabel() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.TOP,
+            binding.typographyQuota.id,
+            ConstraintSet.TOP
+        )
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.BOTTOM,
+            binding.typographyQuota.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.layout)
+    }
+
+    private fun anchorQuotaCounterToQuotaProgressBar() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.TOP,
+            binding.progressBarQuotaUsage.id,
+            ConstraintSet.TOP
+        )
+        set.connect(
+            binding.tpgUsedQuota.id,
+            ConstraintSet.BOTTOM,
+            binding.progressBarQuotaUsage.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.layout)
     }
 }

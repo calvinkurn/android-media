@@ -211,7 +211,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
             title,
             coupon.id,
             onShareOptionsClicked = { shareModel ->
-                handleShareOptionSelection(shareModel, title, description, shop.shopDomain)
+                handleShareOptionSelection(coupon.id, shareModel, title, description, shop.shopDomain)
             }, onCloseOptionClicked = {}
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
@@ -253,6 +253,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleShareOptionSelection(
+        couponId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -274,6 +275,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         }
 
         val linkerShareData = linkerDataGenerator.generate(
+            couponId,
             userSession.shopId,
             shopDomain,
             shareModel,

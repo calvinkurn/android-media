@@ -690,12 +690,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/unify_space_4"
-                tools:text="@string/placeholder_max_product"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/typography23"
-                app:typographyType="small" />
+                app:typographyType="small"
+                tools:text="@string/placeholder_max_product" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgProductCount"
@@ -835,6 +835,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/unify_space_32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"

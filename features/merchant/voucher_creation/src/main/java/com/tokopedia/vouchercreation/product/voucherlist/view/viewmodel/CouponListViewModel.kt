@@ -21,6 +21,7 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.mapper.CouponModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.mapper.CouponModelMapper.mapToType
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherListParam
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherSort.Companion.VOUCHER_STATUS
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
@@ -101,6 +102,7 @@ class CouponListViewModel @Inject constructor(
                 target = mapToTarget(_selectedFilterTarget.value),
                 status = _couponStatusFilter,
                 page = page,
+                sort = VOUCHER_STATUS,
                 perPage = LIST_COUPON_PER_PAGE,
                 voucherName = _couponSearchKeyword
             )
