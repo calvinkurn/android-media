@@ -7,8 +7,8 @@ data class GetAddOnByProductRequest(
         var addOnRequest: List<AddOnByProductRequest> = emptyList(),
         @SerializedName("Source")
         var sourceRequest: SourceRequest = SourceRequest(),
-        @SerializedName("DataRequest")
-        var dataRequest: DataRequest = DataRequest()
+        @SerializedName("RequestData")
+        var requestData: RequestData = RequestData()
 )
 
 data class AddOnByProductRequest(
@@ -37,7 +37,7 @@ data class SourceRequest(
     }
 }
 
-data class DataRequest(
+data class RequestData(
         @SerializedName("Inventory")
         var inventory: Boolean = false
 )

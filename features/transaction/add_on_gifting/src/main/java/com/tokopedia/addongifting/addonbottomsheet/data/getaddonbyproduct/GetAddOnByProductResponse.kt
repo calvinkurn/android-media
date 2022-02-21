@@ -3,7 +3,7 @@ package com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct
 import com.google.gson.annotations.SerializedName
 
 data class GetAddOnByProductResponse(
-        @SerializedName("GetAddOnByProductResponse")
+        @SerializedName("GetAddOnByProduct")
         val dataResponse: DataResponse = DataResponse()
 )
 

@@ -20,74 +20,65 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
     private var params: Map<String, Any>? = null
 
     fun setParams(getAddOnByProductRequest: GetAddOnByProductRequest) {
-        params = mapOf("params" to getAddOnByProductRequest)
+        params = mapOf("getAddOnByProductRequest" to getAddOnByProductRequest)
     }
 
     override suspend fun executeOnBackground(): GetAddOnByProductResponse {
         // Todo : remove mock data before merge to release
-        if (mockResponse.isNotBlank()) {
-            return Gson().fromJson(mockResponse, GetAddOnByProductResponse::class.java)
-        }
+//        if (mockResponse.isNotBlank()) {
+//            return Gson().fromJson(mockResponse, GetAddOnByProductResponse::class.java)
+//        }
 
         if (params.isNullOrEmpty()) {
             throw RuntimeException("Parameter can't be null or empty!")
         }
 
-        val request = GraphqlRequest(GetAddOnByProductQuery(), GetAddOnByProductResponse::class.java, params)
+        val request = GraphqlRequest(GetAddOnByProductQuery.GQL_QUERY, GetAddOnByProductResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
     companion object {
         const val QUERY_NAME = "GetAddOnByProductQuery"
         const val QUERY = """
-            {
-              GetAddOnByProduct(input: getAddOnByProductRequest) {
-                error {
+            query GetAddOnByProduct(${'$'}getAddOnByProductRequest: GetAddOnByProductRequest) {
+              GetAddOnByProduct(getAddOnByProductRequest: ${'$'}getAddOnByProductRequest) {
+                Error {
                   messages
                   reason
                   errorCode
                 }
-                GetAddOnByProductResponse {
-                  AddOnByProductResponse {
-                    ProductID
-                    WarehouseID
-                    AddOnType
-                    CouponText
-                    Addons {
-                      Basic {
-                        ID
-                        ShopID
-                        Name
-                        Rules {
-                          MaxOrder
-                          CustomNotes
+                AddOnByProductResponse {
+                  ProductID
+                  WarehouseID
+                  AddOnLevel
+                  CouponText
+                  Addons {
+                    Basic {
+                      ID
+                      ShopID
+                      Name
+                      Rules {
+                        MaxOrder
+                        CustomNotes
+                      }
+                      Metadata {
+                        Pictures {
+                          FilePath
+                          FileName
+                          URL
+                          URL100
+                          URL200
                         }
-                        Metadata {
-                          Pictures {
-                            FilePath
-                            FileName
-                            URL
-                            URL100
-                            URL200
-                          }
-                          NotesTemplate
-                        }
-                        ProductAddOnType
-                        Status
+                        NotesTemplate
                       }
-                      Pictures {
-                        FilePath
-                        FileName
-                        URL
-                        URL100
-                        URL200
-                      }
-                      Inventory {
-                        WarehouseID
-                        Price
-                        Stock
-                        UnlimitedStock
-                      }
+                      AddOnType
+                      Status
+                    }
+                    Inventory {
+                      WarehouseID
+                      Price
+                      Stock
+                      UnlimitedStock
                     }
                   }
                 }
