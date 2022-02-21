@@ -2024,7 +2024,7 @@ class PlayViewModel @AssistedInject constructor(
             val data = withContext(dispatchers.io) {
                 repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
             }
-            updateReminderUi(CampaignReminderType.OFF) // TODO() = should be reversed based on current state
+            updateReminderUi(productUiModel.config.reminder.reminderType.reversed()) // TODO() = should be reversed based on current state
         }){
         }
     }

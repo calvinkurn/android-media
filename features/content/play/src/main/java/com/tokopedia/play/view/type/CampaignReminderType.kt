@@ -9,4 +9,8 @@ enum class CampaignReminderType {
     NotAvailable
 }
 
-fun getCampaignReminderType(isReminder: Boolean): CampaignReminderType = if (isReminder) CampaignReminderType.ON else CampaignReminderType.OFF
+fun getCampaignReminderType(isReminder: Boolean): CampaignReminderType =
+    if (isReminder) CampaignReminderType.ON else CampaignReminderType.OFF
+
+fun CampaignReminderType.reversed(): CampaignReminderType =
+    if (this == CampaignReminderType.ON) CampaignReminderType.OFF else CampaignReminderType.ON
