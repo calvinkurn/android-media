@@ -7,7 +7,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
@@ -54,6 +53,8 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
         baseProductDetailClass.getProductV3?.let {
+            if (it.pictures?.size == 0 || it.productName.isNullOrEmpty() || it.price?.equals(0.0) == true)
+                onFailProductDetail(IllegalStateException("Data invalid"))
             it.price?.let { productPrice ->
                 price = productPrice
             }
@@ -82,7 +83,10 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
         paylaterGetOptimizedModel.let {
-            _payLaterActivationDetailLiveData.postValue( Success(it))
+            if(it.checkoutData.isNotEmpty())
+             _payLaterActivationDetailLiveData.postValue( Success(it))
+            else
+                onFailActivationData(IllegalStateException("Empty State"))
         }
 
     }
@@ -123,9 +127,11 @@ class PayLaterActivationViewModel @Inject constructor(
     }
 
     private fun onSuccessAddToCartForCheckout(addToCartOcc: AddToCartOccMultiDataModel) {
+        if(addToCartOcc.isStatusError())
+            _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()?:""))
         _addToCartLiveData.value = Success(addToCartOcc)
     }
 
-
-
 }
+
+class ShowToasterException(message:String): Exception(message)

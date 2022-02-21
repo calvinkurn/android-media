@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
@@ -20,16 +21,12 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOpti
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
+import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_PRODUCT_ID
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_QUANTITY
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_SELECTED_TENURE
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.CURRENT_VARINT
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.GATEWAY_LIST
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.SELECTED_GATEWAY
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
+import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
@@ -52,6 +49,8 @@ import kotlinx.android.synthetic.main.fragment_activation_checkout.*
 import kotlinx.android.synthetic.main.paylater_activation_gateway_detail.view.*
 import kotlinx.android.synthetic.main.paylater_activation_product_detail.view.*
 import kotlinx.android.synthetic.main.product_detail.view.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -73,14 +72,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private var productId: String = ""
     private var shopId: String = ""
     private var tenureSelected: String = ""
-
-    private val gatewayCode: String by lazy {
-        arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
-    }
-
+    private var gatewayCode: String = ""
     private var gateWayId = ""
-
-
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
     private lateinit var installmentModel: InstallmentDetails
     private var listOfTenureDetail: List<TenureDetail> = ArrayList()
@@ -111,39 +104,40 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productId = arguments?.getString(PARAM_PRODUCT_ID, "").toString()
-        gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
-        tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
+        initArgument()
         observerProductData()
-        observerOtherDetail()
+        observerTenureDetail()
         observeCartDetail()
         initView()
-
         startAllLoaders()
         payLaterActivationViewModel.getProductDetail(productId)
 
+    }
+
+    private fun initArgument() {
+        productId = arguments?.getString(PARAM_PRODUCT_ID, "").toString()
+        gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
+        tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
+        gatewayCode = arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
     }
 
     private fun observeCartDetail() {
         payLaterActivationViewModel.addToCartLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (it.data.isStatusError()) {
-                        showToaster(it.data.getAtcErrorMessage())
-                    } else {
-
-                        val redirectionUrl =
-                            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${this.tenureSelected}" +
-                                    "&gateway_code=${gatewayToChipMap[gateWayId.toInt()]?.gateway_code ?: ""}" +
-                                    "&fintech"
-                        RouteManager.route(
-                            context,
-                            redirectionUrl
-                        )
-                    }
+                    val redirectionUrl =
+                        ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${this.tenureSelected}" +
+                                "&gateway_code=${gatewayToChipMap[gateWayId.toInt()]?.gateway_code ?: ""}" +
+                                "&fintech"
+                    RouteManager.route(
+                        context,
+                        redirectionUrl
+                    )
                 }
                 is Fail -> {
-
+                    when (it.throwable) {
+                        is ShowToasterException -> showToaster(it.throwable.message)
+                    }
                 }
             }
         }
@@ -179,33 +173,41 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    try {
-                        removeAllError()
-                        productInfoActivationShimmer.visibility = View.GONE
-                        detailHeader.visibility = View.VISIBLE
-                        setProductData(it.data)
-                        it.data.shopDetail?.shopId?.let {
-                            shopId = it
-                        }
-                        it.data.stock?.let { productStock ->
-                            detailHeader.quantityEditor.maxValue = productStock
-                        }
-
-                        payLaterActivationViewModel.getOptimizedCheckoutDetail(
-                            productId,
-                            payLaterActivationViewModel.price * quantity, gatewayCode
-                        )
-                    } catch (e: Exception) {
-                        loaderhideOnCheckoutApi()
-                        fullPageEmptyError()
-                        removeBottomDetailForError()
+                    removeAllError()
+                    productInfoActivationShimmer.visibility = View.GONE
+                    detailHeader.visibility = View.VISIBLE
+                    setProductData(it.data)
+                    it.data.shopDetail?.shopId?.let {
+                        shopId = it
+                    }
+                    it.data.stock?.let { productStock ->
+                        detailHeader.quantityEditor.maxValue = productStock
                     }
 
+                    payLaterActivationViewModel.getOptimizedCheckoutDetail(
+                        productId,
+                        payLaterActivationViewModel.price * quantity, gatewayCode
+                    )
                 }
                 is Fail -> {
                     loaderhideOnCheckoutApi()
-                    fullPageGlobalError()
                     removeBottomDetailForError()
+                    when (it.throwable) {
+
+                        is UnknownHostException, is SocketTimeoutException -> {
+                            fullPageGlobalError(
+                                GlobalError.NO_CONNECTION
+                            )
+                        }
+                        is IllegalStateException -> {
+                            fullPageEmptyError()
+                        }
+                        else -> {
+                            fullPageGlobalError(
+                                GlobalError.SERVER_ERROR
+                            )
+                        }
+                    }
                 }
             }
 
@@ -214,14 +216,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
 
-
     private fun removeAllError() {
         globalErrorGroup.visibility = View.GONE
         nestedScrollView.visibility = View.VISIBLE
 
     }
 
-    private fun fullPageGlobalError() {
+    private fun fullPageGlobalError(errorType: Int) {
+        fullPageGLobalError.setType(errorType)
         fullPageGLobalError.visibility = View.VISIBLE
         nestedScrollView.visibility = View.GONE
     }
@@ -231,28 +233,37 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         nestedScrollView.visibility = View.GONE
     }
 
-    private fun observerOtherDetail() {
+    private fun observerTenureDetail() {
         payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (it.data.checkoutData.isNotEmpty()) {
-                        setGatewayToChipMap(it.data)
-                        showBottomDetail()
-                        loaderhideOnCheckoutApi()
-                        paylaterGetOptimizedModel = it.data
-                        removeErrorInTenure()
-                        setTenureDetailData()
-
-                    } else {
-                        loaderhideOnCheckoutApi()
-                        showEmptyErrorInTenureDetail()
-                        removeBottomDetailForError()
-                    }
+                    setGatewayToChipMap(it.data)
+                    showBottomDetail()
+                    loaderhideOnCheckoutApi()
+                    paylaterGetOptimizedModel = it.data
+                    removeErrorInTenure()
+                    setTenureDetailData()
                 }
                 is Fail -> {
                     loaderhideOnCheckoutApi()
-                    showGlobalErrorInTenureDetail()
                     removeBottomDetailForError()
+                    when (it.throwable) {
+                        is UnknownHostException, is SocketTimeoutException -> {
+                            showGlobalErrorInTenureDetail(
+                                GlobalError.NO_CONNECTION
+                            )
+                        }
+                        is IllegalStateException -> {
+                            showEmptyErrorInTenureDetail()
+                        }
+
+                        else -> {
+                            showGlobalErrorInTenureDetail(
+                                GlobalError.SERVER_ERROR
+                            )
+                        }
+
+                    }
 
 
                 }
@@ -364,7 +375,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     }
 
-    private fun showGlobalErrorInTenureDetail() {
+    private fun showGlobalErrorInTenureDetail(errorType: Int) {
+        gatewayDetailLayout.tenureDetailGlobalError.setType(errorType)
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.VISIBLE
         gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
         gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
@@ -453,7 +465,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             if (isDisabled)
                 removeBottomDetailForError()
 
-            if(gatewayToChipMap.size  <= 1)
+            if (gatewayToChipMap.size <= 1)
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
             else
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.VISIBLE
@@ -554,36 +566,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
             if (this::listOfGateway.isInitialized) {
-                val bundle = Bundle().apply {
-                    putParcelable(
-                        GATEWAY_LIST,
-                        listOfGateway
-                    )
-                    putString(
-                        SELECTED_GATEWAY,
-                        gateWayId
-                    )
-                    putString(
-                        CURRENT_VARINT,
-                        variantName
-                    )
-                    putString(
-                        CURRENT_PRODUCT_ID,
-                        productId)
-                    putString(
-                        CURRENT_SELECTED_TENURE,
-                        tenureSelected
-                    )
-                    putInt(
-                        CURRENT_QUANTITY,
-                        quantity
-                    )
-
-                }
-
                 sendChangePartnerClickEvent()
-
-                SelectGateWayBottomSheet.show(bundle, childFragmentManager).setOnDismissListener {
+                SelectGateWayBottomSheet.show(
+                    OccBundleHelper.setBundleForBottomSheetPartner(
+                        listOfGateway,
+                        gateWayId,
+                        variantName,
+                        productId,
+                        tenureSelected,
+                        quantity
+                    ), childFragmentManager
+                ).setOnDismissListener {
                     setTenureDetailData()
                 }
             }
@@ -640,11 +633,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState?.let { userState ->
                         sendAnalyticEvent(
                             PdpSimulationEvent.OccChangePartnerClicked(
-                                productId,userState,
+                                productId,
+                                userState,
                                 checkoutData.gateway_name,
                                 checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(), quantity.toString(),
-                                limit, variantName,
+                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                                quantity.toString(),
+                                limit,
+                                variantName,
                             )
                         )
                     }
@@ -665,11 +661,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState?.let { userState ->
                         sendAnalyticEvent(
                             PdpSimulationEvent.OccChangeVariantClicked(
-                                productId,userState,
+                                productId,
+                                userState,
                                 checkoutData.gateway_name,
                                 checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(), quantity.toString(),
-                                limit, variantName,
+                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                                quantity.toString(),
+                                limit,
+                                variantName,
                             )
                         )
                     }
@@ -768,7 +767,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         return isDisabled
     }
 
-
     override fun selectedTenure(
         tenureSelectedModel: TenureSelectedModel,
         newPositionToSelect: Int
@@ -789,6 +787,5 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter.updateList(listOfTenureDetail)
 
     }
-
 
 }
