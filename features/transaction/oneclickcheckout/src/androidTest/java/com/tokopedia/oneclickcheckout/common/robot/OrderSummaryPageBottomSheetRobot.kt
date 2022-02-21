@@ -138,8 +138,6 @@ class GoCicilInstallmentDetailBottomSheetRobot {
             val parent = view.parent as ViewGroup
             val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
             radioButtonUnify.performClick()
-            // Wait for bottom sheet to close
-//            Thread.sleep(1000)
         }
     }
 }

@@ -6,7 +6,19 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostCashbackData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostInstallmentData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -207,7 +219,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             var installmentData: OrderCostInstallmentData? = null
             val selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
-            if (orderPayment.walletData.isGoCicil && selectedTerm != null && orderPayment.walletData.goCicilData.hasValidTerm) {
+            if (orderPayment.walletData.isGoCicil && selectedTerm != null && orderPayment.walletData.goCicilData.hasValidTerm &&
+                    payment.minimumAmount <= cost.totalPriceWithoutPaymentFees && cost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
                 installmentData = OrderCostInstallmentData(
                         installmentFee = selectedTerm.interestAmount,
                         installmentTerm = selectedTerm.installmentTerm,

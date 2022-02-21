@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
@@ -142,6 +143,16 @@ class OrderSummaryPageActivityGoCicilTest {
 
             assertPaymentButtonEnable(false)
 
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp4.000.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp4.015.000"
+                )
+                closeBottomSheet()
+            }
+
             clickChangeGoCicilInstallment {
                 chooseInstallment(2)
             }
@@ -165,6 +176,66 @@ class OrderSummaryPageActivityGoCicilTest {
                         installmentPerPeriod = "Rp1.066.353",
                         installmentFirstDate = "28 Februari 2022",
                         installmentLastDate = "28 April 2022"
+                )
+            }
+        }
+    }
+
+    @Test
+    fun errorFlow_maximumAmount() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPayment("Rp2.016.500", "Bayar")
+
+            assertGoCicilInstallment("3 bulan x Rp673.867")
+
+            clickAddProductQuantity(times = 2)
+
+            assertProfilePaymentErrorRevamp(
+                    message = "Oops, limit nggak cukup. Coba metode bayar lain, ya.",
+                    buttonText = null
+            )
+
+            assertPayment("Rp6.016.500", "Ganti Metode Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp6.000.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
+                        paymentFee = "Rp1.500",
+                        totalPrice = "Rp6.016.500"
+                )
+            }
+        }
+    }
+
+    @Test
+    fun errorFlow_allInactiveInstallment() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        paymentInterceptor.customGoCicilInstallmentOptionResponsePath = GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProfilePaymentErrorRevamp(
+                    message = "Oops, metode pembayaran ini nggak tersedia. Coba pilih yang lain, ya.",
+                    buttonText = null
+            )
+
+            assertPayment("Rp2.015.000", "Ganti Metode Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp2.000.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp2.015.000"
                 )
             }
         }
