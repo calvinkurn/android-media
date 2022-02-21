@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.helper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import timber.log.Timber
 
 fun String.toMapParam(): Map<String, String> {
     if (this.isEmpty()) return mapOf()
@@ -80,6 +81,7 @@ private fun getOptionCount(mapEntry: Map.Entry<String, Any>): Int {
         val optionList = optionValue.split(OptionHelper.OPTION_SEPARATOR)
         optionList.size
     } catch (throwable: Throwable) {
+        Timber.e(throwable)
         0
     }
 }
