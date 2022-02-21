@@ -8,12 +8,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -141,11 +143,10 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
-        val iconId = when (reminderType) {
-            PlayWidgetReminderType.Reminded -> IconUnify.BELL_FILLED
-            PlayWidgetReminderType.NotReminded -> IconUnify.BELL
+        when (reminderType) {
+            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_GN500), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_GN500))
+            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
         }
-        ivReminder.setImage(newIconId = iconId)
     }
 
     private fun setPromoType(promoType: PlayWidgetPromoType) {
