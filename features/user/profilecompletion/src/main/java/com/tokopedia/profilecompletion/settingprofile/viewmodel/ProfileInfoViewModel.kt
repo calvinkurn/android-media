@@ -11,11 +11,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase.Companion.PARAM_UPLOAD_ID
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
-import com.tokopedia.profilecompletion.settingprofile.domain.SaveProfilePictureUseCase
-import com.tokopedia.profilecompletion.settingprofile.domain.SaveProfilePictureUseCase.Companion.PARAM_UPLOAD_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
