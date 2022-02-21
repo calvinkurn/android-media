@@ -204,7 +204,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetSelectedGridProduct_thenReturn(SelectedProduct())
 
         val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
-        verifyIsAutoSelectedProductTrue(isAutoSelect)
+        verifyIsAutoSelectedProductFalse(isAutoSelect)
     }
 
     @Test
