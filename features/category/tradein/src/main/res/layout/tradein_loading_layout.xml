@@ -13,6 +13,7 @@
         android:gravity="center"
         app:layout_constraintVertical_chainStyle="packed"
         android:paddingTop="40dp"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_checking.png"
         app:imageDpiSupportType="singleDpi"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/loading_heading"/>

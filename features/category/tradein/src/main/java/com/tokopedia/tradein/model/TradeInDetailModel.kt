@@ -6,78 +6,80 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class TradeInDetailModel(
-    @SerializedName("getTradeInDetailData")
-    var getTradeInDetailData: GetTradeInDetailData
+    @SerializedName("getTradeInDetail")
+    var getTradeInDetail: GetTradeInDetail
 ) {
-    data class GetTradeInDetailData(
-        @SerializedName("activePromo")
+    data class GetTradeInDetail(
+        @SerializedName("ActivePromo")
         var activePromo: ActivePromo,
-        @SerializedName("bannerUrl")
-        var bannerUrl: String,
-        @SerializedName("deviceAttribute")
+        @SerializedName("BannerURL")
+        var bannerURL: String,
+        @SerializedName("DeviceAttribute")
         var deviceAttribute: DeviceAttribute,
-        @SerializedName("logisticMessage")
+        @SerializedName("ErrMessage")
+        var errMessage: String,
+        @SerializedName("LogisticMessage")
         var logisticMessage: String,
-        @SerializedName("logisticOptions")
+        @SerializedName("LogisticOptions")
         var logisticOptions: ArrayList<LogisticOption>,
-        @SerializedName("productPriceFmt")
-        var productPriceFmt: String
+        @SerializedName("OriginalPriceFmt")
+        var originalPriceFmt: String
     ) {
         data class ActivePromo(
-            @SerializedName("code")
+            @SerializedName("Code")
             var code: String,
-            @SerializedName("subTitle")
-            var subTitle: String,
-            @SerializedName("title")
+            @SerializedName("Subtitle")
+            var subtitle: String,
+            @SerializedName("Title")
             var title: String
         )
 
         data class DeviceAttribute(
-            @SerializedName("brand")
+            @SerializedName("Brand")
             var brand: String,
-            @SerializedName("grade")
+            @SerializedName("Grade")
             var grade: String,
-            @SerializedName("imei")
+            @SerializedName("Imei")
             var imei: List<String>,
-            @SerializedName("model")
+            @SerializedName("Model")
             var model: String,
-            @SerializedName("model_id")
-            var modelId: String,
-            @SerializedName("ram")
+            @SerializedName("ModelId")
+            var modelId: Int,
+            @SerializedName("Ram")
             var ram: String,
-            @SerializedName("storage")
+            @SerializedName("Storage")
             var storage: String
         )
 
         data class LogisticOption(
-            @SerializedName("diagnosticPriceFmt")
+            @SerializedName("DiagnosticPriceFmt")
             var diagnosticPriceFmt: String,
-            @SerializedName("diagnosticReview")
-            var diagnosticReview: String,
-            @SerializedName("discountPercentageFmt")
+            @SerializedName("DiagnosticReview")
+            var diagnosticReview: List<String>,
+            @SerializedName("DiscountPercentageFmt")
             var discountPercentageFmt: String,
-            @SerializedName("estimationPriceFmt")
-            var estimationPriceFmt: String,
-            @SerializedName("expiryTime")
+            @SerializedName("EstimatedPriceFmt")
+            var estimatedPriceFmt: String,
+            @SerializedName("ExpiryTime")
             var expiryTime: String,
-            @SerializedName("finalPriceFmt")
+            @SerializedName("FinalPriceFmt")
             var finalPriceFmt: String,
-            @SerializedName("is3PL")
+            @SerializedName("Is3PL")
             var is3PL: Boolean,
-            @SerializedName("isAvailable")
+            @SerializedName("IsAvailable")
             var isAvailable: Boolean,
-            @SerializedName("isDiagnosed")
+            @SerializedName("IsDiagnosed")
             var isDiagnosed: Boolean,
-            @SerializedName("isPrefered")
-            var isPrefered: Boolean,
-            @SerializedName("subTitle")
-            var subTitle: String,
-            @SerializedName("title")
+            @SerializedName("IsPreferred")
+            var isPreferred: Boolean,
+            @SerializedName("Subtitle")
+            var subtitle: String,
+            @SerializedName("Title")
             var title: String
         ) : Parcelable {
             constructor(parcel: Parcel) : this(
                 parcel.readString() ?: "",
-                parcel.readString() ?: "",
+                parcel.createStringArrayList() ?: arrayListOf(),
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
@@ -93,16 +95,16 @@ data class TradeInDetailModel(
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(diagnosticPriceFmt)
-                parcel.writeString(diagnosticReview)
+                parcel.writeStringList(diagnosticReview)
                 parcel.writeString(discountPercentageFmt)
-                parcel.writeString(estimationPriceFmt)
+                parcel.writeString(estimatedPriceFmt)
                 parcel.writeString(expiryTime)
                 parcel.writeString(finalPriceFmt)
                 parcel.writeByte(if (is3PL) 1 else 0)
                 parcel.writeByte(if (isAvailable) 1 else 0)
                 parcel.writeByte(if (isDiagnosed) 1 else 0)
-                parcel.writeByte(if (isPrefered) 1 else 0)
-                parcel.writeString(subTitle)
+                parcel.writeByte(if (isPreferred) 1 else 0)
+                parcel.writeString(subtitle)
                 parcel.writeString(title)
             }
 

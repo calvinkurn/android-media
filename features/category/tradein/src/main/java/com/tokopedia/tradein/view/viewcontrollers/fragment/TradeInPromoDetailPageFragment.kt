@@ -1,5 +1,8 @@
 package com.tokopedia.tradein.view.viewcontrollers.fragment
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +11,7 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -20,6 +24,7 @@ import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.PromoTradeInModel
 import com.tokopedia.tradein.viewmodel.TradeInPromoDetailPageVM
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -93,6 +98,12 @@ class TradeInPromoDetailPageFragment : BaseViewModelFragment<TradeInPromoDetailP
                 findViewById<Typography>(R.id.minimum_transaction_text).text = it.conditionFmt
                 findViewById<Typography>(R.id.code_promo).text = it.code
                 findViewById<Typography>(R.id.terms_text).text = it.termsConditions
+                findViewById<Typography>(R.id.button_salin).setOnClickListener { view->
+                    val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, it.code))
+                    Toaster.build(this, getString(com.tokopedia.tradein.R.string.tradein_code_copies),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                }
             }
         }
     }
@@ -122,6 +133,7 @@ class TradeInPromoDetailPageFragment : BaseViewModelFragment<TradeInPromoDetailP
 
     companion object {
         private const val EXTRA_CODE = "EXTRA_CODE"
+        const val COPY_LABEL = "Copied Text"
 
         fun getFragmentInstance(code: String): Fragment {
             return TradeInPromoDetailPageFragment().also {

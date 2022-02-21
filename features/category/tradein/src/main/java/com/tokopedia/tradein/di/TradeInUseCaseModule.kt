@@ -12,6 +12,12 @@ class TradeInUseCaseModule {
 
     @TradeInScope
     @Provides
+    fun providesContexts(@ApplicationContext context: Context): Context {
+        return context
+    }
+
+    @TradeInScope
+    @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

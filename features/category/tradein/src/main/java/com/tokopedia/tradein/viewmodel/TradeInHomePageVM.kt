@@ -17,7 +17,7 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
     val askUserLogin = MutableLiveData<Int>()
     val laku6DeviceModel = MutableLiveData<Laku6DeviceModel>()
     private lateinit var laku6TradeIn: Laku6TradeIn
-    var is3PLSelected : Boolean = false
+    var is3PLSelected = MutableLiveData<Boolean>()
 
     fun setLaku6(context: Context) {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
@@ -44,5 +44,9 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
         else {
             askUserLogin.value = TradeinConstants.LOGGED_IN
         }
+    }
+
+    fun updateLogistics(is3Pl: Boolean) {
+        is3PLSelected.value = is3Pl
     }
 }

@@ -62,6 +62,13 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
+    <View
+        android:id="@+id/tradein_p1_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/ticker_address_info"
+        app:layout_constraintBottom_toTopOf="@id/divider"/>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -114,4 +121,10 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
+    <View
+        android:id="@+id/tradein_p3_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

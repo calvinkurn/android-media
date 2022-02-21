@@ -9,13 +9,14 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.model.TradeInDetailModel.GetTradeInDetailData.LogisticOption
+import com.tokopedia.tradein.model.TradeInDetailModel.GetTradeInDetail.LogisticOption
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
 class TradeInExchangeMethodBS : BottomSheetUnify() {
     private var contentView: View? = null
+    private var onLogisticSelected: OnLogisticSelected? = null
 
     companion object {
         private const val LOGISTIC_OPTIONS = "LOGISTIC_OPTIONS"
@@ -35,6 +36,10 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    fun setOnLogisticSelected(onLogisticSelected : OnLogisticSelected){
+        this.onLogisticSelected = onLogisticSelected
     }
 
     override fun onCreateView(
@@ -71,12 +76,18 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                                     }
                                 }
                             }
+                            if(available) {
+                                findViewById<View>(R.id.tradein_p1_view).setOnClickListener {
+                                    onLogisticSelected?.onLogisticSelected(false)
+                                    dismiss()
+                                }
+                            }
                             findViewById<Typography>(R.id.tradein_p1_price).let { typography ->
                                 typography.text =
                                     if (logistic.isDiagnosed)
                                         logistic.diagnosticPriceFmt
                                     else
-                                        logistic.estimationPriceFmt
+                                        logistic.estimatedPriceFmt
                                 typography.setTextColor(
                                     MethodChecker.getColor(
                                         context,
@@ -88,7 +99,7 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                                     )
                                 )
                             }
-                            findViewById<Typography>(R.id.tradein_p1_info).text = logistic.subTitle
+                            findViewById<Typography>(R.id.tradein_p1_info).text = logistic.subtitle
                             setTextColour(findViewById(R.id.tradein_p1_info), available)
                             findViewById<Typography>(R.id.tradein_p1).text = logistic.title
                             setTextColour(findViewById(R.id.tradein_p1), available)
@@ -104,12 +115,18 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                                     }
                                 }
                             }
+                            if(available) {
+                                findViewById<View>(R.id.tradein_p3_view).setOnClickListener {
+                                    onLogisticSelected?.onLogisticSelected(true)
+                                    dismiss()
+                                }
+                            }
                             findViewById<Typography>(R.id.tradein_p3_price).let { typography ->
                                 typography.text =
                                     if (logistic.isDiagnosed)
                                         logistic.diagnosticPriceFmt
                                     else
-                                        logistic.estimationPriceFmt
+                                        logistic.estimatedPriceFmt
                                 typography.setTextColor(
                                     MethodChecker.getColor(
                                         context,
@@ -121,7 +138,7 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                                     )
                                 )
                             }
-                            findViewById<Typography>(R.id.tradein_p3_info).text = logistic.subTitle
+                            findViewById<Typography>(R.id.tradein_p3_info).text = logistic.subtitle
                             setTextColour(findViewById(R.id.tradein_p3_info), available)
                             findViewById<Typography>(R.id.tradein_p3).text = logistic.title
                             setTextColour(findViewById(R.id.tradein_p3), available)
@@ -141,6 +158,10 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             }
         ))
+    }
+
+    interface OnLogisticSelected {
+        fun onLogisticSelected(is3Pl : Boolean)
     }
 
 }

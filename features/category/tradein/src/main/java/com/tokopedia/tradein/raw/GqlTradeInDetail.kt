@@ -1,38 +1,39 @@
 package com.tokopedia.tradein.raw
 
-const val GQL_TRADE_IN_DETAIL: String = """query getTradeInDetailData(${"$"}input: Input){
-    getTradeInDetailData(input: ${"$"}input) {
-        bannerUrl
-        productPriceFmt
-        activePromo {
-            code
-            title
-            subTitle
-        }
-        logisticMessage
-        logisticOptions {
-            isDiagnosed
-            isAvailable
-            isPrefered
-            is3PL
-            discountPercentageFmt
-            title
-            estimationPriceFmt
-            diagnosticPriceFmt
-            finalPriceFmt
-            subTitle
-            expiryTime
-            diagnosticReview
-        }
-        deviceAttribute {
-            ram
-            imei
-            brand
-            grade
-            model
-            storage
-            model_id
-        }
+const val GQL_TRADE_IN_DETAIL: String = """query getTradeInDetail(${'$'}params: GetTradeInDetailInput!) {
+  getTradeInDetail(params: ${'$'}params) {
+    BannerURL
+    OriginalPriceFmt
+    ActivePromo {
+      Code
+      Title
+      Subtitle
     }
+    ErrMessage
+    LogisticMessage
+    LogisticOptions {
+      IsDiagnosed
+      IsAvailable
+      IsPreferred
+      Is3PL
+      DiscountPercentageFmt
+      Title
+      EstimatedPriceFmt
+      DiagnosticPriceFmt
+      FinalPriceFmt
+      Subtitle
+      ExpiryTime
+      DiagnosticReview
+    }
+    DeviceAttribute {
+      Imei
+      Model
+      ModelId
+      Brand
+      Storage
+      Ram
+      Grade
+    }
+  }
 }
 """

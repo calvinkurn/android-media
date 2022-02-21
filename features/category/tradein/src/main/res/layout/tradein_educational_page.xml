@@ -44,7 +44,7 @@
         android:layout_marginRight="16dp"
         android:background="@color/Unify_N0"
         android:gravity="center"
-        app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_1.png"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_1.png"
         app:imageDpiSupportType="singleDpi"
         app:layout_constraintBottom_toBottomOf="@id/edu_subtext_1"
         app:layout_constraintLeft_toLeftOf="parent"

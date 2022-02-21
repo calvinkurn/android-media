@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
 
 
-//import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.user.session.UserSession;
 
 import static android.content.Context.TELEPHONY_SERVICE;
@@ -23,9 +23,9 @@ public class TradeInUtils {
 
     public static String getDeviceId(Context context) {
         try {
-//            if (getImeiNumber(context) != null) {
-//                return getImeiNumber(context);
-//            }
+            if (getImeiNumber(context) != null) {
+                return getImeiNumber(context);
+            }
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
             if (!(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == 0)) {
                 Bundle tradeInData = ((Activity) context).getIntent().getExtras();
@@ -44,9 +44,9 @@ public class TradeInUtils {
             } else {
                 String imei = "";
                 if (Build.VERSION.SDK_INT >= 26) {
-//                    imei = telephonyManager.getImei();
+                    imei = telephonyManager.getImei();
                 } else {
-//                    imei = telephonyManager.getDeviceId();
+                    imei = telephonyManager.getDeviceId();
                 }
                 return imei != null && !imei.isEmpty() ? imei : null;
             }
@@ -55,16 +55,16 @@ public class TradeInUtils {
             return null;
         }
     }
-//
-//    public static void setImeiNumber(Context context, String imeiNumber){
-//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
-//        localCacheHandler.putString(IMEI_NUMBER, imeiNumber);
-//        localCacheHandler.applyEditor();
-//    }
-//
-//    @Nullable
-//    private static String getImeiNumber(Context context){
-//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
-//        return localCacheHandler.getString(IMEI_NUMBER);
-//    }
+
+    public static void setImeiNumber(Context context, String imeiNumber){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
+        localCacheHandler.putString(IMEI_NUMBER, imeiNumber);
+        localCacheHandler.applyEditor();
+    }
+
+    @Nullable
+    private static String getImeiNumber(Context context){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
+        return localCacheHandler.getString(IMEI_NUMBER);
+    }
 }

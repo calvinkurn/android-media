@@ -40,9 +40,21 @@
             android:id="@+id/exchange_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tradein_ditukar_di_alamatmu"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/exchange_price_text"
+            app:typographyType="heading_4"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/unavailable_exchange_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tradein_no_options_available"
+            android:visibility="gone"
+            android:textColor="@color/Unify_N700_32"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="heading_4"
             app:typographyWeight="reguler" />
 
@@ -53,9 +65,20 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintTop_toBottomOf="@id/exchange_text"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             tools:text="Rp2.500.000 - Rp3.500.000" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_chevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:icon_color_light_enable="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography

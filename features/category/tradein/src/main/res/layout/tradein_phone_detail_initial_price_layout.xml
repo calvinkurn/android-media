@@ -63,7 +63,7 @@
         app:typographyType="body_2" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/estimated_price"
+        android:id="@+id/phone_detail_estimated_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
