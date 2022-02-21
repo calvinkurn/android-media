@@ -73,6 +73,7 @@ interface TopChatContract {
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
+        fun reloadCurrentAttachment()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

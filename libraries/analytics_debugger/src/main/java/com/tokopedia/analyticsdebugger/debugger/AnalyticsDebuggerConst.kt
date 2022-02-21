@@ -9,6 +9,7 @@ object AnalyticsDebuggerConst {
     val DATA_DETAIL = "DATA_DETAIL"
     val EVENT_NAME = "EVENT_NAME"
     val ENVIRONMENT = "ENVIRONMENT"
+    val TOPADS_VERIFICATOR_BE = "TOPADS_VERIFICATOR_BE"
 
     val ENVIRONMENT_TEST = "Test"
     val ENVIRONMENT_PRODUCTION = "Prod"

@@ -273,6 +273,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+    String SETTING_ADDRESS = "tokopedia://setting/address";
 
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
@@ -498,9 +499,12 @@ public interface ApplinkConst {
         String VOUCHER_LIST = "sellerapp://voucher-list";
         String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
         String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
+        String VOUCHER_PRODUCT_LIST = "sellerapp://voucher-product-list";
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
+        String VOUCHER_PRODUCT_DETAIL = "sellerapp://voucher-product-detail";
         String CAMPAIGN_LIST = "sellerapp://campaign-list";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
+        String CREATE_VOUCHER_PRODUCT = "sellerapp://create-voucher-product";
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
