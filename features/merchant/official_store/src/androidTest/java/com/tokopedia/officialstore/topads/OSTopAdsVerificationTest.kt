@@ -203,30 +203,47 @@ class OSTopAdsVerificationTest {
 //                    Espresso.onView(withId(R.id.dc_banner_rv))
 //                        .perform(scrollToPosition<RecyclerView.ViewHolder>(0))
 
-                    tapRecyclerViewItem(R.id.dc_banner_rv,0)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,1)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,2)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,3)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,4)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,5)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,6)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,7)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,8)
-                    waitForData()
-                    tapRecyclerViewItem(R.id.dc_banner_rv,9)
-                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,0)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,1)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,2)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,3)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,4)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,5)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,6)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,7)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,8)
+////                    waitForData()
+//                    tapRecyclerViewItem(R.id.dc_banner_rv,9)
+////                    waitForData()
 
-//                    recyclerView?.let {
-//                        clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
-//                    }
+//                    viewRecyclerView(R.id.dc_banner_rv,0)
+////                    waitForData()
+//                    viewRecyclerView(R.id.dc_banner_rv,1)
+////                    waitForData()
+//                    viewRecyclerView(R.id.dc_banner_rv,2)
+////                    waitForData()
+//                    viewRecyclerView(R.id.dc_banner_rv,3)
+////                    waitForData()
+//                    viewRecyclerView(R.id.dc_banner_rv,4)
+//                    viewRecyclerView(R.id.dc_banner_rv,5)
+//                    viewRecyclerView(R.id.dc_banner_rv,6)
+//                    viewRecyclerView(R.id.dc_banner_rv,7)
+//                    viewRecyclerView(R.id.dc_banner_rv,8)
+//                    viewRecyclerView(R.id.dc_banner_rv,9)
+
+//                    waitForData()
+
+                    recyclerView?.let {
+                        clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -241,10 +258,19 @@ class OSTopAdsVerificationTest {
     fun tapRecyclerViewItem(recyclerViewId: Int, position: Int) {
         onView(withId(recyclerViewId)).perform(scrollToPosition<RecyclerView.ViewHolder>(position))
         onView(withRecyclerView(recyclerViewId)!!.atPosition(position)).perform(click())
+        viewData()
+    }
+
+    fun viewRecyclerView(recyclerViewId: Int, position: Int) {
+        onView(withId(recyclerViewId)).perform(scrollToPosition<RecyclerView.ViewHolder>(position))
     }
 
     private fun waitForData() {
         Thread.sleep(5000)
+    }
+
+    private fun viewData() {
+        Thread.sleep(2000)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
