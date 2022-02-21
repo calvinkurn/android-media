@@ -87,7 +87,7 @@ sealed class ProductSectionUiModel {
                             emptyList(),
                             ""
                         ),
-                        reminder = ReminderUiModel(hasReminder = false, CampaignReminderType.NotAvailable)
+                        reminder = ReminderUiModel(hasReminder = false, CampaignReminderType.OFF)
                     ),
                     id = "",
                 )

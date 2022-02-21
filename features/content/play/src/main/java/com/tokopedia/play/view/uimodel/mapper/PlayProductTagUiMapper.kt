@@ -39,7 +39,7 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     private fun mapReminder(hasReminder: Boolean) = ProductSectionUiModel.Section.ReminderUiModel(
         hasReminder = hasReminder,
-        reminderType = if(hasReminder) CampaignReminderType.OFF else CampaignReminderType.NotAvailable //TODO = shud be Not Available /
+        reminderType = CampaignReminderType.OFF
     )
 
     private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {

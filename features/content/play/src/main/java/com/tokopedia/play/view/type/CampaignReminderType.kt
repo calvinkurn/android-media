@@ -6,7 +6,6 @@ package com.tokopedia.play.view.type
 enum class CampaignReminderType {
     ON,
     OFF,
-    NotAvailable
 }
 
 fun getCampaignReminderType(isReminder: Boolean): CampaignReminderType =
