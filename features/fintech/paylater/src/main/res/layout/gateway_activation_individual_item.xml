@@ -21,10 +21,10 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/gatewayImage"
-                android:layout_width="32dp"
+                android:layout_width="@dimen/unify_space_32"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_height="32dp"
-                android:layout_marginLeft="@dimen/dp_14"
+                android:layout_height="@dimen/unify_space_32"
+                android:layout_marginStart="@dimen/dp_14"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 app:layout_constraintTop_toTopOf="@id/barrier1"
@@ -36,7 +36,7 @@
                 android:id="@+id/gatewayHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
+                android:layout_marginStart="@dimen/pay_later_margin_dp_10"
                 tools:text="Cicil 2x Rp6.480.000"
                 app:layout_constraintBottom_toTopOf="@+id/gatewaySubHeader"
                 app:layout_constraintLeft_toRightOf="@id/gatewayImage"
@@ -48,9 +48,9 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/gatewaySubHeader"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
+                android:layout_marginStart="@dimen/pay_later_margin_dp_10"
                 tools:text="Biaya cicilan 0%"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toTopOf="@+id/gatewaySubHeader2"
@@ -62,7 +62,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/gatewaySubHeader2"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
                 tools:text="Biaya cicilan 0%"

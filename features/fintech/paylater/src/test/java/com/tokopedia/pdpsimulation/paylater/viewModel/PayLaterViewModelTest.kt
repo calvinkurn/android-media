@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.model.Pictures
+import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
@@ -49,9 +50,9 @@ class PayLaterViewModelTest {
     fun productDetailSuccessTest()
     {
         val baseProductDetail = BaseProductDetailClass(GetProductV3("name", "url",
-            1000.0, arrayListOf(
+            ShopDetail(""),1000.0, arrayListOf(
             Pictures("url")
-        ), null))
+        ), null,0))
         coEvery {
             productDetailUseCase.getProductDetail(any(), any(), "")
         } coAnswers {

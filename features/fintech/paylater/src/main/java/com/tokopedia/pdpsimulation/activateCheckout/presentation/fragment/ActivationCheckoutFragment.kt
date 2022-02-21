@@ -55,9 +55,7 @@ import javax.inject.Inject
 
 class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
-
     private lateinit var parentView: View
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -79,14 +77,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     var isDisabled = false
     private var variantName = ""
 
-
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
         BottomSheetNavigator(childFragmentManager)
     }
 
-
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,7 +100,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         initView()
         startAllLoaders()
         payLaterActivationViewModel.getProductDetail(payLaterActivationViewModel.selectedProductId)
-
     }
 
     private fun initArgument() {
@@ -113,13 +107,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         val gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
         val tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
         val gatewayCode = arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
-
         payLaterActivationViewModel.setProductId(productId)
         payLaterActivationViewModel.setGatewayId(gateWayId)
         payLaterActivationViewModel.setTenure(tenureSelected)
         payLaterActivationViewModel.setGatewayCode(gatewayCode)
     }
-
 
     private fun observeCartDetail() {
         payLaterActivationViewModel.addToCartLiveData.observe(viewLifecycleOwner) {
@@ -138,7 +130,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-
     private fun showToaster(atcErrorMessage: String?) {
         atcErrorMessage?.let {
             Toaster.build(
@@ -149,7 +140,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             ).show()
         }
     }
-
 
     private fun startAllLoaders() {
         productInfoActivationShimmer.visibility = View.VISIBLE
@@ -197,8 +187,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     }
                 }
             }
-
-
         }
     }
 
@@ -206,7 +194,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun removeAllError() {
         globalErrorGroup.visibility = View.GONE
         nestedScrollView.visibility = View.VISIBLE
-
     }
 
     private fun fullPageGlobalError(errorType: Int) {
@@ -269,7 +256,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 }
             }
         } catch (e: Exception) {
-
         }
     }
 
@@ -287,13 +273,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             setSelectedTenure()
             setTenureOptionsData(paylaterGetOptimizedModel)
             setTickerVisibility(it)
-
         } ?: run {
             loaderhideOnCheckoutApi()
             showEmptyErrorInTenureDetail()
             removeBottomDetailForError()
         }
-
     }
 
     private fun setTickerVisibility(it: CheckoutData) {
@@ -337,8 +321,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
         gatewayDetailLayout.errorTicker.visibility = View.GONE
-
-
     }
 
     private fun showGlobalErrorInTenureDetail(errorType: Int) {
@@ -391,8 +373,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 }
             }
         }
-
-
     }
 
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
@@ -413,28 +393,20 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     it.subtitle2
             else
                 gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
-
             if (it.tenureDetail.isNotEmpty()) {
                 gatewayDetailLayout.additionalDetail.text = data.footer
             } else {
                 gatewayDetailLayout.additionalDetail.text = ""
                 removeBottomDetailForError()
             }
-
-
             if (isDisabled)
                 removeBottomDetailForError()
-
             if (payLaterActivationViewModel.gatewayToChipMap.size <= 1)
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
             else
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.VISIBLE
-
-
             setTenureDetail(it.tenureDetail)
         }
-
-
     }
 
     private fun setTenureDetail(tenureDetail: List<TenureDetail>) {
@@ -490,18 +462,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
         }
     }
-
-
     private fun initView() {
         addListeners()
         gatewayDetailLayout.recyclerTenureDetail.isNestedScrollingEnabled = false
         gatewayDetailLayout.recyclerTenureDetail.layoutManager = LinearLayoutManager(context)
         gatewayDetailLayout.recyclerTenureDetail.adapter = activationTenureAdapter
     }
-
     private fun addListeners() {
-
-
         gatewayDetailLayout.tenureDetailEmptyStateError.emptyStateCTAID.setOnClickListener {
             gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
             getCheckoutDetail()
@@ -510,20 +477,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
             getCheckoutDetail()
         }
-
         fullPageEmptyState.emptyStateCTAID.setOnClickListener {
             fullPageEmptyState.visibility = View.GONE
             startAllLoaders()
             payLaterActivationViewModel.getProductDetail(payLaterActivationViewModel.selectedProductId)
         }
-
-
         fullPageGLobalError.errorAction.setOnClickListener {
             fullPageGLobalError.visibility = View.GONE
             startAllLoaders()
             payLaterActivationViewModel.getProductDetail(payLaterActivationViewModel.selectedProductId)
         }
-
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
             if (this::listOfGateway.isInitialized) {
                 sendChangePartnerClickEvent()
@@ -542,13 +505,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
         }
         quantityTextWatcher()
-
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
             getCheckoutDetail()
-
         }
-
         activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
         detailHeader.showVariantBottomSheet.setOnClickListener {
             sendVarintClickEvent()
@@ -578,17 +538,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
 
         }
-
         proceedToCheckout.setOnClickListener {
             payLaterActivationViewModel.addProductToCart(
                 payLaterActivationViewModel.selectedProductId,
                 quantity
             )
         }
-
-
     }
-
     private fun sendChangePartnerClickEvent() {
         try {
             payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
@@ -608,15 +564,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         )
                     }
                 }
-
             }
-
         } catch (e: Exception) {
 
         }
     }
-
-
     private fun sendVarintClickEvent() {
         try {
             payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
@@ -636,16 +588,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         )
                     }
                 }
-
             }
-
         } catch (e: Exception) {
-
         }
-
-
     }
-
     private fun quantityTextWatcher() {
         detailHeader.quantityEditor.editText.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -653,12 +599,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     detailHeader.quantityEditor.editText.clearFocus()
                     return true
                 }
-
                 return false
             }
-
         })
-
         detailHeader.quantityEditor.editText.afterTextChanged { s ->
             if (!s.isNullOrBlank()) {
                 when {
@@ -666,20 +609,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         .toInt() > detailHeader.quantityEditor.maxValue -> {
                         detailHeader.limiterMessage.visibility = View.VISIBLE
                         detailHeader.limiterMessage.text =
-                            "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
-
+                            "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
                     }
                     s.replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
                         detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text = "Min. beli 1 barang"
-
+                        detailHeader.limiterMessage.text = getString(R.string.paylater_occ_min_quantity)
                     }
                     else -> detailHeader.limiterMessage.visibility = View.GONE
                 }
             }
-
         }
-
     }
 
     private fun getCheckoutDetail() {
@@ -697,7 +636,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         return "Activation PayLater"
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
@@ -713,9 +651,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-
     companion object {
-
         @JvmStatic
         fun newInstance(bundle: Bundle): ActivationCheckoutFragment {
             val fragment = ActivationCheckoutFragment()
@@ -746,7 +682,5 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         selectedTenurePosition = newPositionToSelect
         payLaterActivationViewModel.setTenure(tenureSelectedModel.tenure.toString())
         activationTenureAdapter.updateList(listOfTenureDetail)
-
     }
-
 }

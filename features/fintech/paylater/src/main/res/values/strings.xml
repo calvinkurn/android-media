@@ -23,5 +23,7 @@
     <string name="which_paylater_you_want">Mau pakai PayLater yang mana?</string>
     <string name="pay_later_unavailable_title">Oops, pilihan pembayaran tidak tersedia</string>
     <string name="paylater_see_more_offers">Lihat %1$d Lainnya</string>
+    <string name="paylater_occ_quantity_overflow">Oops, stoknya tinggal</string>
+    <string name="paylater_occ_min_quantity">Min. beli 1 barang</string>
 
 </resources>
