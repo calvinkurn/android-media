@@ -156,6 +156,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         return listOf(
             StatisticPageHelper.getShopStatistic(this, remoteConfig),
             StatisticPageHelper.getProductStatistic(this, remoteConfig),
+            StatisticPageHelper.getTrafficStatistic(this),
             StatisticPageHelper.getOperationalStatistic(this),
             StatisticPageHelper.getBuyerStatistic(this)
         )

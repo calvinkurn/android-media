@@ -117,6 +117,30 @@ object StatisticPageHelper {
         )
     }
 
+    fun getTrafficStatistic(context: Context): StatisticPageUiModel {
+        val title = context.getString(R.string.stc_traffic)
+        return StatisticPageUiModel(
+            pageTitle = title,
+            pageSource = Const.PageSource.TRAFFIC_INSIGHT,
+            tickerPageName = Const.TickerPageName.TRAFFIC_INSIGHT,
+            tag = context.getString(R.string.stc_new_tag),
+            actionMenu = listOf(
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_give_suggestions),
+                    appLink = Const.Url.OPERATIONAL_GIVE_SUGGESTIONS,
+                    iconUnify = IconUnify.CHAT_REPORT
+                ),
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_learn_more),
+                    appLink = Const.Url.OPERATIONAL_LEARN_MORE,
+                    iconUnify = IconUnify.HELP
+                )
+            ),
+            dateFilters = getOperationalDateFilters(context),
+            exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_buyer_and_operational_exclusive_identifier_desc)
+        )
+    }
+
     fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         val isOfficialStore = userSession.isShopOfficialStore
@@ -251,6 +275,32 @@ object StatisticPageHelper {
                 showBottomBorder = false
             ),
             DateFilterItem.Divider,
+            getDateFilterPerWeek(context, true, Const.DAYS_91),
+            getFilterPerMonth(context, false, Const.DAYS_91),
+            DateFilterItem.ApplyButton
+        )
+    }
+
+    private fun getTrafficDateFilters(context: Context): List<DateFilterItem> {
+        return listOf(
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_7,
+                Const.DAYS_7,
+                Const.DAY_1,
+                type = DateFilterItem.TYPE_LAST_7_DAYS,
+                true
+            ),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_30,
+                Const.DAYS_30,
+                Const.DAY_1,
+                type = DateFilterItem.TYPE_LAST_30_DAYS,
+                showBottomBorder = false
+            ),
+            DateFilterItem.Divider,
+            getDateFilterPerDay(context, Const.DAYS_365),
             getDateFilterPerWeek(context, true, Const.DAYS_91),
             getFilterPerMonth(context, false, Const.DAYS_91),
             DateFilterItem.ApplyButton

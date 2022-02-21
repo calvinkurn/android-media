@@ -28,6 +28,7 @@ object Const {
         const val SHOP_INSIGHT = "shop-insight"
         const val BUYER_INSIGHT = "buyer-insight"
         const val PRODUCT_INSIGHT = "product-landing-insight"
+        const val TRAFFIC_INSIGHT = "traffic-insight"
         const val OPERATIONAL_INSIGHT = "operational-insight"
     }
 
@@ -35,6 +36,7 @@ object Const {
         const val SHOP_INSIGHT = "seller-statistic"
         const val BUYER_INSIGHT = "wawasan-pembeli"
         const val PRODUCT_INSIGHT = "seller-statistic#wawasan-produk"
+        const val TRAFFIC_INSIGHT = "seller-statistic#wawasan-kunjungan"
         const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-operasional"
     }
 

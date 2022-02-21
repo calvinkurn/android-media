@@ -32,6 +32,7 @@
     <string name="stc_product">Produk</string>
     <string name="stc_buyer">Pembeli</string>
     <string name="stc_upgrade_shop">Upgrade Toko</string>
+    <string name="stc_traffic">Kunjungan</string>
     <string name="stc_operational">Operasional</string>
     <string name="stc_give_suggestions">Beri Saran</string>
     <string name="stc_learn_more">Pelajari Selengkapnya</string>
@@ -47,4 +48,5 @@
     <string name="stc_shop_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari terakhir, 30 hari terakhir, per hari, per minggu, per bulan,</b> atau <b>atur sendiri.<b>]]></string>
     <string name="stc_buyer_and_operational_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari, 30 hari, per minggu,</b> atau <b>per bulan.<b>]]></string>
     <string name="stc_exlusive_feature_title">Fitur Eksklusif Keanggotaan Toko</string>
+    <string name="stc_new_tag">Baru</string>
 </resources>
