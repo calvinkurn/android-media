@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 class GetAddOnData {
     @SerializedName("GetAddOnByProduct")
     @Expose
-    var getAddOnByProduct: GetAddOnByProduct? = null
+    var getAddOnByProduct: GetAddOnByProduct = GetAddOnByProduct()
 }

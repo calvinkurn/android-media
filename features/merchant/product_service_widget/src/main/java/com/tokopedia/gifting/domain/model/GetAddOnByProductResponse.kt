@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class GetAddOnByProduct {
     @SerializedName("error")
     @Expose
-    var error: Error? = null
+    var error: Error = Error()
 
     @SerializedName("StaticInfo")
     @Expose

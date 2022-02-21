@@ -46,7 +46,19 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
         bottomSheetHeader.postDelayed({
             setPageLoading(false)
         }, 5000)
-        viewModel.dummy()
+
+
+        viewModel.getWarehouseId(requireContext())
+        viewModel.getWarehouseIdResult.observe(viewLifecycleOwner) { warehouseId ->
+            viewModel.getAddOn(productId, warehouseId)
+        }
+        viewModel.getAddOnByProduct.observe(viewLifecycleOwner) {
+            print(it.toString())
+        }
+        viewModel.errorThrowable.observe(viewLifecycleOwner) {
+            print(it.toString())
+        }
+
     }
 
     private fun setPageLoading(isLoading: Boolean) {
