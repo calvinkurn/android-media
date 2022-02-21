@@ -50,11 +50,11 @@ class DigitalRecommendationMapper {
                         backgroundUrl = it.campaignLabelBackgroundUrl
                     ),
                     productInfoLeft = DigitalCardInfoModel(
-                        text = it.productInfo1.text.uppercase(),
+                        text = it.productInfo1.text,
                         textColor = it.productInfo1.color
                     ),
                     productInfoRight = DigitalCardInfoModel(
-                        text = it.productInfo2.text.uppercase(),
+                        text = it.productInfo2.text,
                         textColor = it.productInfo2.color
                     ),
                     title = it.title,
@@ -114,8 +114,5 @@ class DigitalRecommendationMapper {
                 items = items,
             )
         }
-
-        private const val TYPE_PRODUCT_RECOMMENDATION = "product"
-        private const val TYPE_CATEGORY = "category"
     }
 }
