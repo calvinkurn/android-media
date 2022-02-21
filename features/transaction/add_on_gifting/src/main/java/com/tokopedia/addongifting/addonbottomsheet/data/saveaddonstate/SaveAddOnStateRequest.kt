@@ -1,5 +1,6 @@
 package com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class SaveAddOnStateRequest(
@@ -21,12 +22,15 @@ data class AddOnRequest(
 )
 
 data class CartProduct(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("cart_id")
-        var cartId: String = "",
+        var cartId: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
-        var productId: String = "",
+        var productId: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        var warehouseId: String = "",
+        var warehouseId: Long = 0,
         @SerializedName("product_name")
         var productName: String = "",
         @SerializedName("product_image_url")
@@ -34,8 +38,9 @@ data class CartProduct(
 )
 
 data class AddOnDataRequest(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("add_on_id")
-        var addOnId: String = "",
+        var addOnId: Long = 0,
         @SerializedName("add_on_qty")
         var addOnQty: Int = 0,
         @SerializedName("add_on_metadata")

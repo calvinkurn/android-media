@@ -14,6 +14,7 @@ import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.TotalAmountUiModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
@@ -80,7 +81,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                 squad = SourceRequest.SQUAD_VALUE
                 useCase = SourceRequest.USE_CASE_VALUE
             }
-            dataRequest = DataRequest().apply {
+            requestData = RequestData().apply {
                 inventory = true
             }
         }
@@ -89,8 +90,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
                                                  addOnProductData: AddOnProductData,
                                                  mockAddOnSavedStateResponse: String?) {
-        // Todo : adjust error validation, should be based on error code not error message
-        if (getAddOnByProductResponse.dataResponse.error.message.isBlank()) {
+        if (getAddOnByProductResponse.dataResponse.error.errorCode.isBlank()) {
             loadSavedStateData(addOnProductData, getAddOnByProductResponse, mockAddOnSavedStateResponse)
         } else {
             throw ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message)
@@ -205,9 +205,9 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                         }
                         cartProducts = addOnProductData.availableBottomSheetData.products.map {
                             CartProduct().apply {
-                                cartId = it.cartId
-                                productId = it.productId
-                                warehouseId = addOnProductData.availableBottomSheetData.warehouseId
+                                cartId = it.cartId.toLongOrZero()
+                                productId = it.productId.toLongOrZero()
+                                warehouseId = addOnProductData.availableBottomSheetData.warehouseId.toLongOrZero()
                                 productName = it.productName
                                 productImageUrl = it.productImageUrl
                             }
@@ -215,7 +215,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                         _addOnUiModel.value.let {
                             addOnData = listOf(
                                     AddOnDataRequest().apply {
-                                        addOnId = it.addOnId
+                                        addOnId = it.addOnId.toLongOrZero()
                                         addOnQty = it.addOnQty
                                         addOnMetadata = AddOnMetadataRequest().apply {
                                             addOnNote = AddOnNoteRequest().apply {

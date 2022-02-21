@@ -60,13 +60,13 @@ class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val 
                         }
                       }
                     }
-//                    add_on_button {          
-//                      title
-//                      description
-//                      left_icon_url
-//                      right_icon_url
-//                      action
-//                    }
+                    add_on_button {          
+                      title
+                      description
+                      left_icon_url
+                      right_icon_url
+                      action
+                    }
                     add_on_bottomsheet {
                       header_title
                       description
