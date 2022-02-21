@@ -1,5 +1,8 @@
 package com.tokopedia.play.broadcaster.model.websocket
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.ui.model.EventUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -176,5 +179,151 @@ class WebSocketUiModelBuilder {
         message = message,
         isActive = isActive,
         editStatus = editStatus,
+    )
+
+    /** LIVE_DURATION */
+    fun buildLiveDurationString(
+        durationSec: Long = 0,
+        maxDurationSec: Long = 0,
+        remainingSec: Long = 0,
+        startTime: String = "",
+        timeNow: String = "",
+    ) = """
+        {
+          "type": "LIVE_DURATION",
+          "data": {
+            "duration_sec": $durationSec,
+            "max_duration_sec": $maxDurationSec,
+            "remaining_sec": $remainingSec,
+            "start_time": "$startTime",
+            "time_now": "$timeNow"
+          }
+        }
+    """.trimIndent()
+
+    fun buildLiveDurationModel(
+        duration: Long = 0,
+        maxDuration: Long = 0,
+        remaining: Long = 0,
+        startTime: String = "",
+        timeNow: String = ""
+    ) = LiveDuration(
+        duration = duration,
+        maxDuration = maxDuration,
+        remaining = remaining,
+        startTime = startTime,
+        timeNow = timeNow
+    )
+
+    /** PRODUCT_TAG */
+    fun buildProductTagString(
+        size: Int = 1
+    ): String {
+        var productList = ""
+        for(i in 1..size) {
+            productList += """
+                {
+                    app_link: "Applink$i",
+                    discount: 0,
+                    id: $i,
+                    image_url: "",
+                    is_available: false,
+                    is_free_shipping: true,
+                    is_variant: true,
+                    min_quantity: 1,
+                    name: "Title $i",
+                    order: 0,
+                    original_price: 123,
+                    original_price_formatted: "123",
+                    price: 0,
+                    price_formatted: "",
+                    quantity: 0,
+                    shop_id: "1",
+                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
+              }
+            """.trimIndent()
+
+            if(i != size) productList += ","
+        }
+
+        return """
+            {
+                "type": "PRODUCT_TAG",
+                "data": {
+                      "is_show_product_tagging" : true,
+                      "products" : [
+                            $productList      
+                      ]
+                }
+            }
+        """.trimIndent()
+    }
+
+    /** FREEZE */
+    fun buildFreezeString(
+        channelId: Int = 1,
+        isFreeze: Boolean = true,
+        timestamp: Long = 1592392273000,
+    ) = """
+        {
+            "type":"FREEZE",
+            "data":{
+              "channel_id": $channelId,
+              "is_freeze": $isFreeze,
+              "timestamp": $timestamp
+            }
+        }
+    """.trimIndent()
+
+    fun buildFreezeModel(
+        freeze: Boolean = true,
+        banned: Boolean = false,
+        title: String = "",
+        message: String = "",
+        buttonTitle: String = "",
+    ) = EventUiModel(
+        freeze = freeze,
+        banned = banned,
+        title = title,
+        message = message,
+        buttonTitle = buttonTitle,
+    )
+
+    /** BANNED */
+    fun buildBannedString(
+        channelId: Int = 1,
+        userId: Int = 1,
+        name: String = "",
+        image: String = "",
+        isBanned: Boolean = true,
+        timestamp: Long = 1579064126000,
+    ) = """
+        {
+            "type": "MODERATE",
+            "data": {
+              "channel_id": $channelId,
+              "user": {
+                "id": $userId,
+                "name": "$name",
+                "image": "$image"
+              },
+              "is_banned": $isBanned,
+              "timestamp": $timestamp
+            }
+        }
+    """.trimIndent()
+
+    fun buildBannedModel(
+        freeze: Boolean = false,
+        banned: Boolean = true,
+        title: String = "",
+        message: String = "",
+        buttonTitle: String = "",
+    ) = EventUiModel(
+        freeze = freeze,
+        banned = banned,
+        title = title,
+        message = message,
+        buttonTitle = buttonTitle,
     )
 }

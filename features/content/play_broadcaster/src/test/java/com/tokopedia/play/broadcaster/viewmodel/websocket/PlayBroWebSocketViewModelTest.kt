@@ -1,19 +1,22 @@
 package com.tokopedia.play.broadcaster.viewmodel.websocket
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.fake.FakePlayWebSocket
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
-import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +35,7 @@ class PlayBroWebSocketViewModelTest {
     private val testDispatcher = rule.dispatchers
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockLogger: PlayLogger = mockk(relaxed = true)
     private val fakePlayWebSocket= FakePlayWebSocket(testDispatcher)
 
     private val uiModelBuilder = UiModelBuilder()
@@ -125,6 +129,94 @@ class PlayBroWebSocketViewModelTest {
             }
 
             state.pinnedMessage.message.assertEqualTo(mockMessage)
+        }
+    }
+
+    @Test
+    fun `when user received live duration event and remaining time is 0, then it should log socket type`() {
+        val mockLiveDurationString = webSocketUiModelBuilder.buildLiveDurationString()
+        val mockLiveDuration = webSocketUiModelBuilder.buildLiveDurationModel()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            logger = mockLogger,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            robot.executeViewModelPrivateFunction("startWebSocket")
+            fakePlayWebSocket.fakeEmitMessage(mockLiveDurationString)
+
+            verify { mockLogger.logSocketType(mockLiveDuration) }
+        }
+    }
+
+    @Test
+    fun `when user received freeze event and its freeze, it should emit stop livestream`() {
+        val mockFreezeString = webSocketUiModelBuilder.buildFreezeString()
+        val mockFreeze = webSocketUiModelBuilder.buildFreezeModel()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            logger = mockLogger,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            val observableTimerState = it.getViewModelPrivateField<MutableLiveData<PlayLiveTimerState>>("_observableLiveTimerState")
+            observableTimerState.value = PlayLiveTimerState.Active(remainingInMs = 1000)
+
+            robot.executeViewModelPrivateFunction("startWebSocket")
+            fakePlayWebSocket.fakeEmitMessage(mockFreezeString)
+
+            val eventResult = robot.getViewModel().observableEvent.getOrAwaitValue()
+
+            verify { mockLogger.logSocketType(any()) }
+            fakePlayWebSocket.isOpen().assertFalse()
+            eventResult.assertEqualTo(mockFreeze)
+        }
+    }
+
+    @Test
+    fun `when user received banned event and its banned, it should emit stop livestream`() {
+        val mockBannedString = webSocketUiModelBuilder.buildBannedString()
+        val mockBanned = webSocketUiModelBuilder.buildBannedModel()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            logger = mockLogger,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            val observableTimerState = it.getViewModelPrivateField<MutableLiveData<PlayLiveTimerState>>("_observableLiveTimerState")
+            observableTimerState.value = PlayLiveTimerState.Active(remainingInMs = 1000)
+
+            robot.executeViewModelPrivateFunction("startWebSocket")
+            fakePlayWebSocket.fakeEmitMessage(mockBannedString)
+
+            val eventResult = robot.getViewModel().observableEvent.getOrAwaitValue()
+
+            verify { mockLogger.logSocketType(any()) }
+            fakePlayWebSocket.isOpen().assertFalse()
+            eventResult.assertEqualTo(mockBanned)
+        }
+    }
+
+    @Test
+    fun `when user stop livestreaming, then it should close websocket`() {
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            it.getViewModel().stopLiveStream(false)
+            fakePlayWebSocket.isOpen().assertFalse()
         }
     }
 }

@@ -35,4 +35,6 @@ class FakePlayWebSocket(
     fun fakeEmitMessage(text: String) {
         webSocketFlow.tryEmit(WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java)))
     }
+
+    fun isOpen() = isOpen
 }
