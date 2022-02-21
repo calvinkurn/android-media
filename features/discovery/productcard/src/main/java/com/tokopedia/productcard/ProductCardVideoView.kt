@@ -9,6 +9,7 @@ import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntDef
+import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
@@ -19,6 +20,7 @@ class ProductCardVideoView(
     defStyleAttr: Int
 ) : FrameLayout(context, attrs, defStyleAttr)  {
     companion object{
+        @LayoutRes
         private val playerLayoutId = R.layout.product_card_video_view
 
         private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.5f
