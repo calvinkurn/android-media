@@ -145,7 +145,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
             transactionHistoryViewModel.getEventLabelForTab(it.getCustomText())
                 .also { actionLabel ->
-                    analytics.sendClickPaymentEvents(actionLabel)
+                    // different event names for different tabs here
+                    if (it.position == 0)
+                        analytics.sendClickPaymentEvents(actionLabel)
+                    else analytics.sendTransactionHistoryEvents(actionLabel)
                 }
         }
     }
