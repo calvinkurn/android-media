@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.catalog.viewmodel.CatalogAllReviewsViewModel
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
+import com.tokopedia.catalog.viewmodel.CatalogProductComparisonViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -35,5 +36,11 @@ abstract class ViewModelModule {
     @CatalogScope
     @ViewModelKey(CatalogAllReviewsViewModel::class)
     internal abstract fun catalogAllReviewsViewModel(viewModel: CatalogAllReviewsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @CatalogScope
+    @ViewModelKey(CatalogProductComparisonViewModel::class)
+    internal abstract fun catalogProductComparisonViewModel(viewModel: CatalogProductComparisonViewModel): ViewModel
 
 }

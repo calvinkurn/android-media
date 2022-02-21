@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -93,6 +94,7 @@ import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
@@ -295,6 +297,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
+                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -1716,7 +1719,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isAdded) {
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
-            binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
+            binding?.goToCourierPageButton?.setOnClickListener {
+                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY)
+                checkGoToShipment("")
+            }
         }
     }
 
@@ -2056,6 +2062,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
+        val newTokoNowData = localizationChooseAddress.tokoNow
+        val shouldReplaceTokoNowData = newTokoNowData.isModified
         if (!snippetMode && localizationChooseAddress.state == LocalizationChooseAddress.STATE_ADDRESS_ID_NOT_MATCH) {
             lca = ChooseAddressUtils.setLocalizingAddressData(
                     addressId = localizationChooseAddress.addressId,
@@ -2065,11 +2073,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     long = localizationChooseAddress.longitude,
                     label = String.format("%s %s", localizationChooseAddress.addressName, localizationChooseAddress.receiverName),
                     postalCode = localizationChooseAddress.postalCode,
-                    shopId = localizationChooseAddress.tokoNow.shopId,
-                    warehouseId = localizationChooseAddress.tokoNow.warehouseId)
+                    shopId = if (shouldReplaceTokoNowData) newTokoNowData.shopId else localCacheData.shop_id,
+                    warehouseId = if (shouldReplaceTokoNowData) newTokoNowData.warehouseId else localCacheData.warehouse_id,
+                    warehouses = if (shouldReplaceTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(newTokoNowData.warehouses) else localCacheData.warehouses,
+                    serviceType = if (shouldReplaceTokoNowData) newTokoNowData.serviceType else localCacheData.service_type)
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     localData = lca)
+        } else if (shouldReplaceTokoNowData) {
+            ChooseAddressUtils.updateTokoNowData(
+                context = activity,
+                shopId = newTokoNowData.shopId,
+                warehouseId = newTokoNowData.warehouseId,
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(newTokoNowData.warehouses),
+                serviceType = newTokoNowData.serviceType)
         }
         dPresenter.setLocalizingAddressData(lca)
     }
@@ -2396,6 +2413,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun stopCartPerformanceTrace() {
         if (!isTraceCartStopped) {
+            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }
