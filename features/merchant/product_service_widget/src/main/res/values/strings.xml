@@ -1,0 +1,74 @@
+<resources>
+
+    <!-- gifting -->
+    <string name="gifting_title_bottomsheet">Cara atur bingkisan</string>
+    <string name="gifting_tips_text_1">Pilih barang <![CDATA[<b>kategori Bingkisan</b>]]>. Beli langsung atau masukkan ke keranjang.</string>
+    <string name="gifting_tips_text_2">Di halaman <![CDATA[<b>Keranjang</b>]]>, pilih barang bertanda khusus ( ) dan lanjut ke Pengiriman.</string>
+    <string name="gifting_tips_text_3">Di halaman <![CDATA[<b>Pengiriman</b> atau <b>Beli Langsung</b>]]>, tambah pelengkap bingkisan yang tersedia.</string>
+    <string name="gifting_tips_text_4">Tulis pesan spesial di kartu ucapan.</string>
+    <string name="gifting_tips_text_5">Lanjut bayar untuk kirim ke orang spesial.</string>
+    <string name="gifting_title_tips_text">Langkah mudah lengkapi bingkisanmu:</string>
+    <string name="gifting_tips_detail"> <![CDATA[<i>*Invoice tidak dikirim ke penerima pesanan</i>]]></string>
+    <string name="gifting_shop_caption">Disediakan oleh</string>
+    <string name="gifting_shop_location">Tersedia di wilayah tertentu. <![CDATA[<font color=\'#42b549\'><b>Info Selengkapnya</b></font>]]>.</string>
+
+    <!-- product bundle screen name -->
+    <string name="product_bundle_page_title">Pilih Paket Bundling</string>
+
+    <!-- product bundle detail -->
+    <string name="text_sold_product_bundle">Terjual %d paket</string>
+    <string name="error_empty_variant">Variant habis, ganti ke varian lain</string>
+
+    <!-- product bundle overview -->
+    <string name="action_buy_bundle">Beli Paket</string>
+    <string name="action_preorder">PreOrder</string>
+    <string name="text_saving">Hemat</string>
+    <string name="text_discount_in_percentage">%d%%</string>
+
+    <!-- id -->
+    <item name="product_bundle_master_tag" type="id" />
+    <item name="product_bundle_detail_tag" type="id" />
+    <item name="product_variant_tag" type="id" />
+
+    <!-- actions -->
+    <string name="action_back">Kembali</string>
+    <string name="action_save">Simpan</string>
+    <string name="action_select_another_bundle">Lihat Paket Lain</string>
+    <string name="action_oke">Oke</string>
+    <string name="action_reload">Muat ulang</string>
+    <string name="action_back_to_pdp">Ke Halaman Produk</string>
+    <string name="action_back_to_cart">Kembali ke Keranjang</string>
+
+    <!-- single bundle item mapping -->
+    <string name="preorder_prefix">PO %1s</string>
+    <string name="preorder_time_unit_day">hari</string>
+    <string name="preorder_time_unit_month">bulan</string>
+    <string name="bundle_item_title_prefix">Paket isi %1d</string>
+
+    <!-- single bundle messages wording -->
+    <string name="single_bundle_success_variant_added">Varian berhasil diubah</string>
+    <string name="single_bundle_error_bundle_not_selected">Oops, pilih product dulu, ya.</string>
+    <string name="single_bundle_error_variant_not_selected">Oops, pilih varian dulu, ya.</string>
+    <string name="single_bundle_error_unknown">Terjadi kesalahan!</string>
+    <string name="single_bundle_error_bundle">Oops, paket ini sudah habis</string>
+    <string name="single_bundle_error_bundle_desc">Kamu bisa kembali ke halaman produk untuk beli produk ini secara satuan</string>
+    <string name="single_bundle_error_bundle_is_empty_long">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
+    <string name="single_bundle_default_price">Rp0</string>
+
+    <!-- error dialog wording -->
+    <string name="dialog_error_title_empty">Oops, paket ini habis</string>
+    <string name="dialog_error_title_empty_pdp">Oops, paketnya habis</string>
+    <string name="dialog_error_title_empty_bundle">Oops, paket yang kamu pilih habis</string>
+    <string name="dialog_error_message_other_bundle_and_variant_available">Coba ganti dengan varian lain, atau bisa juga cek paket lainnya, ya.</string>
+    <string name="dialog_error_message_other_variant_available">Coba ganti dengan varian lain, ya.</string>
+    <string name="dialog_error_message_other_bundle_available">Tenang kamu bisa cek pilihan paket serupa lainnya, ya.</string>
+    <string name="dialog_error_message_pdp">Tenang kamu bisa cek pilihan paket serupa lainnya, ya.</string>
+    <string name="dialog_error_action_change_variant">Ganti Varian</string>
+    <string name="dialog_error_action_change_bundle">Lihat Paket Lain</string>
+
+    <!-- error messages -->
+    <string name="error_bundle_out_of_stock_dialog_title">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
+    <string name="error_bundle_out_of_stock_dialog_description">Coba pilih paket lain atau kembali ke halaman produk, ya.</string>
+    <string name="error_bundle_variant_not_selected">Oops, pilih varian dulu, ya.</string>
+
+</resources>

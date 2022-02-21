@@ -135,7 +135,7 @@ ext {
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
-            productBundle                   : ":features:merchant:product_bundle",
+            productServiceWidget            : ":features:merchant:product_service_widget",
             productManageCommon             : ":features:merchant:product_manage_common",
             productManageList               : ":features:merchant:product_manage_list",
             productShare                    : ":features:merchant:product_share",
@@ -144,6 +144,7 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
+            cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
             reputationCommon                : ":features:merchant:reputation_common",

@@ -84,7 +84,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun show(childFragmentManager: FragmentManager, daggerProductDetailComponent: ProductDetailComponent?, listener: ProductDetailBottomSheetListener) {
+    fun show(childFragmentManager: FragmentManager,
+             daggerProductDetailComponent: ProductDetailComponent?,
+             listener: ProductDetailBottomSheetListener) {
         this.productDetailComponent = daggerProductDetailComponent
         this.listener = listener
 
