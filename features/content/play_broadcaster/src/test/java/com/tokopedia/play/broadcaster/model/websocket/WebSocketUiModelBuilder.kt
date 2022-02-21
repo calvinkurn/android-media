@@ -296,7 +296,7 @@ class WebSocketUiModelBuilder {
         """.trimIndent()
     }
 
-    fun buildProductModel(
+    fun buildProductTagModel(
         sectionSize: Int = 1,
         productSize: Int = 1,
     ) = List(sectionSize) {

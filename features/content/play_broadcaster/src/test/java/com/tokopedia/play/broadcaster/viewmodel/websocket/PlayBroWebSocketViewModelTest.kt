@@ -207,6 +207,29 @@ class PlayBroWebSocketViewModelTest {
     }
 
     @Test
+    fun `when user received product tag event, it should emit new product tag`() {
+        val mockProductTagString = webSocketUiModelBuilder.buildProductTagString()
+        val mockProductTag = webSocketUiModelBuilder.buildProductTagModel()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            logger = mockLogger,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+                robot.executeViewModelPrivateFunction("startWebSocket")
+                fakePlayWebSocket.fakeEmitMessage(mockProductTagString)
+            }
+
+            state.selectedProduct.assertEqualTo(mockProductTag)
+        }
+    }
+
+    @Test
     fun `when user stop livestreaming, then it should close websocket`() {
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
