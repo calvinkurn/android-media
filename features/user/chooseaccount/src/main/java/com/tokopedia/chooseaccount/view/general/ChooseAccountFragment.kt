@@ -12,21 +12,18 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chooseaccount.common.analytics.LoginPhoneNumberAnalytics
-import com.tokopedia.chooseaccount.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.ChooseAccountUiModel
 import com.tokopedia.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.chooseaccount.view.base.BaseChooseAccountFragment
 import com.tokopedia.chooseaccount.view.listener.ChooseAccountListener
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by nisie on 12/4/17.
@@ -34,19 +31,13 @@ import javax.inject.Named
 
 open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountListener {
 
-    private var uiModel: ChooseAccountUiModel = ChooseAccountUiModel()
-    private var selectedAccount: UserDetailDataModel? = null
-    private var selectedPhoneNo: String? = null
+    private var uiModel: ChooseAccountUiModel? = ChooseAccountUiModel()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var analytics: LoginPhoneNumberAnalytics
-
-    @Named(SessionModule.SESSION_MODULE)
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
@@ -63,14 +54,11 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     override fun initInjector() {
         if (activity != null) {
             val appComponent = (activity?.application as BaseMainApplication).baseAppComponent
-            val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
-                    .baseAppComponent(appComponent)
-                    .build()
-
-            DaggerChooseAccountComponent.builder()
-                    .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
-                    .build()
-                    .inject(this)
+            DaggerChooseAccountComponent
+                .builder()
+                .baseAppComponent(appComponent)
+                .build()
+                .inject(this)
         }
     }
 
@@ -83,16 +71,15 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
         super.onCreate(savedInstanceState)
         when {
             savedInstanceState != null -> {
-                uiModel.phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                uiModel.accessToken = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                uiModel.loginType = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
-                uiModel.isFromRegister = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
+                if(savedInstanceState.containsKey(KEY_UI_MODEL)) {
+                    uiModel = savedInstanceState.getParcelable(KEY_UI_MODEL)
+                }
             }
             arguments != null -> {
-                uiModel.phoneNumber = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                uiModel.accessToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                uiModel.loginType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
-                uiModel.isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
+                uiModel?.phoneNumber = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")?.replace("-", "") ?: ""
+                uiModel?.accessToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?: ""
+                uiModel?.loginType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "") ?: ""
+                uiModel?.isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
             }
             activity != null -> activity?.finish()
         }
@@ -101,17 +88,12 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAccountList()
+        if(savedInstanceState == null) {
+            getAccountList()
+        }
     }
 
     override fun initObserver() {
-        chooseAccountViewModel.getAccountListDataModelFBResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> onSuccessGetAccountList(it.data)
-                is Fail -> onErrorGetAccountList(it.throwable)
-            }
-        })
-
         chooseAccountViewModel.getAccountListDataModelPhoneResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
@@ -149,15 +131,14 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun open2FA(account: UserDetailDataModel, phone: String) {
-        selectedAccount = account
-        selectedPhoneNo = phone
+        uiModel?.selectedEmail = account.email
         showLoadingProgress()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_AFTER_LOGIN_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.userIdEnc)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, uiModel.accessToken)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, uiModel?.accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
@@ -168,28 +149,19 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     fun getAccountList() {
-        LetUtil.ifLet(uiModel.accessToken, uiModel.phoneNumber) { (accessToken, phoneNumber) ->
+        LetUtil.ifLet(uiModel?.accessToken, uiModel?.phoneNumber) { (accessToken, phoneNumber) ->
             chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
         }
     }
 
-    private fun loginToken(account: UserDetailDataModel?, phone: String) {
-        account?.let {
-            LetUtil.ifLet(uiModel.accountListDataModel, uiModel.phoneNumber) { (accountList, phoneNumber) ->
-                if (accountList is AccountListDataModel && phoneNumber is String) {
-                    chooseAccountViewModel.loginTokenPhone(
-                        accountList.key,
-                        it.email,
-                        phoneNumber
-                    )
-                }
-            }
-        }
+    private fun loginToken(email: String?) {
+        chooseAccountViewModel.loginTokenPhone(uiModel?.key.toEmptyStringIfNull(), email.toEmptyStringIfNull(), uiModel?.phoneNumber.toEmptyStringIfNull())
     }
 
     private fun onSuccessLoginToken() {
         activity?.apply {
             setResult(Activity.RESULT_OK)
+            uiModel?.selectedEmail = ""
             finish()
         }
     }
@@ -197,11 +169,12 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     private fun onErrorLoginToken(throwable: Throwable) {
         checkExceptionType(throwable)
         val logException = Throwable("Failed LoginPN using token", throwable)
-        logUnknownError(logException)
+        logUnknownError(logException, LOGIN_TOKEN_CHOOSE_ACC)
     }
 
     private fun onSuccessGetAccountList(accountListDataModel: AccountListDataModel) {
-        this.uiModel.accountListDataModel = accountListDataModel
+        uiModel?.key = accountListDataModel.key
+        uiModel?.phoneNumber = accountListDataModel.msisdn
 
         if (accountListDataModel.userDetailDataModels.size == 1 && accountListDataModel.msisdn.isNotEmpty()) {
             adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
@@ -209,12 +182,13 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
             if (userDetail.challenge2Fa) {
                 open2FA(userDetail, accountListDataModel.msisdn)
             } else {
-                loginToken(userDetail, accountListDataModel.msisdn)
+                loginToken(userDetail.email)
             }
         } else {
             dismissLoadingProgress()
             adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
         }
+
     }
 
     protected fun onErrorGetAccountList(e: Throwable) {
@@ -233,9 +207,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
                 if(isResetPin2FA) {
                     onSuccessLoginToken()
                 } else {
-                    if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
-                        loginToken(selectedAccount, selectedPhoneNo ?: "")
-                    }
+                    loginToken(uiModel?.selectedEmail)
                 }
             }
         } else {
@@ -245,18 +217,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(ApplinkConstInternalGlobal.PARAM_UUID, uiModel.accessToken)
-        outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, uiModel.phoneNumber)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        chooseAccountViewModel.getAccountListDataModelFBResponse.removeObservers(this)
-        chooseAccountViewModel.getAccountListDataModelPhoneResponse.removeObservers(this)
-        chooseAccountViewModel.loginPhoneNumberResponse.removeObservers(this)
-        chooseAccountViewModel.activationPage.removeObservers(this)
-        chooseAccountViewModel.securityQuestion.removeObservers(this)
-        chooseAccountViewModel.flush()
+        outState.putParcelable(KEY_UI_MODEL, uiModel)
     }
 
     override fun onSelectedAccount(account: UserDetailDataModel, phone: String) {
@@ -264,12 +225,14 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
         if (account.challenge2Fa) {
             open2FA(account, phone)
         } else {
-            loginToken(account, phone)
+            loginToken(account.email)
         }
     }
 
     companion object {
         private const val RESULT_CODE_RESET_PIN = 4
+        private const val KEY_SELECTED_EMAIL = "selected_email"
+        private const val KEY_UI_MODEL = "ui_model_choose_acc"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ChooseAccountFragment()

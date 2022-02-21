@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,12 +27,14 @@ import com.tokopedia.chooseaccount.view.listener.ChooseAccountListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
 
 abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountListener {
 
@@ -97,12 +100,14 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         }
     }
 
-    protected fun logUnknownError(throwable: Throwable) {
-        try {
-            crashlytics.recordException(throwable)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+    protected fun logUnknownError(throwable: Throwable?, flow: String) {
+        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN",
+            mapOf(
+                "type" to flow,
+                "error" to throwable?.message.toEmptyStringIfNull(),
+                "throwable" to Log.getStackTraceString(throwable).take(1000)
+            )
+        )
     }
 
     protected fun showPopupError(header: String, body: String, url: String) {
@@ -139,7 +144,7 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
         onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
         val logException = Throwable("LoginPN activation", messageErrorException)
-        logUnknownError(logException)
+        logUnknownError(logException, GOTO_ACTIVATION_FLOW)
     }
 
     protected fun onGoToSecurityQuestion() {
@@ -156,5 +161,9 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         const val OTP_MODE_PIN = "PIN"
 
         const val TOKOPEDIA_CARE_PATH = "help"
+
+        const val GOTO_ACTIVATION_FLOW = "goto_activation_flow"
+        const val LOGIN_TOKEN_CHOOSE_ACC= "login_token_choose_account"
+
     }
 }

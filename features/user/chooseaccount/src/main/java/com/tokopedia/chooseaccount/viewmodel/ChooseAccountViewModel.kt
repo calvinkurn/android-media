@@ -33,10 +33,6 @@ open class ChooseAccountViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers
 ) : BaseChooseAccountViewModel(dispatcher) {
 
-    private val mutableGetAccountListFBResponse = MutableLiveData<Result<AccountListDataModel>>()
-    val getAccountListDataModelFBResponse: LiveData<Result<AccountListDataModel>>
-        get() = mutableGetAccountListFBResponse
-
     private val mutableGetAccountListPhoneResponse = MutableLiveData<Result<AccountListDataModel>>()
     val getAccountListDataModelPhoneResponse: LiveData<Result<AccountListDataModel>>
         get() = mutableGetAccountListPhoneResponse
