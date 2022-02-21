@@ -7,6 +7,9 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 object TopChatVoucherViewHolderBinder {
 
+    const val SOURCE_MANUAL_ATTACHMENT= "attachment manual"
+    const val SOURCE_BROADCAST = "broadcast"
+
     fun bindVoucherView(
         element: TopChatVoucherUiModel,
         merchantVoucherView: MerchantVoucherView?
@@ -28,10 +31,11 @@ object TopChatVoucherViewHolderBinder {
     fun bindClick(
         element: TopChatVoucherUiModel,
         merchantVoucherView: MerchantVoucherView?,
-        voucherListener: TopChatVoucherListener
+        voucherListener: TopChatVoucherListener,
+        source: String
     ) {
         merchantVoucherView?.setOnClickListener {
-            voucherListener.onVoucherClicked(element)
+            voucherListener.onVoucherClicked(element, source)
         }
     }
 

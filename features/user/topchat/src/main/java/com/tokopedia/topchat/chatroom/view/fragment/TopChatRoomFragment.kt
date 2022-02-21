@@ -1700,8 +1700,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onVoucherClicked(data: TopChatVoucherUiModel) {
-        analytics.eventVoucherThumbnailClicked()
+    override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
+        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
         if (data.isLockToProduct()) {
             goToMvcPage(data.applink)
         } else {

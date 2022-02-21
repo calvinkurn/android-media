@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContain
 import com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 class BroadcastViewHolder constructor(
     itemView: View?,
@@ -193,7 +194,15 @@ class BroadcastViewHolder constructor(
         if (voucher != null) {
             voucherView?.show()
             TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView)
-            TopChatVoucherViewHolderBinder.bindClick(voucher, voucherView, voucherListener)
+            TopChatVoucherViewHolderBinder.bindClick(
+                voucher,
+                voucherView,
+                voucherListener,
+                TopChatVoucherViewHolderBinder.SOURCE_BROADCAST
+            )
+            TopChatAnalyticsKt.eventViewVoucher(
+                TopChatVoucherViewHolderBinder.SOURCE_BROADCAST,
+                voucher.voucher.voucherId)
         } else {
             voucherView?.gone()
         }

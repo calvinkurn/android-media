@@ -12,6 +12,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopC
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.util.ViewUtil
 
 /**
@@ -64,9 +65,16 @@ class TopChatVoucherViewHolder constructor(
     override fun bind(element: TopChatVoucherUiModel) {
         super.bind(element)
         TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView)
-        TopChatVoucherViewHolderBinder.bindClick(element, merchantVoucherView, voucherListener)
+        TopChatVoucherViewHolderBinder.bindClick(
+            element,
+            merchantVoucherView,
+            voucherListener,
+            TopChatVoucherViewHolderBinder.SOURCE_MANUAL_ATTACHMENT
+        )
         bindChatBubbleAlignment(element)
         bindBackground(element)
+        TopChatAnalyticsKt.eventViewVoucher(
+            TopChatVoucherViewHolderBinder.SOURCE_MANUAL_ATTACHMENT, element.voucher.voucherId)
     }
 
     private fun bindBackground(element: TopChatVoucherUiModel) {
