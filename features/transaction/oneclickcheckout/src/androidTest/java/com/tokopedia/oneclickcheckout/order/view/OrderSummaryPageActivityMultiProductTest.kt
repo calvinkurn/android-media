@@ -9,7 +9,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
+import com.tokopedia.oneclickcheckout.common.interceptor.CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_ALL_ERROR_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_ORDER_ERROR_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_WHOLESALE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_WITH_SOME_ERROR_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.test.application.annotations.UiTest
@@ -112,6 +118,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp200.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp216.000"
                 )
@@ -191,6 +198,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp200.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp216.000"
                 )
@@ -250,6 +258,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp116.000"
                 )
@@ -330,6 +339,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp200.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp216.000"
                 )
@@ -439,6 +449,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp200.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp216.000"
                 )
@@ -532,6 +543,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp20.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp36.000"
                 )
@@ -573,6 +585,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp27.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp43.000"
                 )
@@ -614,6 +627,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp25.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp41.000"
                 )
@@ -655,6 +669,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp36.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp52.000"
                 )
@@ -696,6 +711,7 @@ class OrderSummaryPageActivityMultiProductTest {
                 assertSummary(
                         productPrice = "Rp20.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp36.000"
                 )

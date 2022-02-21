@@ -182,6 +182,8 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.tv_shipping_error_message).performClick()
             }
         }))
+        // Wait for bottomsheet to fully open
+        Thread.sleep(1000)
         DurationBottomSheetRobot().apply(func)
     }
 
@@ -944,7 +946,7 @@ class OrderSummaryPageRobot {
         }))
     }
 
-    fun assertInstallmentErrorRevamp() {
+    fun assertInstallmentErrorRevamp(errorMessage: String, errorAction: String?) {
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 
@@ -960,9 +962,13 @@ class OrderSummaryPageRobot {
 
             override fun perform(uiController: UiController?, view: View) {
                 assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_error_message).visibility)
-                assertEquals("Cicilan tidak tersedia.", view.findViewById<Typography>(R.id.tv_installment_error_message).text.toString())
-                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_error_action).visibility)
-                assertEquals("Ubah", view.findViewById<Typography>(R.id.tv_installment_error_action).text.toString())
+                assertEquals(errorMessage, view.findViewById<Typography>(R.id.tv_installment_error_message).text.toString())
+                if (errorAction != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_error_action).visibility)
+                    assertEquals(errorAction, view.findViewById<Typography>(R.id.tv_installment_error_action).text.toString())
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_error_action).visibility)
+                }
             }
         }))
     }

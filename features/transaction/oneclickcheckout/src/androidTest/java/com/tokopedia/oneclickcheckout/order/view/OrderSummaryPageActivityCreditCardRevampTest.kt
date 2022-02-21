@@ -69,6 +69,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.725",
                         totalPrice = "Rp116.725"
                 )
@@ -108,6 +109,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp12.875",
                         totalPrice = "Rp527.875"
                 )
@@ -202,6 +204,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp400.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp10.375",
                         totalPrice = "Rp425.375"
                 )
@@ -212,7 +215,10 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertPaymentButtonEnable(false)
 
-            assertInstallmentErrorRevamp()
+            assertInstallmentErrorRevamp(
+                    errorMessage = "Cicilan tidak tersedia.",
+                    errorAction = "Ubah"
+            )
 
             clickInstallmentErrorActionRevamp {
                 chooseInstallment(0)
@@ -250,6 +256,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp10.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp375",
                         totalPrice = "Rp25.375"
                 )
@@ -281,6 +288,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.725",
                         totalPrice = "Rp116.725"
                 )

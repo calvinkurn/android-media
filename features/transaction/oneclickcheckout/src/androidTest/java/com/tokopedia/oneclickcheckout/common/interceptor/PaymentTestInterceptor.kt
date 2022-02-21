@@ -13,6 +13,9 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
     var customCreditCardTenorListResponsePath: String? = null
     var customCreditCardTenorListThrowable: IOException? = null
 
+    var customGoCicilInstallmentOptionResponsePath: String? = null
+    var customGoCicilInstallmentOptionThrowable: IOException? = null
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
@@ -37,6 +40,11 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
             return mockResponse(copy, getJsonFromResource(CREDIT_CARD_TENOR_LIST_DEFAULT_RESPONSE_PATH))
         }
         if (requestString.contains(GOCICIL_INSTALLMENT_OPTION_QUERY)) {
+            if (customGoCicilInstallmentOptionThrowable != null) {
+                throw customGoCicilInstallmentOptionThrowable!!
+            } else if (customGoCicilInstallmentOptionResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customGoCicilInstallmentOptionResponsePath!!))
+            }
             return mockResponse(copy, getJsonFromResource(GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
@@ -66,3 +74,4 @@ const val CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH = "payment/credit_car
 const val GOCICIL_INSTALLMENT_OPTION_QUERY = "getInstallmentInfo"
 
 const val GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH = "payment/gocicil_installment_option_default_response.json"
+const val GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH = "payment/gocicil_installment_option_some_inactive_response.json"
