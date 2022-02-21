@@ -37,13 +37,28 @@ class HomeBusinessUnitUseCase @Inject constructor(
             homeBusinessUnitDataRepository.setParams(tabId, position, tabName)
             val data = homeBusinessUnitDataRepository.executeOnBackground()
             val newBuList = buModel.contentsList.copy().toMutableList()
-            newBuList[position] = newBuList[position].copy(list = data)
+            if (newBuList.size > position) {
+                newBuList[position] = newBuList[position].copy(list = data)
+            }
+            else {
+                newBuList.add(newBuList[position].copy(list = data))
+            }
             buModel.copy(contentsList = newBuList)
         } catch (e: Exception) {
             val newBuList = buModel.contentsList.copy().toMutableList()
-            newBuList[position] = newBuList[position].copy(list = listOf())
+            if (newBuList.size > position) {
+                newBuList[position] = newBuList[position].copy(list = listOf())
+            }
+            else {
+                newBuList.add(BusinessUnitDataModel(tabPosition = position))
+            }
             val newList = homeDataModel.list.copy().toMutableList()
-            newList[buModelIndex] = buModel.copy(contentsList = newBuList)
+            if(newList.size > buModelIndex) {
+                newList[buModelIndex] = buModel.copy(contentsList = newBuList)
+            }
+            else {
+                newList.add(buModel.copy(contentsList = newBuList))
+            }
             buModel.copy(contentsList = newBuList)
         }
     }

@@ -192,6 +192,14 @@ object CatalogDetailAnalytics {
             const val CLICK_COMPARISION_CATALOG = "click compared catalog on perbandingan preview"
             const val CLICK_SHARE = "click share"
             const val CLICK_BACK_BUTTON = "click back button"
+            const val CLICK_SELENGKAPNYA_ON_REVIEW = "click selengkapnya on review"
+            const val CLICK_ON_LIHAT_SEMUA_REVIEW = "click lihat semua review"
+            const val CLICK_IMAGE_ON_LIST_REVIEW = "click image on list review"
+            const val CLICK_IMAGE_ON_REVIEW = "click image on review"
+            const val CLICK_CLOSE_ON_IMAGE_REVIEW = "click close on image review"
+            const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
+            const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
+            const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
         }
     }
 

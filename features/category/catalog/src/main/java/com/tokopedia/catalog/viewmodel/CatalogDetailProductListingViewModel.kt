@@ -65,10 +65,11 @@ class CatalogDetailProductListingViewModel
             }
 
             override fun onCompleted() {
+
             }
 
-            override fun onError(e: Throwable?) {
-
+            override fun onError(e: Throwable) {
+                mProductList.value = Fail(e)
             }
         })
     }
