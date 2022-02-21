@@ -35,7 +35,7 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
         setFilterItem(filterTitleList, filterData)
         transactionFilter.addItem(filterData)
         transactionHistoryViewModel?.getEventLabelForTab(filterTitleList[0])?.let {
-            saldoDetailsAnalytics.sendTransactionHistoryEvents(it)
+            saldoDetailsAnalytics.sendClickPaymentEvents(it)
         }
     }
 
@@ -57,7 +57,7 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
             filterData[transactionHistoryViewModel?.preSelected ?: 0].type = ChipsUnify.TYPE_NORMAL
         transactionType = selectedTransactionType
         transactionHistoryViewModel?.getEventLabelForTab(transactionType.title)?.let {
-            saldoDetailsAnalytics.sendTransactionHistoryEvents(it)
+            saldoDetailsAnalytics.sendClickPaymentEvents(it)
         }
     }
 
