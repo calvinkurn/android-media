@@ -71,6 +71,4 @@ data class ProductInfoP2UiData(
             it.quantity
         } ?: 0
     }
-
-    fun getIsNewRatesComponent(): Boolean = ratesEstimate.firstOrNull()?.isNewRatesComponent == true
 }

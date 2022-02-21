@@ -357,7 +357,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 subtitle
                 buttonCopy
               }
-              isNewRatesComponent
               data {
                 totalService
                 courierLabel
