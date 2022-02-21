@@ -257,11 +257,11 @@ class WebSocketUiModelBuilder {
         }
 
         var sectionList = ""
-        repeat(sectionSize) {
+        for(i in 1..sectionSize) {
             sectionList += """
                 {
                     "type": "active",
-                    "title": "Section $it",
+                    "title": "Section $i",
                     "countdown": {
                         "copy": "Berakhir dalam"
                     },
@@ -281,7 +281,7 @@ class WebSocketUiModelBuilder {
                 }
             """.trimIndent()
 
-            if(it != sectionSize) sectionList += ","
+            if(i != sectionSize) sectionList += ","
         }
 
         return """
@@ -301,12 +301,13 @@ class WebSocketUiModelBuilder {
         productSize: Int = 1,
     ) = List(sectionSize) {
         ProductTagSectionUiModel(
-            name = "Section $it",
+            name = "Section ${it + 1}",
             campaignStatus = CampaignStatus.Ongoing,
             products = List(productSize) { productIdx ->
+                val idx = productIdx + 1
                 ProductUiModel(
-                    id = productIdx.toString(),
-                    name = "Product $productIdx",
+                    id = idx.toString(),
+                    name = "Product $idx",
                     imageUrl = "",
                     stock = 1,
                     price = OriginalPrice(

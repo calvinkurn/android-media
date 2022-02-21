@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.fake.FakePlayWebSocket
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
@@ -215,6 +216,7 @@ class PlayBroWebSocketViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             logger = mockLogger,
+            productMapper = PlayBroProductUiMapper(),
             playBroadcastWebSocket = fakePlayWebSocket,
         )
 
