@@ -892,7 +892,7 @@ public class GTMAnalytics extends ContextAnalytics {
         // fix Caused by java.lang.NoSuchMethodError
         try {
             String name = eventName == null ? (String) values.get("event") : eventName;
-//            if (isGtmV5) name += " (v5)";
+            if (!isGtmV5) name += " (legacy_v4)";
             String source = (isGtmV5) ? AnalyticsSource.GTM : AnalyticsSource.LEGACY_GTM;
             GtmLogger.getInstance(context).save(values, name, source);
             logEventSize(eventName, values);
