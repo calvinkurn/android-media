@@ -78,8 +78,8 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                 } else {
                     if (orderId != null) {
                         imgProof.visibility = View.VISIBLE
-                        val url: String = TrackingPageUtil.getDeliveryImage(data.proof.imageId, orderId, "small",
-                                userSession.userId, 1, userSession.deviceId)
+                        val url: String = TrackingPageUtil.getDeliveryImage(data.proof.imageId, orderId, TrackingPageUtil.IMAGE_SMALL_SIZE,
+                                userSession.userId, TrackingPageUtil.DEFAULT_OS_TYPE, userSession.deviceId)
                         val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
                         val newUrl = GlideUrl(url, LazyHeaders.Builder()
                                 .addHeader(TrackingPageUtil.HEADER_KEY_AUTH, authKey)

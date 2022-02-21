@@ -6,9 +6,13 @@ import javax.inject.Inject
 
 object TrackingPageUtil {
 
-    val PATH_IMAGE_LOGISTIC = "logistic/tracking/get-delivery-image"
-    val HEADER_KEY_AUTH = "Accounts-Authorization"
-    val HEADER_VALUE_BEARER = "Bearer"
+    const val PATH_IMAGE_LOGISTIC = "logistic/tracking/get-delivery-image"
+    const val HEADER_KEY_AUTH = "Accounts-Authorization"
+    const val HEADER_VALUE_BEARER = "Bearer"
+    const val IMAGE_SMALL_SIZE = "small"
+    const val DEFAULT_OS_TYPE = 1
+    const val IMAGE_LARGE_SIZE = "large"
+
 
     fun getDeliveryImage(imageId: String, orderId: Long, size: String, userId: String, osType: Int, deviceId: String): String {
         val baseUrl = TokopediaUrl.getInstance().API + PATH_IMAGE_LOGISTIC

@@ -38,7 +38,9 @@ import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.DEFAULT_OS_TYPE
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.IMAGE_LARGE_SIZE
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
@@ -499,8 +501,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
-        val url = getDeliveryImage(imageId, orderId, "large",
-                userSession.userId, 1, userSession.deviceId)
+        val url = getDeliveryImage(imageId, orderId, IMAGE_LARGE_SIZE,
+                userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId)
         val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
         val newUrl = GlideUrl(
             url, LazyHeaders.Builder()
