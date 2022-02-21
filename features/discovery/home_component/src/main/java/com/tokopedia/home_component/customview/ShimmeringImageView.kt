@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -16,8 +17,6 @@ import com.bumptech.glide.request.target.Target
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
-import io.embrace.android.embracesdk.Embrace
-import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr){
@@ -32,10 +31,12 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
     init {
         init()
     }
+    private var imageView: ImageView? = null
 
     private fun init(){
-        View.inflate(context, R.layout.layout_shimmering_image_view, this)
+        val view = View.inflate(context, R.layout.layout_shimmering_image_view, this)
         loaderImageView = LoaderImageView(context, attrs)
+        imageView = view?.findViewById(R.id.imageView)
         this.addView(loaderImageView)
     }
 
@@ -94,8 +95,6 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         val performanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring?.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
 
-        Embrace.getInstance().startEvent(fpmItemLabel, null, false)
-
         return performanceMonitoring
     }
 
@@ -104,7 +103,6 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
                                  fpmItemLabel: String) {
         if (dataSource == DataSource.REMOTE) {
             performanceMonitoring?.stopTrace()
-            Embrace.getInstance().endEvent(fpmItemLabel)
         }
     }
 }

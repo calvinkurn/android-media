@@ -3,22 +3,30 @@ package com.tokopedia.play.view.uimodel.state
 import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 28/06/21
  */
 data class PlayViewerNewUiState(
+    val channel: PlayChannelDetailUiModel,
     val interactiveView: PlayInteractiveViewUiState,
-    val partner: PlayPartnerUiState,
+    val partner: PlayPartnerInfo,
     val winnerBadge: PlayWinnerBadgeUiState,
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
     val like: PlayLikeUiState,
     val totalView: PlayTotalViewUiState,
-    val share: PlayShareUiState,
-    val cart: PlayCartUiState,
     val rtn: PlayRtnUiState,
+    val title: PlayTitleUiState,
+    val tagItems: TagItemUiModel,
+    val status: PlayStatusUiModel,
+    val quickReply: PlayQuickReplyInfoUiModel,
+    val kebabMenu: PlayKebabMenuUiState,
 )
 
 data class PlayInteractiveViewUiState(
@@ -48,11 +56,6 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 }
 
-data class PlayPartnerUiState(
-    val name: String,
-    val followStatus: PlayPartnerFollowStatus,
-)
-
 data class PlayWinnerBadgeUiState(
     val leaderboards: PlayLeaderboardWrapperUiModel,
     val shouldShow: Boolean
@@ -73,28 +76,21 @@ data class PlayLikeUiState(
         val canShowBubble: Boolean,
 )
 
-data class PlayCartUiState(
-        val shouldShow: Boolean,
-        val count: PlayCartCount,
-)
-
-sealed class PlayCartCount {
-
-    data class Show(val countText: String) : PlayCartCount()
-    object Hide : PlayCartCount()
-}
-
 data class PlayRtnUiState(
     val shouldShow: Boolean,
     val lifespanInMs: Long,
 )
 
-data class PlayShareUiState(
-    val shouldShow: Boolean
-)
-
 data class PlayTotalViewUiState(
     val viewCountStr: String
+)
+
+data class PlayTitleUiState(
+    val title: String
+)
+
+data class PlayKebabMenuUiState(
+    val shouldShow: Boolean
 )
 
 enum class ViewVisibility {

@@ -10,6 +10,9 @@ data class PlayPartnerInfo(
         val name: String = "",
         val type: PartnerType = PartnerType.Unknown,
         val status: PlayPartnerFollowStatus = PlayPartnerFollowStatus.Unknown,
+        val iconUrl: String = "",
+        val badgeUrl: String = "",
+        val isLoadingFollow: Boolean = false,
 )
 
 sealed class PlayPartnerFollowStatus {

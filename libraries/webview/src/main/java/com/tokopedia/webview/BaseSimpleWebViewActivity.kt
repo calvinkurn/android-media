@@ -65,7 +65,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         intent.data?.let { uri ->
             url = WebViewHelper.getEncodedUrlCheckSecondUrl(
                 uri,
-                uri.getQueryParameter(KEY_URL)?.decode() ?: url
+                url
             )
 
             showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: showTitleBar
@@ -89,7 +89,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (showTitleBar) {
             inflater.inflate(R.menu.menu_web_view, menu)
         }
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -154,11 +154,39 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
         } else {
             if (backPressedEnabled) {
-                goPreviousActivity()
+                val backUrl = getBackUrlFromQueryParameters()
+                if (backUrl.isNullOrEmpty()) {
+                    goPreviousActivity()
+                } else {
+                    val intent = Intent().apply { putExtra(KEY_BACK_URL, backUrl) }
+                    setResult(RESULT_OK, intent)
+                    performSafeFinish()
+                }
             } else {
                 showOnBackPressedDisabledMessage()
             }
         }
+    }
+
+    private fun getBackUrlFromQueryParameters(): String? {
+        fragment?.let {
+            if (fragment is BaseSessionWebViewFragment) {
+                val currentUrl = (fragment as BaseWebViewFragment).webView?.url.orEmpty()
+                if (currentUrl.isEmpty()) return null
+                val uri = Uri.parse(currentUrl)
+                val backUrl: String?
+                try {
+                    backUrl = uri.getQueryParameter(KEY_BACK_URL)
+                    if (!backUrl.isNullOrEmpty()) {
+                        return backUrl
+                    }
+                } catch (e: Exception) {
+                    return null
+                }
+
+            }
+            return null
+        } ?: kotlin.run { return null }
     }
 
     fun setOnWebViewPageFinished() {
@@ -190,8 +218,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
+    fun performSafeFinish() {
+        if (isTaskRoot || intent.data?.pathSegments?.joinToString() == ApplinkConst.WEBVIEW_PARENT_HOME_HOST) {
+            RouteManager.route(this, ApplinkConst.HOME)
+        }
+        finish()
+    }
 
-    fun checkForSameUrlInPreviousIndex(webView: WebView): Boolean {
+
+    private fun checkForSameUrlInPreviousIndex(webView: WebView): Boolean {
         val webBackList = webView.copyBackForwardList()
         val uidKey = "uid"
         if (webBackList.size > 1) {
@@ -306,6 +341,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
         const val TOKOPEDIA_DOMAIN = "tokopedia"
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+        const val KEY_BACK_URL = "back_url"
 
         fun getStartIntent(
             context: Context,

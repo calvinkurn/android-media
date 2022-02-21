@@ -190,6 +190,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu?.clear()
         inflater.inflate(R.menu.entertainment_menu_homepage, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

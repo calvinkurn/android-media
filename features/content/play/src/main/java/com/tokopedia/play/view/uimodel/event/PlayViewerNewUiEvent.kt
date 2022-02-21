@@ -1,8 +1,10 @@
 package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
  * Created by jegul on 29/06/21
@@ -13,7 +15,6 @@ data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: Str
 
 data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
-data class RemindMeEvent(val message: UiString, val isSuccess: Boolean): PlayViewerNewUiEvent()
 
 data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null, val pipMode: Boolean = false) : PlayViewerNewUiEvent()
 
@@ -52,6 +53,15 @@ sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
     ) : ShowLikeBubbleEvent()
 }
 data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEvent()
+
+/**
+ * Sharing Experience
+ */
+data class SaveTemporarySharingImage(val imageUrl: String): PlayViewerNewUiEvent()
+data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayViewerNewUiEvent()
+data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String): PlayViewerNewUiEvent()
+object CloseShareExperienceBottomSheet: PlayViewerNewUiEvent()
+object ErrorGenerateShareLink: PlayViewerNewUiEvent()
 
 //---------------------
 

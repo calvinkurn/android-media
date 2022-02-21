@@ -20,7 +20,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TotalStockEditorViewHolder(itemView: View?,
                                  private val onTotalStockChanged: (Int) -> Unit,
-                                 private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit
+                                 private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit,
+                                 private val source: String,
+                                 private val shopId: String
 ): AbstractViewHolder<TotalStockEditorUiModel>(itemView) {
 
     companion object {
@@ -66,10 +68,18 @@ class TotalStockEditorViewHolder(itemView: View?,
             }
         }
         setAddClickListener {
-            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = false)
+            ProductManageTracking.eventClickAllocationIncreaseStock(
+                isVariant = false,
+                source = source,
+                productId = element.productId.orEmpty(),
+                shopId = shopId)
         }
         setSubstractListener {
-            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
+            ProductManageTracking.eventClickAllocationDecreaseStock(
+                isVariant = false,
+                source = source,
+                productId = element.productId.orEmpty(),
+                shopId = shopId)
         }
         setupStockEditor(element)
         setupCampaignCountText(element)

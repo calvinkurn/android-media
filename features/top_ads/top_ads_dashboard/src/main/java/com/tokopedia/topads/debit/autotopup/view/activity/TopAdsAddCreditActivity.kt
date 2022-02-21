@@ -48,7 +48,9 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun getScreenName(): String? = null
     private val sheet: TopAdsChooseNominalBottomSheet? by lazy {
-        TopAdsChooseNominalBottomSheet.newInstance()
+        TopAdsChooseNominalBottomSheet.newInstance().also {
+            if(showFullScreenBottomSheet()) it.isFullpage = true
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,5 +114,13 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                 Uri.encode(selected?.productUrl),
                 userSession?.deviceId,
                 userSession?.userId)
+    }
+
+    private fun showFullScreenBottomSheet(): Boolean {
+        return intent?.extras?.getBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, false) ?: false
+    }
+
+    companion object {
+        const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
     }
 }

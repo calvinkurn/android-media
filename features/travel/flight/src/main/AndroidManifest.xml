@@ -7,7 +7,8 @@
             android:name=".homepage.presentation.activity.FlightHomepageActivity"
             android:label="@string/flight_dashboard_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -61,7 +62,8 @@
             android:name=".cancellation_navigation.presentation.FlightCancellationActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -92,9 +94,10 @@
             android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailActivity"
-            android:label="@string/flight_order_list"
+            android:label="@string/flight_order_detail_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -120,12 +123,12 @@
         </activity>
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity"
-            android:label="@string/flight_order_list"
+            android:label="@string/flight_order_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
-            android:label="@string/flight_order_list"
+            android:label="@string/flight_order_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
@@ -149,5 +152,4 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>
-
 </manifest>

@@ -72,6 +72,8 @@ class SearchApiConst {
         const val IDENTIFIER = "identifier"
         const val BASE_SRP_APPLINK = "baseSRPApplink"
         const val USE_PAGE = "use_page"
+        const val SRP_COMPONENT_ID = "srp_component_id"
+        const val TYPO = "typo"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
@@ -96,5 +98,6 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE = "sort"
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
         const val DEFAULT_VALUE_OF_NAVSOURCE_TOKONOW = "tokonow"
+        const val HOME = "home"
     }
 }

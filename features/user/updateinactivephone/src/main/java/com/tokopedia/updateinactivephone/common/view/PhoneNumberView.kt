@@ -70,8 +70,8 @@ class PhoneNumberView @JvmOverloads constructor(
         if (attrs != null) {
             val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.PhoneNumberView, 0, 0)
             typedArray?.let {
-                val labelAttr = it.getString(R.styleable.PhoneNumberView_label) ?: ""
-                val messageAttr = it.getString(R.styleable.PhoneNumberView_message) ?: ""
+                val labelAttr = it.getString(R.styleable.PhoneNumberView_label).orEmpty()
+                val messageAttr = it.getString(R.styleable.PhoneNumberView_message).orEmpty()
 
                 label = labelAttr
                 message = messageAttr
@@ -96,5 +96,15 @@ class PhoneNumberView @JvmOverloads constructor(
                 line.setBackgroundColor(MethodChecker.getColor(context, R.color.updateinactivephone_dms_dark_n500))
             }
         }
+    }
+
+    fun setAfterTextChangeListener(callback: () -> Unit) {
+        textField.afterTextChanged { callback.invoke() }
+    }
+
+    fun clearErrorMessage() {
+        textMessage.text = ""
+        textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
     }
 }

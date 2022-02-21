@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import dagger.Binds
 import dagger.Module
@@ -20,4 +21,9 @@ abstract class TopupBillsViewModelModule {
     @IntoMap
     @ViewModelKey(TopupBillsViewModel::class)
     internal abstract fun topupBillsViewModel(viewModel: TopupBillsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TopupBillsSavedNumberViewModel::class)
+    internal abstract fun topupBillsSavedNumberViewModel(viewModel: TopupBillsSavedNumberViewModel): ViewModel
 }

@@ -110,14 +110,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
-    implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
-    implementation projectOrAar(rootProject.ext.features.reviewShop)
+    implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     //Operational
 
     //Payment
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
-    implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
@@ -151,8 +149,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
+    implementation projectOrAar(rootProject.ext.features.wishlist)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
+    implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
 }

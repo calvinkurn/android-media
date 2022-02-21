@@ -68,6 +68,8 @@
     <dimen name="mvc_dimen_20dp">20dp</dimen>
     <dimen name="mvc_dimen_24dp">24dp</dimen>
     <dimen name="mvc_dimen_26dp">26dp</dimen>
+    <dimen name="mvc_dimen_30dp">30dp</dimen>
+    <dimen name="mvc_dimen_35dp">35dp</dimen>
     <dimen name="mvc_dimen_100dp">100dp</dimen>
     <dimen name="mvc_dimen_120dp">120dp</dimen>
     <dimen name="mvc_dimen_140dp">140dp</dimen>
@@ -91,4 +93,19 @@
     <dimen name="mvc_list_item_name_text_size">14sp</dimen>
     <dimen name="mvc_tnc_spacing">5sp</dimen>
     <dimen name="mvc_create_voucher_tips_dot_desc_size">14sp</dimen>
+
+    <dimen name="mvc_preview_value_text_size">40sp</dimen>
+    <dimen name="mvc_preview_scale_text_size">20sp</dimen>
+    <dimen name="mvc_preview_asterix_text_size">15sp</dimen>
+
+    <dimen name="mvc_voucher_preview_shop_name_text_size">30sp</dimen>
+    <dimen name="mvc_voucher_preview_promo_name_text_size">40sp</dimen>
+
+    <dimen name="mvc_square_voucher_preview_value_text_size">50sp</dimen>
+    <dimen name="mvc_square_voucher_preview_scale_text_size">22sp</dimen>
+    <dimen name="mvc_square_voucher_asterix_text_size">15sp</dimen>
+    <dimen name="mvc_square_voucher_shop_name_text_size">40sp</dimen>
+    <dimen name="mvc_square_voucher_promo_name_text_size">40sp</dimen>
+    <dimen name="mvc_square_voucher_promo_code_text_size">50sp</dimen>
+    <dimen name="mvc_square_voucher_promo_period_text_size">45sp</dimen>
 </resources>

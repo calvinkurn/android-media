@@ -13,7 +13,7 @@ class ThanksPageDataUseCase @Inject constructor(
     : GraphqlUseCase<ThanksPageResponse>(graphqlRepository) {
 
     fun getThankPageData(onSuccess: (ThanksPageData) -> Unit,
-                         onError: (Throwable) -> Unit, paymentId: Long, merchant: String) {
+                         onError: (Throwable) -> Unit, paymentId: String, merchant: String) {
         try {
             this.setTypeClass(ThanksPageResponse::class.java)
             this.setRequestParams(getRequestParams(paymentId, merchant))
@@ -30,13 +30,13 @@ class ThanksPageDataUseCase @Inject constructor(
         }
     }
 
-    private fun getRequestParams(paymentId: Long, merchant: String): Map<String, Any> {
+    private fun getRequestParams(paymentId: String, merchant: String): Map<String, Any> {
         return mapOf(PARAM_PAYMENT_ID to paymentId,
                 PARAM_MERCHANT to merchant)
     }
 
     companion object {
-        const val PARAM_PAYMENT_ID = "paymentID"
+        const val PARAM_PAYMENT_ID = "paymentIDStr"
         const val PARAM_MERCHANT = "merchant"
     }
 }

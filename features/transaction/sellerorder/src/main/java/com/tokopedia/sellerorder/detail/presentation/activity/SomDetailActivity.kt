@@ -3,15 +3,11 @@ package com.tokopedia.sellerorder.detail.presentation.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
@@ -41,8 +37,6 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         initSOMDetailPlt()
         super.onCreate(savedInstanceState)
-
-        setWhiteStatusBarBackground()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -67,16 +61,9 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
         finish()
     }
 
-    override fun getComponent(): SomDetailComponent =
-            DaggerSomDetailComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(application))
-                    .build()
-
-    private fun setWhiteStatusBarBackground() {
-        if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
-    }
+    override fun getComponent(): SomDetailComponent = DaggerSomDetailComponent.builder()
+        .somComponent(SomComponentInstance.getSomComponent(application))
+        .build()
 
     private fun initSOMDetailPlt() {
         somDetailLoadTimeMonitoring = SomDetailLoadTimeMonitoring()

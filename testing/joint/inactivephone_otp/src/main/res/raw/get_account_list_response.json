@@ -1,0 +1,104 @@
+[
+  {
+    "data": {
+      "accountsGetAccountsList": {
+        "key": "",
+        "msisdn_view": "6289-6833-2820-9",
+        "msisdn": "6289683328209",
+        "users_details": [
+          {
+            "fullname": "Riva***",
+            "email": "r********************0@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 1
+          },
+          {
+            "fullname": "riva***",
+            "email": "r*******************2@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 2
+          },
+          {
+            "fullname": "riva***",
+            "email": "r*******************1@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 3
+          },
+          {
+            "fullname": "riva***",
+            "email": "r*******************0@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 4
+          },
+          {
+            "fullname": "Riva*** Te**",
+            "email": "r*******************9@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 5
+          },
+          {
+            "fullname": "Riva*** Te**",
+            "email": "r*******************8@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 6
+          },
+          {
+            "fullname": "riv*** te**",
+            "email": "r*******************4@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 7
+          },
+          {
+            "fullname": "riv** te**",
+            "email": "r*******************3@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 8
+          },
+          {
+            "fullname": "Riv** Te**",
+            "email": "r*******************0@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 9
+          },
+          {
+            "fullname": "Riva*** Te**",
+            "email": "r*******************7@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 10
+          },
+          {
+            "fullname": "Riva*** Firm******",
+            "email": "r*******************4@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 11
+          },
+          {
+            "fullname": "Riva*** Firm******",
+            "email": "r*******************6@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 12
+          },
+          {
+            "fullname": "Riva***",
+            "email": "r*******************5@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 13
+          },
+          {
+            "fullname": "Na** Panj***",
+            "email": "r******************1@t*******a.com",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 14
+          },
+          {
+            "fullname": "Riva*** Firm******",
+            "email": "",
+            "image": "https://images-staging.tokopedia.net/img/default_inactive_pn.png",
+            "user_id_index": 15
+          }
+        ],
+        "errors": []
+      }
+    }
+  }
+]

@@ -14,13 +14,11 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
@@ -30,12 +28,15 @@ import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateListener
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
@@ -77,6 +78,8 @@ internal fun createProductItemListener(): ProductListener {
         override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
+            get() = null
     }
 }
 
@@ -94,8 +97,8 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
@@ -108,19 +111,23 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
 
 internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
-        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchImpressed(broadMatchItemDataView: BroadMatchDataView) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
+            get() = null
+        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
     }
 }
 
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
-        override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {}
-        override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView?) {}
+        override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
+        override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
+        override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
     }
 }
 
@@ -133,7 +140,11 @@ internal fun createBannerAdsListener(): BannerAdsListener {
 
 internal fun createSuggestionListener(): SuggestionListener {
     return object : SuggestionListener {
-        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
+        override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
+
+        }
+
+        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
 
         }
     }
@@ -141,11 +152,9 @@ internal fun createSuggestionListener(): SuggestionListener {
 
 internal fun createEmptyStateListener(): EmptyStateListener {
     return object: EmptyStateListener {
-        override fun getUserId(): String { return "" }
         override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
         override fun onSelectedFilterRemoved(uniqueId: String?) {}
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
-        override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
     }
 }
@@ -188,7 +197,7 @@ internal fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
 }
 
 internal fun List<Visitable<*>>.getEmptySearchProductViewModelPosition(): Int {
-    return indexOfFirst { it is EmptySearchProductDataView }
+    return indexOfFirst { it is EmptyStateDataView }
 }
 
 internal fun List<Visitable<*>>.getRecommendationTitleViewModelPosition(): Int {

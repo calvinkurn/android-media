@@ -62,7 +62,9 @@
                 android:layout_toLeftOf="@+id/ll_radio_button_container"
                 android:background="@color/Unify_N0">
 
-                <include layout="@layout/layout_address_normal" />
+                <include
+                    android:id="@+id/layout_address_normal"
+                    layout="@layout/layout_address_normal" />
 
             </RelativeLayout>
 

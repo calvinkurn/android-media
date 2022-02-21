@@ -55,6 +55,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
         private const val MIN_TEXTFIELD_LENGTH = 5
 
         private const val VALIDATE_VOUCHER_TARGET_ERROR = "Validate voucher target error"
+        private const val SCROLL_TO_BOTTOM_DELAY_IN_MILLIS : Long = 200
 
         @JvmStatic
         fun createInstance(onNext: (Int, String, String) -> Unit,
@@ -299,7 +300,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                                 val lastChild = getChildAt(childCount - 1)
                                 val delta = lastChild.bottom - (scrollY + height)
                                 scrollBy(0, delta)
-                            }, 200)
+                            }, SCROLL_TO_BOTTOM_DELAY_IN_MILLIS)
                 }
             }
             textFieldInput.setOnFocusChangeListener { _, hasFocus ->

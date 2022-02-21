@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.authentication.AuthKey
+import com.tokopedia.network.authentication.AuthKey
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.HomeResult
 import com.tokopedia.common_tradein.model.HomeResult.PriceState
@@ -177,7 +177,6 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                             sendGoToProductDetailGTM()
                             finish()
                         }
-                        showDeviceNotElligiblePopup(R.string.tradein_not_elligible_price_high)
                         mTvNotUpto?.visibility = View.GONE
                         mTvModelName?.text = homeResult.deviceDisplayName
                         mTvInitialPrice?.text = homeResult.displayMessage
@@ -225,6 +224,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         viewMoneyInPriceGTM(homeResult.deviceDisplayName + " - " + homeResult.displayMessage)
                     }
                     PriceState.MONEYIN_ERROR -> {
+                        mTvPriceElligible?.text = homeResult.displayMessage
                         showMessageWithAction(homeResult.displayMessage,
                                 getString(R.string.tradein_return)) { this.finish() }
                         errorDialogGTMLabel = homeResult.displayMessage
@@ -296,6 +296,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = MoneyinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
                 TokopediaUrl.getInstance().TYPE == Env.STAGING, TEST_TYPE)
+        laku6TradeIn.setTokopediaTestType(TEST_TYPE)
         requestPermission()
     }
 

@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
@@ -147,7 +147,7 @@ class ReviewViewHolder constructor(
     }
 
     private fun bindImage(element: ReviewUiModel) {
-        ImageHandler.LoadImage(thumbnail, element.reviewCard.imageUrl)
+        thumbnail?.loadImage(element.reviewCard.imageUrl)
     }
 
     private fun bindBackground(element: ReviewUiModel) {

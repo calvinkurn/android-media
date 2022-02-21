@@ -140,5 +140,4 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
         private const val CAMERA_PERMISSION_CODE = 3297
         private const val MICROPHONE_PERMISSION_CODE = 3296
     }
-
 }

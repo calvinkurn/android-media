@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.common.utils
 
 import android.content.Context
 import android.view.View
+import androidx.annotation.DimenRes
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
@@ -145,4 +146,8 @@ private fun shareVoucherByType(context: Context,
             SharingUtil.otherShare(context, shareMessage)
         }
     }
+}
+
+internal fun getTextSizeFromDimens(context: Context, @DimenRes dimensResId : Int): Float {
+    return context.resources.getDimension(dimensResId) / context.resources.displayMetrics.density
 }

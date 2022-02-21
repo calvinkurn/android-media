@@ -63,8 +63,12 @@ class SellerMenuViewModel @Inject constructor(
     private val _settingShopInfoLiveData = MutableLiveData<Result<ShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
     private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
-    private val _isToasterAlreadyShown = MutableLiveData(false)
+    private val _isToasterAlreadyShown = MutableLiveData<Boolean>()
     private val _shopAccountInfo = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
+
+    fun setIsToasterAlreadyShown(isAlreadyShown: Boolean) {
+        _isToasterAlreadyShown.value = isAlreadyShown
+    }
 
     fun getShopAccountInfo() {
         launchCatchError(block = {
@@ -150,9 +154,9 @@ class SellerMenuViewModel @Inject constructor(
         launch(coroutineContext) {
             _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
                 if (!isToasterAlreadyShown) {
-                    _isToasterAlreadyShown.value = true
+                    setIsToasterAlreadyShown(true)
                     delay(DELAY_TIME)
-                    _isToasterAlreadyShown.value = false
+                    setIsToasterAlreadyShown(false)
                 }
             }
         }

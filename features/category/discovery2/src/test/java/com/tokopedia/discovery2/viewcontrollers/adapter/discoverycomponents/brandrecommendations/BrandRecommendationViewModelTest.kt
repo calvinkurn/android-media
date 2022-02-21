@@ -74,5 +74,11 @@ class BrandRecommendationViewModelTest {
 
     }
 
+    @Test
+    fun `get Component id`(){
+        every { componentsItem.id } returns "999"
+        assert(viewModel.getComponentID() == "999")
+    }
+
 
 }

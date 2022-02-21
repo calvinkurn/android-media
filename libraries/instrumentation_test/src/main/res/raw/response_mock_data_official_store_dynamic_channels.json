@@ -134,6 +134,200 @@
             "brand_id": ""
           },
           {
+            "id": 148695,
+            "name": "OS HOME FEATURE BRAND",
+            "layout": "featured_brand",
+            "pageName": "",
+            "type": "home",
+            "campaignID": 0,
+            "widgetParam": "",
+            "contextualInfo": 1,
+            "campaignCode": "",
+            "header": {
+              "id": 167851,
+              "name": "Brand Pilihan",
+              "url": "https://www.tokopedia.com/official-store/brand",
+              "applink": "tokopedia://official-store/brand/0",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": "",
+              "subtitle": "",
+              "textColor": "#31353b"
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 400767,
+                "name": "",
+                "url": "https://www.tokopedia.com/pinkflashofficialstore",
+                "applink": "tokopedia://shop/11164045",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/93d7efe9-8ef0-4398-a5cc-5bb54492f599.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "OS HOME FEATURE BRAND",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "warehouseID": 0,
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "shop": {
+                  "shopID": 0
+                },
+                "campaignCode": "",
+                "labelGroup": [],
+                "back_color": "#db7983",
+                "productImageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/7f144538-c054-4306-880f-2ea1ec128bd8.jpg",
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "72%"
+                }
+              },
+              {
+                "id": 400768,
+                "name": "",
+                "url": "https://www.tokopedia.com/woca-id",
+                "applink": "tokopedia://shop/7066621",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/0b236b31-3e74-487e-bc7c-eaa6e4285b70.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "OS HOME FEATURE BRAND",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "warehouseID": 0,
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "shop": {
+                  "shopID": 0
+                },
+                "campaignCode": "",
+                "labelGroup": [],
+                "back_color": "#be6b03",
+                "productImageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/c1d95361-b54a-4920-bc39-80b1744b7cb9.jpg",
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "52%"
+                }
+              },
+              {
+                "id": 400769,
+                "name": "",
+                "url": "https://www.tokopedia.com/littlepalmerhaus",
+                "applink": "tokopedia://shop/6725896",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/9d1ccd63-939c-4b07-a628-0d7388271f76.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "OS HOME FEATURE BRAND",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "warehouseID": 0,
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "shop": {
+                  "shopID": 0
+                },
+                "campaignCode": "",
+                "labelGroup": [],
+                "back_color": "#003b6b",
+                "productImageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/c97ff1ef-55f1-444f-9fdc-ce57e9b3e9e2.jpg",
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "72%"
+                }
+              },
+              {
+                "id": 400770,
+                "name": "",
+                "url": "https://www.tokopedia.com/les-catino",
+                "applink": "tokopedia://shop/2213904",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/9be9a6d9-e9a5-40dc-ad70-21322dbb90ca.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "OS HOME FEATURE BRAND",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "warehouseID": 0,
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "shop": {
+                  "shopID": 0
+                },
+                "campaignCode": "",
+                "labelGroup": [],
+                "back_color": "#734f39",
+                "productImageUrl": "https://images.tokopedia.net/img/ikRAny/2021/11/30/498b6c63-21f1-4f38-99c7-3145e3d190bc.jpg",
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "82%"
+                }
+              }
+            ],
+            "banner": {
+              "id": 0,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "",
+              "gradient_color": [
+                "#FFFFFF"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "PG",
+            "persona": "",
+            "category_persona": "",
+            "brand_id": ""
+          },
+          {
             "id": 67859,
             "name": "Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2",
             "layout": "banner_carousel",
@@ -1250,6 +1444,46 @@
             "persona": "Fashion Wanita",
             "category_persona": "1845,1865,1921,1926,1952,1925,1919,1927,1908,1855",
             "brand_id": ""
+          },
+          {
+            "id": 105697,
+            "layout": "shop_widget",
+            "name": "Featured Shop",
+            "perso_type": 1,
+            "contextualInfo": 1,
+            "showPromoBadge": false,
+            "type": "inspiration",
+            "widgetParam": "headline_product_count=3&item=10&device=android&user_id=16939915&page=1&ep=cpm&src=homepage&template_id=3",
+            "header": {
+              "id": 68100,
+              "name": "Android Featured Shop",
+              "url": "https://m.tokopedia.com/discovery/kejar-diskon",
+              "applink": "tokopedia://discovery/kejar-diskon",
+              "serverTime": 1611029545,
+              "expiredTime": "2999-01-19T11:59:00+07:00",
+              "backColor": "",
+              "backImage": ""
+            },
+            "banner": {
+              "applink": "",
+              "attribution": "",
+              "back_color": "#1aaba6",
+              "cta": {
+                "coupon_code": "",
+                "mode": "",
+                "text": "",
+                "type": ""
+              },
+              "description": "This is sample widget of featured shop or headline ads",
+              "gradient_color": [
+                "red"
+              ],
+              "id": 14093,
+              "image_url": "",
+              "text_color": "#ffffff",
+              "title": "Android Featured Shop",
+              "url": ""
+            }
           }
         ]
       }

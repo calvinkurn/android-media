@@ -1,22 +1,14 @@
 package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.provider.ContactsContract
-import android.text.Editable
 import android.text.Html
-import android.text.InputType
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -47,18 +39,21 @@ import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBott
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.model.*
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder.OnFavoriteNumberClickListener
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_DELETE
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UNDO_DELETE
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UPDATE
-import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -72,13 +67,13 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class TopupBillsFavoriteNumberFragment :
-        BaseDaggerFragment(),
-        OnFavoriteNumberClickListener,
-        FavoriteNumberMenuListener,
-        FavoriteNumberEmptyStateListener,
-        FavoriteNumberModifyListener,
-        FavoriteNumberErrorStateListener
+class TopupBillsFavoriteNumberFragment:
+    BaseDaggerFragment(),
+    OnFavoriteNumberClickListener,
+    FavoriteNumberMenuListener,
+    FavoriteNumberEmptyStateListener,
+    FavoriteNumberModifyListener,
+    FavoriteNumberErrorStateListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -93,12 +88,14 @@ class TopupBillsFavoriteNumberFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
+    private val savedNumberViewModel by lazy {
+        viewModelFragmentProvider.get(TopupBillsSavedNumberViewModel::class.java) }
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
     private lateinit var localCacheHandler: LocalCacheHandler
-    protected lateinit var inputNumberActionType: InputNumberActionType
+    protected lateinit var inputNumberActionType: TopupBillsSearchNumberFragment.InputNumberActionType
 
     private var currentCategoryName = ""
     private var number: String = ""
@@ -114,7 +111,7 @@ class TopupBillsFavoriteNumberFragment :
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
     }
 
-    override fun getScreenName(): String? {
+    override fun getScreenName(): String {
         return TopupBillsFavoriteNumberFragment::class.java.simpleName
     }
 
@@ -141,7 +138,6 @@ class TopupBillsFavoriteNumberFragment :
         observeData()
         initView()
         loadData()
-        binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
@@ -153,30 +149,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     fun initView() {
-        setClientNumberInputType()
-        if (number.isNotEmpty()) {
-            binding?.run {
-                commonTopupbillsSearchNumberInputView.searchBarTextField.setText(number)
-                commonTopupbillsSearchNumberInputView.searchBarTextField.setSelection(number.length)
-                commonTopupbillsSearchNumberInputView.searchBarIcon.clearAnimation()
-                commonTopupbillsSearchNumberInputView.searchBarIcon.post {
-                    commonTopupbillsSearchNumberInputView.searchBarIcon.animate().scaleX(1f).scaleY(1f).start()
-                }
-            }
-        }
-
-        binding?.commonTopupbillsSearchNumberInputView?.run {
-            searchBarTextField.addTextChangedListener(getSearchTextWatcher)
-            searchBarTextField.setOnEditorActionListener(getSearchNumberListener)
-            searchBarTextField.onFocusChangeListener = getFocusChangeListener
-            clearListener = { onSearchReset() }
-            searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
-        }
-
-        binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
-            inputNumberActionType = InputNumberActionType.CONTACT
-            navigateContact()
-        }
         initRecyclerView()
     }
 
@@ -194,7 +166,6 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun observeData() {
         topUpBillsViewModel.seamlessFavNumberUpdateData.observe(viewLifecycleOwner, Observer {
-            binding?.commonTopupbillsSearchNumberInputView?.clearFocus()
             when (it) {
                 is Success -> onSuccessUpdateClientName()
                 is Fail -> onFailedUpdateClientName()
@@ -203,9 +174,10 @@ class TopupBillsFavoriteNumberFragment :
 
         topUpBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetFavoriteNumber(it.data.favoriteNumbers)
+                is Success -> onSuccessGetFavoriteNumber(it.data.first.favoriteNumbers)
                 is Fail -> onFailedGetFavoriteNumber(it.throwable)
             }
+            savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })
         })
 
         topUpBillsViewModel.seamlessFavNumberDeleteData.observe(viewLifecycleOwner, Observer {
@@ -219,6 +191,16 @@ class TopupBillsFavoriteNumberFragment :
             when (it) {
                 is Success -> onSuccessUndoDeleteFavoriteNumber(it.data)
                 is Fail -> onFailedUndoDeleteFavoriteNumber()
+            }
+        })
+
+        savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { keyword ->
+            filterData(keyword) })
+
+        savedNumberViewModel.refreshSearchBar.observe(viewLifecycleOwner, { position ->
+            if (position == TopupBillsSavedNumberFragment.POSITION_FAVORITE_NUMBER) {
+                savedNumberViewModel.setClueVisibility(clientNumbers.isNotEmpty())
+                savedNumberViewModel.enableSearchBar(clientNumbers.isNotEmpty())
             }
         })
     }
@@ -246,6 +228,13 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
         clientNumbers = newClientNumbers
+        val namedFavNumber = clientNumbers.count { it.clientName.isNotEmpty() }
+        commonTopupBillsAnalytics.eventImpressionTotalFavoriteNumber(
+            totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
+            totalNamedFavNumber = namedFavNumber,
+            userId = userSession.userId
+        )
+
         if (clientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
@@ -254,13 +243,15 @@ class TopupBillsFavoriteNumberFragment :
             commonTopupBillsAnalytics.eventImpressionFavoriteNumberEmptyState(
                     currentCategoryName, userSession.userId)
         }
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (numberListAdapter.visitables.isNotEmpty() &&
-                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
-                show()
-            } else {
-                hide()
-            }
+
+        if (numberListAdapter.visitables.isNotEmpty() &&
+            numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
+        ) {
+            savedNumberViewModel.setClueVisibility(true)
+            savedNumberViewModel.enableSearchBar(true)
+        } else {
+            savedNumberViewModel.setClueVisibility(false)
+            savedNumberViewModel.enableSearchBar(false)
         }
 
         if (!isHideCoachmark && numberListAdapter.visitables.isNotEmpty()) {
@@ -289,7 +280,7 @@ class TopupBillsFavoriteNumberFragment :
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
-                binding?.commonTopupbillsFavoriteNumberClue?.hide()
+                savedNumberViewModel.setClueVisibility(false)
             }
         }
     }
@@ -301,58 +292,19 @@ class TopupBillsFavoriteNumberFragment :
         clickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         view?.let {
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                throwable,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             if (actionText.isNullOrEmpty()) {
-                Toaster.build(it, ErrorHandler.getErrorMessage(requireContext(), throwable),
-                    length, Toaster.TYPE_ERROR).show()
+                Toaster.build(it, errorMessage.orEmpty(), length, Toaster.TYPE_ERROR).show()
             } else {
-                Toaster.build(
-                    it, ErrorHandler.getErrorMessage(requireContext(), throwable),
-                    length, Toaster.TYPE_ERROR, actionText, clickListener
-                ).show()
+                Toaster.build(it, errorMessage.orEmpty(), length, Toaster.TYPE_ERROR,
+                    actionText, clickListener).show()
             }
-        }
-    }
-
-    private val getFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-        if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
-    }
-
-    private val getSearchNumberListener = object : TextView.OnEditorActionListener {
-        override fun onEditorAction(textView: TextView, actionId: Int, event: KeyEvent?): Boolean {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                KeyboardHandler.hideSoftKeyboard(activity)
-                onSearchSubmitted(textView.text.toString())
-                return true
-            } else if (actionId == EditorInfo.IME_ACTION_DONE) {
-                KeyboardHandler.hideSoftKeyboard(activity)
-                onSearchDone(textView.text.toString())
-                return true
-            }
-            return false
-        }
-    }
-
-    private val getSearchTextWatcher = object : TextWatcher {
-        override fun afterTextChanged(text: Editable?) {
-            text?.let { filterData(text.toString()) }
-        }
-
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            //do nothing
-        }
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            //do nothing
-        }
-    }
-
-    private fun setClientNumberInputType() {
-        binding?.commonTopupbillsSearchNumberInputView
-                ?.searchBarTextField?.inputType = when (clientNumberType.toLowerCase()) {
-            ClientNumberType.TYPE_INPUT_TEL.value -> InputType.TYPE_CLASS_PHONE
-            ClientNumberType.TYPE_INPUT_NUMERIC.value -> InputType.TYPE_CLASS_NUMBER
-            ClientNumberType.TYPE_INPUT_ALPHANUMERIC.value -> InputType.TYPE_CLASS_TEXT
-            else -> InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
 
@@ -360,14 +312,14 @@ class TopupBillsFavoriteNumberFragment :
         val searchClientNumbers = ArrayList<TopupBillsSeamlessFavNumberItem>()
 
         searchClientNumbers.addAll(clientNumbers.filter {
-            it.clientNumber.contains(query)
+            it.clientName.contains(query, true) || it.clientNumber.contains(query, true)
         })
 
         if (searchClientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
-            binding?.commonTopupbillsFavoriteNumberClue?.show()
+            if (isVisible) savedNumberViewModel.setClueVisibility(true)
         } else {
             if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -375,90 +327,45 @@ class TopupBillsFavoriteNumberFragment :
                 } else {
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
-            } else {
-                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
             }
-            binding?.commonTopupbillsFavoriteNumberClue?.hide()
+            if (isVisible) savedNumberViewModel.setClueVisibility(false)
         }
     }
 
-    fun onSearchSubmitted(text: String?) {
-        //do nothing
-    }
-
-    fun onSearchDone(text: String) {
-        navigateToPDP(InputNumberActionType.MANUAL)
-    }
-
-    fun onSearchReset() {
-        binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.setText("")
-        if (clientNumbers.isEmpty())
-            numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
-        KeyboardHandler.hideSoftKeyboard(activity)
-    }
-
-    override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
-        navigateToPDP(InputNumberActionType.FAVORITE, clientNumber)
+    override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem, position: Int) {
+        val namedFavNumber = clientNumbers.count { it.clientName.isNotEmpty() }
+        commonTopupBillsAnalytics.eventClickTotalFavoriteNumber(
+            totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
+            totalNamedFavNumber = namedFavNumber,
+            clickPosition = position,
+            userId = userSession.userId
+        )
+        navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE, clientNumber)
     }
 
     override fun onContinueClicked() {
-        val clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
         commonTopupBillsAnalytics.eventClickFavoriteNumberContinue(
-                currentCategoryName, getOperatorNameByPrefix(clientNumber), userSession.userId
-        )
-        navigateToPDP(InputNumberActionType.MANUAL)
+                currentCategoryName, userSession.userId)
+        activity?.finish()
     }
 
     private fun navigateToPDP(
-            inputNumberActionType: InputNumberActionType,
-            clientNumber: TopupBillsSeamlessFavNumberItem? = null
+            inputNumberActionType: TopupBillsSearchNumberFragment.InputNumberActionType? = null,
+            favNumber: TopupBillsSeamlessFavNumberItem? = null
     ) {
         activity?.run {
             val intent = Intent()
-            val searchedClientNumber: TopupBillsSeamlessFavNumberItem = clientNumber
-                    ?: TopupBillsSeamlessFavNumberItem(
-                            clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
-                    )
+            val searchedNumber = TopupBillsSavedNumber(
+                clientName = favNumber?.clientName ?: "",
+                clientNumber = favNumber?.clientNumber ?: "",
+                categoryId = favNumber?.categoryId ?: "",
+                productId = favNumber?.productId ?: "",
+                inputNumberActionTypeIndex = inputNumberActionType?.ordinal ?: -1
+            )
 
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedClientNumber)
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType)
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedNumber)
             setResult(Activity.RESULT_OK, intent)
             finish()
-        }
-    }
-
-    private fun navigateContact() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.checkPermission(this,
-                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            context?.let { permissionCheckerHelper.onPermissionDenied(it, permissionText) }
-                        }
-
-                        override fun onNeverAskAgain(permissionText: String) {
-                            context?.let { permissionCheckerHelper.onNeverAskAgain(it, permissionText) }
-                        }
-
-                        override fun onPermissionGranted() {
-                            openContactPicker()
-                        }
-                    })
-        } else {
-            openContactPicker()
-        }
-    }
-
-    fun openContactPicker() {
-        val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        try {
-            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
-            view?.let {
-                Toaster.build(it, getString(R.string.common_topup_contact_not_found),
-                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-            }
         }
     }
 
@@ -698,10 +605,6 @@ class TopupBillsFavoriteNumberFragment :
         getSeamlessFavoriteNumber()
     }
 
-    enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE
-    }
-
     enum class FavoriteNumberActionType {
         UPDATE, DELETE, UNDO_DELETE
     }
@@ -716,7 +619,7 @@ class TopupBillsFavoriteNumberFragment :
                         val clientNumber = TopupBillsSeamlessFavNumberItem(
                                 clientName = contact.givenName,
                                 clientNumber = contact.contactNumber)
-                        navigateToPDP(InputNumberActionType.CONTACT, clientNumber)
+                        navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT, clientNumber)
                     }
                 }
             }

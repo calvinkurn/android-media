@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:foreground="?selectableItemBackground"
     tools:ignore="Overdraw">
 
@@ -62,7 +62,6 @@
                 android:lineSpacingExtra="4sp"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
-                app:typographyWeight="bold"
                 tools:text="(Rp0)" />
 
         </LinearLayout>
@@ -76,7 +75,6 @@
             android:lineSpacingExtra="4sp"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
-            app:typographyWeight="bold"
             tools:text="Bebas Ongkir (2 - 4 hari)" />
 
         <com.tokopedia.unifycomponents.Label
@@ -88,7 +86,6 @@
             android:text="@string/tersedia_bayar_di_tempat"
             android:visibility="visible"
             app:labelType="general_light_green" />
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_info"

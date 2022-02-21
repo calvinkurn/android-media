@@ -9,11 +9,13 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.chat_common.R
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import org.junit.Test
 
+@UiTest
 class TopchatRoomFollowUnfollowTest: TopchatRoomTest() {
 
     @Test

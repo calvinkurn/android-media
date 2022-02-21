@@ -50,7 +50,7 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
         mGetTokoPointDetailUseCase.addRequest(request1)
         //Section
         val variables: MutableMap<String, Any> = HashMap()
-        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "2.0.0"
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "3.0.0"
         val request4 = GraphqlRequest(
             String.format(TpHomePageSection.GQL_QUERY,MVC_REWARD_MULTISHOP_QUERY),
                 TokopointsSectionOuter::class.java, variables,false)

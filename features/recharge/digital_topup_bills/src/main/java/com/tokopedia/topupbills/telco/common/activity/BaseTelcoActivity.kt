@@ -98,6 +98,14 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         menuBottomSheet.show(supportFragmentManager, TAG_TELCO_MENU)
     }
 
+    fun setupAppBar() {
+        (toolbar as HeaderUnify).transparentMode = true
+        if (::menuTelco.isInitialized) {
+            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+        }
+    }
+
     fun onCollapseAppBar() {
         (toolbar as HeaderUnify).transparentMode = false
         if (::menuTelco.isInitialized) {

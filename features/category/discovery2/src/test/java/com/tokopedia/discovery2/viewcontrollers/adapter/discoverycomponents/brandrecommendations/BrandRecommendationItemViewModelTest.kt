@@ -20,7 +20,7 @@ class BrandRecommendationItemViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: BrandRecommendationItemViewModel by lazy {
-        spyk(BrandRecommendationItemViewModel(application, componentsItem, 0)).apply {
+        spyk(BrandRecommendationItemViewModel(application, componentsItem, 99)).apply {
             onAttachToViewHolder()
         }
     }
@@ -53,5 +53,21 @@ class BrandRecommendationItemViewModelTest {
         assert(viewModel.getComponentDataLiveData().value == componentsItem)
     }
 
+
+    @Test
+    fun `get Component id`(){
+        every { componentsItem.parentComponentId } returns "999"
+        assert(viewModel.getComponentID() == "999")
+    }
+
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
+    }
+
+    @Test
+    fun `test for components passed`(){
+        assert(viewModel.components === componentsItem)
+    }
 
 }

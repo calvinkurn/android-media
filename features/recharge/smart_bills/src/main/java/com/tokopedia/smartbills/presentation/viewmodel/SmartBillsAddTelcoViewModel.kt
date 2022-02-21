@@ -167,12 +167,11 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         return mapOf(PARAM_ADD_REQUEST to addBillRequest)
     }
 
-    fun createCatalogNominal(menuId: Int, platformID: Int, operator: String, clientNumber: String): Map<String, Any> {
+    fun createCatalogNominal(menuId: Int, platformID: Int, operator: String): Map<String, Any> {
         return mapOf(
                 PARAM_MENU_ID to menuId,
                 PARAM_PLATFORM_ID to platformID,
-                PARAM_OPERATOR to operator,
-                PARAM_CLIENT_NUMBER to clientNumber
+                PARAM_OPERATOR to operator
         )
     }
 

@@ -12,10 +12,12 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.SourceCodeScanner
 import com.android.tools.lint.detector.api.getBaseName
+import com.intellij.psi.PsiElement
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
 import org.jetbrains.uast.ULocalVariable
+import org.jetbrains.uast.UReturnExpression
 import java.io.File
 
 class ResourcePackageDetector : Detector(), SourceCodeScanner {
@@ -60,7 +62,8 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
         return listOf(
             UField::class.java,
             ULocalVariable::class.java,
-            UCallExpression::class.java
+            UCallExpression::class.java,
+            UReturnExpression::class.java
         )
     }
 
@@ -70,7 +73,11 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                 val resource = node.text.substringAfter("= ")
 
                 if(shouldScanResource(resource)) {
-                    scanResource(context, node, resource)
+                    scanResource(
+                        context = context,
+                        node = node,
+                        value = resource
+                    )
                 }
             }
 
@@ -78,7 +85,11 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                 val resource = node.text.substringAfter("= ")
 
                 if(shouldScanResource(resource)) {
-                    scanResource(context, node, resource)
+                    scanResource(
+                        context = context,
+                        node = node,
+                        value = resource
+                    )
                 }
             }
 
@@ -87,8 +98,24 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                     val resource = it.asSourceString()
                     shouldScanResource(resource)
                 }?.let {
-                    val resource = it.asSourceString()
-                    scanResource(context, node, resource)
+                    scanResource(
+                        context = context,
+                        node = node,
+                        value = it.asSourceString()
+                    )
+                }
+            }
+
+            override fun visitReturnExpression(node: UReturnExpression) {
+                val element = node.sourcePsi?.lastChild
+                val resource = element?.text.orEmpty()
+
+                if(shouldScanResource(resource)) {
+                    scanResource(
+                        context = context,
+                        psi = element,
+                        value = resource
+                    )
                 }
             }
         }
@@ -107,58 +134,72 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
 
     private fun scanResource(
         context: JavaContext,
-        node: UElement,
+        node: UElement? = null,
+        psi: PsiElement? = null,
         value: String
     ) {
         val resourceName = value.substringAfterLast(".")
         if(!resourceIds.contains(resourceName)) {
-            reportError(context, node)
+            reportError(context, node, psi)
         }
     }
 
-    private fun reportError(context: JavaContext, node: UElement) {
-        context.report(
-            JAVA_ISSUE,
-            node,
-            context.getLocation(node),
-            ERROR_MESSAGE
-        )
+    private fun reportError(context: JavaContext, node: UElement?, psi: PsiElement?) {
+        if(psi != null) {
+            context.report(
+                JAVA_ISSUE,
+                psi,
+                context.getLocation(psi),
+                ERROR_MESSAGE
+            )
+        } else {
+            if (node != null) {
+                context.report(
+                    JAVA_ISSUE,
+                    node,
+                    context.getLocation(node),
+                    ERROR_MESSAGE
+                )
+            }
+        }
     }
 
     private fun findResourceIds(context: Context) {
-        val resFolders = context.project.resourceFolders.firstOrNull()
+        context.project.resourceFolders.forEach { resFolder ->
+            val layoutDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_LAYOUT) }
 
-        val layoutDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_LAYOUT) }
+            val drawableDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_DRAWABLE) }
 
-        val drawableDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_DRAWABLE) }
+            val valueDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
 
-        val valueDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
+            layoutDirs?.forEach { file ->
+                val files = file.listFiles().orEmpty()
+                val drawable = files.map { getBaseName(it.name) }
+                resourceIds.addAll(drawable)
+            }
 
-        layoutDirs?.forEach { file ->
-            val files = file.listFiles().orEmpty()
-            val drawable = files.map { getBaseName(it.name) }
-            resourceIds.addAll(drawable)
-        }
+            drawableDirs?.forEach { file ->
+                val files = file.listFiles().orEmpty()
+                val drawable = files.map { getBaseName(it.name) }
+                resourceIds.addAll(drawable)
+            }
 
-        drawableDirs?.forEach { file ->
-            val files = file.listFiles().orEmpty()
-            val drawable = files.map { getBaseName(it.name) }
-            resourceIds.addAll(drawable)
-        }
-
-        valueDirs?.forEach {
-            val files = it.listFiles()
-            findValueResources(files)
+            valueDirs?.forEach {
+                val files = it.listFiles()
+                findValueResources(files)
+            }
         }
     }
 
     private fun findValueResources(files: Array<File>?) {
         files?.forEach { file ->
             val valueIds = file.readLines().filter {
-                it.contains(SdkConstants.ATTR_NAME) && !it.contains(SdkConstants.TAG_ITEM)
+                val nameAttr = "${SdkConstants.ATTR_NAME}="
+                val itemTag = "<${SdkConstants.TAG_ITEM}"
+                it.contains(nameAttr) && !it.contains(itemTag)
             }.map {
                 it.substringAfter("=\"").substringBefore("\"")
             }.filter { it.isNotEmpty() }

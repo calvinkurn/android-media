@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,23 +30,21 @@
                 app:unify_image_corner_radius="0"
                 app:unify_image_type="rect" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/prefix_text_method_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/prefix_miscall_margin_left"
-                android:layout_marginTop="@dimen/prefix_miscall_margin_top"
-                android:text="@string/cotp_miscall_verification_phone_code"
-                android:textColor="@color/Unify_N0"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieMiscallAnimation"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/otp_dp_210"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/method_icon"
-                app:layout_constraintTop_toTopOf="@+id/method_icon"
-                app:typographyType="heading_1"
-                app:typographyWeight="bold" />
+                android:paddingBottom="@dimen/unify_space_16"
+                app:layout_constraintTop_toBottomOf="@id/method_icon"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"/>
 
             <com.tokopedia.pin.PinUnify
                 android:id="@+id/pin"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl6"
                 android:layout_marginTop="@dimen/spacing_lvl4"
@@ -55,7 +53,7 @@
                 app:is_disabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/method_icon"
+                app:layout_constraintTop_toBottomOf="@id/lottieMiscallAnimation"
                 app:pin_count="6"
                 app:pin_primary_action_text="@string/button_verify"
                 app:pin_title="@string/enter_verification_code"

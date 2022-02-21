@@ -4,7 +4,8 @@
     <string name="error_message_minimum_search_keyword">Masukkan min. 3 karakter di kolom pencarian.</string>
     <string name="fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="uoh_filter_empty_btn">Reset filter</string>
-    <string name="uoh_no_order_btn">Mulai Belanja</string><string name="hint_cari_transaksi">Cari transaksi</string>
+    <string name="uoh_no_order_btn">Mulai Belanja</string>
+    <string name="hint_cari_transaksi">Cari transaksi</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="uoh_filter_empty">Oops, nggak ada transaksi yang sesuai filter</string>
     <string name="uoh_filter_empty_desc">Coba reset atau ubah filter kamu, ya.</string>

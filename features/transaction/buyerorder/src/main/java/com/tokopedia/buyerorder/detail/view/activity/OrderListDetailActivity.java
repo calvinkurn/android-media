@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,13 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     private OrderDetailsComponent orderListComponent;
     String category = null;
     String upstream = null;
+
+    public static Intent getIntent(Context context, String orderId, Uri data) {
+        Intent intent = new Intent(context, OrderListDetailActivity.class);
+        intent.putExtra(ORDER_ID, orderId);
+        intent.setData(data);
+        return intent;
+    }
 
     @Override
     protected Fragment getNewFragment() {
@@ -92,7 +100,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         orderListComponent = DaggerOrderDetailsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
-        GraphqlClient.init(this);
     }
 
     @Override

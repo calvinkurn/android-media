@@ -1,23 +1,27 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import javax.inject.Inject
 
 class ChatListStickerUseCaseStub @Inject constructor(
-        private val gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
-        cacheManager: TopchatCacheManager,
-        dispatchers: CoroutineDispatchers
-) : ChatListStickerUseCase(
-        gqlUseCase, cacheManager, dispatchers
-) {
+    private val repository: GraphqlRepositoryStub,
+    dispatchers: CoroutineDispatchers
+) : ChatListStickerUseCase(repository, dispatchers) {
 
-    var response = StickerResponse()
+    var response: StickerResponse = StickerResponse()
         set(value) {
-            gqlUseCase.response = value
+            repository.createMapResult(response::class.java, value)
+            field = value
+        }
+
+    var errorMessage = ""
+        set(value) {
+            if(value.isNotEmpty()) {
+                repository.createErrorMapResult(response::class.java, value)
+            }
             field = value
         }
 }

@@ -57,9 +57,9 @@ import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
-import com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -79,21 +79,34 @@ import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
-    StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
+    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
-        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
         private const val TAB_PM_PARAM = "tab"
 
+        private const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
         private const val DELIMITER = " - "
 
         const val OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME = "Seller App - Lainnya"
         const val OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME = "Share"
 
+        const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
+
+        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
+        const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+
+        const val SHOP_BADGE = "shop badge"
+        const val SHOP_FOLLOWERS = "shop followers"
+        const val SHOP_INFO = "shop info"
+        const val OPERATIONAL_HOUR = "operational hour"
+        const val SALDO_BALANCE = "saldo balance"
+        const val TOPADS_BALANCE = "topads balance"
+        const val TOPADS_AUTO_TOPUP = "topads auto topup"
+        const val FREE_SHIPPING = "free shipping"
+
         @JvmStatic
-        fun createInstance(): com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment =
-            com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment()
+        fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
 
     @Inject
@@ -119,6 +132,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
+    }
+
+    private val kreditTopadsClickedBundle by lazy {
+        Bundle().also {
+            it.putBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        }
     }
 
     private val topAdsBottomSheet by lazy {
@@ -159,7 +178,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? SellerHomeActivity)?.attachCallback(this)
+        (activity as? SellerHomeActivity)?.run {
+            attachCallback(this@OtherMenuFragment)
+            attachOtherMenuFragmentChangeCallback(this@OtherMenuFragment)
+        }
         viewModel.run {
             setErrorStateMapDefaultValue()
             setSuccessStateMapDefaultValue()
@@ -231,7 +253,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun goToPrintingPage() {
         val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
+        val applink = String.format(SellerBaseUrl.APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         RouteManager.getIntent(context, applink)?.let {
             context?.startActivity(it)
         }
@@ -250,14 +272,18 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
+    override fun onRmTransactionClicked() {
+        goToNewMembershipScheme()
+    }
+
     override fun onShopBadgeClicked() {
         NewOtherMenuTracking.sendEventClickShopReputationBadge()
         goToReputationHistory()
     }
 
     override fun onFollowersCountClicked() {
-//        NewOtherMenuTracking.sendEventClickTotalFollowers()
-//        goToShopFavouriteList()
+        NewOtherMenuTracking.sendEventClickTotalFollowers()
+        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -276,12 +302,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onKreditTopadsClicked() {
         val bottomSheet =
-            childFragmentManager.findFragmentByTag(OtherMenuFragment.TOPADS_BOTTOMSHEET_TAG)
+            childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
         if (bottomSheet is BottomSheetUnify) {
             bottomSheet.dismiss()
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
         } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            RouteManager.route(context,kreditTopadsClickedBundle, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
@@ -298,13 +324,19 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
     }
 
-    override fun onGoToPowerMerchantSubscribe(tab: String?) {
+    override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
         sellerMenuTracker.sendEventClickShopSettingNew()
         if (tab != null) {
             val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-            val appLinkPMTab =
-                Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build()
-                    .toString()
+            val appLinkPMTabBuilder =
+                Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab)
+            if (isUpdate) {
+                appLinkPMTabBuilder.appendQueryParameter(
+                    ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE,
+                    isUpdate.toString()
+                )
+            }
+            val appLinkPMTab = appLinkPMTabBuilder.build().toString()
             context.let { RouteManager.route(it, appLinkPMTab) }
         }
     }
@@ -348,7 +380,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 setChild(this@run)
                 show(
                     this@OtherMenuFragment.childFragmentManager,
-                    OtherMenuFragment.TOPADS_BOTTOMSHEET_TAG
+                    TOPADS_BOTTOMSHEET_TAG
                 )
             }
         }
@@ -398,11 +430,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     checkUsingCustomBranchLinkDomain(linkerShareData)
-                    val shareString = getString(
+                    val shareString = activity?.getString(
                         R.string.sah_new_other_share_text,
                         userSession.shopName,
                         linkerShareData?.shareContents
-                    )
+                    ).orEmpty()
                     shareModel.subjectName = userSession.shopName
                     SharingUtil.executeShareIntent(
                         shareModel,
@@ -465,7 +497,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 showErrorToaster(it.throwable) {
                     onShopBadgeRefresh()
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.SHOP_BADGE)
+                logHeaderError(it.throwable, SHOP_BADGE)
             }
         }
     }
@@ -477,7 +509,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 showErrorToaster(it.throwable) {
                     onShopTotalFollowersRefresh()
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.SHOP_FOLLOWERS)
+                logHeaderError(it.throwable, SHOP_FOLLOWERS)
             }
         }
     }
@@ -489,7 +521,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 showErrorToaster(it.throwable) {
                     onRefreshShopInfo()
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.SHOP_INFO)
+                logHeaderError(it.throwable, SHOP_INFO)
             }
         }
     }
@@ -501,7 +533,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 showErrorToaster(it.throwable) {
                     onOperationalHourRefresh()
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.OPERATIONAL_HOUR)
+                logHeaderError(it.throwable, OPERATIONAL_HOUR)
             }
         }
     }
@@ -514,7 +546,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     showErrorToaster(it.throwable) {
                         onSaldoBalanceRefresh()
                     }
-                    logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
+                    logHeaderError(it.throwable, SALDO_BALANCE)
                 }
             }
         }
@@ -528,7 +560,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     showErrorToaster(it.throwable) {
                         onKreditTopAdsRefresh()
                     }
-                    logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
+                    logHeaderError(it.throwable, TOPADS_BALANCE)
                 }
             }
         }
@@ -541,7 +573,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 showErrorToaster(it.throwable) {
                     onFreeShippingRefresh()
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.FREE_SHIPPING)
+                logHeaderError(it.throwable, FREE_SHIPPING)
             }
         }
     }
@@ -554,7 +586,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 }
                 is Fail -> {
                     showErrorToaster(result.throwable)
-                    logHeaderError(result.throwable, OtherMenuFragment.TOPADS_AUTO_TOPUP)
+                    logHeaderError(result.throwable, TOPADS_AUTO_TOPUP)
                 }
             }
         }
@@ -599,6 +631,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun observeToasterAlreadyShown() {
+        viewModel.setDefaultToasterState(false)
         viewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
             canShowErrorToaster = !isToasterAlreadyShown
         }
@@ -615,7 +648,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private fun goToReputationHistory() {
         val reputationHistoryIntent =
             RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-                putExtra(OtherMenuFragment.GO_TO_REPUTATION_HISTORY, true)
+                putExtra(GO_TO_REPUTATION_HISTORY, true)
             }
         startActivity(reputationHistoryIntent)
     }
@@ -624,9 +657,15 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         val shopFavouriteListIntent =
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST)
                 .apply {
-                    putExtra(OtherMenuFragment.EXTRA_SHOP_ID, userSession.shopId)
+                    putExtra(EXTRA_SHOP_ID, userSession.shopId)
                 }
         startActivity(shopFavouriteListIntent)
+    }
+
+    private fun goToNewMembershipScheme() {
+        context?.let {
+            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+        }
     }
 
     private fun isActivityResumed(): Boolean {
@@ -664,7 +703,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                         .orEmpty(),
                     Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_NORMAL,
-                    context?.getString(R.string.setting_toaster_error_retry).orEmpty()
+                    context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry).orEmpty()
                 )
                 {
                     viewModel.reloadErrorData()
@@ -689,7 +728,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         if (canShowToaster && !hasShownMultipleErrorToaster) {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
-            } ?: resources.getString(R.string.setting_toaster_error_message)
+            } ?: resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message)
             view?.showToasterError(errorMessage, onRetryAction)
         }
     }
@@ -700,6 +739,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty()
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.OTHER_MENU,
+            throwable = throwable,
+            errorType = context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty(),
+            deviceId = userSession.deviceId.orEmpty()
         )
     }
 
@@ -833,7 +880,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             errorMessage,
             Snackbar.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            resources.getString(R.string.setting_toaster_error_retry)
+            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry)
         ) {
             onRetryAction()
         }.show()

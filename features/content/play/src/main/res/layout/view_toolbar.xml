@@ -9,13 +9,16 @@
     tools:background="@color/play_dms_N600"
     >
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_back"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:padding="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_close_white"
         />
 
     <LinearLayout
@@ -27,60 +30,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_back"
         >
-        <androidx.appcompat.widget.AppCompatImageView
+
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_more"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginEnd="2dp"
             android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintBottom_toBottomOf="@id/iv_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/iv_back"
-            app:srcCompat="@drawable/ic_play_more_white"
             />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_copy_link"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/ic_play_copy_link"
-            tools:visibility="visible" />
-
-        <RelativeLayout
-            android:id="@+id/rl_cart"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/play_cart_margin"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:tint="@color/Unify_Static_White"
-                app:srcCompat="@drawable/ic_cart_grayscale_20"
-                />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_badge_cart"
-                android:layout_width="@dimen/play_cart_badge_size"
-                android:layout_height="@dimen/play_cart_badge_size"
-                android:background="@drawable/shape_play_cart_dots"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:gravity="center"
-                android:textSize="@dimen/fontSize_lvl10"
-                android:textStyle="bold"
-                android:textColor="@color/Unify_Static_White"
-                android:visibility="invisible"
-                tools:text="99"/>
-
-        </RelativeLayout>
 
     </LinearLayout>
 

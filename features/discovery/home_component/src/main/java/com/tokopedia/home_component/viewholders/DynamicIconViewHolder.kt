@@ -3,34 +3,41 @@ package com.tokopedia.home_component.viewholders
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.HomeComponentDynamicIconBinding
 import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import kotlinx.android.synthetic.main.home_component_dynamic_icon.view.*
-import kotlinx.android.synthetic.main.home_component_dynamic_icon_item.view.*
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Lukas on 1/8/21.
  */
 class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconComponentListener): AbstractViewHolder<DynamicIconComponentDataModel>(itemView){
+
+    private var binding: HomeComponentDynamicIconBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
-        
-        
+
+
         private const val SCROLLABLE_ITEM = 5
     }
 
     private val adapter = DynamicIconAdapter(listener)
+    private var iconRecyclerView: RecyclerView? = null
 
     override fun bind(element: DynamicIconComponentDataModel) {
         setupDynamicIcon(element)
@@ -39,22 +46,30 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
 
     private fun setupDynamicIcon(element: DynamicIconComponentDataModel){
         val icons = element.dynamicIconComponent.dynamicIcon
+        iconRecyclerView = itemView.findViewById(R.id.dynamic_icon_recycler_view)
         if (icons.isNotEmpty()) {
             adapter.submitList(element)
             adapter.updatePosition(adapterPosition)
             adapter.setType(element.type)
-            if (itemView.dynamic_icon_recycler_view.itemDecorationCount == 0) {
-                itemView.dynamic_icon_recycler_view.addItemDecoration(
+            if (iconRecyclerView?.itemDecorationCount == 0) {
+                iconRecyclerView?.addItemDecoration(
                         CommonSpacingDecoration(
-                                itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                                8f.toDpInt()
                         )
                 )
             }
-            itemView.dynamic_icon_recycler_view.adapter = adapter
+            iconRecyclerView?.adapter = adapter
             setupLayoutManager(
                     isScrollItem = icons.size > SCROLLABLE_ITEM,
                     spanCount = icons.size
             )
+            iconRecyclerView?.clearOnScrollListeners()
+            iconRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    listener.onIconScroll(adapterPosition)
+                }
+            })
         }
     }
 
@@ -66,9 +81,9 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
 
     private fun setupLayoutManager(isScrollItem: Boolean, spanCount: Int){
         if(isScrollItem){
-            itemView.dynamic_icon_recycler_view.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            binding?.dynamicIconRecyclerView?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         } else {
-            itemView.dynamic_icon_recycler_view.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
+            binding?.dynamicIconRecyclerView?.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
         }
     }
 
@@ -106,30 +121,41 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
     }
 
     internal class DynamicIconItemViewHolder(itemView: View, private val listener: DynamicIconComponentListener): RecyclerView.ViewHolder(itemView){
+        var iconTvName: Typography? = null
+        var iconImageView: ImageView? = null
+        var iconContainer: LinearLayout? = null
+        var iconBackground: ImageView? = null
         companion object{
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
         }
 
         fun bind(item: DynamicIconComponent.DynamicIcon, isScrollable: Boolean, parentPosition: Int, type: Int, isCache: Boolean){
-            itemView.dynamic_icon_typography.text = item.name
-            itemView.dynamic_icon_image_view.loadImage(item.imageUrl)
-            itemView.dynamic_icon_container.layoutParams = ViewGroup.LayoutParams(
+            iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
+            iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
+            iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
+            iconBackground = itemView.findViewById(R.id.dynamic_icon_background)
+
+            iconTvName?.text = item.name
+            iconImageView?.loadImage(item.imageUrl)
+            iconContainer?.layoutParams = ViewGroup.LayoutParams(
                     if(isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            itemView.dynamic_icon_typography.maxLines = if(item.withBackground) 2 else 1
-            itemView.dynamic_icon_background.visibility = if(item.withBackground) View.VISIBLE else View.GONE
+            iconTvName?.maxLines = if(item.withBackground) 2 else 1
+            iconBackground?.visibility = if(item.withBackground) View.VISIBLE else View.GONE
             itemView.setOnClickListener {
                 listener.onClickIcon(item, parentPosition,adapterPosition, type)
             }
+
             if (!isCache) {
                 itemView.addOnImpressionListener(item) {
                     listener.onImpressIcon(
                             dynamicIcon = item,
                             iconPosition = adapterPosition,
                             parentPosition = parentPosition,
-                            type = type
+                            type = type,
+                            view = itemView
                     )
                 }
             }

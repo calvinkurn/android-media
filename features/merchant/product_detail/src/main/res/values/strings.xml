@@ -35,8 +35,6 @@
     <string name="courier_title">Kurir</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
-    <string name="button_affiliate">Buat Post</string>
-    <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
@@ -95,8 +93,6 @@
     <string name="notify_me_inactive">Ingatkan Saya</string>
     <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
-    <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
-    <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
 
     <!--Social Proof-->
     <string name="bracket_formated">(%1s)</string>
@@ -130,10 +126,6 @@
     <!--Ticker-->
     <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
 
-
-    <!--By Me-->
-    <string name="product_detail_by_me_subtitle">Dapatkan komisi langsung setiap kali teman beli barang dari rekomendasimu.</string>
-
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
     <string name="shop_online_hours_ago"><![CDATA[Online <b>%1d jam lalu</b>]]></string>
@@ -142,10 +134,10 @@
     <string name="shop_online_last_date"><![CDATA[Terakhir online <b>%1s</b>]]></string>
     <string name="shop_online">• Online</string>
     <string name="location_dot_builder">• %1s</string>
-    <string name="product_shop_rating">rata-rata ulasan</string>
+    <string name="product_shop_rating">rating toko</string>
     <string name="product_shop_total_product">total produk</string>
-    <string name="product_shop_process_product">pesanan di proses</string>
-    <string name="product_shop_chat_reply">chat dibalas</string>
+    <string name="product_shop_process_product">pesanan diproses</string>
+    <string name="product_shop_chat_reply">balas chat &amp; diskusi</string>
     <string name="product_shop_start_sell">mulai jualan</string>
 
     <string name="shop_chat_speed_in_days">%1d hari</string>
@@ -156,7 +148,7 @@
 
     <string name="shop_chat_speed_in_minute">%1d menit</string>
 
-    <string name="label_go_apotik">By GoApotik</string>
+    <string name="label_go_apotik">Go-Apotik</string>
 
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
@@ -195,10 +187,6 @@
     <string name="pdp_shipping_success_change_address">Simulasi pengiriman disesuaikan dengan alamat yang kamu pilih.</string>
     <string name="pdp_tokocabang_label">TokoCabang</string>
     <string name="pdp_bold_html_builder"><![CDATA[<b>%1s</b>]]></string>
-
-
-    <string name="pdp_boe_coachmark_title">Pengiriman gratis &amp; cepat dengan TokoCabang</string>
-    <string name="pdp_boe_coachmark_desc">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Extra sepuasnya!</string>
 
     <string name="pdp_pcs_builder">%1d pcs</string>
     <string name="pdp_total_stock_static">Jumlah Barang:</string>

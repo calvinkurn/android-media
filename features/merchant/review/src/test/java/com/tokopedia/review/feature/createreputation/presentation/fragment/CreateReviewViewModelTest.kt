@@ -2,14 +2,29 @@ package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
-import com.tokopedia.review.feature.createreputation.model.*
+import com.tokopedia.review.feature.createreputation.model.BadRatingCategoriesResponse
+import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
+import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.ProductRevEditReviewResponseWrapper
+import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.model.ProductRevSuccessIndicator
+import com.tokopedia.review.feature.createreputation.model.ProductRevSuccessSubmitReview
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetReviewTemplate
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetReviewTemplateResponseWrapper
+import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoResponse
 import com.tokopedia.review.utils.verifyReviewErrorEquals
@@ -22,9 +37,13 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.verify
 import org.junit.Assert
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.CountDownLatch
@@ -37,7 +56,8 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.clearImageData()
         viewModel.getImageList(images)
         val actualData = viewModel.getSelectedImagesUrl()
-        val expectedData = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+        val expectedData =
+            arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
 
         Assert.assertEquals(actualData, expectedData)
         assertTrue(viewModel.isImageNotEmpty())
@@ -70,7 +90,10 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         fillInImages()
         viewModel.getImageList(images)
 
-        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
+        viewModel.removeImage(
+            ImageReviewUiModel(images.first().thumbnail, images.first().fullSize),
+            true
+        )
 
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
@@ -83,13 +106,23 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
+            getProductReputationForm.getReputationForm(
+                GetProductReputationForm.createRequestParam(
+                    anyString(),
+                    anyString()
+                )
+            )
         } returns ProductRevGetForm()
 
         viewModel.getProductReputation(anyString(), anyString())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
+            getProductReputationForm.getReputationForm(
+                GetProductReputationForm.createRequestParam(
+                    anyString(),
+                    anyString()
+                )
+            )
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Success)
@@ -100,13 +133,23 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
+            getProductReputationForm.getReputationForm(
+                GetProductReputationForm.createRequestParam(
+                    anyString(),
+                    anyString()
+                )
+            )
         } throws Throwable()
 
         viewModel.getProductReputation(anyString(), anyString())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
+            getProductReputationForm.getReputationForm(
+                GetProductReputationForm.createRequestParam(
+                    anyString(),
+                    anyString()
+                )
+            )
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Fail)
@@ -121,7 +164,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertTrue(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
@@ -132,7 +174,8 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertFalse(viewModel.isUserEligible())
+        assertFalse(viewModel.hasIncentive())
+        assertFalse(viewModel.hasOngoingChallenge())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Fail)
     }
 
@@ -165,7 +208,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getImageList of 5 images should return expected ImageReviewModels`() {
-        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1", "ImageUrl1"), ImageReviewUiModel("ImageUrl2", "ImageUrl2"), ImageReviewUiModel("ImageUrl3", "ImageUrl3"), ImageReviewUiModel("ImageUrl4", "ImageUrl4"), ImageReviewUiModel("ImageUrl5", "ImageUrl5"))
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("ImageUrl1", "ImageUrl1"),
+            ImageReviewUiModel("ImageUrl2", "ImageUrl2"),
+            ImageReviewUiModel("ImageUrl3", "ImageUrl3"),
+            ImageReviewUiModel("ImageUrl4", "ImageUrl4"),
+            ImageReviewUiModel("ImageUrl5", "ImageUrl5")
+        )
 
         val actualData = viewModel.getImageList(images)
 
@@ -175,13 +224,19 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when getImageList of less than 5 images should return expected ImageReviewModels and DefaultImageReviewModel`() {
         val selectedImages = listOf(
-                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
-                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
-                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
-                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4")
+            ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
+            ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
+            ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
+            ProductrevReviewAttachment("ImageUrl4", "ImageUrl4")
         )
 
-        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1", "ImageUrl1"), ImageReviewUiModel("ImageUrl2", "ImageUrl2"), ImageReviewUiModel("ImageUrl3", "ImageUrl3"), ImageReviewUiModel("ImageUrl4", "ImageUrl4"), DefaultImageReviewUiModel())
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("ImageUrl1", "ImageUrl1"),
+            ImageReviewUiModel("ImageUrl2", "ImageUrl2"),
+            ImageReviewUiModel("ImageUrl3", "ImageUrl3"),
+            ImageReviewUiModel("ImageUrl4", "ImageUrl4"),
+            DefaultImageReviewUiModel()
+        )
 
         val actualData = viewModel.getImageList(selectedImages)
 
@@ -196,7 +251,8 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with images results in back end error should return failure`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
+        val expectedResponse =
+            ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
         val expectedUploadResponse = UploadResult.Success("success")
 
         onGetForm_thenReturn()
@@ -251,7 +307,12 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with no images should execute expected usecases`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true, feedbackID = "feedbackId"))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(
+            ProductRevSuccessSubmitReview(
+                success = true,
+                feedbackID = "feedbackId"
+            )
+        )
 
         onGetForm_thenReturn()
         onSubmitReview_thenReturn(expectedResponse)
@@ -267,7 +328,8 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with no images results in back end error should return failure`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
+        val expectedResponse =
+            ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
 
         onGetForm_thenReturn()
         onSubmitReview_thenReturn(expectedResponse)
@@ -297,11 +359,21 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when editReview with no images should execute expected usecases`() {
-        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+        val expectedResponse =
+            ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
 
         onEditReview_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -311,11 +383,21 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when editReview with no images results in back end error should return failure`() {
-        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedResponse =
+            ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
 
         onEditReview_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -329,7 +411,16 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReviewError_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -337,12 +428,16 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getAfterEditImageList should add all images when 5 images`() {
-        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
-        val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
+        val imagePickerResult =
+            mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
+        val originalImageUrl =
+            mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
 
-        val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
-                ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
-                ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5"))
+        val expectedData = mutableListOf<BaseImageReviewUiModel>(
+            ImageReviewUiModel("picture1"),
+            ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
+            ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5")
+        )
 
         val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
@@ -354,9 +449,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4")
         val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4")
 
-        val expectedData = mutableListOf(ImageReviewUiModel("picture1"),
-                ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
-                ImageReviewUiModel("picture4"), DefaultImageReviewUiModel())
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("picture1"),
+            ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
+            ImageReviewUiModel("picture4"), DefaultImageReviewUiModel()
+        )
 
         val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
@@ -365,12 +462,15 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getAfterEditImageList contains image from storage should add all images`() {
-        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4", "storage/pic")
+        val imagePickerResult =
+            mutableListOf("picture1", "picture2", "picture3", "picture4", "storage/pic")
         val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4")
 
-        val expectedData = mutableListOf(ImageReviewUiModel("picture1"),
-                ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
-                ImageReviewUiModel("picture4"), ImageReviewUiModel("storage/pic"))
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("picture1"),
+            ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
+            ImageReviewUiModel("picture4"), ImageReviewUiModel("storage/pic")
+        )
 
         val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
@@ -378,16 +478,45 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when getAfterEditImageList contains cached image from cloud should replace it with real image url`() {
+        val imagePickerResult = mutableListOf("picture1.0", "picture2.jpg")
+        val imagesFedIntoPicker = mutableListOf("https://example.com/picture1.jpg", "https://example.com/picture1.jpg")
+
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("https://example.com/picture1.jpg"),
+            ImageReviewUiModel("picture2.jpg"),
+            DefaultImageReviewUiModel()
+        )
+
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, imagesFedIntoPicker)
+
+        assertEquals(expectedData, actualData)
+    }
+
+    @Test
     fun `when editReview with images should execute expected usecases`() {
-        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+        val expectedResponse =
+            ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
         val expectedUploadResponse = UploadResult.Success("success")
 
         onUploadImage_thenReturn(expectedUploadResponse)
         onEditReview_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
+        viewModel.removeImage(
+            ImageReviewUiModel(images.first().thumbnail, images.first().fullSize),
+            true
+        )
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -397,15 +526,28 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when editReview with images results in back end error should return failure`() {
-        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedResponse =
+            ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
         val expectedUploadResponse = UploadResult.Success("success")
 
         onUploadImage_thenReturn(expectedUploadResponse)
         onEditReview_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
+        viewModel.removeImage(
+            ImageReviewUiModel(images.first().thumbnail, images.first().fullSize),
+            true
+        )
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -420,7 +562,16 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onEditReviewError_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -441,7 +592,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getReviewTemplates is not empty should execute expected usecase and indicate that template is available`() {
-        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
+        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(
+            ProductrevGetReviewTemplate(
+                templates = listOf(
+                    "template1",
+                    "template2"
+                )
+            )
+        )
 
         onGetReviewTemplate_thenReturn(expectedResponse)
 
@@ -453,27 +611,15 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `when getReviewTemplates is not empty but product is incentive eligible should execute expected usecase and indicate that template is not available`() {
-        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
-        val expectedIncentivesResponse = ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
-
-        onGetReviewTemplate_thenReturn(expectedResponse)
-        onGetOvoIncentive_thenReturn(expectedIncentivesResponse)
-
-        viewModel.getReviewTemplates(productId)
-        viewModel.getProductIncentiveOvo()
-
-        verifyGetReviewTemplateUseCaseCalled()
-        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
-        verifyOvoIncentiveUseCaseCalled()
-        assertFalse(viewModel.isTemplateAvailable())
-        assertTrue(viewModel.isUserEligible())
-        assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
-    }
-
-    @Test
     fun `when getReviewTemplates is not empty and product is not incentive eligible should execute expected usecase and indicate that template is available`() {
-        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
+        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(
+            ProductrevGetReviewTemplate(
+                templates = listOf(
+                    "template1",
+                    "template2"
+                )
+            )
+        )
         val expectedIncentivesResponse = null
 
         onGetReviewTemplate_thenReturn(expectedResponse)
@@ -486,7 +632,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
         verifyOvoIncentiveValueEquals(expectedIncentivesResponse)
         assertTrue(viewModel.isTemplateAvailable())
-        assertFalse(viewModel.isUserEligible())
+        assertFalse(viewModel.hasIncentive())
     }
 
     @Test
@@ -515,7 +661,8 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when updateProgressBarFromTextArea should only update isNotEmpty`() {
         val isTextAreaFilled = true
-        val expectedProgressBarState = CreateReviewProgressBarState(isTextAreaFilled = isTextAreaFilled)
+        val expectedProgressBarState =
+            CreateReviewProgressBarState(isTextAreaFilled = isTextAreaFilled)
 
         viewModel.updateProgressBarFromTextArea(isTextAreaFilled)
 
@@ -570,15 +717,257 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
     }
 
+    @Test
+    fun `when getBadRatingCategories success should execute getBadRatingCategoryUseCase and get bad rating categories`() {
+        val expectedResponse = BadRatingCategoriesResponse()
+
+        onGetBadRatingCategoriesSuccess_thenReturn(expectedResponse)
+
+        viewModel.getBadRatingCategories()
+
+        verifyGetBadRatingCategoryUseCaseCalled()
+        verifyBadRatingCategoriesSuccess(Success(expectedResponse.productrevGetBadRatingCategory.list))
+    }
+
+    @Test
+    fun `when getBadRatingCategories fail should execute getBadRatingCategoryUseCase and get error`() {
+        val expectedResponse = Throwable()
+
+        onGetBadRatingCategoriesError_thenReturn(expectedResponse)
+
+        viewModel.getBadRatingCategories()
+
+        verifyGetBadRatingCategoryUseCaseCalled()
+        verifyBadRatingCategoriesFail(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when addBadRatingCategory should update progress bar accordingly`() {
+        val expectedProgressBarState = CreateReviewProgressBarState(isBadRatingReasonSelected = true)
+
+        viewModel.addBadRatingCategory(anyString())
+
+        viewModel.progressBarState.verifyValueEquals(expectedProgressBarState)
+        Assert.assertTrue(viewModel.isBadRatingReasonSelected(true))
+    }
+
+    @Test
+    fun `when removeBadRatingCategory should update progress bar accordingly`() {
+        val expectedProgressBarState = CreateReviewProgressBarState(isBadRatingReasonSelected = false)
+        val badRatingCategoryId = anyString()
+
+        viewModel.addBadRatingCategory(badRatingCategoryId)
+        viewModel.removeBadRatingCategory(badRatingCategoryId)
+
+        viewModel.progressBarState.verifyValueEquals(expectedProgressBarState)
+        Assert.assertFalse(viewModel.isBadRatingReasonSelected(true))
+    }
+
+    @Test
+    fun `when isOtherCategoryOnly should get expected value`() {
+        val otherBadRatingCategoryId = "6"
+
+        viewModel.addBadRatingCategory(otherBadRatingCategoryId)
+
+        assertTrue(viewModel.isOtherCategoryOnly())
+        assertTrue(viewModel.isBadRatingReasonSelected(true))
+        assertFalse(viewModel.isBadRatingReasonSelected(false))
+
+        viewModel.addBadRatingCategory(anyString())
+
+        assertFalse(viewModel.isOtherCategoryOnly())
+    }
+
+    @Test
+    fun `when incentiveOvo value is null then hasIncentive should return false`() {
+        onGetOvoIncentive_thenReturn(null)
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo data is null then hasIncentive should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is zero then hasIncentive should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is more than zero then hasIncentive should return true`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10)))
+        viewModel.getProductIncentiveOvo()
+
+        assertTrue(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo value is null then hasOngoingChallenge should return false`() {
+        onGetOvoIncentive_thenReturn(null)
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when incentiveOvo data is null then hasOngoingChallenge should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is more than zero then hasOngoingChallenge should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10)))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is zero then hasOngoingChallenge should return true`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        viewModel.getProductIncentiveOvo()
+
+        assertTrue(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results null should update _postSubmitUiState value to ShowThankYouToaster with null data`() {
+        val expected = PostSubmitUiState.ShowThankYouToaster(null)
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(null))
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results in type equals standard should update _postSubmitUiState value to ShowThankYouBottomSheet`() {
+        val response = ProductrevGetPostSubmitBottomSheetResponse(type = "standard")
+        val expected = PostSubmitUiState.ShowThankYouBottomSheet(
+            data = response,
+            hasPendingIncentive = true
+        )
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(response))
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results in type equals thanks_toaster should update _postSubmitUiState value to ShowThankYouToaster`() {
+        val response = ProductrevGetPostSubmitBottomSheetResponse(type = "thanks_toaster")
+        val expected = PostSubmitUiState.ShowThankYouToaster(
+            data = response
+        )
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(response))
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results error should update _postSubmitUiState value to ShowThankYouToaster`() {
+        val expected = PostSubmitUiState.ShowThankYouToaster(null)
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetDataError_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getIncentiveOvo results is null should set isInboxEmpty param as true`() {
+        onGetOvoIncentive_thenReturn(null)
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `when getIncentiveOvo results data is null should set isInboxEmpty param as true`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `when getIncentiveOvo results is error should set isInboxEmpty param as true`() {
+        onGetOvoIncentiveError_thenReturn(mockk())
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `when incentiveOvo results is null should set incentiveAmount param as zero`() {
+        onGetOvoIncentive_thenReturn(null)
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results data is null should set incentiveAmount param as zero`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results amount is zero should set incentiveAmount param as zero`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results is error should set incentiveAmount param as zero`() {
+        onGetOvoIncentiveError_thenReturn(mockk())
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results amount is more than zero should set incentiveAmount param as equal to the amount`() {
+        val amount = 10
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = amount)))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), amount) }
+    }
+
     private fun fillInImages() {
         val feedbackId = anyString()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
-                ProductrevGetReviewDetail(
-                        review =
-                        ProductrevGetReviewDetailReview(
-                                attachments = images
-                        )
+            ProductrevGetReviewDetail(
+                review =
+                ProductrevGetReviewDetailReview(
+                    attachments = images
                 )
+            )
         )
 
         onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
@@ -586,7 +975,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getReviewDetails(feedbackId)
 
         verifyGetReviewDetailUseCaseCalled()
-        verifyReviewDetailsSuccess(com.tokopedia.review.common.data.Success(expectedReviewDetailResponse.productrevGetReviewDetail))
+        verifyReviewDetailsSuccess(
+            com.tokopedia.review.common.data.Success(
+                expectedReviewDetailResponse.productrevGetReviewDetail
+            )
+        )
     }
 
     private fun verifyGetReviewDetailUseCaseCalled() {
@@ -603,6 +996,10 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun verifyGetReviewTemplateUseCaseCalled() {
         coVerify { getReviewTemplatesUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetBadRatingCategoryUseCaseCalled() {
+        coVerify { getBadRatingCategoryUseCase.executeOnBackground() }
     }
 
     private fun onGetReviewDetails_thenReturn(response: ProductrevGetReviewDetailResponseWrapper) {
@@ -625,9 +1022,22 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         coEvery { getReviewTemplatesUseCase.executeOnBackground() } throws throwable
     }
 
+    private fun onGetBadRatingCategoriesSuccess_thenReturn(response: BadRatingCategoriesResponse) {
+        coEvery { getBadRatingCategoryUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onGetBadRatingCategoriesError_thenReturn(throwable: Throwable) {
+        coEvery { getBadRatingCategoryUseCase.executeOnBackground() } throws throwable
+    }
+
     private fun onGetForm_thenReturn() {
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
+            getProductReputationForm.getReputationForm(
+                GetProductReputationForm.createRequestParam(
+                    anyString(),
+                    anyString()
+                )
+            )
         } returns ProductRevGetForm()
     }
 
@@ -667,6 +1077,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.reviewTemplates.verifyErrorEquals(error)
     }
 
+    private fun verifyBadRatingCategoriesSuccess(badRatingCategories: Success<List<BadRatingCategory>>) {
+        viewModel.badRatingCategories.verifySuccessEquals(badRatingCategories)
+    }
+
+    private fun verifyBadRatingCategoriesFail(error: Fail) {
+        viewModel.badRatingCategories.verifyErrorEquals(error)
+    }
+
     private fun onSubmitReview_thenReturn(response: ProductrevSubmitReviewResponseWrapper) {
         coEvery { submitReviewUseCase.executeOnBackground() } returns response
     }
@@ -681,6 +1099,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun onEditReviewError_thenReturn(throwable: Throwable) {
         coEvery { editReviewUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onGetPostSubmitBottomSheetData_thenReturn(response: ProductrevGetPostSubmitBottomSheetResponseWrapper) {
+        coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onGetPostSubmitBottomSheetDataError_thenReturn(throwable: Throwable) {
+        coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } throws throwable
     }
 
     private fun verifyReviewDetailsSuccess(viewState: com.tokopedia.review.common.data.Success<ProductrevGetReviewDetail>) {

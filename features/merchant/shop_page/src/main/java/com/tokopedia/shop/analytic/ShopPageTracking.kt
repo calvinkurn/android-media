@@ -118,11 +118,21 @@ open class ShopPageTracking(
         return TextUtils.join(" ", s)
     }
 
-    fun sendScreenShopPage(shopId: String?, shopType: String) {
+    fun sendScreenShopPage(
+        shopId: String,
+        isLogin: Boolean,
+        selectedTabName: String
+    ) {
         val screenName = joinDash(SHOPPAGE, shopId)
+        val loginNonLoginEventValue = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
+        val pageSource = String.format(ShopPageTrackingConstant.FIRST_LANDING_PAGE, selectedTabName)
         val customDimension: MutableMap<String, String> = HashMap()
-        customDimension[ShopPageTrackingConstant.SHOP_TYPE] = shopType
         customDimension[ShopPageTrackingConstant.PAGE_TYPE] = SHOPPAGE
+        customDimension[ShopPageTrackingConstant.BUSINESS_UNIT] = ShopPageTrackingConstant.PHYSICAL_GOODS
+        customDimension[ShopPageTrackingConstant.CURRENT_SITE] = ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
+        customDimension[ShopPageTrackingConstant.IS_LOGGED_IN_STATUS] = loginNonLoginEventValue
+        customDimension[ShopPageTrackingConstant.PAGE_SOURCE] = pageSource
+        customDimension[ShopPageTrackingConstant.SHOP_ID] = shopId
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
@@ -177,13 +187,23 @@ open class ShopPageTracking(
                 customDimensionShopPage)
     }
 
-    fun clickTab(isOwner: Boolean,
-                 tabName: String,
-                 customDimensionShopPage: CustomDimensionShopPage?) {
-        sendGeneralEvent(ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner), String.format(ShopPageTrackingConstant.CLICK_X_TAB, tabName.toLowerCase()),
-                "",
-                customDimensionShopPage)
+    fun clickTab(
+            tabName: String,
+            shopId: String,
+            userId: String
+    ) {
+        val eventLabel = String.format(ShopPageTrackingConstant.LABEL_CLICK_TAB, tabName)
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_TAB,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to shopId,
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     fun clickRequestOpenShop(customDimensionShopPage: CustomDimensionShopPage?) {
@@ -234,13 +254,23 @@ open class ShopPageTracking(
                 customDimensionShopPage)
     }
 
-    fun clickEtalaseChip(isOwner: Boolean,
-                         etalaseName: String?,
-                         customDimensionShopPage: CustomDimensionShopPage?) {
-        sendGeneralEvent(ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner), String.format(ShopPageTrackingConstant.CLICK_SHOWCASE_X, etalaseName),
-                "",
-                customDimensionShopPage)
+    fun clickEtalaseChip(
+            tabName: String,
+            shopId: String,
+            userId: String
+    ) {
+        val eventLabel = String.format(ShopPageTrackingConstant.LABEL_CLICK_SHOWCASE_CHIP, tabName)
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.ACTION_CLICK_SHOWCASE_CHIP,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to shopId,
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     fun clickMenuFromMoreMenu(isOwner: Boolean,
@@ -287,13 +317,21 @@ open class ShopPageTracking(
                 customDimensionShopPage)
     }
 
-    fun clickReadNotes(isOwner: Boolean, noteRowIndex: Int,
-                       customDimensionShopPage: CustomDimensionShopPage?) {
-        sendEvent(ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                joinDash(ShopPageTrackingConstant.INFO, ShopPageTrackingConstant.CLICK),
-                joinDash(ShopPageTrackingConstant.CLICK_READ_NOTES, (noteRowIndex + 1).toString()),
-                customDimensionShopPage)
+    fun clickReadNotes(
+            shopId: String,
+            userId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_GLOBAL_HEADER,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                ShopPageTrackingConstant.EVENT_LABEL to ShopPageTrackingConstant.LABEL_CLICK_GLOBAL_HEADER_SHOP_NOTES,
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to shopId,
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     fun clickReview(isOwner: Boolean,
@@ -553,6 +591,20 @@ open class ShopPageTracking(
         eventMap[ShopPageTrackingConstant.NAME] = joinDash(componentName, headerId, headerTrackerType)
         eventMap[ShopPageTrackingConstant.POSITION] = componentPosition
         return eventMap
+    }
+
+    fun sendImpressionShopTab(shopId: String, tabTitle: String) {
+        val eventLabel = String.format(ShopPageTrackingConstant.IMPRESSION_TAB, tabTitle)
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.IMPRESSION_TAB_ICON,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to shopId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     companion object {

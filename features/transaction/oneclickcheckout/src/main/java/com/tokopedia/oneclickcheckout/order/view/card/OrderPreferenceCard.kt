@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -22,6 +20,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
@@ -180,18 +179,19 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         binding.apply {
             val logisticPromo = shipping.shippingRecommendationData?.logisticPromo
             if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && logisticPromo != null) {
-                if (logisticPromo.etaData.errorCode == 0) {
+                val formattedLogisticPromoTickerMessage = HtmlLinkHelper(tickerShippingPromoTitle.context, shipping.logisticPromoTickerMessage).spannedString
+                if (logisticPromo.etaData.errorCode == 0 && !logisticPromo.isBebasOngkirExtra) {
                     if (logisticPromo.etaData.textEta.isEmpty()) {
                         tickerShippingPromoSubtitle.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
                     } else {
                         tickerShippingPromoSubtitle.text = logisticPromo.etaData.textEta
                     }
-                    tickerShippingPromoTitle.text = "${shipping.logisticPromoTickerMessage}"
+                    tickerShippingPromoTitle.text = formattedLogisticPromoTickerMessage
                     tickerShippingPromoTitle.visible()
                     tickerShippingPromoSubtitle.visible()
                     tickerShippingPromoDescription.gone()
                 } else {
-                    tickerShippingPromoDescription.text = "${shipping.logisticPromoTickerMessage}"
+                    tickerShippingPromoDescription.text = formattedLogisticPromoTickerMessage
                     tickerShippingPromoDescription.visible()
                     tickerShippingPromoTitle.gone()
                     tickerShippingPromoSubtitle.gone()
@@ -210,29 +210,13 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     private fun renderBboShipping(shipping: OrderShipment, logisticPromoViewModel: LogisticPromoUiModel) {
         binding.apply {
-            tvShippingCourier.text = binding.root.context.getString(R.string.lbl_shipping_with_name, logisticPromoViewModel.title)
+            val formattedFreeShippingChosenCourierTitle = HtmlLinkHelper(tvShippingCourier.context, logisticPromoViewModel.freeShippingChosenCourierTitle).spannedString
+            tvShippingCourier.text = formattedFreeShippingChosenCourierTitle
             tvShippingDuration.gone()
             btnChangeDuration.gone()
             tvShippingCourierNotes.gone()
-            if (logisticPromoViewModel.benefitAmount >= logisticPromoViewModel.shippingRate) {
-                tvShippingPrice.gone()
-            } else {
-                val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-                val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                val span = SpannableString("($originalPrice $finalPrice)")
-                span.setSpan(StrikethroughSpan(), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(RelativeSizeSpan(PROPOTION_10 / FLOAT_12), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(StyleSpan(BOLD), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                binding.root.context?.let {
-                    val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-                    span.setSpan(ForegroundColorSpan(color), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    span.setSpan(ForegroundColorSpan(color), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                tvShippingPrice.text = span
-                tvShippingPrice.visible()
-            }
-            if (logisticPromoViewModel.etaData.errorCode == 0) {
+            tvShippingPrice.gone()
+            if (logisticPromoViewModel.etaData.errorCode == 0 && !logisticPromoViewModel.isBebasOngkirExtra) {
                 if (logisticPromoViewModel.etaData.textEta.isEmpty()) {
                     tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
                 } else {
@@ -454,24 +438,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tickerShippingPromo.gone()
             loaderShipping.gone()
             if (shipping.isApplyLogisticPromo && shipping.logisticPromoShipping != null && shipping.logisticPromoViewModel != null) {
-                if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-                    tvShippingCourier.text = "${shipping.logisticPromoShipping.productData.shipperName} (${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                    })"
-                } else {
-                    val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-                    val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                    val span = SpannableString("${shipping.logisticPromoShipping.productData.shipperName} ($originalPrice $finalPrice)")
-                    val originalPriceStartIndex = shipping.logisticPromoShipping.productData.shipperName.length + 2
-                    val originalPriceEndIndex = originalPriceStartIndex + originalPrice.length + 1
-                    span.setSpan(StrikethroughSpan(), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    span.setSpan(RelativeSizeSpan(PROPOTION_10 / FLOAT_12), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    binding.root.context?.let {
-                        val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                        span.setSpan(ForegroundColorSpan(color), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-                    tvShippingCourier.text = span
-                }
+                val formattedFreeShippingChosenCourierTitle = HtmlLinkHelper(tvShippingCourier.context, shipping.logisticPromoViewModel.freeShippingChosenCourierTitle).spannedString
+                tvShippingCourier.text = formattedFreeShippingChosenCourierTitle
             } else {
                 tvShippingCourier.text = "$shipperName (${
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()
@@ -567,9 +535,14 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentOvoErrorAction.setOnClickListener {
                             if (profile.enable) {
                                 if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
-                                    listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    if (payment.isOvo) {
+                                        listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    } else {
+                                        listener.onWalletTopUpClicked(payment.walletData.walletType, payment.walletData.topUp.urlLink, payment.walletData.callbackUrl,
+                                                payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
+                                    }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
-                                    if (payment.walletErrorData.isOvo) {
+                                    if (payment.isOvo) {
                                         listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
                                     } else {
                                         listener.onWalletActivateClicked(payment.walletData.activation.headerTitle, payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
@@ -590,9 +563,14 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentErrorMessage.setOnClickListener {
                             if (profile.enable) {
                                 if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
-                                    listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    if (payment.isOvo) {
+                                        listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    } else {
+                                        listener.onWalletTopUpClicked(payment.walletData.walletType, payment.walletData.topUp.urlLink, payment.walletData.callbackUrl,
+                                                payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
+                                    }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
-                                    if (payment.walletErrorData.isOvo) {
+                                    if (payment.isOvo) {
                                         listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
                                     } else {
                                         listener.onWalletActivateClicked(payment.walletData.activation.headerTitle, payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
@@ -605,6 +583,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentOvoErrorAction.gone()
                         if (payment.walletErrorData.type != OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                             tvPaymentDetail.gone()
+                        } else if (payment.walletData.walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
+                            orderSummaryAnalytics.eventViewTopUpGoPayButton()
                         }
                     } else {
                         // only show message
@@ -871,5 +851,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
+
+        fun onWalletTopUpClicked(walletType: Int, url: String, callbackUrl: String, isHideDigital: Int, title: String)
     }
 }

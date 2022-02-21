@@ -1,9 +1,11 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.os.Bundle
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.view.fragment.PlayUpcomingFragment
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import java.util.concurrent.atomic.AtomicBoolean
@@ -19,11 +21,13 @@ class FragmentUpcomingViewComponent(
 
     private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
 
-    fun safeInit() = synchronized(this) {
+    fun safeInit(channelId: String) = synchronized(this) {
+        show()
+
         if (isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(false, true)
 
-        fragmentManager.findFragmentByTag(UPCOMING_FRAGMENT_TAG) ?: getPlayUpcomingFragment().also {
+        fragmentManager.findFragmentByTag(UPCOMING_FRAGMENT_TAG) ?: getPlayUpcomingFragment(channelId).also {
             fragmentManager.beginTransaction()
                 .replace(rootView.id, it, UPCOMING_FRAGMENT_TAG)
                 .commit()
@@ -31,6 +35,8 @@ class FragmentUpcomingViewComponent(
     }
 
     fun safeRelease() = synchronized(this) {
+        hide()
+
         if (!isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(true, false)
 
@@ -41,9 +47,15 @@ class FragmentUpcomingViewComponent(
         }
     }
 
-    private fun getPlayUpcomingFragment(): Fragment {
+    fun getActiveFragment(): PlayUpcomingFragment? = fragmentManager.findFragmentByTag(UPCOMING_FRAGMENT_TAG) as? PlayUpcomingFragment
+
+    private fun getPlayUpcomingFragment(channelId: String): Fragment {
         val fragmentFactory = fragmentManager.fragmentFactory
-        return fragmentFactory.instantiate(container.context.classLoader, PlayUpcomingFragment::class.java.name)
+        return fragmentFactory.instantiate(container.context.classLoader, PlayUpcomingFragment::class.java.name).apply {
+            arguments = Bundle().apply {
+                putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
+        }
     }
 
     companion object {

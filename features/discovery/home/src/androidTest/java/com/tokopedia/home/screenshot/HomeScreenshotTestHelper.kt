@@ -25,6 +25,7 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "ATF3-Icon"),
                 ScreenshotModel(name = "ATF4-Lego4Image"),
                 ScreenshotModel(name = "Lego6Image"),
+                ScreenshotModel(name = "CampaignWidget"),
                 ScreenshotModel(name = "Lego4Image"),
                 ScreenshotModel(name = "Lego3Image"),
                 ScreenshotModel(name = "1x2Banner"),
@@ -44,7 +45,8 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "SalamReminder"),
                 ScreenshotModel(name = "HomeWidget2"),
                 ScreenshotModel(name = "HomeFeaturedShop"),
-                ScreenshotModel(name = "PlayWidget")
+                ScreenshotModel(name = "PlayWidget"),
+                ScreenshotModel(name = "CMHomeWidget")
         )
     }
 

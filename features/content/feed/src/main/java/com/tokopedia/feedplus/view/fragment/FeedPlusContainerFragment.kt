@@ -74,6 +74,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -440,29 +441,33 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
                             title = getString(R.string.feed_fab_create_post),
                             listener = {
-                                fab_feed.menuOpen = false
-                                entryPointAnalytic.clickCreatePostEntryPoint()
-                                val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
-                                 if (shouldShowNewContentCreationFlow) {
-                                    val authors = viewModel.feedContentForm.authors
-                                    val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                    intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                                            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                    intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                                            MAX_MULTI_SELECT_ALLOWED_VALUE)
-                                    intent.putExtra(TITLE,
-                                            getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
-                                    val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                                    intent.putExtra(SUB_TITLE, name)
-                                    intent.putExtra(TOOLBAR_ICON_URL,
-                                            authors.first().thumbnail
-                                    )
-                                    intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                                            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                    startActivity(intent)
-                                    TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-                                } else {
-                                    openBottomSheetToFollowOldFlow()
+                                try {
+                                    fab_feed.menuOpen = false
+                                    entryPointAnalytic.clickCreatePostEntryPoint()
+                                    val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
+                                    if (shouldShowNewContentCreationFlow) {
+                                        val authors = viewModel.feedContentForm.authors
+                                        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                                        intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                        intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                                                MAX_MULTI_SELECT_ALLOWED_VALUE)
+                                        intent.putExtra(TITLE,
+                                                getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
+                                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
+                                        intent.putExtra(SUB_TITLE, name)
+                                        intent.putExtra(TOOLBAR_ICON_URL,
+                                                authors.first().thumbnail
+                                        )
+                                        intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                        startActivity(intent)
+                                        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+                                    } else {
+                                        openBottomSheetToFollowOldFlow()
+                                    }
+                                } catch (e: Exception) {
+                                    Timber.e(e)
                                 }
                             }
                     )

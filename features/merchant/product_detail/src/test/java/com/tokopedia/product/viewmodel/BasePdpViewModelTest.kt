@@ -9,10 +9,10 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -62,9 +62,6 @@ abstract class BasePdpViewModelTest {
     lateinit var trackAffiliateUseCase: TrackAffiliateUseCase
 
     @RelaxedMockK
-    lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
-
-    @RelaxedMockK
     lateinit var updateCartCounterUseCase: UpdateCartCounterUseCase
 
     @RelaxedMockK
@@ -103,6 +100,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
+    @RelaxedMockK
+    lateinit var playWidgetTools: PlayWidgetTools
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -131,7 +131,6 @@ abstract class BasePdpViewModelTest {
                 { getRecommendationUseCase },
                 { getRecommendationFilterChips },
                 { trackAffiliateUseCase },
-                { submitHelpTicketUseCase },
                 { updateCartCounterUseCase },
                 { addToCartUseCase },
                 { addToCartOcsUseCase },
@@ -143,6 +142,7 @@ abstract class BasePdpViewModelTest {
                 { updateCartUseCase },
                 { deleteCartUseCase },
                 { getTopadsIsAdsUseCase },
+                playWidgetTools,
                 userSessionInterface)
     }
 }

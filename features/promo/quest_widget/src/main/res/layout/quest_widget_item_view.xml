@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="@dimen/quest_widget_dim_264dp"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <FrameLayout
+            android:id="@+id/progressBarContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="@dimen/quest_widget_dim_56dp"
+            android:layout_height="@dimen/quest_widget_dim_56dp"
+            android:layout_marginBottom="@dimen/quest_widget_dim_14dp"
+            android:layout_marginTop="@dimen/quest_widget_dim_14dp"
+            android:measureAllChildren="false">
+
+            <com.tokopedia.quest_widget.view.QuestProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="@dimen/quest_widget_dim_56dp"
+                android:layout_height="@dimen/quest_widget_dim_56dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iconContainer"
+                android:layout_width="@dimen/quest_widget_dim_56dp"
+                android:visibility="visible"
+                tools:visibility="visible"
+                android:layout_height="@dimen/quest_widget_dim_56dp"
+                app:srcCompat="@drawable/quest_widget_ellipses"/>
+
+        </FrameLayout>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_banner_icon"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
+            app:layout_constraintEnd_toEndOf="@id/progressBarContainer"
+            app:layout_constraintStart_toStartOf="@id/progressBarContainer"
+            app:layout_constraintTop_toTopOf="@id/progressBarContainer" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_banner_icon_second"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:translationY="56dp"
+            app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
+            app:layout_constraintEnd_toEndOf="@id/progressBarContainer"
+            app:layout_constraintStart_toStartOf="@id/progressBarContainer"
+            app:layout_constraintTop_toTopOf="@id/progressBarContainer" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/quest_widget_dim_12dp"
+            android:layout_marginEnd="@dimen/spacing_lvl5"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
+            app:layout_constraintStart_toEndOf="@id/progressBarContainer"
+            app:layout_constraintTop_toTopOf="@id/progressBarContainer">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_banner_title"
+                android:layout_width="@dimen/quest_widget_dim_168dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_banner_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/quest_widget_dim_2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_banner_desc_sisa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/quest_widget_dim_2dp"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

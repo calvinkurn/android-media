@@ -55,6 +55,7 @@ public class AddressConstants {
     public static final String EXTRA_NEGATIVE_FULL_FLOW = "EXTRA_NEGATIVE_FULL_FLOW";
     public static final String EXTRA_FROM_ADDRESS_FORM = "EXTRA_FROM_ADDRESS_FORM";
     public static final String EXTRA_FROM_PINPOINT = "EXTRA_FROM_PINPOINT";
+    public static final String EXTRA_RESET_TO_SEARCH_PAGE = "EXTRA_RESET_TO_SEARCH_PAGE";
 
     private static final Double MONAS_LAT = -6.175794;
     private static final Double MONAS_LONG = 106.826457;

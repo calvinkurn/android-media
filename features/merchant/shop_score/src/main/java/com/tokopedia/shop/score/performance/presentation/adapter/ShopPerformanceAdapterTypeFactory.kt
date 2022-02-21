@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.tablet.ItemHeaderParameterPerformanceViewHolder
 import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 
 class ShopPerformanceAdapterTypeFactory(
     private val shopPerformanceListener: ShopPerformanceListener,
@@ -75,9 +77,20 @@ class ShopPerformanceAdapterTypeFactory(
         return ItemProtectedParameterSectionViewHolder.LAYOUT
     }
 
+    override fun type(itemReactivatedComebackUiModel: ItemReactivatedComebackUiModel): Int {
+        return ItemReactivatedComebackViewHolder.LAYOUT
+    }
+
+    override fun type(tickerReactivatedUiModel: TickerReactivatedUiModel): Int {
+        return TickerReactivatedViewHolder.LAYOUT
+    }
+
+    override fun type(itemHeaderParameterDetailUiModel: ItemHeaderParameterDetailUiModel): Int {
+        return ItemHeaderParameterPerformanceViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-
             ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(
                 parent,
                 shopPerformanceListener
@@ -130,6 +143,18 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             ItemProtectedParameterSectionViewHolder.LAYOUT -> ItemProtectedParameterSectionViewHolder(
+                parent,
+                shopPerformanceListener
+            )
+            TickerReactivatedViewHolder.LAYOUT -> TickerReactivatedViewHolder(
+                parent,
+                shopPerformanceListener
+            )
+            ItemReactivatedComebackViewHolder.LAYOUT -> ItemReactivatedComebackViewHolder(
+                parent,
+                shopPerformanceListener
+            )
+            ItemHeaderParameterPerformanceViewHolder.LAYOUT -> ItemHeaderParameterPerformanceViewHolder(
                 parent,
                 shopPerformanceListener
             )

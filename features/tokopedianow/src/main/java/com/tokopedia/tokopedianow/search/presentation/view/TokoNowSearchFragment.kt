@@ -44,6 +44,7 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
@@ -54,7 +55,8 @@ class TokoNowSearchFragment :
     SuggestionListener,
     CategoryJumperListener,
     CTATokoNowHomeListener,
-    BroadMatchListener {
+    BroadMatchListener,
+    SwitcherWidgetListener{
 
     companion object {
         @JvmStatic
@@ -141,6 +143,7 @@ class TokoNowSearchFragment :
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
             categoryJumperListener = this,
@@ -254,7 +257,7 @@ class TokoNowSearchFragment :
         return TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
         val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
@@ -265,7 +268,7 @@ class TokoNowSearchFragment :
                 sortFilterParams,
         )
 
-        super.onBannerClick(channelModel, applink)
+        super.onBannerClick(channelModel, applink, param)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -418,6 +421,6 @@ class TokoNowSearchFragment :
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        SearchTracking.sendOOCOpenScreenTracking()
+        SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

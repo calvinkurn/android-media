@@ -16,7 +16,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
         viewModel.checkAccess(AdminFeature.SALDO)
 
         assert((viewModel.isRoleAuthorizedLiveData.value as? Success)?.data == true)
-        viewModel.isLoadingLiveData.verifyValueEquals(true)
+        viewModel.isLoadingLiveData.verifyValueEquals(false)
     }
 
     @Test
@@ -28,7 +28,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
         viewModel.checkAccess(AdminFeature.SALDO)
 
         assert((viewModel.isRoleAuthorizedLiveData.value as? Success)?.data == isRoleAuthorized)
-        viewModel.isLoadingLiveData.verifyValueEquals(true)
+        viewModel.isLoadingLiveData.verifyValueEquals(false)
     }
 
     @Test
@@ -40,7 +40,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
         viewModel.checkAccess(AdminFeature.SALDO)
 
         assert(viewModel.isRoleAuthorizedLiveData.value is Fail)
-        viewModel.isLoadingLiveData.verifyValueEquals(true)
+        viewModel.isLoadingLiveData.verifyValueEquals(false)
     }
 
 }

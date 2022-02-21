@@ -105,7 +105,7 @@ class ChangePinViewModelTest {
         verify {
             resetPinUseCase.setTypeClass(any())
             resetPinUseCase.setRequestParams(mockParam)
-            resetPinUseCase.setGraphqlQuery(any())
+            resetPinUseCase.setGraphqlQuery(any<String>())
             resetPinUseCase.execute(any(), any())
         }
     }
@@ -184,7 +184,7 @@ class ChangePinViewModelTest {
         verify {
             checkPinUseCase.setTypeClass(any())
             checkPinUseCase.setRequestParams(mockParam)
-            checkPinUseCase.setGraphqlQuery(any())
+            checkPinUseCase.setGraphqlQuery(any<String>())
             checkPinUseCase.execute(any(), any())
         }
     }
@@ -261,7 +261,7 @@ class ChangePinViewModelTest {
         verify {
             validatePinUseCase.setTypeClass(any())
             validatePinUseCase.setRequestParams(mockParam)
-            validatePinUseCase.setGraphqlQuery(any())
+            validatePinUseCase.setGraphqlQuery(any<String>())
             validatePinUseCase.execute(any(), any())
         }
     }
@@ -341,7 +341,7 @@ class ChangePinViewModelTest {
         verify {
             changePinUseCase.setTypeClass(any())
             changePinUseCase.setRequestParams(mockParam)
-            changePinUseCase.setGraphqlQuery(any())
+            changePinUseCase.setGraphqlQuery(any<String>())
             changePinUseCase.execute(any(), any())
         }
     }
@@ -428,7 +428,7 @@ class ChangePinViewModelTest {
         verify {
             checkPin2FAUseCase.setTypeClass(any())
             checkPin2FAUseCase.setRequestParams(mockParam)
-            checkPin2FAUseCase.setGraphqlQuery(any())
+            checkPin2FAUseCase.setGraphqlQuery(any<String>())
             checkPin2FAUseCase.execute(any(), any())
         }
     }
@@ -508,7 +508,7 @@ class ChangePinViewModelTest {
         verify {
             reset2FAPinUseCase.setTypeClass(any())
             reset2FAPinUseCase.setRequestParams(mockParam)
-            reset2FAPinUseCase.setGraphqlQuery(any())
+            reset2FAPinUseCase.setGraphqlQuery(any<String>())
             reset2FAPinUseCase.execute(any(), any())
         }
     }
@@ -529,6 +529,22 @@ class ChangePinViewModelTest {
 
         /* Then */
         verify { resetPin2FAObserver.onChanged(Success(resetPin2FaPojo.data)) }
+    }
+
+    @Test
+    fun `on Success Reset Pin 2FA - other errors`() {
+        /* When */
+        resetPin2FaPojo.data.is_success = 0
+        resetPin2FaPojo.data.error = ""
+
+        every { reset2FAPinUseCase.execute(any(), any()) } answers {
+            firstArg<(ResetPin2FaPojo) -> Unit>().invoke(resetPin2FaPojo)
+        }
+
+        viewModel.resetPin2FA(userId, validateToken)
+
+        /* Then */
+        verify { resetPin2FAObserver.onChanged(any<Fail>()) }
     }
 
     @Test

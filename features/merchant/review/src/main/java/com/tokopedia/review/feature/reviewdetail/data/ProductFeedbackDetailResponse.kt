@@ -50,7 +50,10 @@ data class ProductFeedbackDetailResponse(
                 val variantName: String? = "",
                 @SerializedName("isKejarUlasan")
                 @Expose
-                val isKejarUlasan: Boolean = false
+                val isKejarUlasan: Boolean = false,
+                @SerializedName("badRatingReasonFmt")
+                @Expose
+                val badRatingReasonFmt: String = ""
         ) {
             data class Attachment(
                     @SerializedName("thumbnailURL")

@@ -40,9 +40,10 @@ class PlayMoreActionBottomSheet : BottomSheetUnify() {
 
     private val watchModeAction = PlayMoreActionUiModel(
             type = PlayMoreActionType.WatchMode,
-            iconRes = R.drawable.ic_play_watch_mode,
+            iconRes = com.tokopedia.iconunify.R.drawable.iconunify_screen_full,
             subtitleRes = R.string.play_watch_mode,
-            onClick = { listener?.onWatchModeClicked(this@PlayMoreActionBottomSheet) }
+            isIconAvailable = true,
+            onClick = { listener?.onWatchModeClicked(this@PlayMoreActionBottomSheet)}
     )
 
     private var listener: Listener? = null

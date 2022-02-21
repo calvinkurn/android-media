@@ -5,6 +5,7 @@ import androidx.test.espresso.IdlingResource
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.util.HomeInstrumentationTestHelper.disableHomeAnimation
 
 private const val NAME = "Recycler view has item idling resource"
 
@@ -20,6 +21,7 @@ internal class HomeRecyclerViewIdlingResource(
 
     override fun isIdleNow(): Boolean {
         val recyclerView = recyclerView ?: return true
+        recyclerView.disableHomeAnimation()
 
         val isIdle = (recyclerView.adapter as? HomeRecycleAdapter).isNonCacheData()
         if (isIdle) resourceCallback?.onTransitionToIdle()

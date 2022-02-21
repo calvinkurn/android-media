@@ -3,10 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="horizontal"
-    android:paddingEnd="0dp"
-    android:paddingRight="0dp">
+    android:paddingEnd="0dp">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/button_back"
@@ -18,7 +16,7 @@
         app:icon_color_light_disabled="@color/Unify_N200"
         app:icon_color_light_enable="@color/Unify_N700"
         app:icon_color_night_disabled="@color/Unify_N200"
-        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N700"
         app:icon_enable_state="true"
         app:icon_name="ARROW_BACK" />
 
@@ -28,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/button_back"
-        android:layout_toRightOf="@+id/button_back"
         android:text="Pakai Promo"
         app:typographyType="heading_4" />
 
@@ -38,10 +35,8 @@
         android:layout_height="match_parent"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:gravity="center_vertical"
         android:text="Reset Promo"
         android:textColor="@color/Unify_G500"

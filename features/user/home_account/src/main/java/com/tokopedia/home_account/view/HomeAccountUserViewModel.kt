@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -14,6 +15,8 @@ import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
+import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -26,7 +29,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -44,9 +46,10 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
+    private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
+    private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val walletPref: WalletPref,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -90,9 +93,12 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _phoneNo = MutableLiveData<String>()
     val phoneNo: LiveData<String> get() = _phoneNo
 
-    private val _walletEligible = MutableLiveData<Result<WalletappWalletEligibility>>()
-    val walletEligible: LiveData<Result<WalletappWalletEligibility>>
-        get() = _walletEligible
+    private val _safeModeStatus = MutableLiveData<Boolean>()
+    val safeModeStatus: LiveData<Boolean> get() = _safeModeStatus
+
+    private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintResult>>()
+    val checkFingerprintStatus: LiveData<Result<CheckFingerprintResult>>
+        get() = mutableCheckFingerprintStatus
 
     var internalBuyerData: UserAccountDataModel? = null
 
@@ -109,14 +115,32 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
+    fun getFingerprintStatus() {
+        launchCatchError(block = {
+            val result = checkFingerprintToggleStatusUseCase(userSession.userId).data
+            if(result.isSuccess && result.errorMessage.isEmpty()) {
+                mutableCheckFingerprintStatus.postValue(Success(result))
+            } else {
+                mutableCheckFingerprintStatus.value = Fail(Throwable("Gagal"))
+            }
+        }, onError = {
+            mutableCheckFingerprintStatus.value = Fail(it)
+        })
+    }
+
+    fun getSafeModeValue() {
+        userProfileSafeModeUseCase.executeQuerySafeMode(
+            { (profileSettingResponse) ->
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, profileSettingResponse.safeMode)
+                _safeModeStatus.value = profileSettingResponse.safeMode
+            },
+            { it.printStackTrace() }
+        )
+    }
+
     fun setSafeMode(isActive: Boolean) {
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
-                { (userProfileSettingUpdate) ->
-                    if (userProfileSettingUpdate.isSuccess) {
-                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
-                        accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
-                    }
-                },
+                { getSafeModeValue() },
                 { throwable ->
                     throwable.printStackTrace()
                 }, isActive)
@@ -124,10 +148,10 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getShortcutData() {
         launchCatchError(block = {
-            val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
+            val shortcutResponse = getUserShortcutUseCase(Unit)
             _shortcutData.value = Success(shortcutResponse)
         }, onError = {
-            _shortcutData.postValue(Fail(it))
+            _shortcutData.value = Fail(it)
         })
     }
 
@@ -137,17 +161,14 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBuyerData() {
         launchCatchError(block = {
-            val accountModel = getHomeAccountUserUseCase.executeOnBackground()
+            val accountModel = getHomeAccountUserUseCase(Unit)
             val linkStatus = getLinkStatus()
             accountModel.linkStatus = linkStatus.response
-
-            withContext(dispatcher.main) {
-                internalBuyerData = accountModel
-                saveLocallyAttributes(accountModel)
-                _buyerAccountData.value = Success(accountModel)
-            }
+            internalBuyerData = accountModel
+            saveLocallyAttributes(accountModel)
+            _buyerAccountData.value = Success(accountModel)
         }, onError = {
-            _buyerAccountData.postValue(Fail(it))
+            _buyerAccountData.value = Fail(it)
         })
     }
 
@@ -263,17 +284,6 @@ class HomeAccountUserViewModel @Inject constructor(
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
         }
-    }
-
-    fun getGopayWalletEligible() {
-        launchCatchError(block = {
-            val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
-            val result = getWalletEligibleUseCase(params)
-
-            _walletEligible.value = Success(result.data)
-        }, onError = {
-            _walletEligible.value = Fail(it)
-        })
     }
 
     private fun checkFirstPage(page: Int): Boolean = page == 1

@@ -7,6 +7,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import io.mockk.*
 import org.junit.Test
@@ -146,7 +147,11 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
     private fun `Then verify view interaction for click dynamic product carousel`(dynamicProductCarousel: BroadMatchItemDataView) {
         verify {
             val carouselProductType = dynamicProductCarousel.carouselProductType as DynamicCarouselProduct
-            productListView.trackDynamicProductCarouselClick(dynamicProductCarousel, carouselProductType.type)
+            productListView.trackDynamicProductCarouselClick(
+                dynamicProductCarousel,
+                carouselProductType.type,
+                carouselProductType.inspirationCarouselProduct,
+            )
             productListView.redirectionStartActivity(dynamicProductCarousel.applink, dynamicProductCarousel.url)
         }
 
@@ -169,14 +174,56 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
 
     private fun `Then verify view interaction for click see more dynamic product carousel`(dynamicProductCarousel: BroadMatchDataView) {
         verify {
-            val carouselProductType = dynamicProductCarousel.broadMatchItemDataViewList.first().carouselProductType as DynamicCarouselProduct
-            productListView.trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel, carouselProductType.type)
+            val carouselOptionType = dynamicProductCarousel.carouselOptionType as DynamicCarouselOption
+            productListView.trackEventClickSeeMoreDynamicProductCarousel(
+                dynamicProductCarousel,
+                carouselOptionType.option.inspirationCarouselType,
+                carouselOptionType.option,
+            )
             productListView.redirectionStartActivity(any(), dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
             productListView.modifyApplinkToSearchResult(any())
             productListView.trackEventClickSeeMoreBroadMatch(any())
+        }
+    }
+
+    @Test
+    fun `impression broad match`() {
+        val searchProductModel = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
+        `Given View already load data with broad match`(searchProductModel)
+
+        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
+        `When broad match impressed`(broadMatchDataView)
+
+        `Then verify impression broad match`(broadMatchDataView)
+    }
+
+    private fun `When broad match impressed`(broadMatchDataView: BroadMatchDataView) {
+        productListPresenter.onBroadMatchImpressed(broadMatchDataView)
+    }
+
+    private fun `Then verify impression broad match`(broadMatchDataView: BroadMatchDataView) {
+        verify {
+            productListView.trackEventImpressionBroadMatch(broadMatchDataView)
+        }
+    }
+
+    @Test
+    fun `impression dynamic carousel as broad match`() {
+        val searchProductModel = dynamicProductCarousel.jsonToObject<SearchProductModel>()
+        `Given View already load data with broad match`(searchProductModel)
+
+        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
+        `When broad match impressed`(broadMatchDataView)
+
+        `Then verify broad match impression is not called`()
+    }
+
+    private fun `Then verify broad match impression is not called`() {
+        verify(exactly = 0) {
+            productListView.trackEventImpressionBroadMatch(any())
         }
     }
 }

@@ -4,35 +4,35 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.ItemShopLocationBinding
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
-import kotlinx.android.synthetic.main.item_shop_location.view.*
 
-class ShopLocationViewHolder(val view: View, private val listener: OnIconMoreClicked): AbstractViewHolder<ShopLocationOldUiModel>(view) {
+class ShopLocationViewHolder(private val binding: ItemShopLocationBinding, private val listener: OnIconMoreClicked): AbstractViewHolder<ShopLocationOldUiModel>(binding.root) {
     override fun bind(element: ShopLocationOldUiModel) {
-        itemView.title.text = element.name
-        itemView.address_line_1.text = element.address
-        itemView.address_line_2.text = itemView.context.getString(R.string.shop_address_line_2_placeholder,
+        binding.title.text = element.name
+        binding.addressLine1.text = element.address
+        binding.addressLine2.text = binding.root.context.getString(R.string.shop_address_line_2_placeholder,
                 element.districtName,
                 element.cityName, element.stateName, element.postalCode)
         if (TextUtils.isEmpty(element.phone)) {
-            itemView.phone_number.visibility = View.GONE
+            binding.phoneNumber.visibility = View.GONE
         } else {
-            itemView.phone_number.title = element.phone
-            itemView.phone_number.visibility = View.VISIBLE
+            binding.phoneNumber.title = element.phone
+            binding.phoneNumber.visibility = View.VISIBLE
         }
         if (TextUtils.isEmpty(element.email)) {
-            itemView.email.visibility = View.GONE
+            binding.email.visibility = View.GONE
         } else {
-            itemView.email.title = element.email
-            itemView.email.visibility = View.VISIBLE
+            binding.email.title = element.email
+            binding.email.visibility = View.VISIBLE
         }
         if (TextUtils.isEmpty(element.fax)) {
-            itemView.fax.visibility = View.GONE
+            binding.fax.visibility = View.GONE
         } else {
-            itemView.fax.title = element.fax
-            itemView.fax.visibility = View.VISIBLE
+            binding.fax.title = element.fax
+            binding.fax.visibility = View.VISIBLE
         }
-        itemView.menu_more.setOnClickListener { listener.onIconClicked(element, adapterPosition) }
+        binding.menuMore.setOnClickListener { listener.onIconClicked(element, adapterPosition) }
     }
 
     companion object {

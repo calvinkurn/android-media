@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
@@ -13,6 +14,12 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhonePinVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneSmsVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneVerificationMethodFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.MisscallVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -48,7 +55,11 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     protected open fun createVerificationMethodFragment(bundle: Bundle): Fragment {
-        return VerificationMethodFragment.createInstance(bundle)
+        return if (otpData.source == SOURCE_INACTIVE_PHONE) {
+            InactivePhoneVerificationMethodFragment.createInstance(bundle)
+        } else {
+            VerificationMethodFragment.createInstance(bundle)
+        }
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
@@ -142,6 +153,10 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     open fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+        if (otpData.source == SOURCE_INACTIVE_PHONE) {
+            return getVerificationForInactivePhoneFlow(modeListData, bundle)
+        }
+
         return when (modeListData.modeText) {
             OtpConstant.OtpMode.EMAIL -> {
                 EmailVerificationFragment.createInstance(bundle)
@@ -167,9 +182,34 @@ open class VerificationActivity : BaseOtpActivity() {
         }
     }
 
+    private fun getVerificationForInactivePhoneFlow(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+        return when(modeListData.modeText) {
+            OtpConstant.OtpMode.EMAIL -> {
+                InactivePhoneEmailVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.PIN -> {
+                InactivePhonePinVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.SMS -> {
+                InactivePhoneSmsVerificationFragment.createInstance(bundle)
+            }
+            else -> {
+                VerificationFragment.createInstance(bundle)
+            }
+        }
+    }
+
     open fun goToOnboardingMiscallPage(modeListData: ModeListData) {
         val fragment = OnboardingMiscallFragment.createInstance(createBundle(modeListData))
         doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
+    }
+
+    open fun goToSilentVerificationpage(modeListData: ModeListData) {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val bundle = createBundle(modeListData)
+        bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_SILENT_VERIF)
     }
 
     open fun goToMethodPageResetPin(otpData: OtpData) {
@@ -190,5 +230,8 @@ open class VerificationActivity : BaseOtpActivity() {
         const val TAG_OTP_VALIDATOR = "otpValidator"
         const val TAG_OTP_MISCALL = "otpMiscall"
         const val TAG_OTP_WA_NOT_REGISTERED = "otpWaNotRegistered"
+        const val REQUEST_SILENT_VERIF = 1122
+
+        private const val SOURCE_INACTIVE_PHONE = "inactivePhone"
     }
 }

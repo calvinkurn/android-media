@@ -11,6 +11,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -37,6 +38,14 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
                 String.format("click - %s - %s", otpType.toString(), modeName)))
+    }
+
+    fun trackErrorLimitOtpSilentVerif(otpType: Int, modeName: String, reason: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_METHOD_OTP,
+            String.format("fail - %s - %s - %s", reason, otpType.toString(), modeName)))
     }
 
     fun trackClickInactivePhoneNumber(otpType: String) {
@@ -608,11 +617,9 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
@@ -621,14 +628,20 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
+    fun trackClickResendOtp(otpData: OtpData, modeListData: ModeListData) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_RESEND_OTP,
+                "click - ${otpData.otpType} - ${modeListData.modeText}"
+        ))
+    }
 
     /* Auto Submit Tracker */
     fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
@@ -636,11 +649,130 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_AUTO_SUBMIT_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
+    }
+
+    fun trackCellularDialogButton(label: String) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_SILENT_VERIF_REMINDER,
+            Action.ACION_CLICK_SILENT_VERIF,
+            label
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerificationResult(label: String) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
+            Action.ACION_CLICK_SILENT_VERIF,
+            label
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerificationRequestSuccess(otpType: Int, modeName: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_METHOD_OTP,
+                String.format("success - %s - %s", otpType.toString(), modeName))
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerificationRequestFailed(reason: String, otpType: Int, modeName: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_METHOD_OTP,
+                String.format("failed - %s - %s - %s", reason, otpType.toString(), modeName))
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerifTryAgainSuccess(otpType: Int, modeName: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
+                Action.ACION_CLICK_TRY_AGAIN,
+                String.format("success - %s - %s", otpType.toString(), modeName))
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerifTryAgainClick(otpType: Int, modeName: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
+                Action.ACION_CLICK_TRY_AGAIN,
+                String.format("click - %s - %s", otpType.toString(), modeName))
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerifTryAgainFailed(reason: String, otpType: Int, modeName: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
+                Action.ACION_CLICK_TRY_AGAIN,
+                String.format("failed - %s - %s - %s", reason, otpType.toString(), modeName))
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun trackChooseOtherMethod(otpType: Int, modeName: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACION_CLICK_CHOOSE_OTHER_METHOD,
+                String.format("%s - %s", otpType.toString(), modeName))
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    /**
+     * For Inactive Phone
+     **/
+    fun trackClickRequestChangePhoneNumberOnModeList() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_MODE_LIST
+        )
+    }
+
+    fun trackClickRequestChangePhoneNumberOnPin() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_OTP_PAGE
+        )
     }
 }

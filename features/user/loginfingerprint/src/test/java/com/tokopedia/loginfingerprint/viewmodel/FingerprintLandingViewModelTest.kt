@@ -97,4 +97,18 @@ class FingerprintLandingViewModelTest {
         assert((viewModel.verifyFingerprint.value as Fail).throwable is MessageErrorException)
     }
 
+    @Test
+    fun `on Other Errors Verify Fingerprint`() {
+        /* When */
+        val data = VerifyFingerprint(isSuccess = false,  validateToken = "", errorMessage = "")
+        val response = VerifyFingerprintPojo(data)
+
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.verifyFingerprint()
+
+        /* Then */
+        assert((viewModel.verifyFingerprint.value as Fail).throwable is RuntimeException)
+    }
+
 }

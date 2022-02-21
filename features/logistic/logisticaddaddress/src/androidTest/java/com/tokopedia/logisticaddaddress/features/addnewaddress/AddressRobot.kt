@@ -2,7 +2,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,9 +12,8 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.anything
 import org.hamcrest.MatcherAssert.assertThat
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
@@ -24,7 +22,7 @@ class AddressRobot {
 
     fun launchFrom(rule: ActivityTestRule<PinpointMapActivity>, screenName: String) {
         val i = Intent()
-        i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
+        i.putExtra(EXTRA_REF, screenName)
         rule.launchActivity(i)
         waitForData()
     }

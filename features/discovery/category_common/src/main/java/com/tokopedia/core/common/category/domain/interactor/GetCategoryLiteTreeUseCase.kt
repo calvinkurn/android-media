@@ -6,6 +6,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.observables.BlockingObservable
 import javax.inject.Inject
 
 class GetCategoryLiteTreeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<CategoriesResponse>() {
@@ -56,4 +57,7 @@ class GetCategoryLiteTreeUseCase @Inject constructor(private val graphqlUseCase:
     override fun unsubscribe() {
         graphqlUseCase.unsubscribe()
     }
+
+    fun getCategoryLiteData(requestParams: RequestParams): CategoriesResponse =
+        createObservable(requestParams).toBlocking().first()
 }

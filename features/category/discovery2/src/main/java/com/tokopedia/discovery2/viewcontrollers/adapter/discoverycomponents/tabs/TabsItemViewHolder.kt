@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -61,8 +62,8 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
     private fun setFontColor(fontColor: String?) {
         try {
             if(fontColor.isNullOrEmpty()){
-                tabTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
-                selectedView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                tabTextView.setTextColor(ContextCompat.getColor(itemView.context, RUnify.color.Unify_G500))
+                selectedView.setBackgroundColor(ContextCompat.getColor(itemView.context, RUnify.color.Unify_G500))
             }else{
                 tabTextView.setTextColor(Color.parseColor(fontColor))
                 selectedView.setBackgroundColor(Color.parseColor(fontColor))

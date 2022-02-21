@@ -20,7 +20,8 @@ class Bubble(
     private val circleRadius = icon.width.toFloat()
     private val circleCenter = circleRadius / 2
 
-    private var xPos: Float = (icon.width..parentWidth-icon.width).random().toFloat()
+    private var xPos: Float = (icon.width..(parentWidth - icon.width).coerceAtLeast(icon.width))
+        .random().toFloat()
     private var yPos: Float = parentHeight.toFloat()
 
     private val bouncingLimit = (LOWER_LIMIT_BOUNCING_DISTANCE..UPPER_LIMIT_BOUNCING_DISTANCE).random()

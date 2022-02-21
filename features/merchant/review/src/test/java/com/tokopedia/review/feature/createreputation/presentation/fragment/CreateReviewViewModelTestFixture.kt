@@ -4,9 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevGetPostSubmitBottomSheetUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
@@ -44,16 +46,22 @@ abstract class CreateReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var getReviewTemplatesUseCase: GetReviewTemplatesUseCase
 
+    @RelaxedMockK
+    lateinit var getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase
+
+    @RelaxedMockK
+    lateinit var getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     protected lateinit var viewModel: CreateReviewViewModel
     protected val images = listOf(
-            ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
-            ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
-            ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
-            ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
-            ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
+        ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
+        ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
+        ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
+        ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
+        ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
     )
     protected val feedbackID = ArgumentMatchers.anyString()
     protected val reputationId = ArgumentMatchers.anyString()
@@ -68,6 +76,18 @@ abstract class CreateReviewViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = CreateReviewViewModel(CoroutineTestDispatchersProvider, getProductReputationForm, getProductIncentiveOvo, getReviewDetailUseCase, submitReviewUseCase, uploaderUseCase, editReviewUseCase, userSession, getReviewTemplatesUseCase)
+        viewModel = CreateReviewViewModel(
+            CoroutineTestDispatchersProvider,
+            getProductReputationForm,
+            getProductIncentiveOvo,
+            getReviewDetailUseCase,
+            submitReviewUseCase,
+            uploaderUseCase,
+            editReviewUseCase,
+            userSession,
+            getReviewTemplatesUseCase,
+            getBadRatingCategoryUseCase,
+            getPostSubmitBottomSheetUseCase
+        )
     }
 }

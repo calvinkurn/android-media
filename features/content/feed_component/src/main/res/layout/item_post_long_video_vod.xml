@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/post_vod_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/vod_layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/vod_videoPreviewImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/vod_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:focusable="false"
+            android:clickable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/vod_loader"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="circular_white" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/vod_frame_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/vod_layout_video"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:resize_mode="zoom"
+            app:show_timeout="3000"
+            app:layout_constraintDimensionRatio="1:1"
+            app:shutter_background_color="@android:color/transparent"
+            app:surface_type="texture_view"
+            app:use_controller="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/vod_timer_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:textColor="@color/Unify_N50"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/vod_layout_main"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/vod_lihat_product"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:background="@drawable/feed_bg_lihat_produk"
+        android:drawablePadding="@dimen/unify_space_4"
+        android:drawableTint="@color/Unify_N0"
+        android:ellipsize="end"
+        android:gravity="center_vertical|start"
+        android:minWidth="@dimen/unify_space_24"
+        android:paddingStart="@dimen/feed_component_dp_6"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingBottom="@dimen/unify_space_2"
+        android:singleLine="true"
+        android:text="@string/feed_post_tag_text"
+        android:textColor="@color/Unify_N0"
+        app:drawableLeftCompat="@drawable/feed_ic_product"
+        app:layout_constraintBottom_toBottomOf="@id/vod_layout_main"
+        app:layout_constraintStart_toStartOf="@id/vod_layout_main"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <ImageView
+        android:id="@+id/vod_volumeIcon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/vod_full_screen_icon"
+        app:srcCompat="@drawable/ic_feed_volume_mute"
+        android:contentDescription="@string/feed_post_content_desc_volume_btn" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/vod_full_screen_icon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:cardBackgroundColor="@color/Unify_NN900"
+        app:cardCornerRadius="12dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:padding="@dimen/unify_space_2"
+                android:id="@+id/vod_full_screen_icon_img_view"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginBottom="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_fullscreen"
+                android:contentDescription="@string/feed_post_content_desc_full_screen" />
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/ic_vod_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:clickable="true"
+        android:contentDescription="@string/feed_post_content_desc_play_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_play_button" />
+
+
+    <View
+        android:id="@+id/vod_frozen_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.7"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/vod_lanjut_menonton_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_btn_outline_video"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textColor="@color/Unify_N0"
+        android:paddingTop="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_18"
+        app:typographyType="heading_5"
+        android:visibility="gone"
+        android:text="@string/feed_post_lanjut_menonton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

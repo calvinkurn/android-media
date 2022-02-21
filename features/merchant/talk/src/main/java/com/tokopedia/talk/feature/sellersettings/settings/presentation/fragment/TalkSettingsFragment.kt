@@ -63,7 +63,7 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let { activity?.window?.decorView?.setBackgroundColor(it) }
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background) }?.let { activity?.window?.decorView?.setBackgroundColor(it) }
         bindViewReferences(view)
         setNavigation()
         setToolbarTitle()

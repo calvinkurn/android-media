@@ -62,12 +62,13 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
     var topadsTag: Int = 0
+    var applink: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
 
-    fun getProductAsObjectDataLayer(filterSortParams: String): Any {
+    fun getProductAsObjectDataLayer(filterSortParams: String, componentId: String): Any {
         return DataLayer.mapOf(
                 "name", productName,
                 "id", productID,
@@ -75,7 +76,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "brand", "none / other",
                 "category", categoryBreadcrumb,
                 "variant", "none / other",
-                "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag),
+                "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
                 "position", position.toString(),
                 "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
                 "dimension79", shopID,
@@ -115,32 +116,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
 
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
-
-    fun getProductAsATCObjectDataLayer(cartId: String): Any = DataLayer.mapOf(
-            "name", productName,
-            "id", productID,
-            "price", safeCastRupiahToInt(price).toString(),
-            "brand", "none / other",
-            "category", categoryBreadcrumb,
-            "variant", "none / other",
-            "quantity", minOrder,
-            "shop_id", shopID,
-            "shop_type", shopType,
-            "shop_name", shopName,
-            "category_id", categoryID,
-            "dimension82", cartId
-    )
-
-    fun getProductAsShopPageObjectDataLayer(): Any = DataLayer.mapOf(
-            "id", shopID,
-            "name", SearchTracking.getActionFieldString(isAds, topadsTag),
-            "creative", shopName,
-            "creative_url", shopUrl,
-            "position", position.toString(),
-            "category", categoryBreadcrumb,
-            "promo_id", "none / other",
-            "promo_code", "none / other"
-    )
 
     private val shopType: String
         get() = when {
@@ -214,9 +189,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     }
 
     companion object {
-        private const val ORGANIC = "organic"
-        private const val ORGANIC_ADS = "organic ads"
-
         @JvmField
         val CREATOR: Parcelable.Creator<ProductItemDataView> = object : Parcelable.Creator<ProductItemDataView> {
             override fun createFromParcel(source: Parcel): ProductItemDataView {

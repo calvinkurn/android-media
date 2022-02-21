@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.listener
 
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -63,9 +64,9 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelClicked(applink: String)
 
-    fun onRefreshTokoPointButtonClicked()
+    fun onRetryMembership()
 
-    fun onRefreshTokoCashButtonClicked()
+    fun onRetryWalletApp()
 
     fun onLegoBannerClicked(actionLink: String, trackingAttribution: String)
 
@@ -101,10 +102,6 @@ interface HomeCategoryListener {
 
     fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
-    fun getPlayChannel(position: Int)
-
-    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
-
     fun removeViewHolderAtPosition(position: Int)
 
     fun onDynamicChannelRetryClicked()
@@ -121,11 +118,7 @@ interface HomeCategoryListener {
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>)
 
-    fun getRechargeRecommendation()
-
     fun declineSalamItem(requestParams: Map<String, Int>)
-
-    fun getSalamWidget()
 
     fun getRechargeBUWidget(source: WidgetSource)
 
@@ -139,5 +132,7 @@ interface HomeCategoryListener {
 
     fun setRotateTokopointsDone(boolean: Boolean)
 
-    fun isEligibleForNewGopay(): Boolean
+    fun onTokonowViewCaptured(view: View?, parentPosition: Int)
+
+    fun dismissTokonowCoachmark(parentPosition: Int)
 }

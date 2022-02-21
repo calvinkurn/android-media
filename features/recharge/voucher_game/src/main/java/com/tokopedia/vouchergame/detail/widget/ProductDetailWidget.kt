@@ -15,8 +15,17 @@ import com.tokopedia.vouchergame.R
  */
 class ProductDetailWidget: BaseCustomView {
 
+    private lateinit var detailTitle: TextView
     private lateinit var detailDescription: TextView
     private lateinit var detailUrl: TextView
+
+    var title: String = ""
+    set(value) {
+        field = value
+        if (::detailTitle.isInitialized) {
+            detailTitle.text = title
+        }
+    }
 
     var description: String = ""
     set(value) {
@@ -58,6 +67,7 @@ class ProductDetailWidget: BaseCustomView {
     private fun init(context: Context) {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_voucher_game_product, this, true)
         with (view) {
+            detailTitle = findViewById(R.id.detail_title)
             detailDescription = findViewById(R.id.detail_desc)
             detailUrl = findViewById(R.id.detail_url)
         }

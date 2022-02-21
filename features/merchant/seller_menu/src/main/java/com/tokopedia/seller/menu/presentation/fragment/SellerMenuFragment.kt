@@ -164,7 +164,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
         viewModel.getShopAccountInfo()
-        getAllShopInfo()
     }
 
     private fun initInjector() {
@@ -186,7 +185,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeProductCount()
         observeNotifications()
         observeErrorToaster()
-        getAllShopInfo()
     }
 
     private fun observeShopInfoPeriod() {
@@ -198,9 +196,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     getAllShopInfo()
                 }
                 is Fail -> {
+                    if (canShowErrorToaster) {
+                        view?.showToasterError(resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message))
+                    }
+                    adapter.showShopInfoError()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
                             String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
                                     ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
+                    swipeRefreshLayout?.isRefreshing = false
                 }
             }
         }
@@ -247,6 +250,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.isToasterAlreadyShown) {
             canShowErrorToaster = !it
         }
+        viewModel.setIsToasterAlreadyShown(false)
     }
 
     private fun <T : Any> showShopInfo(settingResponseState: SettingResponseState<T>, shopScore: Long = 0, shopAge: Long = 0) {
@@ -304,7 +308,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun retryFetchAfterError() {
         showShopInfoLoading()
         viewModel.getShopAccountInfo()
-        viewModel.getAllSettingShopInfo(isToasterRetry = true, shopAge = shopAge)
     }
 
     private fun showShopInfoLoading() {
@@ -346,4 +349,5 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
         }
     }
+
 }

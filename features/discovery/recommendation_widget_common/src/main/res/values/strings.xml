@@ -10,4 +10,9 @@
     <string name="content_desc_arrow">content_desc_arrow</string>
     <string name="content_desc_banner">content_desc_banner</string>
     <string name="text_other_recom">Rekomendasi Lainnya</string>
+
+    <string name="content_desc_background_see_more">background see more</string>
+    <string name="content_desc_see_more">see more</string>
+
+    <string name="failed_to_load">Gagal memuat, silahkah coba lagi</string>
 </resources>

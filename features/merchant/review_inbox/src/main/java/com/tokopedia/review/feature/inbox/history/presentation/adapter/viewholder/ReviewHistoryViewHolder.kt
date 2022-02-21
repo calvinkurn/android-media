@@ -20,7 +20,7 @@ class ReviewHistoryViewHolder(view: View,
 ) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_review_history
+        val LAYOUT = com.tokopedia.review.inbox.R.layout.item_review_history
     }
 
     private val binding = ItemReviewHistoryBinding.bind(view)
@@ -35,6 +35,7 @@ class ReviewHistoryViewHolder(view: View,
                 showDescription(reviewText)
                 showAttachedImages(attachments, product.productName, product.productId, feedbackId)
                 setupStarRatings(rating)
+                showBadRatingReason(badRatingReason)
             }
             showDate(timestamp.createTimeFormatted)
             showOtherReview(status.hasResponse)
@@ -109,5 +110,9 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun String.removeNewLine(): String {
         return this.replace("\n", "")
+    }
+
+    private fun showBadRatingReason(badRatingReason: String) {
+        binding.reviewHistoryBadRatingReason.showBadRatingReason(badRatingReason)
     }
 }

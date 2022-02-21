@@ -29,6 +29,7 @@ public class RulesUtil {
             String SCREEN_NAME = "s";
             String MULTIPLE_SCREEN_NAME = "ss";
             String UI = "ui";
+            String SHOP_ID = "shopId";
         }
     }
 

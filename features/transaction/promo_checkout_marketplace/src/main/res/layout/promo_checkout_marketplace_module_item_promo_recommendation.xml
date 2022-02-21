@@ -4,24 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_constraint_promo_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/promo_checkout_marketplace_module_ic_promo_recommendation"
+        android:background="@color/dms_promo_checkout_recommendation_background_color"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
         android:paddingTop="8dp"
         android:paddingRight="12dp"
         android:paddingBottom="8dp">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_check_promo_recommendation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,9 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_marginLeft="6dp"
                 android:ellipsize="end"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_Static_White"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Ada xx promo terbaik untukmu" />
@@ -58,15 +55,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_marginLeft="6dp"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_Static_White"
                 app:typographyType="body_3"
                 tools:text="Kamu bisa hemat Rpxx.000" />
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_promo_recommendation"
-            android:layout_width="@dimen/dp_80"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:enabled="true"
             android:foreground="?selectableItemBackground"
@@ -82,11 +78,10 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_button_apply_promo_recommendation"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
+        android:layout_width="80dp"
+        android:layout_height="54dp"
         android:layout_gravity="center_vertical|end"
         android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
         android:scaleType="fitCenter"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"

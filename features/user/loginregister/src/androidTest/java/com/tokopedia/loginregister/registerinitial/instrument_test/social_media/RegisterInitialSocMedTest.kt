@@ -28,17 +28,6 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    @Test
-    fun check_failed_register_tracker_facebook() {
-        isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
-
-        runTest {
-            checkRegisterFacebook()
-        }
-
-        validate(cassavaTestRule, getAnalyticValidatorListFacebookFailed())
-    }
 
     @Test
     fun check_failed_register_tracker_google() {
@@ -53,18 +42,6 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     }
 
     @Test
-    fun check_success_register_tracker_facebook() {
-        isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
-
-        runTest {
-            checkRegisterFacebook()
-        }
-
-        validate(cassavaTestRule, getAnalyticValidatorListFacebookSuccess())
-    }
-
-    @Test
     fun check_success_register_tracker_google() {
 
         runTest {
@@ -72,18 +49,6 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
         }
 
         validate(cassavaTestRule, getAnalyticValidatorListGoogleSuccess())
-    }
-
-    private fun checkRegisterFacebook() {
-        intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        Thread.sleep(1000)
-
-        onView(ViewMatchers.withId(R.id.socmed_btn))
-                .perform(click())
-
-        onView(ViewMatchers.withText("Facebook"))
-                .perform(click())
     }
 
     private fun checkRegisterGoogle() {
@@ -98,17 +63,6 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
             .perform(click())
     }
 
-    private fun getAnalyticValidatorListFacebookSuccess(): List<Map<String, String>> {
-        return listOf(
-            CassavaTestRuleMatcher.getAnalyticValidator(
-                "clickRegister",
-                "register page",
-                "click on button facebook",
-                "click"
-            )
-        )
-    }
-
     private fun getAnalyticValidatorListGoogleSuccess(): List<Map<String, String>> {
         return listOf(
             CassavaTestRuleMatcher.getAnalyticValidator(
@@ -118,23 +72,6 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
                 "click"
             ),
             //Cannot mock GoogleSignInStatusCodes
-        )
-    }
-
-    private fun getAnalyticValidatorListFacebookFailed(): List<Map<String, String>> {
-        return listOf(
-            CassavaTestRuleMatcher.getAnalyticValidator(
-                "clickRegister",
-                "register page",
-                "click on button facebook",
-                "click"
-            ),
-            CassavaTestRuleMatcher.getAnalyticValidator(
-                "clickRegister",
-                "register page",
-                "click on button facebook",
-                "failed - ${Event.ANY}"
-            )
         )
     }
 

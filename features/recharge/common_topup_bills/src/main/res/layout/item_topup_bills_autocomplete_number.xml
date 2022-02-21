@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/common_topup_bills_autocomplete_contact_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/Unify_Background">
+
+    <View
+        android:id="@+id/common_topup_bills_autocomplete_contact_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/common_topup_bills_autocomplete_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/common_topup_bills_autocomplete_number"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topup_bills_autocomplete_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_goneMarginBottom="@dimen/unify_space_12"
+        tools:text="Selalu Ada"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_autocomplete_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/common_topup_bills_autocomplete_number"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topup_bills_autocomplete_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:gravity="top"
+        tools:text="081208120812"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/common_topup_bills_autocomplete_contact_wrapper"
+        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_autocomplete_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/common_topup_bills_autocomplete_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_N100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

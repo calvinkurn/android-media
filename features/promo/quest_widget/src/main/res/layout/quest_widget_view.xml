@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/quest_widget_view_flipper"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:measureAllChildren="false">
+
+    <include layout="@layout/quest_widget_shimmer" android:id="@+id/quest_widget_shimmer"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:id="@+id/constraintLayoutQuestWidget"
+        android:visibility="gone">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_lihat"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_label"
+            app:layout_constraintBottom_toBottomOf="@id/tv_label"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rv_quest_widget"
+            android:layout_marginTop="@dimen/quest_widget_dim_12dp"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/tv_label"
+            app:layout_constraintStart_toStartOf="@id/tv_label" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rv_error"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/quest_widget_dim_12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            tools:itemCount="2"
+            tools:listitem="@layout/quest_widget_error_card"
+            app:layout_constraintStart_toStartOf="@id/tv_label"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat"
+            app:layout_constraintTop_toBottomOf="@id/tv_label"/>
+
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            android:id="@+id/iv_login"
+            app:imageDpiSupportType="singleDpi"
+            app:completeUrl="@string/quest_widget_nonlogin_banner"
+            android:layout_marginTop="@dimen/quest_widget_dim_12dp"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="@id/tv_label"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat"
+            app:layout_constraintTop_toBottomOf="@id/tv_label"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

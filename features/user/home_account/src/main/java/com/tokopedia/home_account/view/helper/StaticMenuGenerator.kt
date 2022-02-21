@@ -86,10 +86,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     fun generateDeveloperOptionsSettingMenu(): SettingDataView {
         return  SettingDataView(context.getString(R.string.menu_account_section_title_developer), mutableListOf(
                 CommonDataView(title = context.getString(R.string.menu_account_title_dev_options), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_DEV_OPTIONS),
-                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM),
-                CommonDataView(title = context.getString(R.string.menu_account_old_account), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_OLD_ACCOUNT))
-
-        , showArrowDown = true)
+                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM)
+        ), showArrowDown = true)
     }
 
     private fun getLabelText(id: Int): String {

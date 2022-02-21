@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
+import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
@@ -104,6 +105,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
             recommendationCarouselListener = this,
@@ -158,10 +160,10 @@ class TokoNowCategoryFragment:
         super.onBannerImpressed(channelModel, position)
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
         CategoryTracking.sendBannerClickEvent(channelModel, getViewModel().categoryL1, getUserId())
 
-        super.onBannerClick(channelModel, applink)
+        super.onBannerClick(channelModel, applink, param)
     }
 
     override fun onSeeAllCategoryClicked() {
@@ -350,14 +352,14 @@ class TokoNowCategoryFragment:
         }
     }
 
-    private fun sendOpenScreenTracking(url: String) {
-        val uri = Uri.parse(url)
+    private fun sendOpenScreenTracking(model: CategoryTrackerModel) {
+        val uri = Uri.parse(model.url)
         val categorySlug = uri.lastPathSegment ?: return
 
-        CategoryTracking.sendOpenScreenTracking(categorySlug)
+        CategoryTracking.sendOpenScreenTracking(categorySlug, model.id, model.name, userSession.isLoggedIn)
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        CategoryTracking.sendOOCOpenScreenTracking()
+        CategoryTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

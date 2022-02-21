@@ -2,19 +2,11 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.travel">
 
-    <dist:module
-        dist:title="@string/df_title_travel">
+    <dist:module dist:title="@string/df_title_travel">
         <dist:delivery>
-            <dist:on-demand/>
-            <dist:install-time>
-                <dist:conditions>
-                    <dist:min-sdk dist:value="21"/>
-                    <dist:max-sdk dist:value="23"/>
-                </dist:conditions>
-            </dist:install-time>
+            <dist:on-demand />
         </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
-
     <application android:hasCode="false" />
 </manifest>

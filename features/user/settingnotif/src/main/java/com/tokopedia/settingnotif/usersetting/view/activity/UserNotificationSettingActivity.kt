@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N0
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_Background
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.SellerFieldFragment
@@ -51,7 +51,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, Unify_N0)
+        val color = ContextCompat.getColor(this, Unify_Background)
         fragmentContainer?.setBackgroundColor(color)
     }
 

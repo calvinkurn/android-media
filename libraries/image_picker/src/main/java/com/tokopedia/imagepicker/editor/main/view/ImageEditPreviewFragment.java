@@ -1,5 +1,9 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
+import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
+import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
+import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -14,13 +18,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
-import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
-import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
+import com.tokopedia.imagepicker.editor.di.DaggerImageEditorComponent;
+import com.tokopedia.imagepicker.editor.di.module.ImageEditorModule;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -32,16 +43,11 @@ import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
+import javax.inject.Inject;
+
 import kotlin.Pair;
-
-import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
-import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
-import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
 
 /**
  * Created by hendry on 25/04/18.
@@ -56,11 +62,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public static final int ROTATE_WIDGET_SENSITIVITY = 1;
 
     private String edittedImagePath;
-    private int minResolution = 0;
-    private boolean isCirclePreview;
+    private int minResolution = 0, removeBackgroundColor = 0;
+    private boolean isCirclePreview, hasRequestRemoveBackground = false;
     private float brightness = 0, contrast = INITIAL_CONTRAST_VALUE;
 
     private View progressBar;
+    private View bgShadow;
 
     private UCropView uCropView;
     private View blockingView;
@@ -73,13 +80,17 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private ImageView ivUndo;
     private ImageView ivRedo;
 
-    private ImageEditPreviewPresenter imageEditPreviewPresenter;
+    @Inject ImageEditPreviewPresenter imageEditPreviewPresenter;
+
     private int imageIndex;
     private int[] widthHeight;
+    private Bitmap[] listOutputWatermark;
 
     private UserSessionInterface userSession;
-
     private Bitmap lastStateImage;
+
+    private String removeBackgroundResultPath = "";
+    private int maxRetry = 3;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -87,6 +98,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         void onEditDoNothing();
 
         void onSuccessSaveEditImage(String path);
+
+        void onSuccessSaveWatermarkImage();
 
         void onErrorSaveEditImage(Throwable throwable);
 
@@ -131,8 +144,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         contrast = INITIAL_CONTRAST_VALUE;
 
         super.onCreate(savedInstanceState);
-        imageEditPreviewPresenter = new ImageEditPreviewPresenter();
+        initInjector();
         imageEditPreviewPresenter.attachView(this);
+        imageEditPreviewPresenter.subscribe();
     }
 
     @Nullable
@@ -147,7 +161,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         isCirclePreview = bundle.getBoolean(ARG_CIRCLE_PREVIEW);
 
         initUCrop(view);
-        initProgressBar(view);
+        initLoader(view);
 
         blockingView = view.findViewById(R.id.blocking_view);
 
@@ -272,12 +286,112 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         cancelWatermark();
 
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        String userInfo;
 
-        String userInfo = userSession.hasShop() ?
-                userSession.getShopName() :
-                userSession.getName();
+        try {
+            userInfo = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
+        } catch (Exception e) {
+            userInfo = "";
+        }
 
         imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
+    }
+
+    private void setRemoveBackgroundCurrentBitmap() {
+        showLoadingAndHidePreview();
+
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+
+        imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
+    }
+
+    public void setRemoveBackground(int color) {
+        removeBackgroundColor = color;
+
+        if (hasRequestRemoveBackground && !removeBackgroundResultPath.isEmpty()) {
+            setImageData(removeBackgroundResultPath);
+            gestureCropImageView.setBackgroundColor(removeBackgroundColor);
+            return;
+        }
+
+        setRemoveBackgroundCurrentBitmap();
+    }
+
+    public void saveRemoveBackground() {
+        if (removeBackgroundColor == 0) {
+            onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
+        }
+
+        Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+        imageEditPreviewPresenter.saveRemoveBackground(gestureCropImageView, compressFormat, 0);
+    }
+
+    public void cancelRemoveBackground() {
+        imageEditPreviewPresenter.unsubscribe();
+        hasRequestRemoveBackground = false;
+
+        resetRemoveBackgroundBitmap();
+        hideLoadingAndShowPreview();
+    }
+
+    public void resetRemoveBackgroundBitmap() {
+        removeBackgroundColor = 0;
+
+        if (lastStateImage == null) return;
+        gestureCropImageView.setImageBitmap(lastStateImage);
+    }
+
+    @Override
+    public void onSuccessSaveRemoveBackground(String filePath) {
+        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+    }
+
+    @Override
+    public void onErrorSaveRemoveBackground(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(
+                getActivity(),
+                ErrorHandler.getErrorMessage(getContext(), e)
+        );
+    }
+
+    @Override
+    public void onSuccessGetRemoveBackground(String filePath) {
+        hideLoadingAndShowPreview();
+
+        hasRequestRemoveBackground = true;
+        removeBackgroundResultPath = filePath;
+
+        gestureCropImageView.setBackgroundColor(removeBackgroundColor);
+
+        setImageData(filePath);
+    }
+
+    @Override
+    public void onErrorGetRemoveBackground(Throwable e) {
+        if (maxRetry == 0) {
+            onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+            return;
+        }
+
+        View rootView = requireView().getRootView();
+
+        if (rootView != null) {
+            hideLoadingAndShowPreview();
+
+            Toaster.build(
+                    rootView,
+                    getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_error_message),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.imagepicker.R.string.editor_retry_button),
+                    v -> {
+                        setRemoveBackgroundCurrentBitmap();
+                        maxRetry--;
+                    }
+            ).show();
+        }
     }
 
     public int getImageIndex() {
@@ -393,34 +507,42 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onSuccessSaveWatermarkImage(String filePath) {
         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+        onImageEditPreviewFragmentListener.onSuccessSaveWatermarkImage();
+        if (listOutputWatermark != null)
+        for(Bitmap bitmap: listOutputWatermark) {
+            if (!bitmap.isRecycled()) bitmap.recycle();
+            listOutputWatermark = null;
+        }
     }
 
     @Override
     public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
-        gestureCropImageView.setImageBitmap(bitmap[0]);
-        onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
+        listOutputWatermark = bitmap.clone();
+        Arrays.fill(bitmap, null);
+        gestureCropImageView.setImageBitmap(listOutputWatermark[0]);
+        onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(listOutputWatermark);
     }
 
     void setPreviewImageWatermark(Bitmap bitmap) {
         gestureCropImageView.setImageBitmap(bitmap);
     }
 
-    private void initProgressBar(View view) {
+    private void initLoader(View view) {
         progressBar = view.findViewById(R.id.progressbar);
+        bgShadow = view.findViewById(R.id.bg_shadow);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setImageData();
-    }
-
-    private void setImageData() {
         showLoadingAndHidePreview();
         processOptions();
+        setImageData(edittedImagePath);
+    }
 
-        Uri inputUri = Uri.fromFile(new File(edittedImagePath));
-        Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString());
+    void setImageData(String filePath) {
+        Uri inputUri = Uri.fromFile(new File(filePath));
+        Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(filePath).toString());
 
         try {
             gestureCropImageView.setImageUri(inputUri, outputUri);
@@ -522,14 +644,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     private void showLoadingAndHidePreview() {
-        uCropView.setVisibility(View.INVISIBLE);
+        bgShadow.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         blockingView.setVisibility(View.VISIBLE);
     }
 
     private void hideLoadingAndShowPreview() {
+        bgShadow.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
-        uCropView.setVisibility(View.VISIBLE);
         setEditCropMode(onImageEditPreviewFragmentListener.isInEditCropMode());
     }
 
@@ -563,6 +685,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelWatermark() {
+        if (listOutputWatermark != null) {
+            for(Bitmap bitmap: listOutputWatermark) {
+                if (!bitmap.isRecycled()) {
+                    bitmap.recycle();
+                }
+                listOutputWatermark = null;
+            }
+        }
         if (lastStateImage == null) return;
         gestureCropImageView.setImageBitmap(lastStateImage);
     }
@@ -599,6 +729,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             onAttachActivity(activity);
         }
+    }
+
+    private void initInjector() {
+        DaggerImageEditorComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .imageEditorModule(new ImageEditorModule())
+                .build()
+                .inject(this);
     }
 
     protected void onAttachActivity(Context context) {

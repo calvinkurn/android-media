@@ -9,28 +9,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.globalerror.showUnifyError
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.toDpInt
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
+import com.tokopedia.recommendation_widget_common.widget.carousel.chips.RecomChipsAdapter
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
+import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderView
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselBannerDataModel
@@ -39,7 +47,6 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.common.Reco
 import com.tokopedia.recommendation_widget_common.widget.tokonowutil.TokonowQuantityUpdater
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.layout_widget_recommendation_carousel.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -69,10 +76,15 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var basicListener: RecomCarouselWidgetBasicListener? = null
     private var tokonowListener: RecommendationCarouselTokonowListener? = null
     private var tokonowPageNameListener: RecommendationCarouselTokonowPageNameListener? = null
+    private var basicChipListener: RecomCarouselChipListener? = null
     private var carouselData: RecommendationCarouselData? = null
+    private var headerView: RecommendationHeaderView? = null
+    private var loadingView: View? = null
     private lateinit var typeFactory: CommonRecomCarouselCardTypeFactory
     private lateinit var recyclerView: RecyclerView
+    private lateinit var rvChips: RecyclerView
     private var adapter: RecommendationCarouselAdapter? = null
+    private var chipsAdapter: RecomChipsAdapter? = null
     private lateinit var layoutManager: LinearLayoutManager
     private var scrollListener: ((Parcelable?) -> Unit)? = null
     private var userSession: UserSessionInterface? = null
@@ -89,6 +101,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val view = LayoutInflater.from(context)
             .inflate(R.layout.layout_widget_recommendation_carousel, this)
         recyclerView = view.findViewById(R.id.rv_product)
+        headerView = view.findViewById(R.id.recommendation_header_view)
+        loadingView = view.findViewById(R.id.loadingRecom)
+        rvChips = view.findViewById(R.id.rv_chips)
         this.itemView = view
         this.itemContext = view.context
         this.userSession = UserSession(itemContext)
@@ -107,15 +122,17 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         adapterPosition: Int = 0,
         basicListener: RecomCarouselWidgetBasicListener?,
         tokonowListener: RecommendationCarouselTokonowListener?,
+        chipListener: RecomCarouselChipListener? = null,
         scrollToPosition: Int = 0
     ) {
         try {
-            widgetMetadata = RecomWidgetMetadata(
+            widgetMetadata = widgetMetadata.copy(
                 adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition
             )
             this.basicListener = basicListener
             this.tokonowListener = tokonowListener
+            this.basicChipListener = chipListener
             if (carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
                 bindWidgetWithData(carouselData)
             } else this.basicListener?.onWidgetFail(
@@ -150,12 +167,15 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isTokonow: Boolean = false
     ) {
         try {
-            widgetMetadata = RecomWidgetMetadata(
+            widgetMetadata = widgetMetadata.copy(
                 adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition,
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
-                isRecomBindWithPageName = true
+                isRecomBindWithPageName = true,
+                productIds = productIds,
+                categoryIds = categoryIds,
+                keyword = keyword
             )
             this.basicListener = basicListener
             this.tokonowPageNameListener = tokonowPageNameListener
@@ -174,11 +194,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     fun bindTemporaryHeader(tempHeaderName: String) {
-        itemView.recommendation_header_view.bindData(
+        headerView?.bindData(
             RecommendationWidget(title = tempHeaderName),
             null
         )
-        itemView.loadingRecom.visible()
+        recyclerView.gone()
+        loadingView?.visible()
     }
 
     fun getCurrentPosition(): Int {
@@ -352,6 +373,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             launch {
                 try {
                     recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+                    recyclerView.visible()
+                    loadingView?.gone()
                 } catch (throwable: Throwable) {
                     throwable.printStackTrace()
                 }
@@ -377,7 +400,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
 
     private fun setHeaderComponent(carouselData: RecommendationCarouselData) {
-        itemView.recommendation_header_view.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
+        headerView?.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
             override fun onSeeAllClick(link: String) {
                 basicListener?.onSeeAllBannerClicked(carouselData, link)
             }
@@ -394,7 +417,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
                     scrollToPosition,
-                    context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16)
+                    16f.toDpInt()
             )
         }
     }
@@ -423,7 +446,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         getMiniCartData()
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
-            itemView.loadingRecom.visible()
+            recyclerView.gone()
+            loadingView?.visible()
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
                 productIds = productIds,
@@ -432,7 +456,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 isTokonow = isTokonow
             )
         } else {
-            itemView.loadingRecom.gone()
+            recyclerView.visible()
+            loadingView?.gone()
         }
     }
 
@@ -440,21 +465,88 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
         initVar()
+        initChips()
         doActionBasedOnRecomState(carouselData.state,
             onLoad = {
-                itemView.loadingRecom.visible()
+                recyclerView.gone()
+                loadingView?.visible()
             },
             onReady = {
-                itemView.loadingRecom.gone()
+                recyclerView.visible()
+                loadingView?.gone()
                 impressChannel(carouselData)
                 setHeaderComponent(carouselData)
                 setData(carouselData)
+                recyclerView.show()
                 scrollCarousel(widgetMetadata.scrollToPosition)
             },
             onFailed = {
-                itemView.loadingRecom.gone()
+                recyclerView.gone()
+                loadingView?.gone()
             }
         )
+    }
+
+    private fun rebindWidgetWithNewFilterData(carouselData: RecommendationCarouselData?) {
+        carouselData?.let {
+            this.carouselData = carouselData
+            setData(carouselData)
+            scrollCarousel(0)
+            impressChannel(carouselData)
+        }
+    }
+
+    private fun initChips() {
+        if (chipsAdapter == null && carouselData?.filterData?.isNotEmpty() == true) {
+            chipsAdapter = RecomChipsAdapter(object : RecomChipsAdapter.RecomChipsListener {
+                override fun onFilterAnnotationClicked(
+                    annotationChip: AnnotationChip,
+                    position: Int
+                ) {
+                    handleChipsClick(annotationChip, position)
+                }
+            })
+            rvChips.adapter = chipsAdapter
+            chipsAdapter?.submitList(carouselData?.filterData ?: listOf())
+            rvChips.show()
+        } else {
+            rvChips.hide()
+        }
+    }
+
+    private fun handleChipsClick(annotationChip: AnnotationChip,
+                                 position: Int) {
+        chipsAdapter?.submitList(
+            carouselData?.filterData?.map {
+                it.copy(
+                    recommendationFilterChip = it.recommendationFilterChip.copy(
+                        isActivated =
+                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                && !annotationChip.recommendationFilterChip.isActivated
+                    )
+                )
+            } ?: listOf()
+        )
+        if (widgetMetadata.pageName.isEmpty()) {
+            //throw to outer listener
+                    basicChipListener?.onChipClicked(
+                        annotationChip.copy(
+                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+                                isActivated = !annotationChip.recommendationFilterChip.isActivated)),
+                        position
+                    )
+        } else {
+            //call recom viewmodel
+                carouselData?.let {
+                    viewModel?.loadRecomBySelectedChips(
+                        widgetMetadata,
+                        it.filterData,
+                        annotationChip
+                    )
+                }
+        }
+        loadingView?.show()
+        recyclerView.invisible()
     }
 
     private fun doActionBasedOnRecomState(
@@ -512,6 +604,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                         bindWidgetWithData(
                             RecommendationCarouselData(
                                 recommendationData = it,
+                                filterData = mapToAnnotateChip(it),
                                 state = STATE_READY,
                                 isUsingWidgetViewModel = true
                             )
@@ -586,6 +679,26 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             })
             viewModel?.minicartError?.observe(owner, Observer {
             })
+            viewModel?.recomFilterResultData?.observe(owner, Observer { result ->
+                if (result.pageName == widgetMetadata.pageName) {
+                    if (result.isSuccess) {
+                        result.recomWidgetData?.let {
+                            rebindWidgetWithNewFilterData(
+                                carouselData?.copy(
+                                    recommendationData = it,
+                                    filterData = result.filterList
+                                )
+                            )
+                        }
+                    } else {
+                        basicListener?.onShowError(
+                            pageName = result.pageName,
+                            e = result.throwable ?: MessageErrorException(context?.getString(R.string.failed_to_load)))
+                        recyclerView.visible()
+                        loadingView?.gone()
+                    }
+                }
+            })
         }
     }
 
@@ -605,13 +718,24 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip> {
+        return data.recommendationFilterChips.map {
+            AnnotationChip(it)
+        }
+    }
+
     data class RecomWidgetMetadata(
         val scrollToPosition: Int = 0,
         val pageName: String = "",
         val adapterPosition: Int = 0,
         var isInitialized: Boolean = false,
         var isForceRefresh: Boolean = false,
-        val isRecomBindWithPageName: Boolean = false
+        val isRecomBindWithPageName: Boolean = false,
+        val productIds: List<String> = listOf(),
+        val categoryIds: List<String> = listOf(),
+        val keyword: String = "",
+        val isTokonow: Boolean = false,
+        val queryParam: String = ""
     ) {
     }
 }

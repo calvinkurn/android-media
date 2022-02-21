@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactoryImpl
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -27,6 +29,9 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var postId: Int = 0
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
+    private var shopName: String = ""
+    private var mediaType: String = ""
+    private var playChannelId: String = "0"
     private var postType: String = ""
     private var isFollowed: Boolean = false
     var closeClicked: (() -> Unit)? = null
@@ -54,16 +59,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         rvPosttag.isNestedScrollingEnabled = false
         rvPosttag.layoutManager = layoutManager
         rvPosttag.setPadding(0, 0, 0, 0)
-        rvPosttag.adapter = PostTagAdapter(
-            mapPostTag(listProducts),
-            PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
-        )
-        listener.onPostTagItemBSImpression(
-            postId.toString(),
-            listProducts,
-            postType,
-            shopId,
-            isFollowed)
+        if (::listProducts.isInitialized) {
+            setAdapter()
+        } else {
+            dismiss()
+        }
+
         (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
         setCloseClickListener {
             dismissedByClosing = true
@@ -75,6 +76,21 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 disMissed?.invoke()
             }
         }
+    }
+    private fun setAdapter() {
+        rvPosttag.adapter = PostTagAdapter(
+                mapPostTag(listProducts),
+                PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
+        )
+        if (listProducts.isNotEmpty())
+        listener.onPostTagItemBSImpression(
+                if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
+                listProducts,
+                postType,
+                shopId,
+                isFollowed,
+                mediaType
+               )
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {
@@ -109,14 +125,17 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.star,
                 postTagItem.mods,
                 shopId,
+                shopName = shopName,
                 description = postDescription,
                 isTopads = postTagItem.isTopads,
-                adClickUrl = adClickUrl
+                adClickUrl = adClickUrl,
+                playChannelId = playChannelId
             )
             item.feedType = "product"
             item.postId = postId
             item.positionInFeed = positionInFeed
             item.postType = postType
+            item.mediaType = mediaType
             item.isFollowed = isFollowed
             itemList.add(item)
         }
@@ -131,7 +150,10 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         shopId: String,
         type: String,
         isFollowed: Boolean,
-        positionInFeed: Int
+        positionInFeed: Int,
+        playChannelId: String,
+        shopName:String,
+        mediaType: String
     ) {
         this.listProducts = products
         this.listener = dynamicPostListener
@@ -140,6 +162,9 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.postType = type
         this.isFollowed = isFollowed
         this.positionInFeed = positionInFeed
+        this.playChannelId = playChannelId
+        this.shopName = shopName
+        this.mediaType = mediaType
         show(fragmentManager, "")
     }
 }

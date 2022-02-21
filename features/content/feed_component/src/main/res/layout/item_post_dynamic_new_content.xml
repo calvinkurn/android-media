@@ -22,7 +22,7 @@
             app:layout_constraintTop_toTopOf="@id/shop_name"
             app:unify_image_type="circle"
             tools:srcCompat="@drawable/ic_affiliate_video"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_badge"
@@ -58,7 +58,6 @@
             android:id="@+id/follow_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
             android:text="@string/kol_action_follow"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="@id/shop_badge"

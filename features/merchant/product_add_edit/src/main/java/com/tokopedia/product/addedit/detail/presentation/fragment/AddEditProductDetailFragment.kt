@@ -34,8 +34,10 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -288,7 +290,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        setFragmentToUnifyBgColor()
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
@@ -321,10 +323,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        if (RollenceUtil.getProductTitleRollence()) {
-            viewModel.usingNewProductTitleRequest = true
-            setupProductNameValidationBottomsheet()
-        }
+        setupProductNameValidationBottomsheet()
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
@@ -676,19 +675,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitTextView?.hide()
             submitLoadingIndicator?.show()
             validateInput()
-            val isInputValid = viewModel.isInputValid.value
-            isInputValid?.let {
-                if (it) {
-                    val isAdding = viewModel.isAdding
-                    val isDrafting = viewModel.isDrafting
-                    val isFirstMoved = viewModel.isFirstMoved
-                    if (isAdding && isFirstMoved) moveToDescriptionActivity()
-                    else if (isAdding && !isDrafting) submitInput()
-                    else submitInputEdit()
-                }
-            }
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
+            // validate product name before submit data
+            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
         }
 
         setupDefaultFieldMessage()
@@ -713,6 +701,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationText()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
+        subscribeToProductNameValidationFromNetwork()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -822,6 +811,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.removeObservers(this)
         viewModel.isInputValid.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
+    }
+
+    private fun submitInputData() {
+        val isAdding = viewModel.isAdding
+        val isDrafting = viewModel.isDrafting
+        val isFirstMoved = viewModel.isFirstMoved
+        if (isAdding && isFirstMoved) moveToDescriptionActivity()
+        else if (isAdding && !isDrafting) submitInput()
+        else submitInputEdit()
     }
 
     private fun updateAddNewWholeSalePriceButtonVisibility() {
@@ -1293,6 +1291,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productNameField?.isInputError = it
             productNameField?.setMessage(viewModel.productNameMessage)
             typoCorrection?.hide()
+            productNameRecAdapter?.setProductNameRecommendations(emptyList())
+            productNameRecView?.isVisible = !it
 
             // if product name input has no issue
             if (!it) {
@@ -1319,16 +1319,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                 }
             } else {
-                // show empty recommendations for input with error
-                productNameRecAdapter?.setProductNameRecommendations(emptyList())
-                hideProductNameLoadingIndicator()
-
                 // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
 
                 // update icon product name field error
+                hideProductNameLoadingIndicator()
                 showProductNameIconError()
             }
 
@@ -1550,6 +1547,32 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         }
         viewModel.getProductPriceRecommendation()
+    }
+
+    private fun subscribeToProductNameValidationFromNetwork() {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
+            submitTextView?.show()
+            submitLoadingIndicator?.hide()
+            when(it) {
+                is Success -> {
+                    val isError = it.data.isNotBlank()
+                    if (isError) {
+                        productNameField?.requestFocus()
+                        viewModel.productNameMessage = it.data
+                        viewModel.setIsProductNameInputError(true)
+                    } else {
+                        // set live data to null so it cannot commit observing twice when back from previous page
+                        viewModel.setProductNameInputFromNetwork(null)
+                        viewModel.setIsProductNameInputError(false)
+                        submitInputData()
+                    }
+                }
+                is Fail -> {
+                    viewModel.productNameMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    viewModel.setIsProductNameInputError(true)
+                }
+            }
+        })
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
@@ -1850,7 +1873,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         observe(viewModel.productNameRecommendations) {
             when (it) {
                 is Success -> {
-                    productNameRecView?.visible()
+                    val inputError = viewModel.isProductNameInputError.value.orFalse()
+                    productNameRecView?.isVisible = !inputError
                     productNameRecAdapter?.setProductNameRecommendations(it.data)
                 }
                 is Fail -> {

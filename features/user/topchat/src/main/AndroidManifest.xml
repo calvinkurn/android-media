@@ -7,7 +7,8 @@
             android:name="com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateVisible">
+            android:windowSoftInputMode="stateVisible"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -24,7 +25,8 @@
             android:name=".chatsetting.view.activity.ChatSettingActivity"
             android:label="@string/title_chat_setting"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.ChatSetting">
+            android:theme="@style/Theme.ChatSetting"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -41,7 +43,8 @@
             android:name=".chatlist.activity.ChatListActivity"
             android:label="@string/title_inbox_chat"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -57,7 +60,8 @@
         <activity
             android:name=".chattemplate.view.activity.TemplateChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.ChatSetting">
+            android:theme="@style/Theme.ChatSetting"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -80,7 +84,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -102,29 +107,25 @@
             android:name=".chatroom.service.NotificationChatService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE">
-
             <intent-filter>
                 <action android:name="NotificationChatService.REPLY_CHAT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".chatroom.service.NotificationChatJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
             android:name=".chatroom.service.NotificationChatServiceReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:exported="false">
             <intent-filter>
                 <action android:name="NotificationChatServiceReceiver.REPLY_CHAT" />
             </intent-filter>
         </receiver>
-
         <service
             android:name=".chatroom.service.UploadImageChatService"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"/>
-
+            android:exported="false" />
     </application>
-
 </manifest>

@@ -29,12 +29,10 @@ import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
@@ -59,7 +57,7 @@ class ChatModuleStub {
     @ChatScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return UserSessionStub(context)
     }
 
     @ChatScope
@@ -105,23 +103,6 @@ class ChatModuleStub {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            rxWebSocketUtilStub: RxWebSocketUtilStub
-    ): RxWebSocketUtil {
-        return rxWebSocketUtilStub
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtilStub(
-        mapper: TopChatRoomGetExistingChatMapper,
-        session: UserSessionInterface,
-    ): RxWebSocketUtilStub {
-        return RxWebSocketUtilStub(mapper, session)
     }
 
     @ChatScope
@@ -193,12 +174,6 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @ChatScope
-    @Provides
     internal fun provideTopchatCacheManager(): TopchatCacheManager {
         return FakeTopchatCacheManager()
     }
@@ -220,5 +195,43 @@ class ChatModuleStub {
     fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideFakeTopChatWebSocket(
+        mapper: TopChatRoomGetExistingChatMapper,
+        session: UserSessionInterface
+    ): FakeTopchatWebSocket {
+        return FakeTopchatWebSocket(mapper, session)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        ws: FakeTopchatWebSocket
+    ): TopchatWebSocket {
+        return ws
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        userSession: UserSessionInterface
+    ): WebsocketPayloadGenerator {
+        return DefaultWebsocketPayloadGenerator(userSession)
     }
 }

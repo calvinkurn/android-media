@@ -56,6 +56,6 @@ interface MvcTrackerImpl {
 
     fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int)
 
-    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, label: String = "")
+    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, productPosition:Int, label: String = "")
 
 }

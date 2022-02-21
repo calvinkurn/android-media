@@ -22,7 +22,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/snapshot_header_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <com.tokopedia.unifycomponents.PageControl
             android:id="@+id/snapshot_page_indicator"
@@ -60,10 +60,10 @@
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/snapshot_bundling_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/snapshot_bundling_name"
-            app:layout_constraintBottom_toBottomOf="@id/snapshot_bundling_name"
-            tools:src="@tools:sample/avatars"/>
+            tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/snapshot_bundling_name"
@@ -73,11 +73,11 @@
             android:layout_marginTop="@dimen/snapshot_dimen_10dp"
             android:layout_marginBottom="4dp"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/snapshot_bundling_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="heading_3"
-            tools:text="Paket Hemat"/>
+            tools:text="Paket Hemat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -128,12 +128,11 @@
         app:layout_constraintTop_toBottomOf="@id/snapshot_label_disc"
         app:typographyType="body_1" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_info"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/snapshot_product_name" />
 
     <!--expected nested to fulfill area onclick for tracking -->
@@ -188,12 +187,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_shop"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/cl_shop" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -216,6 +214,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/snapshot_kondisi_label"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineProductDetailSection"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/snapshot_detail_title"
         app:typographyType="body_1" />
@@ -224,23 +225,24 @@
         android:id="@+id/snapshot_kondisi_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/snapshot_kondisi_label"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/snapshot_min_order_value"
+        app:layout_constraintStart_toEndOf="@id/guidelineProductDetailSection"
         app:layout_constraintTop_toTopOf="@id/snapshot_kondisi_label"
-        app:typographyType="body_1" />
+        app:typographyType="body_1"
+        tools:text="Baru" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_kondisi"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_kondisi_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -251,6 +253,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/snapshot_berat_label"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineProductDetailSection"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/snapshot_kondisi_label"
         app:typographyType="body_1" />
@@ -259,23 +264,24 @@
         android:id="@+id/snapshot_berat_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/snapshot_detail_berat_label"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/snapshot_min_order_value"
+        app:layout_constraintStart_toEndOf="@id/guidelineProductDetailSection"
         app:layout_constraintTop_toTopOf="@id/snapshot_detail_berat_label"
-        app:typographyType="body_1" />
+        app:typographyType="body_1"
+        tools:text="500 gram" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_berat"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_detail_berat_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -286,6 +292,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/snapshot_po_label"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineProductDetailSection"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/snapshot_detail_berat_label"
         app:typographyType="body_1" />
@@ -294,23 +303,24 @@
         android:id="@+id/snapshot_po_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/snapshot_po_label"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/snapshot_min_order_value"
+        app:layout_constraintStart_toEndOf="@id/guidelineProductDetailSection"
         app:layout_constraintTop_toTopOf="@id/snapshot_po_label"
-        app:typographyType="body_1" />
+        app:typographyType="body_1"
+        tools:text="1 minggu" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_po"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_po_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -321,6 +331,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/snapshot_min_order_label"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineProductDetailSection"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/snapshot_po_label"
         app:typographyType="body_1" />
@@ -329,24 +342,31 @@
         android:id="@+id/snapshot_min_order_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/snapshot_min_order_label"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/snapshot_min_order_label"
+        app:layout_constraintStart_toEndOf="@id/guidelineProductDetailSection"
         app:layout_constraintTop_toTopOf="@id/snapshot_min_order_label"
-        app:typographyType="body_1" />
+        app:typographyType="body_1"
+        tools:text="1 pcs" />
 
-    <View
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineProductDetailSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_min_order"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_min_order_label" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -1,25 +1,24 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.STATUS_DELETED
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
-import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 class GetChatUseCaseStub @Inject constructor(
-    private val gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
-    mapper: TopChatRoomGetExistingChatMapper,
+    private val repository: GraphqlRepositoryStub,
     dispatchers: CoroutineDispatchers
-) : GetChatUseCase(gqlUseCase, mapper, dispatchers) {
+) : GetChatUseCase(repository, dispatchers) {
 
     private val changeAddressResponsePath =
         "success_get_chat_replies_with_srw_change_address.json"
@@ -31,10 +30,32 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_as_seller.json"
     private val chatWithBuyerPath =
         "success_get_chat_first_page_as_buyer.json"
+    private val bannedProductChatWithBuyerPath =
+        "success_get_chat_first_page_with_banned_products.json"
+    private val sellerSrwPromptPath =
+        "seller/success_get_chat_replies_with_srw_reply_prompt.json"
+    private val shippingLocationPath =
+        "seller/chat_replies_shipping_location.json"
+    private val upcomingCampaignPath =
+        "buyer/chat_replies_upcoming_campaign.json"
+    private val deleteImageResponsePath =
+        "buyer/chat_replies_delete_image.json"
+    private val blockedChatAsBuyer =
+        "success_get_blocked_chat_replies.json"
+    private val voucherAttachmentSellerResponsePath =
+        "seller/success_get_chat_first_page_with_voucher.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
-            gqlUseCase.response = value
+            repository.createMapResult(response::class.java, value)
+            field = value
+        }
+
+    var isError = false
+        set(value) {
+            if (value) {
+                repository.createErrorMapResult(response::class.java, "Oops!")
+            }
             field = value
         }
 
@@ -48,9 +69,161 @@ class GetChatUseCaseStub @Inject constructor(
             alterDateToToday(response)
         }
 
-    fun getCurrentRoomMetaData(msgId: String): RoomMetaData {
-        return mapper.generateRoomMetaData(msgId, response)
+    val bannedProductChatWithBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(bannedProductChatWithBuyerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val blockedChatResponse: GetExistingChatPojo
+        get() = alterResponseOf(blockedChatAsBuyer) { response ->
+            alterDateToToday(response)
+        }
+
+    val voucherAttachmentChatWithSellerResponse: GetExistingChatPojo
+        get() = alterResponseOf(voucherAttachmentSellerResponsePath) { response ->
+            alterDateToToday(response)
+        }
+
+    /**
+     * <!--- Start OOS label --->
+     */
+
+    val upComingCampaignProduct: GetExistingChatPojo
+        get() = alterResponseOf(upcomingCampaignPath) { response -> }
+
+    /**
+     * <!--- End OOS label --->
+     */
+
+    /**
+     * <!--- Start Delete Image --->
+     */
+
+    val deleteImageResponse: GetExistingChatPojo
+        get() = alterResponseOf(deleteImageResponsePath) { }
+
+    val deleteImageResponseWithStatus5: GetExistingChatPojo
+        get() = alterResponseOf(deleteImageResponsePath) { response ->
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies[1].asJsonObject.addProperty(status, STATUS_DELETED)
+                }
+            )
+        }
+
+    /**
+     * <!--- End Delete Image --->
+     */
+
+    /**
+     * <!--- Start Shipping Location Seller --->
+     */
+
+    val withShippingInfo: GetExistingChatPojo
+        get() = alterResponseOf(shippingLocationPath) { response -> }
+
+    val withShippingInfoBuyer: GetExistingChatPojo
+        get() = alterResponseOf(shippingLocationPath) { response ->
+            swapInterlocutor(response)
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies.forEach {
+                        it.asJsonObject.addProperty(isOpposite, false)
+                    }
+                }
+            )
+        }
+
+    /**
+     * <!--- End Shipping Location Seller --->
+     */
+
+    /**
+     * <!--- Start SRW Prompt --->
+     */
+
+    val defaultSrwPrompt: GetExistingChatPojo get() {
+        return alterResponseOf(sellerSrwPromptPath) { response -> }
     }
+
+    val noTriggerTextSrwPrompt: GetExistingChatPojo
+        get() = alterResponseOf(sellerSrwPromptPath) { response ->
+            val chatReplies = response.getAsJsonObject(chatReplies)
+            chatReplies.addProperty("hasNext", true)
+            alterRepliesAttribute(0, 0, response) {
+                for (i in 0 until 2) {
+                    it.addAll(it)
+                }
+            }
+        }
+
+    fun getInTheMiddleOfThePageSrwPrompt(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+            val chatReplies = response.getAsJsonObject(chatReplies)
+            chatReplies.addProperty("hasNext", true)
+            chatReplies.addProperty("hasNextAfter", true)
+        }
+    }
+
+    fun getSrwPromptWithTriggerText(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+        }
+    }
+
+    fun carouselSrwPrompt(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterRepliesAttribute(0, 0, response) {
+                val product = it.get(0)
+                val chats = it.deepCopy()
+                it.removeAll { true }
+                it.apply {
+                    add(product)
+                    addAll(chats)
+                }
+            }
+            alterChatAttribute(0, 0, 2, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+        }
+    }
+
+    fun multipleSrwPrompt(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterRepliesAttribute(0, 0, response) {
+                val product = it.get(0)
+                val msg = it.get(1)
+                val chats = it.deepCopy()
+                it.removeAll { true }
+                it.apply {
+                    add(product)
+                    add(msg)
+                    addAll(chats)
+                }
+            }
+            alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+            alterChatAttribute(0, 0, 3, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+        }
+    }
+
+    /**
+     * <!--- End SRW Prompt --->
+     */
 
     /**
      * <!--- Start Reply bubble --->
@@ -97,12 +270,6 @@ class GetChatUseCaseStub @Inject constructor(
      * <!--- End Reply bubble --->
      */
 
-    var isError = false
-        set(value) {
-            gqlUseCase.isError = value
-            field = value
-        }
-
     /**
      * <!--- Start Broadcast responses --->
      */
@@ -111,6 +278,7 @@ class GetChatUseCaseStub @Inject constructor(
             broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
+
     /**
      * <!--- End Broadcast responses --->
      */
@@ -189,6 +357,7 @@ class GetChatUseCaseStub @Inject constructor(
                 .getAsJsonArray(replies).get(0).asJsonObject
                 .remove(attachment)
         }
+
     /**
      * <!--- End SRW responses --->
      */
@@ -257,15 +426,39 @@ class GetChatUseCaseStub @Inject constructor(
         responseObj: JsonObject,
         altercation: (JsonObject) -> Unit
     ) {
-        val attachment = responseObj.getAsJsonObject(chatReplies)
+        alterChatAttribute(listPosition, chatsPosition, repliesPosition, responseObj) {
+            val attachment = it.getAsJsonObject(attachment)
+            val attr = attachment.getAsJsonPrimitive(attributes).asString
+            val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
+            altercation(attrObj)
+            attachment.addProperty(attributes, attrObj.toString())
+        }
+    }
+
+    private fun alterChatAttribute(
+        listPosition: Int,
+        chatsPosition: Int,
+        repliesPosition: Int,
+        responseObj: JsonObject,
+        altercation: (JsonObject) -> Unit
+    ) {
+        alterRepliesAttribute(listPosition, chatsPosition, responseObj) { replies ->
+            val chat = replies.get(repliesPosition).asJsonObject
+            altercation(chat)
+        }
+    }
+
+    private fun alterRepliesAttribute(
+        listPosition: Int,
+        chatsPosition: Int,
+        responseObj: JsonObject,
+        altercation: (JsonArray) -> Unit
+    ) {
+        val replies = responseObj.getAsJsonObject(chatReplies)
             .getAsJsonArray(list).get(listPosition).asJsonObject
             .getAsJsonArray(chats).get(chatsPosition).asJsonObject
-            .getAsJsonArray(replies).get(repliesPosition).asJsonObject
-            .getAsJsonObject(attachment)
-        val attr = attachment.getAsJsonPrimitive(attributes).asString
-        val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
-        altercation(attrObj)
-        attachment.addProperty(attributes, attrObj.toString())
+            .getAsJsonArray(replies)
+        altercation(replies)
     }
 
     private fun alterResponseOf(
@@ -279,5 +472,18 @@ class GetChatUseCaseStub @Inject constructor(
         return CommonUtil.fromJson(
             responseObj.toString(), GetExistingChatPojo::class.java
         )
+    }
+
+    private fun swapInterlocutor(response: JsonObject) {
+        val contacts = response.getAsJsonObject(chatReplies)
+            .getAsJsonArray(contacts)
+        val interLoc = contacts.find { contact ->
+            contact.asJsonObject.get(interlocutor).asBoolean
+        }
+        val notInterLoc = contacts.find { contact ->
+            !contact.asJsonObject.get(interlocutor).asBoolean
+        }
+        interLoc?.asJsonObject?.addProperty(interlocutor, false)
+        notInterLoc?.asJsonObject?.addProperty(interlocutor, true)
     }
 }

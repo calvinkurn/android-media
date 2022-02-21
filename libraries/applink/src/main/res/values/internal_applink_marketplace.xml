@@ -39,16 +39,15 @@
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
-    <string name="path_product_review_old" translatable="false">/product/.*\\/review-old</string>
-    <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
+    <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*</string>
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
+    <string name="path_edit_review" translatable="false">/product-review/edit/.*\\/.*\\/</string>
     <string name="path_review_credibility" translatable="false">/review/credibility/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
     <string name="path_product_review_gallery_old" translatable="false">/product/.*\\/review/gallery-old</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
-    <string name="path_store_setting" translatable="false">/store-setting</string>
     <string name="path_qr_scanner" translatable="false">/qr-scanner/.*\\/</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
@@ -91,6 +90,7 @@
     <string name="path_shop_penalty_detail" translatable="false">/shop-penalty-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
+    <string name="path_shop_operational_hour_bottom_sheet" translatable="false">/shop/widget/operational-hour/.*\\/</string>
 
     <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
 
@@ -116,6 +116,6 @@
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
-    <string name="path_sellerapp_search" translatable="false">seller-search</string>
+    <string name="path_sellerapp_search" translatable="false">/seller-search</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 </resources>

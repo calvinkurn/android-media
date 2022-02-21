@@ -3,6 +3,7 @@
     <attr name="showCheckMark" format="boolean" />
     <declare-styleable name="SingleProductAttachmentContainer">
         <attr name="widthMultiplier" format="float" />
+        <attr name="isCarousel" format="boolean" />
     </declare-styleable>
     <declare-styleable name="MessageBubbleConstraintLayout">
         <attr name="showCheckMark"/>

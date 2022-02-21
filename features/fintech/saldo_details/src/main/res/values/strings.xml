@@ -13,12 +13,12 @@
     <string name="sp_disable_desc_long">Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.\nPengembalian dana untuk pelunasan Saldo Prioritas tetap berjalan.</string>
     <string name="saldo_status_updated_success">Status Prioritas Diperbarui</string>
     <string name="sp_title_withdraw">Tarik Saldo</string>
-    <string name="sp_title_remaining_tokopedia">Saldo Aktif</string>
+    <string name="sp_title_remaining_tokopedia">Total Saldo Aktif</string>
     <string name="sp_saldo_title">Saldo</string>
     <string name="sp_positive_saldo_balance">+%s</string>
     <string name="sp_negative_saldo_balance">-%s</string>
     <string name="sp_date_time_view">%s WIB</string>
-    <string name="saldo_hold_balance_text">Saldo Tertahan %s</string>
+    <string name="saldo_hold_balance_text"><![CDATA[Ada saldo tertahan senilai %s. <a href="(%1$s)">Cek Status</a>]]></string>
     <string name="check_saldo_hold_balance_status">Cek Status</string>
     <string name="sp_saldo_withdraw_warning_title">Informasi Penarikan Saldo</string>
     <string name="sp_saldo_withdraw_warning_desc">Layanan pencairan dana bergantung pada jadwal proses kerja bank. Info lebih lanjut, silakan hubungi layanan nasabah bank.</string>
@@ -54,7 +54,7 @@
     <string name="saldo_empty_list_heading">Belum Ada Transaksi</string>
     <string name="saldo_empty_list_desc">Ubah tab untuk melihat transaksi yang lain</string>
     <string name="modal_toko">Modal Toko</string>
-    <string name="financial_services">Layanan Finansial</string>
+    <string name="financial_services">Layanan finansial</string>
     <string name="saldo_lock_tickerTitle">Saldo Penghasilan tidak bisa ditarik</string>
     <string name="saldo_lock_tickerDescription">Karena belum membayar tagihan pinjaman Modal Toko selama %d hari.</string>
     <string name="saldo_lock_pay_now">Bayar Sekarang</string>
@@ -99,5 +99,14 @@
     <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
     <string name="saldo_btn_oke">Oke</string>
     <string name="saldo_save_date">Simpan</string>
+
+    <string name="saldo_refund_info_description_1"><![CDATA[Saldo ini berasal dari <b>transaksi yang dibatalkan.</b>]]></string>
+    <string name="saldo_refund_info_description_2"><![CDATA[Kamu bisa gunakan Saldo Refund untuk <b>bertransaksi</b> lagi.</b>]]></string>
+    <string name="saldo_refund_info_description_3"><![CDATA[Saldo bisa <b>ditarik ke rekening bank.</b>]]></string>
+    <string name="saldo_refund_info_title">Metode pembayaran yang akan dikembalikan ke Saldo Refund:</string>
+    <string name="saldo_income_info_title">Dana yang masuk ke Saldo Penghasilan</string>
+
+    <string name="saldo_income_info_description_1"><![CDATA[Saldo yang <b>menampung penghasilanmu</b> di Tokopedia, dan <b>tidak bisa dipakai untuk bertransaksi.</b>]]></string>
+    <string name="saldo_income_info_description_2"><![CDATA[<b>Khusus Seller</b>, Saldo Penghasilan bisa digunakan untuk top-up TopAds &amp; untuk pemotongan biaya kurir, komisi Affiliate, dll. ]]></string>
 
 </resources>

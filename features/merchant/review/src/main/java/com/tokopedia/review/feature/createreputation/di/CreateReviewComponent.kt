@@ -7,7 +7,7 @@ import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.Cr
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import dagger.Component
 
-@Component(modules = [CreateReviewViewModelModule::class, MediaUploaderModule::class], dependencies = [ReviewComponent::class])
+@Component(modules = [CreateReviewViewModelModule::class, MediaUploaderModule::class, CreateReviewModule::class], dependencies = [ReviewComponent::class])
 @CreateReviewScope
 interface CreateReviewComponent {
     fun inject(createReviewFragment: CreateReviewFragment)

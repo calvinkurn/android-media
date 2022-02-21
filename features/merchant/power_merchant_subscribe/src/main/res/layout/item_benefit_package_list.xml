@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/cardItemBenefitPackage"
     app:card_type="clear"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -29,6 +30,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             app:typographyType="body_3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_Static_Black_96"
             app:layout_constraintStart_toEndOf="@id/icBenefitPackageItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/icBenefitPackageItem"

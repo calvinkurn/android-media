@@ -26,6 +26,7 @@ import javax.inject.Inject
 open class VerificationViewModel @Inject constructor(
         private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
         private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
+        private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
         private val otpValidateUseCase: OtpValidateUseCase,
         private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
@@ -83,11 +84,13 @@ open class VerificationViewModel @Inject constructor(
             otpType: String,
             userId: String,
             msisdn: String,
-            email: String
+            email: String,
+            timeUnix: String,
+            authenticity: String
     ) {
         launchCatchError(block = {
             TkpdIdlingResource.increment()
-            val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
+            val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email, timeUnix, authenticity)
             val data = getVerificationMethodUseCase.getData(params).data
             when {
                 data.success -> {
@@ -96,6 +99,45 @@ open class VerificationViewModel @Inject constructor(
                 }
                 data.errorMessage.isNotEmpty() -> {
                     _getVerificationMethodResult.value = Fail(MessageErrorException(data.errorMessage))
+                    TkpdIdlingResource.decrement()
+                }
+                else -> {
+                    _getVerificationMethodResult.value = Fail(Throwable())
+                    TkpdIdlingResource.decrement()
+                }
+            }
+        }, onError = {
+            _getVerificationMethodResult.value = Fail(it)
+            TkpdIdlingResource.decrement()
+        })
+    }
+
+    fun getVerificationMethodInactive(
+            otpType: String,
+            userId: String = "",
+            msisdn: String = "",
+            email: String = "",
+            validateToken: String= "",
+            userIdEnc: String = ""
+    ) {
+        launchCatchError(block = {
+            TkpdIdlingResource.increment()
+            val response = getVerificationMethodInactivePhoneUseCase(InactivePhoneVerificationMethodeParams(
+                otpType = otpType,
+                userId = userId,
+                msisdn = msisdn,
+                email = email,
+                validateToken = validateToken,
+                userIDEnc = userIdEnc
+            ))
+
+            when {
+                response.data.success -> {
+                    _getVerificationMethodResult.value = Success(response.data)
+                    TkpdIdlingResource.decrement()
+                }
+                response.data.errorMessage.isNotEmpty() -> {
+                    _getVerificationMethodResult.value = Fail(MessageErrorException(response.data.errorMessage))
                     TkpdIdlingResource.decrement()
                 }
                 else -> {
@@ -154,11 +196,20 @@ open class VerificationViewModel @Inject constructor(
             validateToken: String,
             userIdEnc: String,
             mode: String,
-            code: String
+            code: String,
+            msisdn: String = ""
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase2FA.getParams(otpType = otpType, validateToken = validateToken, userIdEnc = userIdEnc, mode = mode, code = code)
+            val params = otpValidateUseCase2FA.getParams(
+                otpType = otpType,
+                validateToken = validateToken,
+                userIdEnc = userIdEnc,
+                mode = mode,
+                code = code,
+                msisdn = msisdn
+            )
+
             val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {

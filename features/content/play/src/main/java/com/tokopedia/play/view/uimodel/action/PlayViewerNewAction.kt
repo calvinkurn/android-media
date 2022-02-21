@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel.action
 
+import com.tokopedia.universal_sharing.view.model.ShareModel
+
 /**
  * Created by jegul on 28/06/21
  */
@@ -37,11 +39,7 @@ object ClickLikeAction : PlayViewerNewAction()
  * Share
  */
 object ClickShareAction : PlayViewerNewAction()
-
-/**
- * Cart
- */
-object ClickCartAction : PlayViewerNewAction()
+object CopyLinkAction: PlayViewerNewAction()
 
 /**
  * Swipe
@@ -49,10 +47,17 @@ object ClickCartAction : PlayViewerNewAction()
 object SetChannelActiveAction : PlayViewerNewAction()
 
 /**
- * Upcoming Page
+ * Sharing Experience
  */
-object ImpressUpcomingChannel: PlayViewerNewAction()
-object ClickRemindMeUpcomingChannel: PlayViewerNewAction()
-object ClickWatchNowUpcomingChannel: PlayViewerNewAction()
+object ShowShareExperienceAction: PlayViewerNewAction()
+data class ClickSharingOptionAction(val shareModel: ShareModel): PlayViewerNewAction()
+object CloseSharingOptionAction: PlayViewerNewAction()
+object ScreenshotTakenAction: PlayViewerNewAction()
+data class SharePermissionAction(val label: String): PlayViewerNewAction()
+
+/**
+ * Product
+ */
+object RetryGetTagItemsAction : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

@@ -2,13 +2,9 @@ package com.tokopedia.attachvoucher.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.attachvoucher.FileUtil
-import com.tokopedia.attachvoucher.data.FilterParam
-import com.tokopedia.attachvoucher.data.GetVoucherParam
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
-import com.tokopedia.attachvoucher.data.voucherv2.MerchantPromotionGetMVList
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherType
@@ -16,14 +12,12 @@ import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Compani
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.Dispatchers
+import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Spy
 
 
 @ExperimentalCoroutinesApi
@@ -44,6 +38,7 @@ class AttachVoucherViewModelTest {
     @RelaxedMockK
     lateinit var errorObserver: Observer<Throwable>
 
+    @Spy
     lateinit var viewModel: AttachVoucherViewModel
 
     private val dispatcherProvider = CoroutineTestDispatchersProvider
@@ -62,7 +57,7 @@ class AttachVoucherViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = AttachVoucherViewModel(getVoucherUseCase, dispatcherProvider)
+        viewModel = spyk(AttachVoucherViewModel(getVoucherUseCase, dispatcherProvider))
         viewModel.voucher.observeForever(voucherObservers)
         viewModel.filter.observeForever(filterObserver)
         viewModel.error.observeForever(errorObserver)
@@ -91,10 +86,23 @@ class AttachVoucherViewModelTest {
         viewModel.isLoading = true
 
         // When
-        viewModel.cancelCurrentLoad()
+        viewModel.loadVouchers(1)
 
         // Then
-        assertFalse(viewModel.isLoading)
+        verify(exactly = 1) { viewModel.cancelCurrentLoad() }
+    }
+
+    @Test
+    fun `load voucher without cancel`() {
+        // Given
+        viewModel.isLoading = false
+        // When
+        viewModel.loadVouchers(1)
+
+        // Then
+        verify(exactly = 0) { viewModel.cancelCurrentLoad() }
+
+
     }
 
     @Test
@@ -111,6 +119,22 @@ class AttachVoucherViewModelTest {
         // Then
         verify { filterObserver.onChanged(VoucherType.paramCashback) }
         assertFalse(viewModel.hasNoFilter())
+        assertEquals(VoucherType.paramCashback, viewModel.filter.value)
+    }
+
+    @Test
+    fun `Filter cashback not clicked`() {
+        // Given
+        coEvery {
+            getVoucherUseCase(any())
+        } returns Dummy.exVouchers
+
+        // When
+        viewModel.loadVouchers(Dummy.firstPage)
+
+        // Then
+        assertNull(viewModel.filter.value)
+        assertTrue(viewModel.hasNoFilter())
     }
 
     @Test
@@ -158,7 +182,20 @@ class AttachVoucherViewModelTest {
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        assertTrue(viewModel.hasNext)
+        assertEquals(true, viewModel.hasNext)
+    }
+
+    @Test
+    fun `hasn't next get from use case`() {
+        coEvery {
+            getVoucherUseCase.hasNext
+        } returns false
+
+        // When
+        viewModel.loadVouchers(Dummy.firstPage)
+
+        // Then
+        assertEquals(false, viewModel.hasNext)
     }
 
     @Test
@@ -172,6 +209,71 @@ class AttachVoucherViewModelTest {
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        assertTrue(viewModel.currentPage == Dummy.firstPage)
+        assertEquals(viewModel.currentPage, Dummy.firstPage)
+    }
+
+    @Test
+    fun `filter toogle is clicked`() {
+        //Given
+        viewModel.toggleFilter(1)
+        coVerify { filterObserver.onChanged(1) }
+    }
+
+    @Test
+    fun `filter toogle is clicked twice`() {
+        viewModel.toggleFilter(1)
+        viewModel.toggleFilter(1)
+        coVerify { filterObserver.onChanged(-1) }
+    }
+
+    @Test
+    fun `should give false when there is a filter`() {
+        //When
+        viewModel.setFilter(1)
+
+        //Then
+        assert(!viewModel.hasNoFilter())
+    }
+
+    @Test
+    fun `should give true when filter is NO_FILTER`() {
+        //When
+        viewModel.setFilter(NO_FILTER)
+
+        //Then
+        assert(viewModel.hasNoFilter())
+    }
+
+    @Test
+    fun `should give true when filter is null`() {
+        //When
+        viewModel.setFilter(null)
+
+        //Then
+        assert(viewModel.hasNoFilter())
+    }
+
+    @Test
+    fun `test set currentPage`() {
+        // Given
+        val expectedPage = 1
+
+        // When
+        viewModel.currentPage = expectedPage
+
+        // Then
+        assertEquals(expectedPage, viewModel.currentPage)
+    }
+
+    @Test
+    fun `test set isLoading`() {
+        // Given
+        val expectedLoading = true
+
+        // When
+        viewModel.isLoading = expectedLoading
+
+        // Then
+        assertEquals(expectedLoading, viewModel.isLoading)
     }
 }

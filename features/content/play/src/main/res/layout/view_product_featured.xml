@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <com.tokopedia.play.util.scroll.NestedScrollableHost
         android:layout_width="match_parent"
@@ -11,29 +12,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:lockScroll="true">
+        app:lockScroll="true"
+        >
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.tokopedia.play.view.custom.ProductFeaturedRecyclerView
             android:id="@+id/rv_product_featured"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
 
     </com.tokopedia.play.util.scroll.NestedScrollableHost>
-
-    <com.tokopedia.play.view.custom.ProductIconView
-        android:id="@+id/ic_product_see_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/spacing_lvl3"
-        android:paddingEnd="@dimen/spacing_lvl3"
-        android:paddingBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/ic_product_see_more"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

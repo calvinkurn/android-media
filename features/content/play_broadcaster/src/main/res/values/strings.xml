@@ -78,6 +78,7 @@
     <string name="play_camera_timer_0_label">0s</string>
     <string name="play_camera_timer_5_label">5s</string>
     <string name="play_camera_timer_10_label">10s</string>
+    <string name="play_camera_get_ready_label">Siap-siap, ya! Live akan segera dimulai~</string>
 
     <string name="play_label_save">Simpan</string>
 
@@ -87,6 +88,7 @@
     <string name="play_live_broadcast_time_default">00:00</string>
     <string name="play_live_broadcast_time_left">Sisa %d menit</string>
     <string name="play_live_broadcast_remaining_duration_format">%1$02d:%2$02d</string>
+    <string name="play_live_broadcast_remaining_duration_format_with_hour">%1$02d:%2$02d:%3$02d</string>
     <string name="play_live_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
     <string name="play_live_broadcast_dialog_end_desc">Banyak penonton kamu yg akan sedih kalau kamu keluar dari live streaming sekarang.</string>
     <string name="play_live_broadcast_dialog_end_primary">Lanjut Siaran</string>
@@ -195,4 +197,25 @@
     <string name="play_bro_tnc_benefit_2">Bisa berinteraksi langsung dengan calon pembeli</string>
     <string name="play_bro_tnc_benefit_3">Bantu meningkatkan penjualanmu</string>
     <string name="play_bro_tnc_ok">Oke, Mengerti</string>
+
+    <string name="play_cancel_live_stream">Batalkan</string>
+
+    <!--Pinned Message-->
+    <string name="play_bro_create_pinned_msg">Buat Pin Chat</string>
+    <string name="play_bro_pinned_msg_form_title">Pin Chat</string>
+    <string name="play_bro_pinned_msg_form_placeholder">Tulis Pin Chat</string>
+    <string name="play_bro_pinned_msg_form_instruction">Buat pin chat untuk kasih info penting ke penontonmu selama Live berlangsung.</string>
+
+
+    <!-- Action Bar Live -->
+    <string name="play_bro_mock_room_title">Review Aksesoris Sepeda</string>
+
+    <!-- Error -->
+    <string name="play_bro_error_network_problem">Segera sambungkan ke koneksi yang stabil untuk memilai siarannya</string>
+
+    <!-- Product Tag -->
+    <string name="play_bro_product_tag_stock_amount">Stok %s</string>
+    <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
+    <string name="play_bro_product_tag_no_price">Rp -</string>
+    <string name="play_bro_product_discount_template">%d%%</string>
 </resources>

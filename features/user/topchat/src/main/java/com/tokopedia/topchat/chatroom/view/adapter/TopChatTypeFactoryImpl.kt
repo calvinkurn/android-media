@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHo
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
@@ -55,7 +56,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val reviewListener: ReviewViewHolder.Listener,
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
     private val chatMsgListener: FlexBoxChatLayout.Listener,
-    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val listener: ReminderTickerViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -144,6 +146,10 @@ open class TopChatTypeFactoryImpl constructor(
         return SrwBubbleViewHolder.LAYOUT
     }
 
+    override fun type(getReminderTickerUiModel: ReminderTickerUiModel): Int {
+        return ReminderTickerViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentUiModel: ProductAttachmentUiModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
@@ -223,6 +229,9 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ReminderTickerViewHolder.LAYOUT -> ReminderTickerViewHolder(
+                parent, listener, commonListener
+            )
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(
                 parent,
                 productAttachmentListener
@@ -257,7 +266,7 @@ open class TopChatTypeFactoryImpl constructor(
                 fraudAlertListener
             )
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(
-                parent, imageUploadListener, replyBubbleListener
+                parent, imageUploadListener, replyBubbleListener, commonListener
             )
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(
                 parent,

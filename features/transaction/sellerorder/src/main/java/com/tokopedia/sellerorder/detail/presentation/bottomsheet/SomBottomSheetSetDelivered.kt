@@ -15,7 +15,7 @@ import com.tokopedia.sellerorder.databinding.BottomsheetSetDeliveredBinding
 class SomBottomSheetSetDelivered(
         context: Context,
         private val listener: SomBottomSheetSetDeliveredListener
-) : SomBottomSheet<BottomsheetSetDeliveredBinding>(LAYOUT, true, true, false, context.getString(R.string.bottomsheet_set_delivered), context, true), TextWatcher, View.OnClickListener {
+) : SomBottomSheet<BottomsheetSetDeliveredBinding>(LAYOUT, true, true, false, false, false, context.getString(R.string.bottomsheet_set_delivered), context, true), TextWatcher, View.OnClickListener {
 
     companion object {
         private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.25f

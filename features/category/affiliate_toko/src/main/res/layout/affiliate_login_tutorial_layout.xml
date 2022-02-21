@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="bottom"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/affiliate_tutorial_iv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_250"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="40dp"
+        app:imageDpiSupportType="singleDpi"
+        android:layout_marginTop="@dimen/unify_space_12"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/affiliate_tutorial_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/affiliate_tutorial_title_1"
+        app:typographyType="heading_2"
+        android:gravity="center|top"
+        android:layout_marginStart="@dimen/spacing_lvl8"
+        android:layout_marginEnd="@dimen/spacing_lvl8"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="@dimen/unify_space_12"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/affiliate_tutorial_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/affiliate_tutorial_subtitle_1"
+        app:typographyType="body_2"
+        android:gravity="center|top"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_12"
+        />
+
+</LinearLayout>

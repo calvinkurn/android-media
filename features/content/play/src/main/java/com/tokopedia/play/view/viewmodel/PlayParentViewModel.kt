@@ -107,13 +107,15 @@ class PlayParentViewModel constructor(
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
             handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
+            handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
+            handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
 
             mNextKey = getNextChannelIdKey(channelId, source)
             loadNextPage()
         }
     }
 
-    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel not found")
+    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
     fun setLatestChannelStorageData(
             channelId: String,
@@ -148,17 +150,28 @@ class PlayParentViewModel constructor(
                 playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(
                         channelId = startingChannelId,
                         videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
-                        shouldTrack = shouldTrack?.toBoolean() ?: true
+                        shouldTrack = shouldTrack?.toBoolean() ?: true,
+                        sourceType = source.key
                     )
                 ).forEach {
                     playChannelStateStorage.setData(it.id, it)
                 }
             }
 
-            _observableChannelIdsResult.value = PageResult(
+            startingChannelId?.let { channelId ->
+                _observableChannelIdsResult.value = PageResult(
+                    currentValue = playChannelStateStorage.getChannelList(),
+                    state = if(playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true)
+                                PageResultState.Upcoming(channelId = channelId)
+                            else PageResultState.Success(pageInfo = PageInfo.Unknown)
+                )
+            } ?: run {
+                _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
                     state = PageResultState.Success(pageInfo = PageInfo.Unknown)
-            )
+                )
+            }
+
         }, onError = {
             _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),

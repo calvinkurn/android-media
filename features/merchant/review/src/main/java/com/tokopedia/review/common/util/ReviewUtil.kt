@@ -16,6 +16,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.text.SimpleDateFormat
@@ -38,7 +39,11 @@ object ReviewUtil {
     }
 
     fun DptoPx(context: Context, dp: Int): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            context.resources.displayMetrics
+        )
     }
 
     fun routeToWebview(context: Context, bottomSheet: BottomSheetUnify?, url: String): Boolean {
@@ -47,27 +52,45 @@ object ReviewUtil {
         return RouteManager.route(context, webviewUrl)
     }
 
-    fun formatReviewExpand(context: Context, review: String, maxChar: Int, allowClick: Boolean): Pair<CharSequence?, Boolean> {
+    fun formatReviewExpand(
+        context: Context,
+        review: String,
+        maxChar: Int,
+        allowClick: Boolean
+    ): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
         return if (formattedText.length > maxChar) {
             val subDescription = formattedText.substring(0, maxChar)
-            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context
-                    .getString(R.string.review_expand)).spannedString, allowClick)
+            Pair(
+                HtmlLinkHelper(
+                    context,
+                    subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context
+                        .getString(R.string.review_expand)
+                ).spannedString, allowClick
+            )
         } else {
             Pair(formattedText, !allowClick)
         }
     }
 
     fun formatReviewCollapse(context: Context, review: String): CharSequence? {
-        return HtmlLinkHelper(context, review.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
+        return HtmlLinkHelper(
+            context,
+            review.replace(
+                "(\r\n|\n)".toRegex(),
+                "<br />"
+            ) + "<br />" + context.getString(R.string.review_reading_collapse)
+        ).spannedString
     }
 }
 
 fun String.toReviewDescriptionFormatted(maxChar: Int, context: Context): CharSequence? {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
         val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
-        HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                + context.getString(R.string.review_expand)).spannedString
+        HtmlLinkHelper(
+            context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                    + context.getString(R.string.review_expand)
+        ).spannedString
     } else {
         MethodChecker.fromHtml(this)
     }
@@ -135,7 +158,9 @@ val String.isUnAnswered: Boolean
     }
 
 fun Float?.roundDecimal(): String {
-    val rounded = this?.times(ReviewUtil.ROUND_DECIMAL)?.let { round(it) }?.div(ReviewUtil.ROUND_DECIMAL).toString()
+    val rounded =
+        this?.times(ReviewUtil.ROUND_DECIMAL)?.let { round(it) }?.div(ReviewUtil.ROUND_DECIMAL)
+            .toString()
     return rounded.isDecimalLengthOne()
 }
 
@@ -186,3 +211,28 @@ val List<SortItemUiModel>.getSortBy: String
     get() {
         return this.firstOrNull { it.isSelected }?.title.orEmpty()
     }
+
+fun String?.mapToUnifyButtonType(): Int {
+    return when (this) {
+        "TRANSACTION" -> UnifyButton.Type.TRANSACTION
+        "ALTERNATE" -> UnifyButton.Type.ALTERNATE
+        else -> UnifyButton.Type.MAIN
+    }
+}
+
+fun String?.mapToUnifyButtonVariant(): Int {
+    return when (this) {
+        "GHOST" -> UnifyButton.Variant.GHOST
+        "TEXT_ONLY" -> UnifyButton.Variant.TEXT_ONLY
+        else -> UnifyButton.Variant.FILLED
+    }
+}
+
+fun String?.mapToUnifyButtonSize(): Int {
+    return when (this) {
+        "LARGE" -> UnifyButton.Size.LARGE
+        "SMALL" -> UnifyButton.Size.SMALL
+        "MICRO" -> UnifyButton.Size.MICRO
+        else -> UnifyButton.Size.MEDIUM
+    }
+}

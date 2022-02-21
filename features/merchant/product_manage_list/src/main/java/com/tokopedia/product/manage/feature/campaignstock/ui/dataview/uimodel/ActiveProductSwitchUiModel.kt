@@ -6,6 +6,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory
 
 class ActiveProductSwitchUiModel(
     val isActive: Boolean,
+    val productId: String?,
     val access: ProductManageAccess?
 ): Visitable<CampaignStockTypeFactory> {
 

@@ -1,0 +1,30 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.updateinactivephone"
+    android:versionCode="1"
+    android:versionName="1.0.0">
+
+    <application
+        android:debuggable="true"
+        android:label="UpdateInactivePhone"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label">
+
+        <meta-data
+            android:name="firebase_performance_collection_deactivated"
+            android:value="true" />
+
+        <activity
+            android:name=".stub.features.accountlist.InactivePhoneAccountListActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".stub.features.successpage.InactivePhoneSuccessPageActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".stub.features.submitnewphone.InactivePhoneSubmitDataActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+    </application>
+</manifest>

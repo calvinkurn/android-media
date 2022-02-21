@@ -4,13 +4,19 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
-import kotlinx.android.synthetic.main.layout_see_more_recent_search.view.*
+import com.tokopedia.autocompletecomponent.databinding.LayoutSeeMoreRecentSearchBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
-class RecentSearchSeeMoreViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<RecentSearchSeeMoreDataView>(itemView) {
+class RecentSearchSeeMoreViewHolder(
+    itemView: View,
+    private val listener: RecentSearchListener,
+) : AbstractViewHolder<RecentSearchSeeMoreDataView>(itemView) {
+
+    private var binding: LayoutSeeMoreRecentSearchBinding? by viewBinding()
 
     private fun bindTitle() {
-        itemView.autocompleteSeeMoreButton?.text = getString(R.string.autocomplete_see_more_recent_search)
+        binding?.autocompleteSeeMoreButton?.text =
+            getString(R.string.autocomplete_see_more_recent_search)
     }
 
     override fun bind(element: RecentSearchSeeMoreDataView) {
@@ -19,7 +25,9 @@ class RecentSearchSeeMoreViewHolder(itemView: View, private val clickListener: I
     }
 
     private fun bindListener(item: RecentSearchSeeMoreDataView) {
-        itemView.autocompleteSeeMoreButton?.setOnClickListener { clickListener.onRecentSearchSeeMoreClicked() }
+        binding?.autocompleteSeeMoreButton?.setOnClickListener {
+            listener.onRecentSearchSeeMoreClicked()
+        }
     }
 
     companion object {

@@ -32,6 +32,7 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.Product
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -58,6 +59,10 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
 
     var isObserverAttached = false
+
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
@@ -99,7 +104,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
 
     override fun loadRecommendation(thanksPageData: ThanksPageData, fragment: BaseDaggerFragment) {
         this.thanksPageData = thanksPageData
-        this.paymentId = thanksPageData.paymentID.toString()
+        this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         startViewModelObserver()
         viewModel.loadRecommendationData()
@@ -154,13 +159,14 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         return object : ProductCardViewListener {
             override fun onProductClick(item: RecommendationItem,
                                         layoutType: String?, vararg position: Int) {
+                topAdsUrlHitter.hitClickUrl(this@MarketPlaceRecommendation.javaClass.simpleName, item.clickUrl,"","","")
                 if (position.isNotEmpty())
                     onRecomProductClick(item, position[0])
             }
 
 
             override fun onProductImpression(item: RecommendationItem, position: Int) {
-
+                topAdsUrlHitter.hitImpressionUrl(this@MarketPlaceRecommendation.javaClass.simpleName, item.trackerImageUrl, "", "", "")
             }
 
 

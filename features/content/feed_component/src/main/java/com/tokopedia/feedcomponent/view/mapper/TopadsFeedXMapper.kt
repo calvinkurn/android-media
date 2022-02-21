@@ -114,7 +114,7 @@ object TopadsFeedXMapper {
                 type = "image",
                 appLink = applinks,
                 mediaUrl = image.m_url,
-                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f,mediaIndex = index)),
+                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.44f,mediaIndex = index)),
                 isImageImpressedFirst = true,
                 productName = name,
                 price = product.priceFormat,
@@ -128,7 +128,7 @@ object TopadsFeedXMapper {
     }
 
     private fun getFeedxMediaTagging(index:Int):FeedXMediaTagging{
-        return FeedXMediaTagging(index,0.5f, 0.5f,mediaIndex = index)
+        return FeedXMediaTagging(index,0.5f, 0.44f,mediaIndex = index)
     }
 
     private fun cpmProductToFeedXProduct(

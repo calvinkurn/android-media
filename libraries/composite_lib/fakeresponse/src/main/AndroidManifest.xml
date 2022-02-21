@@ -6,35 +6,29 @@
     <application>
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.BaseActivity"
-            android:theme="@style/FakeNoActionBar"
-             />
+            android:theme="@style/FakeNoActionBar" />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.AddGqlActivity"
-            android:theme="@style/FakeNoActionBar"
-             />
+            android:theme="@style/FakeNoActionBar" />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.AddRestResponseActivity"
-            android:theme="@style/FakeNoActionBar"
-             />
+            android:theme="@style/FakeNoActionBar" />
         <activity
             android:name="com.tokopedia.fakeresponse.chuck.presentation.activities.SearchActivity"
-            android:theme="@style/FakeNoActionBar"
-             />
+            android:theme="@style/FakeNoActionBar" />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.PasteTextActivity"
-            android:theme="@style/FakeNoActionBar"
-             />
+            android:theme="@style/FakeNoActionBar" />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.FakeResponseActivity"
             android:launchMode="singleTask"
             android:taskAffinity="fakeresponse.gqlTesting"
             android:theme="@style/FakeNoActionBar"
-            >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.tkpd.fakeresponse.gqlTesting" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

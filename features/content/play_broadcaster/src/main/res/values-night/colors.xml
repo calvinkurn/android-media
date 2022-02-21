@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Terms and Condition-->
-    <color name="play_bro_tnc_benefit_bg">#1A2ABF70</color>
+    <color name="play_bro_tnc_benefit_bg_dms">#1A2ABF70</color>
+
+    <color name="play_dms_bg_cover_image_setup">#4D40454C</color>
+    <color name="play_dms_bg_choose_cover">#40454C</color>
 </resources>

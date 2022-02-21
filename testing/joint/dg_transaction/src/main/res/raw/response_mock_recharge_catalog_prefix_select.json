@@ -1,0 +1,22 @@
+[
+  {
+    "data": {
+      "rechargeCatalogPrefixSelect": {
+        "componentID": 159,
+        "name": "operator_id",
+        "paramName": "operator",
+        "text": "Input Nomor Kartu",
+        "help": "",
+        "placeholder": "",
+        "validations": [],
+        "prefixes": [
+          {
+            "key": "578",
+            "value": "8768",
+            "operator": null
+          }
+        ]
+      }
+    }
+  }
+]

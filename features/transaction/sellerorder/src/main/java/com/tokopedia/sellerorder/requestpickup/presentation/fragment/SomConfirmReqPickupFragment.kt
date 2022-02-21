@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,9 +22,14 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomConfirmReqPickupBinding
 import com.tokopedia.sellerorder.requestpickup.data.mapper.SchedulePickupMapper
-import com.tokopedia.sellerorder.requestpickup.data.model.*
+import com.tokopedia.sellerorder.requestpickup.data.model.ScheduleTime
+import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
+import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupParam
 import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmSchedulePickupAdapter
@@ -35,6 +41,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -44,6 +51,9 @@ import javax.inject.Inject
 class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var currOrderId = ""
     private var currSchedulePickupKey = ""
@@ -98,13 +108,26 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupHeader()
         observingConfirmReqPickup()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(SomConfirmReqPickupComponent::class.java).inject(this)
+    }
+
+    private fun setupHeader() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(binding?.headerSomConfirmRequestPickup)
+        }
     }
 
     private fun loadConfirmRequestPickup() {
@@ -130,6 +153,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
@@ -153,6 +183,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     SomErrorHandler.logExceptionToCrashlytics(
                         it.throwable,
                         ERROR_PROCESSING_REQUEST_PICKUP
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)

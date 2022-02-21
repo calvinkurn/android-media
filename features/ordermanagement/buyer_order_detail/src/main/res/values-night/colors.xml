@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="buyer_order_detail_dms_thick_divider">#1D1F22</color>
     <color name="buyer_order_detail_dms_thin_divider">#40454C</color>
-    <color name="buyer_order_detail_dms_window_color">#26292E</color>
     <color name="buyer_order_detail_dms_secondary_action_button_color_filter">#FFFFFF</color>
     <color name="buyer_order_detail_dms_secondary_action_button_stroke_color">#DBDEE2</color>
 </resources>

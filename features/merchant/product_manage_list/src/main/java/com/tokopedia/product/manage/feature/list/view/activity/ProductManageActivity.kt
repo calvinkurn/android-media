@@ -45,7 +45,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         initInjector()
 
         if (!GlobalConfig.isSellerApp()) {
-            window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setupLayout(savedInstanceState)
         }
     }

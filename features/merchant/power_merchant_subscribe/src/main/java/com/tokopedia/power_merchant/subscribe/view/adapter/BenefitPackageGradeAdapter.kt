@@ -52,9 +52,9 @@ class BenefitPackageGradeAdapter :
 
         fun bind(data: BenefitPackageGradeUiModel) {
             with(binding) {
-                bgBenefitPackage?.loadImage(data.backgroundUrl)
-                imgBenefitPackageSection?.loadImage(data.iconBenefitUrl)
-                tvTitleBenefitPackageSection?.text = if (data.isDowngrade) {
+                bgBenefitPackage.loadImage(data.backgroundUrl)
+                imgBenefitPackageSection.loadImage(data.iconBenefitUrl)
+                tvTitleBenefitPackageSection.text = if (data.isDowngrade) {
                     root.context.getString(
                         R.string.pm_title_benefit_package_downgrade_section,
                         data.gradeName.asCamelCase()
@@ -65,7 +65,7 @@ class BenefitPackageGradeAdapter :
                         data.gradeName.asCamelCase()
                     )
                 }
-                tvDescBenefitPackageSection?.text = MethodChecker.fromHtml(data.descBenefit)
+                tvDescBenefitPackageSection.text = MethodChecker.fromHtml(data.descBenefit)
             }
             setItemBenefitAdapter(data.benefitItemList)
         }

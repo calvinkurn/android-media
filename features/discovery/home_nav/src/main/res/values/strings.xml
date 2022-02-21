@@ -19,9 +19,6 @@
     <string name="btn_register">Daftar</string>
     <string name="text_ovo_saldo">%s &#8226; %s Points</string>
 
-    <string name="btn_try_again">Coba Lagi</string>
-
-
     <string name="host_navigation">navigation</string>
 
     <string name="menu_home_back_to_home">Kembali ke Home</string>
@@ -71,12 +68,6 @@
     <string name="onboarding_login_p2_s1_title">Halo, sekarang Akunmu di sini~</string>
     <string name="onboarding_login_p2_s1_description">Kamu bisa atur Akun, atau cek TokoPoints &#38; saldo lainnya. Buat kamu yang punya toko bisa akses di sini.</string>
 
-    <string name="onboarding_nonlogin_p1_s1_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
-    <string name="onboarding_nonlogin_p1_s1_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
-
-    <string name="onboarding_nonlogin_p1_s2_title">Ada yang mau kamu tanyakan?</string>
-    <string name="onboarding_nonlogin_p1_s2_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>
-
     <string name="error_state_bu_title">Gagal memuat menu ini</string>
     <string name="error_state_bu_description">Klik untuk coba lagi.</string>
 
@@ -93,6 +84,4 @@
     <string name="mainnav_wallet_app_format">%s • %s</string>
     <string name="mainnav_tokopoint_format">%s (%s)</string>
     <string name="mainnav_general_error">Gagal Memuat</string>
-
-    <string name="account_saldo_fmt">Saldo %s</string>
 </resources>

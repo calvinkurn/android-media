@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -22,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -84,7 +84,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private val shopInfoNoteLoading: View?
         get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.loading
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
-
+    private val userId: String
+        get() = shopViewModel?.userId().orEmpty()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentShopInfoBinding = FragmentShopInfoBinding.inflate(inflater, container, false)
         return fragmentShopInfoBinding?.root
@@ -129,10 +130,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     override fun onNoteClicked(position: Long, shopNoteUiModel: ShopNoteUiModel) {
         shopInfo?.run {
-            shopPageTracking?.clickReadNotes(
-                    shopViewModel?.isMyShop(shopId) == true, position.toInt(),
-                    CustomDimensionShopPage.create(shopId, isOfficial == 1,
-                            isGold == 1))
+            val isMyShop = shopViewModel?.isMyShop(shopId) ?: false
+            if(!isMyShop) {
+                shopPageTracking?.clickReadNotes(shopId, userId)
+            }
             startActivity(ShopNoteDetailActivity.createIntent(
                     activity,
                     shopId,
@@ -174,7 +175,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private fun showShopBadgeReputation(shopBadge: ShopBadge) {
         fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.imageViewShopReputationBadge?.apply {
             show()
-            ImageHandler.LoadImage(this, shopBadge.badgeHD)
+            loadImageFitCenter(shopBadge.badgeHD)
         }
     }
 

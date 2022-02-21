@@ -64,8 +64,9 @@
     <string name="deals_brand_detail_count">Ada %s Voucher</string>
     <string name="deals_brand_detail_item_valid_until">Berlaku Hingga</string>
     <string name="deals_brand_detail_item_slash_price">Rp %s</string>
-    <string name="deals_brand_detail_share_web_link">https://www.tokopedia.com/deals/b/%s</string>
-    <string name="deals_brand_detail_share_app_link">tokopedia://deals/brand/%s</string>
+    <string name="deals_brand_detail_share_web_link">deals/b/%1$s/</string>
+    <string name="deals_brand_detail_share_title">Bagikan Produk Ini</string>
+    <string name="deals_brand_detail_share_app_link">tokopedia://deals/brand/%1$s</string>
 
     <string name="deals_error_reload">Ulangi</string>
     <string name="deals_empty_state_button">Ke Homepage</string>

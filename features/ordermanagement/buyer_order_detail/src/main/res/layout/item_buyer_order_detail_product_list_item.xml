@@ -5,19 +5,21 @@
     android:id="@+id/cardBuyerOrderDetailProduct"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/buyer_order_detail_card_horizontal_margin"
-    android:padding="@dimen/spacing_lvl4">
+    android:layout_marginHorizontal="@dimen/buyer_order_detail_card_horizontal_margin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:background="?android:attr/selectableItemBackground">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivBuyerOrderDetailProductThumbnail"
             android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
             android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,6 +28,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
@@ -41,6 +44,7 @@
             android:id="@+id/tvBuyerOrderDetailProductPriceQuantity"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
@@ -55,6 +59,7 @@
             android:id="@+id/tvBuyerOrderDetailProductNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
             android:ellipsize="end"
             android:maxLines="2"
@@ -63,10 +68,11 @@
             app:typographyType="body_3"
             tools:text="43 Size. Packing rapi plis." />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerBuyerOrderDetailProduct"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:background="@color/buyer_order_detail_dms_thin_divider"
             app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailProductNote" />
@@ -75,6 +81,7 @@
             android:id="@+id/tvBuyerOrderDetailTotalProductPriceLabel"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/label_total_price"
             android:textColor="@color/Unify_N700_96"
@@ -90,7 +97,9 @@
             android:id="@+id/tvBuyerOrderDetailProductPriceValue"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginBottom="16dp"
             android:textColor="@color/Unify_N700_96"
             android:translationY="-1.97dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -108,6 +117,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/buy_again_label"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

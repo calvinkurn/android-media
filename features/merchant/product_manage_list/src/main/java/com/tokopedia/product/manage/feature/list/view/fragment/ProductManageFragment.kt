@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -63,7 +62,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -73,6 +71,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_IS_STOCK_CHANGED
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
@@ -84,7 +83,6 @@ import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.DialogProductAddBinding
-import com.tokopedia.product.manage.databinding.FragmentProductManageBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -95,10 +93,6 @@ import com.tokopedia.product.manage.feature.cashback.presentation.fragment.Produ
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_RESULT
-import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity
-import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
-import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_NAME
-import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
@@ -113,6 +107,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
@@ -124,16 +119,14 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.layoutmanager.ProductManageLayoutManager
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
-import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
@@ -150,6 +143,7 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
+import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -157,7 +151,8 @@ import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrati
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShowcasePickerType
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -165,14 +160,11 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.*
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
-import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
-import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
-import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -193,7 +185,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
-        ProductCampaignInfoListener, SellerHomeFragmentListener {
+        ProductCampaignInfoListener, SellerHomeFragmentListener,
+        ViolationReasonBottomSheet.Listener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -258,12 +251,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private var tickerIsReady = false
     private var shouldScrollToTop = false
+    private var hasTickerClosed = false
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
 
-    private val stockTicker: Ticker?
-        get() = binding?.layoutFragmentProductManage?.stockTicker?.root
+    private var tickerPagerAdapter: TickerPagerAdapter? = null
+
+    private val ticker: Ticker?
+        get() = binding?.layoutFragmentProductManage?.ticker?.root
     private val mainContainer: CoordinatorLayout?
         get() = binding?.layoutFragmentProductManage?.mainContainer
     private val errorPage: GlobalError?
@@ -290,8 +286,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         get() = binding?.layoutFragmentProductManage?.btnMultiEdit
     private val recyclerView: VerticalRecyclerView?
         get() = binding?.layoutFragmentProductManage?.recyclerView
-    private val topAdsWidgetFreeClaim: TopAdsWidgetFreeClaim?
-        get() = binding?.layoutFragmentProductManage?.topAdsWidgetFreeClaim
     private val progressBar: LoaderUnify?
         get() = binding?.layoutFragmentProductManage?.progressBar
     private val interceptor: FrameLayout?
@@ -339,12 +333,20 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun clearAllData() {
         isLoadingInitialData = true
-        super.clearAllData()
+        recyclerView?.post {
+            super.clearAllData()
+        }
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = swipeRefreshLayout
 
     override fun getRecyclerView(view: View?): RecyclerView? = recyclerView
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager? {
+        return context?.let {
+            ProductManageLayoutManager(it)
+        }
+    }
 
     private fun initView() {
         setupInterceptor()
@@ -356,7 +358,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         setupSelectAll()
         setupErrorPage()
         setupNoAccessPage()
-        setupStockTicker()
         renderCheckedView()
 
         observeShopInfo()
@@ -370,7 +371,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         observeEditPrice()
         observeEditStock()
         observeMultiEdit()
-        observeGetFreeClaim()
         observeGetPopUpInfo()
 
         observeSetFeaturedProduct()
@@ -414,6 +414,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         menu.clear()
         inflater.inflate(menuViewId, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         showHideOptionsMenu()
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -445,7 +454,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
                 putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
             }
-            showcaseListIntent.putExtra(EXTRA_BUNDLE, showcaseListBundle)
+            showcaseListIntent.putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, showcaseListBundle)
             startActivityForResult(showcaseListIntent, REQUEST_CODE_ETALASE)
             productManageMoreMenuBottomSheet?.dismiss()
             ProductManageTracking.eventClickMoreMenuShopShowcase()
@@ -476,7 +485,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun animateProductTicker(isEnter: Boolean) {
         Handler().postDelayed({
-            val shouldAnimateTicker = (isEnter && tickerIsReady && (stockTicker?.visibility == View.INVISIBLE || stockTicker?.visibility == View.GONE)) || !isEnter
+            val shouldAnimateTicker = (isEnter && tickerIsReady && (ticker?.visibility == View.INVISIBLE || ticker?.visibility == View.GONE)) || !isEnter
             if (adapter.data.isNotEmpty() && shouldAnimateTicker) {
                 val enterValue: Float
                 val exitValue: Float
@@ -487,8 +496,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     enterValue = 1f
                     exitValue = 0f
                 }
-                stockTicker?.run {
-                    val height = height.toFloat().orZero()
+                ticker?.run {
+                    val marginTop = TICKER_MARGIN_TOP.toPx()
+                    val height = height.toFloat().orZero() + marginTop
                     translationY = enterValue * height
                     show()
 
@@ -533,6 +543,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         params?.bottomMargin = translation.toInt()
         swipeRefreshLayout?.layoutParams = params
     }
+
      override fun editMultipleProductsEtalase() {
         goToEtalasePicker()
         ProductManageTracking.eventBulkSettingsMoveEtalase()
@@ -561,7 +572,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return EmptyModel().apply {
+        val id = System.currentTimeMillis().toString()
+        return ProductManageEmptyModel(id).apply {
             if (showProductEmptyState()) {
                 contentRes = R.string.product_manage_list_empty_product
                 urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
@@ -576,6 +588,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         productManageAddEditMenuBottomSheet.dismiss()
+    }
+
+    override fun onViolationError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        binding?.root?.let {
+            Toaster.build(
+                    it,
+                    type = Toaster.TYPE_ERROR,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_LONG,
+            ).show()
+        }
     }
 
     private fun observeProductVariantBroadcast() {
@@ -806,6 +830,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     showLoadingProgress()
+                    isLoadingInitialData = true
                     getProductList()
                     clearFocus()
                     true
@@ -853,10 +878,20 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun setupSelectAll() {
         checkBoxSelectAll?.setOnClickListener {
             val isChecked = checkBoxSelectAll?.isChecked == true
-            adapter.data.forEachIndexed { index, _ ->
-                onClickProductCheckBox(isChecked, index)
+            recyclerView?.post {
+                if (isChecked) {
+                    productManageListAdapter.checkAllProducts(itemsChecked) {
+                        itemsChecked = it
+                    }
+                } else {
+                    productManageListAdapter.unCheckMultipleProducts(null, itemsChecked) {
+                        itemsChecked = it
+                    }
+                }
+
+                renderSelectAllCheckBox()
+                renderCheckedView()
             }
-            productManageListAdapter.notifyDataSetChanged()
         }
     }
 
@@ -882,17 +917,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 RouteManager.route(context, ApplinkConst.SellerApp.SELLER_APP_HOME)
             }
         }
-    }
-
-    private fun setupStockTicker() {
-        stockTicker?.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-            }
-
-            override fun onDismiss() {
-                viewModel.hideStockTicker()
-            }
-        })
     }
 
     private fun showFilterBottomSheet() {
@@ -1005,16 +1029,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 if (isLoadingInitialData) {
                     productManageListAdapter.updateProduct(list)
                 } else {
-                    removeEmptyStateWhenLazyLoad()
-                    productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
+                    productManageListAdapter.removeEmptyAndUpdateLayout(list)
                 }
             }
-        }
-        updateScrollListenerState(hasNextPage)
-        if (shouldScrollToTop) {
-            shouldScrollToTop = false
-            recyclerView?.addOneTimeGlobalLayoutListener {
-                recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
+            updateScrollListenerState(hasNextPage)
+            if (shouldScrollToTop) {
+                shouldScrollToTop = false
+                recyclerView?.addOneTimeGlobalLayoutListener {
+                    recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
+                }
             }
         }
         renderCheckedView()
@@ -1035,16 +1058,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
         if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
             goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
-        }
-    }
-
-    private fun removeEmptyStateWhenLazyLoad() {
-        val lastIndex = adapter.data.size - 1
-        adapter.data.getOrNull(lastIndex)?.let { item ->
-            if (item is EmptyModel) {
-                adapter.data.removeAt(lastIndex)
-                adapter.notifyItemRemoved(lastIndex)
-            }
         }
     }
 
@@ -1295,22 +1308,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         progressBar?.hide()
     }
 
-    private fun onErrorGetFreeClaim() {
-        topAdsWidgetFreeClaim?.visibility = View.GONE
-    }
-
-    private fun onSuccessGetFreeClaim(dataDeposit: DataDeposit) {
-        val freeDeposit = dataDeposit.freeDeposit
-
-        if (freeDeposit.nominal > 0 && freeDeposit.status == DEPOSIT_ACTIVE) {
-            topAdsWidgetFreeClaim?.setContent(MethodChecker.fromHtml(getString(com.tokopedia.topads.freeclaim.R.string.free_claim_template, freeDeposit.nominalFmt,
-                    freeDeposit.remainingDays.toString() + "", TOPADS_FREE_CLAIM_URL)))
-            topAdsWidgetFreeClaim?.visibility = View.VISIBLE
-        } else {
-            topAdsWidgetFreeClaim?.visibility = View.GONE
-        }
-    }
-
     private fun onSuccessGetPopUp(isShowPopup: Boolean, productId: String) {
         if (isShowPopup) {
             initPopUpDialog(productId).show()
@@ -1420,24 +1417,23 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun unCheckMultipleProducts(productIds: List<String>) {
-        productIds.forEach { productId ->
-            val index = adapter.data.filterIsInstance<ProductUiModel>().indexOfFirst { it.id == productId }
-            if (index >= 0) {
-                onClickProductCheckBox(false, index)
+        recyclerView?.post {
+            productManageListAdapter.unCheckMultipleProducts(productIds, itemsChecked) {
+                itemsChecked = it
             }
+
+            renderSelectAllCheckBox()
+            renderCheckedView()
         }
-        productManageListAdapter.notifyDataSetChanged()
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
-        productIds.forEach { productId ->
-            recyclerView?.post {
-                when (status) {
-                    DELETED -> productManageListAdapter.deleteProduct(productId)
-                    INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
-                    else -> {
-                    }  // do nothing
-                }
+        recyclerView?.post {
+            when (status) {
+                DELETED -> productManageListAdapter.deleteProducts(productIds)
+                INACTIVE -> productManageListAdapter.setProductsStatuses(productIds, status)
+                else -> {
+                }  // do nothing
             }
         }
     }
@@ -1571,9 +1567,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditVariantPriceButton(product: ProductUiModel) {
-        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id, product.isProductBundling) { result ->
-            viewModel.editVariantsPrice(result)
-        }
+        val editVariantBottomSheet =
+            QuickEditVariantPriceBottomSheet.createInstance(
+                product.id,
+                product.isProductBundling,
+                userSession.isMultiLocationShop) { result ->
+                viewModel.editVariantsPrice(result)
+            }
         editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
         ProductManageTracking.eventClickEditPriceVariant()
     }
@@ -1595,7 +1595,14 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickContactCsButton(product: ProductUiModel) {
-        goToProductViolationHelpPage()
+        when {
+            product.isViolation() -> {
+                goToProductViolationHelpPage()
+            }
+            product.isPending() -> {
+                showViolationReasonBottomSheet(product.id)
+            }
+        }
         ProductManageTracking.eventContactCs(product.id)
     }
 
@@ -1616,7 +1623,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditPriceButton(product: ProductUiModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(product, this) }
+        val editPriceBottomSheet = context?.let {
+            ProductManageQuickEditPriceFragment.createInstance(
+                it,
+                product,
+                userSession.isMultiLocationShop,
+                this)
+        }
         editPriceBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditPrice(product.id)
     }
@@ -1869,8 +1882,20 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun goToEtalasePicker() {
-        val intent = Intent(activity, EtalasePickerActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                .apply {
+                    val bundle = Bundle().apply {
+                        putString(
+                            ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER,
+                            ShowcasePickerType.RADIO
+                        )
+                    }
+                    putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, bundle)
+                }
+
+            startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
+        }
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -1892,6 +1917,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onResume() {
         super.onResume()
+        hasTickerClosed = false
         context?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_ADD_PRODUCT)
@@ -1918,7 +1944,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         removeObservers(viewModel.multiEditProductResult)
         removeObservers(viewModel.deleteProductResult)
         removeObservers(viewModel.editPriceResult)
-        removeObservers(viewModel.getFreeClaimResult)
         removeObservers(viewModel.getPopUpResult)
         removeObservers(viewModel.setFeaturedProductResult)
         removeObservers(viewModel.toggleMultiSelect)
@@ -1933,10 +1958,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 REQUEST_CODE_PICK_ETALASE -> {
                     if (resultCode == Activity.RESULT_OK) {
                         val productIds = itemsChecked.map { product -> product.id }
-                        val etalaseId = intent.getStringExtra(EXTRA_ETALASE_ID).orEmpty()
-                        val etalaseName = intent.getStringExtra(EXTRA_ETALASE_NAME).orEmpty()
+                        val selectedShowcase: ShowcaseItemPicker = intent.getParcelableExtra(
+                            ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE
+                        ) ?: ShowcaseItemPicker()
 
-                        viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
+                        viewModel.editProductsEtalase(
+                            productIds,
+                            selectedShowcase.showcaseId,
+                            selectedShowcase.showcaseName
+                        )
                     }
                 }
                 REQUEST_CODE_ETALASE -> {
@@ -2070,13 +2100,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             updateStateScrollListener()
             showRetryToast()
         }
-        viewModel.hideStockTicker()
+        viewModel.hideTicker()
         hideLoading()
-    }
-
-    private fun getTopAdsFreeClaim() {
-        val query = GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit)
-        viewModel.getFreeClaim(query, userSession.shopId)
     }
 
     private fun getGoldMerchantStatus() {
@@ -2089,6 +2114,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun getProductManageAccess() {
         viewModel.getProductManageAccess()
+    }
+
+    private fun getTickerData() {
+        viewModel.getTickerData()
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
@@ -2111,6 +2140,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onFailedChangeFeaturedProduct(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.SET_FEATURED_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2123,18 +2159,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorGetPopUp()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                }
-            }
-        }
-    }
-
-    private fun observeGetFreeClaim() {
-        observe(viewModel.getFreeClaimResult) {
-            when (it) {
-                is Success -> onSuccessGetFreeClaim(it.data)
-                is Fail -> {
-                    onErrorGetFreeClaim()
-                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.GET_POP_UP_INFO_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2147,6 +2178,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorEditPrice(it.throwable as EditPriceResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_PRICE_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2163,6 +2201,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_STOCK_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2175,6 +2220,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorToast()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.MULTI_EDIT_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2232,11 +2284,20 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Success -> {
                     initHeaderView()
                     showProductList(it.data)
-                    renderMultiSelectProduct()
+                    recyclerView?.post {
+                        renderMultiSelectProduct()
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.PRODUCT_LIST_RESULT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
             hidePageLoading()
@@ -2334,6 +2395,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorDeleteProduct(it.throwable as DeleteProductResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.DELETE_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2367,11 +2435,38 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is HideLoadingDialog -> hideProgressDialogVariant()
             }
         }
-        observe(viewModel.showStockTicker) { shouldShow ->
-            if (shouldShow)                 {
+        observe(viewModel.tickerData) { tickerData ->
+            var tickerPagerAdapter = tickerPagerAdapter
+            if (tickerPagerAdapter == null) {
+                tickerPagerAdapter = TickerPagerAdapter(context, tickerData)
+                this.tickerPagerAdapter = tickerPagerAdapter.apply {
+                    setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            context?.let { RouteManager.route(it, linkUrl.toString()) }
+                        }
+                    })
+                    onDismissListener = {
+                        viewModel.hideTicker()
+                        hasTickerClosed = true
+                    }
+                }
+            }
+            ticker?.let { tickerView ->
+                val visibility = tickerView.visibility
+                tickerView.addPagerView(tickerPagerAdapter, tickerData)
+                tickerView.post {
+                    tickerView.visibility = visibility
+                    viewModel.showTicker()
+                }
+            }
+        }
+        observe(viewModel.showTicker) { shouldShow ->
+            if (shouldShow) {
                 tickerIsReady = true
             }
-            animateProductTicker(shouldShow)
+            if (!hasTickerClosed) {
+                animateProductTicker(shouldShow)
+            }
         }
         observe(viewModel.refreshList) { shouldRefresh ->
             if (shouldRefresh) {
@@ -2396,6 +2491,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_VARIANT_PRICE_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2415,6 +2517,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_VARIANT_STOCK_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2437,11 +2546,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     val access = it.data
 
                     if (access.productList) {
-                        getProductList()
+                        loadInitialData()
 
+                        getTickerData()
                         getFiltersTab()
                         getProductListFeaturedOnlySize()
-                        getTopAdsFreeClaim()
                         getGoldMerchantStatus()
                         getTopAdsInfo()
 
@@ -2563,12 +2672,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun renderProductCount() {
-        val productCount = if (filterTab?.isFilterActive() == true) {
-            filterTab?.getProductCount()
-            filterTab?.getProductCount()
-        } else {
-            viewModel.getTotalProductCount()
-        }
+        val productCount = viewModel.getTotalProductCount()
         textProductCount?.text = getString(R.string.product_manage_count_format, productCount)
     }
 
@@ -2584,6 +2688,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         context?.let {
             OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
         }
+    }
+
+    private fun showViolationReasonBottomSheet(productId: String) {
+        ViolationReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {
@@ -2604,6 +2712,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val START_SPAN_INDEX = 5
 
         private const val RV_TOP_POSITION = 0
+
+        private const val TICKER_MARGIN_TOP = 8
     }
 
 }

@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -14,6 +15,7 @@ import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
     @Test
@@ -238,17 +240,4 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn_disabled)
     }
 
-    @Test
-    fun test_msg_sent_error_empty_text_click() {
-        //Given
-        getChatUseCase.response = firstPageChatAsSeller
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        launchChatRoomActivity()
-
-        //When
-        onView(withId(R.id.send_but)).perform(click())
-
-        //Then
-        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
-    }
 }

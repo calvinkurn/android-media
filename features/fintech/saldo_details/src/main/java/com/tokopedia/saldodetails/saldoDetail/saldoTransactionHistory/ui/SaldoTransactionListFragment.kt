@@ -13,17 +13,16 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.commom.utils.SaldoRollence
-import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
-import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
+import com.tokopedia.saldodetails.commom.utils.SalesTransaction
+import com.tokopedia.saldodetails.commom.utils.TransactionType
+import com.tokopedia.saldodetails.commom.utils.TransactionTypeMapper
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoTransactionAdapter
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.DepositHistoryList
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.SalesTransactionDetail
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.*
-import com.tokopedia.saldodetails.commom.utils.SalesTransaction
-import com.tokopedia.saldodetails.commom.utils.TransactionType
-import com.tokopedia.saldodetails.commom.utils.TransactionTypeMapper
+import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
@@ -180,8 +179,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     }
 
     private fun retryInitialLoading() {
-        val isPenjualanTabActive: Boolean = SaldoRollence.isSaldoRevampEnabled()
-        transactionHistoryViewModel?.retryAllTabLoading(isPenjualanTabActive)
+        transactionHistoryViewModel?.retryAllTabLoading()
     }
 
 

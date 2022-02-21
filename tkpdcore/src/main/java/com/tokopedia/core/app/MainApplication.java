@@ -99,7 +99,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
-                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context);
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context, true);
     }
 
     @NotNull
@@ -143,7 +143,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
                     return true;
                 }
             };
-            Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext());
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext(), true);
         }
     }
 
@@ -178,7 +178,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext(), true);
         return true;
     }
 }

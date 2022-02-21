@@ -13,6 +13,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +22,16 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
-import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
-import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
+import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
@@ -54,12 +56,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
-import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
-import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -101,8 +97,7 @@ import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
  * Created by ricoharisin on 11/11/16.
  */
 
-public abstract class ConsumerMainApplication extends ConsumerRouterApplication implements
-        MoengageInAppListener, MoengagePushListener, CustomPushDataListener {
+public abstract class ConsumerMainApplication extends ConsumerRouterApplication {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -131,7 +126,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @Override
     public void onCreate() {
-        SplashScreenPerformanceTracker.isColdStart = true;
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -165,16 +159,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @NotNull
             @Override
             public Object execute() {
-                if (!checkPackageName()) {
+                if (!isPackageNameValid() || !isVersionNameValid()) {
                     killProcess(android.os.Process.myPid());
                 }
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this, true);
     }
 
-    private boolean checkPackageName() {
+    private boolean isPackageNameValid() {
         boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
             Map<String, String> messageMap = new HashMap<>();
@@ -182,6 +176,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
         }
         return packageNameValid;
+    }
+
+    private boolean isVersionNameValid() {
+        String numberRegex = ".*[0-9].*";
+        return com.tokopedia.config.GlobalConfig.VERSION_NAME.matches(numberRegex) &&
+                com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME.matches(numberRegex);
     }
 
     protected abstract String getOriginalPackageApp();
@@ -225,7 +225,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return executePreCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context, true);
     }
 
     private void createAndCallPostSeq() {
@@ -237,7 +237,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return executePostCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context, true);
     }
 
     private void createAndCallFontLoad() {
@@ -249,7 +249,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return loadFontsInBg();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context, true);
     }
 
     @NotNull
@@ -298,14 +298,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePostCreateSequence() {
         StethoUtil.initStetho(ConsumerMainApplication.this);
-        MoengageInteractor.INSTANCE.setPushListener(ConsumerMainApplication.this);
-        MoengageInteractor.INSTANCE.setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         createCustomSoundNotificationChannel();
-        MoengageInteractor.INSTANCE.setMessageListener(this);
 
         initLogManager();
+        initEmbraceConfig();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
@@ -420,6 +418,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         });
     }
 
+    private void initEmbraceConfig() {
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
+        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
+            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
+        }
+    }
+
     private void openShakeDetectCampaignPage(boolean isLongShake) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -485,7 +493,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initializeSdk() {
         try {
             FirebaseApp.initializeApp(this);
-            FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
 
         }
@@ -505,7 +512,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context, false);
     }
 
     private void fetchAbTestVariant() {
@@ -529,19 +536,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             GlobalConfig.VERSION_CODE = versionCode();
             com.tokopedia.config.GlobalConfig.VERSION_CODE = versionCode();
         }
-    }
-
-    public abstract void generateConsumerAppNetworkKeys();
-
-    @Override
-    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        Timber.d("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    @Override
-    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
@@ -585,22 +579,5 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 }
             }
         }
-    }
-
-    @NotNull
-    @Override
-    public Intent getPersistentNotificationIntent() {
-        return new Intent(ConsumerMainApplication.this, MainParentActivity.class);
-    }
-
-    @NotNull
-    @Override
-    public Intent getNotificationBroadcastIntent() {
-        return new Intent(ConsumerMainApplication.this, NotificationBroadcast.class);
-    }
-
-    @Override
-    public int getIcStatNotifyWhiteDrawable() {
-        return R.drawable.ic_stat_notify_white;
     }
 }

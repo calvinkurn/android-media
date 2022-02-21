@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class SomRejectReasonBottomSheet(context: Context,
                                  actionListener: SomBottomSheetRejectReasonsAdapter.ActionListener
-) : SomBottomSheet<BottomsheetRejectReasonListBinding>(LAYOUT, true, true, false, SomConsts.TITLE_PILIH_PENOLAKAN, context, true) {
+) : SomBottomSheet<BottomsheetRejectReasonListBinding>(LAYOUT, true, true, false, false, false, SomConsts.TITLE_PILIH_PENOLAKAN, context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_reject_reason_list

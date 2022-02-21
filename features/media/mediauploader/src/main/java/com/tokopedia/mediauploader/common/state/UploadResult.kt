@@ -1,6 +1,13 @@
 package com.tokopedia.mediauploader.common.state
 
 sealed class UploadResult {
-    class Success(val uploadId: String): UploadResult()
-    class Error(val message: String): UploadResult()
+    data class Success(
+        // image upload result
+        val uploadId: String = "",
+
+        // video upload result
+        val videoUrl: String = ""
+    ): UploadResult()
+
+    data class Error(val message: String): UploadResult()
 }

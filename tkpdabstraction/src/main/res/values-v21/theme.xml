@@ -2,9 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
         <item name="android:statusBarColor" >@color/Unify_G600</item>
-        <item name="android:background">@color/Unify_N0</item>
-        <item name="actionModeBackground">@color/Unify_N0</item>
-        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:background">@color/Unify_Header_Background</item>
+        <item name="actionModeBackground">@color/Unify_Header_Background</item>
+        <item name="android:actionModeBackground">@color/Unify_Header_Background</item>
         <item name="android:textColorPrimary">@color/Unify_N700_96</item>
         <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
         <item name="android:textColorSecondary">@color/Unify_N700_96</item>

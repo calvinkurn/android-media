@@ -3,27 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.sellerapp">
 
+    <permission android:name="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS"/>
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
-        tools:selector="com.google.firebase"/>
-
+        tools:selector="com.google.firebase" />
     <uses-permission
         android:name="android.permission.WRITE_CALL_LOG"
-        tools:node="remove"/>
+        tools:node="remove" />
     <uses-permission
         android:name="android.permission.READ_CALL_LOG"
-        tools:node="remove"/>
+        tools:node="remove" />
 
-    <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
-
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
     <queries>
         <package android:name="com.tokopedia.tkpd" />
         <package android:name="com.tokopedia.intl" />
         <package android:name="com.telkom.mwallet" />
         <package android:name="com.gojek.app" />
         <package android:name="com.android.chrome" />
-
         <package android:name="abc.myloan.help.pinjol" />
         <package android:name="abc.zakusiap.zspinjol.nusantara" />
         <package android:name="air.GoTunai" />
@@ -65,6 +65,7 @@
         <package android:name="com.andromo.dev910640.app1045299" />
         <package android:name="com.anhttvn.deviceid" />
         <package android:name="com.antokinfo.cepatcair" />
+        <package android:name="com.antsdroids.SamuraiBackup" />
         <package android:name="com.app.cloner.pro" />
         <package android:name="com.app.dumi" />
         <package android:name="com.app.ktaarivianni" />
@@ -129,6 +130,7 @@
         <package android:name="com.dd.social.messenger.bigapp" />
         <package android:name="com.device.emulator" />
         <package android:name="com.di.tinggi.ccc" />
+        <package android:name="com.diimsyah.diim69" />
         <package android:name="com.directworks.dualapps.arm32" />
         <package android:name="com.djakarta.elevena.huoying" />
         <package android:name="com.doeku" />
@@ -148,6 +150,7 @@
         <package android:name="com.dukudana.android" />
         <package android:name="com.duuita.kitt" />
         <package android:name="com.dxjnoa.ylhydp" />
+        <package android:name="com.dv.emu.pro" />
         <package android:name="com.dy.ms.pinjamuang" />
         <package android:name="com.eagle.bird" />
         <package android:name="com.earnpay.solusiku" />
@@ -181,6 +184,8 @@
         <package android:name="com.free.cash.ktacepat" />
         <package android:name="com.free.gocash" />
         <package android:name="com.freshcashuk" />
+        <package android:name="com.fufufu.hackalfagift" />
+        <package android:name="com.fufufu.superblack" />
         <package android:name="com.gamecannon.kilatgame" />
         <package android:name="com.gandengtangan.lender" />
         <package android:name="com.gibatekpro.imeigenerator" />
@@ -457,6 +462,7 @@
         <package android:name="com.space.water.clone.multiple.clone.app.accounts" />
         <package android:name="com.speedy.speedyloan" />
         <package android:name="com.stanfordtek.pinjamduit" />
+        <package android:name="com.sudocode.sudohide" />
         <package android:name="com.sumber.tunai" />
         <package android:name="com.sumeil.bantuki" />
         <package android:name="com.summerholiday.indosa" />
@@ -630,7 +636,6 @@
         <package android:name="xyz.rupiah.sigap.pinjol" />
         <package android:name="zone.bytesreverser.xposeddeviceidmaskerpro" />
     </queries>
-
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
@@ -652,23 +657,20 @@
             android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-
         <activity
             android:name=".FallbackActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.PlainGreen">
-        </activity>
-
+            android:theme="@style/Theme.Tokopedia3.PlainGreen"></activity>
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/drawer_title_home"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -683,20 +685,19 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_sellerhome"/>
+                    android:path="@string/path_sellerhome" />
             </intent-filter>
             <meta-data
                 android:name="APPS_HOME"
                 android:value="true" />
         </activity>
-
         <activity
             android:screenOrientation="portrait"
-            android:name="com.tokopedia.shop.open.view.activity.ShopOpenMandatoryActivity"/>
+            android:name="com.tokopedia.shop.open.view.activity.ShopOpenMandatoryActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true"/>
+            android:value="true" />
         <meta-data
             android:name="GTM_ID"
             android:value="@string/gtm_id_sa" />
@@ -712,16 +713,10 @@
             tools:replace="android:value" />
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
-            android:value="50d42520ce58b3168a5a721995812a72"/>
+            android:value="50d42520ce58b3168a5a721995812a72" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_sa" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id_sa" />
-        <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@xml/actions" />
         <meta-data
             android:name="HANSEL_APP_ID"
             android:value="@string/hansel_app_id_sa"
@@ -734,6 +729,7 @@
             tools:replace="android:value"
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/branch_sdk_key_sa" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -768,7 +764,6 @@
                     android:host="*.tokopedia.com"
                     android:pathPattern="/invoice.pl"
                     android:scheme="https" />
-
                 <data
                     android:host="*.tokopedia.com"
                     android:pathPattern="/topads"
@@ -789,7 +784,6 @@
                     android:host="*.tokopedia.com"
                     android:pathPattern="invoice.pl"
                     android:scheme="http" />
-
                 <data
                     android:host="tokopedia.com"
                     android:pathPattern="/topads"
@@ -810,7 +804,6 @@
                     android:host="tokopedia.com"
                     android:pathPattern="/invoice.pl"
                     android:scheme="https" />
-
                 <data
                     android:host="tokopedia.com"
                     android:pathPattern="/topads"
@@ -831,14 +824,20 @@
                     android:host="tokopedia.com"
                     android:pathPattern="invoice.pl"
                     android:scheme="http" />
-
             </intent-filter>
         </activity>
 
         <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
-            android:exported="true" />
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
@@ -862,15 +861,14 @@
                     android:sspPattern="//.*?.*redirect_to_sellerapp=true.*" />
             </intent-filter>
         </activity>
-        <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
-
-         <receiver android:name=".receiver.SellerAppMediaButtonReceiver" >
+        <service
+            android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver android:name=".receiver.SellerAppMediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.sellerapp.provider"
@@ -882,6 +880,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
     </application>
 </manifest>

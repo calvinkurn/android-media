@@ -76,6 +76,10 @@ data class Category(
         @Expose
         val isAdult: Boolean = false,
 
+        @SerializedName("isKyc")
+        @Expose
+        val isKyc: Boolean = false,
+
         @SerializedName("title")
         @Expose
         val title: String = ""

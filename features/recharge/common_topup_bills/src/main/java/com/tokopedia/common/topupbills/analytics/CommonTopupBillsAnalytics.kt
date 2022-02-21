@@ -217,10 +217,10 @@ class CommonTopupBillsAnalytics {
     }
 
     //#13
-    fun clickViewErrorToasterTelcoAddBills(category: String) {
+    fun clickViewErrorToasterTelcoAddBills(category: String, errorMessage: String) {
         val data = DataLayer.mapOf(
                 TrackAppUtils.EVENT_ACTION, "view error - toaster box",
-                TrackAppUtils.EVENT_LABEL, category)
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, errorMessage))
         data.addGeneralViewAddBills()
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
@@ -288,13 +288,13 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberContinue(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickFavoriteNumberContinue(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
                         TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_CONTINUE,
-                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        TrackAppUtils.EVENT_LABEL, categoryName,
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
                         DigitalTrackingConst.Label.USER_ID, userId
@@ -397,6 +397,34 @@ class CommonTopupBillsAnalytics {
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
                         DigitalTrackingConst.Label.USER_ID, userId
                 )
+        )
+    }
+
+    fun eventImpressionTotalFavoriteNumber(totalUnnamedFavNumber: Int, totalNamedFavNumber: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_IMPRESSION_FAV_NUMBER_AND_CONTACT,
+                TrackAppUtils.EVENT_LABEL, "$totalUnnamedFavNumber - $totalNamedFavNumber",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickTotalFavoriteNumber(totalUnnamedFavNumber: Int, totalNamedFavNumber: Int, clickPosition: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_FAV_NUMBER_AND_CONTACT,
+                TrackAppUtils.EVENT_LABEL, "$totalUnnamedFavNumber - $totalNamedFavNumber - $clickPosition",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
         )
     }
 }

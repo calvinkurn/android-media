@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactory
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapter
@@ -28,7 +29,6 @@ import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.R
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
@@ -209,8 +209,8 @@ class MiniCartChatListBottomSheet @Inject constructor(
     private fun setButton(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         mContext?.apply {
             viewBinding.cardView.show()
-            viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, R.color.Unify_NN0)))
-            viewBinding.btnChat.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
+            viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)))
+            viewBinding.btnChat.text = getString(R.string.mini_cart_chat_btn_label)
             viewBinding.btnChat.setOnClickListener {
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
                 if (elements.isNullOrEmpty()) {

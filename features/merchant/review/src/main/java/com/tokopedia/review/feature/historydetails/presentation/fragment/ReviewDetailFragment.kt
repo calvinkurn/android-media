@@ -17,13 +17,23 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.LoadingView
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailProduct
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReputation
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
@@ -37,7 +47,6 @@ import com.tokopedia.review.feature.historydetails.presentation.viewmodel.Review
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -114,7 +123,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
     }
@@ -233,7 +242,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             setReview(review, product.productName)
                             setResponse(response)
                             setReputation(reputation, response.shopName)
-                            setTicker(review.editable)
+                            setTicker(review.editable, review.editDisclaimer)
                         }
                     } else {
                         with(it.data) {
@@ -356,6 +365,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
+            binding?.reviewDetailBadRatingReason?.showBadRatingReason(badRatingReasonFmt)
+            binding?.reviewDetailBadRatingDisclaimerWidget?.setDisclaimer(ratingDisclaimer)
         }
     }
 
@@ -408,19 +419,19 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setTicker(isEditable: Boolean) {
+    private fun setTicker(isEditable: Boolean, editDisclaimer: String) {
         if (isEditable) {
-            binding?.reviewDetailTicker?.apply {
-                tickerType = Ticker.TYPE_ANNOUNCEMENT
-                tickerTitle = getString(R.string.review_history_details_ticker_editable_title)
-                setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
+            binding?.reviewDetailTicker?.run {
+                setTextDescription(editDisclaimer)
+                show()
             }
-            return
-        }
-        binding?.reviewDetailTicker?.apply {
-            tickerType = Ticker.TYPE_INFORMATION
-            tickerTitle = ""
-            setTextDescription(getString(R.string.review_history_details_ticker_uneditable_subtitle))
+            binding?.reviewDetailTips?.gone()
+        } else {
+            binding?.reviewDetailTips?.run {
+                description = editDisclaimer
+                show()
+            }
+            binding?.reviewDetailTicker?.gone()
         }
     }
 
@@ -496,16 +507,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private fun goToEditForm() {
         with((viewModel.reviewDetails.value as Success).data) {
             val uri = UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.CREATE_REVIEW,
+                ApplinkConstInternalMarketplace.EDIT_REVIEW,
                 reputation.reputationId,
                 product.productId
             )
             val intent = RouteManager.getIntent(
                 context, Uri.parse(uri).buildUpon()
-                    .appendQueryParameter(
-                        ReviewConstants.PARAM_IS_EDIT_MODE,
-                        ReviewConstants.EDIT_MODE.toString()
-                    )
                     .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId)
                     .build().toString()
             )

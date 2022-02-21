@@ -4,9 +4,8 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
@@ -29,13 +28,19 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
     override fun bind(viewModel: ImageDualAnnouncementUiModel) {
         super.bind(viewModel)
 
-        ImageHandler.loadImageWithListener(top, viewModel.imageUrlTop, DynamicSizeImageRequestListener())
+        top?.loadImage(viewModel.imageUrlTop) {
+            adaptiveImageSizeRequest(true)
+            fitCenter()
+        }
         top!!.setOnClickListener { v: View ->
             viewListener.onDualAnnouncementClicked(viewModel.redirectUrlTop, viewModel
                     .attachmentId, viewModel.broadcastBlastId)
         }
 
-        ImageHandler.loadImageWithListener(bottom, viewModel.imageUrlBottom, DynamicSizeImageRequestListener())
+        bottom?.loadImage(viewModel.imageUrlBottom) {
+            adaptiveImageSizeRequest(true)
+            fitCenter()
+        }
         bottom!!.setOnClickListener { v: View ->
             viewListener.onDualAnnouncementClicked(viewModel.redirectUrlBottom, viewModel
                     .attachmentId, viewModel.broadcastBlastId)

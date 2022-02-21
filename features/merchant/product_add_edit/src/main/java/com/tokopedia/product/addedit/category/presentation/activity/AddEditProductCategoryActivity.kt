@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.category.common.Constant.CATEGORY_ID_INIT_SELECTED
 import com.tokopedia.product.addedit.category.common.Constant.INIT_UNSELECTED
@@ -15,9 +16,10 @@ import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_IS_EDIT_MODE
 import com.tokopedia.product.addedit.tracking.ProductCategoryTracking
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.activity_add_edit_product_category.*
 
 class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEditProductCategoryComponent>{
+
+    private var huCategory: HeaderUnify? = null
 
     private val addEditProductCategoryFragment: AddEditProductCategoryFragment by lazy {
         val uri = intent.data
@@ -55,8 +57,10 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
     }
 
     private fun setupUi() {
-        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        huCategory.title = getString(R.string.label_title_category_picker)
+        huCategory = findViewById(R.id.huCategory)
+        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(
+            this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        huCategory?.title = getString(R.string.label_title_category_picker)
         setSupportActionBar(huCategory)
     }
 

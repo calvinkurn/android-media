@@ -6,13 +6,14 @@
             android:name="com.tokopedia.categorylevels.view.activity.CategoryRevampActivity"
             android:label="@string/label_category"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_category_level"
                     android:scheme="@string/internal_scheme" />

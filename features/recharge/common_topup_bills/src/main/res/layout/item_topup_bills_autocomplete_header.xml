@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:background="@color/Unify_Background">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topup_bills_autocomplete_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/common_topup_autocomplete_header"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

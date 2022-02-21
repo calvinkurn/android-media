@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.SHARED_PREF_FILE
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.remote_config.KeyValueEditorDialog
 import com.tokopedia.developer_options.remote_config.KeyValueListener
 import com.tokopedia.developer_options.remote_config.adapters.KeyValueListAdapter
-import com.tokopedia.unifycomponents.Toaster
 
 class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
 
@@ -113,7 +112,7 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
 
     private fun initView() {
         sharedPref = this.getSharedPreferences(
-            intent.extras?.getString(SHARED_PREF_FILE),
+            intent.extras?.getString(DeveloperOptionActivity.SHARED_PREF_FILE),
             Context.MODE_PRIVATE
         )
         listAdapter = KeyValueListAdapter(this)

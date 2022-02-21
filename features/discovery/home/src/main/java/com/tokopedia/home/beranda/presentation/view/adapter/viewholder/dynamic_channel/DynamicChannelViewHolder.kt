@@ -120,6 +120,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
         }
         BenchmarkHelper.endSystraceSection()
@@ -303,9 +304,6 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 serverTime.time = currentMillisecond
                 val timeDiff = serverTime.getTimeDiff(expiredTime)
                 countDownView?.targetDate = timeDiff
-                countDownView?.onFinish = {
-                    listener?.updateExpiredChannel(element, adapterPosition)
-                }
                 if(channel.header.backColor.isNotEmpty()){
                     countDownView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
                 } else {

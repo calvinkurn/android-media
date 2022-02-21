@@ -117,6 +117,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
         addCredit.setOnClickListener {
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET,true)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
         goToInsights.setOnClickListener {

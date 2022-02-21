@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -64,21 +63,20 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_no_variant_input_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
-import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -90,6 +88,24 @@ class AddEditProductDescriptionFragment:
         VideoLinkTypeFactory.VideoLinkListener,
         AddEditProductPerformanceMonitoringListener
 {
+
+    private var mainLayout: ViewGroup? = null
+    private var layoutVariantTips: ViewGroup? = null
+    private var containerAddEditDescriptionFragmentNoInputVariant: ViewGroup? = null
+    private var containerAddEditDescriptionFragmentInputVariant: ViewGroup? = null
+    private var textViewAddVideo: Typography? = null
+    private var textFieldDescription: TextFieldUnify? = null
+    private var tvNoVariantDescription: Typography? = null
+    private var tvEditVariant: Typography? = null
+    private var tvAddVariant: Typography? = null
+    private var tvVariantHeaderSubtitle: Typography? = null
+    private var tvVariantLevel1Count: Typography? = null
+    private var tvVariantLevel2Count: Typography? = null
+    private var tvVariantLevel1Type: Typography? = null
+    private var tvVariantLevel2Type: Typography? = null
+    private var layoutDescriptionTips: TooltipCardView? = null
+    private var btnNext: UnifyButton? = null
+    private var btnSave: UnifyButton? = null
 
     private lateinit var shopId: String
     private var isFragmentVisible = false
@@ -122,7 +138,7 @@ class AddEditProductDescriptionFragment:
         }
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
-        textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        textViewAddVideo?.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
         updateSaveButtonStatus()
     }
 
@@ -208,24 +224,24 @@ class AddEditProductDescriptionFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(
-                requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setFragmentToUnifyBgColor()
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
+        // setup views and behavior
+        setupViews(view)
         setupDescriptionLayout()
         setupVideoListLayout()
         setupVariantLayout()
         setupSubmitButton()
         setupSellerMigrationLayout()
-
         if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) applyEditMode()
-
         onFragmentResult()
         setupOnBackPressed()
         hideKeyboardWhenTouchOutside()
 
+        // setup observer
         observeProductInputModel()
         observeDescriptionValidation()
         observeProductVideo()
@@ -235,10 +251,30 @@ class AddEditProductDescriptionFragment:
         stopPreparePagePerformanceMonitoring()
     }
 
+    private fun setupViews(view: View) {
+        mainLayout = view.findViewById(R.id.mainLayout)
+        layoutVariantTips = view.findViewById(R.id.layoutVariantTips)
+        containerAddEditDescriptionFragmentNoInputVariant = view.findViewById(R.id.containerAddEditDescriptionFragmentNoInputVariant)
+        containerAddEditDescriptionFragmentInputVariant = view.findViewById(R.id.containerAddEditDescriptionFragmentInputVariant)
+        textViewAddVideo = view.findViewById(R.id.textViewAddVideo)
+        textFieldDescription = view.findViewById(R.id.textFieldDescription)
+        tvNoVariantDescription = view.findViewById(R.id.tvNoVariantDescription)
+        tvEditVariant = view.findViewById(R.id.tvEditVariant)
+        tvAddVariant = view.findViewById(R.id.tvAddVariant)
+        tvVariantHeaderSubtitle = view.findViewById(R.id.tvVariantHeaderSubtitle)
+        tvVariantLevel1Count = view.findViewById(R.id.tvVariantLevel1Count)
+        tvVariantLevel2Count = view.findViewById(R.id.tvVariantLevel2Count)
+        tvVariantLevel1Type = view.findViewById(R.id.tvVariantLevel1Type)
+        tvVariantLevel2Type = view.findViewById(R.id.tvVariantLevel2Type)
+        layoutDescriptionTips = view.findViewById(R.id.layoutDescriptionTips)
+        btnNext = view.findViewById(R.id.btnNext)
+        btnSave = view.findViewById(R.id.btnSave)
+    }
+
     override fun onResume() {
         super.onResume()
-        btnNext.isLoading = false
-        btnSave.isLoading = false
+        btnNext?.isLoading = false
+        btnSave?.isLoading = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -268,8 +304,8 @@ class AddEditProductDescriptionFragment:
                     if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) {
                         applyEditMode()
                     } else {
-                        btnNext.visibility = View.VISIBLE
-                        btnSave.visibility = View.GONE
+                        btnNext?.visibility = View.VISIBLE
+                        btnSave?.visibility = View.GONE
                     }
                 }
             }
@@ -333,14 +369,14 @@ class AddEditProductDescriptionFragment:
 
     private fun setupSellerMigrationLayout() {
         with (GlobalConfig.isSellerApp()) {
-            containerAddEditDescriptionFragmentNoInputVariant.showWithCondition(!this)
-            containerAddEditDescriptionFragmentInputVariant.showWithCondition(this)
-            tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
+            containerAddEditDescriptionFragmentNoInputVariant?.showWithCondition(!this)
+            containerAddEditDescriptionFragmentInputVariant?.showWithCondition(this)
+            tvNoVariantDescription?.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
         }
     }
 
     private fun setupVideoListLayout() {
-        textViewAddVideo.setOnClickListener {
+        textViewAddVideo?.setOnClickListener {
             if (getFilteredValidVideoLink().size == adapter.dataSize) {
                 if (descriptionViewModel.isEditMode) {
                     ProductEditDescriptionTracking.clickAddVideoLink(shopId)
@@ -349,7 +385,7 @@ class AddEditProductDescriptionFragment:
                 }
                 adapter.data.add(VideoLinkModel())
                 adapter.notifyDataSetChanged()
-                textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                textViewAddVideo?.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             }
         }
 
@@ -361,13 +397,13 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun setupSubmitButton() {
-        btnNext.setOnClickListener {
-            btnNext.isLoading = true
+        btnNext?.setOnClickListener {
+            btnNext?.isLoading = true
             moveToShipmentActivity()
         }
 
-        btnSave.setOnClickListener {
-            btnSave.isLoading = true
+        btnSave?.setOnClickListener {
+            btnSave?.isLoading = true
             val isAdding = descriptionViewModel.isAddMode
             val isDrafting = descriptionViewModel.isDraftMode
             if (isAdding && !isDrafting) {
@@ -379,23 +415,23 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun setupVariantLayout() {
-        layoutVariantTips.setOnClickListener {
+        layoutVariantTips?.setOnClickListener {
             showVariantTips()
         }
 
-        tvAddVariant.setOnClickListener {
+        tvAddVariant?.setOnClickListener {
             sendClickAddProductVariant()
             showVariantDialog()
         }
 
-        tvEditVariant.setOnClickListener {
+        tvEditVariant?.setOnClickListener {
             sendClickAddProductVariant()
             showVariantDialog()
         }
     }
 
     private fun setupDescriptionLayout() {
-        layoutDescriptionTips.setOnClickListener {
+        layoutDescriptionTips?.setOnClickListener {
             showDescriptionTips()
         }
 
@@ -481,8 +517,8 @@ class AddEditProductDescriptionFragment:
     private fun observeIsHampersProduct() {
         descriptionViewModel.isHampersProduct.observe(viewLifecycleOwner) { isHampers ->
             if (isHampers && GlobalConfig.isSellerApp()) {
-                layoutDescriptionTips.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
-                layoutDescriptionTips.setOnClickListener {
+                layoutDescriptionTips?.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
+                layoutDescriptionTips?.setOnClickListener {
                     showGiftingDescription()
                 }
             }
@@ -491,22 +527,22 @@ class AddEditProductDescriptionFragment:
 
     private fun updateVariantLayout() {
         if (descriptionViewModel.hasVariant) {
-            tvEditVariant.visible()
-            tvAddVariant.gone()
-            layoutVariantTips.gone()
+            tvEditVariant?.visible()
+            tvAddVariant?.gone()
+            layoutVariantTips?.gone()
         } else {
-            tvEditVariant.gone()
-            tvAddVariant.visible()
-            layoutVariantTips.visible()
+            tvEditVariant?.gone()
+            tvAddVariant?.visible()
+            layoutVariantTips?.visible()
         }
-        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
-        tvVariantLevel1Type.setTextOrGone(descriptionViewModel
+        tvVariantHeaderSubtitle?.text = descriptionViewModel.getVariantSelectedMessage()
+        tvVariantLevel1Type?.setTextOrGone(descriptionViewModel
                 .getVariantTypeMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
-        tvVariantLevel2Type.setTextOrGone(descriptionViewModel
+        tvVariantLevel2Type?.setTextOrGone(descriptionViewModel
                 .getVariantTypeMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
-        tvVariantLevel1Count.setTextOrGone(descriptionViewModel
+        tvVariantLevel1Count?.setTextOrGone(descriptionViewModel
                 .getVariantCountMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
-        tvVariantLevel2Count.setTextOrGone(descriptionViewModel
+        tvVariantLevel2Count?.setTextOrGone(descriptionViewModel
                 .getVariantCountMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
     }
 
@@ -570,7 +606,7 @@ class AddEditProductDescriptionFragment:
     private fun updateDescriptionFieldErrorMessage(message: String) {
         textFieldDescription?.setMessage(message)
         textFieldDescription?.setError(message.isNotEmpty())
-        btnSave.isEnabled = message.isEmpty()
+        btnSave?.isEnabled = message.isEmpty()
     }
 
     private fun applyEditMode() {
@@ -581,7 +617,7 @@ class AddEditProductDescriptionFragment:
         if (!videoLinks.isNullOrEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
-            textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+            textViewAddVideo?.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             // start network monitoring when videoLinks is not empty
             startNetworkRequestPerformanceMonitoring()
         } else {
@@ -591,8 +627,8 @@ class AddEditProductDescriptionFragment:
         }
 
         updateVariantLayout()
-        btnNext.visibility = View.GONE
-        btnSave.visibility = View.VISIBLE
+        btnNext?.visibility = View.GONE
+        btnSave?.visibility = View.VISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -761,8 +797,8 @@ class AddEditProductDescriptionFragment:
 
     private fun updateSaveButtonStatus() {
         with (descriptionViewModel.validateInputVideo(adapter.data)) {
-            btnSave.isEnabled = this
-            btnNext.isEnabled = this
+            btnSave?.isEnabled = this
+            btnNext?.isEnabled = this
         }
     }
 

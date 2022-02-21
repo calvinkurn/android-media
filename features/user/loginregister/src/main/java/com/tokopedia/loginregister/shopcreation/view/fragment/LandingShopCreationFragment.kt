@@ -315,7 +315,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
 

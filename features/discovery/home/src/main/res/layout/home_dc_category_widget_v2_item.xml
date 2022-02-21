@@ -18,8 +18,8 @@
         android:id="@+id/card_container">
         <ImageView
             android:id="@+id/category_image"
-            android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_80"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
             android:scaleType="centerCrop"
             tools:background="@color/Unify_R200"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_title_category"
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="120dp"
             android:layout_height="@dimen/home_category_widget_v2_title_container_height"
             android:paddingHorizontal="8dp"
             android:paddingTop="6dp"

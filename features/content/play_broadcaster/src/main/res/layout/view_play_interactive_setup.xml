@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_dp_12"
-        android:background="@color/Neutral_N75"
+        android:background="@color/play_dms_Neutral_N75"
         app:rcl_cornerRadius="@dimen/play_interactive_time_radius"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_interactive_title"
@@ -51,6 +51,7 @@
             app:layout_constraintEnd_toStartOf="@id/cl_timer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/play_dms_N700_96"
             app:typographyType="small" />
 
         <com.tokopedia.play_common.view.RoundedConstraintLayout

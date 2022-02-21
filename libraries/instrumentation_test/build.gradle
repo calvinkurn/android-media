@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependency-libraries.gradle"
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: "de.mannodermaus.android-junit5"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -14,7 +13,6 @@ buildscript {
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
-        classpath rootProject.ext.miscDependencies.androidjunit5
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -35,24 +33,15 @@ android {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
 
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 }
 
@@ -78,6 +67,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
@@ -90,9 +80,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
@@ -130,15 +120,13 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation rootProject.ext.miscDependencies.rxJava
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     api rootProject.ext.miscDependencies.coroutineTest
 
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {

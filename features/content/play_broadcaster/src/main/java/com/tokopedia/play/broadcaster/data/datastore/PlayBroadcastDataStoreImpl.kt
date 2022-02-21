@@ -7,8 +7,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.model.SerializableProductData
 import com.tokopedia.play.broadcaster.error.ClientException
 import com.tokopedia.play.broadcaster.error.PlayErrorCode
-import com.tokopedia.play.broadcaster.type.OutOfStock
-import com.tokopedia.play.broadcaster.type.StockAvailable
+import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
@@ -52,8 +51,30 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                             imageUrl = it.imageUrl,
                             originalImageUrl = it.originalImageUrl,
                             hasStock = it.stock is StockAvailable,
-                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0
-                    )
+                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0,
+                            price = when(val price = it.price) {
+                                is OriginalPrice -> price.price
+                                is DiscountedPrice -> price.originalPrice
+                                else -> ""
+                            },
+                            priceNumber = when(val price = it.price) {
+                                is OriginalPrice -> price.priceNumber
+                                is DiscountedPrice -> price.originalPriceNumber
+                                else -> 0.0
+                            },
+                            discountedPrice = when(val price = it.price) {
+                                is DiscountedPrice -> price.discountedPrice
+                                else -> ""
+                            },
+                            discountedPriceNumber = when(val price = it.price) {
+                                is DiscountedPrice -> price.discountedPriceNumber
+                                else -> 0.0
+                            },
+                            discountedPercent = when(val price = it.price) {
+                                is DiscountedPrice -> price.discountPercent
+                                else -> 0
+                            },
+                        )
                 },
                 selectedCoverData = SerializableCoverData(
                         coverImageUriString = coverImage.toString(),
@@ -71,7 +92,21 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                     name = it.name,
                     imageUrl = it.imageUrl,
                     originalImageUrl = it.originalImageUrl,
-                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock
+                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock,
+                    price = when {
+                        it.discountedPercent != 0 && it.discountedPrice.isNotEmpty() -> DiscountedPrice(
+                            originalPrice = it.price,
+                            originalPriceNumber = it.priceNumber,
+                            discountPercent = it.discountedPercent,
+                            discountedPrice = it.discountedPrice,
+                            discountedPriceNumber = it.discountedPriceNumber
+                        )
+                        it.discountedPercent == 0 && it.price.isNotEmpty() -> OriginalPrice(
+                            price = it.price,
+                            priceNumber = it.priceNumber
+                        )
+                        else -> PriceUnknown
+                    }
             )
         })
         mSetupDataStore.setFullCover(
@@ -84,5 +119,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                         state = SetupDataState.Uploaded
                 )
         )
+        mSetupDataStore.setTitle(title = data.selectedCoverData.coverTitle)
     }
 }

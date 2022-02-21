@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/flight_dp_20"
     android:gravity="center"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:clickable="true"
     android:focusable="true"
     >

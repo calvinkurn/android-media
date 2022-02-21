@@ -61,7 +61,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
-class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
     HasComponent<ReviewProductListComponent>,
     ReviewSummaryViewHolder.ReviewSummaryViewListener,
     SellerReviewListViewHolder.SellerReviewListListener,
@@ -69,10 +69,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     companion object {
         const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
+        const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
-        private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
-        private const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
 
         private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
@@ -102,7 +102,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private val prefKey = this.javaClass.name + ".pref"
 
-    private var prefs: SharedPreferences? = null
+    protected var prefs: SharedPreferences? = null
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
@@ -138,7 +138,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? =
         null
 
-    private val coachMark: CoachMark by lazy {
+    val coachMark: CoachMark by lazy {
         initCoachMark()
     }
 
@@ -188,7 +188,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         initTickerReviewReminder()
@@ -197,6 +197,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         initChipsSort(view)
         initChipsFilter(view)
         initEmptyState()
+        scrollRecyclerViewSendTracking()
         observeLiveData()
     }
 
@@ -336,6 +337,17 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.rvRatingProduct)
+    }
+
+    private fun scrollRecyclerViewSendTracking() {
+        binding?.rvRatingProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
+                }
+            }
+        })
     }
 
     private fun initSearchBar() {
@@ -496,7 +508,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun loadNextPage(page: Int) {
-        tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
             sortBy = sortBy.orEmpty(),
             filterBy = filterAllText.orEmpty(),

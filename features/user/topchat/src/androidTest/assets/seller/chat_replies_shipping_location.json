@@ -1,0 +1,120 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1619066868261",
+    "maxReplyTime": "1619070599432",
+    "block": {
+      "blockedUntil": "2020-10-17T14:35:38.091098+07:00",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "913459683,913459680,913603922,913603923,913604387,913604388,913604389",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 0,
+        "shopId": 0,
+        "interlocutor": true,
+        "name": "Annoying Buyer",
+        "tag": "Pengguna",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/12299592/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 1,
+        "shopId": 1,
+        "interlocutor": false,
+        "name": "Annoying Seller",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/3987128/shop_xs_thumbnail/desktop",
+        "domain": "totokaku",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 1619070591,
+          "timestampStr": "1619070591",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "22 Apr 2021",
+        "chats": [
+          {
+            "time": "12:49",
+            "replies": [
+              {
+                "msgId": 0,
+                "replyId": "15558264919",
+                "senderId": 3987128,
+                "senderName": "Try",
+                "role": "User",
+                "msg": "\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/totokaku/shoes-multiple-variant-same-type-one-color-hitam?whid=0\"\u003ehttps://www.tokopedia.com/totokaku/shoes-multiple-variant-same-type-one-color-hitam?whid=0\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1619070599414158000",
+                "status": 1,
+                "attachmentID": 913604387,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "",
+                "label": "",
+                "attachment": {
+                  "id": 713604387,
+                  "type": 3,
+                  "attributes": "{\"product_id\":1318079981,\"product_profile\":{\"name\":\"Shoes (Multiple Variant same type - one color)\",\"price\":\"Rp24.000\",\"price_int\":24000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/95739ac3-b0a7-4ce5-8ce2-19651962ca37.jpg\",\"url\":\"https://www.tokopedia.com/totokaku/shoes-multiple-variant-same-type-one-color-hitam?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":3987128,\"status\":1,\"min_order\":0,\"category_id\":1759,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\"}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "Apakah stok tersedia?"
+                  }
+                }
+              },
+              {
+                "msgId": 1259906530,
+                "replyId": "15558264925",
+                "senderId": 12299592,
+                "senderName": "Try",
+                "role": "User",
+                "msg": "Single product? complete UI",
+                "fraudStatus": 0,
+                "replyTime": "1619070599432744000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "smart_reply_stock_availability_question",
+                "label": "",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

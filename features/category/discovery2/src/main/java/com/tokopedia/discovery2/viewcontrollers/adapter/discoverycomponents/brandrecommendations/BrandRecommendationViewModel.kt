@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 
-class BrandRecommendationViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BrandRecommendationViewModel(application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var listData: List<ComponentsItem>? = null
     private val componentItemLiveData: MutableLiveData<List<ComponentsItem>> = MutableLiveData()

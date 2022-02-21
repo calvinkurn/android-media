@@ -26,6 +26,7 @@ object ViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
     private const val FIVE_MARGIN = 5
+    private const val ELLIPSIZE = "..."
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
@@ -194,7 +195,8 @@ object ViewUtil {
         if (rect.top == 0) {
             //Device feature is placed vertically
             set.setMargin(deviceFeatureId, ConstraintSet.START, rect.left)
-            setupVerticalFlex(set,
+            setupVerticalFlex(
+                set,
                 firstContainerId, secondContainerId,
                 toolbarId, deviceFeatureId
             )
@@ -265,5 +267,19 @@ object ViewUtil {
 
     fun convertToPx(dp: Int): Int {
         return (dp * getSystem().displayMetrics.density).toInt()
+    }
+
+    fun ellipsizeLongText(text: String, maxChar: Int): String {
+        var resultText = text
+        if (text.length > maxChar) {
+            resultText = resultText.substring(0, maxChar)
+            //Remove if last char is whitespace
+            val lastCharIndex = maxChar - 1
+            if (lastCharIndex > 0 && resultText[lastCharIndex].toString() == " ") {
+                resultText = resultText.substring(0, lastCharIndex)
+            }
+            resultText += ELLIPSIZE
+        }
+        return resultText
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
@@ -8,6 +9,7 @@ import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
 
+@UiTest
 class CopyMessageToClipBoardTest : TopchatRoomTest() {
 
     @Test

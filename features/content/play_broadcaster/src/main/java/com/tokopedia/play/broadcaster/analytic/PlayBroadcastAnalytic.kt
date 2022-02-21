@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -380,6 +381,16 @@ class PlayBroadcastAnalytic(
     }
 
     /**
+     * Click 'Batalkan' on Count Down
+     */
+    fun clickCancelOnCountDown(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            action = "batalkan livestream",
+            label = "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
      * Click `Simpan` on Preparation Page Title Edit
      */
     fun clickSubmitOnEditTitleBottomSheet() {
@@ -450,6 +461,56 @@ class PlayBroadcastAnalytic(
         clickGeneralEvent(
                 "camera switch live",
                 "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Add Pin Chat Message
+     */
+    fun clickAddPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "add pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Edit Pin Chat Message
+     */
+    fun clickEditPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "edit pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Save Pin Chat Message
+     */
+    fun clickSavePinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "save pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Impress Product Tag Carousel
+     */
+    fun impressProductTag(channelId: String) {
+        impressionGeneralEvent(
+            "- product tag carousel",
+            "- $channelId"
+        )
+    }
+
+    /**
+     * Scroll Product Tag Carousel
+     */
+    fun scrollProductTag(channelId: String, product: ProductContentUiModel, position: Int) {
+        scrollGeneralEvent(
+            "- product tag carousel",
+            "- $channelId - ${product.id} - $position"
         )
     }
 
@@ -697,6 +758,36 @@ class PlayBroadcastAnalytic(
                 event = KEY_TRACK_CLICK_EVENT,
                 action = eventAction.toString(),
                 label = label
+        )
+    }
+
+    private fun impressionGeneralEvent(action: String, label: String =  "") {
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_IMPRESSION)
+        if (action.isNotBlank()) {
+            eventAction.append(" ")
+            eventAction.append(action)
+        }
+
+        sendGeneralEvent(
+            event = KEY_TRACK_VIEW_EVENT,
+            action = eventAction.toString(),
+            label = label
+        )
+    }
+
+    private fun scrollGeneralEvent(action: String, label: String =  "") {
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_SCROLL)
+        if (action.isNotBlank()) {
+            eventAction.append(" ")
+            eventAction.append(action)
+        }
+
+        sendGeneralEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            action = eventAction.toString(),
+            label = label
         )
     }
 

@@ -58,7 +58,7 @@ object SellerMenuList {
         val sectionTitle = context.getString(R.string.setting_menu_buyer_info)
 
         return listOf(
-                SettingTitleUiModel(sectionTitle, R.dimen.spacing_lvl4),
+                SettingTitleUiModel(sectionTitle, com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_review),
                         type = MenuItemType.REVIEW,

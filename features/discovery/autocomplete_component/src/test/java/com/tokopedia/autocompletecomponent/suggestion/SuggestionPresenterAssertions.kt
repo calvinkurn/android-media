@@ -12,6 +12,9 @@ import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingl
 import com.tokopedia.autocompletecomponent.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetDataView
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 
 internal fun SuggestionTitleDataView.assertSuggestionTitleDataView(item: SuggestionItem) {
     title shouldBe item.title
@@ -43,23 +46,58 @@ private fun SuggestionTopShopCardDataView.assertSuggestionTopShopCardDataView(su
     }
 }
 
-internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(template: String, item: SuggestionItem, dimension90: String = "") {
-    template shouldBe template
-    type shouldBe item.type
-    applink shouldBe item.applink
-    url shouldBe item.url
-    title shouldBe item.title
-    subtitle shouldBe item.subtitle
-    iconTitle shouldBe item.iconTitle
-    iconSubtitle shouldBe item.iconSubtitle
-    shortcutUrl shouldBe item.shortcutUrl
-    shortcutImage shouldBe item.shortcutImage
-    imageUrl shouldBe item.imageUrl
-    label shouldBe item.label
-    labelType shouldBe item.labelType
-    urlTracker shouldBe item.urlTracker
-    trackingCode shouldBe item.tracking.code
+internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(
+    template: String,
+    item: SuggestionItem,
+    dimension90: String = "",
+    expectedKeyword: String,
+) {
+    this.template shouldBe template
+    this.type shouldBe item.type
+    this.applink shouldBe item.applink
+    this.url shouldBe item.url
+    this.title shouldBe item.title
+    this.subtitle shouldBe item.subtitle
+    this.iconTitle shouldBe item.iconTitle
+    this.iconSubtitle shouldBe item.iconSubtitle
+    this.shortcutImage shouldBe item.shortcutImage
+    this.imageUrl shouldBe item.imageUrl
+    this.label shouldBe item.label
+    this.labelType shouldBe item.labelType
+    this.urlTracker shouldBe item.urlTracker
+    this.trackingCode shouldBe item.tracking.code
+    this.trackingOption shouldBe item.trackingOption
+    this.componentId shouldBe item.componentId
+    this.discountPercentage shouldBe item.discountPercentage
+    this.originalPrice shouldBe item.originalPrice
     this.dimension90 shouldBe dimension90
+    this.searchTerm shouldBe expectedKeyword
+}
+
+internal fun BaseSuggestionDataView.assertShopAdsSuggestionData(
+    item: SuggestionItem,
+    cpmData: CpmData,
+    expectedPosition: Int,
+    dimension90: String,
+    expectedKeyword: String,
+) {
+    this.template shouldBe item.template
+    this.type shouldBe TYPE_SHOP
+    this.applink shouldBe cpmData.applinks
+    this.title shouldBe cpmData.cpm.name
+    this.iconTitle shouldBe cpmData.cpm.badges.first().imageUrl
+    this.imageUrl shouldBe cpmData.cpm.cpmImage.fullEcs
+    this.dimension90 shouldBe dimension90
+    this.componentId shouldBe item.componentId
+    this.trackingOption shouldBe item.trackingOption
+    this.position shouldBe expectedPosition
+    this.searchTerm shouldBe expectedKeyword
+
+    MatcherAssert.assertThat(this.shopAdsDataView, CoreMatchers.notNullValue())
+
+    this.shopAdsDataView!!.clickUrl shouldBe cpmData.adClickUrl
+    this.shopAdsDataView!!.impressionUrl shouldBe cpmData.cpm.cpmImage.fullUrl
+    this.shopAdsDataView!!.imageUrl shouldBe cpmData.cpm.cpmImage.fullEcs
 }
 
 internal fun SuggestionDoubleLineDataDataView.assertBoldText(expectedValue: Boolean) {
@@ -83,12 +121,14 @@ internal fun Visitable<*>.shouldBeSuggestionChipWidgetDataView() {
     shouldBeInstanceOf<SuggestionChipWidgetDataView>()
 }
 
-internal fun SuggestionChipWidgetDataView.assertSuggestionChipWidgetDataView(expectedList: List<SuggestionChildItem>) {
+internal fun SuggestionChipWidgetDataView.assertSuggestionChipWidgetDataView(
+    expectedList: List<SuggestionChildItem>
+) {
     expectedList.forEachIndexed { index, expectedChildItem ->
-        childItems[index].template shouldBe expectedChildItem.template
-        childItems[index].type shouldBe expectedChildItem.type
-        childItems[index].applink shouldBe expectedChildItem.applink
-        childItems[index].url shouldBe expectedChildItem.url
-        childItems[index].title shouldBe expectedChildItem.title
+        data.childItems[index].template shouldBe expectedChildItem.template
+        data.childItems[index].type shouldBe expectedChildItem.type
+        data.childItems[index].applink shouldBe expectedChildItem.applink
+        data.childItems[index].url shouldBe expectedChildItem.url
+        data.childItems[index].title shouldBe expectedChildItem.title
     }
 }

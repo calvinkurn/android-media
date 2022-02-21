@@ -18,9 +18,13 @@
     <string name="remote_config_delete_btn_key">Delete Key</string>
 
     <string name="pdp_layout_id">Change Layout ID PDP</string>
+    <string name="pdp_vbs">Go To Variant Bottom Sheet</string>
     <string name="pdp_route">Route to PDP</string>
     <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
     <string name="pdp_product_id_edittext_placeholder">Product Id</string>
+    <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
+    <string name="pdp_page_source_edittext_placeholder">Page Source</string>
+    <string name="pdp_true_false_atc_edittext_placeholder">true/false</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
@@ -37,7 +41,7 @@
     <string name="open_screen_recorder">Open Screen Recorder</string>
     <string name="enable_network_log_on_notification">Enable Network Log on Notification</string>
     <string name="view_network_log">View Network Log</string>
-    <string name="device_id">Device ID: 1213124</string>
+    <string name="device_id">DEVICE ID:</string>
     <string name="force_dark_mode">Force Dark Mode</string>
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>
@@ -55,23 +59,24 @@
     <string name="str_to_be_put">String to be put in RouteManager.route(…)</string>
     <string name="try_routemanager">Try RouteManager.route</string>
     <string name="shared_pref_editor">SharedPreferences Editor</string>
-    <string name="logging_to_server">Logging To Server</string>
+    <string name="logging_to_server">Logging To Server:</string>
     <string name="required_server_logging">Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)</string>
     <string name="send_log_to_server">Send Log to Server</string>
+    <string name="view_server_logger">View Server Logger</string>
     <string name="enable_seller_app_review_debugging">Enable Seller App Review Debugging</string>
     <string name="v_3_99">3.99</string>
     <string name="example_version_code">399123456</string>
-    <string name="change">Change</string>
+    <string name="change_the_version">Change</string>
     <string name="version_change_api">Version change is for api purpose - app kill will change back</string>
     <string name="choose_url_env">Choose URL Env</string>
-    <string name="fake_response_activity">Fake response Activity</string>
+    <string name="fake_response_activity">Fake Response Activity</string>
     <string name="request_new_fcm">Request New FCM Token</string>
     <string name="reset_onboarding_nav">RESET ONBOARDING NAVIGATION!</string>
-    <string name="rollence_ab_testing">Rollence AB Testing Manual Switcher :</string>
+    <string name="rollence_ab_testing">Rollence AB Testing Manual Switcher:</string>
     <string name="input_rollence_key">input rollence key</string>
     <string name="input_rollence_variant">input rollence variant</string>
     <string name="apply">APPLY</string>
-    <string name="home_nav_revamp_switcher">Home and Navigation Revamp Switcher :</string>
+    <string name="home_nav_revamp_switcher">Home and Navigation Revamp Switcher:</string>
     <string name="always_os_experiment">Always OS Experiment</string>
     <string name="always_new_nav">New Navigation</string>
     <string name="always_old_home">Old Home</string>
@@ -83,5 +88,15 @@
     <string name="always_old_notif">Old Notifcenter</string>
     <string name="always_new_notif">New Notifcenter</string>
     <string name="search_remote_config_here">search remote config here</string>
+    <string name="show_applink_on_toast_and_copy_the_link_to_clipboard">Show Applink on Toast and Copy the Link to Clipboard</string>
+    <string name="system_apps">System Apps</string>
+    <string name="non_system_apps">Non System Apps</string>
+    <string name="old_cart_checkout">Old Cart Checkout</string>
+    <string name="new_cart_checkout_bundling">New Cart Checkout Bundling</string>
+    <string name="type_anything">Type Anything Here</string>
+    <string name="play_websocket_and_sse_logging_title">Play - Web Socket and SSE Logging</string>
+    <string name="view_sse_logging">View SSE Logging</string>
+    <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
+    <string name="view_websocket_logging">View Web Socket Logging</string>
 
 </resources>

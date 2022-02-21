@@ -9,8 +9,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -20,6 +22,8 @@ import com.tokopedia.unifyprinciples.Typography
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
+
+private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
 
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
@@ -31,11 +35,9 @@ fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toStrin
 
 fun TextFieldUnify?.getTextBigIntegerOrZero(): BigInteger = this?.textFieldInput?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
 
-fun TextFieldUnify?.setModeToNumberInput() {
+fun TextFieldUnify?.setModeToNumberInput(maxLength: Int = MAX_LENGTH_NUMBER_INPUT) {
     val textFieldInput = this?.textFieldInput
-    val maxLength = Int.MAX_VALUE.toString().length
-    val delimiterCount = maxLength / 3
-    textFieldInput?.filters = arrayOf(InputFilter.LengthFilter(maxLength + delimiterCount - 2))
+    textFieldInput?.filters = arrayOf(InputFilter.LengthFilter(maxLength))
     textFieldInput?.addTextChangedListener(object : TextWatcher {
 
         override fun afterTextChanged(p0: Editable?) {}
@@ -56,7 +58,7 @@ fun TextFieldUnify?.setModeToNumberInput() {
                     val lengthDiff = formattedText.length - charSequence.length
                     val cursorPosition = start + count + lengthDiff
                     textFieldInput.setText(formattedText)
-                    textFieldInput.setSelection(cursorPosition.coerceIn(0, formattedText.length))
+                    textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
                     textFieldInput.addTextChangedListener(this)
                 }
             }
@@ -105,12 +107,12 @@ fun RadioButtonUnify?.setTitle(title: String) {
         val bodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
 
         val span1 = SpannableString(title)
-        span1.setSpan(AbsoluteSizeSpan(titleFontSize), 0, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        span1.setSpan(ForegroundColorSpan(titleColor), 0, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        span1.setSpan(AbsoluteSizeSpan(titleFontSize), Int.ZERO, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        span1.setSpan(ForegroundColorSpan(titleColor), Int.ZERO, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
         val span2 = SpannableString(text)
-        span2.setSpan(AbsoluteSizeSpan(bodyFontSize), 0, text.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        span2.setSpan(ForegroundColorSpan(bodyColor), 0, text.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        span2.setSpan(AbsoluteSizeSpan(bodyFontSize), Int.ZERO, text.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        span2.setSpan(ForegroundColorSpan(bodyColor), Int.ZERO, text.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
         text = TextUtils.concat(span1, "\n", span2)
     }
@@ -119,15 +121,17 @@ fun RadioButtonUnify?.setTitle(title: String) {
 fun UnifyButton.setUnifyDrawableEnd(iconId: Int) {
     val icon = getIconUnifyDrawable(context, iconId, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N400))
     val dp8 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).dpToPx()
-    val drawable = ScaleDrawable(icon, 0, dp8, dp8).drawable
+    val drawable = ScaleDrawable(icon, Int.ZERO, dp8, dp8).drawable
 
-    drawable?.setBounds(0, 0, dp8.toInt(), dp8.toInt())
+    drawable?.setBounds(Int.ZERO, Int.ZERO, dp8.toInt(), dp8.toInt())
     this.setCompoundDrawables(null, null, drawable, null)
 }
 
 fun TextFieldUnify2?.setText(text: String) = this?.editText?.setText(text)
 
 fun TextFieldUnify2?.getText(): String = this?.editText?.text.toString()
+
+fun TextFieldUnify2?.getTrimmedText(): String = this?.editText?.text.toString().trim().replace("\\s+".toRegex(), " ")
 
 // set text listener only has a focus
 fun TextFieldUnify2?.afterTextChanged(listener: (String) -> Unit) {
@@ -152,5 +156,12 @@ fun TextFieldUnify2?.updateText(text: String) {
         if (focused) {
             requestFocus()
         }
+    }
+}
+
+fun Fragment.setFragmentToUnifyBgColor() {
+    if (activity != null && context != null) {
+        activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
+                context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 }

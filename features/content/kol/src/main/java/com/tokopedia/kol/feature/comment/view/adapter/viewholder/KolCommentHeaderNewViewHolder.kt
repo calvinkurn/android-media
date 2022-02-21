@@ -8,11 +8,16 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.view.custom.KolCommentNewCardView
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: KolComment.View) :
     AbstractViewHolder<KolCommentHeaderNewModel?>(itemView) {
     private val commentView: KolCommentNewCardView = itemView.findViewById(R.id.kcv_comment)
+    private val loadMore: Typography? = itemView.findViewById(R.id.btn_load_more)
+
     private val progressBar: ProgressBarUnify = itemView.findViewById(R.id.progress_bar)
     private val commentViewListener: KolCommentNewCardView.Listener =
         object : KolCommentNewCardView.Listener {
@@ -43,9 +48,19 @@ class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: Ko
     override fun bind(element: KolCommentHeaderNewModel?) {
         commentView.setListener(commentViewListener)
         element?.let {
+            if (it.isCanLoadMore) loadMore?.visible() else loadMore?.gone()
+
             commentView.setModel(it, true)
             if (it.isLoading) progressBar.visibility = View.VISIBLE else progressBar.visibility =
                 View.GONE
+
+            loadMore?.setOnClickListener { v: View? ->
+                element.isCanLoadMore = false
+                element.isLoading = true
+                progressBar.visibility = View.VISIBLE
+                loadMore.visibility = View.GONE
+                viewListener.loadMoreComments()
+            }
         }
     }
 

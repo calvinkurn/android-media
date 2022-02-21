@@ -10,5 +10,4 @@
             android:name="io.branch.sdk.BranchKey.test"
             android:value="@string/BRANCH_SDK_KEY_TEST" />
     </application>
-
 </manifest>

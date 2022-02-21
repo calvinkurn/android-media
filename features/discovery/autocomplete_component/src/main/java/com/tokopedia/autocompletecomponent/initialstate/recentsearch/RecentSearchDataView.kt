@@ -5,7 +5,8 @@ import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSear
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateTypeFactory
 
 class RecentSearchDataView(
-    var list: MutableList<BaseItemInitialStateSearch> = mutableListOf()
+    var list: MutableList<BaseItemInitialStateSearch> = mutableListOf(),
+    val trackingOption: Int = 0,
 ): Visitable<InitialStateTypeFactory>{
 
     override fun type(typeFactory: InitialStateTypeFactory): Int {

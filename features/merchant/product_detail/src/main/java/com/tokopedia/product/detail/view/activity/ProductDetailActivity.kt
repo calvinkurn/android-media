@@ -27,7 +27,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 
 
 /**
@@ -42,7 +41,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PARAM_SHOP_DOMAIN = "shop_domain"
         private const val PARAM_PRODUCT_KEY = "product_key"
         private const val PARAM_IS_FROM_DEEPLINK = "is_from_deeplink"
-        private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
@@ -76,7 +74,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private var isFromDeeplink = false
-    private var isFromAffiliate: Boolean? = false
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
@@ -105,22 +102,18 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P1_TRACE)
     }
 
     fun stopMonitoringP2Data() {
         performanceMonitoringP2Data?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_DATA_TRACE)
     }
 
     fun stopMonitoringP2Other() {
         performanceMonitoringP2Other?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE)
     }
 
     fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
     }
 
     fun startMonitoringPltNetworkRequest() {
@@ -221,7 +214,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         shopDomain,
         productKey,
         isFromDeeplink,
-        isFromAffiliate ?: false,
         trackerAttribution,
         trackerListName,
         affiliateString = affiliateString,
@@ -264,7 +256,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
-            isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
             extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
         }
         bundle?.let {
@@ -314,17 +305,13 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P1_TRACE, null, false)
 
         performanceMonitoringP2Data = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_DATA_TRACE)
-        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_DATA_TRACE, null, false)
 
         performanceMonitoringP2Other = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_OTHER_TRACE)
-        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE, null, false)
 
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE, null, false)
         }
     }
 

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
@@ -52,8 +53,8 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
 
     //featured shop OS
-    fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String)
-    fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int)
+    fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
+    fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
     fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String)
     fun goToApplink(applink: String)
     
@@ -65,5 +66,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
 
     fun getOSCategory(): Category?
     fun isLogin(): Boolean
+    fun getUserId(): String
+    fun getTrackingObject(): OfficialStoreTracking?
 
 }

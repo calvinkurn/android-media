@@ -47,7 +47,6 @@ class DetailCreditCardFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run { GraphqlClient.init(this) }
         settingListPaymentModel = arguments?.getParcelable(EXTRA_PAYMENT_MODEL)
     }
 

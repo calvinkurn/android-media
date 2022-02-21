@@ -16,8 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.facebook.FacebookSdk
-import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -174,7 +172,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
-        logoutFacebook()
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
         PersistentCacheManager.instance.delete()
@@ -231,11 +228,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun logoutGoogleAccountIfExist() {
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(applicationContext)
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
-    }
-
-    private fun logoutFacebook() {
-        FacebookSdk.sdkInitialize(applicationContext)
-        LoginManager.getInstance().logOut()
     }
 
     private fun clearStickyLogin() {

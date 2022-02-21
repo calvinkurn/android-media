@@ -11,6 +11,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeEtalaseListSliderMediumBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -39,7 +40,11 @@ class ShopHomeShowcaseListSliderMediumViewHolder (
         showcaseItemName = viewBinding?.tvShowcaseNameItemSliderMedium
     }
 
-    fun bind(element: ShopHomeShowcaseListItemUiModel) {
+    fun bind(
+            element: ShopHomeShowcaseListItemUiModel,
+            shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel,
+            parentPosition: Int
+    ) {
         // try catch to avoid crash ImageUnify on loading image with Glide
         try {
             if (showcaseItemImage?.context?.isValidGlideContext() == true) {
@@ -56,10 +61,15 @@ class ShopHomeShowcaseListSliderMediumViewHolder (
         }
 
         itemView.addOnImpressionListener(element) {
-            itemWidgetListener.onShowcaseListWidgetItemImpression(element, (adapterPosition+1))
+            itemWidgetListener.onShowcaseListWidgetItemImpression(element, adapterPosition)
         }
         itemView.setOnClickListener {
-            itemWidgetListener.onShowcaseListWidgetItemClicked(element, (adapterPosition+1))
+            itemWidgetListener.onShowcaseListWidgetItemClicked(
+                    shopHomeShowcaseListSliderUiModel,
+                    element,
+                    adapterPosition,
+                    parentPosition
+            )
         }
     }
 }

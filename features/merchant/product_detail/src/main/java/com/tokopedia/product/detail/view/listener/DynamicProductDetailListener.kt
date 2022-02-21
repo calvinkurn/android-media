@@ -2,21 +2,24 @@ package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
 import android.util.SparseIntArray
-import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
@@ -78,7 +81,6 @@ interface DynamicProductDetailListener {
     fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
-    fun shouldShowRatingAndReviewCount(): Boolean
 
     /**
      * ProductMerchantVoucherViewHolder
@@ -90,6 +92,8 @@ interface DynamicProductDetailListener {
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
@@ -122,6 +126,8 @@ interface DynamicProductDetailListener {
      * ProductRecom
      */
     fun loadTopads(pageName: String)
+
+    fun loadPlayWidget()
 
     /**
      * ProductDefaultErrorViewHolder
@@ -176,7 +182,6 @@ interface DynamicProductDetailListener {
      */
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun showCoachmark(view: Typography?, isBoeType: Boolean)
 
     /**
      * ProductCategoryCarouselViewHolder
@@ -191,4 +196,12 @@ interface DynamicProductDetailListener {
     fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel)
 
+    /**
+     * ContentWidgetViewHolder
+     */
+    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel)
+    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item:PlayWidgetMediumChannelUiModel)
+    fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel, isRemindMe: Boolean)
 }

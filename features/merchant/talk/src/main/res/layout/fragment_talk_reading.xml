@@ -4,7 +4,7 @@
     android:id="@+id/talkReadingContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/talk_reading_app_bar_layout"

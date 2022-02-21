@@ -5,13 +5,15 @@ import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionAdapterTypeFactory
 import com.tokopedia.autocompletecomponent.suggestion.TYPE_SHOP
 
-class SuggestionDoubleLineDataDataView : BaseSuggestionDataView(), Visitable<SuggestionAdapterTypeFactory> {
+class SuggestionDoubleLineDataDataView(
+    val data: BaseSuggestionDataView = BaseSuggestionDataView()
+) : Visitable<SuggestionAdapterTypeFactory> {
 
     override fun type(typeFactory: SuggestionAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
     fun isBoldText(): Boolean {
-        return type == TYPE_SHOP
+        return data.type == TYPE_SHOP
     }
 }

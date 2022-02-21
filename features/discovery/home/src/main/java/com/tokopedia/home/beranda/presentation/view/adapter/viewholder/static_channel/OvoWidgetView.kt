@@ -36,6 +36,8 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.util.toSp
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadIcon
@@ -95,7 +97,7 @@ class OvoWidgetView: FrameLayout {
         val container = itemView.findViewById<View>(R.id.container_nonlogin)
         val imgNonLogin = itemView.findViewById<AppCompatImageView>(R.id.bg_container_nonlogin)
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, com.tokopedia.unifyprinciples.R.color.Unify_N0, com.tokopedia.home.R.dimen.ovo_corner_radius, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, com.tokopedia.home.R.dimen.ovo_elevation, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
         Glide.with(itemView.context.applicationContext)
@@ -112,7 +114,7 @@ class OvoWidgetView: FrameLayout {
 
     private fun renderLogin(element: HeaderDataModel) {
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo,  com.tokopedia.unifyprinciples.R.color.Unify_N0, com.tokopedia.home.R.dimen.ovo_corner_radius, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, com.tokopedia.home.R.dimen.ovo_elevation, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
         containerOvo.weightSum = 7f
@@ -141,7 +143,6 @@ class OvoWidgetView: FrameLayout {
             // error state wallet -> get use case error
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
-                listener?.onRefreshTokoCashButtonClicked()
             }
             tvTitleTokocash.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
@@ -263,7 +264,7 @@ class OvoWidgetView: FrameLayout {
             // error state tokokpoint -> use case tokopoint error
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener?.onRefreshTokoPointButtonClicked()
+                listener?.onRetryMembership()
             }
             tvActionTokopoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tvActionTokopoint.visibility = View.VISIBLE
@@ -296,7 +297,7 @@ class OvoWidgetView: FrameLayout {
                 if (sectionContent.isNotEmpty()) {
                     setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
                     if (sectionContent.size >= 2) {
-                        setTokopointHeaderData(sectionContent[1], mTextCouponCount, R.dimen.sp_10)
+                        setTokopointHeaderData(sectionContent[1], mTextCouponCount, com.tokopedia.home.R.dimen.home_tokopoints_header)
                     }
                 } else {
                     tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints)
@@ -355,7 +356,7 @@ class OvoWidgetView: FrameLayout {
         if (element.tokopointsDrawerBBOHomeData == null && element.isTokoPointDataError) {
             bebasOngkirContainer.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener?.onRefreshTokoPointButtonClicked()
+                listener?.onRetryMembership()
             }
             tvActionTokopoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tvActionTokopoint.visibility = View.VISIBLE
@@ -386,7 +387,7 @@ class OvoWidgetView: FrameLayout {
                 if (sectionContent.isNotEmpty()) {
                     setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
                     if (sectionContent.size >= 2) {
-                        setTokopointHeaderData(sectionContent[1], mTextCouponCount, R.dimen.sp_10)
+                        setTokopointHeaderData(sectionContent[1], mTextCouponCount, com.tokopedia.home.R.dimen.home_tokopoints_header)
                     }
                 } else {
                     tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_bebasongkir)
@@ -414,7 +415,7 @@ class OvoWidgetView: FrameLayout {
         }
     }
 
-    private fun setTokopointHeaderData(sectionContentItem: SectionContentItem?, tokopointsTextView: TextView, textSize: Int = R.dimen.sp_12) {
+    private fun setTokopointHeaderData(sectionContentItem: SectionContentItem?, tokopointsTextView: TextView, textSize: Int = R.dimen.ovo_default_text_size) {
         if (sectionContentItem != null) {
 
             //Initializing to default value to prevent stale data in case of onresume
@@ -429,12 +430,12 @@ class OvoWidgetView: FrameLayout {
                         val shapeDrawable = drawable as GradientDrawable?
                         shapeDrawable!!.setColorFilter(Color.parseColor(sectionContentItem.tagAttributes.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                         tokopointsTextView.background = shapeDrawable
-                        val horizontalPadding = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
-                        tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_8))
+                        val horizontalPadding = 2f.toDpInt()
+                        tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL)
                         tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
                     }
-                    tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N0))
+                    tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 } else {
                     tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }

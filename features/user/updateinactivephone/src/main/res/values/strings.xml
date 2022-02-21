@@ -1,91 +1,24 @@
 <resources>
-    <string name="title_change_inactive_phone_number">Nomor Ponsel Sudah Tidak Aktif</string>
-    <string name="phone_number_invalid_min_8">Nomor ponsel terlalu pendek, minimum 8 angka</string>
-    <string name="phone_number_invalid_max_15">Nomor ponsel terlalu panjang, maksimum 15 angka</string>
-    <string name="registered_email_dialog_message">Silakan masuk dengan email atau sosial media yang terhubung ke akun Anda untuk mengubah nomor ponsel di menu pengaturan.</string>
-    <string name="registered_email_dialog_title">Akun Anda Terhubung dengan Email</string>
-    <string name="title_change_inactive_form_request" >Pengajuan Ubah Nomor Ponsel</string>
-    <string name="foto_ktp_title">Foto KTP</string>
-    <string name="foto_ktp_desc">Pastikan data KTP Anda terlihat jelas di foto dan sesuai dengan informasi akun Tokopedia Anda.</string>
-    <string name="foto_payment_title">Foto Buku Tabungan / Bukti Pembayaran</string>
-    <string name="foto_payment_desc">Lampirkan halaman pertama buku tabungan atau bukti pembayaran di Tokopedia. Pastikan foto terlihat jelas dan sesuai dengan informasi akun Tokopedia.</string>
-    <string name="submission_sent">Pengajuan Anda Telah Terkirim</string>
-    <string name="submission_sent_desc">Kami akan memproses data yang Anda unggah pada hari kerja (09.00-18.00), mohon menunggu maksimal 1x24 jam.</string>
-    <string name="duplicate_submission_desc">Hasil pengajuan Anda akan dikirim melalui SMS dan juga email.</string>
-    <string name="new_request_submission_desc">Hasil pengajuan Anda akan diberitahukan melalui SMS ke:</string>
-    <string name="email_label">dan email:</string>
-    <string name="goto_home">Kembali ke Beranda</string>
-    <string name="old_phone_heading">Nomor Ponsel Terdaftar</string>
-    <string name="input_phone_hint">Contoh: 08xxxxxxxxxx</string>
-    <string name="new_phone_heading">Nomor Ponsel Baru</string>
-    <string name="email_heading">Email</string>
-    <string name="email_hint">Pastikan email ini aktif untuk memperoleh hasil pengajuan</string>
-    <string name="send_submission">Kirim Pengajuan</string>
-    <string name="phone_blacklisted">Nomor ponsel ini tidak dapat digunakan</string>
-    <string name="wrong_user_id">Wrong User ID</string>
-    <string name="old_new_phone_same">Nomor ponsel baru harus berbeda dengan nomor lama</string>
-    <string name="already_registered_phone">Nomor ponsel sudah digunakan oleh banyak akun</string>
-    <string name="phone_empty">nomor telepon tidak boleh kosong</string>
-    <string name="phone_invalid">nomor telepon tidak valid</string>
-    <string name="max_limit_reached_for_phone">Nomor ponsel sudah digunakan oleh banyak akun</string>
-    <string name="phone_not_registered">Nomor ponsel belum terdaftar.</string>
-    <string name="default_error_upload_image">Gagal mengupload gambar</string>
-    <string name="info_title">Info</string>
-    <string name="info_heading">Apabila terjadi perubahan nomor ponsel:</string>
-    <string name="info_desc_1">Disarankan untuk menarik Saldo Tokopedia ke rekening pribadi terlebih dahulu.</string>
-    <string name="info_desc_2">Dana TokoCash secara otomatis dipindahkan ke nomor baru. Setelah berhasil dipindahkan, dana tersebut tidak dapat digunakan selama 1x24 jam.</string>
-    <string name="user_not_registered">User not registered</string>
-    <string name="change_inactive_phone_heading">Masukkan nomor ponsel yang terhubung dengan akun Anda.</string>
-    <string name="input_phone_number_title">Nomor Ponsel</string>
-    <string name="selanjutnya">Selanjutnya</string>
-    <string name="invalid_phone_number">Nomor ponsel harus berupa angka</string>
-    <string name="invalid_email_error" >Format email salah</string>
-    <string name="phone_field_empty">Nomor ponsel harus diisi</string>
-    <string name="email_field_empty">Email harus diisi</string>
-    <string name="title_next">Selanjutnya</string>
-    <string name="drawer_title_login">Masuk</string>
-    <string name="title_cancel">Batal</string>
-    <string name="error_upload_image">Gagal mengunggah gambar</string>
-
-    <string name="error_invalid_phone_number">Nomor Telepon tidak valid</string>
-    <string name="error_invalid_email">Email ini tidak valid.</string>
-
-    <string name="error_general">Terjadi gangguan di rumah Toped, silakan coba lagi nanti.</string>
   
-    <!-- REVAMP -->
-    <string name="camera_recapture_text">Foto Ulang</string>
-    <string name="camera_next_button">Lanjut</string>
-    <string name="text_camera_description_id_card">Posisikan kartu identitas di dalam bingkai, pastikan informasi di foto terlihat jelas.</string>
-    <string name="text_camera_description_selfie">Pastikan wajah dan kartu identitasmu terlihat jelas di dalam bingkai foto ini.</string>
-    <string name="text_camera_description_saving_book">Posisikan buku tabungan di dalam bingkai &amp; pastikan informasi terlihat jelas.</string>
-    <string name="text_camera_error_make_file">Terjadi kesalahan silahkan coba kembali.</string>
-    <string name="text_title">"<b>Ubah Nomor HP</b>"</string>
-    <string name="text_button_camera">Kamera</string>
-    <string name="text_button_gallery">Galeri</string>
-    <string name="text_select_image">Pilih Foto</string>
-    <string name="text_title_id_card">Foto kartu identitas</string>
-    <string name="text_title_selfie">Foto wajah dan kartu identitas</string>
-    <string name="text_title_saving_book">Lampirkan Buku Tabungan</string>
-    <string name="text_onboarding_button">Lanjut Ubah</string>
-    <string name="text_onboarding_correct">Benar</string>
-    <string name="text_onboarding_false">Salah</string>
-    <string name="text_onboarding_title">Mau mengubah nomor HP?</string>
-    <string name="text_onboarding_description">Kamu bisa mengajukan perubahan nomor HP dan akan diminta upload kartu identitas untuk verifikasi data diri</string>
-    <string name="text_onboarding_protected">Tokopedia menjamin keamanan datamu.</string>
-    <string name="text_onboarding_id_card_description_title">Ikuti cara ini agar kartumu berhasil diverifikasi:</string>
-    <string name="text_onboarding_id_card_description_1">Siapkan kartu identitas (KTP, SIM, kartu pelajar, atau paspor).</string>
-    <string name="text_onboarding_id_card_description_2">Pastikan kartu identitas sesuai dengan data di akun Tokopedia kamu.</string>
-    <string name="text_onboarding_id_card_description_3">Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
-    <string name="text_onboarding_selfie_description">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
-    <string name="text_onboarding_saving_book_description">Ikuti cara ini agar datamu berhasil diverifikasi:
-      \n- Siapkan buku tabungan dari rekening yang sering kamu pakai di Tokopedia.
-      \n- Pastikan nama pemilik rekening, nomor rekening, dan nama bank terlihat jelas.</string>
-    <string name="text_onboarding_receipt_description">Kamu bisa pakai bukti pembayaran dari transaksimu di Tokopedia berupa:
-      \n- Struk transfer dari ATM
-      \n- Bukti transfer dari m-banking
-      \n- Bukti transfer dari OVO
-      \n- Struk pembayaran dari Indomaret atau Alfamart</string>
-  <string name="text_onboarding_saving_book_titile">Lampirkan buku tabungan atau bukti pembayaran</string>
+  <!-- REVAMP -->
+  <string name="camera_recapture_text">Foto Ulang</string>
+  <string name="camera_next_button">Lanjut</string>
+  <string name="text_camera_description_id_card">Posisikan kartu identitas di dalam bingkai, pastikan informasi di foto terlihat jelas.</string>
+  <string name="text_camera_description_selfie">Pastikan wajah dan kartu identitasmu terlihat jelas di dalam bingkai foto ini.</string>
+  <string name="text_camera_description_saving_book">Posisikan buku tabungan di dalam bingkai &amp; pastikan informasi terlihat jelas.</string>
+  <string name="text_title">Ubah Nomor HP</string>
+  <string name="text_select_image">Pilih Foto</string>
+  <string name="text_title_id_card">Foto kartu identitas</string>
+  <string name="text_title_selfie">Foto wajah dan kartu identitas</string>
+  <string name="text_onboarding_button">Lanjut Ubah</string>
+  <string name="text_onboarding_title">Verifikasi datamu dulu, ya!</string>
+  <string name="text_onboarding_description">Kamu bisa mengajukan perubahan nomor HP dan akan diminta upload kartu identitas untuk verifikasi data diri</string>
+  <string name="text_onboarding_protected">Tokopedia menjamin keamanan datamu.</string>
+  <string name="text_onboarding_id_card_description_title">Ikuti cara ini agar kartumu berhasil diverifikasi:</string>
+  <string name="text_onboarding_id_card_description_1">Siapkan kartu identitas (KTP, SIM, kartu pelajar, atau paspor).</string>
+  <string name="text_onboarding_id_card_description_2">Pastikan kartu identitas sesuai dengan data di akun Tokopedia kamu.</string>
+  <string name="text_onboarding_id_card_description_3">Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
+  <string name="text_onboarding_selfie_description">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
   <string name="text_form_title">Hasil fotomu</string>
   <string name="text_form_button">Upload Data</string>
   <string name="text_form_input_phone_number">Masukan nomor HP baru</string>
@@ -95,13 +28,12 @@
   <string name="text_form_saving_book">Bukti Untuk Verifikasi</string>
   <string name="text_form_error_empty">Wajib diisi.</string>
   <string name="text_form_error_min_9_digit">Min. 9 digit.</string>
-  <string name="text_form_error_phone_already_used">Nomor ini sudah terdaftar, masukkan nomor lainnya.</string>
   <string name="phone_id_idn">+62</string>
   <string name="label_new_phone_number">Nomor HP Baru</string>
   <string name="text_exit_title">Keluar dari halaman ini?</string>
-  <string name="text_exit_description">Foto barusan tidak akan tersimpan dan kamu harus mengulang proses verifikasi dari awal.</string>
+  <string name="text_exit_description">Kamu harus mengulang proses verifikasi dari awal kalau mau ubah nomor HP.</string>
   <string name="text_exit_cta_primary">Keluar</string>
-  <string name="text_exit_cta_secondary">Lanjut Verifikasi</string>
+  <string name="text_exit_cta_secondary">Lanjut Ubah Nomor</string>
   <string name="text_success_title">Perubahan sudah diajukan</string>
   <string name="text_success_description_single_account"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat <b>%s</b> dan SMS ke nomor <b>%s</b>.]]></string>
   <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
@@ -119,6 +51,10 @@
   <string name="image_shutter_1">image shutter 1</string>
   <string name="image_shutter_2">image shutter 2</string>
   <string name="button_back">button back</string>
-
+  <string name="button_text_save">Simpan</string>
+  
+  <string name="expedited_onboarding_description">Kamu perlu masukkan PIN Tokopedia &amp; kode verifikasi yang dikirim ke e-mail.</string>
+  <string name="expedited_title_success_page">Nomor HP-mu sudah diubah!</string>
+  <string name="expedited_description_success_page">Kamu bisa pakai nomor ini buat verifikasi atau masuk ke Tokopedia.</string>
 
 </resources>

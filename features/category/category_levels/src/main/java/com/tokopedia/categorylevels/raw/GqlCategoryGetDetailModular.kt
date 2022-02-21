@@ -1,7 +1,7 @@
 package com.tokopedia.categorylevels.raw
 
-const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailModular(${'$'}identifier:String!){
-  categoryGetDetailModular(identifier:${'$'}identifier){
+const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailModular(${'$'}identifier:String!, ${'$'}isLatestVersion:Boolean){
+  categoryGetDetailModular(identifier:${'$'}identifier, isLatestVersion:${'$'}isLatestVersion){
     header{
       code
       message
@@ -37,6 +37,11 @@ const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailMo
       type
       targetID
       sticky
+      properties{
+        background
+        dynamic
+        categoryDetail
+      }
       data{
         ... on CategoryModularChildrenNav{
           id
@@ -47,7 +52,12 @@ const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailMo
           applinks
         }
           ... on CategoryModularStaticText{
-          text
+            text
+        } 
+          ... on CategoryModularTab {
+            id
+            categoryName
+	        targetComponentId
         }
       }
     }

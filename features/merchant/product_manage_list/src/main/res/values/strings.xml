@@ -143,6 +143,9 @@
     <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
     <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
 
+    <string name="product_manage_violation_ticker_message">Diduga ada pelanggaran</string>
+    <string name="product_manage_violation_button_text">Lihat Detail</string>
+
     <string name="product_manage_max_count">%s+</string>
 
     <string name="popup_tips_trick_clickable">baru di sini.</string>

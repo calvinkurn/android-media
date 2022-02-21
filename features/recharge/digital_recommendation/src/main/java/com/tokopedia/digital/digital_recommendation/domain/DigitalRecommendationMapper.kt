@@ -25,7 +25,7 @@ class DigitalRecommendationMapper {
                                         TYPE_CATEGORY -> item.trackingData.categoryName
                                         else -> item.title
                                     }
-                                } else "",
+                                } else item.title,
                                 productName = item.subtitle,
                                 applink = item.appLink,
                                 tracking = transform(item.trackingData),
@@ -44,6 +44,7 @@ class DigitalRecommendationMapper {
 
             return DigitalRecommendationModel(
                     userType = response.personalizedItems.trackingData.userType,
+                    title = response.personalizedItems.title,
                     items = newData
             )
         }

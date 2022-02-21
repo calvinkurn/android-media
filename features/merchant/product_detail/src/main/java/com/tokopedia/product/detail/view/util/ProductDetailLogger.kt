@@ -8,6 +8,10 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 
 object ProductDetailLogger {
 
+    private const val STACK_TRACE_TRIM_LENGTH = 50
+    private const val ERROR_CODE_RANGE_START = 400
+    private const val ERROR_CODE_RANGE_END = 599
+
     private val GENERIC_ERROR_MESSAGES = listOf("terjadi kesalahan", "koneksi")
     private const val LOCALIZATION_FORMAT_ERROR = "localization_format_error"
 
@@ -47,13 +51,13 @@ object ProductDetailLogger {
     }
 
     private fun getTrimmedStackTrace(throwable: Throwable): String {
-        return throwable.stackTrace.toString().substring(0, 50)
+        return throwable.stackTrace.toString().substring(0, STACK_TRACE_TRIM_LENGTH)
     }
 
     private fun isServerError(throwable: Throwable): Boolean {
         return try {
             val code = throwable.localizedMessage.toIntOrZero()
-            code in 400..599
+            code in ERROR_CODE_RANGE_START..ERROR_CODE_RANGE_END
         } catch (e1: NumberFormatException) {
             false
         }

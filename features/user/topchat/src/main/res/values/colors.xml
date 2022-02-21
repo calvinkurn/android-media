@@ -40,7 +40,11 @@
     <color name="topchat_dms_icon_compose">#525A67</color>
     <color name="topchat_dms_send_button_gray_bg">#DAE2ED</color>
 
+    <color name="topchat_dms_chat_bubble_shadow">#33000000</color>
     <color name="topchat_dms_right_button_pressed">#CFDFD6</color>
-    <!-- TODO: add support for dark mode color -->
     <color name="topchat_dms_left_button_pressed">#E0E0E0</color>
+    <color name="topchat_bg_dms_left_bubble">#FFFFFF</color>
+    <color name="topchat_bg_dms_right_bubble">#ECFEF4</color>
+    <color name="topchat_bg_dms_right_bubble_reply">#C9FDE0</color>
+    <color name="topchat_bg_dms_right_bubble_reply_text">#6D7588</color>
 </resources>

@@ -5,7 +5,5 @@ interface SuggestionListener {
 
     fun onItemClicked(item: BaseSuggestionDataView)
 
-    fun onChipClicked(item: BaseSuggestionDataView.ChildItem)
-
     fun onItemImpressed(item: BaseSuggestionDataView)
 }

@@ -3,6 +3,9 @@ package com.tokopedia.topchat.chatroom.view.activity
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.filters.FlakyTest
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
@@ -11,6 +14,7 @@ import org.junit.Test
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
 
+@UiTest
 class ReplyBubbleTest : TopchatRoomTest() {
 
     override fun before() {
@@ -77,6 +81,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
+        waitForIt(5000)
 
         // Then
         ReplyBubbleResult.hasNoVisibleReplyBubbleAt(0)
@@ -191,7 +196,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
     fun should_match_the_senderId_name_with_contacts_from_chatReplies_GQL() {
         // Given
         getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
-        val roomMetaData = getChatUseCase.getCurrentRoomMetaData(MSG_ID)
+        val roomMetaData = getCurrentRoomMetaData(MSG_ID, getChatUseCase.response)
         launchChatRoomActivity()
 
         // When
@@ -248,7 +253,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
     fun should_show_image_reply_bubble_when_parent_reply_is_not_null_from_websocket() {
         // Given
         getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
-        val roomMetaData = getChatUseCase.getCurrentRoomMetaData(MSG_ID)
+        val roomMetaData = getCurrentRoomMetaData(MSG_ID, getChatUseCase.response)
         launchChatRoomActivity()
 
         // When
@@ -257,6 +262,10 @@ class ReplyBubbleTest : TopchatRoomTest() {
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)
+    }
+
+    private fun getCurrentRoomMetaData(msgId: String, chat: GetExistingChatPojo): RoomMetaData {
+        return existingChatMapper.generateRoomMetaData(msgId, chat)
     }
 
     // TODO: should_go_to_specific_bubble_when_msg_bubble_reply_time_nano_exist

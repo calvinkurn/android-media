@@ -252,19 +252,25 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         return label
     }
 
-    fun selectProductFromFavNumber(productId: String) {
+    fun selectProductById(productId: String) {
         val label = getLabelProductItem(productId)
+        var isSelected = false
         if (!::adapter.isInitialized) return
         for (i in adapter.data.indices) {
             if (adapter.data[i] is TelcoProduct) {
                 val itemProduct = adapter.data[i] as TelcoProduct
                 if (itemProduct.id == productId) {
                     listener.onClickProduct(itemProduct, i, label)
+                    isSelected = true
 
                     scrollToPosition(i)
                     break
                 }
             }
+        }
+
+        if (!isSelected) {
+            listener.onFailedAutoSelectById()
         }
     }
 
@@ -281,6 +287,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)
         fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int)
+        fun onFailedAutoSelectById()
     }
 
     companion object {

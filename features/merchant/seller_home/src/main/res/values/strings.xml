@@ -14,9 +14,10 @@
     <string name="sah_home">Home</string>
     <string name="sah_product">Produk</string>
     <string name="sah_chat">Chat</string>
-    <string name="sah_sale">Penjualan</string>
+    <string name="sah_som_list">Daftar Pesanan</string>
     <string name="sah_others">Lainnya</string>
 
+    <string name="sah_order">Pesanan</string>
     <string name="sah_product_list">Daftar Produk</string>
 
     <!--toolbar menu-->
@@ -38,12 +39,11 @@
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
     <string name="setting_menu_product_package">Kemasan Produk</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
-    <string name="setting_menu_set_activation_page_cod">Layanan Bayar di Tempat</string>
-    <string name="setting_menu_exclusive_feature">FITUR EKSKLUSIF</string>
+    <string name="setting_menu_set_activation_page_cod">Layanan bayar di tempat</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
-    <string name="setting_menu_self_profile">Profil Diri</string>
-    <string name="setting_menu_bank_account">Rekening Bank</string>
-    <string name="setting_menu_password">Kata Sandi</string>
+    <string name="setting_menu_self_profile">Ubah profil diri</string>
+    <string name="setting_menu_bank_account">Edit rekening bank</string>
+    <string name="setting_menu_password">Edit kata sandi</string>
     <string name="setting_menu_app_setting">Pengaturan aplikasi</string>
     <string name="setting_menu_chat_and_notification">Chat &amp; Notifikasi</string>
     <string name="setting_notification_troubleshooter">Push Notification Troubleshooter</string>
@@ -128,7 +128,6 @@
     <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
     <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
     <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
-    <string name="settings_shop_status_label">Status toko:</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
     <string name="settings_operational_hour_not_set">LIBUR</string>
@@ -145,4 +144,18 @@
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
+    
+    <!-- Social Media Links -->
+    <string name="sah_social_menu_title">Media Sosial Tokopedia Seller</string>
+    <string name="sah_social_title">Media sosial Tokopedia Seller</string>
+    <string name="sah_social_desc">Ikuti akun media sosial Tokopedia Seller agar kamu tidak ketinggalan info terkini, tips dan trik berjualan, dan promo menarik.</string>
+    <string name="sah_social_ig_title">\@tokopediaseller</string>
+    <string name="sah_social_ig_desc">Nikmati konten edukasi dan kabar terbaru untuk Seller.</string>
+    <string name="sah_social_youtube_fb_title">Tokopedia Seller</string>
+    <string name="sah_social_youtube_desc">Tonton berbagai video edukasi pengembangan bisnis untuk Seller.</string>
+    <string name="sah_social_fb_desc">Nikmati konten edukasi dan kabar terbaru untuk Seller.</string>
+    <string name="sah_social_fb_com_title">Keluarga Tokopedia</string>
+    <string name="sah_social_fb_com_desc">Gabung grup Keluarga Tokopedia untuk berbagi info dan pengalaman ke sesama Seller.</string>
+    <string name="sah_social_cta">Lihat</string>
+        
 </resources>

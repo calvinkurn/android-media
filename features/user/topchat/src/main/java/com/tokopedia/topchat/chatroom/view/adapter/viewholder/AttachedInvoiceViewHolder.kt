@@ -7,13 +7,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -40,7 +40,7 @@ class AttachedInvoiceViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -52,7 +52,7 @@ class AttachedInvoiceViewHolder(
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -149,7 +149,7 @@ class AttachedInvoiceViewHolder(
     private fun bindViewWithModel(uiModel: AttachInvoiceSentUiModel) {
         val labelType = getLabelType(uiModel.statusId)
 
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, uiModel.imageUrl, radiusInvoice)
+        thumbnail?.loadImageRounded(uiModel.imageUrl, radiusInvoice)
         status?.text = uiModel.status
         status?.setLabelType(labelType)
         invoiceId?.text = uiModel.invoiceId

@@ -93,7 +93,7 @@ class MvcTracker{
         trackerImpl.viewMVCCoupon(label,mapData,source)
     }
 
-    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, label: String = ""){
-        trackerImpl.mvcMultiShopCardClick(shopName,eventAction,source,userId,label)
+    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, productPosition:Int, label: String = ""){
+        trackerImpl.mvcMultiShopCardClick(shopName,eventAction,source,userId,productPosition,label)
     }
 }

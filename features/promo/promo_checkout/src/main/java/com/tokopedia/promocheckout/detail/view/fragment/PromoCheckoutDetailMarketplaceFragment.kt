@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
@@ -15,6 +13,11 @@ import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import javax.inject.Inject
 
+/**
+ * For Marketplace Promo Detail, only for showing detail, cannot apply/remove promo from this page
+ *
+ * Used by: feature/transaction/promo_checkout_marketplace @minion-bob
+ */
 class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment() {
     @Inject
     lateinit var promoCheckoutDetailPresenter: PromoCheckoutDetailPresenter

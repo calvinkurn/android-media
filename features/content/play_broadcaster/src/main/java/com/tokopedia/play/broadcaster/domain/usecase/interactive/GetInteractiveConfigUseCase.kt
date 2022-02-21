@@ -16,7 +16,7 @@ import javax.inject.Inject
 class GetInteractiveConfigUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
-) : RetryableGraphqlUseCase<GetInteractiveConfigResponse>(gqlRepository) {
+) : RetryableGraphqlUseCase<GetInteractiveConfigResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     private val query = """
         query GetInteractiveGetInteractiveConfig(${"$$PARAM_SHOP_ID"}: String!) {

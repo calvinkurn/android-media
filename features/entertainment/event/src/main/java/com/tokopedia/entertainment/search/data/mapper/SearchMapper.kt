@@ -75,7 +75,7 @@ object SearchMapper {
         return listViewHolder
     }
 
-    fun mappingLocationandKegiatantoSearchList(dataLocation: EventSearchLocationResponse.Data, text:String, resources: Resources): MutableList<SearchEventItem<*>>{
+    fun mappingLocationandKegiatantoSearchList(dataLocation: EventSearchLocationResponse.Data, text:String): MutableList<SearchEventItem<*>>{
         val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
         val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
         val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
@@ -93,7 +93,7 @@ object SearchMapper {
                     it.products.forEach{
                         listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
                     }
-                    if(listsKegiatan.size > 0) listViewHolder.add(SearchEventModel(listsKegiatan, resources))
+                    if(listsKegiatan.size > 0) listViewHolder.add(SearchEventModel(listsKegiatan))
                 }
             }
             if(it.eventLocationSearch.locations.isEmpty() && it.eventSearch.products.isEmpty()) {

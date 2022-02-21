@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="20dp">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tagLine"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
@@ -16,8 +16,10 @@
         android:gravity="center"
         android:textSize="10dp"
         android:textStyle="bold"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:visibility="gone"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,17 +29,18 @@
         tools:background="@drawable/bg_rounded_pink_label"
         />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pricePrefix"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_10"
+        android:textSize="10sp"
         android:textColor="@color/Unify_N700_68"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:visibility="gone"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
+        app:typographyType="small"
         app:layout_constraintStart_toEndOf="@+id/tagLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,17 +49,18 @@
         tools:visibility="gone"
         tools:text="mulai dari"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/strikeThroughPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="10dp"
         android:textColor="@color/Unify_N700_68"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:visibility="gone"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
+        app:typographyType="small"
         app:layout_constraintStart_toEndOf="@+id/pricePrefix"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -64,17 +68,19 @@
         tools:visibility="visible"
         tools:text="Rp3.425.000" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:gravity="center"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:textColor="@color/Unify_N700_68"
         android:textSize="12dp"
         android:textStyle="bold"
         android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

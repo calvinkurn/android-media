@@ -3,9 +3,14 @@ package com.tokopedia.shop.home.view.viewmodel
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DataValue
@@ -32,10 +37,9 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
-import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
@@ -93,6 +97,9 @@ class ShopHomeViewModelTest {
 
     @RelaxedMockK
     lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartBundleUseCase: AddToCartBundleUseCase
 
     @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
@@ -194,6 +201,7 @@ class ShopHomeViewModelTest {
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
                 addToCartOccUseCase,
+                addToCartBundleUseCase,
                 gqlCheckWishlistUseCaseProvider,
                 getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,
@@ -437,6 +445,86 @@ class ShopHomeViewModelTest {
     }
 
     @Test
+    fun `check whether onFinishAddToCart is called when call addBundleToCart success`() {
+        val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
+
+        val mockBundleProductList = listOf(
+                ProductDetail(
+                        productId = "111",
+                        quantity = 1,
+                        shopId = "123",
+                        customerId = "321"
+                )
+        )
+
+        val mockAtcBundleParams = AddToCartBundleRequestParams(
+                shopId = "123",
+                bundleId = "222",
+                bundleQty = 1,
+                selectedProductPdp = "0",
+                productDetails = mockBundleProductList
+        )
+
+        coEvery {
+            addToCartBundleUseCase.setParams(mockAtcBundleParams)
+            addToCartBundleUseCase.executeOnBackground()
+        } throws Throwable()
+        viewModel.addBundleToCart(
+                shopId = "123",
+                userId = "321",
+                bundleId = "222",
+                productDetails = listOf(ShopHomeBundleProductUiModel()),
+                {},
+                onErrorAddToCart,
+                bundleQuantity = 1
+        )
+
+        verify { onErrorAddToCart.invoke(any()) }
+    }
+
+    @Test
+    fun `check whether onErrorAddToCart is called when call addBundleToCart throw exception`() {
+        val onFinishAddToCart: (AddToCartBundleModel) -> Unit = mockk(relaxed = true)
+
+        val mockBundleProductList = listOf(
+                ProductDetail(
+                        productId = "111",
+                        quantity = 1,
+                        shopId = "123",
+                        customerId = "321"
+                )
+        )
+
+        val mockAtcBundleParams = AddToCartBundleRequestParams(
+                shopId = "123",
+                bundleId = "222",
+                bundleQty = 1,
+                selectedProductPdp = "0",
+                productDetails = mockBundleProductList
+        )
+
+        coEvery {
+            addToCartBundleUseCase.setParams(mockAtcBundleParams)
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(
+                status = "OK",
+                errorMessage = "",
+                addToCartBundleDataModel = AddToCartBundleDataModel(success = 1)
+        )
+        viewModel.addBundleToCart(
+                shopId = "123",
+                userId = "321",
+                bundleId = "222",
+                productDetails = listOf(ShopHomeBundleProductUiModel()),
+                onFinishAddToCart = onFinishAddToCart,
+                {},
+                bundleQuantity = 1
+        )
+
+        verify { onFinishAddToCart.invoke(any()) }
+    }
+
+    @Test
     fun `check whether getShopProductUseCase clearCache is called`() {
         viewModel.clearGetShopProductUseCase()
         verify { getShopProductUseCase.clearCache() }
@@ -548,6 +636,24 @@ class ShopHomeViewModelTest {
     }
 
     @Test
+    fun `check whether campaignFlashSaleRemindMeStatusData post Success value`() {
+        val mockCampaignId ="12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } returns GetCampaignNotifyMeModel()
+        viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
+        coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.campaignFlashSaleStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether campaignFlashSaleRemindMeStatusData value is null when error`() {
+        val mockCampaignId ="12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
+        coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.campaignFlashSaleStatusData.value == null)
+    }
+
+    @Test
     fun `check whether checkCampaignNplRemindMeStatusData post Success value`() {
         val mockAction = "action"
         coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
@@ -563,6 +669,24 @@ class ShopHomeViewModelTest {
         viewModel.clickRemindMe(mockCampaignId, mockAction)
         coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
         assert(viewModel.checkCampaignNplRemindMeStatusData.value is Fail)
+    }
+
+    @Test
+    fun `check whether checkCampaignFlashSaleRemindMeStatusData post Success value`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
+        viewModel.clickFlashSaleReminder(mockCampaignId, mockAction)
+        coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.checkCampaignFlashSaleRemindMeStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether checkCampaignFlashSaleRemindMeStatusData post Fail value`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.clickFlashSaleReminder(mockCampaignId, mockAction)
+        coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.checkCampaignFlashSaleRemindMeStatusData.value is Fail)
     }
 
     @Test
@@ -955,6 +1079,7 @@ class ShopHomeViewModelTest {
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming,
                                 false,
+                                "",
                                 ""
                         )
                 )
@@ -1042,6 +1167,7 @@ class ShopHomeViewModelTest {
                     PlayWidgetShareUiModel("", false),
                     "",
                     false,
+                    "",
                     ""
                 )
             )
@@ -1109,6 +1235,7 @@ class ShopHomeViewModelTest {
                                 PlayWidgetShareUiModel("", false),
                                 "",
                                 false,
+                                "",
                                 ""
                         )
                 )

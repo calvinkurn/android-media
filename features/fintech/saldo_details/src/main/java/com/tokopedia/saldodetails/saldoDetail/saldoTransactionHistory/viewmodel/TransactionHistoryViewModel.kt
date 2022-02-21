@@ -59,7 +59,7 @@ class TransactionHistoryViewModel @Inject constructor(
         }.getNextPage()
     }
 
-    fun refreshAllTabsData(dateFrom: Date, dateTo: Date, isPenjualanTabActive : Boolean) {
+    fun refreshAllTabsData(dateFrom: Date, dateTo: Date) {
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         clearPrevData()
@@ -75,13 +75,11 @@ class TransactionHistoryViewModel @Inject constructor(
                 onAllTabsDataError(it)
             }, dateFrom, dateTo
         )
-        if(isPenjualanTabActive) {
-            loadSaleTransaction(1)
-        }
+        loadSaleTransaction(1)
     }
 
-    fun retryAllTabLoading(isPenjualanTabActive : Boolean) {
-        refreshAllTabsData(dateFrom, dateTo, isPenjualanTabActive)
+    fun retryAllTabLoading() {
+        refreshAllTabsData(dateFrom, dateTo)
     }
 
     private fun clearPrevData() {

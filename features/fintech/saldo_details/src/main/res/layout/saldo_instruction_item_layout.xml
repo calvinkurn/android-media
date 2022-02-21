@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/unify_space_12">
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/instructionIcon"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:icon_name="REFUND"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        app:icon_color_light_enable="@color/Unify_NN700"
+        app:icon_color_night_enable="@color/Unify_NN700"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/saldoInstructionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/unify_space_12"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"/>
+
+</LinearLayout>

@@ -15,10 +15,7 @@ import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
-import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
-import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
-import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
-import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.voucherlist.domain.model.*
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
@@ -34,15 +31,31 @@ import javax.inject.Inject
  */
 
 class VoucherListViewModel @Inject constructor(
-    private val getVoucherListUseCase: GetVoucherListUseCase,
-    private val getNotStartedVoucherListUseCase: GetVoucherListUseCase,
-    private val cancelVoucherUseCase: CancelVoucherUseCase,
-    private val shopBasicDataUseCase: ShopBasicDataUseCase,
-    private val voucherDetailUseCase: VoucherDetailUseCase,
-    private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
-    private val initiateVoucherUseCase: InitiateVoucherUseCase,
-    private val dispatchers: CoroutineDispatchers
+        private val getVoucherListUseCase: GetVoucherListUseCase,
+        private val getNotStartedVoucherListUseCase: GetVoucherListUseCase,
+        private val cancelVoucherUseCase: CancelVoucherUseCase,
+        private val shopBasicDataUseCase: ShopBasicDataUseCase,
+        private val voucherDetailUseCase: VoucherDetailUseCase,
+        private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
+        private val initiateVoucherUseCase: InitiateVoucherUseCase,
+        private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
+
+    // voucher filter properties
+    @VoucherTypeConst
+    var voucherType: Int? = null
+    var voucherTarget: List<Int>? = null
+    var isSellerCreated: Boolean? = null
+    var isSubsidy: Boolean? = null
+    var isVps: Boolean? = null
+    var keyword: String? = null
+    var targetBuyer: String? = null
+
+    // voucher sort properties
+    @VoucherSort
+    var voucherSort: String = VoucherSort.FINISH_TIME
+    var isInverted: Boolean = false
+    var isSortApplied: Boolean = false
 
     var isEligibleToCreateVoucher = false
     var currentPage: Int = 1
@@ -54,14 +67,6 @@ class VoucherListViewModel @Inject constructor(
     private val bcTickerExpirationPeriod = 3 // months
     private val isUpdate = false
 
-    private val notStartedVoucherRequestParam by lazy {
-        VoucherListParam.createParam(status = VoucherStatus.NOT_STARTED)
-    }
-
-    private val ongoingVoucherRequestParam by lazy {
-        VoucherListParam.createParam(status = VoucherStatus.ONGOING)
-    }
-
     private val _keywordLiveData = MutableLiveData<String>()
 
     private val _cancelledVoucherLiveData = MutableLiveData<Int>()
@@ -71,14 +76,6 @@ class VoucherListViewModel @Inject constructor(
     private val _voucherList = MutableLiveData<Result<List<VoucherUiModel>>>()
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
         get() = _voucherList
-
-    private val _localVoucherListLiveData = MediatorLiveData<List<VoucherUiModel>>().apply {
-        addSource(_keywordLiveData) { keyword ->
-            searchVoucherByKeyword(keyword)
-        }
-    }
-    val localVoucherListLiveData: LiveData<List<VoucherUiModel>>
-        get() = _localVoucherListLiveData
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
 
@@ -146,18 +143,43 @@ class VoucherListViewModel @Inject constructor(
     private val createVoucherEligibilityLiveData = MutableLiveData<Result<InitiateVoucherUiModel>>()
     val createVoucherEligibility: LiveData<Result<InitiateVoucherUiModel>> get() = createVoucherEligibilityLiveData
 
-    fun getActiveVoucherList(isFirstTime: Boolean) {
+    fun getActiveVoucherList(
+            isFirstTime: Boolean,
+            keyword: String? = null,
+            @VoucherTypeConst type: Int? = null,
+            target: List<Int>? = null,
+            sourceRequestParams: Pair<Int, String>,
+            targetBuyer: String? = null) {
         launchCatchError(block = {
             if (isFirstTime) {
                 _shopBasicLiveData.value = Success(withContext(dispatchers.io) {
                     shopBasicDataUseCase.executeOnBackground()
                 })
             }
+            val ongoingVoucherRequestParam = VoucherListParam.createParam(
+                    status = VoucherStatus.ONGOING,
+                    type = type,
+                    targetList = target,
+                    includeSubsidy = sourceRequestParams.first,
+                    isVps = sourceRequestParams.second,
+                    voucherName = keyword,
+                    targetBuyer = targetBuyer
+            )
+            val notStartedVoucherRequestParam = VoucherListParam.createParam(
+                    status = VoucherStatus.NOT_STARTED,
+                    type = type,
+                    targetList = target,
+                    includeSubsidy = sourceRequestParams.first,
+                    isVps = sourceRequestParams.second,
+                    voucherName = keyword,
+                    targetBuyer = targetBuyer
+            )
             _voucherList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
                 getNotStartedVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
                 val ongoingVoucherList = async { getVoucherListUseCase.executeOnBackground() }
                 val notStartedVoucherList = async { getNotStartedVoucherListUseCase.executeOnBackground() }
+                _fullVoucherListLiveData.value?.addAll(ongoingVoucherList.await() + notStartedVoucherList.await())
                 ongoingVoucherList.await() + notStartedVoucherList.await()
             })
         }, onError = {
@@ -166,19 +188,26 @@ class VoucherListViewModel @Inject constructor(
     }
 
     fun getVoucherListHistory(@VoucherTypeConst type: Int?,
+                              keyword: String? = null,
                               targetList: List<Int>?,
                               @VoucherSort sort: String?,
                               page: Int,
-                              isInverted: Boolean) {
+                              isInverted: Boolean,
+                              sourceRequestParams: Pair<Int, String>,
+                              targetBuyer: String?) {
         launchCatchError(block = {
             getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(
                     VoucherListParam.createParam(
                             status = VoucherStatus.HISTORY,
+                            voucherName = keyword,
                             type = type,
                             targetList = targetList,
                             sort = sort,
                             page = page,
-                            isInverted = isInverted)
+                            isInverted = isInverted,
+                            includeSubsidy = sourceRequestParams.first,
+                            isVps = sourceRequestParams.second,
+                            targetBuyer = targetBuyer)
             )
             withContext(dispatchers.io) {
                 val voucherList = getVoucherListUseCase.executeOnBackground()
@@ -210,10 +239,32 @@ class VoucherListViewModel @Inject constructor(
         _successCreatedVoucherIdLiveData.value = voucherId
     }
 
-    private fun searchVoucherByKeyword(keyword: String) {
-        _localVoucherListLiveData.value = _fullVoucherListLiveData.value?.filter {
-            it.name.contains(keyword, true)
-        } ?: listOf()
+    fun searchVoucherByKeyword(
+            isActiveVoucher: Boolean,
+            keyword: String?,
+            voucherType: Int? = this.voucherType,
+            voucherTarget: List<Int>? = this.voucherTarget,
+            voucherSort: String = this.voucherSort,
+            sourceRequestParams: Pair<Int, String>,
+            targetBuyer: String?) {
+        if (isActiveVoucher) {
+            getActiveVoucherList(
+                    isFirstTime = false,
+                    keyword = keyword,
+                    type = voucherType,
+                    target = voucherTarget,
+                    sourceRequestParams = sourceRequestParams,
+                    targetBuyer = targetBuyer)
+        } else {
+            getVoucherListHistory(
+                    type = voucherType,
+                    targetList = voucherTarget,
+                    sort = voucherSort,
+                    page = currentPage,
+                    isInverted = isInverted,
+                    sourceRequestParams = sourceRequestParams, targetBuyer = targetBuyer
+            )
+        }
     }
 
     fun getBroadCastMetaData() {
@@ -258,7 +309,7 @@ class VoucherListViewModel @Inject constructor(
         this.isSuccessDialogDisplayed = isDisplayed
     }
 
-    fun isSuccessDialogDisplayed() : Boolean {
+    fun isSuccessDialogDisplayed(): Boolean {
         return isSuccessDialogDisplayed
     }
 
@@ -271,5 +322,45 @@ class VoucherListViewModel @Inject constructor(
         // < 0 => current date is before the expiration date
         // > 0 => current date is after the expiration date
         return Date() >= calendar.time
+    }
+
+    fun getVoucherSourceRequestParams(
+            isSellerCreated: Boolean? = null,
+            isVps: Boolean? = null,
+            isSubsidy: Boolean? = null): Pair<Int, String> {
+        return when {
+            // seller only
+            isSellerCreated == true && isVps == false && isSubsidy == false -> {
+                Pair(VoucherSubsidy.SELLER, VoucherVps.NON_VPS)
+            }
+            // vps only
+            isSellerCreated == false && isVps == true && isSubsidy == false -> {
+                Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.VPS)
+            }
+            // subsidy only
+            isSellerCreated == false && isVps == false && isSubsidy == true -> {
+                Pair(VoucherSubsidy.TOKOPEDIA, VoucherVps.NON_VPS)
+            }
+            // seller vps subsidy
+            isSellerCreated == true && isVps == true && isSubsidy == true -> {
+                Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            }
+            // seller vps
+            isSellerCreated == true && isVps == true && isSubsidy == false -> {
+                Pair(VoucherSubsidy.SELLER, VoucherVps.ALL)
+            }
+            // seller subsidy
+            isSellerCreated == true && isVps == false && isSubsidy == false -> {
+                Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.NON_VPS)
+            }
+            // vps subsidy
+            isSellerCreated == false && isVps == true && isSubsidy == false -> {
+                Pair(VoucherSubsidy.TOKOPEDIA, VoucherVps.VPS)
+            }
+            else -> {
+                // all
+                Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            }
+        }
     }
 }

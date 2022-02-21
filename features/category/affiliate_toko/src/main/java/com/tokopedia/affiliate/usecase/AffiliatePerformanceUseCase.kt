@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.AffiliatePerformanceData
+import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Performance
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
@@ -22,6 +22,7 @@ class AffiliatePerformanceUseCase @Inject constructor(
                 createRequestParams(page,limit)
         )
     }
+
 
     companion object {
         private const val PARAM_PAGE = "page"

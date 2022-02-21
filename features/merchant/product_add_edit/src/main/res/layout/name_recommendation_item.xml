@@ -4,7 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_34"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/name_recommendation_view"

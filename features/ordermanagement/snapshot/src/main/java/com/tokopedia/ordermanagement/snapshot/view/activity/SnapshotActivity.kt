@@ -3,6 +3,7 @@ package com.tokopedia.ordermanagement.snapshot.view.activity
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
@@ -10,6 +11,19 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.ordermanagement.snapshot.view.fragment.SnapshotFragment
 
 class SnapshotActivity : BaseSimpleActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupBackground()
+    }
+
+    private fun setupBackground() {
+        window?.run {
+            val backgroundColor = MethodChecker.getColor(this@SnapshotActivity, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            decorView.setBackgroundColor(backgroundColor)
+            statusBarColor = backgroundColor
+        }
+    }
 
     override fun getNewFragment(): SnapshotFragment {
         val bundle = Bundle()

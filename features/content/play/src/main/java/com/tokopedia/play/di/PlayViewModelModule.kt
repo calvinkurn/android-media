@@ -21,11 +21,6 @@ abstract class PlayViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PlayViewModel::class)
-    abstract fun getPlayViewModel(viewModel: PlayViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(PlayInteractionViewModel::class)
     abstract fun getPlayInteractionViewModel(viewModel: PlayInteractionViewModel): ViewModel
 
@@ -33,4 +28,9 @@ abstract class PlayViewModelModule {
     @IntoMap
     @ViewModelKey(PlayBottomSheetViewModel::class)
     abstract fun getPlayVariantViewModel(viewModel: PlayBottomSheetViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayUpcomingViewModel::class)
+    abstract fun getPlayUpcomingViewModel(viewModel: PlayUpcomingViewModel): ViewModel
 }

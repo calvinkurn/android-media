@@ -25,7 +25,6 @@ public class RemoveWishListUseCase {
     public RemoveWishListUseCase(Context context) {
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
-        GraphqlClient.init(context);
     }
 
     public void createObservable(String productId, String userId,

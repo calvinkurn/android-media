@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.couponlisting
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -286,12 +285,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val code = data!!.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
-        if (requestCode == REQUEST_CODE_STACKED_ADAPTER) {
-            mAdapter.couponCodeVisible(code, false)
-        } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER) {
-            mAdapter.couponStackedVisible()
-        }
+            val code = data?.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
+            if (requestCode == REQUEST_CODE_STACKED_ADAPTER && resultCode == Activity.RESULT_OK) {
+                mAdapter.couponCodeVisible(code, false)
+            } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER && resultCode == Activity.RESULT_OK) {
+                mAdapter.couponStackedVisible()
+            }
     }
 
     companion object {

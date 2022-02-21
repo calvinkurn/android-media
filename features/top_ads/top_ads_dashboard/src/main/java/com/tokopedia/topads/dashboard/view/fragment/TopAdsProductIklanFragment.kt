@@ -148,9 +148,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        activity?.let {
-            GraphqlClient.init(it)
-        }
         autoAdsAdapter = AutoAdsItemsListAdapter(AutoAdsItemsAdapterTypeFactoryImpl())
 
         super.onCreate(savedInstanceState)

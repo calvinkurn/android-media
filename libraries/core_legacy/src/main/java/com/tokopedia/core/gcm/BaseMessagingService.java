@@ -20,7 +20,6 @@ import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -65,13 +64,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             messageMap.put("from", remoteMessage.getFrom());
             messageMap.put("data", data.toString());
             ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
-        } else if (MoengageInteractor.INSTANCE.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
-            appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "MoengageNotification");
-            messageMap.put("from", remoteMessage.getFrom());
-            messageMap.put("data", data.toString());
-            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
         } else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
             appNotificationReceiver.onCampaignManagementNotificationReceived(remoteMessage);
             Map<String, String> messageMap = new HashMap<>();
@@ -82,7 +74,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         } else {
             AnalyticsLog.logNotification(mContext, userSession.getUserId(), remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
-            logTokopediaNotification(remoteMessage);
         }
         logOnMessageReceived(data);
 
@@ -151,18 +142,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         Intent intent = new Intent(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA);
         if (localBroadcastManager != null)
             localBroadcastManager.sendBroadcast(intent);
-    }
-
-    private void logTokopediaNotification(RemoteMessage remoteMessage) {
-        // Remove sensitive summary content for logging
-        Bundle bundleTemp = convertMap(remoteMessage);
-        bundleTemp.remove("summary");
-        bundleTemp.remove("desc");
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", "TokopediaNotification");
-        messageMap.put("from", remoteMessage.getFrom());
-        messageMap.put("data", bundleTemp.toString());
-        ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
     }
 
     public static IAppNotificationReceiver createInstance(Context context) {

@@ -145,6 +145,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightBookingParam.departureDate = data.cartData.flight.journeys[0].departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.YYYY_MM_DD)
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
+                    flightBookingParam.isMandatoryIdentificationNumber = data.cartData.flight.mandatoryIdentificationNumber
                     flightDetailModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceModel)
                     if (flightPassengersData.value?.isEmpty() != false && !isRefreshCart) {
                         _flightPromoResult.postValue(FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher))
@@ -391,6 +392,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         it.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                     } ?: ""
                 }
+                flightVerifyPassenger.identificationNumber = passenger.identificationNumber
 
                 for (mealMeta in passenger.flightBookingMealMetaViewModels) {
                     for (meal in mealMeta.amenities) {
@@ -765,6 +767,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getSearchParam(): FlightSearchPassDataModel = flightBookingParam.searchParam
     fun getFlightPriceModel(): FlightPriceModel = flightBookingParam.flightPriceModel
     fun getMandatoryDOB(): Boolean = flightBookingParam.isMandatoryDob
+    fun getMandatoryIdentificationNumber(): Boolean = flightBookingParam.isMandatoryIdentificationNumber
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId
     fun getDepartureTerm(): String = flightBookingParam.departureTerm

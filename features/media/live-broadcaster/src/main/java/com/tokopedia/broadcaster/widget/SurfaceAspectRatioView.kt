@@ -7,17 +7,17 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.broadcaster.R
+import kotlin.math.abs
 
 class SurfaceAspectRatioView : FrameLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     val surfaceHolder: SurfaceHolder
         get() = mSurfaceView.holder
 
     private var mTargetAspect = -1.0 // initially use default window size
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
     private var mSurfaceView: SurfaceView
 
     init {
@@ -27,21 +27,9 @@ class SurfaceAspectRatioView : FrameLayout {
 
     fun setCallback(callback: Callback) {
         mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback{
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                callback.onSurfaceCreated()
-            }
-
-            override fun surfaceChanged(
-                holder: SurfaceHolder,
-                format: Int,
-                width: Int,
-                height: Int
-            ) {
-            }
-
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                callback.onSurfaceDestroyed()
-            }
+            override fun surfaceCreated(holder: SurfaceHolder) = callback.onSurfaceCreated()
+            override fun surfaceDestroyed(holder: SurfaceHolder) = callback.onSurfaceDestroyed()
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
         })
     }
 
@@ -56,13 +44,16 @@ class SurfaceAspectRatioView : FrameLayout {
             var initialHeight = MeasureSpec.getSize(modifyHeightMeasureSpec)
 
             // factor the padding out
-            val horizPadding = paddingLeft + paddingRight
-            val vertPadding = paddingTop + paddingBottom
-            initialWidth -= horizPadding
-            initialHeight -= vertPadding
+            val horizontalPadding = paddingLeft + paddingRight
+            val verticalPadding = paddingTop + paddingBottom
+
+            initialWidth -= horizontalPadding
+            initialHeight -= verticalPadding
+
             val viewAspectRatio = initialWidth.toDouble() / initialHeight
             val aspectDiff = mTargetAspect / viewAspectRatio - 1
-            if (Math.abs(aspectDiff) < 0.01) {
+
+            if (abs(aspectDiff) < THRESHOLD_RATIO) {
                 // We're very close already.  We don't want to risk switching from e.g. non-scaled
                 // 1280x720 to scaled 1280x719 because of some floating-point round-off error,
                 // so if we're really close just leave it alone.
@@ -74,12 +65,13 @@ class SurfaceAspectRatioView : FrameLayout {
                     // limited by short height; restrict width
                     initialWidth = (initialHeight * mTargetAspect).toInt()
                 }
-                initialWidth += horizPadding
-                initialHeight += vertPadding
+                initialWidth += horizontalPadding
+                initialHeight += verticalPadding
                 modifyWidthMeasureSpec = MeasureSpec.makeMeasureSpec(initialWidth, MeasureSpec.EXACTLY)
                 modifyHeightMeasureSpec = MeasureSpec.makeMeasureSpec(initialHeight, MeasureSpec.EXACTLY)
             }
         }
+
         super.onMeasure(modifyWidthMeasureSpec, modifyHeightMeasureSpec)
     }
 
@@ -87,4 +79,9 @@ class SurfaceAspectRatioView : FrameLayout {
         fun onSurfaceCreated()
         fun onSurfaceDestroyed()
     }
+
+    companion object {
+        private const val THRESHOLD_RATIO = 0.01
+    }
+
 }

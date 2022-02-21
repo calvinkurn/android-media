@@ -34,21 +34,20 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
+    implementation rootProject.ext.miscDependencies.javaxInject
+    implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
-    implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.miscDependencies.dagger
+
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

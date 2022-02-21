@@ -1,11 +1,12 @@
 package com.tokopedia.tokopedianow.common.model
 
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 
 data class TokoNowChooseAddressWidgetUiModel(
         val id: String = ""
-) : TokoNowLayoutUiModel(id)  {
-    override fun type(typeFactory: TokoNowTypeFactory): Int {
+) : Visitable<TokoNowChooseAddressWidgetTypeFactory>  {
+    override fun type(typeFactory: TokoNowChooseAddressWidgetTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

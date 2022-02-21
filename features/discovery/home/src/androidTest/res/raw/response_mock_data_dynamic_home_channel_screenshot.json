@@ -1325,7 +1325,7 @@
                     "persona": "Fashion Muslim",
                     "brand_id": "",
                     "category_persona": "1889,1901,1904,1771,1921,1902,69,500,425,1764",
-                    "name": "Android Test - List carousel",
+                    "name": "Android Test List carousel",
                     "layout": "list_carousel",
                     "type": "inspiration",
                     "showPromoBadge": true,
@@ -1333,9 +1333,10 @@
                     "perso_type": 1,
                     "campaignCode": "",
                     "has_close_button": true,
+                    "pageName": "page_name",
                     "header": {
                         "id": 25833,
-                        "name": "Android Test - List carousel",
+                        "name": "Android Test List Carousel",
                         "subtitle": "",
                         "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
                         "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
@@ -1348,6 +1349,62 @@
                     "grids": [
                         {
                             "id": 45873377,
+                            "back_color": "",
+                            "recommendationType": "recommendation_type",
+                            "name": "Microsoft Surface Pro 4 Cover / Keyboard Fingerprint Original Garansi",
+                            "url": "https://www.tokopedia.com/chocoapple/microsoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi?src=topads",
+                            "applink": "tokopedia://product/45873377",
+                            "price": "Rp2.350.000",
+                            "slashedPrice": "Rp2.350.000",
+                            "discount": "99%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/16/5138814/5138814_bee96f1a-3622-44e1-ab19-13dabed77231_1132_1132",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "abc",
+                            "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJFH_n7Hp1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUstho_jNHAKf6ArObm-srcHi6srOHmFiy3zwrfo5rM1i6sUdHZd7HsJFosr7H_176A1Rbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2o8jOE_92o8jOE_92o8jOE_92oH1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32g8Jhke92vzcDa_uzC8jYJqp-ouJVE_jo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_u6zJOE_92u8u22HI2g8MxW_Vzz8V2WZ9zvucPR3BHhqV2Wz_zo8jBN_OP6QJNJ33BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZMgozsxR3I2mgjNkz9x6qMoE3AJdPOxEe3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9BvzJuO_jz-8JOJ3_o6zJ1h_jzSH1NNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk_9Bvepep_jzSoJNkyRxozVBd_92C81BXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-By1-p69V_Qjrhu_2C1JJNH3-cPszMb1BqQsVOZRV2H3PdQBueP_uR8ux5gBzOPRJWoO-NyBjdH7gIq32wZ9nO1MN2qJuZPMtO61268u-W_MhE_3Voqp-OZjWj8A-i3sjagsuzoOKRrArhz_rh814pPVCdHVzzufh03sz_gpCbH3gF_cONe1zf_OueP7ddHfV2qJKa6_yOgiUDUMVDgaUEUSotQRCwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2Qos1DHsrfbAHFopuPbm-X9foxQMz2gcV7guYxgIHi6syObm-xyBY7g9o7Ustig9xF9f-DQfYW9fh2Q3B79fBWrI-BrRo2QfNwgMBDPcuaUiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7H_jNHR7?sid=eaBs9qSnG1U%3AAPA91bFv4f-IZn1uKqi1gxnUPu5wyXofTuwq-7RybY83FGij_Ip5RnihERvj59JNyRmNlzMaMk2uJKdx2bZ92f5Q7X7p71E71yO3tPx0TQWlkZ4Sg0K1fpLmyADvOUPwN83aihH2965f&r=https%3A%2F%2Fwww.tokopedia.com%2Fchocoapple%2Fmicrosoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi%3Fsrc%3Dtopads&src=recom_widget_homepage&t=android&management_type=1&page=1&dv=android-3.92",
+                            "impression": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syhHAJFoAHObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_1N6_ndosKRoZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpr5H_y5o_Jp6AKhom4OH_Hd6AJ79f-Bg_jfgsVxb_HfHsUWoAzBHZOxysJNb_JpgcVig3eRopUpHu4hH_Ha9pJhHpUibm-xgVYpyfYagZUEHsKhbseaH_nfopeho_edo_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j78jOE_92o8jOE_92o8jOE_92o8j7hZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBBd_c2C8jYJqp-ouJVE_7z0HjO1e926e7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1NJ_92o8BuN3MjF8BBEqcOHuVVd3MO-PJY1gRPq1pVt3MOVoJOEZ9Bvu7ND_jzgq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGgjOc6IPy8j-M_M2V8JNkyR2yH_xR3I2Cq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81YJz9u6zJBd_1zgH7NJz_V6zcrh_SB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32o81YAoAo6zcr7_M2s8JOJ39xo8jVNZ3dFvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMuxeSHNruoXzpVu6jVee_jhyjgfocyWZu2XH9ubr3jhgRxXuuCOo9PN3cYMuIuRrZ7R1SBi3_KpzjP2qBY-rAuZQMBtzu-fqs1NZjNN1MO6QI2oy1O0HSuGZfzdHM-q6_-MouJR3APFopVVopVN_po71IKFuVV9QcWqoVoSHJDhgSCHQ9BCzIgvuuCR_sKpy3BtZAUNosuMUiFiy3hSUstirfx5rVYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-B8ICwyMh5QfOwQcBWq9zwq3OFrMuprfB5QBYMq3h7g9Uibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAJN6_oY?page=1&dv=android-3.92&src=recom_widget_homepage&sid=eaBs9qSnG1U%3AAPA91bFv4f-IZn1uKqi1gxnUPu5wyXofTuwq-7RybY83FGij_Ip5RnihERvj59JNyRmNlzMaMk2uJKdx2bZ92f5Q7X7p71E71yO3tPx0TQWlkZ4Sg0K1fpLmyADvOUPwN83aihH2965f&management_type=1&t=android",
+                            "cashback": "",
+                            "isTopads": true,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 611673
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen"
+                                },
+                                {
+                                    "title": "Bisa Tukar Tambah",
+                                    "position": "offers",
+                                    "type": "lightGrey"
+                                },
+                                {
+                                    "title": "Cashback",
+                                    "position": "price",
+                                    "type": "lightGreen"
+                                }
+                            ],
+                            "has_buy_button": true,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 45873377,
+                            "recommendationType": "recommendation_type",
                             "back_color": "",
                             "name": "Microsoft Surface Pro 4 Cover / Keyboard Fingerprint Original Garansi",
                             "url": "https://www.tokopedia.com/chocoapple/microsoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi?src=topads",
@@ -1403,7 +1460,7 @@
                     ],
                     "banner": {
                         "id": 2313,
-                        "title": "Android Test - List carousel",
+                        "title": "Android Test List Carousel",
                         "description": "",
                         "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
                         "back_color": "red",
@@ -3415,6 +3472,119 @@
                             },
                             "textColor": "",
                             "badges": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
+                    "id": 36300,
+                    "dividerType": 0,
+                    "group_id": 120,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "SAMPLE HOME TODO",
+                    "layout": "home_todo",
+                    "type": "inspiration",
+                    "pageName": "",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": true,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 1,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": [
+
+                        ]
+                    },
+                    "header": {
+                        "id": 8501,
+                        "name": "HEADER SAMPLE HTDW",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "",
+                            "id": 23841,
+                            "back_color": "#003b6b",
+                            "name": "",
+                            "url": "https://www.tokopedia.com",
+                            "applink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fwww.tokopedia.com\u0026source\u003dhomepage.dg_bills.0.36300",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/phZFtb/2021/8/25/79b00498-f638-47ec-9536-1b92f63a613c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "attribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [
+
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": [
+
+                            ]
                         }
                     ],
                     "banner": {

@@ -5,16 +5,14 @@
     android:id="@+id/general_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingBottom="16dp"
     tools:ignore="RtlSymmetry">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/info_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_general_info_desc" />
 

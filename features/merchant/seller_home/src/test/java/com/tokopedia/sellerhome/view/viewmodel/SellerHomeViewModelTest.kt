@@ -9,6 +9,7 @@ import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.utils.observeAwaitValue
+import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -122,12 +123,29 @@ class SellerHomeViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
+    private lateinit var sellerHomeLayoutHelper: SellerHomeLayoutHelper
     private lateinit var viewModel: SellerHomeViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        sellerHomeLayoutHelper = SellerHomeLayoutHelper(
+            { getCardDataUseCase },
+            { getLineGraphDataUseCase },
+            { getProgressDataUseCase },
+            { getPostDataUseCase },
+            { getCarouselDataUseCase },
+            { getTableDataUseCase },
+            { getPieChartDataUseCase },
+            { getBarChartDataUseCase },
+            { getMultiLineGraphUseCase },
+            { getAnnouncementDataUseCase },
+            { getRecommendationDataUseCase },
+            { getMilestoneDataUseCase },
+            coroutineTestRule.dispatchers
+        )
 
         viewModel = SellerHomeViewModel(
             { userSession },
@@ -148,6 +166,7 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
+            { sellerHomeLayoutHelper },
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -228,9 +247,11 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout()
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
+
+        verify {
             userSession.shopId
         }
+
         coVerify {
             getLayoutUseCase.executeOnBackground()
         }
@@ -240,10 +261,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get widget layout and set height as 0f, should also success`() = runBlocking {
-
         val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
         val shopId = "123456"
         val page = "seller-home"
+        val widgetHeightInDp = 0f
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
@@ -270,14 +291,21 @@ class SellerHomeViewModelTest {
         } returns shopId
 
         every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns false
+
+        every {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
         } returns true
+
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
-        coEvery {
+
+        every {
             getLayoutUseCase.isFirstLoad
         } returns true
+
         everyGetWidgetData_shouldSuccess(
             cardData,
             lineGraphDataUiModel,
@@ -293,13 +321,15 @@ class SellerHomeViewModelTest {
             milestoneDataUiModel
         )
 
-        viewModel.getWidgetLayout(0f)
+        viewModel.getWidgetLayout(widgetHeightInDp)
 
-        coVerify {
+        verify {
             userSession.shopId
         }
+
         coVerify {
             getLayoutUseCase.executeOnBackground()
+            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp)
         }
 
         val successLayoutList = layoutList.map {
@@ -330,11 +360,10 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `when get widget layout and height param is not null, should also success`() = runBlocking {
-
+    fun `given null widget height, should also success`() = coroutineTestRule.runBlockingTest {
         val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
-        val shopId = "123456"
-        val page = "seller-home"
+        val isFirstLoad = true
+        val cachingEnabled = true
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
@@ -354,21 +383,20 @@ class SellerHomeViewModelTest {
         val milestoneDataUiModel =
             MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
-
         every {
-            userSession.shopId
-        } returns shopId
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns true
 
         every {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns cachingEnabled
+
         coEvery {
             getLayoutUseCase.isFirstLoad
-        } returns true
+        } returns isFirstLoad
+
+        onGetLayoutFlow_thenReturn(layoutList)
+
         everyGetWidgetData_shouldSuccess(
             cardData,
             lineGraphDataUiModel,
@@ -384,13 +412,11 @@ class SellerHomeViewModelTest {
             milestoneDataUiModel
         )
 
-        viewModel.getWidgetLayout(5000f)
+        viewModel.getWidgetLayout(null)
 
         coVerify {
-            userSession.shopId
-        }
-        coVerify {
-            getLayoutUseCase.executeOnBackground()
+            getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+            getLayoutUseCase.getResultFlow()
         }
 
         val successLayoutList = layoutList.map {
@@ -421,9 +447,365 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `when get widget layout and height param is not null and is new caching enabled, should also success`() =
+    fun `given null widget height and second load, should also success`() {
+        coroutineTestRule.runBlockingTest {
+            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val isFirstLoad = false
+            val cachingEnabled = true
+
+            val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+            val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+            val progressDataUiModel =
+                ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+            val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+            val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+            val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+            val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+            val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+            val multiLineGraphDataUiModel =
+                MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+            val announcementDataUiModel =
+                AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+            val recommendationDataUiModel =
+                RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val milestoneDataUiModel =
+                MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns cachingEnabled
+
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            onGetLayoutFlow_thenReturn(layoutList)
+
+            everyGetWidgetData_shouldSuccess(
+                cardData,
+                lineGraphDataUiModel,
+                progressDataUiModel,
+                postListDataUiModel,
+                carouselDataUiModel,
+                tableDataUiModel,
+                pieChartDataUiModel,
+                barChartDataUiModel,
+                multiLineGraphDataUiModel,
+                announcementDataUiModel,
+                recommendationDataUiModel,
+                milestoneDataUiModel
+            )
+
+            viewModel.getWidgetLayout(null)
+
+            coVerify {
+                getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+                getLayoutUseCase.getResultFlow()
+            }
+
+            val successLayoutList = layoutList.map {
+                when (it) {
+                    is CardWidgetUiModel -> it.apply { data = cardData }
+                    is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
+                    is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
+                    is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
+                    is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
+                    is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
+                    is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
+                    is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
+                    is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
+                    is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
+                    is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                    is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    else -> it
+                }
+            }.map {
+                it.apply {
+                    isLoading = false
+                }
+            }
+
+            assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+                successLayoutList.find { it.data == actualWidget.data } != null
+            } == true)
+        }
+    }
+
+    @Test
+    fun `given null widget height and caching disabled, should also success`() =
+        coroutineTestRule.runBlockingTest {
+            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val isFirstLoad = true
+            val cachingEnabled = false
+
+            val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+            val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+            val progressDataUiModel =
+                ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+            val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+            val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+            val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+            val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+            val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+            val multiLineGraphDataUiModel =
+                MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+            val announcementDataUiModel =
+                AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+            val recommendationDataUiModel =
+                RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val milestoneDataUiModel =
+                MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns cachingEnabled
+
+            every {
+                getLayoutUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            onGetLayoutFlow_thenReturn(layoutList)
+
+            everyGetWidgetData_shouldSuccess(
+                cardData,
+                lineGraphDataUiModel,
+                progressDataUiModel,
+                postListDataUiModel,
+                carouselDataUiModel,
+                tableDataUiModel,
+                pieChartDataUiModel,
+                barChartDataUiModel,
+                multiLineGraphDataUiModel,
+                announcementDataUiModel,
+                recommendationDataUiModel,
+                milestoneDataUiModel
+            )
+
+            viewModel.getWidgetLayout(null)
+
+            coVerify {
+                getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+                getLayoutUseCase.getResultFlow()
+            }
+
+            val successLayoutList = layoutList.map {
+                when (it) {
+                    is CardWidgetUiModel -> it.apply { data = cardData }
+                    is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
+                    is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
+                    is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
+                    is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
+                    is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
+                    is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
+                    is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
+                    is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
+                    is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
+                    is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                    is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    else -> it
+                }
+            }.map {
+                it.apply {
+                    isLoading = false
+                }
+            }
+
+            assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+                successLayoutList.find { it.data == actualWidget.data } != null
+            } == true)
+        }
+
+    @Test
+    fun `given null widget height, caching disabled and second load should also success`() =
+        coroutineTestRule.runBlockingTest {
+            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val isFirstLoad = false
+            val cachingEnabled = false
+
+            val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+            val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+            val progressDataUiModel =
+                ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+            val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+            val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+            val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+            val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+            val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+            val multiLineGraphDataUiModel =
+                MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+            val announcementDataUiModel =
+                AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+            val recommendationDataUiModel =
+                RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val milestoneDataUiModel =
+                MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns cachingEnabled
+
+            every {
+                getLayoutUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            onGetLayoutFlow_thenReturn(layoutList)
+
+            everyGetWidgetData_shouldSuccess(
+                cardData,
+                lineGraphDataUiModel,
+                progressDataUiModel,
+                postListDataUiModel,
+                carouselDataUiModel,
+                tableDataUiModel,
+                pieChartDataUiModel,
+                barChartDataUiModel,
+                multiLineGraphDataUiModel,
+                announcementDataUiModel,
+                recommendationDataUiModel,
+                milestoneDataUiModel
+            )
+
+            viewModel.getWidgetLayout(null)
+
+            coVerify {
+                getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+                getLayoutUseCase.getResultFlow()
+            }
+
+            val successLayoutList = layoutList.map {
+                when (it) {
+                    is CardWidgetUiModel -> it.apply { data = cardData }
+                    is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
+                    is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
+                    is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
+                    is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
+                    is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
+                    is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
+                    is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
+                    is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
+                    is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
+                    is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                    is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    else -> it
+                }
+            }.map {
+                it.apply {
+                    isLoading = false
+                }
+            }
+
+            assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+                successLayoutList.find { it.data == actualWidget.data } != null
+            } == true)
+        }
+
+    @Test
+    fun `when get widget layout and height param is not null, should also success`() {
         runBlocking {
+            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val shopId = "123456"
+            val page = "seller-home"
 
+            val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+            val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+            val progressDataUiModel =
+                ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+            val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+            val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+            val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+            val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+            val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+            val multiLineGraphDataUiModel =
+                MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+            val announcementDataUiModel =
+                AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+            val recommendationDataUiModel =
+                RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val milestoneDataUiModel =
+                MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+
+            every {
+                userSession.shopId
+            } returns shopId
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+            coEvery {
+                getLayoutUseCase.executeOnBackground()
+            } returns layoutList
+            every {
+                getLayoutUseCase.isFirstLoad
+            } returns true
+            everyGetWidgetData_shouldSuccess(
+                cardData,
+                lineGraphDataUiModel,
+                progressDataUiModel,
+                postListDataUiModel,
+                carouselDataUiModel,
+                tableDataUiModel,
+                pieChartDataUiModel,
+                barChartDataUiModel,
+                multiLineGraphDataUiModel,
+                announcementDataUiModel,
+                recommendationDataUiModel,
+                milestoneDataUiModel
+            )
+
+            viewModel.getWidgetLayout(5000f)
+
+            verify {
+                userSession.shopId
+            }
+            coVerify {
+                getLayoutUseCase.executeOnBackground()
+            }
+
+            val successLayoutList = layoutList.map {
+                when (it) {
+                    is CardWidgetUiModel -> it.apply { data = cardData }
+                    is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
+                    is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
+                    is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
+                    is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
+                    is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
+                    is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
+                    is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
+                    is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
+                    is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
+                    is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                    is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    else -> it
+                }
+            }.map {
+                it.apply {
+                    isLoading = false
+                }
+            }
+
+            assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+                successLayoutList.find { it.data == actualWidget.data } != null
+            } == true)
+        }
+    }
+
+    @Test
+    fun `when get widget layout and height param is not null and is new caching enabled, should also success`() {
+        coroutineTestRule.runBlockingTest {
             val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
             val shopId = "123456"
             val page = "seller-home"
@@ -452,16 +834,19 @@ class SellerHomeViewModelTest {
             } returns shopId
 
             every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
                 remoteConfig.isSellerHomeDashboardCachingEnabled()
             } returns true
-            onGetIsNewCachingEnabled_thenReturn(true)
-            coEvery {
-                getLayoutUseCase.executeOnBackground()
-            } returns layoutList
+
             onGetLayoutFlow_thenReturn(layoutList)
-            coEvery {
+
+            every {
                 getLayoutUseCase.isFirstLoad
             } returns true
+
             everyGetWidgetData_shouldSuccess(
                 cardData,
                 lineGraphDataUiModel,
@@ -479,7 +864,7 @@ class SellerHomeViewModelTest {
 
             viewModel.getWidgetLayout(5000f)
 
-            coVerify {
+            verify {
                 userSession.shopId
             }
             coVerify {
@@ -512,6 +897,75 @@ class SellerHomeViewModelTest {
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
         }
+    }
+
+    @Test
+    fun `when get widget layout with given height and new caching enabled then throws exception should return failed result`() {
+        coroutineTestRule.runBlockingTest {
+            val exception = Throwable()
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            onGetIsNewCachingEnabled_thenReturn(true)
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getLayoutUseCase.getResultFlow()
+            } throws exception
+
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getWidgetLayout(5000f)
+
+            coVerify {
+                getLayoutUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getLayoutUseCase.getResultFlow()
+            }
+
+            val expected = Fail(exception)
+            viewModel.widgetLayout.verifyErrorEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when get widget layout with given height and new caching disabled then throws exception should return failed result`() {
+        coroutineTestRule.runBlockingTest {
+            val exception = Throwable()
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            onGetIsNewCachingEnabled_thenReturn(false)
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getLayoutUseCase.executeOnBackground()
+            } throws exception
+
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getWidgetLayout(5000f)
+
+            coVerify {
+                getLayoutUseCase.executeOnBackground()
+            }
+
+            val expected = Fail(exception)
+            viewModel.widgetLayout.verifyErrorEquals(expected)
+        }
+    }
 
     @Test
     fun `given new caching enabled and use case already start collecting, get layout should not being called`() =
@@ -572,36 +1026,6 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get widget layout should failed`() = runBlocking {
-        val throwable = MessageErrorException("error message")
-        val shopId = "123456"
-        val page = "seller-home"
-
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } throws throwable
-
-        viewModel.getWidgetLayout()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
-            userSession.shopId
-        }
-
-        coVerify {
-            getLayoutUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.widgetLayout.value is Fail)
-    }
-
-    @Test
     fun `get widget layout with height provided should failed`() = runBlocking {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
@@ -616,7 +1040,9 @@ class SellerHomeViewModelTest {
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
+
         onGetIsNewCachingEnabled_thenReturn(false)
+
         coEvery {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
         } returns true
@@ -653,10 +1079,13 @@ class SellerHomeViewModelTest {
             coEvery {
                 getLayoutUseCase.executeOnBackground()
             } throws throwable
+
             onGetIsNewCachingEnabled_thenReturn(false)
+
             coEvery {
                 remoteConfig.isSellerHomeDashboardCachingEnabled()
             } returns true
+
             coEvery {
                 getLayoutUseCase.isFirstLoad
             } returns true
@@ -797,6 +1226,34 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when fetch shop info by id then return null data should still success`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "12345"
+            val shopInfo = ShopInfoResultResponse(
+                coreInfo = null,
+                shopSnippetURL = null
+            )
+            every {
+                userSession.userId
+            } returns shopId
+
+            coEvery {
+                getShopInfoByIdUseCase.execute(anyLong())
+            } returns shopInfo
+
+            viewModel.getShopInfoById()
+
+            val expected = Success(
+                ShopShareDataUiModel(
+                    shopUrl = "",
+                    shopSnippetURL = ""
+                )
+            )
+            viewModel.shopShareData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
     fun `when fetch shop info by id then throw exception`() {
         coroutineTestRule.runBlockingTest {
             val shopId = "12345"
@@ -929,6 +1386,212 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `get line graph widget data when new cache enabled, on first load and cache enabled then returns success result`() =
+        runBlocking {
+            val dataKeys = listOf("x", "y", "z")
+            val lineGraphDataResult =
+                listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getLineGraphDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getLineGraphDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<LineGraphDataUiModel>>(replay = 1).apply {
+                emit(lineGraphDataResult)
+            }
+
+            viewModel.getLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getLineGraphDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getLineGraphDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(lineGraphDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.lineGraphWidgetData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `get line graph widget data when new cache enabled, on second load and cache enabled then returns success result`() =
+        runBlocking {
+            val dataKeys = listOf("x", "y", "z")
+            val lineGraphDataResult =
+                listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getLineGraphDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getLineGraphDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<LineGraphDataUiModel>>(replay = 1).apply {
+                emit(lineGraphDataResult)
+            }
+
+            viewModel.getLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getLineGraphDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getLineGraphDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(lineGraphDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.lineGraphWidgetData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `get line graph widget data when new cache enabled, on first load and cache disabled then returns success result`() =
+        runBlocking {
+            val dataKeys = listOf("x", "y", "z")
+            val lineGraphDataResult =
+                listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getLineGraphDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getLineGraphDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<LineGraphDataUiModel>>(replay = 1).apply {
+                emit(lineGraphDataResult)
+            }
+
+            viewModel.getLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getLineGraphDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getLineGraphDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(lineGraphDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.lineGraphWidgetData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `get line graph widget data when new cache enabled, on second load and cache disabled then returns success result`() =
+        runBlocking {
+            val dataKeys = listOf("x", "y", "z")
+            val lineGraphDataResult =
+                listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getLineGraphDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getLineGraphDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<LineGraphDataUiModel>>(replay = 1).apply {
+                emit(lineGraphDataResult)
+            }
+
+            viewModel.getLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getLineGraphDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getLineGraphDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(lineGraphDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.lineGraphWidgetData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `get line graph widget data when new cache enabled, on second load and cache disabled then throw exception should return failed result`() =
+        runBlocking {
+            val dataKeys = listOf("x", "y", "z")
+            val throwable = Throwable()
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getLineGraphDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getLineGraphDataUseCase.getResultFlow()
+            } throws throwable
+
+            viewModel.getLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getLineGraphDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getLineGraphDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Fail(throwable)
+            viewModel.lineGraphWidgetData.verifyErrorEquals(expectedResult)
+        }
+
+    @Test
     fun `get line graph widget data then returns failed result`() = runBlocking {
         val dataKeys = listOf("x", "y", "z")
 
@@ -942,7 +1605,6 @@ class SellerHomeViewModelTest {
 
         viewModel.getLineGraphWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -951,11 +1613,176 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get progress widget data then returns success result`() = runBlocking {
+    fun `get progress widget data from remote when cache disabled on second load then returns success result`() =
+        runBlocking {
+            val progressWidgetData =
+                listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+            val dataKeys = listOf("x", "y", "z")
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                getProgressDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            coEvery {
+                getProgressDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<ProgressDataUiModel>>(replay = 1).apply {
+                emit(progressWidgetData)
+            }
+
+            viewModel.getProgressWidgetData(dataKeys)
+
+            coVerify {
+                getProgressDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getProgressDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(progressWidgetData)
+            viewModel.progressWidgetData.verifySuccessEquals(expected)
+        }
+
+    @Test
+    fun `get progress widget data from remote when cache disabled on first load then returns success result`() =
+        runBlocking {
+            val progressWidgetData =
+                listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+            val dataKeys = listOf("x", "y", "z")
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                getProgressDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            coEvery {
+                getProgressDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<ProgressDataUiModel>>(replay = 1).apply {
+                emit(progressWidgetData)
+            }
+
+            viewModel.getProgressWidgetData(dataKeys)
+
+            coVerify {
+                getProgressDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getProgressDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(progressWidgetData)
+            viewModel.progressWidgetData.verifySuccessEquals(expected)
+        }
+
+    @Test
+    fun `get progress widget data from remote for second load then returns success result`() =
+        runBlocking {
+            val progressWidgetData =
+                listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+            val dataKeys = listOf("x", "y", "z")
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                getProgressDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            coEvery {
+                getProgressDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<ProgressDataUiModel>>(replay = 1).apply {
+                emit(progressWidgetData)
+            }
+
+            viewModel.getProgressWidgetData(dataKeys)
+
+            coVerify {
+                getProgressDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getProgressDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(progressWidgetData)
+            viewModel.progressWidgetData.verifySuccessEquals(expected)
+        }
+
+    @Test
+    fun `get progress widget data from cache then returns success result`() = runBlocking {
+        val progressWidgetData =
+            listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+        val isCacheEnabled = true
+        val isFirstLoad = true
+        val dataKeys = listOf("x", "y", "z")
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns true
+
+        every {
+            getProgressDataUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns isCacheEnabled
+
+        coEvery {
+            getProgressDataUseCase.getResultFlow()
+        } returns MutableSharedFlow<List<ProgressDataUiModel>>(replay = 1).apply {
+            emit(progressWidgetData)
+        }
+
+        viewModel.getProgressWidgetData(dataKeys)
+
+        coVerify {
+            getProgressDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+        }
+
+        coVerify {
+            getProgressDataUseCase.getResultFlow()
+        }
+
+        val expected = Success(progressWidgetData)
+        viewModel.progressWidgetData.verifySuccessEquals(expected)
+    }
+
+    @Test
+    fun `get progress widget data from remote then returns success result`() = runBlocking {
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
-        val progressDataList =
-            listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+        val progressDataList = listOf(
+            ProgressDataUiModel(),
+            ProgressDataUiModel(), ProgressDataUiModel()
+        )
 
         getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
@@ -965,7 +1792,6 @@ class SellerHomeViewModelTest {
 
         viewModel.getProgressWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -999,31 +1825,170 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get post widget data then returns success result`() = runBlocking {
-        val dataKeys = listOf(
-            TableAndPostDataKey("x", "x", 6, 3),
-            TableAndPostDataKey("y", "y", 6, 3)
-        )
-        val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
+    fun `should get post widget data from cache and new caching enabled then returns success result`() =
+        runBlocking {
+            val postDataList = listOf(PostListDataUiModel(), PostListDataUiModel())
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            val isFirstLoad = true
+            val isCachingEnabled = true
 
-        coEvery {
-            getPostDataUseCase.executeOnBackground()
-        } returns postList
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
 
-        viewModel.getPostWidgetData(dataKeys)
+            every {
+                getPostDataUseCase.isFirstLoad
+            } returns isFirstLoad
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
 
-        coVerify {
-            getPostDataUseCase.executeOnBackground()
+            coEvery {
+                getPostDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PostListDataUiModel>>(replay = 1).apply {
+                emit(postDataList)
+            }
+
+            viewModel.getPostWidgetData(dataKeys)
+
+            coVerify {
+                getPostDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getPostDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(postDataList)
+            assert(postDataList.size == dataKeys.size)
+            viewModel.postListWidgetData.verifySuccessEquals(expected)
         }
 
-        val expectedResult = Success(postList)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.postListWidgetData.value)
-    }
+    @Test
+    fun `should get post widget data from remote when first load and new caching enabled then returns success result`() =
+        runBlocking {
+            val postDataList = listOf(PostListDataUiModel(), PostListDataUiModel())
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+
+            val isFirstLoad = true
+            val isCachingEnabled = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                getPostDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getPostDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PostListDataUiModel>>(replay = 1).apply {
+                emit(postDataList)
+            }
+
+            viewModel.getPostWidgetData(dataKeys)
+
+            coVerify {
+                getPostDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getPostDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(postDataList)
+            assert(postDataList.size == dataKeys.size)
+            viewModel.postListWidgetData.verifySuccessEquals(expected)
+        }
+
+    @Test
+    fun `should get post widget data from remote when not first load and new caching enabled then returns success result`() =
+        runBlocking {
+            val postDataList = listOf(PostListDataUiModel(), PostListDataUiModel())
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+
+            val isFirstLoad = false
+            val isCachingEnabled = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                getPostDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getPostDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PostListDataUiModel>>(replay = 1).apply {
+                emit(postDataList)
+            }
+
+            viewModel.getPostWidgetData(dataKeys)
+
+            coVerify {
+                getPostDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getPostDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(postDataList)
+            assert(postDataList.size == dataKeys.size)
+            viewModel.postListWidgetData.verifySuccessEquals(expected)
+        }
+
+    @Test
+    fun `get post widget data and new caching disabled then returns success result`() =
+        runBlocking {
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+            val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
+
+            getPostDataUseCase.params =
+                GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns false
+
+            coEvery {
+                getPostDataUseCase.executeOnBackground()
+            } returns postList
+
+            viewModel.getPostWidgetData(dataKeys)
+
+            coVerify {
+                getPostDataUseCase.executeOnBackground()
+            }
+
+            val expectedResult = Success(postList)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.postListWidgetData.value)
+        }
 
     @Test
     fun `get post widget data then returns failed result`() = runBlocking {
@@ -1081,37 +2046,381 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(carouselList)
         Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.carouselWidgetData.value)
+        viewModel.carouselWidgetData.verifySuccessEquals(expectedResult)
     }
 
     @Test
-    fun `get carousel widget data then returns failed results`() = runBlocking {
-        val dataKeys = listOf(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString()
-        )
-        val throwable = MessageErrorException("error")
+    fun `get carousel widget data on new caching enabled, first load and cache enabled then returns success results`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString()
+            )
+            val carouselList = listOf(
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel()
+            )
+            val isCachingEnabled = true
+            val isFirstLoad = true
 
-        getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
 
-        coEvery {
-            getCarouselDataUseCase.executeOnBackground()
-        } throws throwable
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
 
-        viewModel.getCarouselWidgetData(dataKeys)
+            every {
+                getCarouselDataUseCase.isFirstLoad
+            } returns isFirstLoad
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
-            getCarouselDataUseCase.executeOnBackground()
+            coEvery {
+                getCarouselDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CarouselDataUiModel>>(replay = 1).apply {
+                emit(carouselList)
+            }
+
+            viewModel.getCarouselWidgetData(dataKeys)
+
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getCarouselDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(carouselList)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            viewModel.carouselWidgetData.verifySuccessEquals(expectedResult)
         }
 
-        assert(viewModel.carouselWidgetData.value is Fail)
+    @Test
+    fun `get carousel widget data on new caching enabled, first load and cache disabled then returns success results`() =
+        runBlocking {
+            val dataKeys = listOf(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString()
+            )
+            val carouselList = listOf(
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel()
+            )
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            every {
+                getCarouselDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCarouselDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CarouselDataUiModel>>(replay = 1).apply {
+                emit(carouselList)
+            }
+
+            viewModel.getCarouselWidgetData(dataKeys)
+
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getCarouselDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(carouselList)
+            assert(expectedResult.data.size == dataKeys.size)
+            viewModel.carouselWidgetData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `get carousel widget data on new caching enabled, on reload load and cache enabled then returns success results`() =
+        runBlocking {
+            val dataKeys = listOf(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString()
+            )
+            val carouselList = listOf(
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel()
+            )
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            every {
+                getCarouselDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCarouselDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CarouselDataUiModel>>(replay = 1).apply {
+                emit(carouselList)
+            }
+
+            viewModel.getCarouselWidgetData(dataKeys)
+
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getCarouselDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(carouselList)
+            assert(expectedResult.data.size == dataKeys.size)
+            viewModel.carouselWidgetData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `get carousel widget data on new caching enabled, on reload load and cache disabled then returns success results`() {
+        runBlocking {
+            val dataKeys = listOf(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString()
+            )
+            val carouselList = listOf(
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel(),
+                CarouselDataUiModel()
+            )
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            every {
+                getCarouselDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCarouselDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CarouselDataUiModel>>(replay = 1).apply {
+                emit(carouselList)
+            }
+
+            viewModel.getCarouselWidgetData(dataKeys)
+
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+            }
+
+            coVerify {
+                getCarouselDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(carouselList)
+            assert(expectedResult.data.size == dataKeys.size)
+            viewModel.carouselWidgetData.verifySuccessEquals(expectedResult)
+        }
     }
 
     @Test
-    fun `should success when get table widget data`() = runBlocking {
+    fun `get carousel widget data then returns failed results`() {
+        runBlocking {
+            val dataKeys = listOf(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString()
+            )
+            val throwable = MessageErrorException("error")
+
+            getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+
+            coEvery {
+                getCarouselDataUseCase.executeOnBackground()
+            } throws throwable
+
+            viewModel.getCarouselWidgetData(dataKeys)
+
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground()
+            }
+
+            assert(viewModel.carouselWidgetData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `should success when get table widget data from cache on new caching enabled`() {
+        runBlocking {
+            val tableDataList = listOf(TableDataUiModel(), TableDataUiModel())
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+
+            val isNewCachingEnabled = true
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns isNewCachingEnabled
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            every {
+                getTableDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getTableDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<TableDataUiModel>>(replay = 1).apply {
+                emit(tableDataList)
+            }
+
+            viewModel.getTableWidgetData(dataKeys)
+
+            coVerify {
+                getTableDataUseCase.executeOnBackground(any(), isCachingEnabled && isFirstLoad)
+            }
+
+            coVerify {
+                getTableDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(tableDataList)
+            assert(dataKeys.size == tableDataList.size)
+            viewModel.tableWidgetData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `should success when get table widget data from remote on new caching enabled`() {
+        runBlocking {
+            val tableDataList = listOf(TableDataUiModel(), TableDataUiModel())
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            every {
+                getTableDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getTableDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<TableDataUiModel>>(replay = 1).apply {
+                emit(tableDataList)
+            }
+
+            viewModel.getTableWidgetData(dataKeys)
+
+            coVerify {
+                getTableDataUseCase.executeOnBackground(any(), isCachingEnabled && isFirstLoad)
+            }
+
+            coVerify {
+                getTableDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(tableDataList)
+            assert(dataKeys.size == tableDataList.size)
+            viewModel.tableWidgetData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `should success when get table widget data from remote at the second load on new caching enabled`() =
+        runBlocking {
+            val tableDataList = listOf(TableDataUiModel(), TableDataUiModel())
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            every {
+                getTableDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getTableDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<TableDataUiModel>>(replay = 1).apply {
+                emit(tableDataList)
+            }
+
+            viewModel.getTableWidgetData(dataKeys)
+
+            coVerify {
+                getTableDataUseCase.executeOnBackground(any(), isCachingEnabled && isFirstLoad)
+            }
+
+            coVerify {
+                getTableDataUseCase.getResultFlow()
+            }
+
+            val expected = Success(tableDataList)
+            assert(dataKeys.size == tableDataList.size)
+            viewModel.tableWidgetData.verifySuccessEquals(expected)
+        }
+
+    @Test
+    fun `should success when get table widget data on caching disabled`() = runBlocking {
         val dataKeys = listOf(
             TableAndPostDataKey("x", "x", 6, 3),
             TableAndPostDataKey("y", "y", 6, 3)
@@ -1121,21 +2430,23 @@ class SellerHomeViewModelTest {
         getTableDataUseCase.params =
             GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns false
+
         coEvery {
             getTableDataUseCase.executeOnBackground()
         } returns result
 
         viewModel.getTableWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getTableDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.tableWidgetData.value)
+        assert(expectedResult.data.size == dataKeys.size)
+        viewModel.tableWidgetData.verifySuccessEquals(expectedResult)
     }
 
     @Test
@@ -1184,9 +2495,212 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        assert(expectedResult.data.size == dataKeys.size)
+        viewModel.pieChartWidgetData.verifySuccessEquals(expectedResult)
     }
+
+    @Test
+    fun `get pie chart widget data when new cache enabled, on first load and cache enabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getPieChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getPieChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PieChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getPieChartWidgetData(dataKeys)
+
+            coVerify {
+                getPieChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getPieChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        }
+
+    @Test
+    fun `get pie chart widget data when new cache enabled, on second load and cache enabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getPieChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getPieChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PieChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getPieChartWidgetData(dataKeys)
+
+            coVerify {
+                getPieChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getPieChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        }
+
+    @Test
+    fun `get pie chart widget data when new cache enabled, on first load and cache disabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getPieChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getPieChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PieChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getPieChartWidgetData(dataKeys)
+
+            coVerify {
+                getPieChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getPieChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        }
+
+    @Test
+    fun `get pie chart widget data when new cache enabled, on second load and cache disabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getPieChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getPieChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<PieChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getPieChartWidgetData(dataKeys)
+
+            coVerify {
+                getPieChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getPieChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        }
+
+    @Test
+    fun `get pie chart widget data when new cache enabled, on second load and cache disabled then throw exception should return failed result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+            val throwable = Throwable()
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getPieChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getPieChartDataUseCase.getResultFlow()
+            } throws throwable
+
+            viewModel.getPieChartWidgetData(dataKeys)
+
+            coVerify {
+                getPieChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getPieChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Fail(throwable)
+            viewModel.pieChartWidgetData.verifyErrorEquals(expectedResult)
+        }
 
     @Test
     fun `should failed when get pie chart widget data`() = runBlocking {
@@ -1234,6 +2748,209 @@ class SellerHomeViewModelTest {
         Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
         Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
     }
+
+    @Test
+    fun `get bar chart widget data when new caching enabled, on first load and cache enabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getBarChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getBarChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<BarChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getBarChartWidgetData(dataKeys)
+
+            coVerify {
+                getBarChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getBarChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        }
+
+    @Test
+    fun `get bar chart widget data when new caching enabled, on first load and cache disabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getBarChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getBarChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<BarChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getBarChartWidgetData(dataKeys)
+
+            coVerify {
+                getBarChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getBarChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        }
+
+    @Test
+    fun `get bar chart widget data when new caching enabled, on second load and cache disabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getBarChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getBarChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<BarChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getBarChartWidgetData(dataKeys)
+
+            coVerify {
+                getBarChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getBarChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        }
+
+    @Test
+    fun `get bar chart widget data when new caching enabled, on second load and cache disabled then return failed result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+            val exception = Throwable()
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getBarChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getBarChartDataUseCase.getResultFlow()
+            } throws exception
+
+            viewModel.getBarChartWidgetData(dataKeys)
+
+            coVerify {
+                getBarChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getBarChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Fail(exception)
+            Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        }
+
+    @Test
+    fun `get bar chart widget data when new caching enabled, on second load and cache enabled then return success result`() =
+        runBlocking {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getBarChartDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getBarChartDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<BarChartDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getBarChartWidgetData(dataKeys)
+
+            coVerify {
+                getBarChartDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getBarChartDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        }
 
     @Test
     fun `should failed when get bar chart widget data`() = runBlocking {
@@ -1286,6 +3003,186 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `get multi line graph widget data when new cache enabled, on first load and cache enabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `get multi line graph widget data when new cache enabled, on first load and cache disabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `get multi line graph widget data when new cache enabled, on second load and cache enabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `get multi line graph widget data when new cache enabled, on second load and cache disabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
     fun `should failed when get multi line graph widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
@@ -1333,6 +3230,182 @@ class SellerHomeViewModelTest {
         Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
         Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
     }
+
+    @Test
+    fun `given new caching enabled, on first load and cache enabled should success when get announcement widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(AnnouncementDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getAnnouncementDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<AnnouncementDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getAnnouncementDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getAnnouncementWidgetData(dataKeys)
+
+            coVerify {
+                getAnnouncementDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getAnnouncementDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on reload and cache enabled should success when get announcement widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(AnnouncementDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getAnnouncementDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<AnnouncementDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getAnnouncementDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getAnnouncementWidgetData(dataKeys)
+
+            coVerify {
+                getAnnouncementDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getAnnouncementDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on first load and cache disabled should success when get announcement widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(AnnouncementDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getAnnouncementDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<AnnouncementDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getAnnouncementDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getAnnouncementWidgetData(dataKeys)
+
+            coVerify {
+                getAnnouncementDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getAnnouncementDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on second load and cache disabled should success when get announcement widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(AnnouncementDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getAnnouncementDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<AnnouncementDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getAnnouncementDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getAnnouncementWidgetData(dataKeys)
+
+            coVerify {
+                getAnnouncementDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getAnnouncementDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+        }
 
     @Test
     fun `should failed when get announcement widget data`() = runBlocking {
@@ -1445,6 +3518,213 @@ class SellerHomeViewModelTest {
         Assertions.assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
     }
 
+    @Test
+    fun `get card widget data when new cache enabled, on first load and cache enabled then return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf("a", "b", "c")
+            val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCardDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCardDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CardDataUiModel>>(replay = 1).apply {
+                emit(cardDataResult)
+            }
+
+            viewModel.getCardWidgetData(dataKeys)
+
+            coVerify {
+                getCardDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCardDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(cardDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.cardWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get card widget data when new cache enabled, on second load and cache enabled then return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf("a", "b", "c")
+            val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCardDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCardDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CardDataUiModel>>(replay = 1).apply {
+                emit(cardDataResult)
+            }
+
+            viewModel.getCardWidgetData(dataKeys)
+
+            coVerify {
+                getCardDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCardDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(cardDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.cardWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get card widget data when new cache enabled, on first load and cache disabled then return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf("a", "b", "c")
+            val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCardDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCardDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CardDataUiModel>>(replay = 1).apply {
+                emit(cardDataResult)
+            }
+
+            viewModel.getCardWidgetData(dataKeys)
+
+            coVerify {
+                getCardDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCardDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(cardDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.cardWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get card widget data when new cache enabled, on second load and cache disabled then return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf("a", "b", "c")
+            val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCardDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCardDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CardDataUiModel>>(replay = 1).apply {
+                emit(cardDataResult)
+            }
+
+            viewModel.getCardWidgetData(dataKeys)
+
+            coVerify {
+                getCardDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCardDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(cardDataResult)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.cardWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get card widget data when new cache enabled then throws exception should return failed result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf("a", "b", "c")
+            val isCacheEnabled = false
+            val isFirstLoad = false
+            val throwable = Throwable()
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCardDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCardDataUseCase.getResultFlow()
+            } throws throwable
+
+            viewModel.getCardWidgetData(dataKeys)
+
+            coVerify {
+                getCardDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCardDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Fail(throwable)
+            viewModel.cardWidgetData.verifyErrorEquals(expectedResult)
+        }
+    }
+
     // example using get card widget data, any usecase is fine
     @Test
     fun `should still success when there is no cached data`() {
@@ -1531,18 +3811,97 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given new caching enabled when getTicker flow success should set homeTicker liveData success`() {
+    fun `given new caching enabled when getTicker at first load flow success should set homeTicker liveData success`() {
         coroutineTestRule.runBlockingTest {
             val isNewCachingEnabled = true
+            val isCachingEnabled = true
+            val isFirstLoad = true
             val tickerList = listOf(TickerItemUiModel())
 
             onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
             onGetTickerListFlow_thenReturn(tickerList)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            Assertions.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker at second load flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val isCachingEnabled = true
+            val isFirstLoad = false
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            Assertions.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled and caching disabled when getTicker at first load flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val isCachingEnabled = false
+            val isFirstLoad = true
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            Assertions.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled and caching disabled when getTicker at second load flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val isCachingEnabled = false
+            val isFirstLoad = false
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             val expectedResult = Success(listOf(TickerItemUiModel()))
             val actualResult = viewModel.homeTicker.value
@@ -1558,22 +3917,28 @@ class SellerHomeViewModelTest {
             val isNewCachingEnabled = true
             val firstTickerList = listOf(TickerItemUiModel(message = "ticker"))
             val secondTickerList = listOf(TickerItemUiModel(message = "another ticker"))
+            val isCachingEnabled = false
+            val isFirstLoad = true
 
             onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
             onGetTickerListFlow_thenReturn(firstTickerList)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             onGetCollectingResult_thenReturn(isCollectingResult)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
             onGetTickerListFlow_thenReturn(secondTickerList)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             val expectedResult = Success(firstTickerList)
             val actualResult = viewModel.homeTicker.value
@@ -1587,14 +3952,18 @@ class SellerHomeViewModelTest {
         coroutineTestRule.runBlockingTest {
             val isNewCachingEnabled = true
             val error = IllegalStateException()
+            val isCachingEnabled = false
+            val isFirstLoad = true
 
             onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
             onGetTickerListFlow_thenReturn(error)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             val expectedResult = Fail(error)
             val actualResult = viewModel.homeTicker.value
@@ -1623,7 +3992,8 @@ class SellerHomeViewModelTest {
                     isLoading = false,
                     isFromCache = false,
                     isNeedToBeRemoved = false,
-                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                    gridSize = 4
                 ),
                 CardWidgetUiModel(
                     id = DATA_KEY_CARD,
@@ -1635,6 +4005,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -1653,6 +4024,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -1671,6 +4043,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -1722,6 +4095,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1740,6 +4114,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1758,6 +4133,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section_other",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1776,6 +4152,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CAROUSEL,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1794,6 +4171,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1815,6 +4193,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section_other2",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1833,6 +4212,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1901,6 +4281,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1919,6 +4300,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1974,6 +4356,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2024,6 +4407,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2074,6 +4458,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -2124,6 +4509,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -2175,6 +4561,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2233,6 +4620,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_TABLE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2292,11 +4680,11 @@ class SellerHomeViewModelTest {
         }
     }
 
-    private suspend fun onGetLayoutFlow_thenReturn(tickerList: List<BaseWidgetUiModel<*>>) {
+    private suspend fun onGetLayoutFlow_thenReturn(widgets: List<BaseWidgetUiModel<*>>) {
         coEvery {
             getLayoutUseCase.getResultFlow()
         } returns MutableSharedFlow<List<BaseWidgetUiModel<*>>>(replay = 1).apply {
-            emit(tickerList)
+            emit(widgets)
         }
     }
 
@@ -2312,15 +4700,27 @@ class SellerHomeViewModelTest {
         } throws error
     }
 
+    private fun onGetIsCachingEnabled_thenReturn(cachingEnabled: Boolean) {
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns cachingEnabled
+    }
+
+    private fun onGetTickerIsFirstLoad_thenReturn(isFirstLoad: Boolean) {
+        every {
+            getTickerUseCase.isFirstLoad
+        } returns isFirstLoad
+    }
+
     private fun onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled: Boolean) {
-        coEvery {
+        every {
             remoteConfig.isSellerHomeDashboardNewCachingEnabled()
         } returns isNewCachingEnabled
     }
 
-    private fun verifyGetTickerUseCaseCalled() {
+    private fun verifyGetTickerUseCaseCalled(fistLoad: Boolean, cachingEnabled: Boolean) {
         coVerify {
-            getTickerUseCase.executeOnBackground(any(), any())
+            getTickerUseCase.executeOnBackground(any(), fistLoad && cachingEnabled)
         }
     }
 
@@ -2342,6 +4742,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CARD,
                 ctaText = "",
+                gridSize = 2,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2360,6 +4761,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2378,6 +4780,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_LINE_GRAPH,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2396,6 +4799,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2414,6 +4818,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CAROUSEL,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2432,6 +4837,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2453,6 +4859,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_TABLE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2484,6 +4891,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PIE_CHART,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2502,6 +4910,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_BAR_CHART,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2520,6 +4929,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_MULTI_LINE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2539,6 +4949,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_RECOMMENDATION,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2557,6 +4968,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_MILESTONE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,

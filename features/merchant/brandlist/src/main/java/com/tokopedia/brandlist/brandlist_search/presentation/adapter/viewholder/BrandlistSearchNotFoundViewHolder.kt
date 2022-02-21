@@ -8,7 +8,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchNotFoundUiModel
 import com.tokopedia.brandlist.common.ImageAssets
-import kotlinx.android.synthetic.main.view_brand_not_found.view.*
+import com.tokopedia.brandlist.databinding.ViewBrandNotFoundBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BrandlistSearchNotFoundViewHolder(
         view: View,
@@ -18,12 +19,13 @@ class BrandlistSearchNotFoundViewHolder(
     companion object {
         val LAYOUT = R.layout.view_brand_not_found
     }
+    private var binding: ViewBrandNotFoundBinding? by viewBinding()
 
     override fun bind(element: BrandlistSearchNotFoundUiModel?) {
-        itemView.brand_not_found_layout.visibility = View.VISIBLE
-        ImageHandler.loadImage(itemView.context, itemView.img_brand_not_found,
+        binding?.brandNotFoundLayout?.visibility = View.VISIBLE
+        ImageHandler.loadImage(itemView.context, binding?.imgBrandNotFound,
                 ImageAssets.BRAND_NOT_FOUND, null)
-        itemView.btn_check_balance.setOnClickListener {
+        binding?.btnCheckBalance?.setOnClickListener {
             val inputManager = itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
             listener.focusSearchView()

@@ -8,7 +8,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationUiModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
-import kotlinx.android.synthetic.main.item_search_recommendation.view.*
+import com.tokopedia.brandlist.databinding.ItemSearchRecommendationBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<BrandlistSearchRecommendationUiModel>(view) {
@@ -16,11 +17,11 @@ class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<Br
     companion object {
         val LAYOUT = R.layout.item_search_recommendation
     }
-
+    private var binding: ItemSearchRecommendationBinding? by viewBinding()
     private val context: Context = itemView.context
-    private val imgBrandLogo = itemView.iv_brand_logo
-    private val imgBrandImage = itemView.iv_brand_image
-    private val txtBrandName = itemView.tv_brand_name
+    private val imgBrandLogo = binding?.ivBrandLogo
+    private val imgBrandImage = binding?.ivBrandImage
+    private val txtBrandName = binding?.tvBrandName
 
     override fun bind(element: BrandlistSearchRecommendationUiModel) {
         bindData(element.name, element.logoUrl, element.exclusiveLogoUrl,
@@ -29,12 +30,12 @@ class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<Br
 
     private fun bindData(name: String, brandLogoUrl: String, brandImageUrl: String, shopId: Int,
                          Applink: String, tracking: BrandlistSearchTrackingListener, position: String) {
-        txtBrandName.text = name
+        txtBrandName?.text = name
         ImageHandler.loadImage(context, imgBrandLogo, brandLogoUrl, null)
         if (brandImageUrl.isNotBlank()) {
             ImageHandler.loadImage(context, imgBrandImage, brandImageUrl, null)
         } else {
-            imgBrandImage.visibility = View.GONE
+            imgBrandImage?.visibility = View.GONE
         }
 
         tracking.impressionBrand(shopId.toString(), position, name, brandImageUrl)

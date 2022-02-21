@@ -44,7 +44,7 @@ data class Properties(
         var targetId: String? = null,
 
         @SerializedName("template")
-        val template: String = GRID,
+        var template: String = GRID,
 
         @SerializedName("timer_style")
         val timerStyle: String? = null,
@@ -61,5 +61,10 @@ data class Properties(
         @SerializedName("tokonow_add_to_cart_active")
         val tokonowATCActive : Boolean = false,
 
+        @SerializedName("calendar_layout")
+        val calendarLayout: String = "",
+
+        @SerializedName("calendar_type")
+        val calendarType: String = "",
 
 )

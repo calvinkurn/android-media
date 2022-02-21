@@ -88,4 +88,19 @@ enum class ComponentNames(val componentName: String) {
     //Topads Headline View
     TopadsHeadlineView("topads"),
 
+    MerchantVoucherCarousel("merchant_voucher_carousel"),
+    MerchantVoucherList("merchant_voucher_list"),
+    MerchantVoucherListItem("merchant_voucher_list_item"),
+    MerchantVoucherCarouselItem("merchant_voucher_carousel_item"),
+
+    Section("section"),
+
+    //Calendar Widget
+    CalendarWidgetCarousel("calendar"),
+    CalendarWidgetGrid("calendar_grid"),
+    CalendarWidgetItem("calendar_item"),
+    ShimmerCalendarWidget("shimmer_calendar_widget"),
+
+    TopQuestWidget("top_quest")
+
 }

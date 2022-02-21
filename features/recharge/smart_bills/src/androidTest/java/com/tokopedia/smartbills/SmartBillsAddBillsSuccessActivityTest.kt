@@ -93,7 +93,7 @@ class SmartBillsAddBillsSuccessActivityTest {
     }
 
     @Test
-    fun validateSmartBills() {
+    fun validateAddSmartBillsSuccess() {
         Thread.sleep(3000)
         click_add_bills()
         click_input_field()

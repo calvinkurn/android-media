@@ -5,14 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -36,6 +39,8 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCra
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
@@ -73,6 +78,7 @@ class ShopHomeViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatchers,
         private val addToCartUseCase: AddToCartUseCase,
         private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+        private val addToCartBundleUseCase: AddToCartBundleUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
         private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
         private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
@@ -124,9 +130,17 @@ class ShopHomeViewModel @Inject constructor(
         get() = _campaignNplRemindMeStatusData
     private val _campaignNplRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
 
+    val campaignFlashSaleStatusData: LiveData<Result<GetCampaignNotifyMeUiModel>>
+        get() = _campaignFlashSaleRemindMeStatusData
+    private val _campaignFlashSaleRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
+
     val checkCampaignNplRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
         get() = _checkCampaignNplRemindMeStatusData
     private val _checkCampaignNplRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
+
+    val checkCampaignFlashSaleRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
+        get() = _checkCampaignFlashSaleRemindMeStatusData
+    private val _checkCampaignFlashSaleRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
     val bottomSheetFilterLiveData : LiveData<Result<DynamicFilterModel>>
         get() = _bottomSheetFilterLiveData
@@ -254,6 +268,46 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
+    fun addBundleToCart(
+            shopId: String,
+            userId: String,
+            bundleId: String,
+            productDetails: List<ShopHomeBundleProductUiModel>,
+            onFinishAddToCart: (atcBundleModel: AddToCartBundleModel) -> Unit,
+            onErrorAddBundleToCart: (exception: Throwable) -> Unit,
+            bundleQuantity: Int
+    ) {
+
+        launchCatchError(block = {
+
+            val bundleProductDetails = productDetails.map {
+                ProductDetail(
+                        productId = it.productId,
+                        quantity = bundleQuantity,
+                        shopId = shopId,
+                        customerId = userId
+                )
+            }
+
+            val atcBundleParams = AddToCartBundleRequestParams(
+                    shopId = shopId,
+                    bundleId = bundleId,
+                    bundleQty = bundleQuantity,
+                    selectedProductPdp = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID,
+                    productDetails = bundleProductDetails
+            )
+
+            val atcBundleResult = withContext(dispatcherProvider.io) {
+                submitAddBundleToCart(atcBundleParams)
+            }
+
+            onFinishAddToCart(atcBundleResult)
+
+        }) {
+            onErrorAddBundleToCart(it)
+        }
+    }
+
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
     }
@@ -360,6 +414,11 @@ class ShopHomeViewModel @Inject constructor(
         )).executeOnBackground().mapToAddToCartDataModel()
     }
 
+    private suspend fun submitAddBundleToCart(atcBundleParams: AddToCartBundleRequestParams): AddToCartBundleModel {
+        addToCartBundleUseCase.setParams(atcBundleParams)
+        return addToCartBundleUseCase.executeOnBackground()
+    }
+
     private suspend fun checkListProductWishlist(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel
     ): List<CheckWishlistResult> {
@@ -391,6 +450,18 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun getCampaignFlashSaleRemindMeStatus(campaignId: String) {
+        launchCatchError(block = {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                getCampaignNotifyMe(campaignId)
+            }
+            val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
+                getCampaignNotifyMeModel
+            )
+            _campaignFlashSaleRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+        }) {}
+    }
+
     private suspend fun getCampaignNotifyMe(campaignId: String): GetCampaignNotifyMeModel {
         val useCase = getCampaignNotifyMeUseCase.get()
         useCase.params = GetCampaignNotifyMeUseCase.createParams(campaignId)
@@ -415,6 +486,28 @@ class ShopHomeViewModel @Inject constructor(
                     it.cause,
                     it.message,
                     campaignId
+            )))
+        }
+    }
+
+    fun clickFlashSaleReminder(campaignId: String, action: String) {
+        launchCatchError(block = {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                checkCampaignNotifyMe(campaignId, action)
+            }
+            val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
+                checkCampaignNotifyMeModel.campaignId,
+                checkCampaignNotifyMeModel.success,
+                checkCampaignNotifyMeModel.message,
+                checkCampaignNotifyMeModel.errorMessage,
+                action
+            )
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
+        }) {
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
+                it.cause,
+                it.message,
+                campaignId
             )))
         }
     }

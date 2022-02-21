@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/sellerMigrationFooter">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/footerShadow"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,9 +24,9 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
+                android:text="@string/seller_migration_fragment_header_title"
                 android:textColor="@color/Unify_N700_96"
-                app:typographyType="heading_2"
-                android:text="@string/seller_migration_fragment_header_title" />
+                app:typographyType="heading_2" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivSellerMigration"
@@ -32,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"/>
+                android:layout_marginRight="@dimen/layout_lvl2" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSellerMigrationAdvantageTitle"
@@ -52,12 +54,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/layout_lvl2" />
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl2"
-                android:background="@drawable/line_divider" />
+                android:layout_marginBottom="@dimen/layout_lvl2" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSellerMigrationBodyTitle"
@@ -79,7 +80,6 @@
                     android:id="@+id/tabProduct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/Unify_N0"
                     android:text="@string/seller_migration_fragment_tab_product" />
 
                 <com.google.android.material.tabs.TabItem
@@ -131,48 +131,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@drawable/line_divider" />
+                android:layout_marginTop="@dimen/layout_lvl2" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/sellerMigrationFooter"
+    <View
+        android:id="@+id/footerShadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_footer_shadow"
+        app:layout_constraintBottom_toTopOf="@id/sellerMigrationButton" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/sellerMigrationButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/layout_lvl1"
-        android:layout_alignParentBottom="true"
-        app:cardCornerRadius="@dimen/layout_lvl0">
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
+        android:text="@string/seller_migration_bottom_sheet_button"
+        app:layout_constraintBottom_toTopOf="@id/sellerMigrationLink"
+        app:unifyButtonSize="medium" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/sellerMigrationButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:text="@string/seller_migration_bottom_sheet_button"
-                app:unifyButtonSize="medium" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/sellerMigrationLink"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl2"
-                android:gravity="center"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-</RelativeLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/sellerMigrationLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Beralih ke Tokopedia Seller" />
+</androidx.constraintlayout.widget.ConstraintLayout>

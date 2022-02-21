@@ -134,7 +134,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(activityListener != null) {
+        if (activityListener != null) {
             activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
         }
         documentUploadPresenter.attachView(this);

@@ -36,6 +36,9 @@ class SettingFingerprintViewModelTest {
     private var removeFingerprintObserver = mockk<Observer<Result<RemoveFingerprintData>>>(relaxed = true)
     val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
+    val navigateSuccessRegister = mockk<Observer<Void>>(relaxed = true)
+    val errorMessageRegister = mockk<Observer<String>>(relaxed = true)
+
     private val throwable = mockk<Throwable>(relaxed = true)
 
     @Before
@@ -53,6 +56,8 @@ class SettingFingerprintViewModelTest {
         viewModel.checkFingerprintStatus.observeForever(checkFingerprintObserver)
         viewModel.registerFingerprintResult.observeForever(registerFingerprintObserver)
         viewModel.removeFingerprintResult.observeForever(removeFingerprintObserver)
+        viewModel.navigateSuccessRegister.observeForever(navigateSuccessRegister)
+        viewModel.errorMessageRegister.observeForever(errorMessageRegister)
     }
 
     @Test
@@ -67,6 +72,21 @@ class SettingFingerprintViewModelTest {
 
         /* Then */
         verify { checkFingerprintObserver.onChanged(Success(response.data)) }
+    }
+
+    @Test
+    fun `on Success Check Fingerprint has errors`() {
+        /* When */
+        val data = CheckFingerprintResult(isSuccess = false, errorMessage = "")
+        val response = CheckFingerprintPojo(data)
+
+        coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } returns response
+
+        viewModel.getFingerprintStatus()
+
+        /* Then */
+        verify { checkFingerprintObserver.onChanged(any<Fail>()) }
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
     }
 
     @Test
@@ -96,7 +116,7 @@ class SettingFingerprintViewModelTest {
         /* Then */
         verify {
             cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-            registerFingerprintObserver.onChanged(Success(response.data))
+            navigateSuccessRegister.onChanged(any())
         }
     }
 
@@ -111,7 +131,9 @@ class SettingFingerprintViewModelTest {
         viewModel.registerFingerprint()
 
         /* Then */
-        verify { registerFingerprintObserver.onChanged(Fail(throwable)) }
+        verify {
+            errorMessageRegister.onChanged(throwable.message)
+        }
     }
 
     @Test
@@ -122,7 +144,48 @@ class SettingFingerprintViewModelTest {
         viewModel.registerFingerprint()
 
         /* Then */
-        assert(viewModel.registerFingerprintResult.value is Fail)
+        verify {
+            errorMessageRegister.onChanged("Terjadi Kesalahan, Silahkan coba lagi")
+        }
+    }
+
+    @Test
+    fun `on Error Register Fingerprint - errorMessage not empty`() {
+        /* When */
+        val errMsg = "error"
+        val data = RegisterFingerprintResult(success = true, errorMessage = errMsg)
+        val response = RegisterFingerprintPojo(data)
+
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns "abc123"
+
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            errorMessageRegister.onChanged(errMsg)
+        }
+    }
+
+    @Test
+    fun `on Error Register Fingerprint - other errors`() {
+        /* When */
+        val data = RegisterFingerprintResult(success = false, errorMessage = "")
+        val response = RegisterFingerprintPojo(data)
+
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns "abc123"
+
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            errorMessageRegister.onChanged(any())
+        }
     }
 
     @Test

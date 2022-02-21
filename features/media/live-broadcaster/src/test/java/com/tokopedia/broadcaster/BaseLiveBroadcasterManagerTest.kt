@@ -4,9 +4,9 @@ import android.content.Context
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
-import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.lib.BroadcasterConnection
 import com.tokopedia.broadcaster.state.BroadcasterState
-import com.tokopedia.broadcaster.utils.BroadcasterUtil
+import com.tokopedia.broadcaster.utils.BroadcasterUtils
 import com.tokopedia.broadcaster.utils.DeviceInfoTest.Companion.ARM_64
 import com.tokopedia.broadcaster.utils.DeviceInfoTest.Companion.MINIMUM_SUPPORTED_SDK
 import com.wmspanel.libstream.AudioConfig
@@ -26,7 +26,7 @@ open class BaseLiveBroadcasterManagerTest {
 
     val broadcaster = LiveBroadcasterManager(
         streamer = mockk(relaxUnitFun = true),
-        logger = mockk(relaxUnitFun = true),
+        statistic = mockk(relaxUnitFun = true),
     )
 
     protected val context = mockk<Context>(relaxed = true)
@@ -57,7 +57,7 @@ open class BaseLiveBroadcasterManagerTest {
 
     fun `Given data logger`() {
         justRun {
-            broadcaster.logger.init(
+            broadcaster.statistic.init(
                 any(),
                 any()
             )
@@ -100,7 +100,7 @@ open class BaseLiveBroadcasterManagerTest {
 
     fun `Given audio config`() {
         every {
-            BroadcasterUtil.getAudioConfig(any() as BroadcasterConfig)
+            BroadcasterUtils.getAudioConfig(any() as BroadcasterConfig)
         } returns AudioConfig()
     }
 
@@ -117,7 +117,7 @@ open class BaseLiveBroadcasterManagerTest {
 
         // then, mock the video config from BroadcasterUtil
         every {
-            BroadcasterUtil.getVideoConfig(any() as BroadcasterConfig)
+            BroadcasterUtils.getVideoConfig(any() as BroadcasterConfig)
         } returns VideoConfig()
     }
 
@@ -215,7 +215,7 @@ open class BaseLiveBroadcasterManagerTest {
         expectedState: BroadcasterState,
         actualState: BroadcasterState
     ) {
-        assertTrue { expectedState.javaClass == actualState.javaClass }
+        assertEquals(expectedState.javaClass, actualState.javaClass)
     }
 
     fun `Then the state should be expected with actual`(state: BroadcasterState) {
@@ -228,7 +228,7 @@ open class BaseLiveBroadcasterManagerTest {
 
     fun `Then data log is succeed to init`() {
         verify(exactly = 1) {
-            broadcaster.logger.init(
+            broadcaster.statistic.init(
                 any(),
                 any()
             )

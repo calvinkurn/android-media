@@ -32,6 +32,10 @@ class BalanceAndPointItemViewHolder(
         }
     }
 
+    fun getSubTitle(): String {
+        return binding?.homeAccountItemBalanceAndPointSubtitle?.text.toString()
+    }
+
     private fun setImage(url: String?) {
         url?.let { binding?.homeAccountItemBalanceAndPointIcon?.setImageUrl(it) }
     }

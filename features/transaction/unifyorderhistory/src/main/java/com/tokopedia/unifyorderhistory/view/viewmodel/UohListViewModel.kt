@@ -3,16 +3,13 @@ package com.tokopedia.unifyorderhistory.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.util.UohIdlingResource
-import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -22,15 +19,16 @@ import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.domain.*
+import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INVENTORY_ID
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.unifyorderhistory.util.UohIdlingResource
+import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
-import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -38,6 +36,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 03/07/20.
  */
 class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
+                                           private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
@@ -48,6 +47,10 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
+
+    private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
+    val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
+        get() = _filterCategoryResult
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -88,6 +91,12 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageViewModel>>()
     val tdnBannerResult: LiveData<Result<TopAdsImageViewModel>>
         get() = _tdnBannerResult
+
+    fun loadFilterCategory() {
+        launch {
+            _filterCategoryResult.value = getUohFilterCategoryUseCase.executeSuspend()
+        }
+    }
 
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
@@ -132,18 +141,18 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
             listParam.forEachIndexed { index, product ->
                 arrayListProducts.add(
-                    ECommerceAdd.Add.Products(
-                    name = product.productName,
-                    id = product.productId.toString(),
-                    price = product.productPrice.toString(),
-                    quantity = product.qty.toString(),
-                    dimension79 = product.shopId.toString()
-                ))
+                        ECommerceAdd.Add.Products(
+                                name = product.productName,
+                                id = product.productId.toString(),
+                                price = product.productPrice.toString(),
+                                quantity = product.qty.toString(),
+                                dimension79 = product.shopId.toString()
+                        ))
             }
 
             if (result is Success) {
                 UohAnalytics.clickBeliLagiOnOrderCardMP("", userId, arrayListProducts,
-                    verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
+                        verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
             }
 
             UohIdlingResource.decrement()
@@ -182,7 +191,7 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun loadTdnBanner(){
+    fun loadTdnBanner() {
         launch {
             try {
                 val params = topAdsImageViewUseCase.getQueryMap("", TDN_INVENTORY_ID, "", TDN_ADS_COUNT, TDN_DIMEN_ID, "", "", "")
@@ -198,28 +207,17 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
     fun doAtc(atcParams: AddToCartRequestParams) {
         UohIdlingResource.increment()
-        val requestParams = RequestParams.create()
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
-        try {
-            atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
-                override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                    addToCartDataModel?.let {
-                        _atcResult.value = (Success(it))
-                        UohIdlingResource.decrement()
-                    }
-                }
-
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable?) {
-                    _atcResult.value = (e?.let { Fail(it) })
-                    UohIdlingResource.decrement()
-                }
-            })
-        } catch (e: Exception) {
-            Timber.d(e)
-            _atcResult.value = Fail(e.fillInStackTrace())
-            UohIdlingResource.decrement()
+        launch {
+            try {
+                atcUseCase.setParams(atcParams)
+                val result = atcUseCase.executeOnBackground()
+                _atcResult.value = Success(result)
+                UohIdlingResource.decrement()
+            } catch (e: Exception) {
+                Timber.d(e)
+                _atcResult.value = Fail(e)
+                UohIdlingResource.decrement()
+            }
         }
     }
 }

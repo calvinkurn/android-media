@@ -108,7 +108,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun initBackground() {
         if (GlobalConfig.isSellerApp()) {
             context?.let {
-                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
         }
     }
@@ -221,7 +221,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         for (i in 0 until tabList.size) {
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    context, com.tokopedia.unifyprinciples.R.color.Unify_Background
             ))
         }
 
@@ -424,7 +424,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun isFromSeller(fromUid: String, tag: String): Boolean {
-        return (tag == ROLE_SELLER && fromUid != userSession.userId)
+        return (tag == ROLE_SELLER && fromUid != userSession.userId) && !GlobalConfig.isSellerApp()
     }
 
     private fun isFromMyselfAsSeller(fromUid: String, tag: String): Boolean {

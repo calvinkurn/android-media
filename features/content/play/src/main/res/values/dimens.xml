@@ -5,6 +5,8 @@
     <dimen name="play_player_control_spacing_right">12dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_9">9dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_20">20dp</dimen>
@@ -23,7 +25,6 @@
     <dimen name="play_product_image_radius">6dp</dimen>
 
     <dimen name="play_product_line_title_image_margin">14dp</dimen>
-    <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_line_buy_padding_start_end">20dp</dimen>
     <dimen name="play_product_line_divider_height">1dp</dimen>
     <dimen name="play_product_line_divider_start_offset">96dp</dimen>
@@ -61,9 +62,9 @@
     <dimen name="play_pip_view_radius">6dp</dimen>
 
     <dimen name="play_product_grid_radius">8dp</dimen>
-    <dimen name="play_product_featured_width">240dp</dimen>
-    <dimen name="play_product_featured_height">72dp</dimen>
-    <dimen name="play_product_featured_placeholder_width">@dimen/play_product_featured_height</dimen>
+    <dimen name="play_product_featured_width">90dp</dimen>
+    <dimen name="play_product_featured_image_height">90dp</dimen>
+    <dimen name="play_product_featured_placeholder_height">128dp</dimen>
     <dimen name="play_product_grid_more_action_size">32dp</dimen>
 
     <dimen name="play_pinned_voucher_radius">8dp</dimen>
@@ -108,6 +109,15 @@
     <!--Multiple Like-->
     <dimen name="play_like_bubble_original_size">12dp</dimen>
 
+    <!--Partner Info-->
+    <dimen name="play_follow_button_width">56dp</dimen>
+
+    <!--Featured Product-->
+    <dimen name="play_featured_product_radius">8dp</dimen>
+
+    <!--User Report-->
+    <dimen name="play_user_report_list_divider_height">0.5dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>
@@ -117,4 +127,9 @@
     <dimen name="play_offset_30">30dp</dimen>
     <dimen name="play_offset_44">44dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>
+
+    <dimen name="play_count_background_radius">16dp</dimen>
+    <dimen name="play_product_item_image_size">104dp</dimen>
+    <dimen name="play_line_spacing_4">4sp</dimen>
+    <dimen name="play_voucher_info_translationY">-2dp</dimen>
 </resources>

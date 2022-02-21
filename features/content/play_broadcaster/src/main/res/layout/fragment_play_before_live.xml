@@ -8,7 +8,13 @@
     tools:background="@color/play_dms_broadcaster_background"
     >
 
-    <include
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_play_before_live_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <include
         layout="@layout/layout_play_action_bar"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
@@ -139,7 +145,7 @@
             />
 
     </LinearLayout>
-    
+
     <com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
         android:id="@+id/follower_view"
         android:layout_width="@dimen/layout_lvl0"
@@ -203,6 +209,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
+        android:id="@+id/play_countdown_timer"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

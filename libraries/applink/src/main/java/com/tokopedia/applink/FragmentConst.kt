@@ -6,10 +6,9 @@ package com.tokopedia.applink
  */
 object FragmentConst {
     const val FEED_PLUS_CONTAINER_FRAGMENT = "com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment"
-    const val CART_FRAGMENT = "com.tokopedia.cart.bundle.view.CartFragment"
-    const val OLD_CART_FRAGMENT = "com.tokopedia.cart.old.view.CartFragment"
 
     const val DF_INSTALLER_FRAGMENT_CLASS_PATH = "com.tokopedia.dynamicfeatures.DFInstallerFragment"
-    const val REVIEW_SHOP_FRAGMENT = "com.tokopedia.review_shop.shop.view.ReviewShopFragment"
     const val UOH_LIST_FRAGMENT = "com.tokopedia.unifyorderhistory.view.fragment.UohListFragment"
+    const val WISHLIST_V2_FRAGMENT = "com.tokopedia.wishlist.view.fragment.WishlistV2Fragment"
+    const val SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH = "com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment"
 }

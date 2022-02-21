@@ -111,14 +111,16 @@ public class TopAdsGtmTracker {
             String userId,
             String irisSessionId,
             int topadsTag,
-            String dimension115
+            String dimension115,
+            String componentId
     ) {
         List<Object> impressionList = createSearchResultProductImpressionDataLayer(
                 item,
                 position,
                 dimension90,
                 topadsTag,
-                dimension115
+                dimension115,
+                componentId
         );
 
         Map<String, Object> map = DataLayer.mapOf(
@@ -149,13 +151,15 @@ public class TopAdsGtmTracker {
             int position,
             String dimension90,
             int topadsTag,
-            String dimension115
+            String dimension115,
+            String componentId
     ) {
         List<Object> impressionList = new ArrayList<>();
 
         String list = String.format(
                 TopAdsGtmTrackerConstant.SEARCH_PRODUCT_TOPADS_PRODUCTLIST,
-                String.valueOf(topadsTag)
+                String.valueOf(topadsTag),
+                componentId
         );
         Object impression = DataLayer.mapOf(
                 TopAdsGtmTrackerConstant.Product.NAME, item.getName(),
@@ -331,13 +335,15 @@ public class TopAdsGtmTracker {
             String userId,
             String dimension90,
             int topadsTag,
-            String dimension115
+            String dimension115,
+            String componentId
     ) {
         Analytics tracker = getTracker();
         if (tracker != null) {
             String list = String.format(
                     TopAdsGtmTrackerConstant.SEARCH_PRODUCT_TOPADS_PRODUCTLIST,
-                    String.valueOf(topadsTag)
+                    String.valueOf(topadsTag),
+                    componentId
             );
 
             Map<String, Object> productItemMap = DataLayer.mapOf(

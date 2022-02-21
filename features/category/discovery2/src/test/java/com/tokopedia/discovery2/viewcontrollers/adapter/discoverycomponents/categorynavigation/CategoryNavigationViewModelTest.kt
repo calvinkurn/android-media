@@ -23,7 +23,7 @@ class CategoryNavigationViewModelTest {
     private val application: Application = mockk()
     private val testString = "testData"
     private val viewModel: CategoryNavigationViewModel by lazy {
-        spyk(CategoryNavigationViewModel(application, componentsItem, 0))
+        spyk(CategoryNavigationViewModel(application, componentsItem, 99))
     }
     private val useCase: CategoryNavigationUseCase by lazy {
         mockk()
@@ -64,16 +64,20 @@ class CategoryNavigationViewModelTest {
 
         viewModel.categoryNavigationUseCase = useCase
         coEvery { useCase.getCategoryNavigationData(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-        viewModel.getCategoryNavigationData()
+        viewModel.onAttachToViewHolder()
         coVerify { useCase.getCategoryNavigationData(componentsItem.id, componentsItem.pageEndPoint) }
         assert(viewModel.getListData().value is Fail)
 
         coEvery { useCase.getCategoryNavigationData(componentsItem.id, componentsItem.pageEndPoint) } returns true
         val list = ArrayList<ComponentsItem>()
         every { componentsItem.getComponentsItem() } returns list
-        viewModel.getCategoryNavigationData()
+        viewModel.onAttachToViewHolder()
         assert(viewModel.getListData().value is Success)
         assert((viewModel.getListData().value as Success).data === list)
     }
 
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
+    }
 }

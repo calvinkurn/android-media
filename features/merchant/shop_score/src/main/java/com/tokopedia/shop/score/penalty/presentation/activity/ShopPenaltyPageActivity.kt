@@ -1,26 +1,42 @@
 package com.tokopedia.shop.score.penalty.presentation.activity
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.score.common.plt.ShopPenaltyPerformanceMonitoringListener
 import com.tokopedia.shop.score.common.plt.ShopPenaltyPltConstants
-import com.tokopedia.shop.score.common.plt.ShopScorePltConstants
+import com.tokopedia.shop.score.common.presentation.fragments.ShopPenaltyContainerFragment
 import com.tokopedia.shop.score.penalty.di.component.DaggerPenaltyComponent
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
+import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
-class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
+open class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
     ShopPenaltyPerformanceMonitoringListener {
 
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null
 
+    private val accelerometerOrientationListener: AccelerometerOrientationListener by lazy {
+        AccelerometerOrientationListener(contentResolver) {
+            onAccelerometerOrientationSettingChange(it)
+        }
+    }
 
-    override fun getNewFragment(): Fragment = ShopPenaltyPageFragment.newInstance()
+    override fun getNewFragment(): Fragment {
+        return if (DeviceScreenInfo.isTablet(this)) {
+            ShopPenaltyContainerFragment.newInstance()
+        } else {
+            ShopPenaltyPageFragment.newInstance()
+        }
+    }
 
     override fun getComponent(): PenaltyComponent {
         return DaggerPenaltyComponent
@@ -31,7 +47,31 @@ class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyCompon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setActivityOrientation()
         startPerformanceMonitoring()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (DeviceScreenInfo.isTablet(this)) {
+            accelerometerOrientationListener.register()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (DeviceScreenInfo.isTablet(this)) {
+            accelerometerOrientationListener.unregister()
+        }
+    }
+
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is TkpdBaseV4Fragment) {
+                if (it.onFragmentBackPressed()) return
+            }
+        }
+        super.onBackPressed()
     }
 
     override fun startPerformanceMonitoring() {
@@ -76,5 +116,46 @@ class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyCompon
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformance?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setActivityOrientation() {
+        if (DeviceScreenInfo.isTablet(this)) {
+            val isAccelerometerRotationEnabled = Settings.System.getInt(
+                contentResolver,
+                Settings.System.ACCELEROMETER_ROTATION,
+                0
+            ) == 1
+            requestedOrientation =
+                if (isAccelerometerRotationEnabled)
+                    ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
+        if (DeviceScreenInfo.isTablet(this)) {
+            requestedOrientation =
+                if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun clearFragments() {
+        val transaction = supportFragmentManager.beginTransaction()
+        for (fragment in supportFragmentManager.fragments) {
+            transaction.remove(fragment)
+        }
+        transaction.commitNowAllowingStateLoss()
+    }
+
+    override fun inflateFragment() {
+        if (DeviceScreenInfo.isTablet(this)) {
+            clearFragments()
+            supportFragmentManager.beginTransaction().replace(
+                com.tokopedia.abstraction.R.id.parent_view,
+                newFragment,
+                newFragment::class.java.simpleName
+            ).commitNowAllowingStateLoss()
+        } else {
+            super.inflateFragment()
+        }
     }
 }

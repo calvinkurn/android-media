@@ -1,7 +1,9 @@
 package com.tokopedia.play_common.util.extension
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -9,10 +11,12 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
@@ -25,8 +29,12 @@ import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.reflect.KProperty1
 
 /**
  * Created by jegul on 03/08/20
@@ -291,4 +299,69 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 fun dismissToaster() {
     try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+}
+
+fun SpannableStringBuilder.append(
+    text: CharSequence,
+    flags: Int,
+    vararg spans: Any,
+): SpannableStringBuilder {
+    val start = length
+    append(text)
+
+    spans.forEach { span ->
+        setSpan(span, start, length, flags)
+    }
+
+    return this
+}
+
+fun Activity.hideKeyboard() {
+    val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+}
+
+fun Fragment.hideKeyboard() {
+    activity?.hideKeyboard()
+}
+
+fun View.showKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+data class CachedState<T>(val prevValue: T? = null, val value: T) {
+
+    fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {
+        val prevState = this.prevValue
+        val currState = this.value
+
+        return when {
+            currState == null -> false
+            prevState == null -> true
+            else -> {
+                val prevValue = prop.get(prevState)
+                val currentValue = prop.get(currState)
+                prevValue != currentValue
+            }
+        }
+    }
+}
+
+fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+    var cachedValue : T? = null
+    return map {
+        val prevValue = cachedValue
+        cachedValue = it
+        CachedState(prevValue, it)
+    }
+}
+
+fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
+    value = value.fn()
+}
+
+fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
+    val value = this.value ?: return
+    this.value = value.fn()
 }

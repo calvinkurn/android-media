@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.data.ToggleProductReviewLike
+import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
@@ -152,7 +152,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_image_preview, container, false)
+        return inflater.inflate(com.tokopedia.review.R.layout.fragment_review_image_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -398,21 +398,20 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     }
                     viewModel.toggleLikeReview(
                         productReview.feedbackID,
-                        shopId,
-                        productId,
                         productReview.likeDislike.likeStatus
                     )
                 }
                 setLikeButtonImage(likeDislike.isLiked())
                 setVariantName(variantName)
                 setStats(userReviewStats)
+                setBadRatingReason(badRatingReasonFmt)
             }
             setThreeDotsVisibility(isReportable && !areComponentsHidden)
         }
     }
 
     private fun observeToggleLikeReviewResult() {
-        viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
+        viewModel.toggleLikeReviewReview.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessLikeReview(it.data)
                 is Fail -> onFailLikeReview(it.throwable)
@@ -429,11 +428,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         })
     }
 
-    private fun onSuccessLikeReview(toggleLikeReviewResponse: ToggleProductReviewLike) {
-        with(toggleLikeReviewResponse) {
-            updateLikeCount(reviewId, totalLike)
+    private fun onSuccessLikeReview(toggleLikeReviewResponseReview: ProductrevLikeReview) {
+        with(toggleLikeReviewResponseReview) {
+            updateLikeCount(feedbackId, totalLike)
             updateLikeButton(isLiked())
-            updateLikeStatus(reviewId, likeStatus)
+            updateLikeStatus(feedbackId, likeStatus)
             isLikeValueChange = true
         }
     }
@@ -548,7 +547,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             viewModel.getProductId(),
                             isFromGallery,
                             viewModel.getUserId(),
-                            it.userImage
+                            it.userImage,
+                            it.badRatingReason
                         )
                     )
             }
@@ -570,7 +570,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             productId,
                             isFromGallery,
                             viewModel.getUserId(),
-                            user.image
+                            user.image,
+                            badRatingReasonFmt
                         )
                     )
             }
@@ -591,6 +592,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             clearContentPadding = true
             isDragable = true
             isHideable = true
+            isFullpage = true
         }
     }
 
@@ -654,6 +656,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setStats(userStats)
+                        setBadRatingReason(badRatingReason)
                         setReviewerImage(userImage)
                         setLikeCount(totalLiked.toString())
                         setLikeButtonClickListener {
@@ -665,8 +668,6 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             )
                             viewModel.toggleLikeReview(
                                 feedbackId,
-                                shopId,
-                                viewModel.getProductId(),
                                 mapToLikeStatus(selectedReview.isLiked)
                             )
                         }
@@ -792,7 +793,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         userStats: List<UserReviewStats>, userId: String,
         isAnonymous: Boolean = false, isProductReview: Boolean = false, feedbackId: String = "",
         productId: String, isFromGallery: Boolean, currentUserId: String,
-        reviewerImage: String
+        reviewerImage: String, badRatingReason: String
     ): ReviewImagePreviewBottomSheetUiModel {
         return ReviewImagePreviewBottomSheetUiModel(
             rating,
@@ -809,7 +810,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             isFromGallery,
             currentUserId,
             reviewerImage,
-            getCredibilitySource()
+            getCredibilitySource(),
+            badRatingReason
         )
     }
 

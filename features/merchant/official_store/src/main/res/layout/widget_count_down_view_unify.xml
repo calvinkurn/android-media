@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="horizontal">
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hourView"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -13,18 +14,22 @@
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/Unify_R400"
-            android:textSize="@dimen/sp_12"
+            android:textSize="12sp"
             android:textStyle="bold"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="00" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/col1"
             style="@style/TextView.Small.OrangeRed.Bold"
             android:padding="2dp"
             android:text=":"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:textColor="@color/Unify_R400" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/minuteView"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -32,18 +37,22 @@
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/Unify_R400"
-            android:textSize="@dimen/sp_12"
+            android:textSize="12sp"
             android:textStyle="bold"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="00" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/col2"
             style="@style/TextView.Small.OrangeRed.Bold"
             android:padding="2dp"
             android:text=":"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:textColor="@color/Unify_R400" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/secondView"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -51,8 +60,10 @@
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/Unify_R400"
-            android:textSize="@dimen/sp_12"
+            android:textSize="12sp"
             android:textStyle="bold"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="00" />
 
 </LinearLayout>

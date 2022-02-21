@@ -6,13 +6,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/top_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         tools:visibility="visible"
-        android:visibility="gone"
-        android:background="@color/Unify_N50" />
+        android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -81,11 +80,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottom_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         tools:visibility="visible"
-        android:visibility="gone"
-        android:background="@color/Unify_N50" />
+        android:visibility="gone" />
 </LinearLayout>

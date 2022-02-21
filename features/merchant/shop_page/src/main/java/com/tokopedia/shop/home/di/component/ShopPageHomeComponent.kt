@@ -3,7 +3,7 @@ package com.tokopedia.shop.home.di.component
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.home.view.fragment.OldShopPageHomeFragment
+import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import dagger.Component
@@ -14,7 +14,7 @@ import dagger.Component
 @ShopPageHomeScope
 @Component(modules = [ShopPageHomeModule::class], dependencies = [ShopComponent::class])
 interface ShopPageHomeComponent {
-    fun inject(fragment: OldShopPageHomeFragment?)
     fun inject(fragment: ShopPageHomeFragment?)
     fun inject(bottomSheet: ShopHomeNplCampaignTncBottomSheet?)
+    fun inject(bottomSheet: ShopHomeFlashSaleTncBottomSheet?)
 }

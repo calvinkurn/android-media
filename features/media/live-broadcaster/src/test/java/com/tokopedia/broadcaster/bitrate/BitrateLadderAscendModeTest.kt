@@ -1,6 +1,6 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.tokopedia.broadcaster.LibStreamerGL
+import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.bitrate.BitrateLadderAscendMode.Companion.LOST_BANDWIDTH_TOLERANCE_FRACTION
 import com.tokopedia.broadcaster.bitrate.BitrateLadderAscendMode.Companion.NORMALIZATION_DELAY
 import io.mockk.justRun
@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class BitrateLadderAscendModeTest {
 
     private val bitrate = BitrateLadderAscendMode()
-    private val streamer = mockk<LibStreamerGL>(relaxed = true)
+    private val streamer = mockk<LarixStreamer>(relaxed = true)
 
     @Test
     fun `start ladder ascend mode properly`() {

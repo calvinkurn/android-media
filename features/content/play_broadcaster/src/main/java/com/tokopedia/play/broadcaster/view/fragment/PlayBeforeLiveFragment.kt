@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +16,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -29,6 +32,7 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
@@ -65,6 +69,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
 
+    private lateinit var clBeforeLiveContainer: ConstraintLayout
     private lateinit var ivImagePreview: ImageView
     private lateinit var tvChannelTitle: TextView
     private lateinit var llSelectedProduct: LinearLayout
@@ -73,6 +78,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var ivShareLink: ImageView
     private lateinit var flEdit: FrameLayout
+    private lateinit var countdownTimer: PlayTimerLiveCountDown
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
@@ -158,7 +164,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         initView(view)
         setupView(view)
         setupObserve()
-        setupInsets(view)
+        setupInsets()
 
         if (savedInstanceState != null) populateSavedData(savedInstanceState)
     }
@@ -191,6 +197,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun initView(view: View) {
         with(view) {
+            clBeforeLiveContainer = findViewById(R.id.cl_play_before_live_container)
             ivImagePreview = findViewById(R.id.iv_image_preview)
             tvChannelTitle = findViewById(R.id.tv_channel_title)
             tvSelectedProduct = findViewById(R.id.tv_selected_product)
@@ -199,14 +206,27 @@ class PlayBeforeLiveFragment @Inject constructor(
             followerView = findViewById(R.id.follower_view)
             ivShareLink = findViewById(R.id.iv_share_link)
             flEdit = findViewById(R.id.fl_edit)
+            countdownTimer = findViewById(R.id.play_countdown_timer)
         }
     }
 
     private fun setupView(view: View) {
         actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
-            startStreaming()
+            analytic.clickStartStreamingOnFinalSetupPage()
+            val schedule = scheduleViewModel.schedule
+            if (schedule is BroadcastScheduleUiModel.Scheduled) {
+                val currentTime = Date()
+                if (currentTime.before(schedule.time)) {
+                    getEarlyLiveStreamDialog().show()
+                    analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
+                    return@setOnClickListener
+                }
+            }
+
+            startCountDown()
         }
+
         llSelectedProduct.setOnClickListener {
             openEditProductPage()
             analytic.clickEditProductTaggingOnFinalSetupPage()
@@ -238,10 +258,12 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeChannelInfo()
     }
 
-    private fun setupInsets(view: View) {
-        view.doOnApplyWindowInsets { v, insets, padding, _ ->
+    private fun setupInsets() {
+        clBeforeLiveContainer.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
+
+        countdownTimer.setBottomWindowInsets()
     }
 
     //region observe
@@ -287,11 +309,10 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun observeCreateChannel() {
         prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
-                NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
                 is NetworkResult.Fail -> {
+                    showCountdown(false)
                     showErrorToaster(it.error)
-                    btnStartLive.setLoading(false)
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
@@ -362,11 +383,10 @@ class PlayBeforeLiveFragment @Inject constructor(
         when (state) {
             is PlayLiveViewState.Started -> {
                 openBroadcastLivePage()
-                btnStartLive.setLoading(false)
                 parentViewModel.setFirstTimeLiveStreaming()
             }
             is PlayLiveViewState.Error -> {
-                btnStartLive.setLoading(false)
+                showCountdown(false)
                 handleLivePushError(state)
             }
         }
@@ -378,7 +398,10 @@ class PlayBeforeLiveFragment @Inject constructor(
                 err = state.error,
                 customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
                 actionLabel = getString(R.string.play_broadcast_try_again),
-                actionListener = { parentViewModel.reconnectLiveStream() }
+                actionListener = {
+                    showCountdown(true)
+                    parentViewModel.reconnectLiveStream()
+                }
             )
             PlayLivePusherErrorType.SystemError -> showErrorToaster(
                 err = state.error,
@@ -386,7 +409,17 @@ class PlayBeforeLiveFragment @Inject constructor(
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
-            else -> {}
+            PlayLivePusherErrorType.NetworkLoss,
+            PlayLivePusherErrorType.NetworkPoor -> showErrorToaster(
+                err = state.error,
+                customErrMessage = getString(R.string.play_bro_error_network_problem),
+                actionLabel = getString(R.string.play_ok)
+            )
+            else -> showErrorToaster(
+                err = state.error,
+                customErrMessage = getString(R.string.play_broadcaster_default_error),
+                actionLabel = getString(R.string.play_ok)
+            )
         }
         analytic.viewErrorOnFinalSetupPage(state.error.reason)
         if (GlobalConfig.DEBUG) {
@@ -399,10 +432,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun openBroadcastLivePage() {
-        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
-                Bundle().apply {
-                    putBoolean(PlayBroadcastUserInteractionFragment.KEY_START_COUNTDOWN, true)
-                })
+        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(parentViewModel.channelId)
     }
 
@@ -441,27 +471,13 @@ class PlayBeforeLiveFragment @Inject constructor(
         }
     }
 
-    private fun startStreaming() {
-        val schedule = scheduleViewModel.schedule
-        if (schedule is BroadcastScheduleUiModel.Scheduled) {
-            val currentTime = Date()
-            if (currentTime.before(schedule.time)) {
-                getEarlyLiveStreamDialog().show()
-                analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
-                return
-            }
-        }
-
-        createLiveStream()
-    }
-
     private fun getEarlyLiveStreamDialog(): DialogUnify {
         if (!::earlyLiveStreamDialog.isInitialized) {
             earlyLiveStreamDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
                 setPrimaryCTAClickListener {
                     analytic.clickStartLiveOnBeforeScheduledDialog()
-                    createLiveStream()
+                    startCountDown()
                     dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
@@ -504,9 +520,41 @@ class PlayBeforeLiveFragment @Inject constructor(
         }
     }
 
+    private fun startCountDown() {
+        showCountdown(true)
+
+        val animationProperty = PlayTimerLiveCountDown.AnimationProperty.Builder()
+            .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
+            .setTotalCount(parentViewModel.getBeforeLiveCountDownDuration())
+            .build()
+
+        countdownTimer.startCountDown(animationProperty, object : PlayTimerLiveCountDown.Listener {
+            override fun onTick(milisUntilFinished: Long) {}
+
+            override fun onFinish() {
+                createLiveStream()
+            }
+
+            override fun onCancelLiveStream() {
+                showCountdown(false)
+                analytic.clickCancelOnCountDown(parentViewModel.channelId, parentViewModel.channelTitle)
+            }
+        })
+    }
+
+    private fun showCountdown(isShow: Boolean) {
+        if(isShow) {
+            countdownTimer.visible()
+            clBeforeLiveContainer.gone()
+        }
+        else {
+            countdownTimer.gone()
+            clBeforeLiveContainer.visible()
+        }
+    }
+
     private fun createLiveStream() {
         prepareViewModel.createLiveStream()
-        analytic.clickStartStreamingOnFinalSetupPage()
     }
 
     private fun deleteBroadcastSchedule() {
@@ -573,10 +621,11 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     companion object {
-
         private const val KEY_SETUP_DATA = "setup_data"
         private const val TAG_COVER_EDIT = "cover_edit"
         private const val TAG_PRODUCT_EDIT = "product_edit"
         private const val TAG_TITLE_AND_TAGS_EDIT = "title_and_tags_edit"
+
+        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
     }
 }

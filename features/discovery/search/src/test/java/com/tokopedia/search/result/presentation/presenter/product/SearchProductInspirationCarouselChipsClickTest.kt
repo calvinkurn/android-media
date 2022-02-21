@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
@@ -21,6 +22,8 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
+    private val searchParameter = mapOf(SearchApiConst.Q to "samsung")
+    private val expectedDimension90 = Dimension90Utils.getDimension90(searchParameter)
 
     @Test
     fun `Click inspiration carousel chips without products should call API`() {
@@ -39,7 +42,10 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
         `Then verify tracking chips click`(clickedInspirationCarouselOption)
         `Then assert view is refreshed`(adapterPosition)
-        `Then assert get inspiration carousel chips API is called`(clickedInspirationCarouselOption.identifier)
+        `Then assert get inspiration carousel chips API is called`(
+            clickedInspirationCarouselOption.identifier,
+            clickedInspirationCarouselOption.componentId,
+        )
     }
 
     private fun `Given view already load data`(searchProductModel: SearchProductModel) {
@@ -49,7 +55,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
         every { productListView.setProductList(capture(visitableListSlot)) } just runs
 
-        productListPresenter.loadData(mapOf(SearchApiConst.Q to "samsung"))
+        productListPresenter.loadData(searchParameter)
     }
 
     private fun List<Visitable<*>>.findIndexedChipsCarousel(): IndexedValue<InspirationCarouselDataView> {
@@ -77,7 +83,10 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
         )
     }
 
-    private fun `Then assert get inspiration carousel chips API is called`(expectedIdentifier: String) {
+    private fun `Then assert get inspiration carousel chips API is called`(
+        expectedIdentifier: String,
+        expectedSRPComponentId: String,
+    ) {
         val requestParamsSlot = slot<RequestParams>()
 
         verify {
@@ -86,7 +95,8 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
         }
 
         val requestParams = requestParamsSlot.captured
-        requestParams.parameters["identifier"] shouldBe expectedIdentifier
+        requestParams.parameters[SearchApiConst.IDENTIFIER] shouldBe expectedIdentifier
+        requestParams.parameters[SearchApiConst.SRP_COMPONENT_ID] shouldBe expectedSRPComponentId
     }
 
     private fun `Then verify tracking chips click`(clickedInspirationCarouselOption: InspirationCarouselDataView.Option) {
@@ -151,9 +161,10 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
         `Then verify tracking chips click`(clickedInspirationCarouselOption)
         `Then verify inspiration carousel option product is updated`(
-                clickedInspirationCarouselOption,
-                chipsProductsModel,
-                clickedPosition + 1,
+            inspirationCarouselDataView.title,
+            clickedInspirationCarouselOption,
+            chipsProductsModel,
+            clickedPosition + 1,
         )
 
         `Then verify refresh view is called twice`(adapterPosition)
@@ -172,17 +183,19 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
     }
 
     private fun `Then verify inspiration carousel option product is updated`(
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            chipsProductsModel:
-            InspirationCarouselChipsProductModel,
-            position: Int
+        expectedInspirationCarouselTitle: String,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        chipsProductsModel: InspirationCarouselChipsProductModel,
+        position: Int
     ) {
         clickedInspirationCarouselOption.product.assert(
-                chipsProductsModel.searchProductCarouselByIdentifier.product,
-                clickedInspirationCarouselOption.inspirationCarouselType,
-                clickedInspirationCarouselOption.layout,
-                position,
-                clickedInspirationCarouselOption.title,
+            chipsProductsModel.searchProductCarouselByIdentifier.product,
+            expectedInspirationCarouselTitle,
+            clickedInspirationCarouselOption.inspirationCarouselType,
+            clickedInspirationCarouselOption.layout,
+            position,
+            clickedInspirationCarouselOption.title,
+            expectedDimension90,
         )
     }
 

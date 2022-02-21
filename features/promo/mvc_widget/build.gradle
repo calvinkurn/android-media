@@ -27,7 +27,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.features.promoUiCommon)
@@ -65,5 +65,6 @@ project.ext {
     versionName = "0.0.2"
     artifactName = "merchant_voucher_widget-release"
 }
+
 
 apply from: '../../../publish_local.gradle'

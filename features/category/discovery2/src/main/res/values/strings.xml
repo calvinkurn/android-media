@@ -66,7 +66,17 @@
     <string name="choose_address_description">Biar pengalaman belanjamu lebih asyik dan mudah.</string>
     <string name="discovery_product_empty_state_title">Bagian ini gagal ditampilkan</string>
     <string name="discovery_product_empty_state_description">Sambil kami perbaiki, lihat-lihat dulu ke atas atau coba lagi.</string>
+    <string name="discovery_section_empty_state_description">Klik ikon sebelah untuk coba lagi.</string>
     <string name="discovery_error_500_action">Coba Lagi</string>
     <string name="discovery_product_stock_color">#1e31353b</string>
     <string name="share">share</string>
+    <string name="discovery_button_event_expired">Sudah Berakhir</string>
+    <string name="discovery_button_event_ongoing">Cek Sekarang</string>
+    <string name="discovery_button_event_reminder">Ingatkan</string>
+    <string name="discovery_button_event_active">Aktif</string>
+    <string name="discovery_calendar_push_error">Oops, terjadi kendala teknis. Silakan  coba lagi.</string>
+    <string name="discovery_calendar_push_subscribe">Pengingat sudah terpasang. Nantikan notifikasinya.</string>
+    <string name="discovery_calendar_push_unsubscribe">Pengingat berhasil dibatalkan.</string>
+    <string name="discovery_calendar_push_action">Oke</string>
+    <string name="discovery_calendar_line">────</string>
 </resources>

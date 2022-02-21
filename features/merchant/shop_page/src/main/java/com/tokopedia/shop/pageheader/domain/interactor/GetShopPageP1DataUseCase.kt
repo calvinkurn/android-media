@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -36,7 +37,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(
-                shopId: Int,
+                shopId: String,
                 shopDomain: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
@@ -48,7 +49,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopPageHeaderP1 {
-        val shopId: Int = params.getInt(PARAM_SHOP_ID, 0)
+        val shopId: String = params.getString(PARAM_SHOP_ID, "")
         val shopDomain: String = params.getString(PARAM_SHOP_DOMAIN, "")
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(getIsShopOfficialRequest(shopId))
@@ -82,25 +83,25 @@ class GetShopPageP1DataUseCase @Inject constructor(
         )
     }
 
-    private fun getIsShopOfficialRequest(shopId: Int): GraphqlRequest {
-        val params = GqlGetIsShopOsUseCase.createParams(shopId)
+    private fun getIsShopOfficialRequest(shopId: String): GraphqlRequest {
+        val params = GqlGetIsShopOsUseCase.createParams(shopId.toIntOrZero())
         return createGraphqlRequest<GetIsShopOfficialStore.Response>(
                 GqlGetIsShopOsUseCase.QUERY,
                 params.parameters
         )
     }
 
-    private fun getIsShopPowerMerchantRequest(shopId: Int): GraphqlRequest {
-        val params = GqlGetIsShopPmUseCase.createParams(shopId)
+    private fun getIsShopPowerMerchantRequest(shopId: String): GraphqlRequest {
+        val params = GqlGetIsShopPmUseCase.createParams(shopId.toIntOrZero())
         return createGraphqlRequest<GetIsShopPowerMerchant.Response>(
                 GqlGetIsShopPmUseCase.QUERY,
                 params.parameters
         )
     }
 
-    private fun getShopInfoTopContentDataRequest(shopId: Int, shopDomain: String): GraphqlRequest {
+    private fun getShopInfoTopContentDataRequest(shopId: String, shopDomain: String): GraphqlRequest {
         val params = GQLGetShopInfoUseCase.createParams(
-                if (shopId == 0) listOf() else listOf(shopId),
+                if (shopId.toIntOrZero() == 0) listOf() else listOf(shopId.toIntOrZero()),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_TOP_CONTENT)
@@ -111,17 +112,17 @@ class GetShopPageP1DataUseCase @Inject constructor(
         )
     }
 
-    private fun getShopInfoHomeTypeDataRequest(shopId: Int): GraphqlRequest {
-        val params = GqlShopPageGetHomeType.createParams(shopId)
+    private fun getShopInfoHomeTypeDataRequest(shopId: String): GraphqlRequest {
+        val params = GqlShopPageGetHomeType.createParams(shopId.toIntOrZero())
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
                 GqlShopPageGetHomeType.QUERY,
                 params.parameters
         )
     }
 
-    private fun getShopInfoCoreAndAssetsDataRequest(shopId: Int, shopDomain: String): GraphqlRequest {
+    private fun getShopInfoCoreAndAssetsDataRequest(shopId: String, shopDomain: String): GraphqlRequest {
         val params = GQLGetShopInfoUseCase.createParams(
-                if (shopId == 0) listOf() else listOf(shopId),
+                if (shopId.toIntOrZero() == 0) listOf() else listOf(shopId.toIntOrZero()),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_CORE, GQLGetShopInfoUseCase.FIELD_ASSETS)
@@ -132,10 +133,10 @@ class GetShopPageP1DataUseCase @Inject constructor(
         )
     }
 
-    private fun getFeedWhitelistRequest(shopId: Int): GraphqlRequest {
+    private fun getFeedWhitelistRequest(shopId: String): GraphqlRequest {
         val params = GetWhitelistUseCase.createRequestParams(
                 GetWhitelistUseCase.WHITELIST_SHOP,
-                shopId.toString()
+                shopId
         )
         return createGraphqlRequest<WhitelistQuery>(
                 mapQuery[ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST].orEmpty(),

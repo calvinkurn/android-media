@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import java.util.*
 import kotlin.collections.ArrayList
 
 data class DynamicHomeChannel(
@@ -73,22 +72,34 @@ data class DynamicHomeChannel(
             @SerializedName("banner")
             val banner: Banner = Banner(),
             @SerializedName("promoName")
+            @Expose
             var promoName: String = "",
             @SerializedName("homeAttribution")
+            @Expose
             val homeAttribution: String = "",
             @SerializedName("has_close_button")
+            @Expose
             val hasCloseButton: Boolean = false,
             @SerializedName("isAutoRefreshAfterExpired")
+            @Expose
             val isAutoRefreshAfterExpired: Boolean = false,
             @SerializedName("contextualInfo")
+            @Expose
             val contextualInfo: Int = 0,
             @SerializedName("widgetParam")
+            @Expose
             val widgetParam: String = "",
             @SerializedName("token")
+            @Expose
             var token: String = "",
             @SerializedName("dividerType")
+            @Expose
             val dividerType: Int = DIVIDER_NO_DIVIDER,
+            @SerializedName("timestamp")
+            @Expose
             var timestamp: String = "",
+            @SerializedName("isCache")
+            @Expose
             var isCache: Boolean = true
     ) : ImpressHolder() {
 
@@ -148,47 +159,6 @@ data class DynamicHomeChannel(
             ),
                     "attribution", getHomeAttribution(position + 1, grids[position].id)
             )
-        }
-
-        fun getEnhanceClickSprintSaleCarouselHomePage(position: Int, countDown: String?, label: String?): Map<String, Any> {
-            return DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "sprint sale banner click",
-                    "eventLabel", String.format("%s - %s", countDown, label),
-                    channelId, id,
-                    "ecommerce", DataLayer.mapOf(
-                    "promoClick", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    DataLayer.mapOf(
-                            "id", grids[position].id,
-                            "name", "/ - p2 - sprint sale banner",
-                            "position", (position + 1).toString(),
-                            "creative", grids[position].name,
-                            "creative_url", grids[position].imageUrl
-                    )
-            )
-            )
-            ),
-                    "attribution", getHomeAttribution(position + 1, grids[position].id)
-            )
-        }
-
-        fun convertProductEnhanceSprintSaleCarouselDataLayerForCombination(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-
-            for (i in grids.indices) {
-                val grid: Grid = grids[i]
-                list.add(
-                        DataLayer.mapOf(
-                                "id", grid.id,
-                                "name", "/ - p2 - sprint sale banner",
-                                "creative", grid.name,
-                                "position", (i + 1).toString())
-                )
-            }
-
-            return list
         }
 
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
@@ -321,7 +291,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
-            const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_SPOTLIGHT: String = "spotlight"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
@@ -347,13 +316,12 @@ data class DynamicHomeChannel(
             const val LAYOUT_CATEGORY_ICON: String = "category_icon"
             const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
+            const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
+            const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
-            const val DIVIDER_TOP = 1
-            const val DIVIDER_BOTTOM = 2
-            const val DIVIDER_TOP_AND_BOTTOM = 3
         }
     }
 

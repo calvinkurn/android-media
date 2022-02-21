@@ -1,0 +1,12 @@
+{
+  "midasGetSaldoWidgetBalance":{
+    "id":"saldo",
+    "icon":"https://images.tokopedia.net/img/payment/saldo/widget/icons/saldo.png",
+    "title":"Rp35.121.704",
+    "subtitle":"Saldo Tokopedia",
+    "subtitle_color":"#000000",
+    "applink":"tokopedia://saldo",
+    "weblink":"https://www.tokopedia.com/deposit",
+    "is_active":true
+  }
+}

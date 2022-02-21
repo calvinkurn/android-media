@@ -33,7 +33,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     //region helper function
     @Test
     fun `get aggreagator data`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val data = viewModel.getVariantAggregatorData()
 
         Assert.assertNotNull(data)
@@ -80,7 +80,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      * render without calling gql, because all of the data already provided from PDP
      */
     @Test
-    fun `render initial variant with given parent id and non hit gql tokonow tokocabang`() {
+    fun `render initial variant with given parent id and non hit gql tokonow tokocabang campaign`() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
@@ -104,10 +104,16 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 23,
-                expectedMinOrder = 1,
+                expectedMinOrder = 3, //use min order campaign
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
                 isTokoCabang = true
+        )
+
+        assertCampaign(
+                visitablesData,
+                expectedCampaignActive = true,
+                expectedDiscountedPrice = 208000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
@@ -170,7 +176,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 0,
-                expectedMinOrder = 1,
+                expectedMinOrder = 3,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
                 isTokoCabang = true
@@ -200,7 +206,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 23,
-                expectedMinOrder = 1,
+                expectedMinOrder = 3,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
                 isTokoCabang = true
@@ -215,7 +221,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      * Doesnt has product in minicart
      */
     @Test
-    fun `render initial variant with given child id and hit gql tokonow`() {
+    fun `render initial variant with given child id and hit gql tokonow campaign hide gimmick`() {
         decideSuccessValueHitGqlAggregator("2147818593", true)
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -234,6 +240,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 uspImageUrl = "icon usp",
                 isTokoCabang = false
         )
+        assertCampaign(visitablesData,
+                expectedCampaignActive = false,
+                expectedDiscountedPrice = 2000.getCurrencyFormatted())
         assertStockCopy("")
         assertButton()
         assertRestrictionData(
@@ -461,7 +470,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     //region atc
     @Test
     fun `on success delete cart`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         `on success atc tokonow`()
 
         val mockData = RemoveFromCartData(data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart")))
@@ -497,7 +506,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail delete cart`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         `on success atc tokonow`()
 
         coEvery {
@@ -530,7 +539,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success atc tokonow`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
 
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L, cartId = "2147818593"), status = "OK")
@@ -572,7 +581,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail atc`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
@@ -633,7 +642,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success ocs`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 3
         val slot = slot<RequestParams>()
 
@@ -655,7 +664,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail ocs`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 3
 
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
@@ -673,7 +682,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success occ`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
@@ -690,7 +699,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail occ`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
 
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
