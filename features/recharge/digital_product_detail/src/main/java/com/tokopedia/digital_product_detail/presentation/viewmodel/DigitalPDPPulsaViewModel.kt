@@ -112,7 +112,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun getPrefixOperator(menuId: Int) {
         _catalogPrefixSelect.value = RechargeNetworkResult.Loading
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        viewModelScope.launchCatchError(block = {
+            delay(DELAY_PREFIX_TIME)
             operatorData = repo.getOperatorList(menuId)
             _catalogPrefixSelect.value = RechargeNetworkResult.Success(operatorData)
         }) {
