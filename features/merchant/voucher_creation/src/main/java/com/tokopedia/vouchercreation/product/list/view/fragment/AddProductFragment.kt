@@ -234,7 +234,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     private fun setupSellerLocationTicker(binding: FragmentMvcAddProductBinding?, warehouseName: String, productSize: Int) {
-        val description = getString(R.string.mvc_product_seller_location_warning_message, warehouseName, productSize.toString())
+        val description = getString(R.string.mvc_product_seller_location_warning_message, productSize.toString(), warehouseName)
         binding?.tickerSellerLocationChange?.setTextDescription(description)
     }
 
@@ -397,14 +397,14 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
-//        val isSelectionChanged = viewModel.getWarehouseLocationId() != selectedWarehouseLocation.warehouseId
-//        if (viewModel.getSelectedProducts().isNotEmpty() && isSelectionChanged) {
-//            val warehouseName = selectedWarehouseLocation.warehouseName
-//            val productSize = viewModel.getSelectedProducts().size
-//            setupSellerLocationTicker(binding, warehouseName, productSize)
-//            binding?.tickerSellerLocationChange?.show()
-//        } else {
-//            binding?.tickerSellerLocationChange?.hide()
+        val isSelectionChanged = viewModel.getWarehouseLocationId() != selectedWarehouseLocation.warehouseId
+        if (viewModel.getSelectedProducts().isNotEmpty() && isSelectionChanged) {
+            val warehouseName = selectedWarehouseLocation.warehouseName
+            val productSize = viewModel.getSelectedProducts().size
+            setupSellerLocationTicker(binding, warehouseName, productSize)
+            binding?.tickerSellerLocationChange?.show()
+        } else {
+            binding?.tickerSellerLocationChange?.hide()
             viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
             viewModel.getProductList(
                     keyword = viewModel.getSearchKeyWord(),
@@ -414,7 +414,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     categoryList = viewModel.getSelectedCategoryIds(),
                     sort = viewModel.getSelectedSort()
             )
-//        }
+        }
     }
 
     override fun onApplyShowCaseFilter(selectedShowCases: List<ShowCaseSelection>) {
