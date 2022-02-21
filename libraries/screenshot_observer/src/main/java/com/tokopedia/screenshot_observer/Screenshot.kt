@@ -22,7 +22,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 
-class Screenshot @JvmOverloads constructor(
+open class Screenshot @JvmOverloads constructor(
     contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
     protected open val toasterSellerListener: ToasterSellerListener? = null
 ) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
