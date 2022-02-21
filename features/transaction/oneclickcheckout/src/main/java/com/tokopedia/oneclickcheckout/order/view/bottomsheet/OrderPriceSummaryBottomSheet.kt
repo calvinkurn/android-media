@@ -93,6 +93,15 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalPaymentFeePriceValue.gone()
         }
 
+        if (orderCost.addOnPrice > 0.0) {
+            binding.tvAddOnPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
+            binding.tvAddOnPriceLabel.visible()
+            binding.tvAddOnPriceValue.visible()
+        } else {
+            binding.tvAddOnPriceLabel.gone()
+            binding.tvAddOnPriceValue.gone()
+        }
+
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
         if (orderCost.cashbacks.isNotEmpty()) {

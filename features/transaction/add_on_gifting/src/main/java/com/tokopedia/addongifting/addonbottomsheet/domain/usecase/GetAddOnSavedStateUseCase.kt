@@ -20,28 +20,31 @@ class GetAddOnSavedStateUseCase @Inject constructor(@ApplicationContext private 
     private var params: Map<String, Any>? = null
 
     fun setParams(getAddOnSavedStateRequest: GetAddOnSavedStateRequest) {
-        params = mapOf("params" to getAddOnSavedStateRequest)
+        params = mapOf(
+                "add_on_keys" to getAddOnSavedStateRequest.addOnKeys,
+                "source" to getAddOnSavedStateRequest.source
+        )
     }
 
     override suspend fun executeOnBackground(): GetAddOnSavedStateResponse {
         // Todo : remove mock data before merge to release
-        if (mockResponse.isNotBlank()) {
-            return Gson().fromJson(mockResponse, GetAddOnSavedStateResponse::class.java)
-        }
+//        if (mockResponse.isNotBlank()) {
+//            return Gson().fromJson(mockResponse, GetAddOnSavedStateResponse::class.java)
+//        }
 
         if (params.isNullOrEmpty()) {
             throw RuntimeException("Parameter can't be null or empty!")
         }
 
-        val request = GraphqlRequest(GetAddOnByProductQuery(), GetAddOnSavedStateResponse::class.java, params)
+        val request = GraphqlRequest(GetAddOnSavedStateQuery.GQL_QUERY, GetAddOnSavedStateResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
     companion object {
         const val QUERY_NAME = "GetAddOnSavedStateQuery"
         const val QUERY = """
-            query get_add_ons {
-                get_add_ons {
+            query get_add_ons(${'$'}add_on_keys: [String], ${'$'}source: String) {
+                get_add_ons(add_on_keys: ${'$'}add_on_keys, source: ${'$'}source) {
                     error_message
                     status
                     data {
@@ -50,8 +53,7 @@ class GetAddOnSavedStateUseCase @Inject constructor(@ApplicationContext private 
                             add_on_level
                             add_on_data {
                                 add_on_id
-                                add_on_qty
-                                add_on_price
+                                add_on_qty                               
                                 add_on_metadata {
                                     add_on_note{
                                         is_custom_note

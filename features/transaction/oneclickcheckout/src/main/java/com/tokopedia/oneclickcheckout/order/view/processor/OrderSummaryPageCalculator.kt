@@ -180,7 +180,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             subtotal -= cost.productDiscountAmount
             subtotal -= cost.shippingDiscountAmount
-            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.cashbacks)
+            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.addOnPrice, cost.cashbacks)
             return@withContext orderCost to payment
         }
         OccIdlingResource.decrement()
@@ -195,6 +195,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val mapParentWholesalePrice: HashMap<String, Double> = HashMap()
             val updatedProductIndex = arrayListOf<Int>()
             var totalPurchaseProtectionPrice = 0
+            var totalAddOnPrice = 0.0
+            // This is for add on shop level
+            totalAddOnPrice += (orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice?.toDouble() ?: 0.0)
             for (productIndex in orderCart.products.indices) {
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
@@ -233,14 +236,16 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         purchaseProtectionPriceMultiplier = 1
                     }
                     totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
+                    // This is for add on product level
+                    totalAddOnPrice += (product.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice?.toDouble() ?: 0.0)
                 }
             }
             totalProductPrice += totalProductWholesalePrice
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            val subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice - productDiscount - shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
+            val subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice + totalAddOnPrice - productDiscount - shippingDiscount
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, totalAddOnPrice, cashbacks)
             return@withContext orderCost to updatedProductIndex
         }
         OccIdlingResource.decrement()
