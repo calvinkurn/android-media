@@ -17,7 +17,7 @@ class AdminRestrictionActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sah_admin_restriction_base)
+        setContentView(R.layout.activity_sah_transparent_base)
     }
 
     override fun onStart() {

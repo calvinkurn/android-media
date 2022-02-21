@@ -295,6 +295,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 unavailableItemsCartId.add(it.cartId)
             }
         }
+        tmpHiddenUnavailableItems.forEach {
+            if (it is MiniCartProductUiModel && it.isProductDisabled) {
+                unavailableItemsCartId.add(it.cartId)
+            }
+        }
 
         val tmpVisitables = getVisitables()
         var isLastItem = true

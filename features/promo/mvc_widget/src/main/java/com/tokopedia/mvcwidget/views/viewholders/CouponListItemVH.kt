@@ -4,29 +4,72 @@ import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.views.MvcDetailViewContract
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val rvImage: RecyclerView = itemView.findViewById(R.id.rvImage)
     val tv1: Typography = itemView.findViewById(R.id.tv1)
     val tv2: Typography = itemView.findViewById(R.id.tv2)
     val tv3: Typography = itemView.findViewById(R.id.tv3)
+    val tv4: Typography = itemView.findViewById(R.id.tv4)
+    val tv_info: Typography = itemView.findViewById(R.id.tv_info)
+    val rel_cta: RelativeLayout = itemView.findViewById(R.id.rel_cta)
+    val rel_info: RelativeLayout = itemView.findViewById(R.id.rel_info)
     val divider: View = itemView.findViewById(R.id.divider)
+    private val REDIRECT_CHECK = "redirect"
+    private val INFO_CHECK = "info"
 
     init {
         rvImage.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    fun setData(data: MvcCouponListItem) {
+    fun setData(data: MvcCouponListItem, contract: MvcDetailViewContract) {
         tv1.text = data.title1
         tv2.text = data.title2
         tv3.text = data.title3
+        if(data.ctaCatalog.type.isNullOrEmpty().not()) {
+            when (data.ctaCatalog.type) {
+                REDIRECT_CHECK -> {
+                    rel_cta.show()
+                    if (data.ctaCatalog.text.isNullOrEmpty().not()) {
+                        contract.getMvcTracker()?.viewMVCLockToProduct(
+                            shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
+                        tv4.text = data.ctaCatalog.text
+                    } else {
+                        rel_cta.hide()
+                    }
+                    if (data.ctaCatalog.appLink.isNullOrEmpty().not()) {
+                        rel_cta.setOnClickListener {
+                            contract.getMvcTracker()?.userClickEntryPointOnMVCLockToProduct(
+                                shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
+                            RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                        }
+                    } else {
+                        rel_cta.hide()
+                    }
+                }
+                INFO_CHECK -> {
+                    rel_info.show()
+                    if (data.ctaCatalog.text.isNullOrEmpty().not()) {
+                        tv_info.text = data.ctaCatalog.text
+                    } else {
+                        rel_info.hide()
+                    }
+                }
+            }
+        }
 
         toggleView(data.title2,tv2)
         toggleView(data.title3,tv3)
