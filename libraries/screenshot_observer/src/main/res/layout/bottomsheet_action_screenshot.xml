@@ -20,7 +20,7 @@
             android:textStyle="bold"
             android:textSize="14sp"
             android:layout_marginTop="18dp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/Unify_Static_Black"/>
 
         <View
             android:id="@+id/divider"
@@ -38,7 +38,7 @@
         android:text="Tutup"
         android:textStyle="bold"
         android:textSize="14sp"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_Static_Black"
         android:layout_marginTop="18dp"
         android:layout_marginBottom="18dp" />
 
