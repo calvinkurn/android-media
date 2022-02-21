@@ -2219,8 +2219,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     CartItemModel cartItemModel = cartItemModelList.get(i);
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
-                    // TODO : delete after get real response
-                    // if (addOnResult.getAddOnKey().equalsIgnoreCase("12345")) {
                         AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
                         setAddOnsData(addOnsDataModel, addOnResult, 0);
                     }
@@ -2234,8 +2232,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if ((shipmentCartItemModel.getCartString()+"-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-                // TODO : delete after get real response
-                // if (addOnResult.getAddOnKey().equalsIgnoreCase("12345")) {
                     AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
                     setAddOnsData(addOnsDataModel, addOnResult, 1);
                 }
