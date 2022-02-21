@@ -1001,7 +1001,7 @@ class PlayViewModel @AssistedInject constructor(
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList
                     .filterIsInstance<ProductSectionUiModel.Section>()
-                    .flatMap { it.productList } // todo: retest
+                    .flatMap { it.productList }
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
