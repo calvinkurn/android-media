@@ -2,6 +2,7 @@ package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -23,7 +25,6 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import java.util.Date
 import java.util.Calendar
-
 /**
  * @author by astidhiyaa on 27/01/22
  */
@@ -41,12 +42,15 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    private fun productScrollListener(sectionInfo: ProductSectionUiModel.Section) = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                listener.onProductImpressed(getVisibleVouchers(layoutManagerProductList(sectionInfo)), sectionInfo)
+    private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
+        itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
+            override fun onScrollChanged() {
+                itemView.isVisibleOnTheScreen(onViewVisible = { listener.onProductImpressed(getVisibleVouchers(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
+                    onViewNotVisible = {
+                        itemView.viewTreeObserver.removeOnScrollChangedListener(this)
+                    })
             }
-        }
+        })
     }
 
     private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
@@ -72,9 +76,9 @@ class ProductSectionViewHolder(
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
+        setupOnScrollListener(sectionInfo = item)
         adapter = ProductLineAdapter(setupListener(item))
         rvProducts.layoutManager = layoutManagerProductList(item)
-        rvProducts.addOnScrollListener(productScrollListener(item))
         rvProducts.adapter = adapter
 
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
