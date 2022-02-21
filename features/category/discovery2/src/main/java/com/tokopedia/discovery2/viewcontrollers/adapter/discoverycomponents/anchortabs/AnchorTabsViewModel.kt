@@ -28,6 +28,7 @@ class AnchorTabsViewModel(
     private val sectionPositionMap: MutableMap<String, Int> = mutableMapOf()
     var selectedSectionPos = 0
     var selectedSectionId = ""
+    private var sectionDeleted = false
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -96,10 +97,17 @@ class AnchorTabsViewModel(
             if (shouldSync) {
                 components.data = dataList
                 components.noOfPagesLoaded = 0
+                sectionDeleted = true
                 mapToComponents()
                 setupData()
             }
         }
+    }
+
+    fun wasSectionDeleted():Boolean{
+        val temp = sectionDeleted
+        sectionDeleted = false
+        return temp
     }
 
     fun getListSize(): Int {

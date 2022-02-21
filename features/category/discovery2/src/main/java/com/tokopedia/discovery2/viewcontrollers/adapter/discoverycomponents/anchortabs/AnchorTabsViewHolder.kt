@@ -29,7 +29,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
             return if (displayMetrics != null) {
 //                Todo:: convert to constant
-                return 200f/displayMetrics.densityDpi
+                return 150f/displayMetrics.densityDpi
             } else
                 super.calculateSpeedPerPixel(displayMetrics)
 
@@ -57,8 +57,12 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
                 mDiscoveryRecycleAdapter.addDataList(item)
                 anchorRV.post {
                     if (viewModel.selectedSectionPos < viewModel.getListSize()){
-                        smoothScroller.targetPosition = viewModel.selectedSectionPos
-                        linearLayoutManager.startSmoothScroll(smoothScroller)
+                        if(viewModel.wasSectionDeleted()){
+                            linearLayoutManager.scrollToPositionWithOffset(viewModel.selectedSectionPos,0)
+                        }else {
+                            smoothScroller.targetPosition = viewModel.selectedSectionPos
+                            linearLayoutManager.startSmoothScroll(smoothScroller)
+                        }
                     }
                 }
             })
@@ -71,7 +75,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
                 anchorRV.post {
                     if (newPos < viewModel.getListSize()) {
-                        smoothScroller.targetPosition = viewModel.selectedSectionPos
+                        smoothScroller.targetPosition = newPos
                         linearLayoutManager.startSmoothScroll(smoothScroller)
                     }
                 }
