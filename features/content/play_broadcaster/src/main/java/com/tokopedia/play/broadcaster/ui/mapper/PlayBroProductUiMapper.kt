@@ -167,9 +167,9 @@ class PlayBroProductUiMapper @Inject constructor() {
     }
 
     private fun mapCampaignStatusFromType(type: String): CampaignStatus {
-        return when(type) {
-            "Mendatang", "upcoming" -> CampaignStatus.Ready
-            "Berlangsung", "active" -> CampaignStatus.Ongoing
+        return when(type.lowercase()) {
+            "mendatang", "upcoming" -> CampaignStatus.Ready
+            "berlangsung", "active" -> CampaignStatus.Ongoing
             else -> CampaignStatus.Unknown
         }
     }
