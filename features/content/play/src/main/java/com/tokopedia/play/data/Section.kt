@@ -31,7 +31,7 @@ data class Section (
     val countdown: Countdown = Countdown(),
 
     @SerializedName("sourceID")
-    val id: String = ""
+    val id: String = "",
 
 ){
     data class Background(

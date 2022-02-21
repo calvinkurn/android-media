@@ -259,7 +259,7 @@ class PlayAnalytic(
     }
 
     fun clickProductAction(product: PlayProductUiModel.Product,
-                           sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
+                           sectionInfo: ProductSectionUiModel.Section,
                            cartId: String,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType,
@@ -670,7 +670,7 @@ class PlayAnalytic(
                                                    cartId: String,
                                                    shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - - atc in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
             else -> Pair(KEY_TRACK_CLICK + "atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
         }
         trackingQueue.putEETracking(
