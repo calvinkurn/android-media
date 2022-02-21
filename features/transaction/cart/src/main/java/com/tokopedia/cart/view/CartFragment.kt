@@ -73,7 +73,18 @@ import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
@@ -115,6 +126,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -2056,10 +2068,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddress: LocalizationChooseAddress) {
         var snippetMode = false
         var lca = ChooseAddressUtils.getLocalizingAddressData(activity)
-        lca?.let {
-            if (it.address_id.toLongOrZero() == 0L && it.district_id.toLongOrZero() != 0L) {
-                snippetMode = true
-            }
+        if (lca.address_id.toLongOrZero() == 0L && lca.district_id.toLongOrZero() != 0L) {
+            snippetMode = true
         }
 
         val newTokoNowData = localizationChooseAddress.tokoNow
@@ -2073,14 +2083,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     long = localizationChooseAddress.longitude,
                     label = String.format("%s %s", localizationChooseAddress.addressName, localizationChooseAddress.receiverName),
                     postalCode = localizationChooseAddress.postalCode,
-                    shopId = if (shouldReplaceTokoNowData) newTokoNowData.shopId else localCacheData.shop_id,
-                    warehouseId = if (shouldReplaceTokoNowData) newTokoNowData.warehouseId else localCacheData.warehouse_id,
-                    warehouses = if (shouldReplaceTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(newTokoNowData.warehouses) else localCacheData.warehouses,
-                    serviceType = if (shouldReplaceTokoNowData) newTokoNowData.serviceType else localCacheData.service_type)
+                    shopId = if (shouldReplaceTokoNowData) newTokoNowData.shopId else lca.shop_id,
+                    warehouseId = if (shouldReplaceTokoNowData) newTokoNowData.warehouseId else lca.warehouse_id,
+                    warehouses = if (shouldReplaceTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(newTokoNowData.warehouses) else lca.warehouses,
+                    serviceType = if (shouldReplaceTokoNowData) newTokoNowData.serviceType else lca.service_type)
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     localData = lca)
         } else if (shouldReplaceTokoNowData) {
+            // no need to update lca variable, because tokonow data is not used in presenter
             ChooseAddressUtils.updateTokoNowData(
                 context = activity,
                 shopId = newTokoNowData.shopId,
