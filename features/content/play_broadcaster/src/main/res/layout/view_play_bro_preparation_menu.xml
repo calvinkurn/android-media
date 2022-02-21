@@ -5,7 +5,8 @@
     android:id="@+id/cl_preparation_list"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:background="@color/black">
+    tools:background="@color/black"
+    >
 
     <!-- Title -->
     <androidx.constraintlayout.widget.ConstraintLayout

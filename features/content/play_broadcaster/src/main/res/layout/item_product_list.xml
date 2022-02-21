@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackgroundBorderless"
+    app:cardBackgroundColor="@color/Unify_Background"
     app:cardCornerRadius="@dimen/play_product_preview_radius"
     app:cardUseCompatPadding="true"
     >
@@ -102,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:maxLines="2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 tools:text="ROCKBROS YPK027 Bicycle Pants Trousers"
                 />
@@ -112,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp4.890.000"
@@ -141,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl2"
                     android:maxLines="1"
-                    android:textColor="@color/Neutral_N700_32"
+                    android:textColor="@color/Unify_N700_32"
                     app:typographyType="small"
                     tools:text="Rp2.950.000"
                     />
