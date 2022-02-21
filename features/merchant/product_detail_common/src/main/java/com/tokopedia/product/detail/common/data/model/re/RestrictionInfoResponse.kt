@@ -18,6 +18,7 @@ data class RestrictionInfoResponse(
     companion object {
         const val SHOP_FOLLOWERS_TYPE = "shop_follower"
         const val SHOP_EXCLUSIVE_TYPE = "exclusive_discount"
+        const val GAMIFICATION_TYPE = "gamification_eligible_rp0"
 
         const val CATEGORIES_KYC_STATUS_TYPE = "category_user_kyc_status"
         const val CATEGORIES_AGE_TYPE = "category_user_kyc_age"
@@ -57,6 +58,10 @@ data class RestrictionData(
 
     fun restrictionExclusiveType(): Boolean {
         return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.SHOP_EXCLUSIVE_TYPE
+    }
+
+    fun restrictionGamificationType(): Boolean {
+        return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.GAMIFICATION_TYPE
     }
 }
 
