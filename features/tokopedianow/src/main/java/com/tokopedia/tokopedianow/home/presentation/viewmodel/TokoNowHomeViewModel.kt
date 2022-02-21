@@ -201,7 +201,6 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val warehouseId = localCacheModel.warehouse_id
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
             )
@@ -215,8 +214,6 @@ class TokoNowHomeViewModel @Inject constructor(
                 localCacheModel,
                 userSession.isLoggedIn
             )
-
-            getLayoutComponentData(warehouseId)
 
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
@@ -460,14 +457,29 @@ class TokoNowHomeViewModel @Inject constructor(
      * Example: Category Grid get its data from TokonowCategoryTree.
      * @param warehouseId Id obtained from choose address widget
      */
-    private suspend fun getLayoutComponentData(warehouseId: String) {
-        homeLayoutItemList.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
-            homeLayoutItemList.setStateToLoading(it)
+    fun getLayoutComponentData(warehouseId: String) {
+        launchCatchError(block = {
+            homeLayoutItemList.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
+                homeLayoutItemList.setStateToLoading(it)
 
-            when (val item = it.layout) {
-                is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-                else -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+                when (val item = it.layout) {
+                    is HomeLayoutUiModel -> {
+                        getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
+                    }
+                    else -> {
+                        getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+                    }
+                }
+
+                val data = HomeLayoutListUiModel(
+                    items = getHomeVisitableList(),
+                    state = TokoNowLayoutState.UPDATE
+                )
+
+                _homeLayoutList.postValue(Success(data))
             }
+        }) {
+            _homeLayoutList.postValue(Fail(it))
         }
     }
 

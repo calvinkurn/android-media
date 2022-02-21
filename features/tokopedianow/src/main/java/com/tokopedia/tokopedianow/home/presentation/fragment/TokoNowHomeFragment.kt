@@ -1120,7 +1120,14 @@ class TokoNowHomeFragment: Fragment(),
         stickyLoginLoadContent()
         getProductAddToCartQuantity()
         showSwitcherCoachMark()
+        getLayoutComponentData()
         stopRenderPerformanceMonitoring()
+    }
+
+    private fun getLayoutComponentData() {
+        localCacheModel?.let {
+            viewModelTokoNow.getLayoutComponentData(it.warehouse_id)
+        }
     }
 
     private fun showSwitcherCoachMark() {
