@@ -1,5 +1,9 @@
 package com.tokopedia.play.broadcaster.model.interactive
 
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveType
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
@@ -13,7 +17,7 @@ class InteractiveUiModelBuilder {
     fun buildLeaderboardInfoModel(
         leaderboardWinners: List<PlayLeaderboardUiModel> = buildLeaderboardWinnerList(3),
         totalParticipant: String = "1",
-        config: PlayLeaderboardConfigUiModel = buildConfigModel(),
+        config: PlayLeaderboardConfigUiModel = buildLeaderboardConfigModel(),
     ) = PlayLeaderboardInfoUiModel(
         leaderboardWinners = leaderboardWinners,
         totalParticipant = totalParticipant,
@@ -53,7 +57,7 @@ class InteractiveUiModelBuilder {
         topChatMessage = topChatMessage,
     )
 
-    fun buildConfigModel(
+    fun buildLeaderboardConfigModel(
         sellerMessage: String = "",
         winnerMessage: String = "",
         winnerDetail: String = "",
@@ -65,5 +69,37 @@ class InteractiveUiModelBuilder {
         winnerDetail = winnerDetail,
         loserMessage = loserMessage,
         loserDetail = loserDetail,
+    )
+
+    fun buildInteractiveConfigModel(
+        isActive: Boolean = true,
+        nameGuidelineHeader: String = "",
+        nameGuidelineDetail: String = "",
+        timeGuidelineHeader: String = "",
+        timeGuidelineDetail: String = "",
+        durationInMs: Long = 1000,
+        availableStartTimeInMs: List<Long> = List(5) { it.toLong() },
+    ) = InteractiveConfigUiModel(
+        isActive = isActive,
+        nameGuidelineHeader = nameGuidelineHeader,
+        nameGuidelineDetail = nameGuidelineDetail,
+        timeGuidelineHeader = timeGuidelineHeader,
+        timeGuidelineDetail = timeGuidelineDetail,
+        durationInMs = durationInMs,
+        availableStartTimeInMs = availableStartTimeInMs,
+    )
+
+    fun buildCurrentInteractiveModel(
+        id: Long = 0L,
+        type: InteractiveType = InteractiveType.Unknown,
+        title: String = "",
+        timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,
+        endGameDelayInMs: Long = 0L
+    ) = PlayCurrentInteractiveModel(
+        id = id,
+        type = type,
+        title = title,
+        timeStatus = timeStatus,
+        endGameDelayInMs = endGameDelayInMs,
     )
 }
