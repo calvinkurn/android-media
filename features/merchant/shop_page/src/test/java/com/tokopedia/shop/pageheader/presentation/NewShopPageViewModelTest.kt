@@ -85,9 +85,6 @@ class NewShopPageViewModelTest {
     lateinit var getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>
 
     @RelaxedMockK
-    lateinit var getShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>
-
-    @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
 
@@ -120,7 +117,6 @@ class NewShopPageViewModelTest {
                 getShopPageHeaderLayoutUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
-                getShopOperationalHoursListUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 testCoroutineDispatcherProvider
         )

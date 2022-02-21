@@ -81,7 +81,6 @@ class NewShopPageViewModel @Inject constructor(
         private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val gqlGetShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
@@ -454,20 +453,6 @@ class NewShopPageViewModel @Inject constructor(
                 )
         )
         return useCase.executeOnBackground()
-    }
-
-    fun getShopOperationalHoursList(shopId: String) {
-        launchCatchError(dispatcherProvider.io, block =  {
-
-            val useCase = gqlGetShopOperationalHoursListUseCase.get().apply {
-                params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
-            }
-            val response = useCase.executeOnBackground()
-            _shopOperationalHoursListData.postValue(Success(response))
-
-        }) {
-            _shopOperationalHoursListData.postValue(Fail(it))
-        }
     }
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
