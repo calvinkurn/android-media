@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.utils
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -30,7 +29,12 @@ object DateTimeUtil {
         return sdf.format(timeMillis)
     }
 
-    fun format(timeMillis: Long, pattern: String, timeZone: TimeZone, locale: Locale = getLocale()): String {
+    fun format(
+        timeMillis: Long,
+        pattern: String,
+        timeZone: TimeZone,
+        locale: Locale = getLocale()
+    ): String {
         val sdf = SimpleDateFormat(pattern, locale).apply {
             setTimeZone(timeZone)
         }
@@ -45,7 +49,7 @@ object DateTimeUtil {
             sourceDate?.let {
                 return outputSdf.format(it)
             }
-            throw RuntimeException("invalid date format")
+            return dateStr
         } catch (e: Exception) {
             dateStr
         }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -32,13 +33,19 @@ class GetCalendarDataUseCase(
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
+        private const val KEY_START_DATE = "start_date"
+        private const val KEY_END_DATE = "end_date"
 
         fun createParams(dataKeys: List<CalendarFilterDataKeyUiModel>): RequestParams {
             return RequestParams.create().apply {
                 val mDataKeys = dataKeys.map {
-                    DataKeyModel(
+                    val map = mapOf(
+                        KEY_START_DATE to it.startDate,
+                        KEY_END_DATE to it.endDate,
+                    )
+                    return@map DataKeyModel(
                         key = it.dataKey,
-                        jsonParams = "{\"start_date\":\"${it.startDate}\", \"end_date\": \"${it.endDate}\"}"
+                        jsonParams = Gson().toJson(map)
                     )
                 }
                 putObject(DATA_KEYS, mDataKeys)

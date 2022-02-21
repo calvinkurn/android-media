@@ -1,11 +1,13 @@
 package com.tokopedia.sellerhomecommon.common.const
 
+import com.tokopedia.kotlin.extensions.view.ZERO
+
 /**
  * Created by @ilhamsuaib on 09/02/22.
  */
 
 object ShcConst {
-    const val INT_0 = 0
+    val INT_0 = Int.ZERO
     const val INT_1 = 1
     const val INT_6 = 6
     const val INT_24 = 24
