@@ -134,15 +134,15 @@ object MvcLockedToProductMapper {
             reviewCount = productResponse.totalReview.toIntOrZero(),
             labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
             nonVariant = ProductCardModel.NonVariant(
-                quantity = 0,
-                minQuantity = 0,
+                quantity = productResponse.productInCart.qty,
+                minQuantity = 1,
                 maxQuantity = productResponse.stock
             )
         )
     }
 
     private fun createVariantProductCardModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
-        return ProductCardModel(
+        var productCardModel = ProductCardModel(
             productName = productResponse.name,
             productImageUrl = productResponse.imageUrl,
             formattedPrice = productResponse.displayPrice,
@@ -156,9 +156,39 @@ object MvcLockedToProductMapper {
             ratingCount = productResponse.rating,
             countSoldRating = getProductCardRating(productResponse.averageRating),
             reviewCount = productResponse.totalReview.toIntOrZero(),
-            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
-            hasAddToCartButton = true
-        )
+            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
+        ).let {
+            val productInCartQuantity = productResponse.productInCart.qty
+            if( productInCartQuantity != 0){
+                it.copy(
+                    nonVariant = ProductCardModel.NonVariant(
+                        quantity = productInCartQuantity,
+                        minQuantity = 1,
+                        maxQuantity = productResponse.stock
+                    )
+                )
+            }else{
+                it.copy(
+                    hasAddToCartButton = true
+                )
+            }
+        }
+        val productInCartQuantity = productResponse.productInCart.qty
+        productCardModel = if( productInCartQuantity != 0){
+            productCardModel.copy(
+                hasAddToCartButton = false,
+                nonVariant = ProductCardModel.NonVariant(
+                    quantity = productInCartQuantity,
+                    minQuantity = 0,
+                    maxQuantity = productResponse.stock
+                )
+            )
+        }else{
+            productCardModel.copy(
+                hasAddToCartButton = true
+            )
+        }
+        return productCardModel
     }
 
     private fun createProductCardModelPhase1(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {

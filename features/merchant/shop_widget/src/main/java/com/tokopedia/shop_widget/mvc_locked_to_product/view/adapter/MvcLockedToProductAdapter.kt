@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop_widget.customview.OnStickySingleHeaderListener
 import com.tokopedia.shop_widget.customview.StickySingleHeaderView
@@ -24,7 +28,7 @@ class MvcLockedToProductAdapter(
             it::class.java == MvcLockedToProductSortSectionUiModel::class.java
         }
 
-    override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder? {
+    override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val stickyViewType = getItemViewType(stickyHeaderPosition)
         val view = onCreateViewItem(parent, stickyViewType)
         return typeFactory.createViewHolder(view, stickyViewType)
@@ -34,8 +38,8 @@ class MvcLockedToProductAdapter(
         if (viewHolder is MvcLockedToProductSortSectionViewHolder) {
             visitables.filterIsInstance(MvcLockedToProductSortSectionUiModel::class.java)
                 .firstOrNull()?.let {
-                viewHolder.bind(it)
-            }
+                    viewHolder.bind(it)
+                }
         }
     }
 
@@ -103,19 +107,21 @@ class MvcLockedToProductAdapter(
     }
 
     private fun hideVoucherSortPlaceholder(newList: MutableList<Visitable<*>>) {
-        visitables.filterIsInstance<MvcLockedToProductVoucherSortPlaceholderUiModel>().firstOrNull()?.let {
-            if (newList.contains(it)) {
-                newList.remove(it)
+        visitables.filterIsInstance<MvcLockedToProductVoucherSortPlaceholderUiModel>().firstOrNull()
+            ?.let {
+                if (newList.contains(it)) {
+                    newList.remove(it)
+                }
             }
-        }
     }
 
     private fun hideProductGridListPlaceholder(newList: MutableList<Visitable<*>>) {
-        visitables.filterIsInstance<MvcLockedToProductGridListPlaceholderUiModel>().firstOrNull()?.let {
-            if (newList.contains(it)) {
-                newList.remove(it)
+        visitables.filterIsInstance<MvcLockedToProductGridListPlaceholderUiModel>().firstOrNull()
+            ?.let {
+                if (newList.contains(it)) {
+                    newList.remove(it)
+                }
             }
-        }
     }
 
     private fun hideLoadingMore(newList: MutableList<Visitable<*>>) {
@@ -147,22 +153,27 @@ class MvcLockedToProductAdapter(
     }
 
     fun updateTotalProductAndSortData(selectedSortData: MvcLockedToProductSortUiModel) {
-        val uiModel = visitables.filterIsInstance<MvcLockedToProductSortSectionUiModel>()
-            .firstOrNull()
-        uiModel?.let {
-            it.selectedSortData = selectedSortData
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<MvcLockedToProductSortSectionUiModel>().firstOrNull()?.let {
+            val position = newList.indexOf(it)
+            newList.setElement(position, it.copy(selectedSortData = selectedSortData))
         }
-        val index = visitables.indexOf(uiModel)
-        if (index >= 0 && index < visitables.size)
-            notifyItemChanged(index)
+        submitList(newList)
     }
 
     fun getVoucherName(): String {
-        return visitables.filterIsInstance<MvcLockedToProductVoucherUiModel>().firstOrNull()?.baseCode.orEmpty()
+        return visitables.filterIsInstance<MvcLockedToProductVoucherUiModel>()
+            .firstOrNull()?.baseCode.orEmpty()
     }
 
     fun getVoucherUiModel(): MvcLockedToProductVoucherUiModel? {
         return visitables.filterIsInstance<MvcLockedToProductVoucherUiModel>().firstOrNull()
+    }
+
+    fun getProductUiModel(productId: String): MvcLockedToProductGridProductUiModel? {
+        return visitables.filterIsInstance<MvcLockedToProductGridProductUiModel>().firstOrNull {
+            it.productID == productId
+        }
     }
 
     fun getFirstProductCardPosition(): Int {
@@ -171,31 +182,105 @@ class MvcLockedToProductAdapter(
         }
     }
 
-    fun updateProductCardMvcVariantAtc(productId: String) {
-        val ggz = visitables.filterIsInstance<MvcLockedToProductGridProductUiModel>().first {
-            it.productID ==  productId
-        }.apply {
-            productCardModel = productCardModel.copy(
-                hasAddToCartButton = false,
-                nonVariant = ProductCardModel.NonVariant(
-                    quantity = 1,
-                    minQuantity = 0,
-                    maxQuantity = 10
+    fun updateProductListDataWithMiniCartData(data: MiniCartSimplifiedData) {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<MvcLockedToProductGridProductUiModel>().forEach { productUiModel ->
+            val matchedMiniCartItem = getMatchedMiniCartItem(productUiModel, data)
+            val position = visitables.indexOf(productUiModel)
+            if(matchedMiniCartItem != null){
+                val miniCartProductId = matchedMiniCartItem.productId
+                val quantity =  matchedMiniCartItem.quantity
+                newList.setElement(
+                    position, productUiModel.copy(
+                        productInCart = MvcLockedToProductGridProductUiModel.ProductInCart(
+                            miniCartProductId,
+                            quantity
+                        ),
+                        productCardModel = getMvcProductCardModel(
+                            productUiModel,
+                            quantity
+                        )
+                    )
+                )
+            } else {
+                if(productUiModel.productInCart.productId.isNotEmpty()){
+                    newList.setElement(
+                        position, productUiModel.copy(
+                            productInCart = MvcLockedToProductGridProductUiModel.ProductInCart(),
+                            productCardModel = getMvcProductCardModel(
+                                productUiModel,
+                                Int.ZERO
+                            )
+                        )
+                    )
+                }
+            }
+        }
+        submitList(newList)
+    }
+
+    private fun getMatchedMiniCartItem(
+        productUiModel: MvcLockedToProductGridProductUiModel,
+        miniCartData: MiniCartSimplifiedData
+    ): MiniCartItem? {
+        val isVariant = productUiModel.isVariant
+        return miniCartData.miniCartItems.firstOrNull {
+            if (isVariant) {
+                it.productId == productUiModel.productID || productUiModel.childIDs.contains(it.productId)
+            } else {
+                it.productId == productUiModel.productID
+            }
+        }
+    }
+
+    private fun getMvcProductCardModel(
+        productUiModel: MvcLockedToProductGridProductUiModel,
+        productQuantityInCart: Int
+    ): ProductCardModel {
+        return if (productUiModel.isVariant) {
+            if (productQuantityInCart.isZero()) {
+                productUiModel.productCardModel.copy(
+                    hasAddToCartButton = true,
+                    nonVariant = null
+                )
+            } else {
+                productUiModel.productCardModel.copy(
+                    hasAddToCartButton = false,
+                    nonVariant = ProductCardModel.NonVariant(
+                        quantity = productQuantityInCart,
+                        minQuantity = 1,
+                        maxQuantity = productUiModel.stock
+                    )
+                )
+            }
+        } else {
+            productUiModel.productCardModel.copy(
+                nonVariant = productUiModel.productCardModel.nonVariant?.copy(
+                    quantity = productQuantityInCart
                 )
             )
         }
-        notifyItemChanged(visitables.indexOf(ggz))
     }
 
-    fun updateProductCardMvcVariantAtcToDefault(productId: String) {
-        val ggz = visitables.filterIsInstance<MvcLockedToProductGridProductUiModel>().first {
-            it.productID ==  productId
-        }.apply {
-            productCardModel = productCardModel.copy(
-                hasAddToCartButton = true,
-                nonVariant = null
-            )
+    private fun <E> MutableList<E>.setElement(index: Int, element: E) {
+        if (index in 0 until size) {
+            set(index, element)
         }
-        notifyItemChanged(visitables.indexOf(ggz))
+    }
+
+    fun resetProductVariantQuantity(productId: String, quantity: Int) {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<MvcLockedToProductGridProductUiModel>().firstOrNull {
+            it.childIDs.contains(productId)
+        }?.let{
+            val visitablePosition =  visitables.indexOf(it)
+            newList.setElement(visitablePosition, it.copy(
+                productInCart = MvcLockedToProductGridProductUiModel.ProductInCart(),
+                productCardModel = getMvcProductCardModel(
+                    it,
+                    quantity
+                )
+            ))
+        }
     }
 }

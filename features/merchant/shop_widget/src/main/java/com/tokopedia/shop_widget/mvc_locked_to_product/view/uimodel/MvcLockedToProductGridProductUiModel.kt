@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.MvcLockedToProductTypeFactory
 
-class MvcLockedToProductGridProductUiModel(
+data class MvcLockedToProductGridProductUiModel(
     val productID: String = "",
     val finalPrice: String = "",
     val childIDs: List<String> = listOf(),

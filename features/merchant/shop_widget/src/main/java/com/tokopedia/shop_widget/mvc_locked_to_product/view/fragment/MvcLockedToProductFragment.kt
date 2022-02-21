@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -22,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -36,6 +36,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.databinding.FragmentMvcLockedToProductBinding
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTracking
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.model.MvcLockedToProductAddToCartTracker
 import com.tokopedia.shop_widget.mvc_locked_to_product.di.component.DaggerMvcLockedToProductComponent
 import com.tokopedia.shop_widget.mvc_locked_to_product.di.component.MvcLockedToProductComponent
 import com.tokopedia.shop_widget.mvc_locked_to_product.di.module.MvcLockedToProductModule
@@ -146,38 +147,39 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         observeUpdateCartLiveData()
         observeDeleteCartLiveData()
         observeMiniCartLiveData()
+        observeMvcAddToCartTrackerLiveData()
         loadInitialData()
         sendOpenScreenTracker()
     }
 
-    private fun observeDeleteCartLiveData() {
-        viewModel?.miniCartRemove?.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    getMiniCart()
-                    showToaster(
-                        message = it.data.second,
-                        type = Toaster.TYPE_NORMAL
-                    )
+    private fun observeMvcAddToCartTrackerLiveData() {
+        viewModel?.mvcAddToCartTracker?.observe(viewLifecycleOwner, {
+            when (it.atcType) {
+                MvcLockedToProductAddToCartTracker.AtcType.ADD -> {
+                    sendClickAddToCartTracker(it)
                 }
-                is Fail -> {
-                    val message = it.throwable.message.orEmpty()
-                    showToaster(message = message, type = Toaster.TYPE_ERROR)
+                MvcLockedToProductAddToCartTracker.AtcType.UPDATE_ADD, MvcLockedToProductAddToCartTracker.AtcType.UPDATE_REMOVE -> {
+                    sendUpdateCartProductQuantityTracker(it)
+                }
+                else -> {
+                    sendRemoveCartProductTracker(it)
                 }
             }
         })
     }
 
     private fun observeMiniCartLiveData() {
-        viewModel?.miniCart?.observe(viewLifecycleOwner, Observer {
+        viewModel?.miniCart?.observe(viewLifecycleOwner, {
             if (it is Success) {
+                viewBinding?.rvProductList?.invalidateItemDecorations()
+                adapter.updateProductListDataWithMiniCartData(it.data)
                 initMiniCart(it.data, adapter.getVoucherUiModel())
             }
         })
     }
 
     private fun observeAddToCartLiveData() {
-        viewModel?.miniCartAdd?.observe(viewLifecycleOwner, Observer {
+        viewModel?.miniCartAdd?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     getMiniCart()
@@ -196,8 +198,45 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun sendClickAddToCartTracker(atcTrackerModel: MvcLockedToProductAddToCartTracker) {
+        adapter.getProductUiModel(atcTrackerModel.productId)?.let {
+            tracking.sendClickAddToCartTracker(
+                atcTrackerModel.cartId,
+                it,
+                voucherId,
+                atcTrackerModel.quantity,
+                shopId,
+                userId,
+                isSellerView
+            )
+        }
+    }
+
+    private fun sendUpdateCartProductQuantityTracker(atcTrackerModel: MvcLockedToProductAddToCartTracker) {
+        tracking.sendClickUpdateProductQuantityTracker(
+            atcTrackerModel.productId,
+            atcTrackerModel.quantity,
+            atcTrackerModel.atcType,
+            shopId,
+            userId,
+            isSellerView
+        )
+    }
+
+    private fun sendRemoveCartProductTracker(atcTrackerModel: MvcLockedToProductAddToCartTracker) {
+        tracking.sendClickAtcTrashButton(
+            atcTrackerModel.productId,
+            atcTrackerModel.quantity,
+            atcTrackerModel.atcType,
+            shopId,
+            userId,
+            voucherId,
+            isSellerView
+        )
+    }
+
     private fun observeUpdateCartLiveData() {
-        viewModel?.miniCartUpdate?.observe(viewLifecycleOwner, Observer {
+        viewModel?.miniCartUpdate?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     updateMiniCartWidget()
@@ -207,6 +246,24 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                         message = it.throwable.message.orEmpty(),
                         type = Toaster.TYPE_ERROR
                     )
+                }
+            }
+        })
+    }
+
+    private fun observeDeleteCartLiveData() {
+        viewModel?.miniCartRemove?.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    getMiniCart()
+                    showToaster(
+                        message = it.data.second,
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
+                is Fail -> {
+                    val message = it.throwable.message.orEmpty()
+                    showToaster(message = message, type = Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -542,8 +599,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 context = requireContext(),
                 productId = uiModel.productID,
                 pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-                isTokoNow = true,
                 shopId = shopId,
+                dismissAfterTransaction = true,
                 startActivitResult = this::startActivityForResult
             )
         } else {
@@ -551,23 +608,29 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onProductVariantQuantityZero(productId: String) {
-        adapter.updateProductCardMvcVariantAtcToDefault(productId)
+    override fun onProductVariantQuantityChanged(
+        productInCart: MvcLockedToProductGridProductUiModel.ProductInCart,
+        quantity: Int
+    ) {
+        if(quantity.isZero()){
+            adapter.resetProductVariantQuantity(productInCart.productId, quantity)
+        }
+        handleAtcFlow(productInCart.productId, quantity, shopId)
     }
 
-    override fun onProductNonVariantVariantAtc(
+    override fun onProductNonVariantAtcQuantityChanged(
         productId: String,
         quantity: Int
     ) {
         if (isUserLogin) {
-            addProductToCart(productId, quantity, shopId)
+            handleAtcFlow(productId, quantity, shopId)
         } else {
             redirectToLoginPage()
         }
     }
 
-    private fun addProductToCart(productId: String, quantity: Int, shopId: String) {
-        viewModel?.addProductToCart(productId, quantity, shopId)
+    private fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
+        viewModel?.handleAtcFlow(productId, quantity, shopId)
     }
 
     private fun redirectToLoginPage() {
@@ -578,10 +641,22 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
-                adapter.updateProductCardMvcVariantAtc("2148252387")
+        context?.let {
+            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+//                adapter.updateProductCardMvcVariantAtc(this.parentProductId)
             }
+        }
+        when (requestCode) {
+//            AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
+//                if(resultCode == Activity.RESULT_OK){
+//                    adapter.updateProductCardMvcVariantAtc("2148252387")
+//                    val cacheId = data?.getStringExtra(AtcVariantHelper.ATC_VARIANT_CACHE_ID).orEmpty()
+//                    val cacheManager = SaveInstanceCacheManager(context, cacheId)
+//
+//                    val result: ProductVariantResult = cacheManager.get(AtcVariantHelper.PDP_PARCEL_KEY_RESULT, ProductVariantResult::class.java)
+//                        ?: return
+//                }
+//            }
             REQUEST_CODE_USER_LOGIN -> {
                 loadInitialData()
             }
@@ -623,7 +698,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private fun getMiniCart() {
         adapter.getVoucherUiModel()?.let{
             val shopId = listOf(shopId)
-//            val warehouseId = chooseAddressLocalCacheModel?.warehouse_id
             viewModel?.getMiniCart(shopId)
         }
     }
