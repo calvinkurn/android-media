@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="thumbImg" type="id"/>
+    <item name="exoProgressBar" type="id"/>
+    <item name="product_video_texture" type="id"/>
+</resources>

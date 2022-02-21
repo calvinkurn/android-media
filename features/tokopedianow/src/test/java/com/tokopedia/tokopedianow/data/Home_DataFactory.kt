@@ -140,10 +140,10 @@ fun createLoadingState(): HomeLayoutListUiModel {
     )
 }
 
-fun createEmptyState(id: String): HomeLayoutListUiModel {
+fun createEmptyState(id: String, serviceType: String): HomeLayoutListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, hostSource = TokoNowRepurchaseFragment.SOURCE)
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, hostSource = TokoNowRepurchaseFragment.SOURCE, serviceType = serviceType)
     mutableList.add(chooseAddressUiModel)
     mutableList.add(emptyStateUiModel)
     return HomeLayoutListUiModel(

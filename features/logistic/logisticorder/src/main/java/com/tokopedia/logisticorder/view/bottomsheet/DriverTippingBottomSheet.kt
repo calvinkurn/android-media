@@ -4,7 +4,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.*
 import android.text.style.BulletSpan
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,6 @@ import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -185,9 +183,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
                     tvTipResultDesc.text = MethodChecker.fromHtml(getString(com.tokopedia.logisticorder.R.string.tipping_result_desc))
                     tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
-                    tvDriverNameValue.text = logisticDriverModel.lastDriver.name
-                    tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
-                    tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
+                    tvDriverNameValue.text = logisticDriverModel.tippingLastDriver.name
+                    tvPhoneNumberValue.text = logisticDriverModel.tippingLastDriver.phone
+                    tvLicenseValue.text = logisticDriverModel.tippingLastDriver.licenseNumber
                     if (logisticDriverModel.payment.methodIcon.isNotEmpty()) {
                         tippingMethod.setImageUrl(logisticDriverModel.payment.methodIcon)
                     } else {
