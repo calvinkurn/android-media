@@ -1,0 +1,29 @@
+{
+  "readme": "Home merchant voucher view, click shop, click product, and view all",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "merchant voucher multiple - view coupon",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "{coupon_code} - {coupon_type} - {creative_name} //coupon type: Cashback / Bebas Ongkir",
+          "creative_slot": "{horizontal_card_position}",
+          "item_id": "{banner_id}_{shop_id}",
+          "item_name": "/ - p{{x}} - merchant_voucher_multiple - banner - {{header name}}"
+        },
+        {
+          "creative_name": "{coupon_code} - {coupon_type} - {creative_name} //coupon type: Cashback / Bebas Ongkir",
+          "creative_slot": "{horizontal_card_position}",
+          "item_id": "{banner_id}_{shop_id}",
+          "item_name": "/ - p{{x}} - merchant_voucher_multiple - banner - {{header name}}"
+        }
+      ],
+      "userId": "{user_id}"
+    }
+  ]
+}

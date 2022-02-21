@@ -11,10 +11,9 @@ class Constant{
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
         const val ECOMMERCE = "ecommerce"
-        const val PROMOTIONS = "promotions"
 
         val impressionEventList by lazy{
-            listOf("productView", "promoView", "viewProduct", "view_item")
+            listOf("productView", "promoView", "viewProduct")
         }
     }
 }

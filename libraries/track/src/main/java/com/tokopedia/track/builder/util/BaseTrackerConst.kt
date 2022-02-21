@@ -2,7 +2,6 @@ package com.tokopedia.track.builder.util
 
 import android.os.Bundle
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.util.BaseTrackerConst.Value.FORMAT_2_ITEMS_UNDERSCORE
@@ -220,11 +219,6 @@ abstract class BaseTrackerConst {
                     PROMO_VIEW, getPromotionsMap(promotions))
         }
 
-        fun getEcommercePromoV5View(promotions: List<PromotionV5>): Map<String, Any> {
-            return DataLayer.mapOf(
-                    PROMO_VIEW, getPromotionsV5Map(promotions))
-        }
-
         fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any> {
             return DataLayer.mapOf(
                     PROMO_VIEW,
@@ -241,10 +235,6 @@ abstract class BaseTrackerConst {
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
-        }
-
-        fun getPromotionsV5Map(promotions: List<PromotionV5>): Map<String, Any> {
-            return DataLayer.mapOf(PROMOTIONS, promotions)
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
@@ -297,12 +287,6 @@ abstract class BaseTrackerConst {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun getPromotionsV5(promotions: List<PromotionV5>): List<Any>{
-            val list = ArrayList<Map<String,Any>>()
-            promotions.forEach { list.add(createPromotionV5Map(it)) }
-            return DataLayer.listOf(*list.toTypedArray<Any>())
-        }
-
         private fun getProducts(products: List<Product>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it)) }
@@ -336,15 +320,6 @@ abstract class BaseTrackerConst {
             map[KEY_POSITION] = promotion.position
             if(promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
             if(promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
-            return map
-        }
-
-        private fun createPromotionV5Map(promotion: PromotionV5) : Map<String, String>{
-            val map = HashMap<String, String>()
-            map[KEY_CREATIVE_NAME] = promotion.creativeName
-            map[KEY_CREATIVE_SLOT] = promotion.creativeSlot
-            map[KEY_ITEM_ID] = promotion.itemId
-            map[KEY_ITEM_NAME] = promotion.itemName
             return map
         }
 

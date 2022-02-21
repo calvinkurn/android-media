@@ -27,20 +27,6 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
         return this
     }
 
-    override fun constructBasicPromotionV5View(event: String,
-                                             eventCategory: String,
-                                             eventAction: String,
-                                             eventLabel: String,
-                                             promotions: ArrayList<PromotionV5>): BaseTrackerBuilderInterface {
-        dataLayer = DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Promotion.KEY, promotions)
-        return this
-    }
-
     override fun constructBasicProductView(event: String,
                                            eventCategory: String,
                                            eventAction: String,

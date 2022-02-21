@@ -65,7 +65,6 @@ public class GTMAnalytics extends ContextAnalytics {
     public static final String CLIENT_ID = "clientId";
     public static final String SESSION_IRIS = "sessionIris";
     public static final String PROMOVIEW = "promoview";
-    public static final String VIEW_ITEM = "view_item";
     private static final String EMPTY_DEFAULT_VALUE = "none / other";
     private static final String KEY_DIMENSION_40 = "dimension40";
     private static final String KEY_EVENT = "event";
@@ -90,7 +89,6 @@ public class GTMAnalytics extends ContextAnalytics {
             KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
     };
     private static final String ECOMMERCE = "ecommerce";
-    private static final String PROMOTIONS = "promotions";
     private final Iris iris;
     private final RemoteConfig remoteConfig;
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
@@ -255,7 +253,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
 
         // https://tokopedia.atlassian.net/browse/AN-19138
-        if (!value.containsKey(ECOMMERCE) && !value.containsKey(PROMOTIONS)) {
+        if (!value.containsKey(ECOMMERCE)) {
             sendGeneralEvent(value);
             return;
         }
@@ -348,7 +346,6 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_LABEL, value.remove(KEY_LABEL) + "");
 
         Map<String, Object> ecommerce = (Map<String, Object>) value.remove("ecommerce");
-        ArrayList<Map<String, Object>> promotions = (ArrayList<Map<String, Object>>) value.remove("promotions");
         if (keyEvent != null) {
             switch (keyEvent.toLowerCase()) {
                 case PRODUCTVIEW:
@@ -373,9 +370,6 @@ public class GTMAnalytics extends ContextAnalytics {
                     break;
                 case PROMOCLICK:
                     promoClickBundle(bundle, ecommerce);
-                    break;
-                case VIEW_ITEM:
-                    promoViewBundle(bundle, promotions);
                     break;
             }
         }
@@ -571,15 +565,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void promoViewBundle(Bundle bundle, ArrayList<Map<String, Object>> promotions) {
-        ArrayList<Bundle> promotionBundles = new ArrayList<>();
-        for (int i = 0; i < promotions.size(); i++) {
-            Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
-            promotionBundles.add(promotionMapV5(promotion));
-        }
-        bundle.putParcelableArrayList("promotions", promotionBundles);
-    }
-
     private void promoView(Bundle bundle, Map<String, Object> ecommerce) {
         Map<String, Object> promoView = (Map<String, Object>) ecommerce.remove("promoView");
         Object promotionObj = promoView.remove("promotions");
@@ -762,17 +747,6 @@ public class GTMAnalytics extends ContextAnalytics {
         promotionsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);    // promotion slot name: ex: /p/fashion-wanita - p1 - slider banner
         promotionsBundle.putString(FirebaseAnalytics.Param.CREATIVE_NAME, creative);
         promotionsBundle.putString(FirebaseAnalytics.Param.CREATIVE_SLOT, position);
-
-        // custom dimension
-        for (Map.Entry<String, Object> entry : value.entrySet()) {
-            promotionsBundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
-        }
-        return promotionsBundle;
-
-    }
-
-    private Bundle promotionMapV5(Map<String, Object> value) {
-        Bundle promotionsBundle = new Bundle();
 
         // custom dimension
         for (Map.Entry<String, Object> entry : value.entrySet()) {
@@ -1079,8 +1053,6 @@ public class GTMAnalytics extends ContextAnalytics {
             case TRANSACTION:
                 keyEvent = FirebaseAnalytics.Event.ECOMMERCE_PURCHASE;
                 break;
-            case VIEW_ITEM:
-                keyEvent = PROMOVIEW;
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);

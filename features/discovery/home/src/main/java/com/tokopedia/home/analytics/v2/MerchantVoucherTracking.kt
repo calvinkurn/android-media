@@ -169,15 +169,15 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             merchantVoucherImpressed.headerName
         )
         val listPromotions = arrayListOf(
-            PromotionV5(
-                creativeName = creativeName,
-                creativeSlot = creativeSlot,
-                itemId = itemId,
-                itemName = itemName
+            Promotion(
+                creative = creativeName,
+                position = creativeSlot,
+                id = itemId,
+                name = itemName
             )
         )
-        return trackingBuilder.constructBasicPromotionV5View(
-                event = Event.VIEW_ITEM,
+        return trackingBuilder.constructBasicPromotionView(
+                event = Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
                 eventLabel = Label.NONE,
