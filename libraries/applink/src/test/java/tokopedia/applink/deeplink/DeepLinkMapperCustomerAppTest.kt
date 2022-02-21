@@ -1218,6 +1218,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check address list appLink then should return tokopedia internal manage address in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ADDRESS, expectedDeepLink)
+    }
+
+    @Test
     fun `check flight appLink then should return tokopedia internal ticket detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://pesawat/dashboard"
         assertEqualsDeepLinkMapper(ApplinkConst.FLIGHT, expectedDeepLink)

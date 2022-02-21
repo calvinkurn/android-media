@@ -27,11 +27,12 @@ class OfficialHomeMapper (
         private val context: Context,
         private val dispatchers: CoroutineDispatchers
 ){
-    var listOfficialStore = mutableListOf<Visitable<*>>()
+    val listOfficialStore : List<Visitable<*>> get() =  _listOfficialStore
+    private var _listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
-        private const val BENEFIT_POSITION = 1
-        private const val FEATURE_SHOP_POSITION = 2
+        const val BENEFIT_POSITION = 1
+        const val FEATURE_SHOP_POSITION = 2
         const val RECOM_WIDGET_POSITION = 3
         const val WIDGET_NOT_FOUND = -1
     }
@@ -61,44 +62,61 @@ class OfficialHomeMapper (
                 newList.add(officialBanner)
             }
         }
-        listOfficialStore = newList
+        _listOfficialStore = newList
         adapter?.submitList(newList)
     }
 
     fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialBenefitDataModel }
-
-            val benefit = OfficialBenefitDataModel(benefits.benefits)
-
-            if(index == -1) add(BENEFIT_POSITION, benefit)
-            else set(index, benefit)
-
-            adapter?.submitList(this.toMutableList())
+        val newList = mutableListOf<Visitable<*>>()
+        val benefit = OfficialBenefitDataModel(benefits.benefits)
+        listOfficialStore.toMutableList().forEach {
+            if(it is OfficialBenefitDataModel) {
+                newList.add(benefit)
+            }
+            else {
+                newList.add(it)
+            }
         }
+        val isBenefitNotExisted = newList.indexOfFirst { it is OfficialBenefitDataModel } == WIDGET_NOT_FOUND
+        if(isBenefitNotExisted) {
+            if(newList.size > BENEFIT_POSITION) {
+                newList.add(BENEFIT_POSITION, benefit)
+            }
+            else {
+                newList.add(benefit)
+            }
+        }
+        _listOfficialStore = newList
+        adapter?.submitList(newList)
     }
 
     //this is old featured brand from external api
     //now doubles with featured brand on dynamic channel
     fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialFeaturedShopDataModel }
-
-            val officialFeaturedShop = OfficialFeaturedShopDataModel(
-                    featuredShop.featuredShops,
-                    featuredShop.header,
-                    categoryName.toEmptyStringIfNull(),
-                    listener
-            )
-            if(index == -1) {
-                if(size < FEATURE_SHOP_POSITION) add(officialFeaturedShop)
-                else add(FEATURE_SHOP_POSITION, officialFeaturedShop)
-            } else {
-                set(index, officialFeaturedShop)
+        val newList = mutableListOf<Visitable<*>>()
+        val officialFeaturedShop = OfficialFeaturedShopDataModel(
+            featuredShop.featuredShops,
+            featuredShop.header,
+            categoryName.toEmptyStringIfNull(),
+            listener
+        )
+        listOfficialStore.toMutableList().forEach {
+            if(it is OfficialFeaturedShopDataModel) {
+                newList.add(officialFeaturedShop)
             }
-
-            adapter?.submitList(this.toMutableList())
+            else {
+                newList.add(it)
+            }
         }
+        val isOfficialFeaturedShopNotExisted = newList.indexOfFirst { it is OfficialFeaturedShopDataModel } == WIDGET_NOT_FOUND
+        if (isOfficialFeaturedShopNotExisted && newList.size > FEATURE_SHOP_POSITION) {
+            newList.add(FEATURE_SHOP_POSITION, officialFeaturedShop)
+        }
+        else {
+            newList.add(officialFeaturedShop)
+        }
+        _listOfficialStore = newList
+        adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
@@ -174,41 +192,41 @@ class OfficialHomeMapper (
                     else -> views.add(DynamicChannelDataModel(officialStore))
                 }
             }
-            listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }
-            listOfficialStore.addAll(views)
+            _listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }
+            _listOfficialStore.addAll(views)
             adapter?.submitList(listOfficialStore.toMutableList())
         }
     }
 
     fun mappingProductRecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
-        listOfficialStore.add(ProductRecommendationTitleDataModel(title))
+        _listOfficialStore.add(ProductRecommendationTitleDataModel(title))
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
         productRecommendation.recommendationItemList.forEach {
-            listOfficialStore.add(ProductRecommendationDataModel(it, listener))
+            _listOfficialStore.add(ProductRecommendationDataModel(it, listener))
         }
-        listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
+        _listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
-        listOfficialStore.run {
+        _listOfficialStore.run {
             removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
             adapter?.submitList(this.toMutableList())
         }
     }
 
     fun showLoadingMore(adapter: OfficialHomeAdapter?){
-        listOfficialStore.run {
+        _listOfficialStore.run {
             this.add(OfficialLoadingMoreDataModel())
             adapter?.submitList(this.toMutableList())
         }
     }
 
     fun removeFlashSale(adapter: OfficialHomeAdapter?){
-        listOfficialStore.run {
+        _listOfficialStore.run {
             removeAll {
                 it is DynamicChannelDataModel || it is ProductRecommendationDataModel
             }
@@ -217,7 +235,7 @@ class OfficialHomeMapper (
     }
 
     fun updateWishlist(wishlist: Boolean, position: Int, adapter: OfficialHomeAdapter?) {
-        listOfficialStore.run {
+        _listOfficialStore.run {
             (getOrNull(position) as? ProductRecommendationDataModel)?.let { recom ->
                 val newRecom = recom.copy(
                         productItem = recom.productItem.copy(isWishlist = wishlist)
@@ -229,8 +247,8 @@ class OfficialHomeMapper (
     }
 
     fun resetState(adapter: OfficialHomeAdapter?) {
-        listOfficialStore.clear()
-        listOfficialStore.add(BANNER_POSITION, OfficialLoadingDataModel())
+        _listOfficialStore.clear()
+        _listOfficialStore.add(BANNER_POSITION, OfficialLoadingDataModel())
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
@@ -292,7 +310,7 @@ class OfficialHomeMapper (
                 newList.add(it)
             }
         }
-        listOfficialStore = newList
+        _listOfficialStore = newList
         action.invoke(newList.toMutableList())
     }
 
@@ -303,7 +321,7 @@ class OfficialHomeMapper (
                 newList.add(it)
             }
         }
-        listOfficialStore = newList
+        _listOfficialStore = newList
         action.invoke(newList.toMutableList())
     }
 
@@ -313,16 +331,20 @@ class OfficialHomeMapper (
         copyListOfficialStore.forEach {
             if (it is BestSellerDataModel && it.channelId == data.channelId) {
                 newList.add(data)
-            }
-            else {
+            } else {
                 newList.add(it)
             }
         }
-        val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
+        val isBestSellerWidgetNotExist =
+            copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
         if (isBestSellerWidgetNotExist) {
-            newList.add(RECOM_WIDGET_POSITION, data)
+            if (newList.size > RECOM_WIDGET_POSITION) {
+                newList.add(RECOM_WIDGET_POSITION, data)
+            } else {
+                newList.add(data)
+            }
         }
-        listOfficialStore = newList
+        _listOfficialStore = newList
         action.invoke(newList)
     }
 
@@ -335,7 +357,7 @@ class OfficialHomeMapper (
                 newList.add(it)
             }
         }
-        listOfficialStore = newList
+        _listOfficialStore = newList
         action.invoke(newList)
     }
 }

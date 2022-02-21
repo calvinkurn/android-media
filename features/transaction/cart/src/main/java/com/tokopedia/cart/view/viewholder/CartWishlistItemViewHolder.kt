@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.common.utils.Utils
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
@@ -66,7 +67,7 @@ class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBinding
 
     private fun renderShopName(element: CartWishlistItemHolderData) {
         binding.textShopName.apply {
-            text = element.shopName
+            text = Utils.getHtmlFormat(element.shopName)
             val marginFour = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
             val marginNine = itemView.context.resources.getDimension(R.dimen.dp_9).toInt()
             if (binding.imgShopBadge.visibility == View.VISIBLE) {
