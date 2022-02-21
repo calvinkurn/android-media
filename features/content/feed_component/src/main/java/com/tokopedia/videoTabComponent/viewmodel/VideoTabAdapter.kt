@@ -3,10 +3,15 @@ package com.tokopedia.videoTabComponent.viewmodel
 import android.app.Activity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
-import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
-import com.tokopedia.videoTabComponent.domain.model.data.*
+import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 
 /**
@@ -78,4 +83,43 @@ class VideoTabAdapter(
         return getItem(it) is PlaySlotTabMenuUiModel
     }
 
+
+    fun getPositionInList(channelId: String, positionOfItem: Int): Int {
+        itemList.forEachIndexed { index, playFeedUiModel ->
+            if (playFeedUiModel is PlayWidgetMediumUiModel) {
+                val item = playFeedUiModel.model.items[positionOfItem]
+                if (item is PlayWidgetChannelUiModel) {
+                    if (channelId == item.channelId)
+                        return index
+                }
+            }
+
+
+        }
+        return -1
+    }
+
+    fun updateItemInList(position: Int, channelId: String, reminderType: PlayWidgetReminderType) {
+        val list = mutableListOf<PlayFeedUiModel>()
+        itemList.forEachIndexed { index, playFeedUiModel ->
+            if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
+                val model = (itemList[position] as PlayWidgetMediumUiModel)
+                val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
+                list.add(updatedItem)
+            } else {
+                list.add(playFeedUiModel)
+            }
+        }
+        setItems(list)
+        notifyItemChanged(position)
+    }
+
+    private fun updateWidgetActionReminder(model: PlayWidgetUiModel, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel {
+        return model.copy(
+                items = model.items.map { mediumWidget ->
+                    if (mediumWidget is PlayWidgetChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(reminderType = reminderType)
+                    else mediumWidget
+                }
+        )
+    }
 }

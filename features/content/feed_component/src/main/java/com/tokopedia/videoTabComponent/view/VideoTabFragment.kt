@@ -22,6 +22,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
@@ -31,9 +32,9 @@ import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.clearTabMenuPosition
-import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.getTabMenuPosition
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
@@ -96,6 +97,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun initVar() {
+        requireActivity().clearTabMenuPosition()
         playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@VideoTabFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
@@ -114,6 +116,14 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         playFeedVideoTabViewModel.run {
+            reminderObservable.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is Success -> if (it.data != null) onSuccessReminderSet(it.data)
+                    else -> {
+                        showToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), Toaster.TYPE_ERROR)
+                    }
+                }
+            })
             getPlayInitialDataRsp.observe(lifecycleOwner, Observer {
 //                hideAdapterLoading()
                 when (it) {
@@ -259,6 +269,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             "onToggleReminderClicked PlayWidgetMediumView $channelId",
             Toast.LENGTH_SHORT
         ).show()
+        playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
     }
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
@@ -358,4 +369,24 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         super.onDestroy()
         requireActivity().clearTabMenuPosition()
     }
+    private fun showToast(message: String, type: Int, actionText: String? = null) {
+        if (actionText?.isEmpty() == false)
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
+        else {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
+
+        }
+    }
+    private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
+        showToast(
+                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), Toaster.TYPE_NORMAL)
+
+        val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
+        adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
+//        adapter.notifyItemChanged(adapterPositionForItem)
+
+    }
+
+
 }
