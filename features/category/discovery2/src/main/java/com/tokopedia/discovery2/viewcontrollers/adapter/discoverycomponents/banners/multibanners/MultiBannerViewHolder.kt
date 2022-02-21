@@ -51,7 +51,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
                 constraintLayout.removeAllViews()
                 bannersItemList = ArrayList()
                 bannerName = item?.name ?: ""
-                addBanners(item.data!!)
+                addBanners(item.data!!,item.properties?.compType)
             }
         })
 
@@ -134,7 +134,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         }
     }
 
-    private fun addBanners(data: List<DataItem>) {
+    private fun addBanners(data: List<DataItem>, compType: String?) {
         val constraintSet = ConstraintSet()
         val height = multiBannerViewModel.getBannerUrlHeight()
         val width = multiBannerViewModel.getBannerUrlWidth()
@@ -148,10 +148,10 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             bannerItem.positionForParentItem = multiBannerViewModel.position
             bannerView = if (index == 0) {
                 BannerItem(bannerItem, constraintLayout, constraintSet, width, height,bannerItem.itemWeight, index,
-                        null, context, isLastItem)
+                        null, context, isLastItem,compType)
             } else {
                 BannerItem(bannerItem, constraintLayout, constraintSet, width, height,bannerItem.itemWeight, index,
-                        bannersItemList.get(index - 1), context, isLastItem)
+                        bannersItemList.get(index - 1), context, isLastItem,compType)
             }
             bannersItemList.add(bannerView)
 

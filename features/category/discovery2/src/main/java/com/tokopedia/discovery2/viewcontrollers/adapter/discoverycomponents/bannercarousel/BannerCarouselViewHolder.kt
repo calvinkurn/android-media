@@ -136,6 +136,8 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         val list: ArrayList<ComponentsItem> = ArrayList()
         list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
         list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 
