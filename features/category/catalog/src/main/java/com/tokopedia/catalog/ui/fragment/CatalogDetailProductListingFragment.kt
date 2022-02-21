@@ -27,6 +27,7 @@ import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogProductCardListener
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogSearchApiConst
@@ -104,6 +105,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
         private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
+        const val MORE_CATALOG_WIDGET_INDEX = 4
 
         @JvmStatic
         fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
@@ -275,6 +277,15 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         })
 
+        observeMoreCatalogProductData()
+    }
+
+    private fun observeMoreCatalogProductData(){
+        viewModel.mCatalogComparisonSuccess.observe(viewLifecycleOwner,{ dataSuccess ->
+            if(dataSuccess == true){
+                product_recyclerview.adapter?.notifyItemChanged(MORE_CATALOG_WIDGET_INDEX)
+            }
+        })
     }
 
     private fun setHeaderCount(totalProductsCount : String){
@@ -402,6 +413,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId)
         } else {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        }
+    }
+
+    override fun onCatalogProductClicked(model: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison?) {
+        context?.let {
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${model?.id}")
         }
     }
 

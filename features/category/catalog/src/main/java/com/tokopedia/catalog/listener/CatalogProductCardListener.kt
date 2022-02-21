@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.listener
 
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 
 
@@ -18,4 +19,6 @@ interface CatalogProductCardListener {
     }
 
     fun hasThreeDots() = false
+
+    fun onCatalogProductClicked(model : CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison?)
 }
