@@ -174,8 +174,6 @@ class PlayBroProductUiMapper @Inject constructor() {
         }
     }
 
-
-
     private fun Long.forceToUTCWithoutTimezone(): Date {
         val calendar = Calendar.getInstance()
         calendar.time = Date(this)
