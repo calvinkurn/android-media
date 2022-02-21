@@ -45,6 +45,18 @@ class PayLaterActivationViewModel @Inject constructor(
     var price = 0.0
     var shopId: String? = null
 
+    var selectedProductId = ""
+    var selectedGatewayId= "0"
+    var selectedTenureSelected = "0"
+    var selectedGatewayCode = ""
+    var occRedirectionUrl = ""
+
+    fun setProductId(productId:String) { selectedProductId = productId }
+    fun setGatewayId(gatewayId:String) { selectedGatewayId = gatewayId }
+    fun setTenure(tenure:String) { selectedTenureSelected = tenure }
+    fun setGatewayCode(gatewayCode:String) { selectedGatewayCode = gatewayCode }
+
+
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
 
@@ -142,7 +154,11 @@ class PayLaterActivationViewModel @Inject constructor(
         if(addToCartOcc.isStatusError())
             _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()?:""))
         else {
+            occRedirectionUrl =   ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${selectedTenureSelected}" +
+                    "&gateway_code=${gatewayToChipMap[selectedGatewayId.toInt()]?.gateway_code ?: ""}" +
+                    "&fintech"
             _addToCartLiveData.value = Success(addToCartOcc)
+
         }
     }
 

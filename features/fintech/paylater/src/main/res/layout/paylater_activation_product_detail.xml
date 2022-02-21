@@ -47,10 +47,10 @@
         android:id="@+id/quantityEditor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/divider_two"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
         android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toTopOf="@id/divider_two"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_one"
         app:qty_default_value="1"
@@ -61,12 +61,11 @@
         android:id="@+id/limiterMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="small"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:textColor="@color/Unify_RN500"
         app:layout_constraintRight_toRightOf="@id/quantityEditor"
         app:layout_constraintTop_toBottomOf="@id/quantityEditor"
-        tools:text="Minimum quantity is 1"
-        android:layout_marginTop="@dimen/unify_space_4"
-        />
+        app:typographyType="small"
+        tools:text="Minimum quantity is 1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
