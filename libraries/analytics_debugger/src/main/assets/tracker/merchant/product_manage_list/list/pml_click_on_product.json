@@ -1,11 +1,11 @@
 {
-  "readme": "Product Manage - click edit stock toggle active",
+  "readme": "Product Manage - click on product",
   "mode": "subset",
   "query": [
     {
       "eventCategory": "product list page",
       "event": "clickManageProduct",
-      "eventAction": "click on edit stock - toggle active product active",
+      "eventAction": "click on product",
       "eventLabel": ".+"
     }
   ]
