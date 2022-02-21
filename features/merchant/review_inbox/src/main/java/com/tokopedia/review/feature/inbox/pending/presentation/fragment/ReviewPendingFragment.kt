@@ -365,23 +365,11 @@ class ReviewPendingFragment :
 
     private fun initView() {
         setupErrorPage()
-        setupEmptyState()
     }
 
     private fun setupErrorPage() {
         binding?.reviewPendingConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
-        }
-    }
-
-    private fun setupEmptyState() {
-        binding?.reviewPendingEmpty?.apply {
-            reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
-            reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
-            reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
-            reviewEmptyButton.setOnClickListener {
-                goToHome()
-            }
         }
     }
 
@@ -399,14 +387,6 @@ class ReviewPendingFragment :
 
     private fun hideList() {
         binding?.reviewPendingSwipeRefresh?.hide()
-    }
-
-    private fun showEmptyState() {
-        binding?.reviewPendingEmpty?.root?.show()
-    }
-
-    private fun hideEmptyState() {
-        binding?.reviewPendingEmpty?.root?.hide()
     }
 
     private fun showFullPageLoading() {
@@ -472,7 +452,7 @@ class ReviewPendingFragment :
                     hideFullPageLoading()
                     hideError()
                     hideLoading()
-                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         addCredibilityCarouselWidget(it.data.banners)
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
@@ -492,13 +472,11 @@ class ReviewPendingFragment :
                 is LoadingView -> {
                     showFullPageLoading()
                     hideError()
-                    hideEmptyState()
                 }
                 is Fail -> {
                     hideFullPageLoading()
                     if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showError()
-                        hideEmptyState()
                         hideList()
                     } else {
                         showErrorToaster(
@@ -556,7 +534,6 @@ class ReviewPendingFragment :
     }
 
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {
-        hideEmptyState()
         showList()
         renderList(reviewData, hasNextPage)
     }
@@ -632,28 +609,6 @@ class ReviewPendingFragment :
         reviewPendingPreference = ReviewPendingPreference(context)
     }
 
-    private fun shouldShowCredibility(): Boolean {
-        return isNewCredibilityEnabled()
-    }
-
-    private fun isNewCredibilityEnabled(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY,
-                RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET
-            ) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
-        }
-        return false
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform
-        } catch (e: java.lang.IllegalStateException) {
-            null
-        }
-    }
-
     private fun showCredibilityEmptyState(imageUrl: String, title: String, subtitle: String) {
         (adapter as? ReviewPendingAdapter)?.insertEmptyModel(
             ReviewPendingEmptyUiModel(
@@ -665,12 +620,8 @@ class ReviewPendingFragment :
     }
 
     private fun handleEmptyState(emptyImageUrl: String, labelTitle: String, labelSubtitle: String) {
-        if (shouldShowCredibility()) {
-            showCredibilityEmptyState(emptyImageUrl, labelTitle, labelSubtitle)
-            showList()
-        } else {
-            showEmptyState()
-        }
+        showCredibilityEmptyState(emptyImageUrl, labelTitle, labelSubtitle)
+        showList()
     }
 
     private fun refresh() {

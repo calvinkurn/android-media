@@ -6,8 +6,10 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
+import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.stub.chatroom.view.customview.FakeTopChatViewStateImpl
+import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 
 open class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
@@ -45,6 +47,12 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
     override fun onDetach() {
         SUCCESS_CHANGE_ADDRESS = false
         super.onDetach()
+    }
+
+    override fun uploadImage(image: ImageUploadServiceModel) {
+        UploadImageChatServiceStub.enqueueWork(
+                context!!, image, viewModel.roomMetaData.msgId
+        )
     }
 
     companion object {

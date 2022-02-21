@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -25,13 +26,13 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -39,7 +40,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSear
 import com.tokopedia.tokopedianow.searchcategory.utils.*
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -50,27 +50,28 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryViewModel @Inject constructor (
-        baseDispatcher: CoroutineDispatchers,
-        @param:Named(TOKONOW_CATEGORY_L1)
+    baseDispatcher: CoroutineDispatchers,
+    @param:Named(TOKONOW_CATEGORY_L1)
         val categoryL1: String,
-        @param:Named(TOKONOW_CATEGORY_L2)
+    @param:Named(TOKONOW_CATEGORY_L2)
         val categoryL2: String,
-        @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
+    @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
-        @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
+    @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
-        @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
+    @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
-        getFilterUseCase: UseCase<DynamicFilterModel>,
-        getProductCountUseCase: UseCase<String>,
-        getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        cartService: CartService,
-        getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-        getRecommendationUseCase: GetRecommendationUseCase,
-        private val getCategoryListUseCase: GetCategoryListUseCase,
-        chooseAddressWrapper: ChooseAddressWrapper,
-        abTestPlatformWrapper: ABTestPlatformWrapper,
-        userSession: UserSessionInterface,
+    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getProductCountUseCase: UseCase<String>,
+    getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    cartService: CartService,
+    getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    getRecommendationUseCase: GetRecommendationUseCase,
+    private val getCategoryListUseCase: GetCategoryListUseCase,
+    setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    chooseAddressWrapper: ChooseAddressWrapper,
+    abTestPlatformWrapper: ABTestPlatformWrapper,
+    userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -80,6 +81,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
+        setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -160,6 +162,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         return TitleDataView(
             titleType = CategoryTitle(headerDataView.title),
             hasSeeAllCategoryButton = true,
+            serviceType = chooseAddressData?.service_type.orEmpty(),
+            is15mAvailable = chooseAddressData?.warehouses?.find { it.service_type == ServiceType.NOW_15M }?.warehouse_id.orZero() != 0L
         )
     }
 
@@ -177,7 +181,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         listOf(
             createAisleItem(navigation?.prev),
             createAisleItem(navigation?.next),
-        )
+        ),
+        chooseAddressData?.service_type.orEmpty()
     )
 
     private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {
@@ -269,9 +274,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     fun onCategoryGridRetry() {
         processEmptyState(true)
     }
-
-    override fun getPageSourceForGeneralSearchTracking() =
-        "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
     private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
         openScreenTrackingUrlMutableLiveData.value = CategoryTrackerModel(
