@@ -792,14 +792,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
-        // Todo : set param on afpb
-
         // Add on currently only support single product on OCC
         val orderProduct = orderProducts.value.firstOrNull()
         val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
         if (orderProduct != null) {
             if (addOnResult != null) {
-                if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER /*&& addOnResult.addOnKey == "${orderCart.cartString}-0"*/) {
+                if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") {
                     orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
                     orderProducts.value = listOf(orderProduct)
 
