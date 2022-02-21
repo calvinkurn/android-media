@@ -24,6 +24,28 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".profileinfo.view.activity.ProfileInfoActivity"
+            android:label="@string/title_setting_profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_new_profile_info"
+                    android:scheme="@string/internal_scheme" />
+
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneActivity"
             android:label=""
