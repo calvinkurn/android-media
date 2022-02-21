@@ -137,5 +137,4 @@ object ContentWidgetTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-
 }

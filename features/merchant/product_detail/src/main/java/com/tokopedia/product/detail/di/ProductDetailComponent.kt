@@ -20,5 +20,4 @@ interface ProductDetailComponent {
     fun inject(fragment: DynamicProductDetailFragment)
     fun inject(bottomSheetFragment: AddToCartDoneBottomSheet)
     fun inject(productDetailBottomSheet: ProductDetailInfoBottomSheet)
-    fun inject(gopayLinkBenefitBottomSheet: GopayLinkBenefitBottomSheet)
 }

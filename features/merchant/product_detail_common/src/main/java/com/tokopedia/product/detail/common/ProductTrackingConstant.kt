@@ -278,8 +278,6 @@ object ProductTrackingConstant {
         const val EVENT_CLICK_COURIER = "clickCourier"
     }
 
-
-
     object Affiliate {
         const val CLICK_AFFILIATE = "clickAffiliate"
         const val CATEGORY = "product detail page tokopedia by.me"
