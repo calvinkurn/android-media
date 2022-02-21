@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.model.websocket
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
@@ -140,5 +142,39 @@ class WebSocketUiModelBuilder {
         name = name,
         message = message,
         isSelfMessage = isSelfMessage,
+    )
+
+    /** PINNED_MESSAGE */
+    fun buildPinnedMessageString(
+        channelId: Int = 1,
+        pinnedMessageId: Int = 1,
+        title: String = "",
+        message: String = "",
+        imageUrl: String = "",
+        redirectUrl: String = "",
+    ) = """
+        {
+            "type": "PINNED_MESSAGE",
+            "data": {
+            	"channel_id" : $channelId,
+            	"pinned_message_id" : $pinnedMessageId,
+            	"title" : "$title",
+            	"message" : "$message",
+                "imageUrl": "$imageUrl",
+            	"redirect_url" : "$redirectUrl"
+            }
+        }
+    """.trimIndent()
+
+    fun buildPinnedMessageModel(
+        id: String = "1",
+        message: String = "",
+        isActive: Boolean = true,
+        editStatus: PinnedMessageEditStatus = PinnedMessageEditStatus.Nothing,
+    ) = PinnedMessageUiModel(
+        id = id,
+        message = message,
+        isActive = isActive,
+        editStatus = editStatus,
     )
 }

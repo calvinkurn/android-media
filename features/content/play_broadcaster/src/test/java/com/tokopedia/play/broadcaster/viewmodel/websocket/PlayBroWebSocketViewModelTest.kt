@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.viewmodel.websocket
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.fake.FakePlayWebSocket
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -11,7 +12,9 @@ import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -31,7 +34,18 @@ class PlayBroWebSocketViewModelTest {
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val fakePlayWebSocket= FakePlayWebSocket(testDispatcher)
 
+    private val uiModelBuilder = UiModelBuilder()
     private val webSocketUiModelBuilder = WebSocketUiModelBuilder()
+
+    private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
+        streamAllowed = true,
+        channelId = "123"
+    )
+
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+    }
 
     @Test
     fun `when user received new total view event, then it should emit new total view data`() {
@@ -89,6 +103,28 @@ class PlayBroWebSocketViewModelTest {
             val result = robot.getViewModel().observableChatList.getOrAwaitValue()
 
             result.assertEqualTo(listOf(mockChat))
+        }
+    }
+
+    @Test
+    fun `when user received pinned message event, then it should emit new pinned message data`() {
+        val mockMessage = "Cek produk ini disini!"
+        val mockPinnedMessageString = webSocketUiModelBuilder.buildPinnedMessageString(title = mockMessage)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+                robot.executeViewModelPrivateFunction("startWebSocket")
+                fakePlayWebSocket.fakeEmitMessage(mockPinnedMessageString)
+            }
+
+            state.pinnedMessage.message.assertEqualTo(mockMessage)
         }
     }
 }
