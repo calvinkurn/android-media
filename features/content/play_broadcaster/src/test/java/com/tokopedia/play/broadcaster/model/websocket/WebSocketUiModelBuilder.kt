@@ -2,12 +2,16 @@ package com.tokopedia.play.broadcaster.model.websocket
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
@@ -217,46 +221,101 @@ class WebSocketUiModelBuilder {
 
     /** PRODUCT_TAG */
     fun buildProductTagString(
-        size: Int = 1
+        sectionSize: Int = 1,
+        productSize: Int = 1,
     ): String {
         var productList = ""
-        for(i in 1..size) {
+        for(i in 1..productSize) {
             productList += """
                 {
-                    app_link: "Applink$i",
-                    discount: 0,
-                    id: $i,
-                    image_url: "",
-                    is_available: false,
-                    is_free_shipping: true,
-                    is_variant: true,
-                    min_quantity: 1,
-                    name: "Title $i",
-                    order: 0,
-                    original_price: 123,
-                    original_price_formatted: "123",
-                    price: 0,
-                    price_formatted: "",
-                    quantity: 0,
-                    shop_id: "1",
-                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
-              }
+                    "id": "$i",
+                    "name": "Product $i",
+                    "image_url": "",
+                    "shop_id": "479887",
+                    "original_price": 60000,
+                    "original_price_formatted": "Rp 60.000",
+                    "discount": 0,
+                    "price": 0,
+                    "price_formatted": "",
+                    "quantity": 1,
+                    "quantity_render": {
+                        "show": false,
+                        "copy": "",
+                        "color": ""
+                    },
+                    "is_variant": false,
+                    "is_available": false,
+                    "order": 0,
+                    "app_link": "tokopedia://product/15240013",
+                    "web_link": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                    "min_quantity": 1,
+                    "is_free_shipping": true
+                }
             """.trimIndent()
 
-            if(i != size) productList += ","
+            if(i != productSize) productList += ","
+        }
+
+        var sectionList = ""
+        repeat(sectionSize) {
+            sectionList += """
+                {
+                    "type": "active",
+                    "title": "Section $it",
+                    "countdown": {
+                        "copy": "Berakhir dalam"
+                    },
+                    "background": {
+                        "gradient": [
+                            "#ff23de",
+                            "#2244aa"
+                        ],
+                        "image_url": "https://via.placeholder.com/150"
+                    },
+                    "start_time": "2022-01-02T15:04:05Z07:00",
+                    "end_time": "2022-01-02T16:04:05Z07:00",
+                    "server_time": "2022-01-02T15:14:05Z07:00",
+                    "products": [
+                        $productList
+                    ]
+                }
+            """.trimIndent()
+
+            if(it != sectionSize) sectionList += ","
         }
 
         return """
             {
-                "type": "PRODUCT_TAG",
+                "type": "PRODUCT_TAG_UPDATE",
                 "data": {
-                      "is_show_product_tagging" : true,
-                      "products" : [
-                            $productList      
+                      "sections" : [
+                            $sectionList
                       ]
                 }
             }
         """.trimIndent()
+    }
+
+    fun buildProductModel(
+        sectionSize: Int = 1,
+        productSize: Int = 1,
+    ) = List(sectionSize) {
+        ProductTagSectionUiModel(
+            name = "Section $it",
+            campaignStatus = CampaignStatus.Ongoing,
+            products = List(productSize) { productIdx ->
+                ProductUiModel(
+                    id = productIdx.toString(),
+                    name = "Product $productIdx",
+                    imageUrl = "",
+                    stock = 1,
+                    price = OriginalPrice(
+                        price = "Rp 60.000",
+                        priceNumber = 60000.0,
+                    )
+                )
+            }
+        )
     }
 
     /** FREEZE */
