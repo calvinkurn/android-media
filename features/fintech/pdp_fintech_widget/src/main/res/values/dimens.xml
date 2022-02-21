@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="pdp_fintech_16_dp">16dp</dimen>
-    <dimen name="pfp_fintech_10_dp">10dp</dimen>
-    <dimen name="pdp_fintech_14_dp">14dp</dimen>
-    <dimen name="pdp_fintech_8_dp">8dp</dimen>
-    <dimen name="pdp_fintech_12_dp">12dp</dimen>
-    <dimen name="pdp_fintech_7_dp">7dp</dimen>
-    <dimen name="pdp_fintech_4_dp">4dp</dimen>
-    <dimen name="pdp_fintech_14_sp">14sp</dimen>
-    <dimen name="pdp_fintech_24_dp">24dp</dimen>
+    <dimen name="pdp_fintech_widget_16_dp">16dp</dimen>
+    <dimen name="pfp_fintech_widget_10_dp">10dp</dimen>
+    <dimen name="pdp_fintech_widget_14_dp">14dp</dimen>
+    <dimen name="pdp_fintech_widget_8_dp">8dp</dimen>
+    <dimen name="pdp_fintech_widget_12_dp">12dp</dimen>
+    <dimen name="pdp_fintech_widget_7_dp">7dp</dimen>
+    <dimen name="pdp_fintech_widget_4_dp">4dp</dimen>
+    <dimen name="pdp_fintech_widget_14_sp">14sp</dimen>
+    <dimen name="pdp_fintech_widget_24_dp">24dp</dimen>
+    <dimen name="pdp_fintech_widget_160dp">160dp</dimen>
+    <dimen name="pdp_fintech_widget_23dp">23dp</dimen>
+    <dimen name="pdp_fintech_widget_5dp">5dp</dimen>
+    <dimen name="pdp_fintech_widget_30dp">30dp</dimen>
+    <dimen name="pdp_fintech_widget_51dp">51dp</dimen>
 </resources>
