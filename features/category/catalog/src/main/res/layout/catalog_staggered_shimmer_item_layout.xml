@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lvl3">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/img_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_150"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt1"
+        android:layout_width="@dimen/unify_space_128"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textSize="@dimen/sp_8"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt2"
+        android:layout_width="@dimen/unify_space_96"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textSize="@dimen/sp_8"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt3"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textSize="@dimen/sp_8"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt4"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textSize="@dimen/sp_8"
+        app:corners="16" />
+
+</LinearLayout>
