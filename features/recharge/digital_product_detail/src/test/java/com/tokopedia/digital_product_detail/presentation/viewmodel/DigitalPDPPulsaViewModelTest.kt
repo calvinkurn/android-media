@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.verify
@@ -25,12 +26,28 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting menuDetail should run and give fail result`() {
+        onGetMenuDetail_thenReturn(NullPointerException())
+
+        viewModel.getMenuDetail(MENU_ID, false)
+        verifyGetMenuDetailFail()
+    }
+
+    @Test
     fun `when getting favoriteNumber should run and give success result`() {
         val response = dataFactory.getFavoriteNumberData()
         onGetFavoriteNumber_thenReturn(response)
 
         viewModel.getFavoriteNumber(listOf())
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
+    }
+
+    @Test
+    fun `when getting favoriteNumber should run and give success fail`() {
+        onGetFavoriteNumber_thenReturn(NullPointerException())
+
+        viewModel.getFavoriteNumber(listOf())
+        verifyGetFavoriteNumberFail()
     }
 
     @Test
@@ -43,6 +60,17 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
             skipPrefixOperatorDelay()
 
             verifyGetPrefixOperatorSuccess(response)
+        }
+
+    @Test
+    fun `when getting catalogPrefixSelect should run and give success fail`() =
+        testCoroutineRule.runBlockingTest {
+            onGetPrefixOperator_thenReturn(NullPointerException())
+
+            viewModel.getPrefixOperator(MENU_ID)
+            skipPrefixOperatorDelay()
+
+            verifyGetPrefixOperatorFail()
         }
 
     @Test
@@ -147,6 +175,70 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         viewModel.onResetSelectedProduct()
         verifySelectedGridProductEmpty()
     }
+
+    @Test
+    fun `given layoutType is not match & other condition fulfilled when call isAutoSelectedProduct should return false`() {
+        onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+        val result = viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)
+        verifyIsAutoSelectedProductFalse(result)
+    }
+
+    @Test
+    fun `given layoutType is match & other condition fulfilled when call isAutoSelectedProduct should return true`() =
+        testCoroutineRule.runBlockingTest {
+            // use empty validator to make isEligibleToBuy true
+            val response = dataFactory.getPrefixOperatorEmptyValData()
+            onGetPrefixOperator_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+            viewModel.validateClientNumber(PulsaDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+
+            verifyIsAutoSelectedProductTrue(isAutoSelect)
+        }
+
+    @Test
+    fun `given empty selectedGridProduct & other condition fulfilled when isAutoSelectedProduct should return false`() {
+        onGetSelectedGridProduct_thenReturn(SelectedProduct())
+
+        val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+        verifyIsAutoSelectedProductTrue(isAutoSelect)
+    }
+
+    @Test
+    fun `given isEligibleToBuy true & other condition fulfilled when isAutoSelectedProduct should return true`() =
+        testCoroutineRule.runBlockingTest {
+            // use empty validator & dummy selectedProduct to make isEligibleToBuy true
+            val response = dataFactory.getPrefixOperatorEmptyValData()
+            onGetPrefixOperator_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+            viewModel.validateClientNumber(PulsaDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+
+            verifyIsAutoSelectedProductTrue(isAutoSelect)
+        }
+
+    @Test
+    fun `given isEligibleToBuy false & other condition fulfilled when isAutoSelectedProduct should return false`() =
+        testCoroutineRule.runBlockingTest {
+            // use empty validator & dummy selectedProduct to make isEligibleToBuy true
+            val response = dataFactory.getPrefixOperatorData()
+            onGetPrefixOperator_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+            viewModel.getPrefixOperator(MENU_ID)
+            skipPrefixOperatorDelay()
+            viewModel.validateClientNumber(PulsaDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+            verifyIsAutoSelectedProductFalse(isAutoSelect)
+
+        }
 
     companion object {
         const val MENU_ID = 289

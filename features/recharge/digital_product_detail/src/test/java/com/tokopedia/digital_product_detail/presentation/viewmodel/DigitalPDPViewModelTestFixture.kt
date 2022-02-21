@@ -11,6 +11,7 @@ import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRep
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -46,16 +47,34 @@ abstract class DigitalPDPViewModelTestFixture {
         } returns response
     }
 
+    protected fun onGetMenuDetail_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getMenuDetail(any(), any(), any())
+        } throws error
+    }
+
     protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
             repo.getFavoriteNumber(any())
         } returns response
     }
 
+    protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getFavoriteNumber(any())
+        } throws error
+    }
+
     protected fun onGetPrefixOperator_thenReturn(response: TelcoCatalogPrefixSelect) {
         coEvery {
             repo.getOperatorList(any())
         } returns response
+    }
+
+    protected fun onGetPrefixOperator_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getOperatorList(any())
+        } throws error
     }
 
     protected fun onGetSelectedGridProduct_thenReturn(result: SelectedProduct) {
@@ -67,14 +86,29 @@ abstract class DigitalPDPViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
+    protected fun verifyGetFavoriteNumberFail() {
+        val actualResponse = viewModel.favoriteNumberData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
     protected fun verifyGetPrefixOperatorSuccess(expectedResponse: TelcoCatalogPrefixSelect) {
         val actualResponse = viewModel.catalogPrefixSelect.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
+    protected fun verifyGetPrefixOperatorFail() {
+        val actualResponse = viewModel.catalogPrefixSelect.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
     protected fun verifyGetMenuDetailSuccess(expectedResponse: MenuDetailModel) {
         val actualResponse = viewModel.menuDetailData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetMenuDetailFail() {
+        val actualResponse = viewModel.menuDetailData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
@@ -105,8 +139,17 @@ abstract class DigitalPDPViewModelTestFixture {
     protected fun verifySelectedGridProductNonEmpty() {
         Assert.assertEquals(viewModel.selectedGridProduct.position, POSITION_0)
     }
+
     protected fun verifySelectedGridProductEmpty() {
         Assert.assertEquals(viewModel.selectedGridProduct.position, POSITION_DEFAULT)
+    }
+
+    protected fun verifyIsAutoSelectedProductTrue(isAutoSelect: Boolean) {
+        Assert.assertTrue(isAutoSelect)
+    }
+
+    protected fun verifyIsAutoSelectedProductFalse(isAutoSelect: Boolean) {
+        Assert.assertFalse(isAutoSelect)
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
