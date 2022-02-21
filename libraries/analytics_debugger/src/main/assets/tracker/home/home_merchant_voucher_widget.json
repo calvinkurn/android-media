@@ -11,19 +11,15 @@
       "currentSite": "tokopediamarketplace",
       "promotions": [
         {
-          "creative_name": "{coupon_code} - {coupon_type} - {creative_name} //coupon type: Cashback / Bebas Ongkir",
-          "creative_slot": "{horizontal_card_position}",
-          "item_id": "{banner_id}_{shop_id}",
-          "item_name": "/ - p{{x}} - merchant_voucher_multiple - banner - {{header name}}"
-        },
-        {
-          "creative_name": "{coupon_code} - {coupon_type} - {creative_name} //coupon type: Cashback / Bebas Ongkir",
-          "creative_slot": "{horizontal_card_position}",
-          "item_id": "{banner_id}_{shop_id}",
-          "item_name": "/ - p{{x}} - merchant_voucher_multiple - banner - {{header name}}"
+          "creative_name": ".* - .* - .*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/ - p.* - merchant_voucher_multiple - banner - .*",
+          "creative_url": ""
         }
       ],
-      "userId": "{user_id}"
+      "userId": ".*",
+      "sessionIris": ".*"
     }
   ]
 }
