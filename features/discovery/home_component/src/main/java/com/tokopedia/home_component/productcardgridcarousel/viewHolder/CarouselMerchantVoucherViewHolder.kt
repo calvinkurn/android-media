@@ -2,6 +2,7 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -16,6 +17,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMe
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -36,6 +38,10 @@ class CarouselMerchantVoucherViewHolder (
     }
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
+        if (itemView.context.isDarkMode()) {
+            binding?.imageBackgroundVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
+        }
         binding?.shopName?.text = element.shopName
         binding?.titleBenefit?.text = element.benefit
         binding?.benefitPrice?.text = element.benefitPrice

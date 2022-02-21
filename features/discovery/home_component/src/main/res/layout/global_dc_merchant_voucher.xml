@@ -20,20 +20,31 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/home_component_divider_header"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleList"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_recycler_merchant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
+        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/recycleList"
+        app:layout_constraintTop_toBottomOf="@id/container_recycler_merchant"
         tools:visibility="visible"
         tools:background="@color/Unify_B500"/>
 
