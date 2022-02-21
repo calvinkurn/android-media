@@ -797,7 +797,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
         if (orderProduct != null) {
             if (addOnResult != null) {
-                if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") {
+                if ((addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") ||
+                        (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_PRODUCT && addOnResult.addOnKey == "${orderCart.cartString}-${orderProduct.cartId}")) {
                     orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
                     orderProducts.value = listOf(orderProduct)
 
