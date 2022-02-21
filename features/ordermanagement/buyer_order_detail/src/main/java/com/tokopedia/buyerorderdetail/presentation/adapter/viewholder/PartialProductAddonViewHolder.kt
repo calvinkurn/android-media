@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.AddonsItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -17,8 +18,9 @@ class PartialProductAddonViewHolder(
     private fun setupViews(element: AddonsListUiModel) {
         partialItemBuyerOrderDetailAddonsBinding.run {
             tvBomDetailAddonsTitle.text = element.addonsTitle
-            ivBomDetailAddonsIcon.setImageUrl(element.addonsLogoUrl)
             tvBomDetailAddonsTotalPriceValue.text = element.totalPriceText
+            tvBomDetailAddonsTotalPriceLabel.text =
+                root.context.getString(R.string.order_addons_total_price_label, element.addonsTitle)
         }
     }
 

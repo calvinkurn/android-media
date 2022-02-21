@@ -64,8 +64,8 @@
     <string name="order_addons_to_label">Ke</string>
     <string name="order_addons_to_value">: %s</string>
     <string name="order_addons_from_value">: %s</string>
-    <string name="order_addons_total_price_label">Total Harga Pelengkap</string>
-    <string name="order_addons_read_more"> &lt;a href="#"&gt;Lihat Selengkapnya&lt;/a&gt;</string>
+    <string name="order_addons_total_price_label">Total %s</string>
+    <string name="order_addons_read_more">&lt;a href="#"&gt;Lihat Selengkapnya&lt;/a&gt;</string>
     <string name="order_addons_close"> &lt;a href="#"&gt;Tutup&lt;/a&gt;</string>
     <string name="order_addons_type_and_name">%1$s - %2$s</string>
 </resources>

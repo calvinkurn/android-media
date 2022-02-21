@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivBomDetailAddonsIcon"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBomDetailAddonsIcon"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toStartOf="@id/tvBomDetailAddonsTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="0" />
+        app:icon_name="ADD_ON" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsTitle"
@@ -22,14 +22,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/ivBomDetailAddonsIcon"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/icBomDetailAddonsIcon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivBomDetailAddonsIcon"
-        app:layout_constraintTop_toTopOf="@id/ivBomDetailAddonsIcon"
+        app:layout_constraintStart_toEndOf="@id/icBomDetailAddonsIcon"
+        app:layout_constraintTop_toTopOf="@id/icBomDetailAddonsIcon"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Pelengkap" />
+        tools:text="Pelengkap Produk" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAddonsList"
@@ -39,7 +39,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsIcon"
+        app:layout_constraintTop_toBottomOf="@id/icBomDetailAddonsIcon"
         tools:itemCount="2"
         tools:listitem="@layout/item_buyer_order_detail_addons_list" />
 
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/order_addons_total_price_label"
+        tools:text="@string/order_addons_total_price_label"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/dividerBomDetailAddonsTotalPrice"
