@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
@@ -83,7 +84,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     var quantity = 1
     var isDisabled = false
     private var variantName = ""
-    private var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
 
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -127,7 +127,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 is Success -> {
                     val redirectionUrl =
                         ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${this.tenureSelected}" +
-                                "&gateway_code=${gatewayToChipMap[gateWayId.toInt()]?.gateway_code ?: ""}" +
+                                "&gateway_code=${payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.gateway_code ?: ""}" +
                                 "&fintech"
                     RouteManager.route(
                         context,
@@ -193,20 +193,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     loaderhideOnCheckoutApi()
                     removeBottomDetailForError()
                     when (it.throwable) {
-
-                        is UnknownHostException, is SocketTimeoutException -> {
-                            fullPageGlobalError(
-                                GlobalError.NO_CONNECTION
-                            )
-                        }
-                        is IllegalStateException -> {
-                            fullPageEmptyError()
-                        }
-                        else -> {
-                            fullPageGlobalError(
-                                GlobalError.SERVER_ERROR
-                            )
-                        }
+                        is UnknownHostException, is SocketTimeoutException -> fullPageGlobalError(GlobalError.NO_CONNECTION)
+                        is IllegalStateException -> fullPageEmptyError()
+                        else -> fullPageGlobalError(GlobalError.SERVER_ERROR)
                     }
                 }
             }
@@ -237,7 +226,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    setGatewayToChipMap(it.data)
                     showBottomDetail()
                     loaderhideOnCheckoutApi()
                     paylaterGetOptimizedModel = it.data
@@ -248,24 +236,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     loaderhideOnCheckoutApi()
                     removeBottomDetailForError()
                     when (it.throwable) {
-                        is UnknownHostException, is SocketTimeoutException -> {
-                            showGlobalErrorInTenureDetail(
-                                GlobalError.NO_CONNECTION
-                            )
-                        }
-                        is IllegalStateException -> {
-                            showEmptyErrorInTenureDetail()
-                        }
-
-                        else -> {
-                            showGlobalErrorInTenureDetail(
-                                GlobalError.SERVER_ERROR
-                            )
-                        }
-
+                        is UnknownHostException, is SocketTimeoutException -> showGlobalErrorInTenureDetail(GlobalError.NO_CONNECTION)
+                        is IllegalStateException -> showEmptyErrorInTenureDetail()
+                        else -> showGlobalErrorInTenureDetail(GlobalError.SERVER_ERROR)
                     }
-
-
                 }
             }
         }
@@ -274,7 +248,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun sendOccImpressionEvent() {
         try {
-            gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
+            payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
                     checkoutData.userState?.let { userStatus ->
                         if (!isDisabled) {
@@ -305,14 +279,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    private fun setGatewayToChipMap(data: PaylaterGetOptimizedModel) {
-        for (i in 0 until data.checkoutData.size) {
-            gatewayToChipMap[data.checkoutData[i].gateway_id] = data.checkoutData[i]
-        }
-    }
-
     private fun setTenureDetailData() {
-        gatewayToChipMap[gateWayId.toInt()]?.let {
+        payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.let {
             checkDisableLogic(it.disable)
             sendOccImpressionEvent()
             listOfGateway = paylaterGetOptimizedModel
@@ -340,8 +308,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             proceedToCheckout.isEnabled = true
             priceBreakdown.visibility = View.VISIBLE
             priceBreakdown.isEnabled = true
-
-
         }
     }
 
@@ -397,28 +363,22 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
 
     private fun setSelectedTenure() {
-
-
-        gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
+        payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
             if (checkoutData.tenureDetail.isNotEmpty()) {
-
                 checkoutData.tenureDetail.map {
                     it.isSelectedTenure = false
                 }
-
                 for (i in 0 until checkoutData.tenureDetail.size) {
                     if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
                         selectedTenurePosition = i
                         break
                     }
                 }
-
                 if (selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty()) {
                     checkoutData.tenureDetail[0].isSelectedTenure = true
                     selectedTenurePosition = 0
                 } else
                     checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
-
 
                 DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
                     installmentModel = it
@@ -436,7 +396,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
-        gatewayToChipMap[gateWayId.toInt()]?.let { it ->
+        payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.let { it ->
             setGatewayProductImage(it)
             if (it.gateway_name.isNotBlank())
                 gatewayDetailLayout.getwayBrandName.text =
@@ -465,7 +425,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             if (isDisabled)
                 removeBottomDetailForError()
 
-            if (gatewayToChipMap.size <= 1)
+            if (payLaterActivationViewModel.gatewayToChipMap.size <= 1)
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
             else
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.VISIBLE
@@ -628,7 +588,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun sendChangePartnerClickEvent() {
         try {
-            gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
+            payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
                     checkoutData.userState?.let { userState ->
                         sendAnalyticEvent(
@@ -656,7 +616,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun sendVarintClickEvent() {
         try {
-            gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
+            payLaterActivationViewModel.gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData ->
                 checkoutData.userAmount?.let { limit ->
                     checkoutData.userState?.let { userState ->
                         sendAnalyticEvent(
@@ -695,30 +655,29 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
 
         })
-        detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (!s.isNullOrBlank()) {
-                    when {
-                        s.toString().replace("[^0-9]".toRegex(), "")
-                            .toInt() > detailHeader.quantityEditor.maxValue -> {
-                            detailHeader.limiterMessage.visibility = View.VISIBLE
-                            detailHeader.limiterMessage.text =
-                                "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
 
-                        }
-                        s.toString().replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
-                            detailHeader.limiterMessage.visibility = View.VISIBLE
-                            detailHeader.limiterMessage.text = "Min. beli 1 barang"
+        detailHeader.quantityEditor.editText.afterTextChanged{
+           s->
+            if (!s.isNullOrBlank()) {
+                when {
+                    s.replace("[^0-9]".toRegex(), "")
+                        .toInt() > detailHeader.quantityEditor.maxValue -> {
+                        detailHeader.limiterMessage.visibility = View.VISIBLE
+                        detailHeader.limiterMessage.text =
+                            "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
 
-                        }
-                        else -> detailHeader.limiterMessage.visibility = View.GONE
                     }
+                    s.replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
+                        detailHeader.limiterMessage.visibility = View.VISIBLE
+                        detailHeader.limiterMessage.text = "Min. beli 1 barang"
+
+                    }
+                    else -> detailHeader.limiterMessage.visibility = View.GONE
                 }
             }
 
-        })
+        }
+
     }
 
     private fun getCheckoutDetail() {

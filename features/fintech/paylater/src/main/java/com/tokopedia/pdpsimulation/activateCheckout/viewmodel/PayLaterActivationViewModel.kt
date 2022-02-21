@@ -3,10 +3,12 @@ package com.tokopedia.pdpsimulation.activateCheckout.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
@@ -26,6 +28,8 @@ class PayLaterActivationViewModel @Inject constructor(
     @CoroutineBackgroundDispatcher val dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
+
+    var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
@@ -50,6 +54,8 @@ class PayLaterActivationViewModel @Inject constructor(
             productId
         )
     }
+
+
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
         baseProductDetailClass.getProductV3?.let {
@@ -84,7 +90,13 @@ class PayLaterActivationViewModel @Inject constructor(
     private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
         paylaterGetOptimizedModel.let {
             if(it.checkoutData.isNotEmpty())
-             _payLaterActivationDetailLiveData.postValue( Success(it))
+            {
+                for (i in 0 until it.checkoutData.size) {
+                    gatewayToChipMap[it.checkoutData[i].gateway_id] = it.checkoutData[i]
+                }
+                _payLaterActivationDetailLiveData.postValue( Success(it))
+
+            }
             else
                 onFailActivationData(IllegalStateException("Empty State"))
         }
@@ -129,7 +141,9 @@ class PayLaterActivationViewModel @Inject constructor(
     private fun onSuccessAddToCartForCheckout(addToCartOcc: AddToCartOccMultiDataModel) {
         if(addToCartOcc.isStatusError())
             _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()?:""))
-        _addToCartLiveData.value = Success(addToCartOcc)
+        else {
+            _addToCartLiveData.value = Success(addToCartOcc)
+        }
     }
 
 }
