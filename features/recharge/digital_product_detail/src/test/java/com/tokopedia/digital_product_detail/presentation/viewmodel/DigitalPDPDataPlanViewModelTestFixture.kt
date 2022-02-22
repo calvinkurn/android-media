@@ -6,7 +6,9 @@ import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberDat
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
@@ -79,15 +81,21 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         } throws error
     }
 
-    protected fun onGetCatalogInputMultitab_thenReturn(response: DenomMCCMModel) {
+    protected fun onGetCatalogInputMultitab_thenReturn(response: InputMultiTabDenomModel) {
         coEvery {
-            repo.getProductInputMultiTabDenomGrid(any(), any(), any())
+            repo.getProductInputMultiTabDenomFull(any(), any(), any(), any())
+        } returns response
+    }
+
+    protected fun onGetCatalogInputMultitabisFiltered_thenReturn(response: InputMultiTabDenomModel) {
+        coEvery {
+            repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any())
         } returns response
     }
 
     protected fun onGetCatalogInputMultitab_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.getProductInputMultiTabDenomGrid(any(), any(), any())
+            repo.getProductInputMultiTabDenomFull(any(), any(), any(), any())
         } throws errorThrowable
     }
 
@@ -120,11 +128,19 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun verifyGetProductInputMultiTabRepoGetCalled() {
-        coVerify { repo.getProductInputMultiTabDenomGrid(any(), any(), any()) }
+        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any()) }
     }
 
     protected fun verifyGetProductInputMultiTabRepoWasNotCalled() {
-        coVerify { repo.getProductInputMultiTabDenomGrid(any(), any(), any()) wasNot Called }
+        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any()) wasNot Called }
+    }
+
+    protected fun verifyGetProductInputMultiTabRepoIsRefreshedGetCalled() {
+        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any()) }
+    }
+
+    protected fun verifyGetProductInputMultiTabRepoIsRefreshedWasNotCalled() {
+        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any()) wasNot Called }
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
@@ -156,9 +172,28 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyGetCatalogInputMultitabSuccess(expectedResponse: DenomMCCMModel) {
+    protected fun verifyGetCatalogInputMultitabSuccess(expectedResponse: InputMultiTabDenomModel) {
         val actualResponse = viewModel.observableDenomMCCMData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetFilterTagComponentSuccess(expectedResponse: List<TelcoFilterTagComponent>) {
+        val actualResponse = viewModel.filterData
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetFilterParam(expectedResponse: ArrayList<HashMap<String, Any>>){
+        val actualResponse = viewModel.filterDataParams
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+    protected fun verifyGetFilterParamEmpty(expectedResponse: ArrayList<HashMap<String, Any>>){
+        val actualResponse = viewModel.filterDataParams
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetFilterTagComponentEmpty() {
+        val actualResponse = viewModel.filterData
+        Assert.assertEquals(emptyList<TelcoFilterTagComponent>(), actualResponse)
     }
 
     protected fun verifyGetCatalogInputMultitabLoading(expectedResponse: RechargeNetworkResult.Loading){
