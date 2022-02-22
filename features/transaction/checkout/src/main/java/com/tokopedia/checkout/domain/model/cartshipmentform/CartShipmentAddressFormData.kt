@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -24,6 +25,7 @@ data class CartShipmentAddressFormData(
         var keroDiscomToken: String? = null,
         var keroUnixTime: Int = 0,
         var popup: PopUpData? = null,
+        var addOnWording: AddOnWordingData? = null,
         var donation: Donation? = null,
         var crossSell: List<CrossSellModel> = ArrayList(),
         var cod: CodModel? = null,

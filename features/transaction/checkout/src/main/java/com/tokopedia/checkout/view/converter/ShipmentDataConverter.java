@@ -17,6 +17,8 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
@@ -203,7 +205,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
             shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex, cartShipmentAddressFormData.getAddOnWording());
             if (groupShop.isFulfillment()) {
                 shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
             }
@@ -233,7 +235,7 @@ public class ShipmentDataConverter {
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
                                  UserAddress userAddress, GroupShop groupShop,
                                  String keroToken, String keroUnixTime,
-                                 boolean hasTradeInDropOffAddress, int orderIndex) {
+                                 boolean hasTradeInDropOffAddress, int orderIndex, AddOnWordingData addOnWording) {
         shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {
@@ -281,9 +283,10 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setHasSetDropOffLocation(hasTradeInDropOffAddress);
 
         shipmentCartItemModel.setAddOnsOrderLevelModel(groupShop.getAddOns());
+        shipmentCartItemModel.setAddOnWordingModel(convertFromAddOnWordingData(addOnWording));
 
         List<Product> products = groupShop.getProducts();
-        List<CartItemModel> cartItemModels = convertFromProductList(products);
+        List<CartItemModel> cartItemModels = convertFromProductList(products, groupShop);
 
         // This is something that not well planned
         Fobject fobject = levelUpParametersFromProductToCartSeller(cartItemModels);
@@ -295,17 +298,17 @@ public class ShipmentDataConverter {
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));
     }
 
-    private List<CartItemModel> convertFromProductList(List<Product> products) {
+    private List<CartItemModel> convertFromProductList(List<Product> products, GroupShop groupShop) {
         List<CartItemModel> cartItemModels = new ArrayList<>();
 
         for (Product product : products) {
-            cartItemModels.add(convertFromProduct(product));
+            cartItemModels.add(convertFromProduct(product, groupShop));
         }
 
         return cartItemModels;
     }
 
-    private CartItemModel convertFromProduct(Product product) {
+    private CartItemModel convertFromProduct(Product product, GroupShop groupShop) {
         CartItemModel cartItemModel = new CartItemModel();
 
         cartItemModel.setCartId(product.getCartId());
@@ -382,7 +385,18 @@ public class ShipmentDataConverter {
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
 
         cartItemModel.setAddOnProductLevelModel(product.getAddOnProduct());
+        cartItemModel.setCartString(groupShop.getCartString());
+        cartItemModel.setWarehouseId(String.valueOf(groupShop.getFulfillmentId()));
+        cartItemModel.setTokoCabang(groupShop.isFulfillment());
         return cartItemModel;
+    }
+
+    private AddOnWordingModel convertFromAddOnWordingData(AddOnWordingData addOnWordingData) {
+        AddOnWordingModel addOnWordingModel = new AddOnWordingModel();
+        addOnWordingModel.setOnlyGreetingCard(addOnWordingData.getOnlyGreetingCard());
+        addOnWordingModel.setPackagingAndGreetingCard(addOnWordingData.getPackagingAndGreetingCard());
+        addOnWordingModel.setInvoiceNotSendToRecipient(addOnWordingData.getInvoiceNotSendToRecipient());
+        return addOnWordingModel;
     }
 
     private Fobject levelUpParametersFromProductToCartSeller(List<CartItemModel> cartItemList) {

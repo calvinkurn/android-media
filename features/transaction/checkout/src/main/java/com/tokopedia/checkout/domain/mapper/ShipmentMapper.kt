@@ -26,6 +26,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopU
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -94,6 +95,7 @@ class ShipmentMapper @Inject constructor() {
                 crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
+            addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
         }
     }
 
@@ -699,6 +701,14 @@ class ShipmentMapper @Inject constructor() {
             button = mapButton(popup.button)
             description = popup.description
             title = popup.title
+        }
+    }
+
+    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+        return AddOnWordingData().apply {
+            packagingAndGreetingCard = addOnWording.packagingAndGreetingCard
+            onlyGreetingCard = addOnWording.onlyGreetingCard
+            invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
         }
     }
 

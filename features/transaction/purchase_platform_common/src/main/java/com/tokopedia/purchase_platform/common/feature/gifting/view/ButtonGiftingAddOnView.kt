@@ -83,12 +83,6 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
         binding?.iconRight?.loadImage(urlRightIcon)
     }
 
-    fun setOnButtonClickedListener(actionListener: () -> Unit) {
-        binding?.root?.setOnClickListener {
-            actionListener.invoke()
-        }
-    }
-
     private fun setViewActive() {
         binding?.run {
             titleAddon.visible()

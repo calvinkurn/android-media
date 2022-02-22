@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
@@ -59,7 +60,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val llGiftingAddOnProductLevel: LinearLayout = itemView.findViewById(R.id.ll_gifting_addon_product_level)
     private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon_product_level)
 
-    fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
+    fun bindViewHolder(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
         if (cartItem.isError) {
             showShipmentWarning(cartItem)
@@ -83,7 +84,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
         renderBundlingInfo(cartItem)
-        renderAddOnProductLevel(cartItem)
+        renderAddOnProductLevel(cartItem, addOnWordingModel)
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
@@ -244,7 +245,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
     }
 
-    private fun renderAddOnProductLevel(cartItemModel: CartItemModel) {
+    private fun renderAddOnProductLevel(cartItemModel: CartItemModel, addOnWordingModel: AddOnWordingModel) {
         val addOns = cartItemModel.addOnProductLevelModel
         if (addOns.status == 0) {
             llGiftingAddOnProductLevel.visibility = View.GONE
@@ -259,14 +260,14 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
             buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
             buttonGiftingAddOnProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
-            buttonGiftingAddOnProductLevel.setOnClickListener { shipmentItemListener?.openAddOnBottomSheet(cartItemModel) }
+            buttonGiftingAddOnProductLevel.setOnClickListener { shipmentItemListener?.openAddOnProductLevelBottomSheet(cartItemModel, addOnWordingModel) }
         }
     }
 
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(cartItem: CartItemModel)
-        fun openAddOnBottomSheet(cartItem: CartItemModel)
+        fun openAddOnProductLevelBottomSheet(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel)
     }
 
     companion object {
