@@ -11,6 +11,7 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import org.junit.Test
 
 
@@ -42,6 +43,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetMenuDetail_thenReturn(NullPointerException())
 
         viewModel.getMenuDetail(MENU_ID, false)
+        verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailFail()
     }
 
@@ -59,6 +61,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetFavoriteNumber_thenReturn(response)
 
         viewModel.getFavoriteNumber(listOf())
+        verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
 
@@ -67,6 +70,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
         viewModel.getFavoriteNumber(listOf())
+        verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberFail()
     }
 
@@ -87,6 +91,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
             viewModel.getPrefixOperator(MENU_ID)
             skipPrefixOperatorDelay()
 
+            verifyGetOperatorListRepoGetCalled()
             verifyGetPrefixOperatorSuccess(response)
         }
 
@@ -98,6 +103,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
             viewModel.getPrefixOperator(MENU_ID)
             skipPrefixOperatorDelay()
 
+            verifyGetOperatorListRepoGetCalled()
             verifyGetPrefixOperatorFail()
         }
 
@@ -181,6 +187,27 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         }
 
     @Test
+    fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
+        testCoroutineRule.runBlockingTest {
+            viewModel.validateClientNumber(PulsaDataFactory.VALID_CLIENT_NUMBER)
+            viewModel.cancelValidatorJob()
+            verifyValidatorJobIsCancelled()
+        }
+    }
+
+    @Test
+    fun `given validatorJob null when cancelValidatorJob called should do nothing`() {
+        viewModel.cancelValidatorJob()
+        verifyValidatorJobIsNull()
+    }
+
+    @Test
+    fun `given validatorJob null when implicit setValidatorJob executed should update validatorJob to non-null`() {
+        viewModel.validatorJob = Job()
+        verifyValidatorJobIsNotNull()
+    }
+
+    @Test
     fun `given selectedGridProduct non-empty when getSelectedPositionId return index`() {
         onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
 
@@ -194,6 +221,14 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getSelectedPositionId(dataFactory.getListDenomData())
         verifySelectedGridProductEmpty()
+    }
+
+    @Test
+    fun `given selectedGridProduct non-empty with invalid ID when getSelectedPositionId return default index`() {
+        onGetSelectedGridProduct_thenReturn(dataFactory.getInvalidIdSelectedProduct())
+
+        val id = viewModel.getSelectedPositionId(dataFactory.getInvalidListDenomData())
+        verifyGetSelectedPositionNull(id)
     }
 
     @Test
@@ -265,8 +300,25 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
             val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
             verifyIsAutoSelectedProductFalse(isAutoSelect)
-
         }
+
+    @Test
+    fun `given selectedGridProduct pos less than 0 & other condition fulfilled when isAutoSelectedProduct should return false`() {
+        testCoroutineRule.runBlockingTest {
+            // use empty validator & empty selectedProduct to make position < 0
+            val response = dataFactory.getPrefixOperatorEmptyValData()
+            onGetPrefixOperator_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getInvalidPositionSelectedProduct())
+
+            viewModel.getPrefixOperator(MENU_ID)
+            skipPrefixOperatorDelay()
+            viewModel.validateClientNumber(PulsaDataFactory.VALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+            verifyIsAutoSelectedProductFalse(isAutoSelect)
+        }
+    }
 
     @Test
     fun `when getting catalogInputMultitab should run and give success result`() = testCoroutineRule.runBlockingTest {
@@ -276,6 +328,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
         skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoGetCalled()
         verifyGetCatalogInputMultitabSuccess(mappedResponse)
     }
 
@@ -294,17 +347,44 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
         skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoGetCalled()
         verifyGetCatalogInputMultitabError(errorResponse)
     }
 
     @Test
-    fun `given CancellationException to catalogInputMultitab and should return empty result`() = testCoroutineRule.runBlockingTest {
+    fun `given CancellationException to catalogInputMultitab and should return empty result`() {
         val errorResponse = CancellationException()
         onGetCatalogInputMultitab_thenReturn(errorResponse)
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
-        skipMultitabDelay()
+        viewModel.cancelCatalogProductJob()
+        verifyGetProductInputMultiTabRepoWasNotCalled()
         verifyGetCatalogInputMultitabErrorCancellation()
+    }
+
+    @Test
+    fun `when cancelCatalogProductJob called the job should be cancelled and live data should not emit value`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val mappedResponse = mapperFactory.mapMultiTabGridDenom(response)
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        viewModel.cancelCatalogProductJob()
+        verifyCatalogProductJobIsCancelled()
+        verifyGetProductInputMultiTabRepoWasNotCalled()
+        verifyGetCatalogInputMultitabErrorCancellation()
+    }
+
+    @Test
+    fun `given catalogProductJob null when cancelCatalogProductJob called should do nothing`() {
+        viewModel.cancelCatalogProductJob()
+        verifyCatalogProductJobIsNull()
+    }
+
+    @Test
+    fun `given catalogProductJob null when implicit setCatalogProductJob called should update catalogProductJob to non-null`() {
+        viewModel.catalogProductJob = Job()
+        verifyCatalogProductJobIsNotNull()
     }
 
     @Test
@@ -313,6 +393,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(response)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
 
@@ -324,6 +405,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(errorResponseException)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
 
@@ -335,6 +417,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(errorResponseException)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
 
@@ -344,6 +427,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(errorMessageException)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
 

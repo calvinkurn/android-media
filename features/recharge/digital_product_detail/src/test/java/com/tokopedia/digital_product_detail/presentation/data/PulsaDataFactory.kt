@@ -66,6 +66,15 @@ class PulsaDataFactory {
         )
     }
 
+    fun getInvalidIdDenomData(): DenomData {
+        return DenomData(
+            categoryId = CATEGORY_ID,
+            promoStatus = IS_NOT_PROMO,
+            id = "",
+            isSpecialPromo = IS_NOT_SPECIAL_PRODUCT
+        )
+    }
+
     fun getRecomCardWidgetModelData(): RecommendationCardWidgetModel {
         return RecommendationCardWidgetModel(
             categoryId = CATEGORY_ID,
@@ -79,9 +88,27 @@ class PulsaDataFactory {
         return listOf(getDenomData())
     }
 
+    fun getInvalidListDenomData(): List<DenomData> {
+        return listOf(getInvalidIdDenomData())
+    }
+
     fun getSelectedProduct(): SelectedProduct {
         return SelectedProduct(
             denomData = getDenomData(),
+            position = 0
+        )
+    }
+
+    fun getInvalidPositionSelectedProduct(): SelectedProduct {
+        return SelectedProduct(
+            denomData = getDenomData(),
+            position = -1
+        )
+    }
+
+    fun getInvalidIdSelectedProduct(): SelectedProduct {
+        return SelectedProduct(
+            denomData = getInvalidIdDenomData(),
             position = 0
         )
     }

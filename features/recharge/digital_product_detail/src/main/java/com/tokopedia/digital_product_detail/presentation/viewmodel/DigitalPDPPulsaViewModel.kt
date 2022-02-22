@@ -36,8 +36,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var loadingJob: Job? = null
-    private var catalogProductJob: Job? = null
+    var validatorJob: Job? = null
+    var catalogProductJob: Job? = null
 
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
@@ -136,6 +136,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelValidatorJob() {
+        validatorJob?.cancel()
+    }
+
     fun setAddToCartLoading(){
         _addToCartResult.value = RechargeNetworkResult.Loading
     }
@@ -187,8 +191,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String) {
-        loadingJob?.cancel()
-        loadingJob = viewModelScope.launch {
+        validatorJob = viewModelScope.launch {
             var errorMessage = ""
             for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
                 val phoneIsValid = Pattern.compile(validation.rule)
