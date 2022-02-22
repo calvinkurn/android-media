@@ -22,9 +22,10 @@ class AddOnActivity : BaseSimpleActivity() {
         intent.extras?.let {
             val addOnProductData = it.getParcelable(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA)
                     ?: AddOnProductData()
+            val source = it.getString(AddOnConstant.EXTRA_ADD_ON_SOURCE) ?: ""
             when (addOnProductData.bottomSheetType) {
                 AddOnProductData.ADD_ON_BOTTOM_SHEET -> {
-                    val addOnBottomSheet = AddOnBottomSheet(addOnProductData)
+                    val addOnBottomSheet = AddOnBottomSheet(addOnProductData, source)
                     addOnBottomSheet.show(supportFragmentManager, "")
                 }
                 AddOnProductData.ADD_ON_UNAVAILABLE_BOTTOM_SHEET -> {

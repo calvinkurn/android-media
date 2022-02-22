@@ -394,6 +394,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             binding.giftingWidgetLayout.root.setOnClickListener {
                 actionListener.onClickAddOnCart(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
             }
+            actionListener.addOnImpression(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
         } else {
             binding.giftingWidgetLayout.root.gone()
         }

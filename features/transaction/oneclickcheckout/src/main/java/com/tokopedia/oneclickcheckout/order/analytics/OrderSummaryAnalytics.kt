@@ -506,6 +506,30 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    fun eventViewAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickAddOnsDetail(productId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_PP,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 

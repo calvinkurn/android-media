@@ -87,4 +87,6 @@ interface ActionListener {
 
     fun onClickAddOnCart(productId: String)
 
+    fun addOnImpression(productId: String)
+
 }
