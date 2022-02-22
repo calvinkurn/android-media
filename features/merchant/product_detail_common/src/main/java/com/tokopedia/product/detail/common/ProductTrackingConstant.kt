@@ -4,6 +4,7 @@ object ProductTrackingConstant {
 
     object Category {
         const val PDP = "product detail page"
+        const val PDP_DETAIL_BOTTOMSHEET = "product detail page - product detail bottomsheet"
         const val PDP_VARIANT_BOTTOMSHEET = "product detail page - global variant bottomsheet"
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
@@ -199,6 +200,7 @@ object ProductTrackingConstant {
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
 
         const val CLICK_VARIANT_GUIDELINE_BOTTOM_SHEET = "click - panduan ukuran on product detail bottomsheet"
+        const val CLICK_CUSTOM_INFO_HAMPERS_BOTTOM_SHEET = "click - informasi pelengkap bingkisan"
         const val CLICK_SHOP_NOTES_BOTTOM_SHEET = "click - lihat informasi penting catatan toko on product detail bottomsheet"
         const val CLICK_SPECIFICATION_BOTTOM_SHEET = "click - selengkapnya on product detail bottomsheet"
         const val CLICK_CATEGORY_BOTTOM_SHEET = "click - kategori on product detail bottomsheet"
@@ -272,6 +274,7 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
+        const val EVENT_CLICK_PG = "clickPG"
         const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"

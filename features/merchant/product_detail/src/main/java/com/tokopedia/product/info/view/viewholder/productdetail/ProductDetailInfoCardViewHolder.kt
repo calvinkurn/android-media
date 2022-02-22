@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.databinding.ProductDetailCardViewHolderBindi
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 
-class ProductDetailInfoCardViewHolder(private val view: View,
+class ProductDetailInfoCardViewHolder(view: View,
                                       private val listener: ProductDetailInfoListener)
     : AbstractViewHolder<ProductDetailInfoCardDataModel>(view) {
     companion object {
@@ -22,7 +22,7 @@ class ProductDetailInfoCardViewHolder(private val view: View,
         binding.txtTitleCard.text = element.title
 
         binding.root.setOnClickListener {
-            listener.goToApplink(element.applink)
+            listener.onCustomInfoClicked(element.applink)
         }
     }
 }

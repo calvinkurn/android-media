@@ -244,6 +244,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         productDetailInfoAdapter.closeAllExpanded(uniqueIdentifier, toggle, currentList ?: listOf())
     }
 
+    override fun onCustomInfoClicked(url: String) {
+        DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+                ?: "")
+        goToApplink(url)
+    }
+
     private fun observeData() {
         if (viewModel != null) {
             viewLifecycleOwner.observe(viewModel!!.bottomSheetDetailData) { data ->
