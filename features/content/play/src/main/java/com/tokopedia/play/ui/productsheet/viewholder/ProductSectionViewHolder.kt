@@ -21,7 +21,8 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -117,14 +118,14 @@ class ProductSectionViewHolder(
 
         val dt = DateUtil.getCurrentCalendar().apply {
                 val diff = convertedTimerTime.time - getTimeDiff(serverTime = convertedServerTime, currentTime = time).time
-                add(Calendar.MILLISECOND, diff.toInt())
+                add(Calendar.SECOND, ((diff / 1000) % 60).toInt())
+                add(Calendar.MINUTE, (((diff / 1000) / 60) % 60).toInt())
+                add(Calendar.HOUR, (((diff / 1000) / 60) / 60).toInt())
             }
-            timerSection.pause()
             timerSection.targetDate = dt
             timerSection.onFinish = {
                 listener.onTimerExpired(item)
             }
-            timerSection.resume()
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
