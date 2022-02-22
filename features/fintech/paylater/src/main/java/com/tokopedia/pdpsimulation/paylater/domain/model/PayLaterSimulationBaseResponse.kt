@@ -87,8 +87,7 @@ data class RecommendationDetail(
 data class DisableDetail(
 
     @SerializedName("status") val status: Boolean?,
-    @SerializedName("header") val header: String?,
-    @SerializedName("description") val description: String?
+    @SerializedName("header") val header: String?
 ): Parcelable
 
 @Parcelize

@@ -68,8 +68,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
             itemView.payLaterStatusTicker.visible()
-            itemView.payLaterStatusTicker.tickerTitle = element.paylaterDisableDetail.header
-            itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.description.orEmpty())
+            itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.header.orEmpty())
         } else {
             itemView.payLaterActionCta.visible()
             itemView.payLaterStatusTicker.gone()
