@@ -5,14 +5,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl3"
     android:layout_marginBottom="@dimen/spacing_lvl3"
     >
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/play_bro_etalase_list_divider_height"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintStart_toStartOf="@id/tv_etalase_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_etalase"
         android:layout_width="@dimen/play_bro_etalase_list_body_image_size"
         android:layout_height="@dimen/play_bro_etalase_list_body_image_size"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

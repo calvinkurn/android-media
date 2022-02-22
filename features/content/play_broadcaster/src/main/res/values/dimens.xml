@@ -107,6 +107,7 @@
 
     <!--Etalase & Campaign-->
     <dimen name="play_bro_etalase_list_body_image_size">64dp</dimen>
+    <dimen name="play_bro_etalase_list_divider_height">1dp</dimen>
 
     <!--Product Chooser-->
     <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>

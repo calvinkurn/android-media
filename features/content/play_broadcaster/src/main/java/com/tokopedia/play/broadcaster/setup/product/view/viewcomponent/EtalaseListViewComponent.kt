@@ -43,11 +43,12 @@ internal class EtalaseListViewComponent(
         val combinedEtalaseList = buildList {
             if (campaignList.isNotEmpty()) {
                 add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
-                addAll(campaignList.map {
+                addAll(campaignList.mapIndexed { index, it ->
                     EtalaseListAdapter.Model.Campaign(
                         campaignUiModel = it,
                         isSelected = selected is SelectedEtalaseModel.Campaign &&
-                                selected.campaign.id == it.id
+                                selected.campaign.id == it.id,
+                        isShowDivider = index != 0,
                     )
                 })
             }
@@ -55,11 +56,12 @@ internal class EtalaseListViewComponent(
             if (etalaseList.isNotEmpty()) {
                 add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
                 addAll(
-                    etalaseList.map {
+                    etalaseList.mapIndexed { index, it ->
                         EtalaseListAdapter.Model.Etalase(
                             etalaseUiModel = it,
                             isSelected = selected is SelectedEtalaseModel.Etalase &&
-                                    selected.etalase.id == it.id
+                                    selected.etalase.id == it.id,
+                            isShowDivider = index != 0,
                         )
                     }
                 )
