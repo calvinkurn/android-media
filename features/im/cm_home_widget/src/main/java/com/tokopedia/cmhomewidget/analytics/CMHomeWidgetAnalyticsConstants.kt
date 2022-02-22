@@ -10,6 +10,7 @@ object CMHomeWidgetAnalyticsConstants {
             const val USER_ID = "userId"
             const val PARENT_ID = "parent_id"
             const val CAMPAIGN_ID = "campaign_id"
+            const val SESSION_ID = "session_id"
             const val NOTIFICATION_ID = "notification_id"
             const val MESSAGE_ID = "message_id"
             const val IS_SILENT = "is_silent"
