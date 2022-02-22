@@ -288,7 +288,7 @@ class TokoNowHomeViewModel @Inject constructor(
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
-                    setMiniCartAndProductQuantity(it)
+                    setProductAddToCartQuantity(it)
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -375,7 +375,7 @@ class TokoNowHomeViewModel @Inject constructor(
             setMiniCartAndProductQuantity(miniCart)
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
-                state = TokoNowLayoutState.SHOW
+                state = TokoNowLayoutState.UPDATE
             )
             _atcQuantity.postValue(Success(data))
         }) {}
