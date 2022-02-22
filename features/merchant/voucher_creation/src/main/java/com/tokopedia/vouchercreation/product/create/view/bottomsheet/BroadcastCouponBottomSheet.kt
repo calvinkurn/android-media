@@ -108,7 +108,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         viewModel.setCoupon(coupon)
         tracker.sendCouponCreationSuccessImpression()
         setCloseClickListener {
-            tracker.sendDismissBottomSheetImpression()
+            tracker.sendDismissBottomSheetClickEvent()
             dismiss()
         }
         return super.onCreateView(inflater, container, savedInstanceState)

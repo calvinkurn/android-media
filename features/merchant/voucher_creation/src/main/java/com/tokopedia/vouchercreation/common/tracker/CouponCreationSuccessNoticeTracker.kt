@@ -19,7 +19,7 @@ class CouponCreationSuccessNoticeTracker @Inject constructor() {
         )
     }
 
-    fun sendDismissBottomSheetImpression() {
+    fun sendDismissBottomSheetClickEvent() {
         sendGeneralTracking(
             event = "clickPG",
             action = "click nanti saja - success creation bottom sheet",
