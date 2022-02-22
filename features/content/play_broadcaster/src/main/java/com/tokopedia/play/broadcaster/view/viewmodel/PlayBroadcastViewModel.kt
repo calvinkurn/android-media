@@ -748,7 +748,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
-//        getCurrentSetupDataStore().setSelectedProducts(products)
         _productSectionList.value = productSectionList
     }
 

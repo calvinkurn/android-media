@@ -12,6 +12,9 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveType
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
@@ -385,5 +388,50 @@ class WebSocketUiModelBuilder {
         title = title,
         message = message,
         buttonTitle = buttonTitle,
+    )
+
+    /** CHANNEL_INTERACTIVE */
+    fun buildChannelInteractiveString(
+        channelId: Long = 1,
+        interactiveID: Long = 0,
+        interactiveType: Int = -1,
+        title: String = "",
+        status: Int = 0,
+        countdownStart: Int = 0,
+        countdownEnd: Int = 0,
+        countdownEndDelay: Int = 0,
+        waitingDuration: Int = 0,
+    ) = """
+        {
+            "type": "CHANNEL_INTERACTIVE",
+            "data": {
+              "channel_id": $channelId,
+              "interactive_id": $interactiveID,
+              "interactive_type": $interactiveType,
+              "title": "$title",
+              "status": $status,
+              "countdown_start": $countdownStart,
+              "countdown_end": $countdownEnd,
+              "countdown_end_delay": $countdownEndDelay,
+              "waiting_duration": $waitingDuration
+            }
+        }
+    """.trimIndent()
+
+    fun buildChannelInteractiveModel(
+        id: Long = 0L,
+        type: InteractiveType = InteractiveType.Unknown,
+        title: String = "",
+        timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Scheduled(
+            timeToStartInMs = 0,
+            interactiveDurationInMs = 0,
+        ),
+        endGameDelayInMs: Long = 0L,
+    ) = PlayCurrentInteractiveModel(
+        id = id,
+        type = type,
+        title = title,
+        timeStatus = timeStatus,
+        endGameDelayInMs = endGameDelayInMs,
     )
 }
