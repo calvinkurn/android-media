@@ -83,7 +83,9 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
     private fun routeToAppLink() {
         val appLink = appLinkSearchbar?.searchBarTextField?.text?.toString().orEmpty()
         appLinkRouteBtn?.setOnClickListener {
-            if (!RouteManager.route(context, appLink)) {
+            if (RouteManager.isSupportApplink(context, appLink)) {
+                RouteManager.route(context, appLink)
+            } else {
                 Toaster.build(
                     it,
                     getString(R.string.message_applink_failed)
