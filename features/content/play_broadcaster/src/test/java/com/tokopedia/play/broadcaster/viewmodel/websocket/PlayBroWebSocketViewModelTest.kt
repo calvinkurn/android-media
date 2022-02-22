@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.fake.FakePlayWebSocket
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
 import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -13,6 +14,7 @@ import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -41,6 +43,7 @@ class PlayBroWebSocketViewModelTest {
 
     private val uiModelBuilder = UiModelBuilder()
     private val webSocketUiModelBuilder = WebSocketUiModelBuilder()
+    private val interactiveUiModelBuilder = InteractiveUiModelBuilder()
 
     private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
         streamAllowed = true,
@@ -228,6 +231,29 @@ class PlayBroWebSocketViewModelTest {
             }
 
             state.selectedProduct.assertEqualTo(mockProductTag)
+        }
+    }
+
+    @Test
+    fun `when user received new metrics event, it should emit new metrics data`() {
+        val mockNewMetricString = webSocketUiModelBuilder.buildNewMetricString()
+        val mockNewMetric = webSocketUiModelBuilder.buildNewMetricModelList()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            logger = mockLogger,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastWebSocket = fakePlayWebSocket,
+        )
+
+        robot.use {
+            robot.executeViewModelPrivateFunction("startWebSocket")
+            fakePlayWebSocket.fakeEmitMessage(mockNewMetricString)
+
+            val result = robot.getViewModel().observableNewMetrics.getOrAwaitValue()
+
+            result.peekContent().assertEqualTo(mockNewMetric)
         }
     }
 
