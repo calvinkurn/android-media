@@ -106,9 +106,13 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             if (TextUtils.isEmpty(opName)) {
                 opName = CacheHelper.getQueryName(requests.get(0).getQuery());
             }
-            url = "graphql/" + opName;
+            url = CommonUtils.getGraphqlUrlAppend(opName);
         }
-        return mApi.getResponse(url, requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+        if(!TextUtils.isEmpty(url)){
+            return mApi.getResponseWithPath(url, requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+        } else {
+            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+        }
     }
 
     public void putAkamaiHeader(Map<String, String> header, List<GraphqlRequest> requests) {
@@ -195,8 +199,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         messageMap.put("hash", queryHashValues.toString());
                         ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
 
-                        String url = "graphql/" + opName;
-                        mApi.getResponse(url, requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+                        String url = CommonUtils.getGraphqlUrlAppend(opName);
+                        if(!TextUtils.isEmpty(url)){
+                            mApi.getResponseWithPath(url, requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+                        } else {
+                            mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+                        }
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
                         LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());

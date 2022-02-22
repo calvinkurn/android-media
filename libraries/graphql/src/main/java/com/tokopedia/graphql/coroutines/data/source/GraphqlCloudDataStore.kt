@@ -86,9 +86,13 @@ class GraphqlCloudDataStore @Inject constructor(
             if (TextUtils.isEmpty(opName)) {
                 opName = CacheHelper.getQueryName(requests[0].query)
             }
-            url = "graphql/$opName"
+            url = CommonUtils.getGraphqlUrlAppend(opName)
         }
-        return api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        return if(!url.isNullOrEmpty()){
+            api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        } else {
+            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        }
     }
 
     private fun putAkamaiHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
@@ -215,15 +219,13 @@ class GraphqlCloudDataStore @Inject constructor(
                                 if (TextUtils.isEmpty(opName)) {
                                     opName = CacheHelper.getQueryName(requests[0].query)
                                 }
-                                url = "graphql/$opName"
+                                url = CommonUtils.getGraphqlUrlAppend(opName)
                             }
-                            api.getResponseSuspendWithPath(
-                                    url,
-                                    requests.toMutableList(),
-                                    header,
-                                    FingerprintManager.getQueryDigest(requests),
-                                    FingerprintManager.getQueryDigest(requests)
-                            )
+                            if(!url.isNullOrEmpty()){
+                                api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+                            } else {
+                                api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+                            }
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
                             LoggingUtils.logGqlResponseCode(
