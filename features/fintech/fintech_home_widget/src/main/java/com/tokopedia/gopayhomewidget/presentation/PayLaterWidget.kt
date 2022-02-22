@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.AttrRes
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopayhomewidget.databinding.LayoutGopayHomeWidgetBinding
 import com.tokopedia.gopayhomewidget.di.component.DaggerPayLaterHomeWidgetComponent
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
@@ -58,7 +60,12 @@ class PayLaterWidget @JvmOverloads constructor(
             }
             layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
             when (payLaterWidgetData.button?.ctaType) {
-
+                1 -> RouteManager.route(context, payLaterWidgetData.button.appsUrl)
+                2 -> {
+                    val webViewAppLink =
+                        ApplinkConst.WEBVIEW + "?url=" + payLaterWidgetData.button.webUrl
+                    RouteManager.route(context, webViewAppLink)
+                }
             }
             layoutGopayBinding.crossIcon.setOnClickListener {
                 payLaterWidgetListener?.onClosePayLaterWidget()
