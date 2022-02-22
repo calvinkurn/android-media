@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -60,6 +61,8 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                     oldItem.totalDataText == newItem.totalDataText
                 } else if (oldItem is ChooseAddressDataView && newItem is ChooseAddressDataView) {
                     oldItem.chooseAddressData == newItem.chooseAddressData
+                } else if (oldItem is TokoNowRecommendationCarouselUiModel && newItem is TokoNowRecommendationCarouselUiModel) {
+                    oldItem.pageName == newItem.pageName
                 } else {
                     true
                 }
