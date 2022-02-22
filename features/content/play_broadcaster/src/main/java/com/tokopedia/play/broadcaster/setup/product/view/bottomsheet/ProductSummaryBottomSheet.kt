@@ -24,6 +24,8 @@ import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
@@ -57,6 +59,10 @@ class ProductSummaryBottomSheet @Inject constructor(
     private val productSummaryListView by viewComponent {
         ProductSummaryListViewComponent(binding.rvProductSummaries, this)
     }
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
 
     override fun onProductDeleteClicked(product: ProductUiModel) {
         analytic.clickDeleteProductOnProductSetup(productId = product.id)
@@ -147,7 +153,7 @@ class ProductSummaryBottomSheet @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayBroProductChooserEvent.GetDataError -> {
-                        view?.rootView?.showErrorToaster(
+                        toaster.showError(
                             err = event.throwable,
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = { event.action?.invoke() },
@@ -157,12 +163,12 @@ class ProductSummaryBottomSheet @Inject constructor(
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
-                        view?.rootView?.showToaster(
+                        toaster.showToaster(
                             message = getString(R.string.play_bro_product_summary_success_delete_product, event.deletedProductCount),
                         )
                     }
                     is PlayBroProductChooserEvent.DeleteProductError -> {
-                        view?.rootView?.showErrorToaster(
+                        toaster.showError(
                             err = event.throwable,
                             customErrMessage = getString(R.string.play_bro_product_summary_fail_to_delete_product),
                             actionLabel = getString(R.string.play_broadcast_try_again),
