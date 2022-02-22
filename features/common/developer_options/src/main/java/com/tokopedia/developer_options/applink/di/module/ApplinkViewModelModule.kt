@@ -19,5 +19,5 @@ abstract class AppLinkViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(AppLinkViewModel::class)
-    abstract fun bindDeepLinkViewModel(deepLinkViewModel: AppLinkViewModel): ViewModel
+    abstract fun bindDeepLinkViewModel(appLinkViewModel: AppLinkViewModel): ViewModel
 }

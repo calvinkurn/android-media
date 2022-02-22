@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.applink.di.component.AppLinkComponent
+import com.tokopedia.developer_options.applink.di.component.DaggerAppLinkComponent
 import com.tokopedia.developer_options.applink.presentation.fragment.AppLinkListFragment
 
 class AppLinkListActivity: AppCompatActivity(), HasComponent<AppLinkComponent> {
@@ -47,5 +48,4 @@ class AppLinkListActivity: AppCompatActivity(), HasComponent<AppLinkComponent> {
             return Intent(context, AppLinkListActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
-
 }

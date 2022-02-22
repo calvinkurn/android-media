@@ -10,9 +10,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 
-class AppLinkViewModel(
+class AppLinkViewModel @Inject constructor(
     coroutineDispatchers: CoroutineDispatchers,
     private val getAppLinkListUseCase: GetAppLinkListUseCase
 ) : BaseViewModel(coroutineDispatchers.main) {
@@ -21,9 +22,9 @@ class AppLinkViewModel(
     val appLinkItemList: LiveData<Result<List<AppLinkUiModel>>>
         get() = _appLinkItemList
 
-    fun getAppLinkItemList() {
+    fun getAppLinkItemList(json: String) {
         launchCatchError(block = {
-            _appLinkItemList.value = Success(getAppLinkListUseCase.execute())
+            _appLinkItemList.value = Success(getAppLinkListUseCase.execute(json))
         }, onError = {
             _appLinkItemList.value = Fail(it)
         })

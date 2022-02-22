@@ -1,33 +1,29 @@
 package com.tokopedia.developer_options.applink.utils
 
+import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString
 import java.io.IOException
+import java.io.InputStream
 import javax.inject.Inject
 
 class DeepLinkFileUtils @Inject constructor() {
 
-    fun <T> getJsonArrayResources(path: String): List<T> {
-        val j: String = getJsonFromResource(path)
+    inline fun <reified T> getJsonArrayResources(json: String): List<T> {
         val gson = Gson()
-        val t = object : TypeToken<ArrayList<T>>() {}.type
-        return gson.fromJson(j, t)
+        val type = object : TypeToken<List<T>>() {}.type
+        return gson.fromJson(json, type)
     }
 
-    private fun getJsonFromResource(path: String): String {
-        var json = ""
+    fun getJsonFromRaw(resources: Resources, resourcesId: Int): String {
+        val rawResource: InputStream = resources.openRawResource(resourcesId)
+        val content: String = streamToString(rawResource)
         try {
-            val inputStream = this.javaClass.classLoader.getResourceAsStream(path)
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            json = String(buffer, Charsets.UTF_8)
+            rawResource.close()
         } catch (e: IOException) {
             e.printStackTrace()
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
         }
-        return json
+        return content
     }
 }

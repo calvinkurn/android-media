@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
@@ -19,6 +18,7 @@ import com.tokopedia.developer_options.applink.di.component.AppLinkComponent
 import com.tokopedia.developer_options.applink.presentation.adapter.AppLinkItemAdapter
 import com.tokopedia.developer_options.applink.presentation.uimodel.AppLinkUiModel
 import com.tokopedia.developer_options.applink.presentation.viewmodel.AppLinkViewModel
+import com.tokopedia.developer_options.applink.utils.DeepLinkFileUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,6 +35,9 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var deepLinkFileUtils: DeepLinkFileUtils
+
     private val viewModel by lazy {
         ViewModelProvider(
             this,
@@ -44,11 +47,10 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
 
     private val appLinkItemAdapter by lazy { AppLinkItemAdapter(this) }
 
-    private var rvAppLinkList: RecyclerView? = null
-    private var searchbarAppLink: SearchBarUnify? = null
-    private var swipeRefreshAppLink: SwipeRefreshLayout? = null
-    private var tvAppLinkNotFound: Typography? = null
-    private var btnAppLinkRoute: UnifyButton? = null
+    private var appLinkListRv: RecyclerView? = null
+    private var appLinkSearchbar: SearchBarUnify? = null
+    private var appLinkNotFoundTv: Typography? = null
+    private var appLinkRouteBtn: UnifyButton? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,23 +77,23 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
     }
 
     override fun onAppLinkItemClicked(appLink: String) {
-        searchbarAppLink?.searchBarTextField?.setText(appLink)
+        appLinkSearchbar?.searchBarTextField?.setText(appLink)
     }
 
     private fun routeToAppLink() {
-        val appLink = searchbarAppLink?.searchBarTextField?.text?.toString().orEmpty()
-        btnAppLinkRoute?.setOnClickListener {
+        val appLink = appLinkSearchbar?.searchBarTextField?.text?.toString().orEmpty()
+        appLinkRouteBtn?.setOnClickListener {
             if (!RouteManager.route(context, appLink)) {
                 Toaster.build(
                     it,
-                    "Applink is not supported, please check the value from searchbar"
+                    getString(R.string.message_applink_failed)
                 ).show()
             }
         }
     }
 
     private fun initSearchbarView() {
-        searchbarAppLink?.searchBarTextField?.apply {
+        appLinkSearchbar?.searchBarTextField?.apply {
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val query = text.toString()
@@ -119,21 +121,22 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
 
     private fun initViews(view: View) {
         with(view) {
-            rvAppLinkList = findViewById(R.id.rvAppLinkList)
-            searchbarAppLink = findViewById(R.id.searchbarAppLink)
-            swipeRefreshAppLink = findViewById(R.id.swipeRefreshAppLink)
-            tvAppLinkNotFound = findViewById(R.id.tvAppLinkNotFound)
-            btnAppLinkRoute = findViewById(R.id.btnAppLinkRoute)
+            appLinkListRv = findViewById(R.id.appLinkListRv)
+            appLinkSearchbar = findViewById(R.id.appLinkSearchbar)
+            appLinkNotFoundTv = findViewById(R.id.appLinkNotFoundTv)
+            appLinkRouteBtn = findViewById(R.id.appLinkRouteBtn)
         }
     }
 
 
     private fun loadData() {
-        viewModel.getAppLinkItemList()
+        viewModel.getAppLinkItemList(deepLinkFileUtils.getJsonFromRaw(
+            resources, DEEPLINK_RESOURCE)
+        )
     }
 
     private fun setupRvAdapter() {
-        rvAppLinkList?.run {
+        appLinkListRv?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = appLinkItemAdapter
         }
@@ -147,7 +150,7 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
                     setAppLinkList(it.data)
                 }
                 is Fail -> {
-                    tvAppLinkNotFound?.show()
+                    appLinkNotFoundTv?.show()
                     view?.let { view ->
                         Toaster.build(
                             view,
@@ -164,15 +167,17 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
     private fun setAppLinkList(appLinkList: List<AppLinkUiModel>) {
         if (appLinkList.isNotEmpty()) {
             appLinkItemAdapter.setAppLinkList(appLinkList)
-            tvAppLinkNotFound?.hide()
+            appLinkNotFoundTv?.hide()
         } else {
-            tvAppLinkNotFound?.show()
+            appLinkNotFoundTv?.show()
         }
     }
 
     companion object {
         @JvmStatic
         val TAG: String = AppLinkListFragment::class.java.simpleName
+
+        private val DEEPLINK_RESOURCE = R.raw.deeplink
 
         @JvmStatic
         fun newInstance(): AppLinkListFragment {

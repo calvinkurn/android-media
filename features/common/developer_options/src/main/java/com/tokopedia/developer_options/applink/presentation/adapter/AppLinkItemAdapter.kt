@@ -17,7 +17,7 @@ class AppLinkItemAdapter(private val appLinkItemListener: AppLinkItemListener):
     private val appLinkListFilterData = mutableListOf<AppLinkUiModel>()
 
     fun setAppLinkList(appLinkList: List<AppLinkUiModel>) {
-        if (appLinkList.isNotEmpty()) return
+        if (appLinkList.isNullOrEmpty()) return
         appLinkListData.clear()
         appLinkListFilterData.clear()
         appLinkListData.addAll(appLinkList)

@@ -104,5 +104,7 @@
     <string name="search_applink_here">search applink here or input applink here</string>
     <string name="applink_no_data">No Data</string>
     <string name="route_to_applink">Route to Applink</string>
+    <string name="message_applink_failed">Applink is not supported, please check the value from searchbar</string>
+    <string name="view_applink_list">View Applink List</string>
 
 </resources>
