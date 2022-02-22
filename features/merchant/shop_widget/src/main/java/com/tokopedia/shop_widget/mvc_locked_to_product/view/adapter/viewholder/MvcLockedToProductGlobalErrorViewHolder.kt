@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
@@ -37,7 +38,7 @@ open class MvcLockedToProductGlobalErrorViewHolder(
         viewBinding?.layoutGlobalError?.apply {
             setType(uiModel.globalErrorType)
             errorSecondaryAction.hide()
-            errorDescription.text = uiModel.errorDescription
+            errorDescription.text = MethodChecker.fromHtml(uiModel.errorDescription)
             if (uiModel.ctaText.isNotEmpty()) {
                 errorTitle.text = uiModel.errorTitle
                 errorAction.text = uiModel.ctaText
