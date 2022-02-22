@@ -178,8 +178,8 @@ class PlayAnalytic(
         if (products.isEmpty()) return
 
         val (eventAction, eventLabel) = when(sectionInfo.config.type){
-            ProductSectionType.Active -> Pair("impression - product in ongoing section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${sectionInfo.id}")
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section","$mChannelId - ${products.first().first.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Active -> Pair("impression - product in ongoing section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
             else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
         }
         trackingQueue.putEETracking(
@@ -207,8 +207,8 @@ class PlayAnalytic(
                      position: Int) {
 
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
             else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
         }
 
@@ -632,7 +632,7 @@ class PlayAnalytic(
                                                     cartId: String,
                                                     shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
             else -> Pair(KEY_TRACK_CLICK + "buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
         }
         trackingQueue.putEETracking(
@@ -670,7 +670,7 @@ class PlayAnalytic(
                                                    cartId: String,
                                                    shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
             else -> Pair(KEY_TRACK_CLICK + "atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
         }
         trackingQueue.putEETracking(
@@ -833,6 +833,8 @@ class PlayAnalytic(
         val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
         return identifier + System.currentTimeMillis()
     }
+
+    private fun generateBaseEventLabel(productId: String, campaignId: String): String = "$mChannelId - $productId - ${mChannelType.value} - $campaignId"
 
     companion object {
         private const val KEY_EVENT = "event"
