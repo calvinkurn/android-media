@@ -435,6 +435,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     animatedInfos = it.merchantVoucherSummary.animatedInfos
                     isShown = it.merchantVoucherSummary.isShown
                     shopId = it.shopInfo.shopCore.shopID
+                    productIdMVC = productId
                 }
             }
 
