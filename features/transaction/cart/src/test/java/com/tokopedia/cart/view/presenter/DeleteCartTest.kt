@@ -33,7 +33,7 @@ class DeleteCartTest : BaseCartTest() {
 
         // THEN
         verify {
-            view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false, false)
+            view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false)
         }
     }
 
@@ -58,7 +58,7 @@ class DeleteCartTest : BaseCartTest() {
 
         // THEN
         verify {
-            view.onDeleteCartDataSuccess(arrayListOf("1"), false, false, false, false, false, false)
+            view.onDeleteCartDataSuccess(arrayListOf("1"), false, false, false, false, false)
         }
 
     }
@@ -148,7 +148,7 @@ class DeleteCartTest : BaseCartTest() {
 
         // THEN
         verify(inverse = true) {
-            view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false, false)
+            view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false)
         }
     }
 
