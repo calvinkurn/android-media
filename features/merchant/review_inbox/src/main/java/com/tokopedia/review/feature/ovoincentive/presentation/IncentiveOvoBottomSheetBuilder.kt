@@ -22,12 +22,12 @@ object IncentiveOvoBottomSheetBuilder {
     private const val ADD_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png"
     private const val ADD_REVIEW_URL = "https://ecs7.tokopedia.net/android/others/ic_add_review_incentive_tnc.png"
 
-    fun getTermsAndConditionsBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, incentiveOvoListener: IncentiveOvoListener, category: String, trackerData: TncBottomSheetTrackerData? = null): BottomSheetUnify {
+    fun getTermsAndConditionsBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, hasIncentive: Boolean, hasOngoingChallenge: Boolean, incentiveOvoListener: IncentiveOvoListener, category: String, trackerData: TncBottomSheetTrackerData? = null): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.incentive_ovo_tnc_bottom_sheet, null)
         bottomSheetUnify.apply {
             setChild(view)
-            setupTermsAndConditionView(view, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, category, trackerData)
+            setupTermsAndConditionView(view, productRevIncentiveOvoDomain, hasIncentive, hasOngoingChallenge, bottomSheetUnify, incentiveOvoListener, category, trackerData)
             setOnDismissListener {
                 trackerData?.let {
                     IncentiveOvoTracking.eventDismissTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.description ?: ".", it.reputationId, it.orderId, it.productId, it.userId)
@@ -53,7 +53,7 @@ object IncentiveOvoBottomSheetBuilder {
         return bottomSheetUnify
     }
 
-    private fun setupTermsAndConditionView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, category: String, trackerData: TncBottomSheetTrackerData?) {
+    private fun setupTermsAndConditionView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, hasIncentive: Boolean, hasOngoingChallenge: Boolean, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, category: String, trackerData: TncBottomSheetTrackerData?) {
         bottomSheet.apply {
             val binding = IncentiveOvoTncBottomSheetBinding.bind(view)
             binding.apply {
@@ -70,6 +70,13 @@ object IncentiveOvoBottomSheetBuilder {
                         ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
                     }
                     text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
+                }
+                tvIncentiveOvoAddRating.text = if (hasIncentive) {
+                    view.context.getString(R.string.review_create_rating_condition_incentive)
+                } else if (hasOngoingChallenge) {
+                    view.context.getString(R.string.review_create_rating_condition_challenge)
+                } else {
+                    view.context.getString(R.string.review_create_rating_condition_incentive)
                 }
                 incentiveOvoAddRating.loadImage(ADD_RATING_URL)
                 incentiveOvoAddImage.loadImage(ADD_IMAGE_URL)

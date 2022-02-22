@@ -603,6 +603,10 @@
         <value>5000</value>
     </entry>
     <entry>
+        <key>android_affiliate_callback_timeout_key</key>
+        <value>5000</value>
+    </entry>
+    <entry>
         <key>android_enable_seller_global_feedback</key>
         <value>true</value>
     </entry>
@@ -628,6 +632,10 @@
     </entry>
     <entry>
         <key>android_main_app_enable_new_recharge_order_detail</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_affiliate_universal_sharing</key>
         <value>true</value>
     </entry>
 </defaultsMap>

@@ -32,7 +32,7 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
         }
 
         binding?.linkFeaturedShop?.setOnClickListener {
-            officialStoreTracking?.eventClickAllFeaturedBrand(
+            officialStoreTracking?.eventClickAllShop(
                     element.categoryName.toEmptyStringIfNull())
 
             RouteManager.route(it.context, element?.headerShop?.link)

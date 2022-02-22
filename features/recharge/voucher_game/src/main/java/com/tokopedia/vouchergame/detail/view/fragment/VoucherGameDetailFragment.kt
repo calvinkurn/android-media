@@ -613,12 +613,13 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         activity?.let {
             val productDetailBottomSheet = BottomSheetUnify()
             with(product.attributes) {
-                productDetailBottomSheet.setTitle(desc)
+                productDetailBottomSheet.setTitle(getString(R.string.vg_product_detail_title))
                 productDetailBottomSheet.setCloseClickListener {
                     productDetailBottomSheet.dismiss()
                 }
 
                 val productDetailWidget = ProductDetailWidget(it)
+                productDetailWidget.title = desc
                 productDetailWidget.description = detail
                 productDetailWidget.url = detailUrl
                 productDetailWidget.urlLabel = detailUrlText

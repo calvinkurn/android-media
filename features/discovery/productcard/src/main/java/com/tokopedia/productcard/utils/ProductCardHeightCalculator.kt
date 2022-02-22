@@ -35,6 +35,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val buttonVariantSectionHeight = productCardModel.getVariantSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
             val buttonSimilarProductHeight = productCardModel.getButtonSimilarProductHeight(context)
+            val buttonPrimaryWishlistHeight = productCardModel.getButtonPrimaryWishlistHeight(context)
 
             productCardHeightList.add(
                             imageHeight +
@@ -48,7 +49,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                             buttonQuantityEditorSectionHeight +
                             buttonVariantSectionHeight +
                             buttonNotifyMeSectionHeight +
-                            buttonSimilarProductHeight
+                            buttonSimilarProductHeight +
+                            buttonPrimaryWishlistHeight
             )
         }
 
@@ -497,6 +499,16 @@ private fun ProductCardModel.getButtonSimilarProductHeight(context: Context): In
         val buttonSimilarProductHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_similar_product_height)
 
         buttonSimilarProductMarginTop + buttonSimilarProductHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getButtonPrimaryWishlistHeight(context: Context): Int {
+    return if (willShowPrimaryButtonWishlist()) {
+        val buttonPrimaryWishlistMarginTop = context.resources.getDimensionPixelOffset(R.dimen.product_card_button_primary_margin)
+        val buttonPrimaryWishlistHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_primary_height)
+
+        buttonPrimaryWishlistMarginTop + buttonPrimaryWishlistHeight
     }
     else 0
 }

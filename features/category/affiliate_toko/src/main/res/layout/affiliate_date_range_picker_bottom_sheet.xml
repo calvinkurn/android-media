@@ -5,18 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/affiliate_filter_announcement_ticker_cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="0dp">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/affiliate_filter_announcement_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="@string/affilite_filter_ticker_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tickerType="announcement" />
+    </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/date_picker_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
     <com.tokopedia.unifycomponents.UnifyButton
-        android:enabled="true"
         android:id="@+id/cnf_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_marginVertical="@dimen/dp_16"
+        android:enabled="true"
         android:text="@string/affiliate_terapkan"
-        app:unifyButtonSize="medium"
-        />
+        app:unifyButtonSize="medium" />
 </LinearLayout>
 

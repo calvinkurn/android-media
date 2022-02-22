@@ -8,7 +8,7 @@
         <activity
             android:name="com.tokopedia.ordermanagement.orderhistory.purchase.detail.presentation.activity.OrderHistoryActivity"
             android:label="@string/transaction_title_activity_order_history"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

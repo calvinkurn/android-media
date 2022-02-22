@@ -9,6 +9,7 @@ import java.io.IOException
 
 private const val FILE_DIR = "voucher_images"
 private const val MAXIMUM_FILES_IN_FOLDER = 3
+private const val BITMAP_COMPRESS_OUTPUT_QUALITY = 100
 
 fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
     val file = getSavedImageDirFile(context, filename, false)
@@ -29,7 +30,7 @@ fun Bitmap.getSavedImageDirFile(context: Context, filename: String, isSharing: B
     val fos = FileOutputStream(filePath)
 
     try {
-        compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        compress(Bitmap.CompressFormat.JPEG, BITMAP_COMPRESS_OUTPUT_QUALITY, fos)
     } catch (ex: Exception) {
         ex.printStackTrace()
     } finally {

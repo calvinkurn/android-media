@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -79,9 +80,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
         spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
 
+        outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
+
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
+
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
         renderProductCardContent(productCardModel, isWideContent = true)
 
@@ -135,6 +140,18 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
+    fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) {
+        buttonThreeDotsWishlist?.setOnClickListener(threeDotsClickListener)
+    }
+
+    fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) {
+        buttonAddToCartWishlist?.setOnClickListener(addToCartWishlistClickListener)
+    }
+
+    fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
+        buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -168,6 +185,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     override fun getShopBadgeView(): View? = imageShopBadge
+
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getProductVideoView(): ProductCardVideoView? {
+        return videoProduct
+    }
 
     /**
      * Special cases for specific pages

@@ -125,9 +125,9 @@ class ShopCommonModule {
 
     @ShopQualifier
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor?,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                            errorResponseInterceptor: ErrorResponseInterceptor?): OkHttpClient {
+    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
+                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                            errorResponseInterceptor: ErrorResponseInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)

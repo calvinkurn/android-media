@@ -17,7 +17,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var cartPosition = 0
 
     fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?) {
-        this.data = shippingCourierUiModels.toMutableList()
+        this.data = shippingCourierUiModels.filter {courier -> !courier.productData.isUiRatesHidden}.toMutableList()
         if (preOrderModel?.display == true) {
             preOrderModel.let { this.data.add(0, it) }
             if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(1, NotifierModel())

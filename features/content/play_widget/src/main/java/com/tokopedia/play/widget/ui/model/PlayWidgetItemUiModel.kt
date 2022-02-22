@@ -34,6 +34,7 @@ data class PlayWidgetSmallChannelUiModel(
         val channelType: PlayWidgetChannelType,
         val hasGiveaway: Boolean,
         val poolType: String,
+        val recommendationType: String,
 ): PlayWidgetSmallItemUiModel(), ImpressionableModel {
 
     override val impressHolder = ImpressHolder()
@@ -82,6 +83,7 @@ data class PlayWidgetMediumChannelUiModel(
         val performanceSummaryLink: String,
         val hasGiveaway: Boolean,
         val poolType: String,
+        val recommendationType: String,
 ) : PlayWidgetMediumItemUiModel(), ImpressionableModel {
 
     override val impressHolder = ImpressHolder()

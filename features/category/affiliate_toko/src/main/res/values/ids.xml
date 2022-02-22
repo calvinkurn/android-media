@@ -2,5 +2,6 @@
 <resources>
     <item name="menu_home_affiliate" type="id"/>
     <item name="menu_promo_affiliate" type="id"/>
+    <item name="menu_withdrawal_affiliate" type="id"/>
     <item name="menu_help_affiliate" type="id"/>
 </resources>

@@ -27,13 +27,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.managename.R
+import com.tokopedia.managename.databinding.FragmentManageNameBinding
 import com.tokopedia.managename.di.ManageNameComponent
 import com.tokopedia.managename.view.ViewUtil
 import com.tokopedia.managename.viewmodel.ManageNameViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_manage_name.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -52,6 +53,8 @@ class AddNameFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val viewModel by lazy { viewModelProvider.get(ManageNameViewModel::class.java) }
+
+    private val binding: FragmentManageNameBinding? by viewBinding()
 
     override fun initInjector() {
         getComponent(ManageNameComponent::class.java).inject(this)
@@ -80,11 +83,11 @@ class AddNameFragment : BaseDaggerFragment() {
 
     private fun initViews(){
         initTermPrivacyView()
-        ViewUtil.stripUnderlines(bottom_info)
+        binding?.bottomInfo?.let { ViewUtil.stripUnderlines(it) }
     }
 
     private fun setViewListener() {
-        et_name.textFieldInput.addTextChangedListener(object : TextWatcher {
+        binding?.etName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.isNotEmpty()) {
@@ -99,8 +102,8 @@ class AddNameFragment : BaseDaggerFragment() {
 
             override fun afterTextChanged(editable: Editable) {}
         })
-        btn_continue.setOnClickListener { onContinueClick() }
-        btn_continue.setOnEditorActionListener(OnEditorActionListener { v, id, event ->
+        binding?.btnContinue?.setOnClickListener { onContinueClick() }
+        binding?.btnContinue?.setOnEditorActionListener(OnEditorActionListener { v, id, event ->
             if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
                 onContinueClick()
                 return@OnEditorActionListener true
@@ -123,7 +126,7 @@ class AddNameFragment : BaseDaggerFragment() {
             termPrivacy.append(textPrivacyPolicy)
             termPrivacy.setSpan(privacyClickAction(), termPrivacy.length - textPrivacyPolicy.length, termPrivacy.length, 0)
 
-            bottom_info?.run {
+            binding?.bottomInfo?.run {
                 movementMethod = LinkMovementMethod.getInstance()
                 isSelected = false
                 text = termPrivacy
@@ -162,23 +165,23 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     fun enableNextButton() {
-        btn_continue?.isEnabled = true
+        binding?.btnContinue?.isEnabled = true
     }
 
     fun disableNextButton(){
-        btn_continue?.isEnabled = false
+        binding?.btnContinue?.isEnabled = false
     }
 
     fun showValidationError(error: String?) {
         isError = true
-        et_name?.setError(true)
-        et_name?.setMessage(error ?: "")
+        binding?.etName?.setError(true)
+        binding?.etName?.setMessage(error ?: "")
     }
 
     fun hideValidationError() {
         isError = false
-        et_name?.setError(false)
-        et_name?.setMessage("")
+        binding?.etName?.setError(false)
+        binding?.etName?.setMessage("")
     }
 
     fun onSuccessAddName() {
@@ -189,15 +192,19 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     fun showLoading(){
-        btn_continue?.isEnabled = false
-        add_name_linear_layout?.alpha = 0.5F
-        add_name_progressbar?.show()
+        binding?.let {
+            it.btnContinue.isEnabled = false
+            it.addNameLinearLayout.alpha = 0.5F
+            it.addNameProgressbar.show()
+        }
     }
 
     fun dismissLoading(){
-        btn_continue?.isEnabled = true
-        add_name_linear_layout?.alpha = 1.0F
-        add_name_progressbar?.hide()
+        binding?.let {
+            it.btnContinue?.isEnabled = true
+            it.addNameLinearLayout?.alpha = 1.0F
+            it.addNameProgressbar?.hide()
+        }
     }
 
     fun onErrorRegister(error: Throwable){
@@ -208,7 +215,7 @@ class AddNameFragment : BaseDaggerFragment() {
     private fun onContinueClick() {
         showLoading()
         KeyboardHandler.DropKeyboard(activity, view)
-        viewModel.updateName(et_name.textFieldInput.text.toString())
+        viewModel.updateName(binding?.etName?.textFieldInput?.text.toString())
     }
 
 

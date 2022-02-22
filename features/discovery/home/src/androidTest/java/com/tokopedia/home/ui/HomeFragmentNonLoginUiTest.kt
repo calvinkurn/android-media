@@ -47,6 +47,7 @@ class HomeFragmentNonLoginUiTest {
         InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
+            InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HomeMockResponseConfig())
@@ -65,7 +66,6 @@ class HomeFragmentNonLoginUiTest {
             limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
-        activityRule.deleteHomeDatabase()
     }
 
     @After
@@ -75,12 +75,6 @@ class HomeFragmentNonLoginUiTest {
 
     @Test
     fun testFirstTimeNonLoggedInUser() {
-        /**
-         * Onboarding and coachmark for new user
-         */
-        assertNavigationBottomSheetDisplayed()
-        assertHomeCoachmarkDisplayed()
-
         /**
          * Home skeleton content for non login
          * - Toolbar
@@ -189,31 +183,6 @@ class HomeFragmentNonLoginUiTest {
 
         onView(withId(R.id.tab_layout_home_feeds)).check(matches(isDisplayed()))
         onView(withId(R.id.view_pager_home_feeds)).check(matches(isDisplayed()))
-    }
-
-    /**
-     * Assert bottomsheet text and proceed
-     */
-    private fun assertNavigationBottomSheetDisplayed() {
-        onView(withText(R.string.onboarding_navigation_title)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_description)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_button)).check(matches(isDisplayed()))
-            .perform(click())
-    }
-
-    /**
-     * Assert coachmark text and proceed
-     */
-    private fun assertHomeCoachmarkDisplayed() {
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_inbox_title,
-            descRes = R.string.onboarding_coachmark_inbox_description
-        )
-
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_title,
-            descRes = R.string.onboarding_coachmark_description
-        )
     }
 
     private fun assertCoachmarkAndNext(

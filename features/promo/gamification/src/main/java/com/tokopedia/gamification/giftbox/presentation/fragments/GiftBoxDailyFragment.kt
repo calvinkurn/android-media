@@ -86,6 +86,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     val APPLNK_HOME = "tokopedia://home"
 
     private val HTTP_STATUS_OK = "200"
+    private var shopId: String? = ""
 
     override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
@@ -398,6 +399,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 tokoButtonContainer.btnSecond.visibility = View.GONE
                             }
 
+                            shopId = it.data.gamiCrack.recommendation.shopId
                             handleRecomPage(it.data?.gamiCrack?.recommendation)
 
                         } else {
@@ -481,7 +483,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    GtmEvents.clickProductRecom(userSession?.userId)
+                    GtmEvents.clickProductRecom(userSession?.userId , shopId)
                     pdpGamificationView.recyclerView.scrollBy(0, 1.toPx())
                 }
             }
@@ -545,7 +547,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (!applink.isNullOrEmpty()) {
                 performAutoApply()
                 RouteManager.route(context, applink)
-                GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
+                GtmEvents.clickClaimButton(
+                    tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId,
+                    giftBoxRewardEntity?.gamiCrack?.recommendation?.shopId
+                )
             }
         }
     }

@@ -82,6 +82,7 @@
         <package android:name="com.andromo.dev910640.app1045299" />
         <package android:name="com.anhttvn.deviceid" />
         <package android:name="com.antokinfo.cepatcair" />
+        <package android:name="com.antsdroids.SamuraiBackup" />
         <package android:name="com.app.cloner.pro" />
         <package android:name="com.app.dumi" />
         <package android:name="com.app.ktaarivianni" />
@@ -146,6 +147,7 @@
         <package android:name="com.dd.social.messenger.bigapp" />
         <package android:name="com.device.emulator" />
         <package android:name="com.di.tinggi.ccc" />
+        <package android:name="com.diimsyah.diim69" />
         <package android:name="com.directworks.dualapps.arm32" />
         <package android:name="com.djakarta.elevena.huoying" />
         <package android:name="com.doeku" />
@@ -165,6 +167,7 @@
         <package android:name="com.dukudana.android" />
         <package android:name="com.duuita.kitt" />
         <package android:name="com.dxjnoa.ylhydp" />
+        <package android:name="com.dv.emu.pro" />
         <package android:name="com.dy.ms.pinjamuang" />
         <package android:name="com.eagle.bird" />
         <package android:name="com.earnpay.solusiku" />
@@ -198,6 +201,8 @@
         <package android:name="com.free.cash.ktacepat" />
         <package android:name="com.free.gocash" />
         <package android:name="com.freshcashuk" />
+        <package android:name="com.fufufu.hackalfagift" />
+        <package android:name="com.fufufu.superblack" />
         <package android:name="com.gamecannon.kilatgame" />
         <package android:name="com.gandengtangan.lender" />
         <package android:name="com.gibatekpro.imeigenerator" />
@@ -474,6 +479,7 @@
         <package android:name="com.space.water.clone.multiple.clone.app.accounts" />
         <package android:name="com.speedy.speedyloan" />
         <package android:name="com.stanfordtek.pinjamduit" />
+        <package android:name="com.sudocode.sudohide" />
         <package android:name="com.sumber.tunai" />
         <package android:name="com.sumeil.bantuki" />
         <package android:name="com.summerholiday.indosa" />
@@ -646,6 +652,13 @@
         <package android:name="xyz.duit.saku" />
         <package android:name="xyz.rupiah.sigap.pinjol" />
         <package android:name="zone.bytesreverser.xposeddeviceidmaskerpro" />
+        <package android:name="com.instagram.android"/>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.whatsapp"/>
+        <package android:name="jp.naver.line.android"/>
+        <package android:name="com.twitter.android"/>
+        <package android:name="org.telegram.messenger"/>
+        <package android:name="com.google.android.gm"/>
     </queries>
     <application
         android:name=".ConsumerMainApplication"
@@ -722,6 +735,18 @@
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <provider
             android:name="androidx.core.content.FileProvider"

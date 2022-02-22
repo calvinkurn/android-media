@@ -125,6 +125,9 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig true
+    }
 
     dexOptions {
         javaMaxHeapSize "8g"
@@ -139,7 +142,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.6.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -175,6 +178,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
 
@@ -209,7 +213,7 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.sellerorder)
     implementation projectOrAar(rootProject.ext.features.sellerAppWidget)
@@ -262,11 +266,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.campaignList)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsOnBoarding)
 
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
@@ -296,10 +302,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
 
@@ -318,6 +324,7 @@ dependencies {
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
@@ -362,6 +369,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
+
+    implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.startupRuntime
 
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)

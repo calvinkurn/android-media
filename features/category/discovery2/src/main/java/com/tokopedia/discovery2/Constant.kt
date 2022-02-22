@@ -41,6 +41,11 @@ object Constant {
         const val PDP_VIEW_THRESHOLD = 1000
     }
 
+    object Dimensions{
+        const val HEIGHT = "height"
+        const val WIDTH = "width"
+    }
+
     object EmptyStateTexts{
         const val TITLE = "Awas keduluan pembeli lain!"
         const val DESCRIPTION = "Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!"

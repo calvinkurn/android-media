@@ -1,5 +1,6 @@
 package com.tokopedia.otp.verification.viewmodel
 
+import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
@@ -37,6 +38,9 @@ class VerificationViewModelTest {
 
     @RelaxedMockK
     lateinit var getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA
+
+    @RelaxedMockK
+    lateinit var getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase
 
     @RelaxedMockK
     lateinit var otpValidateUseCase: OtpValidateUseCase
@@ -82,15 +86,16 @@ class VerificationViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewmodel = VerificationViewModel(
-                getVerificationMethodUseCase,
-                getVerificationMethodUseCase2FA,
-                otpValidateUseCase,
-                otpValidateUseCase2FA,
-                sendOtpUseCase,
-                sendOtpUseCase2FA,
-                userSessionInterface,
-                remoteConfig,
-                dispatcherProviderTest
+            getVerificationMethodUseCase,
+            getVerificationMethodUseCase2FA,
+            getVerificationMethodInactivePhoneUseCase,
+            otpValidateUseCase,
+            otpValidateUseCase2FA,
+            sendOtpUseCase,
+            sendOtpUseCase2FA,
+            userSessionInterface,
+            remoteConfig,
+            dispatcherProviderTest
         )
     }
 
@@ -198,6 +203,34 @@ class VerificationViewModelTest {
         coEvery { getVerificationMethodUseCase2FA.getData(any()) } coAnswers { throw throwable }
 
         viewmodel.getVerificationMethod2FA("", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Fail)
+
+        val result = viewmodel.getVerificationMethodResult.value as Fail
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
+    fun `Success get verification method inactive phone`() {
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodInactivePhoneUseCase(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethodInactive("", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Success<OtpModeListData>>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Success)
+
+        val result = viewmodel.getVerificationMethodResult.value as Success<OtpModeListData>
+        assert(result.data == successGetVerificationMethodResponse.data)
+    }
+
+    @Test
+    fun `Failed get verification method inactive phone`() {
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodInactivePhoneUseCase(any()) } coAnswers { throw throwable }
+
+        viewmodel.getVerificationMethodInactive("", "", "")
 
         verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.getVerificationMethodResult.value is Fail)
@@ -378,7 +411,12 @@ class VerificationViewModelTest {
         viewmodel.done = false
         viewmodel.isLoginRegisterFlow = true
         val clearValue = true
-        coEvery { remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true) } returns clearValue
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns clearValue
 
         viewmodel.onCleared()
 

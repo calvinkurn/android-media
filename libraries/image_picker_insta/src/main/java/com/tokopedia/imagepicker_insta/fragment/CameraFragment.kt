@@ -235,7 +235,7 @@ class CameraFragment : Fragment() {
 
             override fun onLongClickEnd() {
                 stopRecordingVideo()
-                TrackerProvider.tracker?.onRecordButtonClick(MediaType.IMAGE)
+                TrackerProvider.tracker?.onRecordButtonClick(MediaType.VIDEO)
             }
         }
 

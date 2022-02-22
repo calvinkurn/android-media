@@ -96,6 +96,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -192,6 +193,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
+    public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
+    private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -221,6 +224,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean isFirstNavigationImpression = false;
     private boolean useNewInbox = false;
     private boolean useNewNotificationOnNewInbox = false;
+    private RemoteConfigInstance remoteConfigInstance;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
@@ -561,7 +565,7 @@ public class MainParentActivity extends BaseActivity implements
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.general_label_ok), (v) -> {
+                    getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
                     });
         }
     }
@@ -689,7 +693,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
-        addShortcuts();
+        addShortcutsAsync();
 
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
@@ -757,9 +761,20 @@ public class MainParentActivity extends BaseActivity implements
             }
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
-        Bundle bundleWishlist = new Bundle();
-        bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-        fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+
+        if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
+            Bundle bundleWishlist = getIntent().getExtras();
+            if (bundleWishlist == null) {
+                bundleWishlist = new Bundle();
+            }
+            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
+            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+        } else {
+            Bundle bundleWishlist = new Bundle();
+            bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
+            fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+        }
 
         Bundle bundleUoh = getIntent().getExtras();
         if (bundleUoh == null) {
@@ -771,6 +786,27 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
+    }
+
+    private boolean useWishlistV2Rollence() {
+        boolean isWishlistV2;
+        try {
+            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT).equals(RollenceKey.WISHLIST_V2_VARIANT);
+        } catch (Exception e) {
+            isWishlistV2 = true;
+        }
+        return isWishlistV2;
+    }
+
+    private boolean useRemoteConfigWishlistV2Revamp() {
+        return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2);
+    }
+
+    private AbTestPlatform getAbTestPlatform() {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = new RemoteConfigInstance(getApplication());
+        }
+        return remoteConfigInstance.getABTestPlatform();
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -826,8 +862,12 @@ public class MainParentActivity extends BaseActivity implements
             this.finish();
         } else {
             doubleTapExit = true;
-            Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+            try {
+                Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1005,8 +1045,11 @@ public class MainParentActivity extends BaseActivity implements
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
-
-                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                try {
+                    Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             RouteManager.route(this, applink);
@@ -1051,8 +1094,15 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = (Lazy<MainParentPresenter>) presenter;
     }
 
-    @NotNull
-    private boolean addShortcuts() {
+    private void addShortcutsAsync() {
+        WeaveInterface mainDaggerWeave = () -> {
+            addShortcuts();
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(mainDaggerWeave);
+    }
+
+    private void addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -1139,7 +1189,6 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
-        return true;
     }
 
     @Override

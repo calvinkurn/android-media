@@ -112,7 +112,7 @@ class CatalogFragmentTest
         }.assertTest {
             val query = listOf(
                     mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                             Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                             Event.ACTION_KEY to Event.ALL_STAR,
                             Event.LABEL_KEY to Event.ALL_STAR
@@ -164,7 +164,7 @@ class CatalogFragmentTest
         }.assertTest {
             val query = listOf(
                     mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                             Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                             Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
                             Event.LABEL_KEY to Event.ALL_STAR
@@ -202,7 +202,7 @@ class CatalogFragmentTest
         }.assertTest {
             val query = listOf(
                     mapOf(
-                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                         Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                         Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
                         Event.LABEL_KEY to Event.ALL_STAR
@@ -252,38 +252,6 @@ class CatalogFragmentTest
             assert(true)
         } else {
             assert(false)
-        }
-    }
-
-    @Test
-    fun check_comparison_section_opening() {
-        actionTest {
-            Thread.sleep(3000)
-            onView(withId(R.id.catalog_detail_rv))
-                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_comparision_rv))),
-                            ViewActions.scrollTo()))
-            Thread.sleep(3000)
-            onView(CommonMatcher.firstView(AllOf.allOf(
-                    withId(R.id.second_catalog_image),
-                    ViewMatchers.isDisplayed())))
-            onView(CommonMatcher.firstView(AllOf.allOf(
-                    withId(R.id.comparision_card),
-                    ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-            Thread.sleep(3000)
-            onView(CommonMatcher.firstView(AllOf.allOf(
-                    withId(R.id.product_name),
-                    ViewMatchers.isDisplayed())))
-        }.assertTest {
-            val query = listOf(
-                mapOf(
-                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                        Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                        Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                        Event.LABEL_KEY to Event.ALL_STAR
-                )
-            )
-            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
         }
     }
 
@@ -406,7 +374,7 @@ class CatalogFragmentTest
 
     private fun launchActivity() {
         val bundle = Bundle()
-        bundle.putString(EXTRA_CATALOG_ID, "53169")
+        bundle.putString(EXTRA_CATALOG_ID, "57735")
         val intent = Intent(context, CatalogDetailPageActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)

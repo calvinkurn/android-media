@@ -3,9 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/product_manage_campaign_stock_variant_action_height"
     android:paddingStart="@dimen/layout_lvl1"
-    android:paddingLeft="@dimen/layout_lvl1"
     android:paddingEnd="@dimen/product_manage_campaign_stock_accordion_padding"
-    android:paddingRight="@dimen/product_manage_campaign_stock_accordion_padding"
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -20,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_campaign_stock_chevron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

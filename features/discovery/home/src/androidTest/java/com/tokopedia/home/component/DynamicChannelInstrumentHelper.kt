@@ -16,12 +16,13 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
@@ -51,6 +52,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "t
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL = "tracker/home/banner_carousel.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -60,10 +62,9 @@ private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
  */
 
 fun disableCoachMark(context: Context){
-    disableOnboarding(context)
+    disableHomeAnimation()
     disableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
-    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
@@ -73,10 +74,9 @@ fun disableCoachMark(context: Context){
 }
 
 fun enableCoachMark(context: Context){
-    enableOnboarding(context)
+    disableHomeAnimation()
     enableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
-    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, false)
@@ -85,6 +85,11 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
     setHomeTokonowCoachmarkSharedPrefValue(context, false)
+}
+
+fun disableHomeAnimation() {
+    BalanceWidgetView.disableAnimation = true
+    BalanceAdapter.disableAnimation = true
 }
 
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
@@ -108,18 +113,6 @@ fun enableChooseAddressCoachmark(context: Context) {
     val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
         CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
-}
-
-fun disableOnboarding(context: Context) {
-    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean(
-            NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
-}
-
-fun enableOnboarding(context: Context) {
-    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean(
-        NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true).apply()
 }
 
 fun waitForData() {
@@ -177,7 +170,37 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
 fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
     waitForData()
     clickRecommendationFeedTab()
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+    val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
+    val rvCount = recyclerView.adapter!!.itemCount
+    for (i in 0 until rvCount) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun clickHomeRecommendationItem(): ViewAction? {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click home recommendation item"
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val bannerView: View? = view.findViewById(R.id.bannerImageView)
+            if (bannerView != null) {
+                bannerView.performClick()
+            } else {
+                view.performClick()
+            }
+        }
+    }
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
@@ -220,6 +243,11 @@ fun clickOnTickerSection(viewHolder: RecyclerView.ViewHolder) {
 
 fun clickHPBSection(viewHolder: RecyclerView.ViewHolder) {
     clickHomeBannerItemAndViewAll(viewHolder)
+}
+
+fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
 }
 
 fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int){
@@ -320,23 +348,17 @@ private fun clickBUWidgetTab() {
 }
 
 private fun clickTickerItem(view: View) {
-    val childView = view
-    val textApplink = childView.findViewById<View>(R.id.ticker_description)
-    val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
-    if (textApplink.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+    try {
+        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
     }
-    if (closeButton.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
-                    .perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+
+    try {
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
+                .perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
     }
 }
 

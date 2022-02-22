@@ -37,10 +37,11 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         calendarWidgetCarouselViewModel = discoveryBaseViewModel as CalendarWidgetCarouselViewModel
         getSubComponent().inject(calendarWidgetCarouselViewModel)
+        addDecorator()
         if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList().isNullOrEmpty()) {
             addShimmer()
+            mDiscoveryRecycleAdapter.notifyDataSetChanged()
         }
-        addDecorator()
         handleCarouselPagination()
     }
 
@@ -80,8 +81,10 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 

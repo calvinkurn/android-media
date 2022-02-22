@@ -54,9 +54,9 @@
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             android:digits="1234567890"
-            android:maxLength="5"
+            app:text_field_counter="5"
             android:completionThreshold="1"
-            app:text_field_input_type="phone"
+            app:text_field_input_type="number"
             app:text_field_placeholder="@string/shop_address_postal_code_placeholder"
             app:text_field_label="@string/shop_address_label_postal_code"
             app:text_field_label_static="true" />

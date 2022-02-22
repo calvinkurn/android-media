@@ -1,0 +1,10 @@
+[
+  {
+    "data": {
+      "verifyNewPhoneInactivePhoneUser" : {
+        "isSuccess": true,
+        "ErrorMessage": ""
+      }
+    }
+  }
+]

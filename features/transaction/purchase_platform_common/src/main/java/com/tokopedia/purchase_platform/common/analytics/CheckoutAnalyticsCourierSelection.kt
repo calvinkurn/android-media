@@ -414,8 +414,9 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventClickLanjutkanTerapkanPromoError(errorMsg: String) {
-        val label = ConstantTransactionAnalytics.EventLabel.ERROR + " - " + errorMsg
+    fun eventClickLanjutkanTerapkanPromoError(errorMsg: String?) {
+        val finalErrorMsg = errorMsg ?: ""
+        val label = ConstantTransactionAnalytics.EventLabel.ERROR + " - " + finalErrorMsg
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,

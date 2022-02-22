@@ -30,8 +30,15 @@ class GetReminderTickerUseCaseStub @Inject constructor(
             ticker.addProperty(enable, false)
         }
 
+    val noRegexMatchSrwPrompt: GetReminderTickerResponse
+        get() = alterResponseOf(defaultResponse) {
+            val ticker = it.getAsJsonObject(GetReminderTicker)
+            ticker.addProperty(regexMessage, "random message not gonna happened")
+        }
+
     companion object {
         const val GetReminderTicker = "GetReminderTicker"
         const val enable = "enable"
+        const val regexMessage = "regexMessage"
     }
 }

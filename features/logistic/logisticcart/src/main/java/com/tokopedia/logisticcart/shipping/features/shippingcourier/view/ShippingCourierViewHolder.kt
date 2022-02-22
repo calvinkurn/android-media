@@ -40,13 +40,12 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
     fun bindData(shippingCourierUiModel: ShippingCourierUiModel,
                  shippingCourierAdapterListener: ShippingCourierAdapterListener?,
                  isLastItem: Boolean) {
-        if (isLastItem) {
-            separator.visibility = View.GONE
-        } else {
-            separator.visibility = View.VISIBLE
-        }
-
         if (!shippingCourierUiModel.productData.isUiRatesHidden) {
+            if (isLastItem) {
+                separator.visibility = View.GONE
+            } else {
+                separator.visibility = View.VISIBLE
+            }
             if (shippingCourierAdapterListener?.isToogleYearEndPromotionOn() == true &&
                 !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)
             ) {
@@ -212,10 +211,8 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                     )
                 }
             }
-
+            imgCheck.visibility = if (shippingCourierUiModel.isSelected) View.VISIBLE else View.GONE
         }
-
-        imgCheck.visibility = if (shippingCourierUiModel.isSelected) View.VISIBLE else View.GONE
     }
 
     companion object {

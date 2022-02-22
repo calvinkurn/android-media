@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -42,7 +43,9 @@ import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
-import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.component.DaggerHomeDashboardComponent
+import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
@@ -60,8 +63,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
-    SomListLoadTimeMonitoringActivity {
+open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
+    SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
 
     companion object {
         @JvmStatic
@@ -112,6 +115,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private var statusBarCallback: StatusBarCallback? = null
+    private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
+    private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
@@ -147,6 +152,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+    }
+
+    override fun getComponent(): HomeDashboardComponent {
+        return DaggerHomeDashboardComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onResume() {
@@ -266,6 +277,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         statusBarCallback = callback
     }
 
+    fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {
+        sellerHomeFragmentChangeCallback = callback
+    }
+
+    fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
+        otherMenuFragmentChangeCallback = callback
+    }
+
     private fun setContentView() {
         binding = ActivitySahSellerHomeBinding.inflate(layoutInflater).apply {
             setContentView(root)
@@ -351,10 +370,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun initInjector() {
-        DaggerSellerHomeComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        component.inject(this)
     }
 
     private fun setupNavigator() {
@@ -440,7 +456,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setCurrentFragmentType(@FragmentType pageType: Int) {
-        statusBarCallback?.setCurrentFragmentType(pageType)
+        sellerHomeFragmentChangeCallback?.setCurrentFragmentType(pageType)
+        otherMenuFragmentChangeCallback?.setCurrentFragmentType(pageType)
     }
 
     private fun observeNotificationsLiveData() {
@@ -475,10 +492,15 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable,
-                        SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
 
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        it.throwable,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                    )
                     navigator?.run {
                         if (isHomePageSelected()) {
                             supportActionBar?.title = userSession.shopName

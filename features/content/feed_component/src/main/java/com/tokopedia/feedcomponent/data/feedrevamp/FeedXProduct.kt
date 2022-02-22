@@ -2,8 +2,11 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class FeedXProduct(
         @SerializedName("appLink")
         var appLink: String = "",
@@ -27,7 +30,7 @@ data class FeedXProduct(
         @SerializedName("isDiscount")
         var isDiscount: Boolean = false,
         @SerializedName("mods")
-        var mods: List<Any> = listOf(),
+        var mods: List<String> = emptyList(),
         @SerializedName("name")
         var name: String = "",
         @SuppressLint("Invalid Data Type") @SerializedName("price")
@@ -51,9 +54,11 @@ data class FeedXProduct(
 
         //TopadsHeadline
         var variant: Int = 1,
+        var isWishlisted :Boolean = false,
         var productName : String= "",
         val slashedPrice : String = "",
         val authorName : String = "",
+        var shopID : String = "",
         val isTopads: Boolean = false,
         val adClickUrl: String = ""
-        )
+        ):Parcelable

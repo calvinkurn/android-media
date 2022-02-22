@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
@@ -13,6 +15,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -20,8 +25,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
-    listener: ImageUploadListener,
-    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
+    private val listener: ImageUploadListener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val commonListener: CommonViewHolderListener,
 ) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
@@ -70,8 +76,12 @@ class TopchatImageUploadViewHolder(
 
     private val attachmentUnify get() = attachment as? ImageUnify
 
-    private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-            ?: 0f
+    override fun bind(element: ImageUploadUiModel?, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        if (payloads.first() == Payload.REBIND) {
+            bind(element)
+        }
+    }
 
     override fun bind(element: ImageUploadUiModel?) {
         if (element == null) return
@@ -82,6 +92,36 @@ class TopchatImageUploadViewHolder(
         bindReplyBubbleListener()
         bindReplyReference(element)
         bindMsgOffsetLine(element)
+        bindLongClick(element)
+    }
+
+    override fun setBottomHour(element: BaseChatUiModel?) {
+        if (element is ImageUploadUiModel && element.isDummy) {
+            hour.text = SENDING_TEXT
+            hour.show()
+        } else {
+            super.setBottomHour(element)
+        }
+    }
+
+    private fun bindLongClick(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnLongClickListener {
+            if (element.isSender) {
+                val menus = LongClickMenuItemGenerator.createLongClickMenuUploadImageBubble()
+                commonListener.showMsgMenu(
+                    element, "", menus
+                )
+            }
+            true
+        }
+    }
+
+    override fun bindClickListener(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnClickListener { view ->
+            if (element.imageUrl != null && element.replyTime != null) {
+                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+            }
+        }
     }
 
     override fun setChatLeft(chatBalloon: View?) {
@@ -114,7 +154,7 @@ class TopchatImageUploadViewHolder(
     }
 
     private fun hideReadStatusIfRetry(element: ImageUploadUiModel) {
-        if(element.isRetry) {
+        if (element.isRetry) {
             chatReadStatus.hide()
         }
     }
@@ -136,7 +176,12 @@ class TopchatImageUploadViewHolder(
     }
 
     override fun bindImageAttachment(element: ImageUploadUiModel) {
-        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        changeHourColor(
+            MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)

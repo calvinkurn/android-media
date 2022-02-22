@@ -800,14 +800,16 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun smoothScrollToPmProSection() {
-        context?.let {
-            val smoothScroller = object : LinearSmoothScroller(it) {
-                override fun getVerticalSnapPreference(): Int = SNAP_TO_START
+        if (indexOfUpgradePmProWidget != RecyclerView.NO_POSITION) {
+            context?.let {
+                val smoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int = SNAP_TO_START
+                }
+                val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+                smoothScroller.targetPosition = indexOfUpgradePmProWidget
+                layoutManager?.startSmoothScroll(smoothScroller)
+                isAlreadyScrolled = true
             }
-            val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
-            smoothScroller.targetPosition = indexOfUpgradePmProWidget
-            layoutManager?.startSmoothScroll(smoothScroller)
-            isAlreadyScrolled = true
         }
     }
 

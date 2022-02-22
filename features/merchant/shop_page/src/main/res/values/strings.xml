@@ -182,6 +182,7 @@
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
     <string name="tablayout_new_text">Baru</string>
     <string name="x_product">%1$s Produk</string>
+    <string name="shop_page_label_remind_me">Ingatkan</string>
 
     <string name="string_btn_whitelist">Buat Post</string>
     <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
@@ -247,7 +248,6 @@
     <string name="shop_page_retry">Ulangi</string>
     <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
 
-    <string name="shop_home_npl_remind_me">Ingatkan</string>
     <string name="shop_home_npl_campaign_follow">Follow Toko</string>
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
@@ -288,19 +288,23 @@
     <string name="content_desc_shop_home_get_failed_reload_image">Reload Image</string>
     <string name="content_desc_icon_chevron">Icon Chevron</string>
 
-    <!-- shop page showcase tab -->
-    <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
-    <string name="shop_page_showcase_all_text">Semua Etalase</string>
-    <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
-
     <!-- flash sale -->
     <string name="shop_page_label_flash_sale_toko">Flash Sale Toko</string>
     <string name="shop_page_label_flash_sale">Flash Sale</string>
     <string name="shop_page_label_see_all">Lihat Semua</string>
     <string name="shop_page_label_started_in">Dimulai dalam</string>
     <string name="shop_page_label_ends_in">Berakhir dalam</string>
-    <string name="shop_page_label_remind_me">Ingatkan</string>
     <string name="shop_page_label_thousand">rb</string>
     <string name="shop_page_label_million">jt</string>
     <string name="shop_page_label_oke">Oke</string>
+
+    <!-- Product Bundling Widget -->
+    <string name="shop_page_product_bundle_success_atc_text">Paket berhasil dimasukkan ke keranjang belanja</string>
+    <string name="shop_page_product_bundle_failed_atc_text_for_shop_owner">Oops, kamu nggak bisa menambahkan barang jualanmu ke keranjang.</string>
+    <string name="shop_page_product_bundle_failed_oos_dialog_title">Oops, paket yang kamu pilih\nhabis</string>
+    <string name="shop_page_product_bundle_failed_oos_dialog_desc_with_alt">Tenang kamu bisa coba lihat paket lain di\ntoko ini</string>
+    <string name="shop_page_product_bundle_failed_oos_dialog_desc_no_alt">Kamu tetap bisa beli barang dalam paket\nsecara satuan</string>
+    <string name="shop_page_product_bundle_failed_oos_cta_text">Kembali</string>
+    <string name="shop_page_product_bundle_failed_oos_cta_text_with_alt">Lihat Paket Lain</string>
+
 </resources>

@@ -4,11 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -114,21 +110,33 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun setUIFlashCamera(flashEnum: Int) {
-        val colorWhite = ContextCompat.getColor(requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        when (flashEnum) {
-            Flash.AUTO.ordinal -> {
-                flashControl?.setImageDrawable(MethodChecker.getDrawable(activity,
-                        R.drawable.home_credit_ic_auto_flash))
-            }
-            Flash.ON.ordinal -> {
-                flashControl?.setImage(IconUnify.FLASH_ON, colorWhite,
-                        colorWhite, colorWhite, colorWhite)
-            }
-            Flash.OFF.ordinal -> {
-                flashControl?.setImage(IconUnify.FLASH_OFF, colorWhite,
+        context?.let {
+            val colorWhite = ContextCompat.getColor(
+                requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+            when (flashEnum) {
+                Flash.AUTO.ordinal -> {
+                    flashControl?.setImageDrawable(
+                        MethodChecker.getDrawable(
+                            activity,
+                            R.drawable.home_credit_ic_auto_flash
+                        )
+                    )
+                }
+                Flash.ON.ordinal -> {
+                    flashControl?.setImage(
+                        IconUnify.FLASH_ON, colorWhite,
                         colorWhite, colorWhite, colorWhite
-                )
+                    )
+                }
+                Flash.OFF.ordinal -> {
+                    flashControl?.setImage(
+                        IconUnify.FLASH_OFF, colorWhite,
+                        colorWhite, colorWhite, colorWhite
+                    )
+                }
+                else -> {}
             }
         }
     }

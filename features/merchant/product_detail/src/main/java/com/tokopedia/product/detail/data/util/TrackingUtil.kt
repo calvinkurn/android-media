@@ -155,9 +155,9 @@ object TrackingUtil {
     }
 
     fun getEnhanceCategoryFormatted(detail: List<Category.Detail>?): String {
-        val categoryNameLvl1 = detail?.firstOrNull()?.id ?: KEY_UNDEFINED
-        val categoryNameLvl2 = detail?.getOrNull(1)?.id ?: KEY_UNDEFINED
-        val categoryNameLvl3 = detail?.getOrNull(2)?.id ?: KEY_UNDEFINED
+        val categoryNameLvl1 = detail?.firstOrNull()?.name ?: KEY_UNDEFINED
+        val categoryNameLvl2 = detail?.getOrNull(1)?.name ?: KEY_UNDEFINED
+        val categoryNameLvl3 = detail?.getOrNull(2)?.name ?: KEY_UNDEFINED
         return String.format(ITEM_CATEGORY_BUILDER, categoryNameLvl1, categoryNameLvl2, categoryNameLvl3, KEY_UNDEFINED)
     }
 

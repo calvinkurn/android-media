@@ -4,8 +4,10 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.imageuploader.data.*
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.imageuploader.data.source.GenerateHostCloud
@@ -21,6 +23,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.profilecompletion.data.UploadProfileImageModel
+import com.tokopedia.profilecompletion.settingprofile.domain.SaveProfilePictureUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -190,5 +193,10 @@ class ImageUploadSettingProfileModule {
             userSession: UserSessionInterface,
             @ProfileCompletionQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<UploadProfileImageModel> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, UploadProfileImageModel::class.java, imageUploaderUtils)
+    }
+
+    @Provides
+    fun provideSaveProfilePictureUseCase(repository: GraphqlRepository, dispatchers: CoroutineDispatchers): SaveProfilePictureUseCase {
+        return SaveProfilePictureUseCase(repository, dispatchers)
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.pusher.bitrate.BitrateAdapter
 import com.tokopedia.play.broadcaster.pusher.camera.CameraInfo
@@ -11,7 +12,6 @@ import com.tokopedia.play.broadcaster.pusher.camera.CameraManager
 import com.tokopedia.play.broadcaster.pusher.camera.CameraType
 import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.extension.safeExecute
-import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.wmspanel.libstream.*
 import org.json.JSONObject
 import java.util.*

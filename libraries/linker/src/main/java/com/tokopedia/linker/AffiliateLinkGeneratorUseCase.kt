@@ -19,7 +19,7 @@ class AffiliateLinkGeneratorUseCase constructor(
     override suspend fun executeOnBackground(): String {
         val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLink.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-            .Builder(CacheType.CACHE_FIRST).build())
+            .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<GenerateAffiliateLink.Response>(GenerateAffiliateLink.Response::class.java)
         if (!TextUtils.isEmpty(response.generateAffiliateLink.data?.get(0)?.uRL?.shortURL)) {

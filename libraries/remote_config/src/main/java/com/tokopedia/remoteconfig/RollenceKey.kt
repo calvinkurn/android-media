@@ -13,21 +13,13 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
-    const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
-
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
     const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
 
-    // Merchant Voucher Creation
-    const val BROADCAST_VOUCHER_AB_TEST_KEY = "broadcast_voucher"
-
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-
-    const val HOME_WALLETAPP = "gopay_on"
-    const val HOME_PAYMENT_ABC = "PaymentABC"
 
     const val HOME_BEAUTY_FEST = "home_cantik"
 
@@ -48,17 +40,6 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
-    //TAPCASH
-    const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
-
-    //Home account
-    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
-
-    //Add Bills SBM
-    const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
-    const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
-    const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
-
     //User
     const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
@@ -71,4 +52,14 @@ object RollenceKey {
 
     //Search
     const val SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION = "ContentTrackerUni"
+    const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
+
+    // Purchase Platform
+    const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
+    const val WISHLIST_OLD_VARIANT = "control_variant"
+    const val WISHLIST_V2_VARIANT = "experiment_variant"
+
+    // advanced search negative keywords
+    const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
+    const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
 }

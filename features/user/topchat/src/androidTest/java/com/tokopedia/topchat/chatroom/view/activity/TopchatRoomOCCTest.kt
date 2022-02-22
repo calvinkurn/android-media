@@ -11,6 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
@@ -26,6 +27,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+@UiTest
 class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
 
     @Before

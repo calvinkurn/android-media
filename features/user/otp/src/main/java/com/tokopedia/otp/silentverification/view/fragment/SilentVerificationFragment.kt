@@ -39,9 +39,9 @@ import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import okhttp3.*
-import java.io.IOException
+import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.viewBinding
 import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
@@ -65,7 +65,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private var isFirstTry = true
 
     private lateinit var viewModel: SilentVerificationViewModel
-    private val binding by viewBinding(FragmentSilentVerificationBinding::bind)
+    private var binding by autoClearedNullable<FragmentSilentVerificationBinding>()
     private var otpData: OtpData? = null
     private var modeListData: ModeListData? = null
     private var lottieTaskList: ArrayList<LottieTask<LottieComposition>> = arrayListOf()
@@ -91,7 +91,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_silent_verification, container, false)
+        binding = FragmentSilentVerificationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -434,57 +435,23 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(url: String) {
-        // for testing purpose only, please use later merhod
-//        verifyWithoutSwitching(url)
-
-        // Main method to switch between wifi & cellular data
         context?.run {
             networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
                 override fun onSuccess(network: Network) {
                     viewModel.verifyBoku(network, url)
                 }
                 override fun onError(throwable: Throwable) {
-                    onValidateFailed(throwable)
-                }
-            })
-        }
-    }
-
-    // to be deleted, for testing purpose only
-    private fun verifyWithoutSwitching(url: String) {
-        try {
-            val okHttpClient =
-                OkHttpClient.Builder().build()
-            val request: Request = Request.Builder()
-                .url(url)
-                .build()
-            okHttpClient.newCall(request).enqueue(object: Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val result = response.body()?.string()
-                    println("verify:onResponse:$result")
                     activity?.runOnUiThread {
-                        handleBokuResult(result ?: "")
-                    }
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    println("verify:onResponse:${e.message}")
-                    e.printStackTrace()
-                    activity?.runOnUiThread {
-                        onValidateFailed(e)
+                        onValidateFailed(throwable)
                     }
                 }
             })
-        } catch (ex: Exception) {
-            onValidateFailed(ex)
-            ex.printStackTrace()
         }
     }
 
     companion object {
         private const val KEY_ERROR_CODE = "ErrorCode"
         private const val KEY_ERROR_DESC = "ErrorDescription"
-        private const val KEY_CARRIER = "Carrier"
 
         private const val VALUE_SUCCESS = "Success"
         private const val ERROR_CODE_ZERO = "0"

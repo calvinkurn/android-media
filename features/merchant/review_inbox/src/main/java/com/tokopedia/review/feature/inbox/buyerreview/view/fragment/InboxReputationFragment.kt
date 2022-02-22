@@ -57,8 +57,6 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     private var searchView: SearchInputView? = null
     private var mainList: RecyclerView? = null
     private var swipeToRefresh: SwipeToRefresh? = null
-
-    private var layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private var adapter = InboxReputationAdapter(InboxReputationTypeFactoryImpl(this, this))
 
     private var timeFilter: String = ""
@@ -138,9 +136,10 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     private fun prepareView() {
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         mainList?.layoutManager = layoutManager
         mainList?.adapter = adapter
-        mainList?.addOnScrollListener(onScroll())
+        mainList?.addOnScrollListener(onScroll(layoutManager))
         swipeToRefresh?.setOnRefreshListener { refreshPage() }
         setQueryHint()
         filterButton?.setOnClickListener { openFilter() }
@@ -164,7 +163,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         )
     }
 
-    private fun onScroll(): RecyclerView.OnScrollListener {
+    private fun onScroll(layoutManager: LinearLayoutManager): RecyclerView.OnScrollListener {
         return object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)

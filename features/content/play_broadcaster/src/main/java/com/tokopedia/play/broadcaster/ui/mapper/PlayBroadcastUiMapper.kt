@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -13,10 +14,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
-import com.tokopedia.play.broadcaster.type.EtalaseType
-import com.tokopedia.play.broadcaster.type.OutOfStock
-import com.tokopedia.play.broadcaster.type.StockAvailable
+import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -65,6 +63,7 @@ class PlayBroadcastUiMapper(
                 imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
+                price = PriceUnknown,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
@@ -138,7 +137,20 @@ class PlayBroadcastUiMapper(
                 name = it.name,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
-                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
+                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
+                price = if(it.discount != 0) {
+                    DiscountedPrice(
+                        originalPrice = it.originalPriceFormatted,
+                        originalPriceNumber = it.originalPrice,
+                        discountedPrice = it.priceFormatted,
+                        discountedPriceNumber = it.price,
+                        discountPercent = it.discount
+                    )
+                }
+                else {
+                    OriginalPrice(price = it.originalPriceFormatted,
+                        priceNumber = it.originalPrice)
+                }
         )
     }
 
@@ -204,7 +216,20 @@ class PlayBroadcastUiMapper(
                 name = it.productName,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
-                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
+                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
+                price = if(it.discount.toInt() != 0) {
+                            DiscountedPrice(
+                                originalPrice = it.originalPriceFmt,
+                                originalPriceNumber = it.originalPrice.toDouble(),
+                                discountedPrice = it.priceFmt,
+                                discountedPriceNumber = it.price.toDouble(),
+                                discountPercent = it.discount.toInt()
+                            )
+                        }
+                        else {
+                            OriginalPrice(price = it.originalPriceFmt,
+                                priceNumber = it.originalPrice.toDouble())
+                        }
         )
     }
 
@@ -304,7 +329,7 @@ class PlayBroadcastUiMapper(
 
     override fun mapLiveInfo(
         activeIngestUrl: String,
-        config: PlayLivePusherConfig
+        config: LivePusherConfig
     ): PlayLiveLogState {
         return PlayLiveLogState.Init(
             activeIngestUrl,

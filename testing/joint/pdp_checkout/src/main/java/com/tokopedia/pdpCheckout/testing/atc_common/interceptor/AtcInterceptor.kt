@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.pdpCheckout.testing.R
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
 open class AtcInterceptor(private val context: Context): Interceptor {
@@ -35,7 +37,7 @@ open class AtcInterceptor(private val context: Context): Interceptor {
 
     private fun readRequestString(copyRequest: Request): String {
         val buffer = Buffer()
-        copyRequest.body()?.writeTo(buffer)
+        copyRequest.body?.writeTo(buffer)
         return buffer.readUtf8()
     }
 
@@ -45,8 +47,10 @@ open class AtcInterceptor(private val context: Context): Interceptor {
                 .code(200)
                 .protocol(Protocol.HTTP_2)
                 .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
+                .body(
+                    responseString.toByteArray()
+                        .toResponseBody("application/json".toMediaTypeOrNull())
+                )
                 .addHeader("content-type", "application/json")
                 .build()
     }

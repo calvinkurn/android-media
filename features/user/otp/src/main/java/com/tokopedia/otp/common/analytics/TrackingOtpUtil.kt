@@ -11,6 +11,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -616,11 +617,9 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
@@ -629,11 +628,9 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
@@ -646,18 +643,15 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         ))
     }
 
-
     /* Auto Submit Tracker */
     fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_AUTO_SUBMIT_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
@@ -761,4 +755,24 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
+    /**
+     * For Inactive Phone
+     **/
+    fun trackClickRequestChangePhoneNumberOnModeList() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_MODE_LIST
+        )
+    }
+
+    fun trackClickRequestChangePhoneNumberOnPin() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_OTP_PAGE
+        )
+    }
 }

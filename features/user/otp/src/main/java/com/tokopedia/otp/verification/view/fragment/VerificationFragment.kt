@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -57,6 +56,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as RUnify
 
 
 /**
@@ -89,6 +89,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     protected var isMoreThanOneMethod = true
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
+    protected var isOnValidation = false
 
     private var handler: Handler = Handler()
 
@@ -143,6 +144,23 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         analytics.trackScreen(screenName)
     }
 
+    private fun resumeCountDown() {
+        countDownTimer = object : CountDownTimer((verificationPref.getRemainingTimeByMode(modeListData.modeText) * INTERVAL).toLong(), INTERVAL.toLong()) {
+            override fun onFinish() {
+                isRunningCountDown = false
+                setFooterText()
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+                if (isAdded) {
+                    isRunningCountDown = true
+                    setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
+                }
+            }
+
+        }.start()
+    }
+
     override fun onResume() {
         super.onResume()
         showKeyboard()
@@ -170,7 +188,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         return true
     }
 
-    protected fun sendOtp() {
+    private fun isSameIdentifier(): Boolean {
+        val identifier = otpData.email.ifEmpty { otpData.msisdn }
+        return identifier.isNotEmpty() && verificationPref.userIdentifier == identifier
+    }
+
+    open fun sendOtp() {
+        if(!isSameIdentifier()) {
+            verificationPref.resetByMode(modeListData.modeText)
+        }
+
         if (isCountdownFinished()) {
             if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
@@ -192,11 +219,15 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 )
             }
         } else {
-            setFooterText()
+            if(isSameIdentifier()) {
+                resumeCountDown()
+            }  else {
+                setFooterText()
+            }
         }
     }
 
-    protected fun validate(code: String) {
+    open fun validate(code: String) {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackClickVerificationRegisterPhoneButton()
@@ -242,6 +273,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             }
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
+            isOnValidation = false
             when (it) {
                 is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate(it.throwable)
@@ -262,7 +294,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                         }
                     }
                 }
-                startCountDown()
+                startCountDown(getCountDownTimer())
+                val identifier = otpData.email.ifEmpty { otpData.msisdn }
+                verificationPref.userIdentifier = identifier
                 viewBound.containerView?.let {
                     Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
@@ -315,14 +349,15 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
+    open fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         when {
             otpValidateData.success -> {
                 // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
+                verificationPref.userIdentifier = ""
                 viewModel.done = true
+                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 trackSuccess()
-                resetCountDown()
+                verificationPref.resetByMode(modeListData.modeText)
                 val bundle = Bundle().apply {
                     putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
                     putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
@@ -396,18 +431,20 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         handler?.postDelayed(characterAdder, DELAY_ANIMATE_TEXT.toLong())
     }
 
-    private fun isCountdownFinished(): Boolean {
-        return verificationPref.isExpired() || !verificationPref.hasTimer
+    open fun isCountdownFinished(): Boolean {
+        return verificationPref.isExpiredByMode(modeListData.modeText) || !verificationPref.hasTimer
     }
 
-    private fun startCountDown() {
+    open fun getCountDownTimer(): Int = COUNTDOWN_LENGTH
+
+    private fun startCountDown(countdown: Int) {
         if (isCountdownFinished()) {
             verificationPref.hasTimer = true
-            verificationPref.setExpire(COUNTDOWN_LENGTH)
+            verificationPref.setExpireByMode(modeListData.modeText, countdown)
         }
 
         if (!isRunningCountDown) {
-            countDownTimer = object : CountDownTimer((verificationPref.getRemainingTime() * INTERVAL).toLong(), INTERVAL.toLong()) {
+            countDownTimer = object : CountDownTimer((verificationPref.getRemainingTimeByMode(modeListData.modeText) * INTERVAL).toLong(), INTERVAL.toLong()) {
                 override fun onFinish() {
                     isRunningCountDown = false
                     setFooterText()
@@ -422,10 +459,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
             }.start()
         }
-    }
-
-    private fun resetCountDown() {
-        verificationPref.hasTimer = false
     }
 
     open fun initView() {
@@ -589,8 +622,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
         private const val DELAY_ANIMATE_TEXT = 350
-
-        const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = VerificationFragment()

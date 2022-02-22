@@ -30,6 +30,7 @@ class ProductViewHolder(
         setTitleAndPrice(product)
         showProductStock(product)
 
+        showProductTicker(product)
         showProductLabel(product)
         showVariantLabel(product)
 
@@ -49,6 +50,10 @@ class ProductViewHolder(
         binding?.textTitle?.text = product.title
         val prices = mutableListOf(product.minPrice?.priceFormatted, product.maxPrice?.priceFormatted).distinct()
         binding?.textPrice?.text = prices.joinToString(" - ")
+    }
+
+    private fun showProductTicker(product: ProductUiModel) {
+        binding?.tickerProductManageViolation?.showWithCondition(product.isPending())
     }
 
     private fun showProductStock(product: ProductUiModel) {
@@ -80,7 +85,17 @@ class ProductViewHolder(
             binding?.btnEditStock?.hide()
             binding?.btnMoreOptions?.hide()
         } else {
-            binding?.btnContactCS?.showWithCondition(product.isViolation())
+            binding?.btnContactCS?.run {
+                showWithCondition(product.isViolation() || product.isPending())
+                when {
+                    product.isViolation() -> {
+                        text = getString(R.string.product_manage_contact_cs)
+                    }
+                    product.isPending() -> {
+                        text = getString(R.string.product_manage_violation_button_text)
+                    }
+                }
+            }
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation())

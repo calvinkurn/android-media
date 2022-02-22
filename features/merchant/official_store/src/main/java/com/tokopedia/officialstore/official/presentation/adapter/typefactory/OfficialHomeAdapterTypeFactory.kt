@@ -30,7 +30,8 @@ class OfficialHomeAdapterTypeFactory(
         private val mixTopComponentListener: MixTopComponentListener,
         private val featuredBrandListener: FeaturedBrandListener,
         private val featuredShopDCListener: com.tokopedia.home_component.listener.FeaturedShopListener,
-        private val recycledViewPool: RecyclerView.RecycledViewPool? = null
+        private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
+        private val onTopAdsHeadlineClicked: (applink: String) -> Unit
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     override fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int {
@@ -133,8 +134,17 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return -1
+    }
+
+    override fun type(officialTopAdsHeadlineDataModel: OfficialTopAdsHeadlineDataModel): Int {
+        return OfficialTopAdsHeadlineViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
+            OfficialTopAdsHeadlineViewHolder.LAYOUT -> OfficialTopAdsHeadlineViewHolder(view, onTopAdsHeadlineClicked)
             BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(view, recommendationWidgetListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             OfficialLoadingMoreViewHolder.LAYOUT -> OfficialLoadingMoreViewHolder(view)

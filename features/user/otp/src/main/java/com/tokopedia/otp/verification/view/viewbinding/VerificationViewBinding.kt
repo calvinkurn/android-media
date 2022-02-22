@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.pin.PinUnify
@@ -23,7 +24,7 @@ open class VerificationViewBinding @Inject constructor() : BaseOtpViewBinding() 
 
     var containerView: View? = null
     var methodIcon: ImageUnify? = null
-    var prefixTextMethodIcon: Typography? = null
+    var lottieMiscallAnimation: LottieAnimationView? = null
     var pin: PinUnify? = null
     var loader: LoaderUnify? = null
     var toolbar: Toolbar? = null
@@ -32,7 +33,7 @@ open class VerificationViewBinding @Inject constructor() : BaseOtpViewBinding() 
             layoutInflater.inflate(layoutResId, container, false).apply {
                 containerView = findViewById(R.id.container)
                 methodIcon = findViewById(R.id.method_icon)
-                prefixTextMethodIcon = findViewById(R.id.prefix_text_method_icon)
+                lottieMiscallAnimation = findViewById(R.id.lottieMiscallAnimation)
                 pin = findViewById(R.id.pin)
                 loader = findViewById(R.id.loader)
                 toolbar = findViewById(R.id.toolbar_otp)

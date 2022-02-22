@@ -274,6 +274,51 @@
       "businessUnit" : "home & browse",
       "userId" : ".*",
       "currentSite" : "tokopediamarketplace"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/official-store/.* - popular brands - .*"
+        }
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "os microsite",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression banner - popular brands",
+      "sessionIris": ".*",
+      "eventLabel": "popular brands - .* - .*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".* reference: row 18",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/official-store/.* - popular brands - .*"
+        }
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "os microsite",
+      "currentSite": "tokopediamarketplace",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click banner - popular brands",
+      "sessionIris": ".*",
+      "eventLabel": "popular brands - .* - .*"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "os microsite",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOSMicrosite",
+      "eventAction": "all brands - click",
+      "sessionIris": ".*",
+      "eventLabel": "click view all - .*"
     }
   ]
 }

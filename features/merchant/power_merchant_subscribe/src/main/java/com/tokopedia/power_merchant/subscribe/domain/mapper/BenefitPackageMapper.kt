@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.domain.model.BenefitPackageResponse
 import com.tokopedia.power_merchant.subscribe.view.model.*
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: Context?) {
@@ -79,7 +81,11 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
         BenefitPackageResponse.NextBenefitPackageList,
         pmStatusText: String
     ): Pair<String, String> {
-        val blackColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96.toString()
+        val blackColor = PowerMerchantSpannableUtil.getColorHexString(
+            context,
+            R.color.pm_static_nn950_light_dms
+        )
+
         return when (item.pmGradeName.asCamelCase()) {
             Constant.PM_PRO_ADVANCED -> {
                 Pair(

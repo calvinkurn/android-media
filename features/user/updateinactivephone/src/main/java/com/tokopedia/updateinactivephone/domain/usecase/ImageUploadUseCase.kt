@@ -10,12 +10,14 @@ import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.data.ImageUploadDataModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.utils.image.ImageProcessingUtil
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
-class ImageUploadUseCase @Inject constructor(
+open class ImageUploadUseCase @Inject constructor(
         private val inactivePhoneApi: InactivePhoneApiClient<InactivePhoneApi>
 ) : UseCase<ImageUploadDataModel>() {
 
@@ -36,10 +38,8 @@ class ImageUploadUseCase @Inject constructor(
     }
 
     private fun generateParamString(key: String): RequestBody {
-        return RequestBody.create(
-                MediaType.parse("text/plain"),
-                useCaseRequestParams.getString(key, "") ?: ""
-        )
+        return (useCaseRequestParams.getString(key, "") ?: ""
+                ).toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun generateParamFile(): RequestBody {
@@ -54,7 +54,7 @@ class ImageUploadUseCase @Inject constructor(
             }
         }
 
-        return RequestBody.create(MediaType.parse("image/*"), file)
+        return file.asRequestBody("image/*".toMediaTypeOrNull())
     }
 
     private fun checkFileIsMoreThan10Mb(file: File): Boolean {

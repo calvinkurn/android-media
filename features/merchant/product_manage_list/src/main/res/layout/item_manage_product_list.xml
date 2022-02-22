@@ -6,6 +6,21 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/product_manage_list_padding_top">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_product_manage_violation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/imageProduct"
+        app:tickerShapeType="loose"
+        app:tickerType="warning"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/product_manage_violation_ticker_message"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxSelect"
         android:contentDescription="@string/content_desc_checkBoxSelect"
@@ -29,7 +44,8 @@
         android:layout_marginEnd="@dimen/product_manage_list_image_horizontal_spacing"
         app:layout_constraintLeft_toRightOf="@id/checkBoxSelect"
         app:layout_constraintRight_toLeftOf="@id/textTitle"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker_product_manage_violation"
+        app:layout_constraintBottom_toBottomOf="@id/imageProduct"
         app:unify_image_corner_radius="6"
         app:unify_image_type="rect" />
 
@@ -57,7 +73,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toRightOf="@id/imageProduct"
         app:layout_constraintRight_toRightOf="@id/rightGuideline"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="New Balance 1500 Genel (Limited Edition) Japan Ver. 2019, Rare Item" />
@@ -197,7 +213,7 @@
         tools:text="1 Promosi"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageStockInformation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -255,19 +271,18 @@
         android:layout_marginTop="@dimen/product_manage_button_horizontal_spacing_long"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-        android:text="@string/product_manage_contact_cs"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toRightOf="@id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-        app:layout_constraintTop_toBottomOf="@id/labelBanned"
+        app:layout_constraintTop_toBottomOf="@id/textStockCount"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
         tools:visibility="gone" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btnMoreOptions"
         android:contentDescription="@string/content_desc_btnMoreOptions"
         android:layout_width="@dimen/product_manage_button_width"
@@ -282,7 +297,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintRight_toRightOf="@id/rightGuideline"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
-        app:srcCompat="@drawable/ic_product_manage_more_grey"
+        app:icon_name="MENU_KEBAB_VERTICAL"
         tools:ignore="ContentDescription,UnusedAttribute"
         tools:visibility="visible" />
 

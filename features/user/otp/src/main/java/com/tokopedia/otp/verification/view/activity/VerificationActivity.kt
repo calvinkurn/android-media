@@ -14,6 +14,12 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhonePinVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneSmsVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneVerificationMethodFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.MisscallVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -49,7 +55,11 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     protected open fun createVerificationMethodFragment(bundle: Bundle): Fragment {
-        return VerificationMethodFragment.createInstance(bundle)
+        return if (otpData.source == SOURCE_INACTIVE_PHONE) {
+            InactivePhoneVerificationMethodFragment.createInstance(bundle)
+        } else {
+            VerificationMethodFragment.createInstance(bundle)
+        }
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
@@ -143,6 +153,10 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     open fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+        if (otpData.source == SOURCE_INACTIVE_PHONE) {
+            return getVerificationForInactivePhoneFlow(modeListData, bundle)
+        }
+
         return when (modeListData.modeText) {
             OtpConstant.OtpMode.EMAIL -> {
                 EmailVerificationFragment.createInstance(bundle)
@@ -161,6 +175,23 @@ open class VerificationActivity : BaseOtpActivity() {
             }
             OtpConstant.OtpMode.MISCALL -> {
                 MisscallVerificationFragment.createInstance(bundle)
+            }
+            else -> {
+                VerificationFragment.createInstance(bundle)
+            }
+        }
+    }
+
+    private fun getVerificationForInactivePhoneFlow(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+        return when(modeListData.modeText) {
+            OtpConstant.OtpMode.EMAIL -> {
+                InactivePhoneEmailVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.PIN -> {
+                InactivePhonePinVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.SMS -> {
+                InactivePhoneSmsVerificationFragment.createInstance(bundle)
             }
             else -> {
                 VerificationFragment.createInstance(bundle)
@@ -200,5 +231,7 @@ open class VerificationActivity : BaseOtpActivity() {
         const val TAG_OTP_MISCALL = "otpMiscall"
         const val TAG_OTP_WA_NOT_REGISTERED = "otpWaNotRegistered"
         const val REQUEST_SILENT_VERIF = 1122
+
+        private const val SOURCE_INACTIVE_PHONE = "inactivePhone"
     }
 }

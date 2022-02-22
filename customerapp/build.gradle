@@ -219,6 +219,10 @@ android {
         manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     dexOptions {
         javaMaxHeapSize "8g"
     }
@@ -235,7 +239,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.6.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -270,6 +274,7 @@ dependencies {
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
     implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.customer_mid_app)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
@@ -294,10 +299,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -340,6 +346,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.startupRuntime
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"

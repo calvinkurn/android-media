@@ -74,7 +74,6 @@
                 android:value="true" />
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
-                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -157,7 +156,7 @@
         <activity
             android:name="com.tokopedia.tkpd.nfc.NFCHandlerActivity"
             android:theme="@style/Theme.White"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>

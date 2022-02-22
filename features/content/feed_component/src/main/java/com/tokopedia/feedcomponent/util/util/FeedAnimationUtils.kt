@@ -191,17 +191,19 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = 100F
     val shrinkedWidthDp = 24F
-    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
-    anim.cancel()
-    anim.addUpdateListener { valueAnimator ->
-        val animatedFinalValue = valueAnimator.animatedValue as Int
-        val layoutParams: ViewGroup.LayoutParams =
-            layoutLihatProdukParent.layoutParams
-        layoutParams.width = animatedFinalValue
-        layoutLihatProdukParent.layoutParams = layoutParams
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
+        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+        anim.cancel()
+        anim.addUpdateListener { valueAnimator ->
+            val animatedFinalValue = valueAnimator.animatedValue as Int
+            val layoutParams: ViewGroup.LayoutParams =
+                    layoutLihatProdukParent.layoutParams
+            layoutParams.width = animatedFinalValue
+            layoutLihatProdukParent.layoutParams = layoutParams
+        }
+        anim.duration = 0
+        anim.start()
     }
-    anim.duration = 300
-    anim.start()
 }
 
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
@@ -217,7 +219,7 @@ fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
             layoutParams.width = animatedFinalValue
             layoutLihatProdukParent.layoutParams = layoutParams
         }
-        anim.duration = 0
+        anim.duration = 300
         anim.start()
     }
 }

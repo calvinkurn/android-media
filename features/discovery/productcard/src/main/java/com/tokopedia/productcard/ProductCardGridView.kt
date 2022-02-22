@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -18,6 +19,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -82,24 +84,26 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
+
         renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+        imageThreeDots?.shouldShowWithAction(productCardModel.hasThreeDots) {
+            constraintLayoutProductCard?.post {
+                imageThreeDots?.expandTouchArea(
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                )
+            }
+        }
 
         cartExtension.setProductModel(productCardModel)
-
-        constraintLayoutProductCard?.post {
-            imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            )
-        }
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -131,6 +135,18 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
+    fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) {
+        buttonThreeDotsWishlist?.setOnClickListener(threeDotsClickListener)
+    }
+
+    fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) {
+        buttonAddToCartWishlist?.setOnClickListener(addToCartWishlistClickListener)
+    }
+
+    fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
+        buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -158,4 +174,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getShopBadgeView(): View? = imageShopBadge
 
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getProductVideoView(): ProductCardVideoView? {
+        return videoProduct
+    }
 }

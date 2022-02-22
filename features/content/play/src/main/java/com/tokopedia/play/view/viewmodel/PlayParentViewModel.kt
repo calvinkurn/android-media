@@ -115,7 +115,7 @@ class PlayParentViewModel constructor(
         }
     }
 
-    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel not found")
+    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
     fun setLatestChannelStorageData(
             channelId: String,

@@ -54,5 +54,6 @@ class PlayWidgetSmallUiMapper @Inject constructor(
             video = videoMapper.mapWidgetItemVideo(item.video),
             hasGiveaway = promoLabelMapper.mapWidgetHasGiveaway(item.config.promoLabels),
             poolType = item.widgetSortingMethod,
+            recommendationType = item.recommendationType,
     )
 }

@@ -139,6 +139,26 @@ class RechargeCCViewModelTest {
         Assert.assertEquals(tickers, actualData.value)
     }
 
+    @Test
+    fun getPrefix_ErrorGetApi_FailedGetTicker() {
+        //given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[RechargeCCMenuDetail::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        //when
+        rechargeCCViewModel.getMenuDetail("", "169")
+
+        //then
+        val actualData = rechargeCCViewModel.tickers
+        Assert.assertNull(actualData.value)
+    }
+
     //========================================= PREFIX =====================================
 
     @Test

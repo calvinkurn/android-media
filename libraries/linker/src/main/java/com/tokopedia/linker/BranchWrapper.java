@@ -168,6 +168,9 @@ public class BranchWrapper implements WrapperInterface {
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
+                    else {
+                        deferredDeeplinkPath = deeplink;
+                    }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
                                 LinkerUtils.createDeeplinkData(deeplink, promoCode));
@@ -366,7 +369,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void generateAffiliateLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
-        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback);
+        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback, context);
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,
@@ -439,6 +442,8 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getUri();
+        } else if (LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.getId());
         } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -462,7 +467,8 @@ public class BranchWrapper implements WrapperInterface {
             }
         } else if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
-        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
+        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType()) ||
+                    LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
         } else if (LinkerData.HOTEL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -587,7 +593,7 @@ public class BranchWrapper implements WrapperInterface {
     private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
-            param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
+            param.put(LinkerConstants.SCREEN_NAME_KEY, mapDeeplinkToScreenName());
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
@@ -598,6 +604,18 @@ public class BranchWrapper implements WrapperInterface {
             sendCampaignToTrackApp(context, param);
             logValidCampaignUtmParams(context, utmSource, utmMedium, utmCampaign, clickTime);
         }
+    }
+
+    private String mapDeeplinkToScreenName(){
+        if(!TextUtils.isEmpty(getDefferedDeeplinkForSession())
+                && getDefferedDeeplinkForSession().startsWith(LinkerConstants.TOKOPEDIA_SCHEME)
+                && getDefferedDeeplinkForSession().contains(LinkerConstants.DISCOVERY_PATH)) {
+            String[] deeplinkArray = getDefferedDeeplinkForSession().split(LinkerConstants.QUERY_PARAM_SEPARATOR);
+            if (deeplinkArray.length > 0 && !TextUtils.isEmpty(deeplinkArray[0])) {
+                return LinkerConstants.DEEPLINK_VALUE + deeplinkArray[0].replace(LinkerConstants.TOKOPEDIA_SCHEME, "");
+            }
+        }
+        return LinkerConstants.SCREEN_NAME_VALUE;
     }
 
     private void sendCampaignToTrackApp(Context context, Map<String, Object> param) {

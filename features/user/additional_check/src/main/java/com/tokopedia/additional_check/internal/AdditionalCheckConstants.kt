@@ -37,5 +37,5 @@ object AdditionalCheckConstants {
     const val POPUP_TYPE_PIN = 1
     const val POPUP_TYPE_PHONE = 2
     const val POPUP_TYPE_BOTH = 3
-
+    const val POPUP_TYPE_ACCOUNT_LINK = 4
 }

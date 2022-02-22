@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
@@ -17,10 +18,13 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevEditReviewR
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductRevSuccessIndicator
 import com.tokopedia.review.feature.createreputation.model.ProductRevSuccessSubmitReview
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetReviewTemplate
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetReviewTemplateResponseWrapper
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoResponse
 import com.tokopedia.review.utils.verifyReviewErrorEquals
@@ -33,9 +37,13 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.verify
 import org.junit.Assert
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.CountDownLatch
@@ -156,7 +164,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertTrue(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
@@ -167,7 +174,8 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertFalse(viewModel.isUserEligible())
+        assertFalse(viewModel.hasIncentive())
+        assertFalse(viewModel.hasOngoingChallenge())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Fail)
     }
 
@@ -470,6 +478,22 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when getAfterEditImageList contains cached image from cloud should replace it with real image url`() {
+        val imagePickerResult = mutableListOf("picture1.0", "picture2.jpg")
+        val imagesFedIntoPicker = mutableListOf("https://example.com/picture1.jpg", "https://example.com/picture1.jpg")
+
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("https://example.com/picture1.jpg"),
+            ImageReviewUiModel("picture2.jpg"),
+            DefaultImageReviewUiModel()
+        )
+
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, imagesFedIntoPicker)
+
+        assertEquals(expectedData, actualData)
+    }
+
+    @Test
     fun `when editReview with images should execute expected usecases`() {
         val expectedResponse =
             ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
@@ -587,33 +611,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `when getReviewTemplates is not empty but product is incentive eligible should execute expected usecase and indicate that template is not available`() {
-        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(
-            ProductrevGetReviewTemplate(
-                templates = listOf(
-                    "template1",
-                    "template2"
-                )
-            )
-        )
-        val expectedIncentivesResponse =
-            ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
-
-        onGetReviewTemplate_thenReturn(expectedResponse)
-        onGetOvoIncentive_thenReturn(expectedIncentivesResponse)
-
-        viewModel.getReviewTemplates(productId)
-        viewModel.getProductIncentiveOvo()
-
-        verifyGetReviewTemplateUseCaseCalled()
-        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
-        verifyOvoIncentiveUseCaseCalled()
-        assertFalse(viewModel.isTemplateAvailable())
-        assertTrue(viewModel.isUserEligible())
-        assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
-    }
-
-    @Test
     fun `when getReviewTemplates is not empty and product is not incentive eligible should execute expected usecase and indicate that template is available`() {
         val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(
             ProductrevGetReviewTemplate(
@@ -635,7 +632,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
         verifyOvoIncentiveValueEquals(expectedIncentivesResponse)
         assertTrue(viewModel.isTemplateAvailable())
-        assertFalse(viewModel.isUserEligible())
+        assertFalse(viewModel.hasIncentive())
     }
 
     @Test
@@ -781,6 +778,187 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         assertFalse(viewModel.isOtherCategoryOnly())
     }
 
+    @Test
+    fun `when incentiveOvo value is null then hasIncentive should return false`() {
+        onGetOvoIncentive_thenReturn(null)
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo data is null then hasIncentive should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is zero then hasIncentive should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is more than zero then hasIncentive should return true`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10)))
+        viewModel.getProductIncentiveOvo()
+
+        assertTrue(viewModel.hasIncentive())
+    }
+
+    @Test
+    fun `when incentiveOvo value is null then hasOngoingChallenge should return false`() {
+        onGetOvoIncentive_thenReturn(null)
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when incentiveOvo data is null then hasOngoingChallenge should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is more than zero then hasOngoingChallenge should return false`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10)))
+        viewModel.getProductIncentiveOvo()
+
+        assertFalse(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when incentiveOvo amount is zero then hasOngoingChallenge should return true`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        viewModel.getProductIncentiveOvo()
+
+        assertTrue(viewModel.hasOngoingChallenge())
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results null should update _postSubmitUiState value to ShowThankYouToaster with null data`() {
+        val expected = PostSubmitUiState.ShowThankYouToaster(null)
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(null))
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results in type equals standard should update _postSubmitUiState value to ShowThankYouBottomSheet`() {
+        val response = ProductrevGetPostSubmitBottomSheetResponse(type = "standard")
+        val expected = PostSubmitUiState.ShowThankYouBottomSheet(
+            data = response,
+            hasPendingIncentive = true
+        )
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(response))
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results in type equals thanks_toaster should update _postSubmitUiState value to ShowThankYouToaster`() {
+        val response = ProductrevGetPostSubmitBottomSheetResponse(type = "thanks_toaster")
+        val expected = PostSubmitUiState.ShowThankYouToaster(
+            data = response
+        )
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(response))
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getPostSubmitBottomSheetData results error should update _postSubmitUiState value to ShowThankYouToaster`() {
+        val expected = PostSubmitUiState.ShowThankYouToaster(null)
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetDataError_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+
+        assertEquals(expected, viewModel.postSubmitUiState.value)
+    }
+
+    @Test
+    fun `when getIncentiveOvo results is null should set isInboxEmpty param as true`() {
+        onGetOvoIncentive_thenReturn(null)
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `when getIncentiveOvo results data is null should set isInboxEmpty param as true`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `when getIncentiveOvo results is error should set isInboxEmpty param as true`() {
+        onGetOvoIncentiveError_thenReturn(mockk())
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `when incentiveOvo results is null should set incentiveAmount param as zero`() {
+        onGetOvoIncentive_thenReturn(null)
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results data is null should set incentiveAmount param as zero`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results amount is zero should set incentiveAmount param as zero`() {
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results is error should set incentiveAmount param as zero`() {
+        onGetOvoIncentiveError_thenReturn(mockk())
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+    }
+
+    @Test
+    fun `when incentiveOvo results amount is more than zero should set incentiveAmount param as equal to the amount`() {
+        val amount = 10
+        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = amount)))
+        onGetPostSubmitBottomSheetData_thenReturn(mockk())
+        viewModel.getProductIncentiveOvo()
+        viewModel.getPostSubmitBottomSheetData("", "")
+        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), amount) }
+    }
+
     private fun fillInImages() {
         val feedbackId = anyString()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
@@ -921,6 +1099,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun onEditReviewError_thenReturn(throwable: Throwable) {
         coEvery { editReviewUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onGetPostSubmitBottomSheetData_thenReturn(response: ProductrevGetPostSubmitBottomSheetResponseWrapper) {
+        coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onGetPostSubmitBottomSheetDataError_thenReturn(throwable: Throwable) {
+        coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } throws throwable
     }
 
     private fun verifyReviewDetailsSuccess(viewState: com.tokopedia.review.common.data.Success<ProductrevGetReviewDetail>) {

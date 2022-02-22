@@ -22,6 +22,10 @@ class VoucherDisplayAdapter(private val itemList: List<VoucherDisplayUiModel>,
 
     class VoucherDisplayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    companion object {
+        private const val CARD_WIDTH_MULTIPLIER = 3
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherDisplayViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.mvc_voucher_display_view, parent, false)
@@ -32,7 +36,7 @@ class VoucherDisplayAdapter(private val itemList: List<VoucherDisplayUiModel>,
 
     override fun onBindViewHolder(holder: VoucherDisplayViewHolder, position: Int) {
         holder.itemView.run {
-            val cardWidth = getScreenWidth() - context.resources.getDimension(R.dimen.mvc_create_voucher_display_recycler_view_decoration).toInt() * 3
+            val cardWidth = getScreenWidth() - context.resources.getDimension(R.dimen.mvc_create_voucher_display_recycler_view_decoration).toInt() * CARD_WIDTH_MULTIPLIER
             voucherDisplayImage?.layoutParams?.width = cardWidth
             itemList[position].let { uiModel ->
                 voucherDisplayImage?.run {

@@ -16,7 +16,7 @@
       "event": "select_content",
       "eventCategory": "feed updates - cmp",
       "eventAction": "click",
-      "eventLabel": "click channel - (live|vod|upcoming) - \\d+ - \\d+ - \\d+ - is autoplay (true|false)",
+      "eventLabel": "click channel - (live|vod|upcoming) - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .*",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "promotions": [
@@ -55,7 +55,7 @@
       "event": "view_item",
       "eventCategory": "feed updates - cmp",
       "eventAction": "impression on play sgc channel",
-      "eventLabel": "(live|vod|upcoming) - \\d+ - \\d+ - \\d+ - is autoplay (true|false)",
+      "eventLabel": "(live|vod|upcoming) - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .*",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "promotions": [

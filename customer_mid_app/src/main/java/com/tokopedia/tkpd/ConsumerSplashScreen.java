@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
@@ -43,7 +42,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
         executeInBackground();
     }
@@ -133,7 +131,6 @@ public class ConsumerSplashScreen extends SplashScreen {
         } else {
             finish();
         }
-        SplashScreenPerformanceTracker.stopMonitoring();
     }
 
     private void startWarmStart() {

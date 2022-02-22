@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
@@ -99,6 +100,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
+    @RelaxedMockK
+    lateinit var playWidgetTools: PlayWidgetTools
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -138,6 +142,7 @@ abstract class BasePdpViewModelTest {
                 { updateCartUseCase },
                 { deleteCartUseCase },
                 { getTopadsIsAdsUseCase },
+                playWidgetTools,
                 userSessionInterface)
     }
 }

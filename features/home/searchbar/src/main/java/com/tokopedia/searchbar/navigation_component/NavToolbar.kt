@@ -95,7 +95,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private val DEFAULT_PAGE_NAME = "Unknown page"
     private var backType = BACK_TYPE_NONE
     private var initialTheme = TOOLBAR_DARK_TYPE
-    private var toolbarFillColor = getLightIconColor()
+    private var toolbarFillColor = getLightBackgroundColor()
     private var toolbarAlwaysShowShadow = false
     private var backDrawable: Drawable? = null
     private var toolbarContentType = TOOLBAR_TYPE_TITLE
@@ -229,8 +229,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
         statusBarTheme?.let {
             when (it) {
-                StatusBar.STATUS_BAR_LIGHT -> statusBarUtil?.requestStatusBarLight()
-                StatusBar.STATUS_BAR_DARK -> statusBarUtil?.requestStatusBarDark()
+                StatusBar.STATUS_BAR_LIGHT -> statusBarUtil?.requestStatusBarDark()
+                StatusBar.STATUS_BAR_DARK -> statusBarUtil?.requestStatusBarLight()
                 else -> statusBarUtil?.requestStatusBarDark()
             }
         }
@@ -247,12 +247,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             shadowApplied = false
             if (lineShadow) {
                 divider?.visibility = View.INVISIBLE
-                navToolbar?.background = ColorDrawable(getLightIconColor())
+                navToolbar?.background = ColorDrawable(getLightBackgroundColor())
                 setBackgroundAlpha(0f)
                 navToolbar?.updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
-                navToolbar?.background = ColorDrawable(getLightIconColor())
+                navToolbar?.background = ColorDrawable(getLightBackgroundColor())
                 navToolbar?.updatePadding(bottom = pB)
             }
         }
@@ -507,6 +507,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return navSearchBarController.etSearch?.text?.toString() ?: ""
     }
 
+    fun clearSearchbarText() {
+        navSearchBarController.etSearch?.text?.clear()
+        navSearchBarController.etSearch?.clearFocus()
+    }
+
     private fun applyStatusBarPadding() {
         var pT = 0
         pT = ViewHelper.getStatusBarHeight(context)
@@ -607,7 +612,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun configureInitialFillBasedOnAttribute() {
         if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
-            toolbarFillColor = getLightIconColor()
+            toolbarFillColor = getLightBackgroundColor()
             divider?.visibility = View.INVISIBLE
             navToolbar?.background = ColorDrawable(toolbarFillColor)
             setBackgroundAlpha(0f)
@@ -674,7 +679,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+
+    private fun getLightBackgroundColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(

@@ -6,7 +6,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_16"
         android:id="@+id/text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

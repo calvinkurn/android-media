@@ -110,6 +110,8 @@ object TrackingOtpConstant{
         const val ACION_CLICK_TRY_AGAIN = "click on coba lagi"
         const val ACION_CLICK_CHOOSE_OTHER_METHOD = "click gunakan metode lain"
 
+        /*InactivePhone*/
+        const val ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER = "click ajukan perubahan nomor hp"
     }
 
     object Label{
@@ -121,6 +123,8 @@ object TrackingOtpConstant{
         const val LABEL_OFF = "off"
         const val LABEL_MENGERTI = "mengerti"
         const val LABEL_BATAL = "batal"
+        const val LABEL_MODE_LIST = "mode list"
+        const val LABEL_OTP_PAGE = "otp page"
     }
 
     object BusinessUnit {

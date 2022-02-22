@@ -1,6 +1,6 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.tokopedia.broadcaster.LibStreamerGL
+import com.tokopedia.broadcaster.lib.LarixStreamer
 import kotlin.math.max
 import kotlin.math.min
 
@@ -8,9 +8,9 @@ class LogarithmicDescendMode : BitrateAdapter() {
 
     var mMinBitrate =  0L
 
-    override fun start(streamer: LibStreamerGL, bitrate: Long, connectionId: Int) {
+    override fun start(streamer: LarixStreamer, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
-        mMinBitrate = bitrate / 4
+        mMinBitrate = bitrate / LOST_TOLERANCE
         super.start(streamer, bitrate, connectionId)
     }
 

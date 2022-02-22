@@ -37,7 +37,7 @@
         android:id="@+id/ll_button_sticky"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N600"
+        android:background="@color/play_dms_broadcast_summary_info_bg"
         android:orientation="vertical"
         android:padding="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"

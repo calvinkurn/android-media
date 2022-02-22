@@ -10,8 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -46,30 +49,46 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
             bannerCarouselItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
                 componentItem.data?.let {
                     if (it.isNotEmpty()) {
-                        val itemData = it[0]
-                        try {
-                            val layoutParams: ViewGroup.LayoutParams = bannerImage.layoutParams
-                            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
-                                    / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
-                            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                            bannerImage.layoutParams = layoutParams
-                            bannerImage.loadImageWithoutPlaceholder(itemData.image)
-                            itemData.description?.let { title ->
-                                if (title.isEmpty()) {
-                                    titleTextView.hide()
-                                } else {
-                                    titleTextView.text = title
-                                    titleTextView.show()
-                                }
-                            }
-                        } catch (exception: NumberFormatException) {
-                            parentView.hide()
-                            exception.printStackTrace()
-                        }
+                        setupImage(it.first(),componentItem)
                     }
                 }
-
             })
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            bannerCarouselItemViewModel.getComponentLiveData().removeObservers(it)
+        }
+    }
+
+    private fun setupImage(itemData: DataItem,componentItem:ComponentsItem){
+        try {
+            val layoutParams: ViewGroup.LayoutParams = bannerImage.layoutParams
+            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
+                    / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
+            val height = Utils.extractDimension(itemData.image,Constant.Dimensions.HEIGHT)
+            val width = Utils.extractDimension(itemData.image,Constant.Dimensions.WIDTH)
+            if (width != null && height != null && width != 1 && height != 1) {
+                val aspectRatio = width.toFloat() / height.toFloat()
+                layoutParams.height = (layoutParams.width / aspectRatio).toInt()
+            } else {
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+            bannerImage.layoutParams = layoutParams
+            bannerImage.loadImageWithoutPlaceholder(itemData.image)
+            itemData.description?.let { title ->
+                if (title.isEmpty()) {
+                    titleTextView.hide()
+                } else {
+                    titleTextView.text = title
+                    titleTextView.show()
+                }
+            }
+        } catch (exception: NumberFormatException) {
+            parentView.hide()
+            exception.printStackTrace()
         }
     }
 }

@@ -76,7 +76,8 @@ class FeedViewModel @Inject constructor(
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
     private val addWishListUseCase: AddWishListUseCase,
-    private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase
+    private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
+    private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase
 
 ) : BaseViewModel(baseDispatcher.main) {
 
@@ -106,6 +107,7 @@ class FeedViewModel @Inject constructor(
     val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
     val reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
     val viewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
+    val longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
 
 
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
@@ -186,6 +188,19 @@ class FeedViewModel @Inject constructor(
             viewTrackResponse.postValue(Success(data))
         }) {
             viewTrackResponse.postValue(Fail(it))
+        }
+    }
+    fun trackLongVideoView(activityId: String, rowNumber: Int) {
+
+        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+            feedXTrackViewerUseCase.setRequestParams(FeedXTrackViewerUseCase.createParams(activityId))
+            val trackResponse = feedXTrackViewerUseCase.executeOnBackground()
+            val data = ViewsKolModel()
+            data.rowNumber = rowNumber
+            data.isSuccess = trackResponse.feedXTrackViewerResponse.success
+            longVideoViewTrackResponse.postValue(Success(data))
+        }) {
+            longVideoViewTrackResponse.postValue(Fail(it))
         }
     }
 

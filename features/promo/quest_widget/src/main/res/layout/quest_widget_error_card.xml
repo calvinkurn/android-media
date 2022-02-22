@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_error_bg"
+            android:layout_width="@dimen/quest_widget_dim_56dp"
+            android:layout_height="@dimen/quest_widget_dim_56dp"
+            android:layout_marginStart="@dimen/quest_widget_dim_12dp"
+            android:layout_marginTop="@dimen/quest_widget_dim_14dp"
+            android:layout_marginBottom="@dimen/quest_widget_dim_14dp"
+            android:src="@drawable/quest_widget_ellipses"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_error"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:src="@drawable/iconunify_reload"
+            android:tint="@color/green_200"
+            app:layout_constraintEnd_toEndOf="@id/iv_error_bg"
+            app:layout_constraintBottom_toBottomOf="@id/iv_error_bg"
+            app:layout_constraintStart_toStartOf="@id/iv_error_bg"
+            app:layout_constraintTop_toTopOf="@id/iv_error_bg" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/iv_error_bg"
+            app:layout_constraintStart_toEndOf="@id/iv_error_bg"
+            app:layout_constraintTop_toTopOf="@id/iv_error_bg">
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_banner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/quest_widget_dim_12dp"
+            android:layout_marginLeft="@dimen/quest_widget_dim_12dp"
+            android:text="@string/quest_widget_gagal_memuat"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toEndOf="@id/iv_error_bg"
+            app:layout_constraintTop_toTopOf="@id/iv_error_bg"
+            app:layout_constraintBottom_toTopOf="@id/tv_banner_desc"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.6"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_banner_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/quest_widget_dim_12dp"
+            android:layout_marginLeft="@dimen/quest_widget_dim_12dp"
+            android:layout_marginTop="@dimen/quest_widget_dim_2dp"
+            android:layout_marginEnd="@dimen/quest_widget_dim_12dp"
+            android:text="@string/quest_widget_klik_iconnya_untuk_muat_ulang"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="@id/tv_banner_title"
+            app:layout_constraintStart_toStartOf="@id/tv_banner_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_banner_title"
+            app:layout_constraintBottom_toBottomOf="@id/iv_error_bg"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

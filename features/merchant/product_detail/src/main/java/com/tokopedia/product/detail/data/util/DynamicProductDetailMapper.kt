@@ -14,11 +14,13 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -173,6 +175,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_BUNDLING -> {
                     listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.CONTENT_WIDGET -> {
+                    listOfComponent.add(
+                        ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
             }
         }
@@ -339,6 +349,14 @@ object DynamicProductDetailMapper {
                 latlong)
     }
 
+    fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
+        return TokoNowParam(
+            shopId = localData.shop_id,
+            warehouseId = localData.warehouse_id,
+            serviceType = localData.service_type
+        )
+    }
+
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return "${localData.district_id}|${localData.postal_code}|${latlong}"
@@ -385,9 +403,9 @@ object DynamicProductDetailMapper {
                 pageType= "pdp",
                 product = Product(
                         productID = productInfo.basic.productID,
-                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "",
-                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "",
-                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "",
+                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
                         productPrice = productInfo.data.price.value.toString(),
                         maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), //to do
                         productStatus = productInfo.basic.status

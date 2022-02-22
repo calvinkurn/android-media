@@ -59,6 +59,7 @@ import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShare
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -78,11 +79,12 @@ import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
-    StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
+    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
         private const val TAB_PM_PARAM = "tab"
 
+        private const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
         private const val DELIMITER = " - "
 
@@ -132,6 +134,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
 
+    private val kreditTopadsClickedBundle by lazy {
+        Bundle().also {
+            it.putBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        }
+    }
+
     private val topAdsBottomSheet by lazy {
         BottomSheetUnify().apply {
             setCloseClickListener {
@@ -170,7 +178,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? SellerHomeActivity)?.attachCallback(this)
+        (activity as? SellerHomeActivity)?.run {
+            attachCallback(this@OtherMenuFragment)
+            attachOtherMenuFragmentChangeCallback(this@OtherMenuFragment)
+        }
         viewModel.run {
             setErrorStateMapDefaultValue()
             setSuccessStateMapDefaultValue()
@@ -296,7 +307,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             bottomSheet.dismiss()
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
         } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            RouteManager.route(context,kreditTopadsClickedBundle, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
@@ -419,11 +430,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     checkUsingCustomBranchLinkDomain(linkerShareData)
-                    val shareString = getString(
+                    val shareString = activity?.getString(
                         R.string.sah_new_other_share_text,
                         userSession.shopName,
                         linkerShareData?.shareContents
-                    )
+                    ).orEmpty()
                     shareModel.subjectName = userSession.shopName
                     SharingUtil.executeShareIntent(
                         shareModel,
@@ -728,6 +739,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty()
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.OTHER_MENU,
+            throwable = throwable,
+            errorType = context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty(),
+            deviceId = userSession.deviceId.orEmpty()
         )
     }
 

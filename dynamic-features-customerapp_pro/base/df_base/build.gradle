@@ -116,7 +116,6 @@ dependencies {
 
     //Payment
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
-    implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
@@ -150,8 +149,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
+    implementation projectOrAar(rootProject.ext.features.wishlist)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
+    implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
 }

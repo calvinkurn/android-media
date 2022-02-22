@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.databinding.ItemBenefitPackageListBinding
@@ -39,6 +40,12 @@ class BenefitPackageItemAdapter :
             with(binding) {
                 icBenefitPackageItem.loadImage(data.imageUrL)
                 tvBenefitPackageItem.text = data.title
+                cardItemBenefitPackage.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    )
+                )
             }
         }
     }

@@ -42,13 +42,13 @@ https://phab.tokopedia.com/XXXXX
 - **/check risk** - run risk analysis
 - **/check lint** - run linter checker
 - **/check macrobenchmark** - run macrobenchmark test
-- **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
 - **/check vector** - run vector drawable optimizer
 - **/check darkmode** - run dark mode checker
 - **/check rollence** - run expired rollence keys checker
+- **/check codeowners** - run codeowners checkers
 - **/create jira** - auto generate or update jira for this PR with fix versions of both MA and SA
 - **/create jira-ma** - auto generate or update jira for this PR with fix version of MA
 - **/create jira-sa** - auto generate or update jira for this PR with fix version of SA
@@ -70,9 +70,15 @@ https://phab.tokopedia.com/XXXXX
 - **approved for new module** - send along with the approval to cast the magic 
 *(more info: @tokopedia/android-gatekeeper-new-module)*
 
+- **approved for performance** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-performance)*
+
 - **approved for dark mode** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-dark-mode)*
 
 - **approved for rollence** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-risk-analysis)*
+
+- **approved for ut-decrease** - send along with the approval to cast the magic
+*(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1867484824/Unit+Test+Coverage+Decrease+Checker)*
 

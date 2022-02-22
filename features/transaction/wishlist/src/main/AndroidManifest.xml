@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.wishlist">
+
+    <application>
+        <activity
+            android:name=".view.activity.WishlistV2Activity"
+            android:exported="false"
+            android:label="@string/page_name_wishlist"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_transaction"
+                    android:path="/wishlist"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

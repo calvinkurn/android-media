@@ -185,6 +185,14 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         }
     }
 
+    fun getAddToCartView(): View? {
+        return binding?.addToCart
+    }
+
+    fun getBuyNowView(): View? {
+        return binding?.buyNow
+    }
+
     interface ProductInfoListener{
         fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel)

@@ -149,7 +149,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
                 listSize += dataList.size
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
-            } else {
+            } else if(dataList.isNullOrEmpty() && listSize == 0){
                 showNoAffiliate()
             }
         })
@@ -174,8 +174,11 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
             }
         })
         affiliatePromotionViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            view?.findViewById<Typography>(R.id.affiliate_products_count)?.text = getString(R.string.affiliate_product_count, itemCount.toString())
-            totalDataItemsCount = itemCount
+            if(itemCount != 0) {
+                view?.findViewById<Typography>(R.id.affiliate_products_count)?.text =
+                    getString(R.string.affiliate_product_count, itemCount.toString())
+                totalDataItemsCount = itemCount
+            }
         })
     }
 
@@ -184,7 +187,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
     }
 
     override fun initInject() {
-        getComponent().injectRecommendedProductFragment(this)
+        getComponent().injectPromotionHistoryFragment(this)
     }
 
     private fun getComponent(): AffiliateComponent =

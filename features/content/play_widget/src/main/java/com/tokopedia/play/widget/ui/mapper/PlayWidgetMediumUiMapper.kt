@@ -98,6 +98,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 performanceSummaryLink = item.performanceSummaryPageLink,
                 hasGiveaway = promoLabelMapper.mapWidgetHasGiveaway(item.config.promoLabels),
                 poolType = item.widgetSortingMethod,
+                recommendationType = item.recommendationType,
         )
     }
 

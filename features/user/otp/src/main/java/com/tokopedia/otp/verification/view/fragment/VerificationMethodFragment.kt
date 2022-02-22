@@ -36,6 +36,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialogUtils
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
+import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
@@ -50,6 +51,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.util.AuthenticityUtils
 import com.tokopedia.sessioncommon.util.ConnectivityUtils
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -74,6 +76,9 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var verificationPref: VerificationPref
 
     protected lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
@@ -115,7 +120,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun isEnableSilentVerif(): Boolean {
-        return remoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION, true)
+        return remoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -179,6 +184,16 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     adapter.setList(list)
                 }
             }
+            INACTIVE_PHONE_CODE -> {
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    val message = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY).orEmpty()
+                    if (message.isNotEmpty()) {
+                        view?.let {
+                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -200,9 +215,17 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
+    private fun isSameIdentifier(): Boolean {
+        val identifier = otpData.email.ifEmpty { otpData.msisdn }
+        return identifier.isNotEmpty() && verificationPref.userIdentifier == identifier
+    }
+
     open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
+                if(!isSameIdentifier()) {
+                    verificationPref.resetByMode(modeList.modeText)
+                }
                 viewmodel.done = true
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
                 try {
@@ -228,7 +251,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         viewBound.methodList?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     }
 
-    private fun getVerificationMethod() {
+    open fun getVerificationMethod() {
         showLoading()
         val otpType = otpData.otpType.toString()
         if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
@@ -324,7 +347,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun setFooter(linkType: Int) {
+    open fun setFooter(linkType: Int) {
         when (linkType) {
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> onDefaultFooterType()
             TYPE_PROFILE_SETTING -> onProfileSettingFooterType()
@@ -377,7 +400,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
             }
-            startActivity(intent)
+            startActivityForResult(intent, INACTIVE_PHONE_CODE)
         }
     }
 
@@ -433,12 +456,12 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun showLoading() {
+    open fun showLoading() {
         viewBound.loader?.show()
         viewBound.containerView?.hide()
     }
 
-    private fun hideLoading() {
+    open fun hideLoading() {
         viewBound.loader?.hide()
         viewBound.containerView?.show()
     }
@@ -452,6 +475,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         private const val TYPE_PROFILE_SETTING = 2
 
         private const val DEFAULT_MODE_SILENT_VERIF = 16
+        private const val INACTIVE_PHONE_CODE = 1000
+
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = VerificationMethodFragment()
             fragment.arguments = bundle ?: Bundle()

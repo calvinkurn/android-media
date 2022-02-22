@@ -1,7 +1,6 @@
 package com.tokopedia.shop.score.common
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
@@ -97,21 +96,5 @@ fun String.getNumberFormat(defaultNumber: Long): Long {
         this.toLong()
     } catch (e: NumberFormatException) {
         defaultNumber
-    }
-}
-
-fun Context?.getResString(resId: Int): String? {
-    return try {
-        this?.getString(resId)
-    } catch (e: Resources.NotFoundException) {
-        ""
-    }
-}
-
-fun Context?.getResString(resId: Int, param: String): String? {
-    return try {
-        this?.getString(resId, param)
-    } catch (e: Resources.NotFoundException) {
-        ""
     }
 }
