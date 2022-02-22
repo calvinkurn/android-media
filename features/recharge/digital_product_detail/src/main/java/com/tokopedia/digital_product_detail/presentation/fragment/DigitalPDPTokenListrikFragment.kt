@@ -144,7 +144,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         initClientNumberWidget()
         initEmptyState()
         observeData()
-
         getCatalogMenuDetail()
         onShowGreenBox()
     }

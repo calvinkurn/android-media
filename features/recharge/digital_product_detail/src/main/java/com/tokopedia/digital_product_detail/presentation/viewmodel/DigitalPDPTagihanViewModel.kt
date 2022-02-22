@@ -213,6 +213,10 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
+    fun getErrorMessageValidator(): Throwable {
+        return MessageErrorException(clientNumberValidatorMsg.value)
+    }
+
     companion object {
         const val DELAY_TIME = 200L
         const val VALIDATOR_DELAY_TIME = 3000L

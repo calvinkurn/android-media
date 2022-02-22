@@ -252,7 +252,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
     }
 
-
     fun showIndicatorIcon() {
         if (isClearableState) {
             hideCheckIcon()

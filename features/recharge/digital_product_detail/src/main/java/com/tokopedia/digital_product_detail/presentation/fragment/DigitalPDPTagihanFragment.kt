@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -232,7 +233,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             setListener(
                 inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.validators.isEmpty().let {
+                        viewModel.operatorData.id.isEmpty().let {
                             if (it) {
                                 getOperatorSelectGroup()
                             } else {
@@ -381,6 +382,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
             getString(R.string.selection_null_product_error)
         )
+        renderProduct()
         renderChipsAndTitle(operatorGroup)
     }
 
@@ -550,11 +552,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 )
 
                 hideEmptyState()
-
-                if (viewModel.isEligibleToBuy) {
-                    //todo block buy?
-                }
-
             } else {
                 showEmptyState()
             }
@@ -723,7 +720,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 }
                 getFavoriteNumber()
             } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
-                //inquiry or atc
+                addToCart()
             } else if (requestCode == DigitalPDPConstant.RESULT_CODE_QR_SCAN) {
                 if (data != null){
                     val scanResult = data.getStringExtra(DigitalPDPConstant.EXTRA_QR_PARAM)
@@ -738,12 +735,18 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     override fun onClickedButton() {
-        viewModel.updateCheckoutPassData(userSession.userId.generateRechargeCheckoutToken(),
-            binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?:"")
-        if (userSession.isLoggedIn){
-            addToCart()
+        if (viewModel.isEligibleToBuy) {
+            viewModel.updateCheckoutPassData(
+                userSession.userId.generateRechargeCheckoutToken(),
+                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: ""
+            )
+            if (userSession.isLoggedIn) {
+                addToCart()
+            } else {
+                navigateToLoginPage()
+            }
         } else {
-            navigateToLoginPage()
+            showErrorToaster(viewModel.getErrorMessageValidator())
         }
     }
 
