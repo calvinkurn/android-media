@@ -1,6 +1,5 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -42,7 +41,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _filterDataParams = ArrayList<HashMap<String, Any>>()
-    private var loadingJob: Job? = null
+    private var validatorJob: Job? = null
     private var catalogProductJob: Job? = null
 
     var filterData = emptyList<TelcoFilterTagComponent>()
@@ -85,8 +84,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud, true)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
@@ -95,14 +97,16 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
+    fun setRechargeCatalogInputMultiTabLoading(){
+        _observableDenomMCCMData.value = RechargeNetworkResult.Loading
+    }
+
     fun getRechargeCatalogInputMultiTab(
         menuId: Int,
         operator: String,
         clientNumber: String,
         isFilterRefreshed: Boolean = true
     ) {
-        catalogProductJob?.cancel()
-        _observableDenomMCCMData.value = RechargeNetworkResult.Loading
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
             val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber,
@@ -118,8 +122,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>) {
+    fun setFavoriteNumberLoading(){
         _favoriteNumberData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getFavoriteNumber(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.value =
@@ -129,8 +136,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun getPrefixOperator(menuId: Int) {
+    fun setPrefixOperatorLoading() {
         _catalogPrefixSelect.value = RechargeNetworkResult.Loading
+    }
+
+    fun getPrefixOperator(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             operatorData = repo.getOperatorList(menuId)
             delay(DELAY_PREFIX_TIME)
@@ -144,13 +154,20 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelValidatorJob() {
+        validatorJob?.cancel()
+    }
+
+    fun setAddToCartLoading() {
+        _addToCartResult.value = RechargeNetworkResult.Loading
+    }
+
     fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
         userId: String
     ) {
-        _addToCartResult.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
@@ -204,8 +221,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String) {
-        loadingJob?.cancel()
-        loadingJob = viewModelScope.launch {
+        validatorJob = viewModelScope.launch {
             var errorMessage = ""
             for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
                 val phoneIsValid = Pattern.compile(validation.rule)

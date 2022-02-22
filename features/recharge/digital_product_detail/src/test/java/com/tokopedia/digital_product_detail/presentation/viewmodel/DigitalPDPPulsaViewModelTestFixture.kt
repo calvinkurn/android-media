@@ -24,7 +24,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-abstract class DigitalPDPViewModelTestFixture {
+abstract class DigitalPDPPulsaViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -73,6 +73,12 @@ abstract class DigitalPDPViewModelTestFixture {
         } returns response
     }
 
+    protected fun onGetPrefixOperator_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getOperatorList(any())
+        } throws error
+    }
+
     protected fun onGetCatalogInputMultitab_thenReturn(response: DenomMCCMModel) {
         coEvery {
             repo.getProductInputMultiTabDenomGrid(any(), any(), any())
@@ -95,12 +101,6 @@ abstract class DigitalPDPViewModelTestFixture {
         coEvery {
             repo.addToCart(any(), any(), any(), any())
         } throws errorThrowable
-    }
-
-    protected fun onGetPrefixOperator_thenReturn(error: Throwable) {
-        coEvery {
-            repo.getOperatorList(any())
-        } throws error
     }
 
     protected fun onGetSelectedGridProduct_thenReturn(result: SelectedProduct) {
