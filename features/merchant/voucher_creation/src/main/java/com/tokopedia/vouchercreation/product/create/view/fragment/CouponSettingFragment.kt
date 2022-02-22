@@ -24,6 +24,7 @@ import com.tokopedia.vouchercreation.common.extension.DECIMAL_FORMAT_PATTERN
 import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
+import com.tokopedia.vouchercreation.common.tracker.CouponSettingTracker
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -70,6 +71,9 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracker : CouponSettingTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponSettingViewModel::class.java) }
@@ -136,6 +140,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     private fun observeSaveCoupon() {
         viewModel.saveCoupon.observe(viewLifecycleOwner, { coupon ->
+            tracker.sendChangeCouponSettingClick()
             onCouponSaved(coupon)
         })
     }
