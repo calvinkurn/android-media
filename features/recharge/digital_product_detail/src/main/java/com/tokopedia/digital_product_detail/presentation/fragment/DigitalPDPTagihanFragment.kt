@@ -540,10 +540,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
     private fun renderProduct() {
         binding?.run {
-            if (rechargePdpTagihanListrikClientNumberWidget.getInputNumber().length >= DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX) {
-
-                /* operator check */
-                // TODO: [Misael] operator prefix check
+            if (rechargePdpTagihanListrikClientNumberWidget.getInputNumber().length >= DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX_LISTRIK) {
 
                 /* validate client number */
                 viewModel.validateClientNumber(rechargePdpTagihanListrikClientNumberWidget.getInputNumber())
@@ -552,14 +549,13 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     viewModel.operatorData.attributes.name
                 )
 
-                if (rechargePdpTagihanListrikClientNumberWidget.getInputNumber()
-                        .length in DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH..DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
-                ) {
-                    hideEmptyState()
+                hideEmptyState()
+
+                if (viewModel.isEligibleToBuy) {
+                    //todo block buy?
                 }
 
             } else {
-                //viewModel.cancelCatalogProductJob()
                 showEmptyState()
             }
         }
