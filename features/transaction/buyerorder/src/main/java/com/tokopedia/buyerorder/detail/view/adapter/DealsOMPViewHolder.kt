@@ -80,7 +80,7 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                     } else if (actionButton.control.equals(KEY_REDIRECT)){
                         val redeemVoucherView = RedeemVoucherView(context, i, actionButton, item,
                                 actionButton.body, presenter, positionHolder, setTapActionDeals,
-                                setEventDetails)
+                                setEventDetails, true)
                         voucerCodeLayout?.addView(redeemVoucherView)
                     } else if (actionButton.control.equals(KEY_POPUP)){
                         val actionTextButton = adapter.renderActionButtons(i, actionButton, item)
