@@ -25,8 +25,6 @@ class DynamicHeaderCustomView: FrameLayout {
 
     companion object {
         private const val Hour24 = 24
-        private const val Day6 = 6
-        private const val Day1 = 1L
         private const val MIN_TOTAL_PRODUCT = 10
     }
 
@@ -131,11 +129,10 @@ class DynamicHeaderCustomView: FrameLayout {
 
     private fun checkStatusCampaignOngoing(endDate: String) {
         val calendar = Calendar.getInstance()
-        var endDateMillis = DateHelper.getDateFromString(endDate).time
+        val endDateMillis = DateHelper.getDateFromString(endDate).time
         val currentMillis = System.currentTimeMillis()
         val isMoreOrEqualThan1Day = getDateHours(endDateMillis - currentMillis) >= Hour24
         if (isMoreOrEqualThan1Day) {
-            endDateMillis += TimeUnit.DAYS.toMillis(Day1)
             tusCountDown?.timerFormat = TimerUnifySingle.FORMAT_DAY
         } else {
             tusCountDown?.timerFormat = TimerUnifySingle.VARIANT_ALTERNATE
