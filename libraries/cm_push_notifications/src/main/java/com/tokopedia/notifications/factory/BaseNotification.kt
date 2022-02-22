@@ -1,24 +1,17 @@
 package com.tokopedia.notifications.factory
 
 import android.app.Notification
-import android.app.Notification.BADGE_ICON_SMALL
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.text.TextUtils
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -28,6 +21,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
+import com.tokopedia.notifications.factory.helper.NotificationChannelConstant
+import com.tokopedia.notifications.factory.helper.NotificationChannelController
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver
 import org.json.JSONObject
@@ -51,6 +46,10 @@ abstract class BaseNotification internal constructor(
         var baseNotificationModel: BaseNotificationModel
 ): BaseNotificationContract {
 
+    private val notificationChannelController  by lazy {
+        NotificationChannelController.getNotificationController(context = context)
+    }
+
     private var cacheHandler: CMNotificationCacheHandler? = null
     val NOTIFICATION_NUMBER = 1
 
@@ -60,7 +59,7 @@ abstract class BaseNotification internal constructor(
                     if (baseNotificationModel.channelName != null && baseNotificationModel.channelName!!.isNotEmpty()) {
                         NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
                     } else {
-                        NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                        NotificationCompat.Builder(context, NotificationChannelConstant.CHANNEL_DEFAULT_ID)
                     }
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
@@ -71,15 +70,17 @@ abstract class BaseNotification internal constructor(
 
             if (baseNotificationModel.isUpdateExisting) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    silentChannel()
-                    builder.setChannelId(CMConstant.NotificationChannel.Channel_DefaultSilent_Id)
+                    builder.setChannelId(notificationChannelController.createAndGetSilentChannel())
                 } else {
                     builder.setSound(null)
                     builder.setVibrate(null)
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    createNotificationChannel()
+                    val channelId = notificationChannelController.createNotificationChannel(
+                        channelName = baseNotificationModel.channelName,
+                        soundFileName = baseNotificationModel.soundFileName)
+                    builder.setChannelId(channelId)
                     builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                     builder.setNumber(NOTIFICATION_NUMBER)
                 } else {
@@ -103,7 +104,7 @@ abstract class BaseNotification internal constructor(
             val builder: NotificationCompat.Builder = if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
                 NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
             } else {
-                NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                NotificationCompat.Builder(context,  NotificationChannelConstant.CHANNEL_DEFAULT_ID)
             }
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
@@ -116,15 +117,16 @@ abstract class BaseNotification internal constructor(
 
             if (baseNotificationModel.isUpdateExisting) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    silentChannel()
-                    builder.setChannelId(CMConstant.NotificationChannel.Channel_DefaultSilent_Id)
+                    builder.setChannelId(notificationChannelController.createAndGetSilentChannel())
                 } else {
                     builder.setSound(null)
                     builder.setVibrate(null)
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    createNotificationChannel()
+                    notificationChannelController.createNotificationChannel(
+                        channelName = baseNotificationModel.channelName,
+                        soundFileName = baseNotificationModel.soundFileName)
                     builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                     builder.setNumber(1)
                 } else {
@@ -192,65 +194,6 @@ abstract class BaseNotification internal constructor(
 
     private fun setNotificationPriorityPreOreo(builder: NotificationCompat.Builder, priority: Int) {
         builder.priority = priority
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun silentChannel() {
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val notificationChannel = NotificationChannel(CMConstant.NotificationChannel.Channel_DefaultSilent_Id,
-                CMConstant.NotificationChannel.Channel_DefaultSilent_Name,
-                importance)
-        notificationChannel.description = CMConstant.NotificationChannel.Channel_DefaultSilent_DESCRIPTION
-        notificationChannel.setSound(null, null)
-        notificationChannel.enableLights(false)
-        notificationChannel.lightColor = Color.BLUE
-        notificationChannel.enableVibration(false)
-        notificationManager.createNotificationChannel(notificationChannel)
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    fun createNotificationChannel() {
-        if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(baseNotificationModel.channelName,
-                    baseNotificationModel.channelName, importance)
-            channel.description = CMConstant.NotificationChannel.CHANNEL_DESCRIPTION
-
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
-            if (baseNotificationModel.soundFileName != null && !baseNotificationModel.soundFileName!!.isEmpty()) {
-                val att = AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                        .build()
-                channel.setSound(Uri.parse("android.resource://" + context.packageName + "/" +
-                        "/raw/" + baseNotificationModel.soundFileName), att)
-            }
-
-            channel.vibrationPattern = vibratePattern
-
-            channel.setShowBadge(true)
-            notificationManager.createNotificationChannel(channel)
-        } else {
-            createDefaultChannel()
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun createDefaultChannel() {
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(CMConstant.NotificationChannel.CHANNEL_ID,
-                CMConstant.NotificationChannel.CHANNEL,
-                importance)
-        val att = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build()
-        channel.setSound(ringtoneUri, att)
-        channel.setShowBadge(true)
-        channel.description = CMConstant.NotificationChannel.CHANNEL_DESCRIPTION
-        channel.vibrationPattern = vibratePattern
-        notificationManager.createNotificationChannel(channel)
-
     }
 
     private fun setNotificationSound(builder: NotificationCompat.Builder) {
