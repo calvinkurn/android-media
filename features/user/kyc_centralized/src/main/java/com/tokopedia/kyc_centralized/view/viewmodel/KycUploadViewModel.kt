@@ -122,22 +122,6 @@ class KycUploadViewModel @Inject constructor(
         }
     }
 
-    private fun sendLoadTimeUploadLog(
-            isSuccess: Boolean,
-            uploadTime: Long,
-            fileKtp: String = "",
-            fileFace: String = "",
-            message: String = ""
-    ) {
-        ServerLogger.log(Priority.P2, "KYC_UPLOAD_MONITORING", mapOf(
-                "type" to if (isSuccess) "Success" else "Failed",
-                "uploadTime" to "${uploadTime}ms",
-                "ktpFileSize" to if (fileKtp.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileKtp)}Kb" else "-",
-                "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-",
-                "message" to message
-        ))
-    }
-
     fun encryptImage(originalFilePath: String, ivCache: String) {
         Timber.d(
             "$LIVENESS_TAG: Start encrypting %s, %s",
@@ -182,6 +166,22 @@ class KycUploadViewModel @Inject constructor(
     private fun writeDecryptedResult(originalFilePath: String, decryptedFilePath: String, aes: Cipher): String {
         ImageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
         return deleteAndRenameResult(originalFilePath, decryptedFilePath)
+    }
+
+    private fun sendLoadTimeUploadLog(
+            isSuccess: Boolean,
+            uploadTime: Long,
+            fileKtp: String = "",
+            fileFace: String = "",
+            message: String = ""
+    ) {
+        ServerLogger.log(Priority.P2, "KYC_UPLOAD_MONITORING", mapOf(
+                "type" to if (isSuccess) "Success" else "Failed",
+                "uploadTime" to "${uploadTime}ms",
+                "ktpFileSize" to if (fileKtp.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileKtp)}Kb" else "-",
+                "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-",
+                "message" to message
+        ))
     }
 
     companion object {
