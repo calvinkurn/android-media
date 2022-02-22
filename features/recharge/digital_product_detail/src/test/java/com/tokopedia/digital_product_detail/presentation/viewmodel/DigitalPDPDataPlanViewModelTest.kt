@@ -33,7 +33,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val response = dataFactory.getMenuDetail()
         onGetMenuDetail_thenReturn(response)
 
-        viewModel.getMenuDetail(DigitalPDPPulsaPulsaViewModelTest.MENU_ID)
+        viewModel.getMenuDetail(MENU_ID)
         verifyGetMenuDetailSuccess(response)
     }
 
@@ -41,7 +41,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     fun `when getting menuDetail should run and give fail result`() {
         onGetMenuDetail_thenReturn(NullPointerException())
 
-        viewModel.getMenuDetail(DigitalPDPPulsaPulsaViewModelTest.MENU_ID, false)
+        viewModel.getMenuDetail(MENU_ID, false)
         verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailFail()
     }
@@ -87,7 +87,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
-            viewModel.getPrefixOperator(DigitalPDPPulsaPulsaViewModelTest.MENU_ID)
+            viewModel.getPrefixOperator(MENU_ID)
             skipPrefixOperatorDelay()
 
             verifyGetOperatorListRepoGetCalled()
@@ -99,7 +99,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         testCoroutineRule.runBlockingTest {
             onGetPrefixOperator_thenReturn(NullPointerException())
 
-            viewModel.getPrefixOperator(DigitalPDPPulsaPulsaViewModelTest.MENU_ID)
+            viewModel.getPrefixOperator(MENU_ID)
             skipPrefixOperatorDelay()
 
             verifyGetOperatorListRepoGetCalled()

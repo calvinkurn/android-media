@@ -130,7 +130,7 @@ class DataPlanDataFactory {
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
 
-        const val CATEGORY_ID = "1"
+        const val CATEGORY_ID = "2"
         const val OPERATOR_ID = "5"
         const val PRODUCT_ID = "1136"
         const val VALID_CLIENT_NUMBER = "081208120812"
