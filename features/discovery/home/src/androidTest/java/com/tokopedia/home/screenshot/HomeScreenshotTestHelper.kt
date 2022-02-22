@@ -47,7 +47,7 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "HomeFeaturedShop"),
                 ScreenshotModel(name = "PlayWidget"),
                 ScreenshotModel(name = "CMHomeWidget"),
-                ScreenshotModel(name = "PayLaterWidget")
+                ScreenshotModel(name = "HomePayLaterWidget")
         )
     }
 
