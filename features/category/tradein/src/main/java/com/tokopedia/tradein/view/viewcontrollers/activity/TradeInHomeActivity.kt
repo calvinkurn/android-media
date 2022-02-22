@@ -39,8 +39,8 @@ import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragmen
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInFinalPriceFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFragment
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
-import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
-import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
+//import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
+//import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -163,16 +163,16 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
             }
         })
 
-        viewModel.tradeInHomeStateLiveData.observe(this, Observer {
-            when (it) {
-                is GoToCheckout -> {
-                    goToCheckout(it.deviceId, it.price)
-                }
-                is GoToHargaFinal -> {
-                    onInitialPriceClick(it.imei)
-                }
-            }
-        })
+//        viewModel.tradeInHomeStateLiveData.observe(this, Observer {
+//            when (it) {
+//                is GoToCheckout -> {
+//                    goToCheckout(it.deviceId, it.price)
+//                }
+//                is GoToHargaFinal -> {
+//                    onInitialPriceClick(it.imei)
+//                }
+//            }
+//        })
     }
 
     private fun setNotElligible(message: String) {

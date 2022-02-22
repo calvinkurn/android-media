@@ -27,6 +27,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeInUtils
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
@@ -35,6 +36,8 @@ import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.TradeInDetailModel
 import com.tokopedia.tradein.view.viewcontrollers.activity.TradeInPromoActivity
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInExchangeMethodBS
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiBS
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInOutsideCoverageBottomSheet
 import com.tokopedia.tradein.viewmodel.TradeInHomePageFragmentVM
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
 import com.tokopedia.unifycomponents.ImageUnify
@@ -52,10 +55,14 @@ import javax.inject.Inject
 class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>(),
     ChooseAddressWidget.ChooseAddressWidgetListener,
     TradeInEducationalPageFragment.OnDoTradeInClick,
-    TradeInExchangeMethodBS.OnLogisticSelected{
+    TradeInExchangeMethodBS.OnLogisticSelected,
+    TradeInImeiBS.ActionListener{
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var viewModel: TradeInHomePageFragmentVM
     private lateinit var tradeInHomePageVM: TradeInHomePageVM
     private var chooseAddressWidget: ChooseAddressWidget? = null
@@ -165,12 +172,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
         })
         tradeInHomePageVM.is3PLSelected.observe(viewLifecycleOwner, Observer {
-            if(viewModel.logisticData.isNotEmpty()){
+            if (viewModel.logisticData.isNotEmpty()) {
                 setPriceWithLogistic(it, viewModel.logisticData)
             }
         })
         viewModel.tradeInDetailLiveData.observe(viewLifecycleOwner, Observer {
             onTradeInDetailSuccess(it)
+        })
+        viewModel.getWarningMessage().observe(viewLifecycleOwner, Observer {
+            showToast(it, "", {})
         })
         viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
@@ -178,8 +188,23 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             else
                 view?.findViewById<View>(R.id.tradein_loading_layout)?.hide()
         })
+        tradeInHomePageVM.getErrorMessage().observe(viewLifecycleOwner, Observer {
+            view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+                //LAKU6 errors
+                setType(GlobalError.SERVER_ERROR)
+                errorIllustration.hide()
+                errorDescription.text = it.message
+                view?.findViewById<View>(R.id.tradein_error_layout)?.show()
+                view?.findViewById<View>(R.id.error_image_view)?.show()
+                setActionClickListener {
+                    view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
+                    refreshPage()
+                }
+            }
+        })
         viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
             view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+                //Tokopedia Backend errors
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
                         setType(GlobalError.NO_CONNECTION)
@@ -192,6 +217,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         errorDescription.text = it.message
                     }
                 }
+                view?.findViewById<View>(R.id.error_image_view)?.hide()
                 view?.findViewById<View>(R.id.tradein_error_layout)?.show()
                 setActionClickListener {
                     view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
@@ -216,7 +242,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             view?.apply {
                 (findViewById<ImageUnify>(R.id.banner_image)).setImageUrl(tradeInDetail.bannerURL)
                 findViewById<Typography>(R.id.model_text).text = tradeInDetail.deviceAttribute.model
-                findViewById<Typography>(R.id.imei_text).text = tradeInDetail.deviceAttribute.imei.firstOrNull() ?: "-"
+                findViewById<Typography>(R.id.imei_text).text =
+                    tradeInDetail.deviceAttribute.imei.firstOrNull() ?: "-"
                 tradeInDetail.activePromo.let { code ->
                     findViewById<Typography>(R.id.promo_title).text = code.title
                     findViewById<Typography>(R.id.promo_detail).text = code.subtitle
@@ -244,8 +271,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 break
             }
         }
-        for(logistic in logisticOptions){
-            if(logistic.isPreferred)
+        for (logistic in logisticOptions) {
+            if (logistic.isPreferred)
                 tradeInHomePageVM.updateLogistics(logistic.is3PL)
         }
         view?.apply {
@@ -272,26 +299,80 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         view?.apply {
             if (isAnyLogisticAvailable) {
                 findViewById<Typography>(R.id.unavailable_exchange_text).hide()
-                (findViewById<IconUnify>(R.id.iv_chevron)).setImage(null, newLightEnable = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                (findViewById<IconUnify>(R.id.iv_chevron)).setImage(
+                    null,
+                    newLightEnable = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    )
+                )
                 findViewById<Typography>(R.id.exchange_price_text).show()
                 findViewById<Typography>(R.id.exchange_text).show()
                 for (logistic in logisticData) {
                     if (is3Pl == logistic.is3PL) {
+                        tradeInHomePageVM.price = logistic.diagnosticPriceFmt
                         setUpPriceView(logistic, true)
+                        if (logistic.isDiagnosed) {
+                            findViewById<UnifyButton>(R.id.btn_continue).text =
+                                getString(com.tokopedia.tradein.R.string.tradein_continue_payment)
+                            findViewById<UnifyButton>(R.id.btn_continue).setOnClickListener {
+                                goToCheckout()
+                            }
+                        } else {
+                            findViewById<UnifyButton>(R.id.btn_continue).text =
+                                getString(com.tokopedia.tradein.R.string.tradein_mulai_tes_hp)
+                            findViewById<UnifyButton>(R.id.btn_continue).setOnClickListener {
+                                viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute?.imei?.firstOrNull()?.let { imei ->
+                                    if (imei.isNotEmpty())
+                                        startLaku6Testing()
+                                    else {
+                                        openImeiBottomSheet()
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             } else {
                 findViewById<Typography>(R.id.unavailable_exchange_text).show()
-                (findViewById<IconUnify>(R.id.iv_chevron)).setImage(null, newLightEnable = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                (findViewById<IconUnify>(R.id.iv_chevron)).setImage(
+                    null,
+                    newLightEnable = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                    )
+                )
                 findViewById<Typography>(R.id.exchange_price_text).hide()
                 findViewById<Typography>(R.id.exchange_text).hide()
                 setUpPriceView(logisticData.first(), false)
-                (findViewById<UnifyButton>(R.id.btn_continue)).setEnabled(false)
+                findViewById<UnifyButton>(R.id.btn_continue).text =
+                    getString(com.tokopedia.tradein.R.string.tradein_similar_products)
+                (findViewById<UnifyButton>(R.id.btn_continue)).setOnClickListener {
+                    tradeInAnalytics.viewCoverageAreaBottomSheet()
+                    val bottomSheet = TradeInOutsideCoverageBottomSheet
+                        .newInstance(
+                            viewModel.getTradeInPDPData()?.productName
+                                ?: ""
+                        )
+                    bottomSheet.tradeInAnalytics = tradeInAnalytics
+                    bottomSheet.show(childFragmentManager, "")
+                }
+                showToast(
+                    getString(com.tokopedia.tradein.R.string.tradein_no_delivery_area),
+                    getString(com.tokopedia.tradein.R.string.tradein_oke),
+                    View.OnClickListener {
+                    },
+                    Snackbar.LENGTH_INDEFINITE
+                )
             }
         }
     }
 
-    private fun setUpPriceView(logistic: TradeInDetailModel.GetTradeInDetail.LogisticOption, showTimer : Boolean = false) {
+    private fun setUpPriceView(
+        logistic: TradeInDetailModel.GetTradeInDetail.LogisticOption,
+        showTimer: Boolean = false
+    ) {
         view?.apply {
             findViewById<Typography>(R.id.discounted_price).text = logistic.finalPriceFmt
             findViewById<Typography>(R.id.estimated_total).text = logistic.finalPriceFmt
@@ -331,11 +412,35 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         }
     }
 
-    private fun showToast(message: String, actionText: String, listener: View.OnClickListener) {
+    private fun openImeiBottomSheet() {
+        val fragment = TradeInImeiBS.newInstance(tradeInHomePageVM.laku6DeviceModel.value)
+        fragment.setActionListener(this@TradeInHomePageFragment)
+        fragment.show(childFragmentManager, tag)
+    }
+
+    override fun onImeiButtonClick(imei: String) {
+        tradeInHomePageVM.imei = imei
+        tradeInHomePageVM.goToCheckout()
+    }
+
+    private fun startLaku6Testing() {
+        tradeInHomePageVM.startLaku6Testing(viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
+    }
+
+    private fun goToCheckout() {
+        tradeInHomePageVM.goToCheckout()
+    }
+
+    private fun showToast(
+        message: String,
+        actionText: String,
+        listener: View.OnClickListener,
+        duration: Int = Snackbar.LENGTH_LONG
+    ) {
         Toaster.build(
             requireView(),
             message,
-            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener
+            duration, Toaster.TYPE_ERROR, actionText, listener
         ).show()
     }
 
@@ -388,7 +493,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         }
     }
 
-    fun refreshPage() {
+    private fun refreshPage() {
         viewModel.startProgressBar()
         tradeInHomePageVM.getDeviceModel()
     }

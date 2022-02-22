@@ -59,7 +59,6 @@
     <string name="no_imei">No. IMEI</string>
     <string name="enter_the_imei_number_text">Kamu belum masukkan nomor IMEI.</string>
     <string name="how_to_check_imei">Cara cek IMEI?</string>
-    <string name="wrong_imei_string">Oops, nomor IMEI kamu salah.</string>
     <string name="tradein_you_can_find_imei">Kamu bisa menemukan nomor IMEI di berbagai tempat, termasuk di Pengaturan, perangkat fisik, iTunes, dan kemasan asli.</string>
     <string name="tradein_find_imei_settings">Menemukan nomor IMEI di pengaturan</string>
     <string name="tradein_imei_label_1">1.</string>
@@ -98,7 +97,6 @@
     <string name="tradein_black_market">HP Black Market</string>
     <string name="tradein_detail_pengecekan">Detail Pengecekan</string>
     <string name="tradein_model_with_name">Model HP : %1$s</string>
-    <string name="tradein_search_deeplink"><![CDATA[tokopedia://search?q=%1$s&trade_id=true&shipping=25]]></string>
     <string name="tradein_laku6_imei_error">TAC missmatch</string>
     <string name="tradein_laku6_imei_cheat">Model handphone tidak cocok. Harap cek ulang.</string>
     <string name="tradein_wrong_imei_string">IMEI tidak dikenal, silahkan coba lagi</string>
@@ -106,7 +104,6 @@
     <string name="tradein_rincian">Rincian</string>
     <string name="tradein_prizeinfo">Harga pasar sedang optimal</string>
     <string name="tradein_imeidesc_title">IMEI di pengaturan</string>
-    <string name="tradein_imei_helper">Tekan *#06# untuk cek IMEI atau dengan cara berikut</string>
     <string name="tradein_imei_label">No. IMEI</string>
     <string name="tradein_final_price">%1$s*</string>
     <string name="tradein_price_label">Harga HP-mu</string>
@@ -114,11 +111,7 @@
     <string name="tradein_header_final_price">Ringkasan Tukar Tambah</string>
     <string name="tradein_diff_price_label">Ganti gadget hanya dengan harga</string>
     <string name="tradein_remaining_price_label">Sisa Pembayaran Barang</string>
-    <string name="tradein_bs_info">1. Buka Pengaturan > Umum > Mengenai.
-        \n2. Cari nomor seri, IMEI perangkat kamu.
-        \n3. Sentuh dan tahan nomor IMEI hingga tersalin.</string>
     <string name="tradein_imei_title">Masukkan no. IMEI</string>
-    <string name="tradein_imei_di_pengaturan">IMEI di pengaturan</string>
     <string name="tradein_sid">Session ID</string>
     <string name="tradein_sid_desc">kode ini dapat berubah sewaktu waktu</string>
     <string name="tradein_sid_mes">Session ID berhasil disalin.</string>
@@ -170,5 +163,17 @@
     <string name="tradein_minus_asterick">- %1$s*</string>
     <string name="tradein_code_copies">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
     <string name="tradein_no_options_available">Pengiriman tidak tersedia</string>
+    <string name="tradein_no_delivery_area">Saat ini belum ada pengiriman ke wilayahmu. Coba cari produk serupa lainnya, ya.</string>
+    <string name="tradein_oke">Oke</string>
+    <string name="tradein_search_deeplink"><![CDATA[tokopedia://search?q=%1$s&trade_id=true&shipping=25]]></string>
+    <string name="tradein_continue_payment">Lanjut Pembayaran</string>
+    <string name="tradein_similar_products">Cari Produk Serupa</string>
+    <string name="tradein_imei_helper">Tekan *#06# untuk cek IMEI atau dengan cara berikut</string>
+    <string name="tradein_imei_di_pengaturan">IMEI di pengaturan</string>
+    <string name="tradein_bs_info">1. Buka Pengaturan > Umum > Mengenai.
+        \n2. Cari nomor seri, IMEI perangkat kamu.
+        \n3. Sentuh dan tahan nomor IMEI hingga tersalin.</string>
+    <string name="tradein_lanjut_function_test">Lanjut Tes Fungsi</string>
+    <string name="wrong_imei_string">Oops, nomor IMEI kamu salah.</string>
 
 </resources>

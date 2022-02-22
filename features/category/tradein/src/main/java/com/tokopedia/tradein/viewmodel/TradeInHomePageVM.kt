@@ -6,6 +6,10 @@ import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.model.Laku6DeviceModel
+import com.tokopedia.tradein.model.Laku6TestDataModel
+import com.tokopedia.tradein.model.TradeInDetailModel
+import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
+import com.tokopedia.tradein.viewmodel.liveState.TradeInHomeState
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,8 +20,12 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
 
     val askUserLogin = MutableLiveData<Int>()
     val laku6DeviceModel = MutableLiveData<Laku6DeviceModel>()
-    private lateinit var laku6TradeIn: Laku6TradeIn
     var is3PLSelected = MutableLiveData<Boolean>()
+    var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
+
+    private var laku6TradeIn: Laku6TradeIn? = null
+    var imei: String = ""
+    var price: String = ""
 
     fun setLaku6(context: Context) {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
@@ -27,15 +35,49 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
             context, campaignId,
             TokopediaUrl.getInstance().TYPE == Env.STAGING, TradeinConstants.TRADEIN_EXCHANGE
         )
-        laku6TradeIn.setTokopediaTestType(TradeinConstants.TRADEIN_EXCHANGE)
+        laku6TradeIn?.setTokopediaTestType(TradeinConstants.TRADEIN_EXCHANGE)
     }
 
     fun isPermissionGranted(): Boolean {
-        return laku6TradeIn.permissionGranted()
+        return laku6TradeIn?.permissionGranted() ?: false
     }
 
     fun getDeviceModel() {
-        laku6DeviceModel.value = Gson().fromJson(laku6TradeIn.deviceModel.toString(), Laku6DeviceModel::class.java)
+        laku6DeviceModel.value = Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
+    }
+
+    private fun setTestData(deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute?) {
+        laku6DeviceModel.value?.apply {
+            deviceAttribute?.let { deviceAttribute ->
+                val json = Gson().toJson(
+                    Laku6TestDataModel(
+                        rootBlocked = rootDetected,
+                        deviceInfo = Laku6TestDataModel.DeviceInfo(
+                            brand = deviceAttribute.brand,
+                            modelDisplayName = deviceAttribute.model,
+                            modelId = deviceAttribute.modelId.toString(),
+                            modelName = deviceAttribute.model,
+                            ram = deviceAttribute.ram,
+                            storage = deviceAttribute.storage
+                        )
+                    )
+                )
+                try {
+                    laku6TradeIn?.setTestData(json, TradeinConstants.CAMPAIGN_TAG_SELECTION)
+                } catch (exception : Exception){
+                    errorMessage.value = exception
+                }
+            }
+        }
+    }
+
+    fun startLaku6Testing(deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute?) {
+        setTestData(deviceAttribute)
+        try {
+            laku6TradeIn?.startGUITest()
+        } catch (exception : Exception){
+            errorMessage.value = exception
+        }
     }
 
     fun checkLogin() {
@@ -48,5 +90,9 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
 
     fun updateLogistics(is3Pl: Boolean) {
         is3PLSelected.value = is3Pl
+    }
+
+    fun goToCheckout() {
+        tradeInHomeStateLiveData.value = GoToCheckout(imei, laku6DeviceModel.value?.model ?: "", price)
     }
 }

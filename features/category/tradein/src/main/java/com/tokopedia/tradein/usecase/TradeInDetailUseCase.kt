@@ -33,7 +33,7 @@ class TradeInDetailUseCase @Inject constructor(
         return mapOf<String,Any>(PARAM_INPUT to
                 GetTradeInDetailInput(
                     sessionId = laku6DeviceModel.sessionId,
-                    appDeviceId = "",
+                    appDeviceId = userSession.deviceId,
                     traceId = laku6DeviceModel.traceId,
                     uniqueCode = "",
                     modelInfo = laku6DeviceModel.model,

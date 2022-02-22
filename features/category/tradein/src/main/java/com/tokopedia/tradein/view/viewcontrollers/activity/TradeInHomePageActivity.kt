@@ -25,6 +25,7 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInEducationalPageFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInHomePageFragment
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
+import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -56,6 +57,11 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 )
             } else {
                 askPermissions()
+            }
+        })
+        viewModel.tradeInHomeStateLiveData.observe(this, Observer {
+            when(it){
+                is GoToCheckout -> goToCheckout(it.imei,it.displayName,it.price)
             }
         })
     }

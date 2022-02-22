@@ -31,7 +31,7 @@ class TradeInHomeViewModel @Inject constructor(
     var tradeInParams = TradeInParams()
     var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
-    var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
+//    var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
     var imei: String? = null
     var finalPrice: String = "-"
     var xSessionId: String = "-"
@@ -182,11 +182,11 @@ class TradeInHomeViewModel @Inject constructor(
     }
 
     fun onHargaFinalClick(deviceId: String?, price: String) {
-        tradeInHomeStateLiveData.value = GoToCheckout(deviceId, price)
+//        tradeInHomeStateLiveData.value = GoToCheckout(deviceId, displayName = "", price)
     }
 
     fun onInitialPriceClick(imei: String?) {
-        tradeInHomeStateLiveData.value = GoToHargaFinal(imei)
+//        tradeInHomeStateLiveData.value = GoToHargaFinal(imei)
     }
 
 }

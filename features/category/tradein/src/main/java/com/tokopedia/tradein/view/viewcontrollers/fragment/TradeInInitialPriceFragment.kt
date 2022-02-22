@@ -22,7 +22,6 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
-import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.GetImeiBS
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.ShowSessionIdBs
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
@@ -90,8 +89,8 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
         btn_continue.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val getImeiBS = GetImeiBS.newInstance(tradeinHomeViewModel)
-                fragmentManager?.let { fm -> getImeiBS.show(fm, "") }
+//                val getImeiBS = GetImeiBS.newInstance(tradeinHomeViewModel)
+//                fragmentManager?.let { fm -> getImeiBS.show(fm, "") }
             } else {
                 tradeinHomeViewModel.onInitialPriceClick(null)
             }
