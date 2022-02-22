@@ -82,6 +82,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -604,6 +605,7 @@ public class MainParentActivity extends BaseActivity implements
             Fragment currentFrag = manager.findFragmentByTag(backStateName);
             if (currentFrag != null && manager.getFragments().size() > 0) {
                 showSelectedFragment(fragment, manager, ft);
+
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
@@ -1318,21 +1320,22 @@ public class MainParentActivity extends BaseActivity implements
             currentFragment.setUserVisibleHint(false);
         }
         this.currentSelectedFragmentPosition = position;
+        String pageName = "";
+        if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
+            pageName = "/";
+        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
+            pageName = PAGE_OS_HOMEPAGE;
+        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+            globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            pageName = PAGE_FEED;
+        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
+            pageName = PAGE_DAFTAR_TRANSAKSI;
+        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
+            pageName = PAGE_WISHLIST;
+        }
+
         if (!isFirstNavigationImpression) {
-            String pageName = "";
-                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
-                    pageName = "/";
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
-                    pageName = PAGE_OS_HOMEPAGE;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
-                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
-                    pageName = PAGE_FEED;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
-                    pageName = PAGE_DAFTAR_TRANSAKSI;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
-                    pageName = PAGE_WISHLIST;
-                }
-                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
+            globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
         }
         isFirstNavigationImpression = false;
 
@@ -1368,6 +1371,7 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
+        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(pageName);
         return true;
     }
 

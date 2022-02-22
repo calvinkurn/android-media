@@ -95,6 +95,7 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
+import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -371,6 +372,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
+    private var fragmentCurrentCacheState: Boolean = true
+    private var fragmentCurrentVisitableCount: Int = -1
 
     @Suppress("TooGenericExceptionCaught")
     private fun isEligibleForBeautyFest(): Boolean {
@@ -530,6 +533,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
+        homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                HomeServerLogger.sendEmbraceBreadCrumb(
+                    fragment = this@HomeRevampFragment,
+                    isLoggedIn = userSession.isLoggedIn,
+                    isCache = fragmentCurrentCacheState,
+                    visitableListCount = fragmentCurrentVisitableCount,
+                    scrollPosition = layoutManager?.findLastVisibleItemPosition()
+                )
+            }
+        })
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
@@ -1444,6 +1459,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
                 setOnRecyclerViewLayoutReady(isCache)
             }
+            this.fragmentCurrentCacheState = isCache
+            this.fragmentCurrentVisitableCount = data.size
+
+            HomeServerLogger.sendEmbraceBreadCrumb(
+                fragment = this,
+                isLoggedIn = userSession.isLoggedIn,
+                isCache = isCache,
+                visitableListCount = data.size,
+                scrollPosition = layoutManager?.findLastVisibleItemPosition()
+            )
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
         }

@@ -1,13 +1,16 @@
 package com.tokopedia.home.util
 
 import android.util.Log
+import androidx.fragment.app.Fragment
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
+import io.embrace.android.embracesdk.Embrace
 import okhttp3.internal.http2.ConnectionShutdownException
 import org.apache.commons.lang3.exception.ExceptionUtils
+import org.json.JSONObject
 import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -15,6 +18,20 @@ import java.net.UnknownHostException
 object HomeServerLogger {
 
     private const val HOME_STATUS_ERROR_TAG = "HOME_STATUS"
+    private const val HOME_EMBRACE_KEY = "Home"
+    private const val HOME_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
+    private const val HOME_EMBRACE_KEY_FRAGMENT = "HomeFragment"
+    private const val HOME_EMBRACE_KEY_IS_LOGIN = "IsLogin"
+    private const val HOME_EMBRACE_KEY_IS_CACHE = "IsCache"
+    private const val HOME_EMBRACE_VISITABLE_LIST_COUNT = "VisitableCount"
+    private const val HOME_EMBRACE_SCROLL_POSITION = "ScrollPosition"
+
+    private const val HOME_EMBRACE_FRAGMENT_VISIBLE = "Visible"
+    private const val HOME_EMBRACE_FRAGMENT_NOT_VISIBLE = "Not Visible"
+
+    private const val HOME_EMBRACE_TRUE = "true"
+    private const val HOME_EMBRACE_FALSE = "false"
+
     const val TYPE_CANCELLED_INIT_FLOW = "revamp_cancelled_init_flow"
     const val TYPE_REVAMP_ERROR_INIT_FLOW = "revamp_error_init_flow"
     const val TYPE_REVAMP_ERROR_REFRESH = "revamp_error_refresh"
@@ -106,6 +123,55 @@ object HomeServerLogger {
     ) {
         if (type == null || throwable == null || isExceptionExcluded(throwable)) return
         timberLogWarning(type, ExceptionUtils.getStackTrace(throwable), reason, data)
+    }
+
+    fun sendEmbraceBreadCrumb(
+        fragment: Fragment? = null,
+        isLoggedIn: Boolean? = null,
+        isCache: Boolean? = null,
+        visitableListCount: Int? = null,
+        scrollPosition: Int? = null
+    ) {
+        val embraceJsonData = JSONObject()
+        fragment?.let {
+            if (it.isVisible) {
+                embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_VISIBLE)
+            } else {
+                embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_NOT_VISIBLE)
+            }
+        }
+
+        isLoggedIn?.let {
+            if (isLoggedIn) {
+                embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_TRUE)
+            } else {
+                embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_FALSE)
+            }
+        }
+
+        isCache?.let {
+            if (isCache) {
+                embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+            } else {
+                embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+            }
+        }
+
+        visitableListCount?.let {
+            embraceJsonData.put(HOME_EMBRACE_VISITABLE_LIST_COUNT, it)
+        }
+
+        scrollPosition?.let {
+            embraceJsonData.put(HOME_EMBRACE_SCROLL_POSITION, it)
+        }
+
+        Embrace.getInstance().logBreadcrumb(
+            String.format(
+                HOME_EMBRACE_BREADCRUMB_FORMAT,
+                HOME_EMBRACE_KEY,
+                embraceJsonData
+            )
+        )
     }
 
     private fun isExceptionExcluded(throwable: Throwable): Boolean {
