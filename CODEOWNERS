@@ -236,6 +236,7 @@
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionyoda-dev
 /features/fintech/paylater                              @tokopedia/android-minionyoda-dev
+/features/fintech/pdp_fintech_widget                    @tokopedia/android-minionyoda-dev
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionyoda-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionyoda-dev
 /features/fintech/home_credit           				@tokopedia/android-minionyoda-dev
