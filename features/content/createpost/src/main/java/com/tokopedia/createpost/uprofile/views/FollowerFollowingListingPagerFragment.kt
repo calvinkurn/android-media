@@ -12,6 +12,8 @@ import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -44,12 +46,12 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
     }
 
 
-//    private val mAdapter: UserPostBaseAdapter by lazy {
-//        UserPostBaseAdapter(
-//            mPresenter,
-//            this
-//        )
-//    }
+    private val mAdapter: ProfileFollowersAdapter by lazy {
+        ProfileFollowersAdapter(
+            mPresenter,
+            this
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,11 +72,20 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
         //initListener()
         val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
-        //initUserPost()
+        initMainUi()
+        mPresenter.getFollowers(userSessionInterface.userId, "", 1)
+        mPresenter.getFollowings(userSessionInterface.userId, "", 1)
     }
 
     private fun initObserver() {
         //observeUserProfile()
+    }
+
+    private fun initMainUi() {
+        val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
+        rvFollowers?.adapter = mAdapter
+        mAdapter.resetAdapter()
+        mAdapter.startDataLoading()
     }
 
     private fun initListener() {

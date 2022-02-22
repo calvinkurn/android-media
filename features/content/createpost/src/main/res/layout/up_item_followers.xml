@@ -2,48 +2,54 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
-    android:layout_width="@dimen/dp_160"
-    android:layout_height="240dp"
-    android:background="@color/Unify_Background">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_64"
+    android:background="@color/Unify_Background"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_8">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/img_banner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/img_profile_image"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:src="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_live_view_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="12dp"
-        android:drawableLeft="@drawable/ic_play_eye_white"
-        android:text="500"
-        android:drawablePadding="@dimen/dp_4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selenkapnya"
+        android:layout_marginStart="@dimen/dp_16"
+        android:text="Hiiiiiiiii"
         app:layout_constraintBottom_toTopOf="@+id/text_user_name"
-        app:layout_constraintStart_toStartOf="@+id/text_user_name" />
+        app:layout_constraintStart_toEndOf="@+id/img_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/img_profile_image" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
         android:text="Selenkapnya"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/img_profile_image"
+        app:layout_constraintStart_toStartOf="@+id/text_display_name"
+        app:layout_constraintTop_toBottomOf="@+id/text_display_name" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_action_follow"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_32"
+        android:text="Follow"
+        app:layout_constraintBottom_toBottomOf="@+id/img_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_profile_image" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
