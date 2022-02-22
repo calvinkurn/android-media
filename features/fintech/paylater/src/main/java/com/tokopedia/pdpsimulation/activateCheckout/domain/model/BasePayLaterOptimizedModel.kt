@@ -20,6 +20,7 @@ data class PaylaterGetOptimizedModel(
 data class CheckoutData(
     @SerializedName("gateway_id") val gateway_id: Int,
     @SerializedName("gateway_code") val gateway_code: String,
+    @SerializedName("payment_gateway_code") val paymentGatewayCode:String?,
     @SerializedName("gateway_name") val gateway_name: String,
     @SerializedName("subtitle") val subtitle: String,
     @SerializedName("subtitle2") val subtitle2: String,

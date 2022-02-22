@@ -155,7 +155,7 @@ class PayLaterActivationViewModel @Inject constructor(
             _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()?:""))
         else {
             occRedirectionUrl =   ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${selectedTenureSelected}" +
-                    "&gateway_code=${gatewayToChipMap[selectedGatewayId.toInt()]?.gateway_code ?: ""}" +
+                    "&gateway_code=${gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: ""}" +
                     "&fintech"
             _addToCartLiveData.value = Success(addToCartOcc)
 
