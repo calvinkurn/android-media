@@ -25,7 +25,7 @@ class DynamicHeaderCustomView: FrameLayout {
 
     companion object {
         private const val Hour24 = 24
-        private const val MIN_TOTAL_PRODUCT = 10
+        private const val INVALID_TIMER_COUNTER = "-1"
     }
 
     private var listener: HeaderCustomViewListener? = null
@@ -53,8 +53,8 @@ class DynamicHeaderCustomView: FrameLayout {
     private fun handleHeaderComponent(model: DynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
-        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate)
-        handleSeeAllAppLink(model.ctaText, model.ctaTextLink, model.totalProduct)
+        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate, model.timerCounter)
+        handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
     }
 
     private fun setupUi() {
@@ -75,8 +75,8 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String) {
-        if (subtitle.isNotBlank()) {
+    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String, timerCounter: String) {
+        if (subtitle.isNotBlank() && timerCounter != INVALID_TIMER_COUNTER) {
             tpSubtitle?.text = subtitle
             handleCountDownTimer(statusCampaign, endDate)
         } else {
@@ -85,8 +85,8 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String, totalProduct: Int) {
-        if (ctaTextLink.isNotBlank() && totalProduct > MIN_TOTAL_PRODUCT) {
+    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String) {
+        if (ctaTextLink.isNotBlank()) {
             tpSeeAll?.text = if (ctaText.isNotBlank()) {
                 ctaText
             } else {

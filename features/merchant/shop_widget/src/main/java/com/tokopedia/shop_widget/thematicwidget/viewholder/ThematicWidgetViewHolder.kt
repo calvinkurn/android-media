@@ -37,8 +37,6 @@ class ThematicWidgetViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_thematic_widget
-
-        private const val MAX_TOTAL_PRODUCT = 10
     }
 
     private var binding: ItemThematicWidgetBinding? by viewBinding()
@@ -117,15 +115,11 @@ class ThematicWidgetViewHolder (
     }
 
     private fun submitList(element: ThematicWidgetUiModel) {
-        val products : List<ProductCardUiModel>
+        val products = element.productList
         val newList = mutableListOf<Visitable<*>>()
         newList.add(ProductCardSpaceUiModel())
-        if (element.header.totalProduct <= MAX_TOTAL_PRODUCT) {
-            products = element.productList
-            newList.addAll(products)
-        } else {
-            products = element.productList.take(MAX_TOTAL_PRODUCT)
-            newList.addAll(products)
+        newList.addAll(products)
+        if (element.header.ctaTextLink.isNotBlank()) {
             newList.add(ProductCardSeeAllUiModel(element.header.ctaTextLink))
         }
         adapter.submitList(newList)
