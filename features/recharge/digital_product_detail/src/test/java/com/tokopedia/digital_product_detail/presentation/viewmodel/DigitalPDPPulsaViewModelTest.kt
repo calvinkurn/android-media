@@ -352,7 +352,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
     }
 
     @Test
-    fun `given CancellationException to catalogInputMultitab and should return empty result`() = testCoroutineRule.runBlockingTest {
+    fun `given CancellationException to catalogInputMultitab and should return empty result`() {
         val errorResponse = CancellationException()
         onGetCatalogInputMultitab_thenReturn(errorResponse)
 
