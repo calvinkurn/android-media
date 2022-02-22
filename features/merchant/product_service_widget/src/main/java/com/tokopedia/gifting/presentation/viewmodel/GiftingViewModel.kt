@@ -38,7 +38,7 @@ class GiftingViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getAddOnUseCase.setParams(productId.toString(), warehouseId)
-                getAddOnUseCase.executeOnBackground().data.getAddOnByProduct
+                getAddOnUseCase.executeOnBackground().getAddOnByProduct
             }
             mGetAddOnByProduct.value = result
             if (result.error.messages.isNotEmpty()) {

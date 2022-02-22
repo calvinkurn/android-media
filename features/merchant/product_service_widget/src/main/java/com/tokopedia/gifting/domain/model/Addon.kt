@@ -6,17 +6,17 @@ import com.google.gson.annotations.SerializedName
 class Addon {
     @SerializedName("Basic")
     @Expose
-    var basic: Basic? = null
+    var basic: Basic = Basic()
 
     @SerializedName("Inventory")
     @Expose
-    var inventory: Inventory? = null
+    var inventory: Inventory = Inventory()
 
     @SerializedName("Warehouse")
     @Expose
-    var warehouse: Warehouse? = null
+    var warehouse: Warehouse = Warehouse()
 
     @SerializedName("Shop")
     @Expose
-    var shop: Shop? = null
+    var shop: Shop = Shop()
 }

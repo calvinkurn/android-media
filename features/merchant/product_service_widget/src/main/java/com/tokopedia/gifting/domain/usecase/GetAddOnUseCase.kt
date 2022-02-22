@@ -3,10 +3,7 @@ package com.tokopedia.gifting.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_GIFTING_VALUE
-import com.tokopedia.gifting.domain.model.AddOnRequest
-import com.tokopedia.gifting.domain.model.GetAddOnRequest
-import com.tokopedia.gifting.domain.model.GetAddOnResponse
-import com.tokopedia.gifting.domain.model.Source
+import com.tokopedia.gifting.domain.model.*
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
