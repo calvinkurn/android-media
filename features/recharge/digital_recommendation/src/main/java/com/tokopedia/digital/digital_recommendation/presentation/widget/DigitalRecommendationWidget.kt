@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
 import com.tokopedia.digital.digital_recommendation.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
@@ -129,6 +130,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     }
 
     private fun onItemClicked(element: DigitalRecommendationItemUnifyModel, position: Int) {
+        RouteManager.route(context, element.unify.actionButton.applink)
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.clickDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId(), page
