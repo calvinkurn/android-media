@@ -28,6 +28,5 @@ data class User(
     val uid: String = "",
     val uname: String = "",
     val role: String = "",
-    val thumbnail: String = "",
-    val shopId: Long = 0
+    val thumbnail: String = ""
 )

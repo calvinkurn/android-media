@@ -8,7 +8,6 @@ import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -59,23 +58,16 @@ class SendableVoucherPreview(
     ): Any {
         val msgId = roomMetaData.msgId
         val toUid = roomMetaData.receiver.uid
-        val voucherPayload = generatePayload(msgId, toUid, localId, roomMetaData)
+        val voucherPayload = generatePayload(msgId, toUid, localId)
         return CommonUtil.toJson(voucherPayload)
     }
 
     private fun generatePayload(
         messageId: String,
         opponentId: String,
-        localId: String,
-        roomMetaData: RoomMetaData
+        localId: String
     ): WebsocketAttachmentContract {
         val startTime = SendableUiModel.generateStartTime()
-        var shopId: Long = 0
-        if (roomMetaData.sender.role.equals(
-                ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true)
-        ) {
-            shopId = roomMetaData.sender.shopId
-        }
         val payload = WebsocketVoucherPayload(
                 voucherPreview.voucherId,
                 voucherPreview.tnc,
@@ -91,8 +83,7 @@ class SendableVoucherPreview(
                 voucherPreview.voucherType,
                 voucherPreview.isPublic,
                 voucherPreview.isLockToProduct,
-                voucherPreview.applink,
-                shopId
+                voucherPreview.applink
         )
         val data = WebsocketAttachmentData(
             message_id = messageId.toLongOrZero(),
@@ -149,7 +140,6 @@ class SendableVoucherPreview(
             val voucher_type: Int,
             val is_public: Int,
             val is_lock_to_product: Int,
-            val applink: String,
-            val shop_id: Long
+            val applink: String
     )
 }

@@ -50,7 +50,7 @@ class Voucher {
     @Expose
     var isPublic: Int = 1
     @SerializedName("is_lock_to_product")
-    var isLockToProduct: Int = 0
+    var isLockToProduct: Int? = 0
     @SerializedName("applink")
-    var applink: String = ""
+    var applink: String? = ""
 }

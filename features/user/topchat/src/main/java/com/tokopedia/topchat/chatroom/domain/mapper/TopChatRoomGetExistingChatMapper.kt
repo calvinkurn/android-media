@@ -264,8 +264,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withResponseFromGQL(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
-            .withIsLockToProduct(voucher.isLockToProduct)
-            .withApplink(voucher.applink)
+            .withIsLockToProduct(voucher.isLockToProduct?: 0)
+            .withApplink(voucher.applink?: "")
             .build()
     }
 
@@ -338,16 +338,14 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             uid = interlocutor.userId.toString(),
             uname = interlocutor.name,
             role = interlocutor.role,
-            thumbnail = interlocutor.thumbnail,
-            shopId = interlocutor.shopId
+            thumbnail = interlocutor.thumbnail
         )
         val senderMetaData = User(
             name = sender.name,
             uid = sender.userId.toString(),
             uname = sender.name,
             role = sender.role,
-            thumbnail = sender.thumbnail,
-            shopId = sender.shopId
+            thumbnail = sender.thumbnail
         )
         val userIdMap = mapUserId(chat.chatReplies.contacts)
         return RoomMetaData(
