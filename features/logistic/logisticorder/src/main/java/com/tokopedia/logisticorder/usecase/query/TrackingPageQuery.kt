@@ -43,6 +43,7 @@ object TrackingPageQuery {
                   time
                   proof {
                     image_id
+                    copy_writing_disclaimer
                   }
                   partner_name
                 }
