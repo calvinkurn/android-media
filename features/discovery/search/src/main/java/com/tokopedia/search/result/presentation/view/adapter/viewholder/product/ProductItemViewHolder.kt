@@ -3,12 +3,8 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.video.ExoPlayerListener
-import com.tokopedia.productcard.video.ProductCardViewHelper
 import com.tokopedia.productcard.video.ProductVideoPlayer
 import com.tokopedia.productcard.video.VideoPlayerState
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
@@ -18,27 +14,16 @@ import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener
-) : AbstractViewHolder<ProductItemDataView>(itemView), ExoPlayerListener, ProductVideoPlayer {
+) : AbstractViewHolder<ProductItemDataView>(itemView), ProductVideoPlayer {
 
     abstract val productCardView: IProductCardView?
-    protected var helper: ProductCardViewHelper? = null
 
     protected var productCardModel: ProductCardModel? = null
-
-    private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
-
-    protected fun initVideoHelper() {
-        val videoPlayer = productCardView?.getProductVideoView() ?: return
-        helper = ProductCardViewHelper.Builder(videoPlayer.context, videoPlayer)
-            .setExoPlayerEventsListener(this)
-            .create()
-    }
 
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
@@ -102,59 +87,19 @@ abstract class ProductItemViewHolder(
 
     override fun onViewRecycled() {
         val productCardView = this.productCardView ?: return
-        onViewDetach()
 
         productCardView.recycle()
         productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
 
     override val hasProductVideo: Boolean
-        get() = productCardModel?.hasVideo ?: false
+        get() = productCardView?.getProductCardVideo()?.hasProductVideo == true
 
     override fun playVideo(): Flow<VideoPlayerState> {
-        val productCardModel = productCardModel ?: return flowOf(VideoPlayerState.NoVideo)
-        if(!productCardModel.hasVideo) return flowOf(VideoPlayerState.NoVideo)
-        videoPlayerStateFlow = MutableStateFlow(VideoPlayerState.Starting)
-        helper?.play(productCardModel.customVideoURL)
-        return videoPlayerStateFlow as Flow<VideoPlayerState>
+        return productCardView?.getProductCardVideo()?.playVideo() ?: flowOf(VideoPlayerState.NoVideo)
     }
 
     override fun stopVideo() {
-        helper?.stop()
-    }
-
-    private fun onViewDetach(){
-        helper?.onViewDetach()
-    }
-
-    override fun onPlayerIdle() {
-        val productCardView = this.productCardView ?: return
-        productCardView.getProductVideoView()?.hide()
-    }
-
-    override fun onPlayerBuffering() {
-        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Buffering)
-    }
-
-    override fun onPlayerPlaying() {
-        val productCardView = this.productCardView ?: return
-        productCardView.getProductVideoView()?.show()
-        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Playing)
-    }
-
-    override fun onPlayerPaused() {
-        val productCardView = this.productCardView ?: return
-        productCardView.getProductVideoView()?.hide()
-        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Paused)
-    }
-
-    override fun onPlayerEnded() {
-        val productCardView = this.productCardView ?: return
-        productCardView.getProductVideoView()?.hide()
-        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Ended)
-    }
-
-    override fun onPlayerError(errorString: String?) {
-        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Error(errorString ?: ""))
+        productCardView?.getProductCardVideo()?.stopVideo()
     }
 }
