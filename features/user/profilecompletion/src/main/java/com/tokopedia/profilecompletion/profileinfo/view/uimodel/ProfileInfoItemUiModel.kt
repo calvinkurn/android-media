@@ -8,6 +8,8 @@ data class ProfileInfoItemUiModel(
     override var title: String = "",
     var itemValue: String = "",
     var rightIcon: Int = IconUnify.CHEVRON_RIGHT,
+    var isEnable: Boolean = true,
+    var action: () -> Unit = {}
 ): BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {
 	return typeFactory.type(this)

@@ -15,7 +15,7 @@ class ProfileInfoTitleViewHolder(val view: View,
     private var binding: ProfileItemTitleViewBinding? by viewBinding()
 
     override fun bind(element: ProfileInfoTitleUiModel?) {
-	binding?.profileItemTitleIcon?.setOnClickListener { listener.onIconClicked(element?.id) }
+	binding?.profileItemTitleIcon?.setOnClickListener { listener.onSectionIconClicked(element?.id) }
 	binding?.profileItemTitle?.text = element?.title
 	binding?.profileItemTitleIcon?.setImage(element?.infoIcon)
     }
@@ -26,6 +26,6 @@ class ProfileInfoTitleViewHolder(val view: View,
     }
 
     interface ProfileInfoTitleInterface {
-	fun onIconClicked(id: String?)
+	fun onSectionIconClicked(id: String?)
     }
 }

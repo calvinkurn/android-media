@@ -35,10 +35,10 @@
         android:layout_height="wrap_content"/>
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/fragmentProfileItemIcon"
         android:layout_weight="0.5"
+        android:id="@+id/fragmentProfileItemIcon"
         app:icon_name="CHEVRON_RIGHT"
-        android:layout_width="16dp"
-        android:layout_height="16dp"/>
+        android:layout_width="22dp"
+        android:layout_height="22dp"/>
 
 </LinearLayout>

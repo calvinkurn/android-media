@@ -11,14 +11,25 @@
         android:layout_height="0dp"
         android:background="@color/Unify_Background">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_marginTop="@dimen/unify_space_12"
-            android:id="@+id/profileInfoImageUnify"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/fragmentProfileInfoTicker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:tickerType="warning"
+            android:visibility="gone"
+            app:descriptionText="@string/text_change_name_warning_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:id="@+id/profileInfoImageUnify"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragmentProfileInfoTicker"
             app:unify_image_type="circle" />
 
         <com.tokopedia.unifyprinciples.Typography

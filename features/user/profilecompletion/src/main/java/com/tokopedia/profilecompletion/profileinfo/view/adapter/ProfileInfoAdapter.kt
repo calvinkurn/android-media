@@ -9,24 +9,8 @@ class ProfileInfoAdapter(
 ): BaseListAdapter<Visitable<*>, ProfileInfoListTypeFactory>(profileInfoListTypeFactory) {
 
     fun setProfileInfoItem(profileInfoItemUiList: List<BaseProfileInfoUiModel>) {
-	val lastIndex = visitables.size
+	visitables?.clear()
 	visitables.addAll(profileInfoItemUiList)
-	notifyItemRangeInserted(lastIndex, profileInfoItemUiList.size)
+	notifyDataSetChanged()
     }
-
-//    fun setProductRatingOverallData(data: ProductRatingOverallUiModel) {
-//	val lastIndex = visitables.size
-//	visitables.add(data)
-//	notifyItemInserted(lastIndex)
-//    }
-
-//    fun updateDatePeriod(datePeriod: String) {
-//	val reviewSummaryData = visitables.find { it is ProductRatingOverallUiModel }
-//	val indexOfReviewSummary = visitables.indexOf(reviewSummaryData)
-//
-//	if (indexOfReviewSummary != -1) {
-//	    (reviewSummaryData as? ProductRatingOverallUiModel)?.period = datePeriod
-//	    notifyItemChanged(indexOfReviewSummary, PAYLOAD_SUMMARY_PERIOD)
-//	}
-//    }
 }

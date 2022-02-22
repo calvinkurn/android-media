@@ -14,9 +14,15 @@ class ProfileInfoItemViewHolder(val view: View,
     private var binding: ProfileItemViewBinding? by viewBinding()
 
     override fun bind(element: ProfileInfoItemUiModel?) {
-        binding?.fragmentProfileItemIcon?.setOnClickListener { listener.onRightIconClicked(element?.id) }
+	if(element?.isEnable == true) {
+	    binding?.root?.setOnClickListener {
+		element.action.invoke()
+		listener.onItemClicked(element)
+	    }
+	}
 	binding?.fragmentProfileItemTitle?.text = element?.title
 	binding?.fragmentProfileItemValue?.text = element?.itemValue
+	binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
     }
 
     companion object {
@@ -25,6 +31,6 @@ class ProfileInfoItemViewHolder(val view: View,
     }
 
     interface ProfileInfoItemInterface {
-	fun onRightIconClicked(itemId: String?)
+	fun onItemClicked(item: ProfileInfoItemUiModel?)
     }
 }
