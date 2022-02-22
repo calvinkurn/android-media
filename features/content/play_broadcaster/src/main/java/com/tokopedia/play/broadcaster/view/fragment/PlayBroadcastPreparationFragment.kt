@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -224,7 +225,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 //                        return@setOnClickListener
 //                    }
 //                }
-                if(viewModel.validateLiveStreamData()) startCountDown()
+
+                if(viewModel.isCoverAvailable()) startCountDown()
+                else {
+                    val errorMessage = getString(R.string.play_bro_cover_empty_error)
+                    toaster.showError(
+                        err = MessageErrorException(errorMessage),
+                        customErrMessage = errorMessage,
+                    )
+                    showCoverForm(true)
+                }
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
@@ -283,23 +293,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun observeCreateLiveStream() {
-
-        fun onFailCreateLiveStream(error: Throwable) {
-            showCountdown(false)
-            toaster.showError(
-                err = error,
-                customErrMessage = error.message
-            )
-            analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(error))
-        }
-
         viewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
-                is NetworkResult.Fail -> onFailCreateLiveStream(it.error)
-                is NetworkResult.FailNoCover -> {
-                    onFailCreateLiveStream(it.error)
-                    showCoverForm(true)
+                is NetworkResult.Fail -> {
+                    showCountdown(false)
+                    toaster.showError(
+                        err = it.error,
+                        customErrMessage = it.error.message
+                    )
+                    analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
         }

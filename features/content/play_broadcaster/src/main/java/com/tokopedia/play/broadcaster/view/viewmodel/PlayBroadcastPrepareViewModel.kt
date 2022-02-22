@@ -96,16 +96,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         return@withContext setupDataStore.uploadTitle(hydraConfigStore.getChannelId())
     }
 
-    fun validateLiveStreamData(): Boolean {
-        return if (!isCoverAvailable()) {
-            _observableCreateLiveStream.value = NetworkResult.FailNoCover(MessageErrorException("Kamu perlu upload cover dulu, ya."))
-            false
-        } else true
-    }
-
     fun createLiveStream() {
-        if(!validateLiveStreamData()) return
-
         _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
             val liveStream = doCreateLiveStream(channelId).map { playBroadcastMapper.mapLiveStream(channelId, it) }
@@ -133,7 +124,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
-    private fun isCoverAvailable(): Boolean {
+    fun isCoverAvailable(): Boolean {
         val currentCover = mDataStore.getSetupDataStore().getSelectedCover()
         return when(val cover = currentCover?.croppedCover) {
             is CoverSetupState.Cropped.Uploaded -> {
