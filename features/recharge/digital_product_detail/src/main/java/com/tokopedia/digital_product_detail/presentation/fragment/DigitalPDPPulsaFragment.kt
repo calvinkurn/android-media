@@ -311,19 +311,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
+        viewModel.setRechargeCatalogInputMultiTabLoading()
+        viewModel.cancelCatalogProductJob()
         viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey,
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
     }
 
     private fun getCatalogMenuDetail() {
+        viewModel.setMenuDetailLoading()
         viewModel.getMenuDetail(menuId)
     }
 
     private fun getPrefixOperatorData() {
+        viewModel.setPrefixOperatorLoading()
         viewModel.getPrefixOperator(menuId)
     }
 
     private fun getFavoriteNumber() {
+        viewModel.setFavoriteNumberLoading()
         viewModel.getFavoriteNumber(listOf(
             TelcoCategoryType.CATEGORY_PULSA,
             TelcoCategoryType.CATEGORY_PAKET_DATA,
@@ -889,6 +894,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun addToCart(){
+        viewModel.setAddToCartLoading()
         viewModel.addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
             DigitalSubscriptionParams(),
             userSession.userId

@@ -1,13 +1,16 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import kotlinx.coroutines.CancellationException
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import io.mockk.every
-import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import org.junit.Test
 
 
@@ -15,13 +18,22 @@ import org.junit.Test
 class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
+    private val mapperFactory = DigitalDenomMapper()
+
+    @Test
+    fun `given menuDetail loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setMenuDetailLoading()
+        verifyGetMenuDetailLoading(loadingResponse)
+    }
 
     @Test
     fun `when getting menuDetail should run and give success result`() {
         val response = dataFactory.getMenuDetail()
         onGetMenuDetail_thenReturn(response)
 
-        viewModel.getMenuDetail(MENU_ID, false)
+        viewModel.getMenuDetail(MENU_ID)
         verifyGetMenuDetailSuccess(response)
     }
 
@@ -31,6 +43,14 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getMenuDetail(MENU_ID, false)
         verifyGetMenuDetailFail()
+    }
+
+    @Test
+    fun `given favoriteNumber loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setFavoriteNumberLoading()
+        verifyGetFavoriteNumberLoading(loadingResponse)
     }
 
     @Test
@@ -48,6 +68,14 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getFavoriteNumber(listOf())
         verifyGetFavoriteNumberFail()
+    }
+
+    @Test
+    fun `given catalogPrefixSelect loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setPrefixOperatorLoading()
+        verifyPrefixOperatorLoading(loadingResponse)
     }
 
     @Test
@@ -239,6 +267,93 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
             verifyIsAutoSelectedProductFalse(isAutoSelect)
 
         }
+
+    @Test
+    fun `when getting catalogInputMultitab should run and give success result`() = testCoroutineRule.runBlockingTest {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val mappedResponse = mapperFactory.mapMultiTabGridDenom(response)
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
+        verifyGetCatalogInputMultitabSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `given catalogInputMultitab loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeCatalogInputMultiTabLoading()
+        verifyGetCatalogInputMultitabLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting catalogInputMultitab should run and give error result`() = testCoroutineRule.runBlockingTest {
+        val errorResponse = MessageErrorException("")
+        onGetCatalogInputMultitab_thenReturn(errorResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
+        verifyGetCatalogInputMultitabError(errorResponse)
+    }
+
+    @Test
+    fun `given CancellationException to catalogInputMultitab and should return empty result`() = testCoroutineRule.runBlockingTest {
+        val errorResponse = CancellationException()
+        onGetCatalogInputMultitab_thenReturn(errorResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
+        verifyGetCatalogInputMultitabErrorCancellation()
+    }
+
+    @Test
+    fun `when getting addToCart should run and return success`() {
+        val response = dataFactory.getAddToCartData().relationships?.category?.data?.id ?: ""
+        onGetAddToCart_thenReturn(response)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartSuccess(response)
+    }
+
+    @Test
+    fun `when getting addToCart should run and get error ResponseErrorException should return custom message`() {
+        val errorMessage = "error"
+        val errorResponseException = ResponseErrorException(errorMessage)
+        val errorMessageException = MessageErrorException(errorMessage)
+        onGetAddToCart_thenReturn(errorResponseException)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartError(errorMessageException)
+    }
+
+    @Test
+    fun `when getting addToCart should run and get error ResponseErrorException but empty message should return default message`() {
+        val errorMessage = "Terjadi kesalahan, ulangi beberapa saat lagi"
+        val errorResponseException = ResponseErrorException()
+        val errorMessageException = MessageErrorException(errorMessage)
+        onGetAddToCart_thenReturn(errorResponseException)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartError(errorMessageException)
+    }
+
+    @Test
+    fun `when getting addToCart should run and get any error other than ResponseErrorException should return that error`() {
+        val errorMessageException = MessageErrorException()
+        onGetAddToCart_thenReturn(errorMessageException)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartErrorExceptions(errorMessageException)
+    }
+
+    @Test
+    fun `given addToCart loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setAddToCartLoading()
+        verifyAddToCartErrorLoading(loadingResponse)
+    }
 
     companion object {
         const val MENU_ID = 289
