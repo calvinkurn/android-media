@@ -98,7 +98,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     fun validateLiveStreamData(): Boolean {
         return if (!isCoverAvailable()) {
-            _observableCreateLiveStream.value = NetworkResult.Fail(MessageErrorException("Kamu perlu upload cover dulu, ya."))
+            _observableCreateLiveStream.value = NetworkResult.FailNoCover(MessageErrorException("Kamu perlu upload cover dulu, ya."))
             false
         } else true
     }

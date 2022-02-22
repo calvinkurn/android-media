@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.net.Network
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -282,16 +283,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun observeCreateLiveStream() {
+
+        fun onFailCreateLiveStream(error: Throwable) {
+            showCountdown(false)
+            toaster.showError(
+                err = error,
+                customErrMessage = error.message
+            )
+            analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(error))
+        }
+
         viewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
-                is NetworkResult.Fail -> {
-                    showCountdown(false)
-                    toaster.showError(
-                        err = it.error,
-                        customErrMessage = it.error.message
-                    )
-                    analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
+                is NetworkResult.Fail -> onFailCreateLiveStream(it.error)
+                is NetworkResult.FailNoCover -> {
+                    onFailCreateLiveStream(it.error)
+                    showCoverForm(true)
                 }
             }
         }
