@@ -1781,7 +1781,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
-                    setUri(url)
+                    setUri(urlString)
                 }
             } else {
                 shareBottomSheetProduct = false

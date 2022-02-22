@@ -461,15 +461,15 @@ open class DynamicPostUIViewHolder(v: View,
             }
 
                 itemView.shareGroup.show()
-                val desc = getString(R.string.feed_share_default_text)
+                val desc = getString(R.string.feed_share_detail_format_text)
 
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
                         adapterPosition,
                             feedXCard.id.toIntOrZero(),
                             feedXCard.author.name + " `post",
-                            desc.replace("%s", feedXCard.author.name),
-                            feedXCard.appLink,
+                            desc.replace("%s", feedXCard.webLink),
+                            feedXCard.webLink,
                             feedXCard.media.firstOrNull()?.mediaUrl ?: "",
                             false,
                             feedXCard.typename,
@@ -483,9 +483,9 @@ open class DynamicPostUIViewHolder(v: View,
                             adapterPosition,
                             feedXCard.id.toIntOrZero(),
                             feedXCard.author.name + " `post",
-                            desc.replace("%s", feedXCard.author.name),
-                            feedXCard.appLink,
-                            feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+                            desc.replace("%s", feedXCard.webLink),
+                            feedXCard.webLink,
+                            feedXCard.author.logoURL,
                             false,
                             feedXCard.typename,
                             feedXCard.followers.isFollowed,
