@@ -81,18 +81,20 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
     }
 
     private fun routeToAppLink() {
-        val appLink = appLinkSearchbar?.searchBarTextField?.text?.toString().orEmpty()
-        appLinkRouteBtn?.setOnClickListener {
-            if (RouteManager.isSupportApplink(context, appLink)) {
-                RouteManager.route(context, appLink)
+        appLinkRouteBtn?.setOnClickListener { v ->
+            if (RouteManager.isSupportApplink(context, getAppLinkFromSearchbar())) {
+                RouteManager.route(context, getAppLinkFromSearchbar())
             } else {
                 Toaster.build(
-                    it,
+                    v,
                     getString(R.string.message_applink_failed)
                 ).show()
             }
         }
     }
+
+    private fun getAppLinkFromSearchbar() =
+        appLinkSearchbar?.searchBarTextField?.text?.toString().orEmpty()
 
     private fun initSearchbarView() {
         appLinkSearchbar?.searchBarTextField?.apply {
@@ -110,7 +112,8 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
@@ -132,8 +135,10 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
 
 
     private fun loadData() {
-        viewModel.getAppLinkItemList(deepLinkFileUtils.getJsonFromRaw(
-            resources, DEEPLINK_RESOURCE)
+        viewModel.getAppLinkItemList(
+            deepLinkFileUtils.getJsonFromRaw(
+                resources, DEEPLINK_RESOURCE
+            )
         )
     }
 
