@@ -65,11 +65,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         initListener()
         val userSessionInterface = UserSession(context)
         mPresenter.getUserDetails(userSessionInterface.userId)
+        mPresenter.getUPlayVideos( "feeds-profile","","buyer","5510248")
         initUserPost()
     }
 
     private fun initObserver() {
         observeUserProfile()
+        addListObserver()
     }
 
     private fun initListener() {
@@ -106,6 +108,23 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 }
             }
         })
+
+    private fun addListObserver() = mPresenter.playPostContentLiveData.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is Loading -> {
+                    mAdapter.resetAdapter()
+                    mAdapter.notifyDataSetChanged()
+                }
+                is Success -> {
+                    mAdapter.onSuccess(it.data)
+                }
+                is ErrorMessage -> {
+                    mAdapter.onError()
+                }
+            }
+        }
+    })
 
     private fun setMainUi(data: ProfileHeaderBase) {
         val textBio = view?.findViewById<TextView>(R.id.text_bio)

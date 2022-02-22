@@ -4,27 +4,36 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.uprofile.model.PlayPostContent
+import com.tokopedia.createpost.uprofile.model.PlayPostContentItem
 import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
+import com.tokopedia.unifycomponents.ImageUnify
 
 open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
     val callback: AdapterCallback
-) : BaseAdapter<UserPostModel>(callback) {
+) : BaseAdapter<PlayPostContentItem>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
+    private var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
-//        internal var productView: ProductCardGridView = view.findViewById(R.id.product_card)
+        internal var imgCover: ImageUnify = view.findViewById(R.id.img_banner)
+        internal var textLiveCount: TextView = view.findViewById(R.id.text_live_view_count)
+        internal var textName: TextView = view.findViewById(R.id.text_display_name)
+        internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
         var isVisited = false
 
-        override fun bindView(item: UserPostModel, position: Int) {
+        override fun bindView(item: PlayPostContentItem, position: Int) {
             setData(this, item)
         }
     }
@@ -42,43 +51,29 @@ open class UserPostBaseAdapter(
 
     override fun loadData(pageNumber: Int) {
         super.loadData(pageNumber)
-        //viewModel.getList(pageNumber)
-        val list = mutableListOf<UserPostModel>()
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        loadCompleted(list, null)
-        isLastPage = true;
+        viewModel.getUPlayVideos( "feeds-profile",cursor,"buyer","5510248")
     }
 
     fun onSuccess(data: UserPostModel) {
-        //loadCompleted(data.productList.data, data)
-        val list = mutableListOf<UserPostModel>()
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        list.add(UserPostModel("hiii"))
-        loadCompleted(list, null)
-        isLastPage = true;
+        loadCompleted(data.playGetContentSlot.data[0].items, data)
+        isLastPage = data.playGetContentSlot.playGetContentSlot.nextCursor.isEmpty()
+        cursor = data.playGetContentSlot.playGetContentSlot.nextCursor;
     }
 
     fun onError() {
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: UserPostModel) {
+    private fun setData(holder: ViewHolder, item: PlayPostContentItem) {
         val itemContext = holder.itemView.context
-        // holder.productView.setProductModel(toShopProductModel(item))
+         holder.imgCover.setImageUrl(item.coverUrl)
+        holder.textName.text = item.title
+        holder.textUsername.text = item.description
+        holder.textLiveCount.text = item.stats.view.formatted
 
-//        if (holder.itemView != null) {
-//            holder.itemView.setOnClickListener { v ->
-//                viewModel.setNewProductValue(item)
-//                sendClickEvent(itemContext, item, holder.adapterPosition)
-//            }
-//        }
+        holder.itemView.setOnClickListener { v ->
+           RouteManager.route(itemContext, item.appLink)
+        }
     }
 
 
