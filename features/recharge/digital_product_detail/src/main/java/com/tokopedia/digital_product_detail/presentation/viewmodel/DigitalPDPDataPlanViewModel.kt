@@ -41,8 +41,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _filterDataParams = ArrayList<HashMap<String, Any>>()
-    private var validatorJob: Job? = null
-    private var catalogProductJob: Job? = null
+    var validatorJob: Job? = null
+    var catalogProductJob: Job? = null
 
     var filterData = emptyList<TelcoFilterTagComponent>()
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
