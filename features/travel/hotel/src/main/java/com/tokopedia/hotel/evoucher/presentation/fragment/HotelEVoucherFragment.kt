@@ -379,7 +379,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         if (data.agent.logo.isNotEmpty()){
             binding?.ivDynamicLogo?.loadImage(data.agent.logo){
-                overrideSize(Resize(DYNAMIC_LOGO_WIDTH, DYNAMIC_LOGO_HEIGHT))
                 listener(
                     onSuccess = { _, _ ->
                         binding?.ivDynamicLogo?.show()
@@ -436,8 +435,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         const val FILENAME = "Tokopedia"
         const val CONVERT_TIME_MILLIS = 1000
         const val BITMAP_QUALITY = 100
-        private const val DYNAMIC_LOGO_WIDTH = 250
-        private const val DYNAMIC_LOGO_HEIGHT = 100
 
         fun getInstance(orderId: String): HotelEVoucherFragment = HotelEVoucherFragment().also {
             it.arguments = Bundle().apply {
