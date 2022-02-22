@@ -5,4 +5,11 @@ package com.tokopedia.play.view.uimodel.recom
  */
 data class PlayQuickReplyInfoUiModel(
         val quickReplyList: List<String>
-)
+) {
+        companion object {
+                val Empty: PlayQuickReplyInfoUiModel
+                        get() = PlayQuickReplyInfoUiModel(
+                                quickReplyList = emptyList()
+                        )
+        }
+}

@@ -167,6 +167,8 @@ public class RemoteConfigKey {
     public static final String DISABLE_OFFICIAL_STORE_MAPPING_BANNERS = "android_disable_officialstore_mapping_banners";
     public static final String DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET = "android_disable_officialstore_remove_best_seller_widget";
     public static final String DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET = "android_disable_officialstore_remove_shop_widget";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT = "android_disable_officialstore_mapping_benefit";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP = "android_disable_officialstore_mapping_official_featured_shop";
 
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
@@ -270,4 +272,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
+    public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
+
+    public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 }
