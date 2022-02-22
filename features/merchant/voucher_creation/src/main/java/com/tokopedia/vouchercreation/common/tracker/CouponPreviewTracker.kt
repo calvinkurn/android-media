@@ -56,7 +56,7 @@ class CouponPreviewTracker @Inject constructor() {
         )
     }
 
-    fun sendCreateCouponEvent() {
+    fun sendCreateCouponClickEvent() {
         sendGeneralTracking(
             event = "clickPG",
             action = "click buat kupon",
@@ -64,7 +64,44 @@ class CouponPreviewTracker @Inject constructor() {
             label = EMPTY_STRING
         )
     }
-    
+
+
+    fun sendCouponImagePreviewClickEvent() {
+        sendGeneralTracking(
+            event = "clickPG",
+            action = "click lihat tampilan kupon",
+            category = "mvc locked product - creation",
+            label = EMPTY_STRING
+        )
+    }
+
+    fun sendReadArticleClickEvent(title : String, url : String) {
+        sendGeneralTracking(
+            event = "clickPG",
+            action = "click baca artikel",
+            category = "mvc locked product - creation",
+            label = "$title - $url"
+        )
+    }
+
+    fun sendTermAndConditionClickEvent() {
+        sendGeneralTracking(
+            event = "clickPG",
+            action = "click syarat ketentuan",
+            category = "mvc locked product - creation",
+            label = EMPTY_STRING
+        )
+    }
+
+    fun sendUpdateCouponClickEvent(couponId: Long) {
+        sendGeneralTracking(
+            event = "clickPG",
+            action = "click simpan - edit",
+            category = "mvc locked product - creation",
+            label = couponId.toString()
+        )
+    }
+
     private fun sendGeneralTracking(
         event: String,
         action: String,
