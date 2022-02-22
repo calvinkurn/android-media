@@ -9,7 +9,6 @@ data class ProductMediaDataModel(
         val type: String = "",
         val name: String = "",
         var listOfMedia: List<MediaDataModel> = listOf(),
-        var shouldRenderImageVariant: Boolean = true,
         var initialScrollPosition: Int = -1,
         var variantScrollPosition: Int = -1
 ) : DynamicPdpDataModel {
