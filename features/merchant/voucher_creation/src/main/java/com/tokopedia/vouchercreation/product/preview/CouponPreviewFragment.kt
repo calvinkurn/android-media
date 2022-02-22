@@ -298,7 +298,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         }
         binding.tpgUpdateProduct.setOnClickListener { navigateToManageProductPage() }
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
-        binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
+        binding.btnPreviewCouponImage.setOnClickListener {
+            tracker.sendCouponImagePreviewClickEvent()
+            displayCouponPreviewBottomSheet()
+        }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
         binding.header.setNavigationOnClickListener {
             tracker.sendBackToPreviousPageEvent()
@@ -306,6 +309,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         }
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
             override fun onLinkClick(url: String?) {
+                tracker.sendTermAndConditionClickEvent()
                 displayTermAndConditionBottomSheet()
             }
 
@@ -349,9 +353,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     )
 
                     if (viewModel.isCreateMode(pageMode)) {
-                        tracker.sendCreateCouponEvent()
+                        tracker.sendCreateCouponClickEvent()
                         onCreateCouponSuccess(coupon)
                     } else {
+                        tracker.sendUpdateCouponClickEvent(result.data.toLong())
                         onDuplicateCouponSuccess()
                     }
                 }
@@ -638,6 +643,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun redirectToSellerEduPage() {
         if (!isAdded) return
         val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.PRODUCT_COUPON
+        tracker.sendReadArticleClickEvent(getString(R.string.read_article), url)
         val encodedUrl = URLEncoder.encode(url, "utf-8")
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)

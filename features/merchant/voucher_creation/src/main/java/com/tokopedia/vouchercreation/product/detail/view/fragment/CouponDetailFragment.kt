@@ -46,6 +46,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
+import com.tokopedia.vouchercreation.common.tracker.CouponDetailTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -61,10 +62,8 @@ import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductAct
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_COUPON_SETTINGS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_IS_VIEWING
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
-import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
 import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
-import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import javax.inject.Inject
@@ -125,6 +124,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var linkerDataGenerator: LinkerDataGenerator
 
+    @Inject
+    lateinit var tracker: CouponDetailTracker
+
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponDetailViewModel::class.java) }
@@ -171,6 +173,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 copyToClipboard(content)
             }
             btnDownload.setOnClickListener {
+                val couponStatus = binding.labelVoucherStatus.text.toString().trim()
+                tracker.sendDownloadCouponImageClickEvent(couponStatus)
                 downloadCoupon(
                     bannerImageUrl,
                     squareImageUrl,
@@ -178,6 +182,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
             }
             tpgViewProducts.setOnClickListener {
+                val couponStatus = binding.labelVoucherStatus.text.toString().trim()
+                tracker.sendViewAllProductsClickEvent(couponStatus)
                 viewModel.getCoupon()?.run {
                     val maxProductLimit = viewModel.getMaxProductLimit()
                     val couponSettings = viewModel.getCouponSettings(this)
@@ -518,6 +524,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
                 binding.button.text = getString(R.string.mvc_duplicate)
                 binding.button.setOnClickListener {
+                    tracker.sendDuplicateCouponClickEvent()
                     val couponId = viewModel.getCoupon()?.id.orZero().toLong()
                     DuplicateCouponActivity.start(requireActivity(), couponId)
                 }

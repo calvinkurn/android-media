@@ -45,6 +45,7 @@ import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicData
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
+import com.tokopedia.vouchercreation.common.tracker.CouponCreationSuccessNoticeTracker
 
 class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
@@ -56,6 +57,9 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var linkerDataGenerator: LinkerDataGenerator
+
+    @Inject
+    lateinit var tracker : CouponCreationSuccessNoticeTracker
 
     private var nullableBinding: BottomsheetBroadcastCouponBinding? = null
     private val binding: BottomsheetBroadcastCouponBinding
@@ -102,6 +106,11 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         setChild(binding.root)
         clearContentPadding = true
         viewModel.setCoupon(coupon)
+        tracker.sendCouponCreationSuccessImpression()
+        setCloseClickListener {
+            tracker.sendDismissBottomSheetClickEvent()
+            dismiss()
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
