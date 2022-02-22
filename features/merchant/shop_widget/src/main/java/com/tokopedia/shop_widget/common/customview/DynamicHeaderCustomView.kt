@@ -55,9 +55,8 @@ class DynamicHeaderCustomView: FrameLayout {
     private fun handleHeaderComponent(model: DynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
-        handleSubtitle(model.subTitle)
+        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate)
         handleSeeAllAppLink(model.ctaText, model.ctaTextLink, model.totalProduct)
-        handleCountDownTimer(model.statusCampaign, model.endDate)
     }
 
     private fun setupUi() {
@@ -78,11 +77,13 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSubtitle(subtitle: String) {
-        tpSubtitle?.text = if (subtitle.isNotBlank()) {
-            subtitle
+    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String) {
+        if (subtitle.isNotBlank()) {
+            tpSubtitle?.text = subtitle
+            handleCountDownTimer(statusCampaign, endDate)
         } else {
-            itemView?.context?.getString(R.string.thematic_widget_subtitle)
+            tusCountDown?.gone()
+            tpSubtitle?.gone()
         }
     }
 
@@ -134,14 +135,8 @@ class DynamicHeaderCustomView: FrameLayout {
         val currentMillis = System.currentTimeMillis()
         val isMoreOrEqualThan1Day = getDateHours(endDateMillis - currentMillis) >= Hour24
         if (isMoreOrEqualThan1Day) {
-            val isMoreThan7Days = getDateDays(endDateMillis - currentMillis) > Day6
             endDateMillis += TimeUnit.DAYS.toMillis(Day1)
-            if (isMoreThan7Days) {
-                tusCountDown?.gone()
-                tpSubtitle?.gone()
-            } else {
-                tusCountDown?.timerFormat = TimerUnifySingle.FORMAT_DAY
-            }
+            tusCountDown?.timerFormat = TimerUnifySingle.FORMAT_DAY
         } else {
             tusCountDown?.timerFormat = TimerUnifySingle.VARIANT_ALTERNATE
         }
@@ -155,10 +150,6 @@ class DynamicHeaderCustomView: FrameLayout {
 
     private fun getDateHours(millis: Long): Long {
         return TimeUnit.HOURS.convert(millis, TimeUnit.MILLISECONDS)
-    }
-
-    private fun getDateDays(millis: Long): Long {
-        return TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS)
     }
 
     interface HeaderCustomViewListener {
