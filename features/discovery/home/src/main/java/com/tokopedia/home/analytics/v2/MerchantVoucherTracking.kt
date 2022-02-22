@@ -59,47 +59,6 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 
-    fun getClickVoucherDetail(merchantVoucherDetailClicked: MerchantVoucherDetailClicked): Pair<String, Bundle> {
-        val bundle = Bundle()
-        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(
-            Action.KEY,
-            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VOUCHER_DETAIL)
-        )
-        bundle.putString(Category.KEY, Category.HOMEPAGE)
-        bundle.putString(Label.KEY, merchantVoucherDetailClicked.shopId)
-        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-
-        val promotion = Bundle()
-        promotion.putString(
-            Promotion.CREATIVE_NAME,
-            CustomAction.CREATIVE_NAME_VOUCHER_DETAIL_FORMAT.format(
-                merchantVoucherDetailClicked.couponCode,
-                merchantVoucherDetailClicked.couponCode,
-                merchantVoucherDetailClicked.creativeName
-            )
-        )
-        promotion.putString(Promotion.CREATIVE_SLOT, merchantVoucherDetailClicked.horizontalCardPosition)
-        promotion.putString(
-            Promotion.ITEM_ID,
-            CustomAction.ITEM_ID_FORMAT.format(
-                merchantVoucherDetailClicked.bannerId,
-                merchantVoucherDetailClicked.shopId
-            )
-        )
-        promotion.putString(
-            Promotion.ITEM_NAME,
-            CustomAction.ITEM_NAME_VOUCHER_DETAIL_FORMAT.format(
-                merchantVoucherDetailClicked.positionWidget,
-                merchantVoucherDetailClicked.headerName
-            )
-        )
-        bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        bundle.putString(UserId.KEY, merchantVoucherDetailClicked.userId)
-        return Pair(Ecommerce.PROMO_CLICK, bundle)
-    }
-
     fun getClickProduct(merchantVoucherProductClicked: MerchantVoucherProductClicked): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
@@ -142,7 +101,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
     }
 
-    fun getClickViewAll(headerName: String): Pair<String, Bundle> {
+    fun getClickViewAll(headerName: String, userId: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL) )
@@ -150,6 +109,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(Label.KEY, headerName)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(UserId.KEY, userId)
 
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }

@@ -65,24 +65,6 @@ class CarouselMerchantVoucherViewHolder (
         }
         binding?.containerProduct?.setOnClickListener {
             val horizontalPosition = "${adapterPosition + 1}"
-            element.merchantVoucherComponentListener.onVoucherDetailClicked(
-                MerchantVoucherDetailClicked(
-                    productAppLink = element.productAppLink,
-                    shopId = element.shopId,
-                    shopName = element.shopName,
-                    horizontalCardPosition = horizontalPosition,
-                    bannerId = element.bannerId,
-                    positionWidget = element.positionWidget,
-                    headerName = element.headerName,
-                    userId = element.userId,
-                    couponCode = element.couponCode,
-                    couponType = element.couponType,
-                    creativeName = element.creativeName
-                )
-            )
-        }
-        binding?.containerImageProduct?.setOnClickListener {
-            val horizontalPosition = "${adapterPosition + 1}"
             element.merchantVoucherComponentListener.onProductClicked(
                 MerchantVoucherProductClicked(
                     productAppLink = element.productAppLink,

@@ -158,7 +158,8 @@ class MerchantVoucherViewHolder(
             override fun onSeeAllClick(link: String) {
                 merchantVoucherComponentListener.onViewAllClicked(
                     element.channelModel.channelHeader.name,
-                    link
+                    link,
+                    merchantVoucherComponentListener.getUserId()
                 )
             }
 
@@ -205,7 +206,8 @@ class MerchantVoucherViewHolder(
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
         merchantVoucherComponentListener.onViewAllClicked(
             channel.channelHeader.name,
-            channel.channelHeader.applink
+            channel.channelHeader.applink,
+            merchantVoucherComponentListener.getUserId()
         )
     }
 

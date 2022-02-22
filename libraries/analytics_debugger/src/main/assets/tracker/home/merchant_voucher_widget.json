@@ -65,25 +65,6 @@
       "clientId": ".*"
     },
     {
-      "event": "select_content",
-      "eventAction": "merchant voucher multiple - click voucher detail",
-      "eventCategory": "homepage",
-      "eventLabel": ".*",
-      "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "promotions": [
-        {
-          "creative_name": "voucher detail - .* - .* - .*",
-          "creative_slot": ".*",
-          "item_id": ".*_.*",
-          "item_name": "/ - p.* - merchant_voucher_multiple - banner - .*"
-        }
-      ],
-      "userId": ".*",
-      "sessionIris": ".*",
-      "clientId": ".*"
-    },
-    {
       "event": "clickHomepage",
       "eventAction": "merchant voucher multiple - click view all card",
       "eventCategory": "homepage",
