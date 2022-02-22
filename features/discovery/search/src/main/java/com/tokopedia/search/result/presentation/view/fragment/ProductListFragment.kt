@@ -65,12 +65,12 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
-import com.tokopedia.productcard.video.ProductVideoAutoplay
+import com.tokopedia.productcard.video.BaseProductVideoAutoplayFilter
+import com.tokopedia.productcard.video.ProductCardVideoAutoplayHelper
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -304,7 +304,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
-        viewLifecycleOwner.lifecycle.addObserver(productVideoAutoplay)
+        productCardVideoAutoplayHelper.registerLifecycleObserver(viewLifecycleOwner)
 
         presenter?.onViewCreated()
     }
@@ -439,7 +439,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
-            setUpProductVideoAutoplayListener(this)
+            productCardVideoAutoplayHelper.setUpProductVideoAutoplayListener(this)
         }
     }
 
@@ -484,57 +484,8 @@ class ProductListFragment: BaseDaggerFragment(),
     //endregion
 
     //region product video autoplay
-    private val productVideoAutoplay : ProductVideoAutoplay<Visitable<*>, ProductItemDataView> by lazy {
-        ProductVideoAutoplay(this)
-    }
-
-    private val isAutoplayProductVideoEnabled : Boolean by lazy {
-        remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MPC_VIDEO_AUTOPLAY, true)
-    }
-
-    private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                startVideoAutoplayWhenRecyclerViewIsIdle()
-            }
-        }
-    }
-
-    private val autoPlayAdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            if (positionStart == 0) {
-                recyclerView?.viewTreeObserver
-                    ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            startVideoAutoplayWhenRecyclerViewIsIdle()
-                            recyclerView?.viewTreeObserver
-                                ?.removeOnGlobalLayoutListener(this)
-                        }
-                    })
-            }
-        }
-    }
-
-    private fun setUpProductVideoAutoplayListener(recyclerView: RecyclerView) {
-        if(isAutoplayProductVideoEnabled) {
-            recyclerView.addOnScrollListener(autoPlayScrollListener)
-            recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
-        }
-    }
-
-    private fun startVideoAutoplayWhenRecyclerViewIsIdle() {
-        productVideoAutoplay.startVideoAutoplay(
-            recyclerView,
-            staggeredGridLayoutManager,
-            productListAdapter?.itemList
-        ) { visitableList ->
-            visitableList.filterIsInstance<ProductItemDataView>()
-                .filter {
-                    it.hasVideo
-                }
-        }
+    private val productCardVideoAutoplayHelper : ProductCardVideoAutoplayHelper by lazy {
+        ProductCardVideoAutoplayHelper(remoteConfig, ProductListProductVideoAutoplayFilter(), this)
     }
     //endregion
 
@@ -1159,7 +1110,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.clearData()
         productListAdapter?.clearData()
-        productVideoAutoplay.stopVideoAutoplay()
+        productCardVideoAutoplayHelper.stopVideoAutoplay()
 
         hideSearchSortFilter()
 
@@ -1235,20 +1186,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onDestroyView() {
-        unregisterVideoAutoplayAdapterObserver()
         masterJob.cancelChildren()
         super.onDestroyView()
         presenter?.detachView()
-    }
-
-    private fun unregisterVideoAutoplayAdapterObserver() {
-        if (isAutoplayProductVideoEnabled) {
-            try {
-                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
     }
 
     override fun getScreenName(): String {
@@ -2135,4 +2075,13 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.closeLastFilter(searchParameterMap)
     }
     //endregion
+
+    inner class ProductListProductVideoAutoplayFilter : BaseProductVideoAutoplayFilter() {
+        override val recyclerView: RecyclerView?
+            get() = this@ProductListFragment.recyclerView
+        override val layoutManager: RecyclerView.LayoutManager?
+            get() = recyclerView?.layoutManager
+        override val itemList: List<Visitable<*>>?
+            get() = productListAdapter?.itemList
+    }
 }
