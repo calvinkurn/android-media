@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -54,7 +55,8 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         rel_cta.setOnClickListener {
                             contract.getMvcTracker()?.userClickEntryPointOnMVCLockToProduct(
                                 shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
-                            RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                            val applinkUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://1028-staging-feature.tokopedia.com/toko-02/voucher/38356")
+                            RouteManager.route(itemView.context, applinkUrl)
                         }
                     } else {
                         rel_cta.hide()
