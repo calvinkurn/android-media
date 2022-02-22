@@ -9,8 +9,9 @@ data class ProductMediaDataModel(
         val type: String = "",
         val name: String = "",
         var listOfMedia: List<MediaDataModel> = listOf(),
-        var shouldRefreshViewPagger: Boolean = true,
-        var shouldRenderImageVariant: Boolean = true
+        var shouldRenderImageVariant: Boolean = true,
+        var initialScrollPosition: Int = -1,
+        var variantScrollPosition: Int = -1
 ) : DynamicPdpDataModel {
     companion object {
         const val VIDEO_TYPE = "video"
@@ -31,12 +32,9 @@ data class ProductMediaDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMediaDataModel) {
-            val isMediaTheSame = listOfMedia.hashCode() == newData.listOfMedia.hashCode()
-            if (isMediaTheSame) {
-                // we dont want to re-render the data if its bind because the data are same
-                newData.shouldRefreshViewPagger = false
-            }
-            isMediaTheSame
+            listOfMedia.hashCode() == newData.listOfMedia.hashCode()
+                    && initialScrollPosition == newData.initialScrollPosition
+                    && variantScrollPosition == newData.variantScrollPosition
         } else {
             false
         }
@@ -49,12 +47,12 @@ data class ProductMediaDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductMediaDataModel) {
-            if (newData.shouldRefreshViewPagger) {
-                return null
-            }
+            if (variantScrollPosition != newData.variantScrollPosition) {
+                bundle.putInt(
+                        ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                        ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
+                )
 
-            if (shouldRenderImageVariant != newData.shouldRenderImageVariant) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
                 return bundle
             }
             null

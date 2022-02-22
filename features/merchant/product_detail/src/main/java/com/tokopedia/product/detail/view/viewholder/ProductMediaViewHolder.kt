@@ -23,15 +23,12 @@ class ProductMediaViewHolder(private val view: View,
 
     override fun bind(element: ProductMediaDataModel) {
         with(binding) {
-            viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.setup(element.listOfMedia, listener, getComponentTrackData(element))
+            viewMediaPager.setup(element.listOfMedia,
+                    listener,
+                    element.initialScrollPosition,
+                    getComponentTrackData(element))
+            element.initialScrollPosition = -1
 
-            if (element.shouldRenderImageVariant) {
-                viewMediaPager.updateImage(element.listOfMedia, listener)
-                element.shouldRenderImageVariant = false
-            }
-
-            element.shouldRefreshViewPagger = false
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
@@ -45,14 +42,13 @@ class ProductMediaViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                binding.viewMediaPager.updateImage(element.listOfMedia, listener)
-                element.shouldRenderImageVariant = false
+            ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
+                binding.viewMediaPager.scrollToPosition(element.initialScrollPosition)
             }
         }
     }
 
-    fun detachView(){
+    fun detachView() {
         listener.getProductVideoCoordinator()?.onPause()
     }
 
