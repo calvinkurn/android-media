@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.presentation.domain.usecase.GetPayLaterWidgetUseCase
@@ -612,10 +613,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getPayLaterWidgetData(backUrl : String?) {
+    fun getPayLaterWidgetData() {
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             launchCatchError(coroutineContext, {
-                getPayLaterWidgetUseCase.get().getPayLaterWidgetData(backUrl,
+                getPayLaterWidgetUseCase.get().getPayLaterWidgetData(
                     {
                         val newPaylaterHomeWidgetDataModel =
                             homePayLaterWidgetDataModel.copy(payLaterWidgetData = it)

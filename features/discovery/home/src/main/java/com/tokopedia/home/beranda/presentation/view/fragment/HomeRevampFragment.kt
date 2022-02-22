@@ -2867,8 +2867,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getCMHomeWidgetData()
     }
 
-    override fun getPayLaterWidgetData(backUrl : String?) {
-        getHomeViewModel().getPayLaterWidgetData(backUrl)
+    override fun getPayLaterWidgetData() {
+        getHomeViewModel().getPayLaterWidgetData()
     }
 
     override fun deletePayLaterWidget() {

@@ -1,7 +1,7 @@
 package com.tokopedia.gopayhomewidget.presentation.domain.query
 
-const val GQL_QUERY_PAYLATER_WIDGET_DATA = """query paylater_getHomeWidget(${'$'}req: PaylaterGetHomeWidgetRequest!) {
-  	paylater_getHomeWidget(request: ${'$'}req) {
+const val GQL_QUERY_PAYLATER_WIDGET_DATA = """query paylaterGetHomeWidget(${'$'}request: PaylaterGetHomeWidgetRequest!) {
+  	paylater_getHomeWidget(request: ${'$'}request) {
       show
       image_dark
       image_light

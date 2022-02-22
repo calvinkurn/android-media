@@ -24,6 +24,7 @@ class PayLaterWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.layout_gopay_home_widget, this)
+        this.visibility = INVISIBLE
     }
 
     fun setPayLaterWidgetListener(payLaterWidgetListener: PayLaterWidgetListener){
@@ -31,7 +32,7 @@ class PayLaterWidget @JvmOverloads constructor(
     }
 
     fun setData(payLaterWidgetData: PayLaterWidgetData) {
-
+        this.visibility = VISIBLE
     }
 
 
