@@ -165,6 +165,7 @@ class ShipmentViewHolder(
         rates: P2RatesEstimateData
     ) = with(viewMain) {
         val labels = rates.chipsLabel
+        var usedLabels = emptyList<String>()
 
         if (labels.isEmpty()) {
             pdpShipmentCourierLabel2.show()
@@ -177,7 +178,8 @@ class ShipmentViewHolder(
                 pdpShipmentCourierOption1,
                 pdpShipmentCourierOption2
             )
-            labels.take(chipViews.size).forEachIndexed { index, label ->
+            usedLabels = labels.take(chipViews.size)
+            usedLabels.forEachIndexed { index, label ->
                 chipViews[index].showIfWithBlock(label.isNotEmpty()) {
                     setLabel(label)
                 }
@@ -200,7 +202,7 @@ class ShipmentViewHolder(
             )
         ) {
             listener.openShipmentClickedBottomSheet(
-                rates.title, rates.instanLabel, element.isCod, componentTrackDataModel
+                rates.title, usedLabels, element.isCod, componentTrackDataModel
             )
         }
     }

@@ -2414,10 +2414,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean,
+    override fun openShipmentClickedBottomSheet(title: String, chipsLabel: List<String>, isCod: Boolean,
                                                 componentTrackDataModel: ComponentTrackDataModel?) {
         viewModel.getDynamicProductInfoP1?.let {
-            DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, labelShipping, isCod)
+            DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, chipsLabel, isCod)
             val boData = viewModel.getBebasOngkirDataByProductId()
             sharedViewModel?.setRequestData(RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),

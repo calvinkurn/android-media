@@ -120,25 +120,27 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun renderOtherSection(element: ProductShipmentDataModel) = with(itemView) {
         val rates = element.rates
-        adjustUiSuccess(rates.title, rates.instanLabel, element.isCod)
+        val usedLabel = mutableListOf<String>()
 
         val labels = element.rates.chipsLabel
         if (labels.isEmpty()) {
             renderSubtitleGreen(element.isTokoNow)
             hideLabelAndBo()
             shipmentArrow?.hide()
-            return@with
-        }
+        } else {
+            renderSubtitleNormal(rates.subtitle)
 
-        renderSubtitleNormal(rates.subtitle)
-
-        val labelViews = listOf(shipmentLabelInstant, shipmentLabelCod)
-        labelViews.forEachIndexed { index, view ->
-            val label = labels.getOrElse(index) { "" }
-            view?.showIfWithBlock(label.isNotEmpty()) {
-                setLabel(label)
+            val labelViews = listOf(shipmentLabelInstant, shipmentLabelCod)
+            labelViews.forEachIndexed { index, view ->
+                val label = labels.getOrElse(index) { "" }
+                view?.showIfWithBlock(label.isNotEmpty()) {
+                    setLabel(label)
+                    usedLabel += label
+                }
             }
         }
+
+        adjustUiSuccess(rates.title, usedLabel, element.isCod)
     }
 
     private fun renderSubtitleGreen(isTokoNow: Boolean) = with(itemView) {
@@ -201,8 +203,8 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentOtherContainer?.setPadding(0, 0, 20.toPx(), 0)
     }
 
-    private fun adjustUiSuccess(title: String, instantLabel: String, isCod: Boolean) = with(itemView) {
-        val clickListener = commonClickListener(title, instantLabel, isCod)
+    private fun adjustUiSuccess(title: String, chipsLabel: List<String>, isCod: Boolean) = with(itemView) {
+        val clickListener = commonClickListener(title, chipsLabel, isCod)
         otherCourierTxt?.setOnClickListener(clickListener)
         shipmentOtherContainer?.setOnClickListener(clickListener)
         shipmentArrow?.setOnClickListener(clickListener)
@@ -230,9 +232,9 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentContentContainer?.show()
     }
 
-    private fun commonClickListener(title: String, instantLabel: String, isCod: Boolean): View.OnClickListener {
+    private fun commonClickListener(title: String, chipsLabel: List<String>, isCod: Boolean): View.OnClickListener {
         return View.OnClickListener {
-            listener.openShipmentClickedBottomSheet(title, instantLabel, isCod, componentTrackDataModel)
+            listener.openShipmentClickedBottomSheet(title, chipsLabel, isCod, componentTrackDataModel)
         }
     }
 

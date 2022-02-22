@@ -122,12 +122,13 @@ object DynamicProductDetailTracking {
         }
 
         fun eventClickShipment(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?,
-                               title: String, labelShipping: String, isCod: Boolean) {
+                               title: String, chipsLabel: List<String>, isCod: Boolean) {
+            val chipsLabelFormat = chipsLabel.joinToString(",")
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_SEE_OTHER_COURIER,
-                    String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_SHIPMENT, title, labelShipping, isCod))
+                    String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_SHIPMENT, title, chipsLabelFormat, isCod))
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
