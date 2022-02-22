@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.liveDataExtension.SingleLiveEventData
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
@@ -17,7 +18,8 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase
 ) : BaseViewModel() {
 
-    private var userActionLiveData = MutableLiveData<UserAction>()
+    private var userActionLiveData = SingleLiveEventData<UserAction>()
+    private var userLoginPageLiveData = SingleLiveEventData<UserAction>()
     private var errorMessage = MutableLiveData<Throwable>()
     private var progressBar = MutableLiveData<Boolean>()
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
@@ -47,10 +49,10 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
             userActionLiveData.value = UserAction.SignUpAction
         }
         else if(response.validateAffiliateUserStatus.data?.isEligible == false){
-            userActionLiveData.value = UserAction.FraudAction
+            userLoginPageLiveData.value = UserAction.FraudAction
         }
         else if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == true){
-            userActionLiveData.value = UserAction.RegisteredAction
+            userLoginPageLiveData.value = UserAction.RegisteredAction
         }
 
     }
@@ -79,7 +81,8 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
         userActionLiveData.value = UserAction.RegistrationSucces
     }
 
-    fun getUserAction(): LiveData<UserAction> = userActionLiveData
+    fun getUserAction(): SingleLiveEventData<UserAction> = userActionLiveData
+    fun getLoginScreenAction(): SingleLiveEventData<UserAction> = userLoginPageLiveData
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getProgressBar(): LiveData<Boolean> = progressBar
 
