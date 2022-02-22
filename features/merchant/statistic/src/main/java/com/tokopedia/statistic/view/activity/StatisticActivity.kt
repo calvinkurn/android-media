@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceListener
@@ -25,7 +24,6 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
-import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.ActivityStcStatisticBinding
 import com.tokopedia.statistic.di.DaggerStatisticComponent
@@ -65,6 +63,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var pageHelper: StatisticPageHelper
 
     @Inject
     lateinit var coachMarkHelper: StatisticCoachMarkHelper
@@ -154,22 +155,21 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
-        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, remoteConfig),
-            StatisticPageHelper.getTrafficStatistic(this),
-            StatisticPageHelper.getOperationalStatistic(this),
-            StatisticPageHelper.getBuyerStatistic(this)
+            pageHelper.getShopStatistic(),
+            pageHelper.getProductStatistic(),
+            pageHelper.getTrafficStatistic(),
+            pageHelper.getOperationalStatistic(),
+            pageHelper.getBuyerStatistic()
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
-        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, remoteConfig),
-            StatisticPageHelper.getBuyerStatistic(this)
+            pageHelper.getShopStatistic(),
+            pageHelper.getProductStatistic(),
+            pageHelper.getOperationalStatistic(),
+            pageHelper.getBuyerStatistic()
         )
     }
 

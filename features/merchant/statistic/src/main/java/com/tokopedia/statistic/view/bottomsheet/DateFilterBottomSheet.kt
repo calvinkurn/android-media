@@ -11,11 +11,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.common.StatisticPageHelper
@@ -26,9 +26,6 @@ import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -58,10 +55,9 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         }
     }
 
-    private var fm by autoClearedNullable<FragmentManager>()
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
     private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(this, fm ?: return@lazy null)
+        DateFilterAdapter(this, childFragmentManager)
     }
     private val items: List<DateFilterItem> by lazy {
         arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
@@ -112,23 +108,16 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
 
     override fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String) {
         if (isActivityResumed()) {
-            fm?.let {
-                bottomSheet.show(it, tag)
-            }
+            bottomSheet.show(childFragmentManager, tag)
         }
     }
 
     override fun dismissDateFilterBottomSheet() {
-        dismiss()
+        view?.gone()
     }
 
     override fun showDateFilterBottomSheet() {
-        show()
-    }
-
-    fun setFragmentManager(fm: FragmentManager): DateFilterBottomSheet {
-        this.fm = fm
-        return this
+        view?.visible()
     }
 
     fun setOnApplyChanges(callback: (DateFilterItem) -> Unit): DateFilterBottomSheet {
@@ -136,10 +125,8 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         return this
     }
 
-    fun show() {
-        fm?.let {
-            show(it, TAG)
-        }
+    fun show(fm: FragmentManager) {
+        show(fm, TAG)
     }
 
     private fun showFilterItems() {

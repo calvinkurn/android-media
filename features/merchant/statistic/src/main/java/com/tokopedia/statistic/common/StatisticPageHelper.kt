@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.common
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
@@ -12,17 +13,27 @@ import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 15/02/21
  */
 
-object StatisticPageHelper {
+class StatisticPageHelper @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
+    private val remoteConfig: StatisticRemoteConfig
+) {
 
-    fun getShopStatistic(
-        context: Context,
-        remoteConfig: StatisticRemoteConfig
-    ): StatisticPageUiModel {
+    companion object {
+        fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
+            val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+            val isOfficialStore = userSession.isShopOfficialStore
+            return !isPowerMerchant && !isOfficialStore
+        }
+    }
+
+    fun getShopStatistic(): StatisticPageUiModel {
         val title = context.getString(R.string.stc_shop)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -45,10 +56,7 @@ object StatisticPageHelper {
         )
     }
 
-    fun getProductStatistic(
-        context: Context,
-        remoteConfig: StatisticRemoteConfig
-    ): StatisticPageUiModel {
+    fun getProductStatistic(): StatisticPageUiModel {
         val title = context.getString(R.string.stc_product)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -71,7 +79,7 @@ object StatisticPageHelper {
         )
     }
 
-    fun getBuyerStatistic(context: Context): StatisticPageUiModel {
+    fun getBuyerStatistic(): StatisticPageUiModel {
         val title = context.getString(R.string.stc_buyer)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -94,7 +102,7 @@ object StatisticPageHelper {
         )
     }
 
-    fun getOperationalStatistic(context: Context): StatisticPageUiModel {
+    fun getOperationalStatistic(): StatisticPageUiModel {
         val title = context.getString(R.string.stc_operational)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -117,7 +125,7 @@ object StatisticPageHelper {
         )
     }
 
-    fun getTrafficStatistic(context: Context): StatisticPageUiModel {
+    fun getTrafficStatistic(): StatisticPageUiModel {
         val title = context.getString(R.string.stc_traffic)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -136,15 +144,9 @@ object StatisticPageHelper {
                     iconUnify = IconUnify.HELP
                 )
             ),
-            dateFilters = getOperationalDateFilters(context),
+            dateFilters = getTrafficDateFilters(context),
             exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_buyer_and_operational_exclusive_identifier_desc)
         )
-    }
-
-    fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        val isOfficialStore = userSession.isShopOfficialStore
-        return !isPowerMerchant && !isOfficialStore
     }
 
     private fun getShopDateFilters(
@@ -282,7 +284,7 @@ object StatisticPageHelper {
     }
 
     private fun getTrafficDateFilters(context: Context): List<DateFilterItem> {
-        return listOf(
+        val filters = mutableListOf(
             getDateFilterItemClick(
                 context,
                 Const.DAYS_7,
@@ -302,9 +304,19 @@ object StatisticPageHelper {
             DateFilterItem.Divider,
             getDateFilterPerDay(context, Const.DAYS_365),
             getDateFilterPerWeek(context, true, Const.DAYS_91),
-            getFilterPerMonth(context, false, Const.DAYS_91),
-            DateFilterItem.ApplyButton
+            getFilterPerMonth(context, false, Const.DAYS_91)
         )
+        if (remoteConfig.isCustomDateFilterEnabled()) {
+            filters.add(
+                getDateFilterCustom(
+                    context,
+                    Const.DAYS_365,
+                    DateFilterItem.TYPE_CUSTOM
+                )
+            )
+        }
+        filters.add(DateFilterItem.ApplyButton)
+        return filters
     }
 
     private fun getDateRangeItemToday(context: Context, isSelected: Boolean): DateFilterItem {
@@ -420,6 +432,7 @@ object StatisticPageHelper {
     }
 
     private fun getTrafficShowTagStatus(): Boolean {
+        //the new tag won't be shown after 30 days (11 Apr 2022), start from release date
         val removeTagAfter: Long = 1649606400000
         val now = Date().time
         return now <= removeTagAfter

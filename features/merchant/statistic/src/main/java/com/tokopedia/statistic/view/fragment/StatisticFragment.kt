@@ -113,7 +113,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private var mLayoutManager: StatisticLayoutManager? = null
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
         val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
             statisticPage?.pageTitle != getString(R.string.stc_shop)
@@ -214,13 +213,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideMonthPickerIfExist()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mLayoutManager = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        initDateFilterBottomSheet()
 
         inflater.inflate(R.menu.menu_stc_action_calendar, menu)
 
-        for (i in 0 until menu.size()) {
+        for (i in Int.ZERO until menu.size()) {
             menu.getItem(i)?.let { menuItem ->
                 menuItem.actionView?.setOnClickListener {
                     onOptionsItemSelected(menuItem)
@@ -672,17 +675,23 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun fetchAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
-        performanceMonitoringAnnouncementWidget = PerformanceMonitoring.start(ANNOUNCEMENT_WIDGET_TRACE)
+        performanceMonitoringAnnouncementWidget =
+            PerformanceMonitoring.start(ANNOUNCEMENT_WIDGET_TRACE)
         mViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
-        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
+
+        val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
+        val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
+        DateFilterBottomSheet.newInstance(
+            dateFilters, identifierDescription
+        ).setOnApplyChanges {
             setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
             applyDateRange(it)
-        }?.show()
+        }.show(childFragmentManager)
 
         val tabName = statisticPage?.pageTitle.orEmpty()
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
@@ -993,15 +1002,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         )
     }
 
-    private fun initDateFilterBottomSheet() {
-        if (dateFilterBottomSheet == null) {
-            val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
-            val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
-            dateFilterBottomSheet =
-                DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
-        }
-    }
-
     private fun setMenuItemVisibility(menu: Menu) {
         val shouldShowActionMenu = !statisticPage?.actionMenu.isNullOrEmpty()
         menu.findItem(R.id.actionStcOtherMenu)?.isVisible = shouldShowActionMenu
@@ -1054,6 +1054,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.TABLE -> performanceMonitoringTableWidget?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
+            WidgetType.ANNOUNCEMENT -> performanceMonitoringAnnouncementWidget?.stopTrace()
         }
     }
 
