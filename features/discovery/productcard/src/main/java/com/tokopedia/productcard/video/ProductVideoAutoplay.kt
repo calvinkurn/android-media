@@ -67,29 +67,12 @@ class ProductVideoAutoplay(
     }
 
     private suspend fun playNextVideo(visibleItemIterator: Iterator<ProductVideoPlayer>) {
-        if (isActive && !isPaused && visibleItemIterator.hasNext()) {
+        if (canPlayNextVideo(visibleItemIterator)) {
             val visibleItem = visibleItemIterator.next()
             if (visibleItem.hasProductVideo) {
                 productVideoPlayer = visibleItem
-                visibleItem.playVideo()
-                    .filter { state ->
-                        state is VideoPlayerState.Ended
-                                || state is VideoPlayerState.NoVideo
-                                || state is VideoPlayerState.Error
-                    }
-                    .catch { t ->
-                        Timber.e(t)
-                        VideoPlayerState.Error(t.message ?: "Unknown Error")
-                    }
-                    .collect {
-                        productVideoPlayer = null
-                        if (isActive && !isPaused && visibleItemIterator.hasNext()) {
-                            playNextVideo(visibleItemIterator)
-                        } else if (!visibleItemIterator.hasNext()) {
-                            clearQueue()
-                        }
-                    }
-            } else if (isActive && !isPaused && visibleItemIterator.hasNext()) {
+                playVideo(visibleItem, visibleItemIterator)
+            } else if (canPlayNextVideo(visibleItemIterator)) {
                 playNextVideo(visibleItemIterator)
             } else if (!visibleItemIterator.hasNext()) {
                 clearQueue()
@@ -97,6 +80,36 @@ class ProductVideoAutoplay(
         } else if (!visibleItemIterator.hasNext()) {
             clearQueue()
         }
+    }
+
+    private fun canPlayNextVideo(
+        visibleItemIterator: Iterator<ProductVideoPlayer>
+    ) : Boolean {
+        return isActive && !isPaused && visibleItemIterator.hasNext()
+    }
+
+    private suspend fun playVideo(
+        visibleItem : ProductVideoPlayer,
+        visibleItemIterator: Iterator<ProductVideoPlayer>
+    ) {
+        visibleItem.playVideo()
+            .filter { state ->
+                state is VideoPlayerState.Ended
+                        || state is VideoPlayerState.NoVideo
+                        || state is VideoPlayerState.Error
+            }
+            .catch { t ->
+                Timber.e(t)
+                VideoPlayerState.Error(t.message ?: "Unknown Error")
+            }
+            .collect {
+                productVideoPlayer = null
+                if (canPlayNextVideo(visibleItemIterator)) {
+                    playNextVideo(visibleItemIterator)
+                } else if (!visibleItemIterator.hasNext()) {
+                    clearQueue()
+                }
+            }
     }
 
     private fun clearQueue() {
