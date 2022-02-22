@@ -23,8 +23,8 @@
                 android:id="@+id/rb_installment_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:checked="true"
                 app:bold="false"
@@ -39,13 +39,13 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Cicil 2x Rp6.480.000"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toStartOf="@id/rb_installment_detail"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="Cicil 2x Rp6.480.000" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_installment_detail_description"
@@ -54,14 +54,14 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Biaya cicilan 0%"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/rb_installment_detail"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_installment_detail_name"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler" />
+                app:typographyWeight="reguler"
+                tools:text="Biaya cicilan 0%" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -82,10 +82,10 @@
             android:background="@drawable/background_gocicil_installment_label"
             android:paddingHorizontal="4dp"
             android:paddingVertical="2dp"
-            android:text="asdfasdf asdf"
-            android:textColor="@color/Unify_NN0"
+            android:textColor="@color/Unify_Static_White"
             app:typographyType="small"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="asdfasdf asdf" />
 
         <ImageView
             android:layout_width="wrap_content"
