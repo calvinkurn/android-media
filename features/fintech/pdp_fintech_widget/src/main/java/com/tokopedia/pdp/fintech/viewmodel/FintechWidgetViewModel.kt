@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class FintechWidgetViewModel @Inject constructor
     (
-    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-    private val fintchWidgetUseCase: FintechWidgetUseCase
+     val fintchWidgetUseCase: FintechWidgetUseCase,
+     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
 
