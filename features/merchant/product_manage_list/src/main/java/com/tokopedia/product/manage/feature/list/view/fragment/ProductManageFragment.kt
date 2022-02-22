@@ -1709,7 +1709,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
             is CreateProductCoupon -> {
                 goToCreateProductCoupon(product)
-                // TODO: Add tracker
+                ProductManageTracking.eventClickCreateProductCoupon(userSession.shopId)
             }
         }
         productManageBottomSheet?.dismiss(childFragmentManager)
