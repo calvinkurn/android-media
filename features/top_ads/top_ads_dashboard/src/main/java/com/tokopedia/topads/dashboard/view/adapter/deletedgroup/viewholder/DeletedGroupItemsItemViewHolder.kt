@@ -2,12 +2,15 @@ package com.tokopedia.topads.dashboard.view.adapter.deletedgroup.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.FORMAT_YYYY_MM_DD
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.view.adapter.deletedgroup.viewmodel.DeletedGroupItemsItemModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
+private const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
 
 class DeletedGroupItemsItemViewHolder(
     val view: View,
@@ -31,7 +34,11 @@ class DeletedGroupItemsItemViewHolder(
     override fun bind(item: DeletedGroupItemsItemModel) {
         loadImage(item.topAdsDeletedAdsItem.productImageUri)
         deletedProductName.text = item.topAdsDeletedAdsItem.adTitle
-        date.text = item.topAdsDeletedAdsItem.adDeletedTime
+        date.text = DateFormatUtils.formatDate(
+            FORMAT_YYYY_MM_DD,
+            FORMAT_DD_MMM_YYYY,
+            item.topAdsDeletedAdsItem.adDeletedTime
+        )
         tampilCount.text = item.topAdsDeletedAdsItem.statTotalImpression
         pengeluaranCount.text = item.topAdsDeletedAdsItem.statTotalSpent
         klikCount.text = item.topAdsDeletedAdsItem.statAvgClick
