@@ -394,7 +394,7 @@ open class DynamicPostUIViewHolder(v: View,
         val list: MutableList<BasePostViewModel> = ArrayList()
         for (product in feedXCard.products) {
             val mediaFromProduct = FeedXMedia(id = product.id,type = TYPE_IMAGE,appLink = product.appLink, mediaUrl = product.coverURL, webLink = product.webLink)
-            mapPostImage(mediaFromProduct)
+            list.add(mapPostImage(mediaFromProduct))
         }
 
         return list
