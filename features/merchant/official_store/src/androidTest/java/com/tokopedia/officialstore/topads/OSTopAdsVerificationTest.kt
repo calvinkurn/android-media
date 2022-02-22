@@ -169,7 +169,12 @@ class OSTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
             }
             is FeaturedShopViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                try {
+                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                }
+                catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
