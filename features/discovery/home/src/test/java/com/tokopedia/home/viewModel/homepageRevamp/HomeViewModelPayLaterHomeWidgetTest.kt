@@ -1,8 +1,8 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
-import com.tokopedia.gopayhomewidget.presentation.domain.usecase.GetPayLaterWidgetUseCase
+import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
+import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel

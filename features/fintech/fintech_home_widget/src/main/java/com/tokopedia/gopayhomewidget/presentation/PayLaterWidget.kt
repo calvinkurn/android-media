@@ -1,15 +1,18 @@
 package com.tokopedia.gopayhomewidget.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.annotation.AttrRes
-import com.tokopedia.gopayhomewidget.R
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.gopayhomewidget.databinding.LayoutGopayHomeWidgetBinding
-import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
+import com.tokopedia.gopayhomewidget.di.component.DaggerPayLaterHomeWidgetComponent
+import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
 import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class PayLaterWidget @JvmOverloads constructor(
     context: Context,
@@ -18,32 +21,43 @@ class PayLaterWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var payLaterWidgetListener: PayLaterWidgetListener? = null
-    private lateinit var layoutGopayBinding :LayoutGopayHomeWidgetBinding
+    private lateinit var layoutGopayBinding: LayoutGopayHomeWidgetBinding
+
+    @Inject
+    lateinit var userSession: dagger.Lazy<UserSessionInterface>
 
     init {
+        initInjector()
         initView()
     }
 
+    private fun initInjector() {
+        DaggerPayLaterHomeWidgetComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
+    }
+
     private fun initView() {
-        layoutGopayBinding = LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this,true)
+        layoutGopayBinding =
+            LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this, true)
         this.visibility = INVISIBLE
     }
 
-    fun setPayLaterWidgetListener(payLaterWidgetListener: PayLaterWidgetListener){
-        this.payLaterWidgetListener =  payLaterWidgetListener
+    fun setPayLaterWidgetListener(payLaterWidgetListener: PayLaterWidgetListener) {
+        this.payLaterWidgetListener = payLaterWidgetListener
     }
 
+    @SuppressLint("SetTextI18n")
     fun setData(payLaterWidgetData: PayLaterWidgetData) {
-        if(payLaterWidgetData.isShow == true)
-        {
+        if (payLaterWidgetData.isShow == true) {
             this.visibility = VISIBLE
+            layoutGopayBinding.userName.text = "${userSession.get().name}!"
             layoutGopayBinding.gopayDetail.text = payLaterWidgetData.description
-            payLaterWidgetData.imageLight?.let { imageUrl->
+            payLaterWidgetData.imageLight?.let { imageUrl ->
                 layoutGopayBinding.gatewayIcon.setImageUrl(imageUrl)
             }
             layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
-            when(payLaterWidgetData.button?.ctaType)
-            {
+            when (payLaterWidgetData.button?.ctaType) {
 
             }
             layoutGopayBinding.crossIcon.setOnClickListener {

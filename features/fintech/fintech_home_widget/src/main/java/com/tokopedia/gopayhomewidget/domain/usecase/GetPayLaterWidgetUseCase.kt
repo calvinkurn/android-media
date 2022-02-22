@@ -1,8 +1,8 @@
-package com.tokopedia.gopayhomewidget.presentation.domain.usecase
+package com.tokopedia.gopayhomewidget.domain.usecase
 
-import com.tokopedia.gopayhomewidget.presentation.domain.data.GetPayLaterWidgetDataGqlResponse
-import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
-import com.tokopedia.gopayhomewidget.presentation.domain.query.GQL_QUERY_PAYLATER_WIDGET_DATA
+import com.tokopedia.gopayhomewidget.domain.data.GetPayLaterWidgetDataGqlResponse
+import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
+import com.tokopedia.gopayhomewidget.domain.query.GQL_QUERY_PAYLATER_WIDGET_DATA
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -41,7 +41,7 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
         )
     }
 
-    companion object{
+    companion object {
         const val REQUEST_PARAMS = "request"
         const val BACK_URL = "back_url"
     }

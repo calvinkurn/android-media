@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
+import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
