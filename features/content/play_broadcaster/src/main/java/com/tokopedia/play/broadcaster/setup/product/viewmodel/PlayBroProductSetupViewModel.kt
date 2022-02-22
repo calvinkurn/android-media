@@ -222,7 +222,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) = whenProductsNotSaving {
-//        if (product.stock <= 0) return@whenProductsNotSaving
+        if (product.stock <= 0) return@whenProductsNotSaving
 
         _selectedProductSectionList.update { sections ->
             var hasProduct = false

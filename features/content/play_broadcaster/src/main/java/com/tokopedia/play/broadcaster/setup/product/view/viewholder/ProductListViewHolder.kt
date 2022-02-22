@@ -54,7 +54,7 @@ internal class ProductListViewHolder private constructor() {
                 }
             }
 
-            if (item.product.stock <= 0) {
+            if (item.product.stock > 0) {
                 binding.checkboxProduct.visibility = View.VISIBLE
                 binding.flEmptyForeground.visibility = View.GONE
                 binding.viewEmptyStock.root.visibility = View.GONE
