@@ -38,8 +38,10 @@ class CoachMarkLocalCache(context: Context?) {
     }
 
     fun shouldShowBoeCoachmark(): Boolean {
-        val shouldShow = sharedPref?.getBoolean(KEY_SHOW_COACHMARK_BOE, true) ?: false
-        if (shouldShow && isEnableBoeCoachmarkRollence()) {
+        val shouldShow =
+            sharedPref?.getBoolean(KEY_SHOW_COACHMARK_BOE, true) ?: false
+                && isEnableBoeCoachmarkRollence()
+        if (shouldShow) {
             setShown()
         }
         return shouldShow
