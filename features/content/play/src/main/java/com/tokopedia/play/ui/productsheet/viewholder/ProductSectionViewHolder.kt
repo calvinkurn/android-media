@@ -72,12 +72,14 @@ class ProductSectionViewHolder(
                 tvTimerInfo.show()
                 timerSection.show()
                 timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
+                setupBackground(item.config.background)
                 setupTimer(item)
             }
             ProductSectionType.Upcoming -> {
                 tvTimerInfo.show()
                 timerSection.show()
                 timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+                setupBackground(item.config.background)
                 setupTimer(item)
             }
             ProductSectionType.Other -> {
@@ -88,7 +90,6 @@ class ProductSectionViewHolder(
                 // todo: handle unknown section
             }
         }
-        setupBackground(item.config.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
     }
