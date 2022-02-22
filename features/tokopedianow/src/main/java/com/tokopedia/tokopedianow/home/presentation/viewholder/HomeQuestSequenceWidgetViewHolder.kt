@@ -11,6 +11,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_URL
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_URL
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -32,9 +34,6 @@ class HomeQuestSequenceWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestSequenceWidgetUiModel>(itemView) {
 
     companion object {
-        private const val QUEST_DETAIL_STAGING_URL = "https://staging.tokopedia.com/now/quest-channel"
-        private const val QUEST_DETAIL_PRODUCTION_URL = "https://www.tokopedia.com/now/quest-channel"
-
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_sequence_widget
     }

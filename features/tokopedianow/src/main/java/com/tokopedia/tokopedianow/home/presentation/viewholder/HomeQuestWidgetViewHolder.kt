@@ -111,7 +111,6 @@ class HomeQuestWidgetViewHolder(
     private fun setClickListener(id: String) {
         binding?.title?.setOnClickListener {
             goToQuestWebPage(id)
-            listener?.onClickQuestWidgetTitle()
         }
     }
 
