@@ -77,7 +77,11 @@ class AppLinkListFragment : BaseDaggerFragment(), AppLinkItemAdapter.AppLinkItem
     }
 
     override fun onAppLinkItemClicked(appLink: String) {
-        appLinkSearchbar?.searchBarTextField?.setText(appLink)
+        appLinkSearchbar?.searchBarTextField?.run {
+            setText(appLink)
+            setSelection(text.length)
+            requestFocus()
+        }
     }
 
     private fun routeToAppLink() {
