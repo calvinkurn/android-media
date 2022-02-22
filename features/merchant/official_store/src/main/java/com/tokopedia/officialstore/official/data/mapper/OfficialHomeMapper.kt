@@ -19,7 +19,6 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 
@@ -203,12 +202,23 @@ class OfficialHomeMapper (
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
-    fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
-        productRecommendation.recommendationItemList.forEach {
-            _listOfficialStore.add(ProductRecommendationDataModel(it, listener))
+    fun mappingProductRecommendation(
+        productRecommendationWithTopAdsHeadline: ProductRecommendationWithTopAdsHeadline,
+        adapter: OfficialHomeAdapter?,
+        listener: RecommendationListener
+    ) {
+        val newList = listOfficialStore.toMutableList()
+        val headlineIndex =
+            productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
+        productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
+            if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
+                newList.add(it)
+            }
+            newList.add(ProductRecommendationDataModel(recommendationItem, listener))
         }
-        _listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
-        adapter?.submitList(listOfficialStore.toMutableList())
+        newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
+        _listOfficialStore = newList
+        adapter?.submitList(newList)        
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
@@ -360,4 +370,17 @@ class OfficialHomeMapper (
         _listOfficialStore = newList
         action.invoke(newList)
     }
+
+    fun removeTopAdsHeadlineWidget(adapter: OfficialHomeAdapter?) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
+            if (it !is OfficialTopAdsHeadlineDataModel) {
+                newList.add(it)
+            }
+        }
+        _listOfficialStore = newList
+        adapter?.submitList(newList)
+        
+    }
+
 }

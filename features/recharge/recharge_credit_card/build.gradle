@@ -62,7 +62,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

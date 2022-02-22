@@ -207,7 +207,10 @@ data class Grid(
     val benefit: Benefit = Benefit(),
     @Expose
     @SerializedName("textColor")
-    val textColor: String = ""
+    val textColor: String = "",
+    @Expose
+    @SerializedName("param")
+    val param: String = ""
 )
 
 data class Benefit(
