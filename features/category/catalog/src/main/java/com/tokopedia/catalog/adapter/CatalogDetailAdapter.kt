@@ -24,7 +24,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
         if(viewType == CatalogProductsContainerViewHolder.LAYOUT){
             view.findViewById<ConstraintLayout>(R.id.root_container)?.let { rootLayout ->
                 val layoutParams = rootLayout.layoutParams
-                layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                layoutParams.height = catalogDetailListener.getWindowHeight() - context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
                 rootLayout.layoutParams = layoutParams
             }
         }
