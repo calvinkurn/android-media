@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flowOf
 
 abstract class ProductItemViewHolder(
         itemView: View,
-        protected val productListener: ProductListener
+        protected val productListener: ProductListener,
 ) : AbstractViewHolder<ProductItemDataView>(itemView), ProductVideoPlayer {
 
     abstract val productCardView: IProductCardView?
