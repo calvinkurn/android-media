@@ -209,6 +209,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
+    private var seenAttachmentVoucher = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -1706,6 +1707,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             goToMvcPage(data.applink)
         } else {
             goToMerchantVoucherDetail(data)
+        }
+    }
+
+    override fun onVoucherSeen(data: TopChatVoucherUiModel, source: String) {
+        if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
+            TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
         }
     }
 
