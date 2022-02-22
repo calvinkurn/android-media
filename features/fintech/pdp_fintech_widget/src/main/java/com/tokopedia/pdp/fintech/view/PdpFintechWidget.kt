@@ -20,7 +20,6 @@ import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
-import com.tokopedia.pdp.fintech.domain.datamodel.WidgetBottomsheet
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
@@ -120,7 +119,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
             override fun clickedWidget(
-               fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
+                fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
             ) {
                 fintechRedirectionWidgetDataClass.productUrl = idToPriceUrlMap[productID]?.url
                 customRouter(
@@ -244,8 +243,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                         else
                             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                                 FintechWidgetAnalyticsEvent.PdpWidgetImpression(
-                                    productID,linkedStatus
-                                    ,userStatus, "branded chips",
+                                    productID, linkedStatus, userStatus, "branded chips",
                                     partnerName
                                 )
                             )

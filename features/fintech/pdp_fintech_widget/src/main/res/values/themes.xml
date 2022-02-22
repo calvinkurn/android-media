@@ -1,8 +1,8 @@
 <resources>
 
-    <style name="Theme.Androidtokopediacore" parent="Theme.MaterialComponents.Light" />
+    <style name="pdp_fintech_widget_Theme.Androidtokopediacore" parent="Theme.MaterialComponents.Light" />
 
-    <style name="Theme.Androidtokopediacore.Fullscreen" parent="Theme.Androidtokopediacore">
+    <style name="pdp_fintech_widget_Theme.Androidtokopediacore.Fullscreen" parent="pdp_fintech_widget_Theme.Androidtokopediacore">
         <item name="android:actionBarStyle">
             @style/pdp_fintech_widget_Widget.Theme.Androidtokopediacore.ActionBar.Fullscreen
         </item>
@@ -11,7 +11,11 @@
     </style>
 
     <style name="pdp_fintech_widget_ThemeOverlay.Androidtokopediacore.FullscreenContainer" parent="">
-        <item name="pdp_fintech_widget_fullscreenBackgroundColor">@color/pdp_fintech_widget_light_blue_600</item>
-        <item name="pdp_fintech_widget_fullscreenTextColor">@color/pdp_fintech_widget_light_blue_A200</item>
+        <item name="pdp_fintech_widget_fullscreenBackgroundColor">
+            @color/pdp_fintech_widget_light_blue_600
+        </item>
+        <item name="pdp_fintech_widget_fullscreenTextColor">
+            @color/pdp_fintech_widget_light_blue_A200
+        </item>
     </style>
 </resources>

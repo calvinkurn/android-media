@@ -17,7 +17,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         when (analyticsEvent) {
             is FintechWidgetAnalyticsEvent.PdpWidgetImpression ->
                 sendPdpWidgetImpression(
-                    analyticsEvent.partnerId,analyticsEvent.linkingStatus,
+                    analyticsEvent.partnerId, analyticsEvent.linkingStatus,
                     analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType
                 )
 

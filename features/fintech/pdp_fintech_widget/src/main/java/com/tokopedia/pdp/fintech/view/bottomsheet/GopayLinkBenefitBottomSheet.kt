@@ -89,7 +89,7 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
                 if (!activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText.isNullOrBlank())
                     FintechWidgetAnalyticsEvent.ActivationBottomSheetClick(
                         activationBottomSheetDetail?.userStatus ?: "",
-                        activationBottomSheetDetail?.linkingStatus?:"",
+                        activationBottomSheetDetail?.linkingStatus ?: "",
                         activationBottomSheetDetail?.gatewayPartnerName ?: "",
                         activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText
                             ?: ""
@@ -97,7 +97,7 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
                 else
                     FintechWidgetAnalyticsEvent.ActivationBottomSheetClick(
                         activationBottomSheetDetail?.userStatus ?: "",
-                        activationBottomSheetDetail?.linkingStatus?:"",
+                        activationBottomSheetDetail?.linkingStatus ?: "",
                         activationBottomSheetDetail?.gatewayPartnerName ?: "",
                         ""
                     )

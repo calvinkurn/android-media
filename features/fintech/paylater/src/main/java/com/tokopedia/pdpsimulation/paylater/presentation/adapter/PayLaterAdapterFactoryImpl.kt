@@ -31,7 +31,7 @@ class PayLaterAdapterFactoryImpl(
     // These two layouts are only used in Installment BottomSheet
     override fun type(content: Content): Int {
         return when(content.type) {
-            2 -> InstallmentDividerViewHolder.LAYOUT
+            INSTALLMENT_TYPE_DIVIDER -> InstallmentDividerViewHolder.LAYOUT
             else -> PayLaterInstallmentInfoViewHolder.LAYOUT
         }
     }
@@ -50,4 +50,9 @@ class PayLaterAdapterFactoryImpl(
             else -> super.createViewHolder(parent, type)
         }
     }
+
+    companion object{
+        private const val INSTALLMENT_TYPE_DIVIDER = 2
+    }
+
 }

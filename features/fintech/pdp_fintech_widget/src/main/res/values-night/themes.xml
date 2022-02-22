@@ -1,7 +1,11 @@
 <resources>
 
     <style name="pdp_fintech_widget_ThemeOverlay.Androidtokopediacore.FullscreenContainer" parent="">
-        <item name="pdp_fintech_widget_fullscreenBackgroundColor">@color/pdp_fintech_widget_light_blue_900</item>
-        <item name="pdp_fintech_widget_fullscreenTextColor">@color/pdp_fintech_widget_light_blue_A400</item>
+        <item name="pdp_fintech_widget_fullscreenBackgroundColor">
+            @color/pdp_fintech_widget_light_blue_900
+        </item>
+        <item name="pdp_fintech_widget_fullscreenTextColor">
+            @color/pdp_fintech_widget_light_blue_A400
+        </item>
     </style>
 </resources>

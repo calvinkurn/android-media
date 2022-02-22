@@ -159,7 +159,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 chipsData[adapterPosition].name,
                 chipsData[adapterPosition].userStatus,
                 chipsData[adapterPosition].linkingStatus
-            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName,linkingStatus ->
+            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName, linkingStatus ->
 
                 widgetClickListner.clickedWidget(
                     FintechRedirectionWidgetDataClass(
@@ -182,7 +182,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
     // Null Checker
-    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any,  T9 : Any, R : Any> safeLet(
+    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any, T9 : Any, R : Any> safeLet(
         p1: T1?,
         p2: T2?,
         p3: T3?,
