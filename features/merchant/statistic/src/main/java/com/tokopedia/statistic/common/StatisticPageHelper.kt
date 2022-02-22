@@ -123,16 +123,16 @@ object StatisticPageHelper {
             pageTitle = title,
             pageSource = Const.PageSource.TRAFFIC_INSIGHT,
             tickerPageName = Const.TickerPageName.TRAFFIC_INSIGHT,
-            tag = context.getString(R.string.stc_new_tag),
+            shouldShowTag = getTrafficShowTagStatus(),
             actionMenu = listOf(
                 ActionMenuUiModel(
                     title = context.getString(R.string.stc_give_suggestions),
-                    appLink = Const.Url.OPERATIONAL_GIVE_SUGGESTIONS,
+                    appLink = Const.Url.TRAFFIC_GIVE_SUGGESTIONS,
                     iconUnify = IconUnify.CHAT_REPORT
                 ),
                 ActionMenuUiModel(
                     title = context.getString(R.string.stc_learn_more),
-                    appLink = Const.Url.OPERATIONAL_LEARN_MORE,
+                    appLink = Const.Url.TRAFFIC_LEARN_MORE,
                     iconUnify = IconUnify.HELP
                 )
             ),
@@ -417,5 +417,11 @@ object StatisticPageHelper {
             monthPickerMinDate = minDate,
             monthPickerMaxDate = defaultDate
         )
+    }
+
+    private fun getTrafficShowTagStatus(): Boolean {
+        val removeTagAfter: Long = 1649606400000
+        val now = Date().time
+        return now <= removeTagAfter
     }
 }

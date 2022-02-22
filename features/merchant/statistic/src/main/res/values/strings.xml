@@ -38,6 +38,8 @@
     <string name="stc_learn_more">Pelajari Selengkapnya</string>
     <string name="stc_product_coachmark_title">Pantau statistik produkmu dulu, yuk!</string>
     <string name="stc_product_coachmark_desc">Cek dan lihat perkembangan Performa produk tokomu di sini, ya.</string>
+    <string name="stc_traffic_coachmark_title">Pantau statistik kunjunganmu dulu, yuk!</string>
+    <string name="stc_traffic_coachmark_desc">Cek dari mana saja sumber kunjungan calon pembelimu masuk ke produkmu.</string>
     <string name="stc_operational_coachmark_title">Yuk, pantau operasional tokomu!</string>
     <string name="stc_operational_coachmark_desc">Cek dan lihat perkembangan performa operasional tokomu di sini, ya.</string>
     <string name="stc_upgrade_to_pm">Fitur ini hanya untuk Power Merchant, Power Merchant PRO, dan Official Store. <font color="#03AC0E">Upgrade Toko</font></string>
@@ -48,5 +50,4 @@
     <string name="stc_shop_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari terakhir, 30 hari terakhir, per hari, per minggu, per bulan,</b> atau <b>atur sendiri.<b>]]></string>
     <string name="stc_buyer_and_operational_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari, 30 hari, per minggu,</b> atau <b>per bulan.<b>]]></string>
     <string name="stc_exlusive_feature_title">Fitur Eksklusif Keanggotaan Toko</string>
-    <string name="stc_new_tag">Baru</string>
 </resources>
