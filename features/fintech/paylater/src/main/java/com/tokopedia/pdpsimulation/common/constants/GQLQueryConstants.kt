@@ -103,6 +103,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       data {
       gateway_id
       gateway_code
+      payment_gateway_code
       gateway_name
       subtitle
       subtitle2

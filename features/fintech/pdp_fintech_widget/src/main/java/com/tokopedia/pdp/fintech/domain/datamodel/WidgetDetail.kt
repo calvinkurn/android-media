@@ -4,10 +4,9 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class WidgetDetail(
     @SerializedName("paylater_getPDPWidgetV2") var baseWidgetResponse: BaseDataResponse? = null
-) : Parcelable
+)
 
 
 @Parcelize
@@ -21,17 +20,16 @@ data class BaseChipResponse(
 ) : Parcelable
 
 
-@Parcelize
+
 data class ChipList(
 
     @SerializedName("price") var price: Double? = null,
     @SerializedName("title") var title: String? = null,
     @SerializedName("chips") var chips: ArrayList<ChipsData> = arrayListOf()
 
-) : Parcelable
+)
 
 
-@Parcelize
 data class ChipsData(
     @SerializedName("gateway_id") var gatewayId: Int? = null,
     @SerializedName("name") var name: String? = null,
@@ -49,16 +47,15 @@ data class ChipsData(
     @SerializedName("user_balance_amt") var userBalanceAmount: String? = null,
     @SerializedName("installment_amt") var installmentAmount: String? = null,
     @SerializedName("cta") var cta: Cta? = Cta()
-) : Parcelable
+)
 
-@Parcelize
 data class Cta(
     @SerializedName("type") var type: Int? = null,
     @SerializedName("web_url") var webUrl: String? = null,
     @SerializedName("android_url") var androidUrl: String? = null,
     @SerializedName("ios_url") var iosUrl: String? = null,
     @SerializedName("bottomsheet") var bottomsheet: WidgetBottomsheet? = WidgetBottomsheet()
-) : Parcelable
+)
 
 @Parcelize
 data class WidgetBottomsheet(

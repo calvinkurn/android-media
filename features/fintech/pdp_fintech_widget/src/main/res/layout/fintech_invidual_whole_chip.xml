@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<com.tokopedia.unifycomponents.CardUnify android:id="@+id/card"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
-
-
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:card_type="border">
+    android:layout_height="match_parent"
+    app:card_type="border"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cardContent"
@@ -95,4 +91,3 @@
 
     </com.tokopedia.unifycomponents.CardUnify>
 
-</LinearLayout>

@@ -1,6 +1,6 @@
 <resources>
     <declare-styleable name="FullscreenAttrs">
-        <attr name="fullscreenBackgroundColor" format="color" />
-        <attr name="fullscreenTextColor" format="color" />
+        <attr name="pdp_fintech_widget_fullscreenBackgroundColor" format="color" />
+        <attr name="pdp_fintech_widget_fullscreenTextColor" format="color" />
     </declare-styleable>
 </resources>

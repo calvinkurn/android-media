@@ -1,8 +1,5 @@
 <resources>
 
 
-    <string name="title_activity_fullscreen">FullscreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="pdp_fintech_quick_buy_with_paylater">Beli langsung pakai PayLater</string>
 </resources>

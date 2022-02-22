@@ -18,11 +18,9 @@ import kotlinx.coroutines.Dispatchers
 @Module
 class PdpSimulationModule {
 
-    @PdpSimulationScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
-    @PdpSimulationScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
@@ -36,7 +34,6 @@ class PdpSimulationModule {
     @CoroutineBackgroundDispatcher
     fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-    @PdpSimulationScope
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository

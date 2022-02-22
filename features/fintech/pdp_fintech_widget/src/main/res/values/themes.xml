@@ -4,14 +4,14 @@
 
     <style name="Theme.Androidtokopediacore.Fullscreen" parent="Theme.Androidtokopediacore">
         <item name="android:actionBarStyle">
-            @style/Widget.Theme.Androidtokopediacore.ActionBar.Fullscreen
+            @style/pdp_fintech_widget_Widget.Theme.Androidtokopediacore.ActionBar.Fullscreen
         </item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@null</item>
     </style>
 
-    <style name="ThemeOverlay.Androidtokopediacore.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    <style name="pdp_fintech_widget_ThemeOverlay.Androidtokopediacore.FullscreenContainer" parent="">
+        <item name="pdp_fintech_widget_fullscreenBackgroundColor">@color/pdp_fintech_widget_light_blue_600</item>
+        <item name="pdp_fintech_widget_fullscreenTextColor">@color/pdp_fintech_widget_light_blue_A200</item>
     </style>
 </resources>
