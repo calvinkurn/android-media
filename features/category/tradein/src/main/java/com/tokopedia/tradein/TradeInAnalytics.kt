@@ -21,10 +21,6 @@ import com.tokopedia.tradein.TradeInGTMConstants.OPEN_SCREEN
 import com.tokopedia.tradein.TradeInGTMConstants.PRODUCT_ID
 import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_COVERAGE_PAGE
 import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_EDUCATIONAL_PAGE
-import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_FINAL_PAGE
-import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_FINAL_PRICE_PAGE
-import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_INITIAL_PRICE_PAGE
-import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_START_PAGE
 
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -126,37 +122,6 @@ class TradeInAnalytics @Inject constructor(
                         screenName = TRADE_IN_EDUCATIONAL_PAGE))
     }
 
-    //10
-    fun openCoverageAreaCheck() {
-        val map = mutableMapOf<String, Any>(
-                EVENT to OPEN_SCREEN,
-                KEY_SCREEN_NAME to TRADE_IN_COVERAGE_PAGE,
-                KEY_LOGGED_IN to if(userSession.isLoggedIn) "true" else "false",
-                KEY_CURRENT_SITE to CURRENT_SITE,
-                KEY_USER_ID to userSession.userId,
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT
-        )
-        getTracker().sendGeneralEvent(map)
-    }
-
-    //11
-    fun clickChangeAddress() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_COVERAGE_PAGE,
-                        eventAction = ACTION_CLICK,
-                        eventLabel = "change address",
-                        screenName = TRADE_IN_COVERAGE_PAGE))
-    }
-
-    //12
-    fun clickCoverageAreaContinue() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_COVERAGE_PAGE,
-                        eventAction = ACTION_CLICK,
-                        eventLabel = "proceed",
-                        screenName = TRADE_IN_COVERAGE_PAGE))
-    }
-
     //13
     fun viewCoverageAreaBottomSheet() {
         getTracker().sendGeneralEvent(
@@ -185,96 +150,4 @@ class TradeInAnalytics @Inject constructor(
                         screenName = TRADE_IN_COVERAGE_PAGE))
     }
 
-    //16
-    fun viewInitialPricePage(phoneType: String, minPrice: String, maxPrice: String, productId: String) {
-        val map = createGeneralEvent(eventName = ACTION_VIEW_TRADEIN_IRIS,
-                eventCategory = TRADE_IN_START_PAGE,
-                eventAction = "view price range page",
-                eventLabel = "phone type : $phoneType - min price : $minPrice - max price : $maxPrice",
-                screenName = TRADE_IN_INITIAL_PRICE_PAGE)
-        map[PRODUCT_ID] = productId
-        getTracker().sendGeneralEvent(map)
-    }
-
-    //17
-    fun initialPricePageBackButtonClick(productId: String) {
-        val map = createGeneralEvent(eventName = ACTION_VIEW_TRADEIN_IRIS,
-                eventCategory = TRADE_IN_START_PAGE,
-                eventAction = "kembali ke detail produk",
-                screenName = TRADE_IN_INITIAL_PRICE_PAGE)
-        map[PRODUCT_ID] = productId
-        getTracker().sendGeneralEvent(map)
-    }
-
-    //18
-    fun clickInitialPriceContinueButton() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_START_PAGE,
-                        eventAction = ACTION_CLICK,
-                        eventLabel = "proceed",
-                        screenName = TRADE_IN_INITIAL_PRICE_PAGE))
-    }
-
-    //18 android 10
-    fun clickInitialPriceInputImei() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_START_PAGE,
-                        eventAction = "input IMEI",
-                        screenName = TRADE_IN_INITIAL_PRICE_PAGE))
-    }
-
-    //19 android 10
-    fun clickInitialPriceImeiBottomSheet() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_START_PAGE,
-                        eventAction = "check IMEI",
-                        screenName = TRADE_IN_INITIAL_PRICE_PAGE))
-    }
-
-    //20 android 10
-    fun clickInitialPriceImeiNoInput() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_START_PAGE,
-                        eventAction = "IMEI error",
-                        eventLabel = "no input",
-                        screenName = TRADE_IN_INITIAL_PRICE_PAGE))
-    }
-
-    //21 android 10
-    fun clickInitialPriceImeiWrongInput() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_START_PAGE,
-                        eventAction = "IMEI error",
-                        eventLabel = "wrong imei",
-                        screenName = TRADE_IN_INITIAL_PRICE_PAGE))
-    }
-
-    //19
-    fun openFinalPricePage() {
-        val map = mutableMapOf<String, Any>(
-                EVENT to ACTION_VIEW_TRADEIN_IRIS,
-                KEY_SCREEN_NAME to TRADE_IN_FINAL_PRICE_PAGE,
-                KEY_LOGGED_IN to if(userSession.isLoggedIn) "true" else "false",
-                KEY_CURRENT_SITE to CURRENT_SITE,
-                KEY_USER_ID to userSession.userId,
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT
-        )
-        getTracker().sendGeneralEvent(map)
-    }
-
-    //20
-    fun clickFinalPriceBack() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_FINAL_PAGE,
-                        eventAction = "click back",
-                        screenName = TRADE_IN_FINAL_PRICE_PAGE))
-    }
-
-    //22
-    fun clickFinalPriceCheckDetails() {
-        getTracker().sendGeneralEvent(
-                createGeneralEvent(eventCategory = TRADE_IN_FINAL_PAGE,
-                        eventAction = "click check details",
-                        screenName = TRADE_IN_FINAL_PRICE_PAGE))
-    }
 }

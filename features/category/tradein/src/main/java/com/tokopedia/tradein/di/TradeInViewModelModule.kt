@@ -19,30 +19,6 @@ abstract class TradeInViewModelModule {
     @Binds
     @IntoMap
     @TradeInScope
-    @ViewModelKey(TradeInHomeViewModel::class)
-    internal abstract fun tradeInHomeViewModel(viewModel: TradeInHomeViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @TradeInScope
-    @ViewModelKey(FinalPriceViewModel::class)
-    internal abstract fun finalPriceViewModel(viewModel: FinalPriceViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @TradeInScope
-    @ViewModelKey(TradeInAddressViewModel::class)
-    internal abstract fun tradeInAddressViewModel(viewModel: TradeInAddressViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @TradeInScope
-    @ViewModelKey(TradeInInitialPriceViewModel::class)
-    internal abstract fun tradeInInitialPriceViewModel(viewModel: TradeInInitialPriceViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @TradeInScope
     @ViewModelKey(TradeInInfoViewModel::class)
     internal abstract fun tradeInInfoViewModel(viewModel: TradeInInfoViewModel): ViewModel
 

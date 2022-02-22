@@ -11,13 +11,9 @@ import dagger.Component
     TradeInViewModelModule::class],
         dependencies = [BaseAppComponent::class])
 interface TradeInComponent {
-    fun inject(tradeInHomeActivity: TradeInHomeActivity)
-    fun inject(tradeInAddressFragment: TradeInAddressFragment)
-    fun inject(tradeInInitialPriceFragment: TradeInInitialPriceFragment)
-    fun inject(tradeInFinalPriceFragment: TradeInFinalPriceFragment)
     fun inject(tradeInInfoActivity: TradeInInfoActivity)
-    fun inject(tradeInPromoDetailPageFragment: TradeInPromoDetailPageFragment)
     fun inject(tradeInHomePageActivity: TradeInHomePageActivity)
     fun inject(tradeInHomePageFragment: TradeInHomePageFragment)
+    fun inject(tradeInPromoDetailPageFragment: TradeInPromoDetailPageFragment)
     fun inject(tradeInImeiBS: TradeInImeiBS)
 }

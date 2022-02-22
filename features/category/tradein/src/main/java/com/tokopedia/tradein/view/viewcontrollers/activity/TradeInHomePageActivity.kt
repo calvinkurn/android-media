@@ -29,6 +29,10 @@ import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
+const val APP_SETTINGS = 9988
+const val LOGIN_REQUEST = 514
+const val MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123
+
 class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     TradeInEducationalPageFragment.OnDoTradeInClick {
 

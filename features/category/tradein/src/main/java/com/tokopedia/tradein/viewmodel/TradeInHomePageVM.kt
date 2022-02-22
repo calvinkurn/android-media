@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.model.Laku6DeviceModel
-import com.tokopedia.tradein.model.Laku6TestDataModel
+import com.tokopedia.tradein.model.request.Laku6TestDataModel
 import com.tokopedia.tradein.model.TradeInDetailModel
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.tradein.viewmodel.liveState.TradeInHomeState

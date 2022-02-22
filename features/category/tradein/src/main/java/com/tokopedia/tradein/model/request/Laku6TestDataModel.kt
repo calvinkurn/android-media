@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.model
+package com.tokopedia.tradein.model.request
 
 
 import com.google.gson.annotations.SerializedName

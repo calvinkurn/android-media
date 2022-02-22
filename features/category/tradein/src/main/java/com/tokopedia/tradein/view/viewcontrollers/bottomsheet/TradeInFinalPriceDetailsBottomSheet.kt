@@ -34,7 +34,7 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
     private fun init() {
         showCloseIcon = false
         showKnob = true
-        setTitle(getString(R.string.tradein_detail_pengecekan))
+        setTitle("")
         contentView = View.inflate(context,
                 R.layout.tradein_final_price_detail_bottom_sheet, null)
         contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.removeAllViews()
