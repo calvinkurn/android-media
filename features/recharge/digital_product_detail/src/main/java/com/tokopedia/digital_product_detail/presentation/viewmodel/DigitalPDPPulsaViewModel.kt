@@ -95,7 +95,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
-            //delay(DELAY_MULTI_TAB)
+            delay(DELAY_MULTI_TAB)
             val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
             _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
         }){

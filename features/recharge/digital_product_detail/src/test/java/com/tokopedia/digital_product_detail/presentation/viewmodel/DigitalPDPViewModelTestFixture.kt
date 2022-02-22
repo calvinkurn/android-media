@@ -106,6 +106,11 @@ abstract class DigitalPDPViewModelTestFixture {
         viewModel.selectedGridProduct = result
     }
 
+    protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.favoriteNumberData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
     protected fun verifyGetFavoriteNumberSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
         val actualResponse = viewModel.favoriteNumberData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
@@ -114,6 +119,11 @@ abstract class DigitalPDPViewModelTestFixture {
     protected fun verifyGetFavoriteNumberFail() {
         val actualResponse = viewModel.favoriteNumberData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyPrefixOperatorLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.catalogPrefixSelect.value
+        Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetPrefixOperatorSuccess(expectedResponse: TelcoCatalogPrefixSelect) {
@@ -164,6 +174,11 @@ abstract class DigitalPDPViewModelTestFixture {
     protected fun verifyGetPrefixOperatorFail() {
         val actualResponse = viewModel.catalogPrefixSelect.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetMenuDetailLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.menuDetailData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetMenuDetailSuccess(expectedResponse: MenuDetailModel) {
@@ -233,6 +248,10 @@ abstract class DigitalPDPViewModelTestFixture {
 
     protected fun TestCoroutineScope.skipValidatorDelay() {
         advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
+    }
+
+    protected fun TestCoroutineScope.skipMultitabDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
     }
 
     companion object {

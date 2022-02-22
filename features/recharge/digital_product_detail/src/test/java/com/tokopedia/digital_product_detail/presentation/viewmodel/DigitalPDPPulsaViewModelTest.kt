@@ -10,11 +10,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import io.mockk.every
-import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import org.junit.Test
 
 
@@ -25,11 +21,19 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
     private val mapperFactory = DigitalDenomMapper()
 
     @Test
+    fun `given menuDetail loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setMenuDetailLoading()
+        verifyGetMenuDetailLoading(loadingResponse)
+    }
+
+    @Test
     fun `when getting menuDetail should run and give success result`() {
         val response = dataFactory.getMenuDetail()
         onGetMenuDetail_thenReturn(response)
 
-        viewModel.getMenuDetail(MENU_ID, false)
+        viewModel.getMenuDetail(MENU_ID)
         verifyGetMenuDetailSuccess(response)
     }
 
@@ -39,6 +43,14 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getMenuDetail(MENU_ID, false)
         verifyGetMenuDetailFail()
+    }
+
+    @Test
+    fun `given favoriteNumber loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setFavoriteNumberLoading()
+        verifyGetFavoriteNumberLoading(loadingResponse)
     }
 
     @Test
@@ -56,6 +68,14 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getFavoriteNumber(listOf())
         verifyGetFavoriteNumberFail()
+    }
+
+    @Test
+    fun `given catalogPrefixSelect loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setPrefixOperatorLoading()
+        verifyPrefixOperatorLoading(loadingResponse)
     }
 
     @Test
@@ -249,12 +269,13 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give success result`() {
+    fun `when getting catalogInputMultitab should run and give success result`() = testCoroutineRule.runBlockingTest {
         val response = dataFactory.getCatalogInputMultiTabData()
         val mappedResponse = mapperFactory.mapMultiTabGridDenom(response)
         onGetCatalogInputMultitab_thenReturn(mappedResponse)
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
         verifyGetCatalogInputMultitabSuccess(mappedResponse)
     }
 
@@ -267,20 +288,22 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give error result`() {
+    fun `when getting catalogInputMultitab should run and give error result`() = testCoroutineRule.runBlockingTest {
         val errorResponse = MessageErrorException("")
         onGetCatalogInputMultitab_thenReturn(errorResponse)
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
         verifyGetCatalogInputMultitabError(errorResponse)
     }
 
     @Test
-    fun `given CancellationException to catalogInputMultitab and should return empty result`() {
+    fun `given CancellationException to catalogInputMultitab and should return empty result`() = testCoroutineRule.runBlockingTest {
         val errorResponse = CancellationException()
         onGetCatalogInputMultitab_thenReturn(errorResponse)
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
         verifyGetCatalogInputMultitabErrorCancellation()
     }
 

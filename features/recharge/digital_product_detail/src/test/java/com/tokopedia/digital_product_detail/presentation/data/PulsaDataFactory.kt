@@ -86,6 +86,20 @@ class PulsaDataFactory {
         )
     }
 
+    fun getCatalogInputMultiTabData(): DigitalCatalogProductInputMultiTab {
+        return gson.fromJson(
+            gson.JsonToString(GET_CATALOG_INPUT_MULTITAB),
+            DigitalCatalogProductInputMultiTab::class.java
+        )
+    }
+
+    fun getAddToCartData(): ResponseCartData {
+        return gson.fromJson(
+            gson.JsonToString(GET_ADD_TO_CART),
+            ResponseCartData::class.java
+        )
+    }
+
     companion object {
         const val GET_FAVORITE_NUMBER = "get_favorite_number_mock.json"
         const val GET_PREFIX_OPERATOR = "get_prefix_operator_mock.json"
