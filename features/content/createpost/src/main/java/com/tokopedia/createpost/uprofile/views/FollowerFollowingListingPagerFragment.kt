@@ -34,7 +34,7 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -43,8 +43,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
-    var tabLayout : TabsUnify? = null
-    var ffViewPager : ViewPager? = null
 
 //    private val mAdapter: UserPostBaseAdapter by lazy {
 //        UserPostBaseAdapter(
@@ -63,7 +61,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         savedInstanceState: Bundle?
     ): View? {
         initInjector()
-        return inflater.inflate(R.layout.up_fragment_follower_following_listing, container, false)
+        return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,7 +71,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
         //initUserPost()
-        setMainUi()
     }
 
     private fun initObserver() {
@@ -108,50 +105,8 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 //            }
 //        })
 
-    private fun setMainUi() {
-        ffViewPager = view?.findViewById(R.id.view_pager)
-        tabLayout = view?.findViewById(R.id.tp_follow)
-//        tabLayout?.addNewTab("Followers")
-//        tabLayout?.addNewTab("Followings")
-        tabLayout?.visibility = View.VISIBLE
-//        tabLayout?.addNewTab("Followers")
-//        tabLayout?.addNewTab("Followings")
+    private fun setMainUi(data: ProfileHeaderBase) {
 
-        initViewPager(ffViewPager!!)
-//
-//        // If we dont use setupWithViewPager() method then
-//        // tabs are not used or shown when activity opened
-        tabLayout?.setupWithViewPager(ffViewPager!!)
-        tabLayout?.getUnifyTabLayout()?.setupWithViewPager(ffViewPager!!)
-        tabLayout?.show()
-    }
-
-    var adapter: ProfileFollowUnfollowViewPagerAdapter? = null
-    private fun initViewPager(viewPager: ViewPager) {
-        adapter = ProfileFollowUnfollowViewPagerAdapter( requireFragmentManager())
-
-        // LoginFragment is the name of Fragment and the Login
-        // is a title of tab
-        adapter?.addFragment(FollowerFollowingListingPagerFragment(), "Follower")
-        adapter?.addFragment(FollowerFollowingListingPagerFragment(), "Following")
-
-        // setting adapter to view pager.
-        viewPager.adapter = adapter
-
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-
-            }
-
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
     }
 
     private fun showLoader() {
@@ -196,7 +151,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     companion object {
         fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowerFollowingListingFragment()
+            val fragment = FollowerFollowingListingPagerFragment()
             fragment.arguments = extras
             return fragment
         }
@@ -229,6 +184,5 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
     override fun onError(pageNumber: Int) {
         // TODO("Not yet implemented")
     }
-
 }
 
