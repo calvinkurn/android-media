@@ -93,8 +93,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var retakeActionCode = NOT_RETAKE
     private var allowedSelfie = false
 
-    private var loadTimeUploadStart: Long = 0
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -141,24 +139,22 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun initObserver() {
-        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, {
+        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    sendLoadTimeUploadLog(true)
                     sendSuccessTimberLog()
                     setKycUploadResultView(it.data)
                 }
                 is Fail -> {
-                    sendLoadTimeUploadLog(false)
                     hideLoading()
                     showUploadError()
                     setFailedResult(it.throwable)
                     sendErrorTimberLog(it.throwable)
                 }
             }
-        })
+        }
 
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, {
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     uploadButton?.isEnabled = true
@@ -202,7 +198,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     Timber.w(it.throwable, "$LIVENESS_TAG: ENCRYPT ERROR")
                 }
             }
-        })
+        }
     }
 
     private fun sendErrorTimberLog(throwable: Throwable) {
@@ -235,19 +231,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                         "ktpPath" to stepperModel?.ktpFile.orEmpty(),
                         "facePath" to stepperModel?.faceFile.orEmpty(),
                         "tkpdProjectId" to projectId.toString())
-        )
-    }
-
-    private fun sendLoadTimeUploadLog(isSuccess: Boolean) {
-        val uploadTimes = (loadTimeUploadStart - System.currentTimeMillis()) / 1000
-        ServerLogger.log(Priority.P2, "KYC_UPLOAD_MONITORING",
-                mapOf(
-                        "type" to if (isSuccess) "Success" else "Failed",
-                        "method" to if (isKycSelfie) "selfie" else "liveness",
-                        "uploadTime" to "${uploadTimes}s",
-                        "ktpFileSize" to "${FileUtil.getFileSizeInKb(stepperModel?.ktpFile.orEmpty())}Kb",
-                        "faceFileSize" to "${FileUtil.getFileSizeInKb(stepperModel?.faceFile.orEmpty())}Kb",
-                )
         )
     }
 
@@ -300,7 +283,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             isFaceFileUsingEncryption: Boolean
     ) {
         showLoading()
-        loadTimeUploadStart = System.currentTimeMillis()
         stepperModel?.let {
             if (isSocketTimeoutException) {
                 isSocketTimeoutException = false
