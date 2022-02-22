@@ -102,7 +102,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupInsets(view)
+        setupInsets()
         setupListener()
         setupObserver()
 
@@ -174,9 +174,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
     }
 
-    private fun setupInsets(view: View) {
-        view.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
+    private fun setupInsets() {
+        binding.viewActionBar.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
         }
 
         binding.flBroStartLivestream.doOnApplyWindowInsets { v, insets, _, margin ->
