@@ -191,15 +191,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MEDIA, loadInitialData) {
-                mediaMap?.run {
-                    initialScrollPosition = 0
-                    listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
-                            it.data.media.toMutableList()
-                    )
-                }
-            }
-
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY, loadInitialData) {
                 shopCredibility?.run {
                     isOs = it.data.isOS
@@ -269,6 +260,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 topAdsProductBundlingData?.run {
                     this.productId = dataP1?.basic?.productID
                 }
+            }
+        }
+    }
+
+    fun updateInitialMedia(media: List<Media>) {
+        updateData(ProductDetailConstant.MEDIA, true) {
+            mediaMap?.run {
+                //todo add logic to search option id
+                initialScrollPosition = if (initialScrollPosition == -1) -1 else 0
+                listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
+                        media.toMutableList()
+                )
+            }
+        }
+    }
+
+    fun updateMediaScrollPosition(selectedOptionId: String?) {
+        if (selectedOptionId == null) return
+        updateData(ProductDetailConstant.MEDIA, true) {
+            mediaMap?.run {
+                this.variantOptionIdScrollAnchor = selectedOptionId
             }
         }
     }
@@ -499,7 +511,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTicker(data : List<TickerDataResponse>?) {
+    fun updateTicker(data: List<TickerDataResponse>?) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 tickerDataResponse = if (data != null && data.isNotEmpty()) {

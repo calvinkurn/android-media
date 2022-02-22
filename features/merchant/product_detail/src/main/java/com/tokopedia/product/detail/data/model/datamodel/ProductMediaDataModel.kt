@@ -10,7 +10,8 @@ data class ProductMediaDataModel(
         val name: String = "",
         var listOfMedia: List<MediaDataModel> = listOf(),
         var initialScrollPosition: Int = -1,
-        var variantScrollPosition: Int = -1
+        //todo implement this
+        var variantOptionIdScrollAnchor: String = "-1"
 ) : DynamicPdpDataModel {
     companion object {
         const val VIDEO_TYPE = "video"
@@ -33,7 +34,7 @@ data class ProductMediaDataModel(
         return if (newData is ProductMediaDataModel) {
             listOfMedia.hashCode() == newData.listOfMedia.hashCode()
                     && initialScrollPosition == newData.initialScrollPosition
-                    && variantScrollPosition == newData.variantScrollPosition
+                    && variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor
         } else {
             false
         }
@@ -46,7 +47,7 @@ data class ProductMediaDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductMediaDataModel) {
-            if (variantScrollPosition != newData.variantScrollPosition) {
+            if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
                 bundle.putInt(
                         ProductDetailConstant.DIFFUTIL_PAYLOAD,
                         ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT

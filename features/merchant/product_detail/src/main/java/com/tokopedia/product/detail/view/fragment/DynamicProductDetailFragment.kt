@@ -1728,11 +1728,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         else pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
                 ?: listOf()
 
-        val selectedChildAndPosition = VariantCommonMapper.selectedProductData(
+        val selectedChild = VariantCommonMapper.selectedProductData(
                 viewModel.variantData
-                        ?: ProductVariant(), selectedOptionIds)
-        val selectedChild = selectedChildAndPosition?.second
-        val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
+                        ?: ProductVariant(), selectedOptionIds
+        )
+        val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(
+                viewModel.getDynamicProductInfoP1,
+                selectedChild,
+                viewModel.listOfParentMedia
+        )
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
@@ -1746,6 +1750,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             )
         }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
+        pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
@@ -1890,8 +1895,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             data.doSuccessOrFail({
                 firstOpenPage = false
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
-                onSuccessGetDataP1(it.data)
-                ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(isSuccess = true)
+                viewModel.getDynamicProductInfoP1?.let {
+                    onSuccessGetDataP1(it)
+                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(isSuccess = true)
+                }
             }, {
                 ServerLogger.log(Priority.P2, "LOAD_PAGE_FAILED",
                         mapOf("type" to "pdp",
@@ -2165,8 +2172,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         submitList(newData ?: listOf())
     }
 
-    private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+    private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
             updateProductId()
 
             productId?.let {
@@ -2189,24 +2195,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         //no op
                     })
 
-            pdpUiUpdater?.updateDataP1(context, productInfo, true)
-            actionButtonView.setButtonP1(productInfo.data.preOrder)
+        pdpUiUpdater?.updateDataP1(context, productInfo, true)
+        pdpUiUpdater?.updateInitialMedia(productInfo.data.media)
+        actionButtonView.setButtonP1(productInfo.data.preOrder)
 
-            if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
-                    (productInfo.basic.category.isAdult && !productInfo.basic.category.isKyc)) {
-                AdultManager.showAdultPopUp(this,
-                        AdultManager.ORIGIN_PDP,
-                        productInfo.basic.productID)
-            }
-
-            if (affiliateString.hasValue()) {
-                viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
-            }
-
-            setupProductVideoCoordinator()
-
-            submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
+        if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
+                (productInfo.basic.category.isAdult && !productInfo.basic.category.isKyc)) {
+            AdultManager.showAdultPopUp(this,
+                    AdultManager.ORIGIN_PDP,
+                    productInfo.basic.productID)
         }
+
+        if (affiliateString.hasValue()) {
+            viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
+        }
+
+        setupProductVideoCoordinator()
+
+        submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
     }
 
     private fun setupProductVideoCoordinator() {
