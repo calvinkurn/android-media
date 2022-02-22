@@ -510,6 +510,7 @@ public interface ApplinkConst {
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
+        String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
     }
 
     interface TokopediaNow {

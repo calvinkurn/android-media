@@ -11,6 +11,7 @@ import com.tokopedia.imagepicker.editor.watermark.builder.Text
 import com.tokopedia.imagepicker.editor.watermark.builder.TextAndImage
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.isDark
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeScaledBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 import com.tokopedia.imagepicker.editor.watermark.utils.takeAndEllipsizeOf
@@ -128,21 +129,8 @@ open class WatermarkBuilder {
         }
     }
 
-    fun getWatermark(type: Int): Watermark {
-        return Watermark(
-            watermarkTextAndImage = watermarkTextAndImage,
-            watermarkImg = watermarkImage,
-            watermarkText = watermarkText,
-            backgroundImg = backgroundImg,
-            onlyWatermark = onlyWatermark,
-            isTitleMode = isTitleMode,
-            isCombine = isCombine,
-            context = context,
-            type = type
-        )
-    }
-
     private fun getWatermarks(): List<Watermark> {
+        val isDark = backgroundImg!!.isDark()
         return this.watermarkTypes.map { watermarkType ->
             Watermark(
                 watermarkTextAndImage = watermarkTextAndImage,
@@ -154,6 +142,7 @@ open class WatermarkBuilder {
                 isCombine = isCombine,
                 context = context,
                 type = watermarkType,
+                isDark = isDark
             )
         }
     }

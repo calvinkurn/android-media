@@ -38,17 +38,18 @@ internal class FilterGeneralDetailAdapter(
     inner class FilterGeneralDetailViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(option: Option) {
-            bindOnClickListener()
+            bindOnClickListener(option)
             bindColorSample(option)
             bindTitle(option)
             bindNewIcon(option)
             bindDescription(option)
+            bindRadioState(option)
             bindCheckedState(option)
         }
 
-        private fun bindOnClickListener() {
+        private fun bindOnClickListener(option: Option) {
             itemView.filterDetailContainer?.setOnClickListener {
-                itemView.filterDetailCheckBox?.isChecked = itemView.filterDetailCheckBox?.isChecked != true
+                callback.onOptionClick(option, !option.isSelected(), adapterPosition)
             }
         }
 
@@ -73,18 +74,29 @@ internal class FilterGeneralDetailAdapter(
             }
         }
 
+        private fun bindRadioState(option: Option) {
+            itemView.filterDetailRadio?.shouldShowWithAction(option.isTypeRadio) {
+                itemView.filterDetailRadio?.isChecked = option.isSelected()
+                itemView.filterDetailRadio?.setOnClickListener {
+                    callback.onOptionClick(option, !option.isSelected(), adapterPosition)
+                }
+            }
+        }
+
         private fun bindCheckedState(option: Option) {
-            itemView.filterDetailCheckBox?.setOnCheckedChangeListener(null)
-            itemView.filterDetailCheckBox?.isChecked = option.isSelected()
-            itemView.filterDetailCheckBox?.setOnCheckedChangeListener { _, isChecked ->
-                callback.onOptionClick(option, isChecked)
+            itemView.filterDetailCheckBox?.shouldShowWithAction(!option.isTypeRadio) {
+                itemView.filterDetailCheckBox?.setOnCheckedChangeListener(null)
+                itemView.filterDetailCheckBox?.isChecked = option.isSelected()
+                itemView.filterDetailCheckBox?.setOnCheckedChangeListener { _, isChecked ->
+                    callback.onOptionClick(option, isChecked, adapterPosition)
+                }
             }
         }
 
         private fun Option.isSelected() = inputState.toBoolean()
     }
 
-    internal interface Callback {
-        fun onOptionClick(option: Option, isChecked: Boolean)
+    interface Callback {
+        fun onOptionClick(option: Option, isChecked: Boolean, position: Int)
     }
 }
