@@ -125,7 +125,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
 
     private fun RecyclerView.resetLayout() {
         val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.MATCH_PARENT
         this.layoutParams = carouselLayoutParams
     }
 
