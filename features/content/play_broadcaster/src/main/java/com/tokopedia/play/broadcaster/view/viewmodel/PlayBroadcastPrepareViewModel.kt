@@ -14,6 +14,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.error.ClientException
 import com.tokopedia.play.broadcaster.error.PlayErrorCode
@@ -95,11 +96,15 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         return@withContext setupDataStore.uploadTitle(hydraConfigStore.getChannelId())
     }
 
+    fun validateLiveStreamData(): Boolean {
+        return if (!isCoverAvailable()) {
+            _observableCreateLiveStream.value = NetworkResult.Fail(MessageErrorException("Kamu perlu upload cover dulu, ya."))
+            false
+        } else true
+    }
+
     fun createLiveStream() {
-        if (!isDataAlreadyValid()) {
-            _observableCreateLiveStream.value = NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
-            return
-        }
+        if(!validateLiveStreamData()) return
 
         _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
@@ -128,9 +133,14 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
-    private fun isDataAlreadyValid(): Boolean {
+    private fun isCoverAvailable(): Boolean {
         val currentCover = mDataStore.getSetupDataStore().getSelectedCover()
-        return currentCover?.croppedCover is CoverSetupState.Cropped
+        return when(val cover = currentCover?.croppedCover) {
+            is CoverSetupState.Cropped.Uploaded -> {
+                cover.localImage != null || cover.coverImage.toString().isNotEmpty()
+            }
+            else -> false
+        }
     }
 
     private fun setIngestUrl(ingestUrl: String) {

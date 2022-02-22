@@ -35,11 +35,14 @@ import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
 import java.util.*
@@ -75,6 +78,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun getScreenName(): String = "Play Prepare Page"
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
 
     /** Lifecycle */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,7 +176,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun setupInsets(view: View) {
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
+        }
+
+        binding.flBroStartLivestream.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
+
+        binding.viewPreparationMenu.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
         }
     }
 
@@ -193,8 +218,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 //                        return@setOnClickListener
 //                    }
 //                }
-
-                startCountDown()
+                if(viewModel.validateLiveStreamData()) startCountDown()
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
@@ -223,7 +247,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
                     binding.formTitle.setLoading(false)
-                    showErrorToaster(content.error)
+                    toaster.showError(content.error)
                 }
                 is NetworkResult.Success -> {
                     if (!it.hasBeenHandled) {
@@ -258,7 +282,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
                 is NetworkResult.Fail -> {
                     showCountdown(false)
-                    showErrorToaster(it.error)
+                    toaster.showError(
+                        err = it.error,
+                        customErrMessage = it.error.message
+                    )
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
@@ -289,7 +316,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
     }
-
 
     private fun renderProductMenu(prevState: PlayBroadcastUiState?, state: PlayBroadcastUiState) {
         if (prevState?.selectedProduct != state.selectedProduct) {
@@ -391,50 +417,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return ErrorHandler.getErrorMessage(context, err)
     }
 
-    private fun showErrorToaster(
-        err: Throwable,
-        customErrMessage: String? = null,
-        actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {  }
-    ) {
-        val errMessage = if (customErrMessage == null) {
-            ErrorHandler.getErrorMessage(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-        } else {
-            val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-            getString(
-                com.tokopedia.play_common.R.string.play_custom_error_handler_msg,
-                customErrMessage,
-                errCode
-            )
-        }
-        showToaster(errMessage, Toaster.TYPE_ERROR, actionLabel, actionListener)
-    }
-
-    private fun showToaster(
-        message: String,
-        type: Int = Toaster.TYPE_NORMAL,
-        actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {  }
-    ) {
-        view?.showToaster(
-            message = message,
-            actionLabel = actionLabel,
-            type = type,
-            actionListener = actionListener
-        )
-    }
-
     private fun handleLivePushError(state: PlayLiveViewState.Error) {
         when(state.error.type) {
-            PlayLivePusherErrorType.ConnectFailed -> showErrorToaster(
+            PlayLivePusherErrorType.ConnectFailed -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
                 actionLabel = getString(R.string.play_broadcast_try_again),
@@ -443,19 +428,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     parentViewModel.reconnectLiveStream()
                 }
             )
-            PlayLivePusherErrorType.SystemError -> showErrorToaster(
+            PlayLivePusherErrorType.SystemError -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_dialog_unsupported_device_desc),
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
             PlayLivePusherErrorType.NetworkLoss,
-            PlayLivePusherErrorType.NetworkPoor -> showErrorToaster(
+            PlayLivePusherErrorType.NetworkPoor -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_bro_error_network_problem),
                 actionLabel = getString(R.string.play_ok)
             )
-            else -> showErrorToaster(
+            else -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_broadcaster_default_error),
                 actionLabel = getString(R.string.play_ok)
