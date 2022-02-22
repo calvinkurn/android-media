@@ -38,7 +38,6 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
             disable {
               status
               header
-              description
             }
             cta {
               name
