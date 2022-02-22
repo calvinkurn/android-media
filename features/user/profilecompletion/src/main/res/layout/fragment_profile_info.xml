@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
+    android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
@@ -7,11 +8,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@color/Unify_Background">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:id="@+id/profileInfoImageUnify"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -30,7 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileInfoImageUnify"
-            app:typographyType="heading_5" />
+            app:typographyType="heading_4" />
 
         <View
             android:id="@+id/fragmentInfoDivider1"
@@ -43,9 +44,10 @@
             app:layout_constraintTop_toBottomOf="@+id/profileInfoImageSubtitle" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:id="@+id/fragmentProfileInfoRv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
