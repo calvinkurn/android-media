@@ -124,10 +124,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 updateCarouselWithCart(component)
                 listComponents.add(component)
             }
-            ComponentNames.AnchorTabs.componentName -> {
-                saveSectionPosition(component.pageEndPoint, ComponentNames.AnchorTabs.componentName, component.position)
-                listComponents.add(component)
-            }
+//            ComponentNames.AnchorTabs.componentName -> {
+//                saveSectionPosition(component.pageEndPoint, ComponentNames.AnchorTabs.componentName, component.position)
+//                listComponents.add(component)
+//            }
             ComponentNames.Section.componentName ->{
                 saveSectionPosition(component.pageEndPoint, component.sectionId, component.position)
                 listComponents.addAll(parseSectionComponent(component))

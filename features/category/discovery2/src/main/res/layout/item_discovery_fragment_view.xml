@@ -26,6 +26,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
         tools:visibility="visible"/>
+    <!--     Can add layout for CustomView here-->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/header_comp_holder"
+        app:layout_constraintBottom_toTopOf="@id/discovery_recyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/divider_view"/>
 
     <com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
         android:id="@+id/discovery_recyclerView"
@@ -34,7 +43,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
-        app:layout_constraintTop_toBottomOf="@+id/divider_view" />
+        app:layout_constraintTop_toBottomOf="@+id/header_comp_holder" />
 
     <com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
         android:id="@+id/fab"

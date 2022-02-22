@@ -79,6 +79,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
+    private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
@@ -234,6 +235,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                             discoveryResponseList.postValue(Success(it.components))
                             findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
+                            findAnchorTabComponentsIfAny(it.components)
                         }
                     }
                 },
@@ -278,6 +280,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
     fun getDiscoveryBottomNavLiveData(): LiveData<Result<ComponentsItem>> = discoveryBottomNavLiveData
+    fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
@@ -376,6 +379,16 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             discoveryBottomNavLiveData.postValue(Fail(Throwable()))
         }
     }
+    private fun findAnchorTabComponentsIfAny(components: List<ComponentsItem>?) {
+        val tabDataComponent = components?.find {
+            it.name == ComponentNames.AnchorTabs.componentName && it.renderByDefault
+        }
+        if (tabDataComponent != null) {
+            discoveryAnchorTabLiveData.postValue(Success(tabDataComponent))
+        } else {
+            discoveryAnchorTabLiveData.postValue(Fail(Throwable()))
+        }
+    }
 
     fun getTabItem(position: Int): DataItem? {
         bottomTabNavDataComponent?.let {
@@ -422,5 +435,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun updateScroll(dx: Int, dy: Int, newState: Int) {
         _scrollState.value = ScrollData(dx,dy,newState)
+    }
+
+    fun resetScroll(){
+        _scrollState.value = null
     }
 }

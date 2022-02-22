@@ -127,6 +127,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
         mCurrentHeader = currentHeader
+        if (currentHeader == null) {
+            (fragment as DiscoveryFragment).stickyHeaderIsHidden()
+        } else
+            (fragment as DiscoveryFragment).showingStickyHeader()
     }
 
     fun getCurrentHeader() = mCurrentHeader

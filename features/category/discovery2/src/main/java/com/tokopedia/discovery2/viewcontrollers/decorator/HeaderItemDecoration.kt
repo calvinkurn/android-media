@@ -53,13 +53,14 @@ class HeaderItemDecoration(
         if (parent.adapter == null) {
             return null
         }
+        if (itemPosition < getRecyclerAdapter().currentList.size)
+            getRecyclerAdapter().currentList[itemPosition].parentSectionId?.let {
+                if (it.isNotEmpty())
+                    notifySection(it)
+            }
 
         val headerPosition = getHeaderPositionForItem(itemPosition)
         if (headerPosition == RecyclerView.NO_POSITION) return null
-        getRecyclerAdapter().currentList[itemPosition].parentSectionId?.let {
-            if (it.isNotEmpty())
-                notifySection(it)
-        }
         val headerType = parent.adapter?.getItemViewType(headerPosition) ?: return null
         if (getRecyclerAdapter().getCurrentHeader()?.second?.itemViewType == headerType) {
             return getRecyclerAdapter().getCurrentHeader()?.second?.itemView

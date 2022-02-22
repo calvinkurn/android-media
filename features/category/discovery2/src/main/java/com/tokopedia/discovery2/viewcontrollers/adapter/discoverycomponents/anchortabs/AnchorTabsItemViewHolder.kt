@@ -35,9 +35,11 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
     private lateinit var viewModel: AnchorTabsItemViewModel
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
     val observer = Observer<ScrollData> { data ->
-        if(!horizontalTab) {
-            shouldShowIcons = data.dy < 0
-            setupImage()
+        data?.let {
+            if (!horizontalTab) {
+                shouldShowIcons = data.dy < 0
+                setupImage()
+            }
         }
     }
 

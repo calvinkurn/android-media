@@ -23,7 +23,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var viewModel: AnchorTabsViewModel
+    lateinit var viewModel: AnchorTabsViewModel
 
     val observer = Observer<ScrollData> { data ->
         data?.let {
@@ -44,7 +44,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
             return if (displayMetrics != null) {
 //                Todo:: convert to constant
-                return 150f/displayMetrics.densityDpi
+                return 100f/displayMetrics.densityDpi
             } else
                 super.calculateSpeedPerPixel(displayMetrics)
 

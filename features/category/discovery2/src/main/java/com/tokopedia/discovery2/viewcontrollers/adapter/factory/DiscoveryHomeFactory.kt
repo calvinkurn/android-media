@@ -211,7 +211,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
 
             initializeComponent(ComponentsList.Section,::SectionViewHolder,::SectionViewModel)
-            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
+//            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
             initializeComponent(ComponentsList.AnchorTabsItem,::AnchorTabsItemViewHolder,::AnchorTabsItemViewModel)
             //Calendar View
             initializeComponent(ComponentsList.CalendarWidgetCarousel, ::CalendarWidgetCarouselViewHolder, ::CalendarWidgetCarouselViewModel)
