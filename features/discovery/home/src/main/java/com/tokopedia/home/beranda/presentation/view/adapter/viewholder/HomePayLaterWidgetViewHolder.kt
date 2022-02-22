@@ -9,8 +9,6 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.home_dc_paylater_widget.view.*
 
 class HomePayLaterWidgetViewHolder (

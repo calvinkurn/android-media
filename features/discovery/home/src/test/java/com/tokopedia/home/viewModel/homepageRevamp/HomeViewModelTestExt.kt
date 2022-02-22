@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
+import com.tokopedia.gopayhomewidget.presentation.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -75,7 +76,8 @@ fun createHomeViewModel(
         homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
         homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true),
         getCMHomeWidgetDataUseCase : GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
-        deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true)
+        deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
+        getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -95,7 +97,8 @@ fun createHomeViewModel(
             homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
             homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase },
             getCMHomeWidgetDataUseCase = Lazy{ getCMHomeWidgetDataUseCase },
-            deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase }
+            deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase },
+            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase }
     )
 }
 
