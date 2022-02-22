@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers.activity
+package com.tokopedia.tradein.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInPromoDetailPageFragment
+import com.tokopedia.tradein.view.fragment.TradeInPromoDetailPageFragment
 
 class TradeInPromoActivity : BaseSimpleActivity() {
 

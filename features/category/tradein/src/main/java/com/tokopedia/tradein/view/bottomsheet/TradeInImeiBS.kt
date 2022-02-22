@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
+package com.tokopedia.tradein.view.bottomsheet
 
 import android.app.Dialog
 import android.os.Bundle

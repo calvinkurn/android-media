@@ -1,9 +1,11 @@
 package com.tokopedia.tradein.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.tradein.view.viewcontrollers.activity.*
-import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiBS
-import com.tokopedia.tradein.view.viewcontrollers.fragment.*
+import com.tokopedia.tradein.view.activity.TradeInHomePageActivity
+import com.tokopedia.tradein.view.activity.TradeInInfoActivity
+import com.tokopedia.tradein.view.bottomsheet.TradeInImeiBS
+import com.tokopedia.tradein.view.fragment.TradeInHomePageFragment
+import com.tokopedia.tradein.view.fragment.TradeInPromoDetailPageFragment
 import dagger.Component
 
 @TradeInScope

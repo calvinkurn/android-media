@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application android:usesCleartextTraffic="true">
         <activity
-            android:name=".view.viewcontrollers.activity.TradeInInfoActivity"
+            android:name=".view.activity.TradeInInfoActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:exported="false">
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.viewcontrollers.activity.TradeInHomePageActivity"
+            android:name=".view.activity.TradeInHomePageActivity"
             android:label="@string/tukar_tambah"
             android:launchMode="singleTask"
             android:exported="false">
@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.viewcontrollers.activity.TradeInPromoActivity"
+            android:name=".view.activity.TradeInPromoActivity"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>

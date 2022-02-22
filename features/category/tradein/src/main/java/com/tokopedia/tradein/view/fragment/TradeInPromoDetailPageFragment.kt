@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers.fragment
+package com.tokopedia.tradein.view.fragment
 
 import android.content.ClipData
 import android.content.ClipboardManager

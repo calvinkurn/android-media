@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers.activity
+package com.tokopedia.tradein.view.activity
 
 import android.os.Bundle
 import android.util.DisplayMetrics

@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers.fragment
+package com.tokopedia.tradein.view.fragment
 
 import android.graphics.Paint
 import android.os.Bundle
@@ -34,10 +34,10 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.TradeInDetailModel
-import com.tokopedia.tradein.view.viewcontrollers.activity.TradeInPromoActivity
-import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInExchangeMethodBS
-import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiBS
-import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInOutsideCoverageBottomSheet
+import com.tokopedia.tradein.view.activity.TradeInPromoActivity
+import com.tokopedia.tradein.view.bottomsheet.TradeInExchangeMethodBS
+import com.tokopedia.tradein.view.bottomsheet.TradeInImeiBS
+import com.tokopedia.tradein.view.bottomsheet.TradeInOutsideCoverageBottomSheet
 import com.tokopedia.tradein.viewmodel.TradeInHomePageFragmentVM
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
 import com.tokopedia.unifycomponents.ImageUnify

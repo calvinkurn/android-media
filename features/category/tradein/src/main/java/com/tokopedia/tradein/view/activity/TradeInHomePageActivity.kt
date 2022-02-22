@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers.activity
+package com.tokopedia.tradein.view.activity
 
 import android.Manifest
 import android.content.Intent
@@ -22,8 +22,8 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
-import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInEducationalPageFragment
-import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInHomePageFragment
+import com.tokopedia.tradein.view.fragment.TradeInEducationalPageFragment
+import com.tokopedia.tradein.view.fragment.TradeInHomePageFragment
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
@@ -78,7 +78,8 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA,
                 Manifest.permission.VIBRATE),
-                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
+                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+            )
         } else {
             setUpEducationalFragment()
         }
