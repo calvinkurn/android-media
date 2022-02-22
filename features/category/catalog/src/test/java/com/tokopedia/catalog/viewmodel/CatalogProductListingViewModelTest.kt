@@ -5,23 +5,25 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
 import com.tokopedia.catalog.CatalogTestUtils
-import com.tokopedia.catalog.model.raw.*
+import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.model.raw.CatalogSearchProductResponse
+import com.tokopedia.catalog.model.raw.ProductListResponse
+import com.tokopedia.catalog.model.raw.SearchFilterResponse
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.model.filter.FilterResponse
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -93,6 +95,15 @@ class CatalogProductListingViewModelTest {
             assert(false)
         }
         viewModel.onDetach()
+    }
+
+    @Test
+    fun `Get Catalog Product Response Fail`() {
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onError(Throwable("No Data"))
+        }
+        viewModel.fetchProductListing(RequestParams())
+        if(viewModel.mProductList.value is Fail) { assert(true) }else { assert(false) }
     }
 
     @Test

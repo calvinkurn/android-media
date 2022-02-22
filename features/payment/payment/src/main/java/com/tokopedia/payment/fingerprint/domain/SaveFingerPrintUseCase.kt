@@ -1,6 +1,6 @@
 package com.tokopedia.payment.fingerprint.domain
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

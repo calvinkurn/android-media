@@ -31,7 +31,6 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.TabsUnify
-import io.embrace.android.embracesdk.Embrace
 import java.util.*
 
 @SuppressLint("SyntheticAccessor")
@@ -94,7 +93,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         setHeaderComponent(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
-        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         showLoading()
         errorBuWidget.hide()
         tabLayout.show()
@@ -109,7 +107,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             initContainerColor(element.backColor)
             performanceMonitoring?.stopTrace()
             performanceMonitoring = null
-            Embrace.getInstance().endEvent(performanceTraceName)
         }
         if(element?.contentsList != null){
             initViewPager(element.contentsList)
@@ -144,7 +141,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     }
                     performanceMonitoring?.stopTrace()
                     performanceMonitoring = null
-                    Embrace.getInstance().endEvent(performanceTraceName)
                 } else if(bundle.containsKey(UPDATE_BUNDLE_CONTENT_LAYOUT)){
                     if(element?.contentsList != null){
                         initViewPager(element.contentsList)

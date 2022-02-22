@@ -3,9 +3,14 @@ package com.tokopedia.shop.home.view.viewmodel
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DataValue
@@ -32,11 +37,9 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
-import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
@@ -49,9 +52,6 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -97,6 +97,9 @@ class ShopHomeViewModelTest {
 
     @RelaxedMockK
     lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartBundleUseCase: AddToCartBundleUseCase
 
     @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
@@ -199,6 +202,7 @@ class ShopHomeViewModelTest {
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
                 addToCartOccUseCase,
+                addToCartBundleUseCase,
                 gqlCheckWishlistUseCaseProvider,
                 getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,
@@ -439,6 +443,86 @@ class ShopHomeViewModelTest {
                 onErrorAddToCart
         )
         verify { onErrorAddToCart.invoke(any()) }
+    }
+
+    @Test
+    fun `check whether onFinishAddToCart is called when call addBundleToCart success`() {
+        val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
+
+        val mockBundleProductList = listOf(
+                ProductDetail(
+                        productId = "111",
+                        quantity = 1,
+                        shopId = "123",
+                        customerId = "321"
+                )
+        )
+
+        val mockAtcBundleParams = AddToCartBundleRequestParams(
+                shopId = "123",
+                bundleId = "222",
+                bundleQty = 1,
+                selectedProductPdp = "0",
+                productDetails = mockBundleProductList
+        )
+
+        coEvery {
+            addToCartBundleUseCase.setParams(mockAtcBundleParams)
+            addToCartBundleUseCase.executeOnBackground()
+        } throws Throwable()
+        viewModel.addBundleToCart(
+                shopId = "123",
+                userId = "321",
+                bundleId = "222",
+                productDetails = listOf(ShopHomeBundleProductUiModel()),
+                {},
+                onErrorAddToCart,
+                bundleQuantity = 1
+        )
+
+        verify { onErrorAddToCart.invoke(any()) }
+    }
+
+    @Test
+    fun `check whether onErrorAddToCart is called when call addBundleToCart throw exception`() {
+        val onFinishAddToCart: (AddToCartBundleModel) -> Unit = mockk(relaxed = true)
+
+        val mockBundleProductList = listOf(
+                ProductDetail(
+                        productId = "111",
+                        quantity = 1,
+                        shopId = "123",
+                        customerId = "321"
+                )
+        )
+
+        val mockAtcBundleParams = AddToCartBundleRequestParams(
+                shopId = "123",
+                bundleId = "222",
+                bundleQty = 1,
+                selectedProductPdp = "0",
+                productDetails = mockBundleProductList
+        )
+
+        coEvery {
+            addToCartBundleUseCase.setParams(mockAtcBundleParams)
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(
+                status = "OK",
+                errorMessage = "",
+                addToCartBundleDataModel = AddToCartBundleDataModel(success = 1)
+        )
+        viewModel.addBundleToCart(
+                shopId = "123",
+                userId = "321",
+                bundleId = "222",
+                productDetails = listOf(ShopHomeBundleProductUiModel()),
+                onFinishAddToCart = onFinishAddToCart,
+                {},
+                bundleQuantity = 1
+        )
+
+        verify { onFinishAddToCart.invoke(any()) }
     }
 
     @Test

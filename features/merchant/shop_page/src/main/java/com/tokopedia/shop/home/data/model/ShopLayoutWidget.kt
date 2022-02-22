@@ -7,9 +7,9 @@ data class ShopLayoutWidget(
         @SerializedName("layoutID")
         val layoutId: String = "",
         @SerializedName("masterLayoutID")
-        val masterLayoutID: Int = -1,
+        val masterLayoutID: String = "",
         @SerializedName("merchantTierID")
-        val merchantTierID: Int = -1,
+        val merchantTierID: String = "",
         @SerializedName("status")
         val status: Int = -1,
         @SerializedName("maxWidgets")
@@ -61,6 +61,14 @@ data class ShopLayoutWidget(
         )
 
         data class Data(
+                @SerializedName("bundleGroupID")
+                val bundleGroupId: String = "0",
+                @SerializedName("bundleName")
+                val bundleName: String = "",
+                @SerializedName("bundleDetails")
+                val bundleDetails: List<ProductBundleDetailsItem> = listOf(),
+                @SerializedName("bundleProducts")
+                val bundleProducts: List<BundleProduct> = listOf(),
                 @SerializedName("imageUrl")
                 val imageUrl: String = "",
                 @SerializedName("appLink")
@@ -72,7 +80,7 @@ data class ShopLayoutWidget(
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
                 @SerializedName("linkID")
-                val linkId: Long = 0,
+                val linkId: String = "",
                 @SerializedName("productID")
                 val productID: String = "",
                 @SerializedName("name")
@@ -139,6 +147,42 @@ data class ShopLayoutWidget(
                 val minimumOrder: Int? = 1
 
         ) {
+            data class ProductBundleDetailsItem(
+                    @SerializedName("bundleID")
+                    val bundleId: String = "0",
+                    @SerializedName("originalPrice")
+                    val originalPrice: String = "0",
+                    @SerializedName("displayPrice")
+                    val displayPrice: String = "0",
+                    @SerializedName("displayPriceRaw")
+                    val displayPriceRaw: Long = 0,
+                    @SerializedName("discountPercentage")
+                    val discountPercentage: Int = 0,
+                    @SerializedName("isPO")
+                    val isPO: Boolean = false,
+                    @SerializedName("isProductsHaveVariant")
+                    val isProductsHaveVariant: Boolean = false,
+                    @SerializedName("preorderInfo")
+                    val preorderInfo: String = "",
+                    @SerializedName("savingAmountWording")
+                    val savingAmountWording: String = "",
+                    @SerializedName("minOrder")
+                    val minOrder: Int = 0,
+                    @SerializedName("minOrderWording")
+                    val minOrderWording: String = "",
+            )
+
+            data class BundleProduct(
+                    @SerializedName("productID")
+                    val productId: String = "0",
+                    @SerializedName("productName")
+                    val productName: String = "",
+                    @SerializedName("imageUrl")
+                    val productImageUrl: String = "",
+                    @SerializedName("appLink")
+                    val productAppLink: String = "",
+            )
+
             data class Banner(
                     @SerializedName("imageID")
                     val imageId: String = "",
