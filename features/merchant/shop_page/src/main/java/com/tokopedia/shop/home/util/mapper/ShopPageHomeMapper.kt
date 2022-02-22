@@ -445,7 +445,7 @@ object ShopPageHomeMapper {
                 ctaText = widgetResponse.header.ctaText,
                 ctaTextLink = widgetResponse.header.ctaLink,
                 endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
-                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
+                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
                 totalProduct = widgetResponse.data.firstOrNull()?.totalProduct.orZero()
             ),
             widgetMasterId = widgetResponse.widgetMasterID,
