@@ -303,6 +303,50 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         })
     }
 
+    private fun showFraudTicker() {
+        var currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
+        if (currentFragment == null) {
+            showLoginPortal()
+            currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
+        }
+        currentFragment?.let { fragment ->
+            (fragment as? AffiliateLoginFragment)?.showFraudTicker()
+        }
+
+    }
+
+    override fun onRegistrationSuccessful() {
+        showSplashScreen()
+    }
+
+    var splashHandler: Handler? = null
+    var isBackEnabled = true
+
+    private val splashRunnable = Runnable {
+        isBackEnabled = true
+        findViewById<Group>(R.id.splash_group)?.hide()
+        showAffiliatePortal()
+    }
+
+    private fun showSplashScreen() {
+        clearBackStack()
+        findViewById<Typography>(R.id.splash_title).text =
+            getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
+                "{name}",
+                userSessionInterface.name
+            )
+        findViewById<Group>(R.id.splash_group)?.show()
+        isBackEnabled = false
+        splashHandler = Handler(Looper.getMainLooper())
+        splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
+    }
+
+    override fun onDestroy() {
+        splashHandler?.removeCallbacks(splashRunnable)
+        super.onDestroy()
+    }
+
     private fun openFragment(fragment: Fragment) {
         val backStackName = fragment.javaClass.name
         val ft = supportFragmentManager.beginTransaction()

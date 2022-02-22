@@ -21,8 +21,8 @@ object GetBalanceAndPointQuery {
     """.trimIndent()
 
     val tokopointsQuery: String = """
-        query{
-            tokopointsAccountPage{
+        query tokopoints_account_page {
+            tokopointsAccountPage {
                 id
                 icon
                 title
@@ -37,8 +37,8 @@ object GetBalanceAndPointQuery {
     """.trimIndent()
 
     val saldoQuery: String = """
-        query{
-            midasGetSaldoWidgetBalance{
+        query saldo_widget_balance {
+            midasGetSaldoWidgetBalance {
                 id
                 icon
                 title
@@ -52,8 +52,8 @@ object GetBalanceAndPointQuery {
     """.trimIndent()
 
     val coBrandCCQuery: String = """
-        query {
-            cc_cobrand_getstatesforaccounts() {
+        query cobrand_get_states_for_accounts {
+            cc_cobrand_getstatesforaccounts {
                 id
                 icon
                 title
