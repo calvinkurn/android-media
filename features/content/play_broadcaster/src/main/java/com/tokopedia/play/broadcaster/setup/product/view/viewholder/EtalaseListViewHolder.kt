@@ -38,7 +38,7 @@ internal class EtalaseListViewHolder private constructor() {
     }
 
     internal class Body(
-        private val binding: ItemEtalaseListBodyBinding,
+        internal val binding: ItemEtalaseListBodyBinding,
         private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -78,8 +78,6 @@ internal class EtalaseListViewHolder private constructor() {
 
             binding.icEtalaseChecked.visibility = if (item.isSelected) View.VISIBLE else View.GONE
 
-            binding.viewDivider.visibility = if(item.isShowDivider) View.VISIBLE else View.GONE
-
             itemView.setOnClickListener {
                 listener.onCampaignClicked(item.campaignUiModel)
             }
@@ -97,8 +95,6 @@ internal class EtalaseListViewHolder private constructor() {
             binding.labelStatus.visibility = View.GONE
 
             binding.icEtalaseChecked.visibility = if (item.isSelected) View.VISIBLE else View.GONE
-
-            binding.viewDivider.visibility = if(item.isShowDivider) View.VISIBLE else View.GONE
 
             itemView.setOnClickListener {
                 listener.onEtalaseClicked(item.etalaseUiModel)
