@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.analytic
 
-import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
@@ -879,9 +878,8 @@ object SellerHomeTracking {
     }
 
     fun sendCalendarItemClickEvent(element: CalendarWidgetUiModel, event: CalendarEventUiModel) {
-        val isEmpty = element.data?.eventGroups.isNullOrEmpty()
-        val emptyLabel = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
-        val dateRage = "${element.filter.startDate} - ${element.filter.endDate}"
+        val emptyLabel = TrackingConstant.NOT_EMPTY
+        val dateRage = "${event.startDate} - ${event.endDate}"
         val eventTitle = "${event.label} ${event.eventName}"
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,

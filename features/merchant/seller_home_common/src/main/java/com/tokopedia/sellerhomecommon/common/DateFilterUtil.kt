@@ -160,6 +160,7 @@ object DateFilterUtil {
             context: Context,
             maxDaysCount: Int
         ): DateFilterItem.MonthPickerItem {
+            val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(ShcConst.INT_30.toLong()))
             val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(maxDaysCount.toLong()))
             val defaultDate = Date()
             val (startDate, endDate) = getStartAndEndDateInAMonth(defaultDate)
@@ -167,7 +168,7 @@ object DateFilterUtil {
                 label = context.getString(R.string.shc_per_month),
                 startDate = startDate,
                 endDate = endDate,
-                monthPickerMinDate = defaultDate,
+                monthPickerMinDate = minDate,
                 monthPickerMaxDate = maxDate
             )
         }
