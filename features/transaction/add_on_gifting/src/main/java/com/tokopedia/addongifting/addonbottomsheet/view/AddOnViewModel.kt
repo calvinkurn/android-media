@@ -67,8 +67,12 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun generateGetAddOnByProductRequestParams(addOnProductData: AddOnProductData): GetAddOnByProductRequest {
         return GetAddOnByProductRequest().apply {
             addOnRequest = addOnProductData.availableBottomSheetData.products.map {
+                var parentId = ""
+                parentId = if (it.productParentId.isNotEmpty() && it.productParentId.toLongOrZero() > 0) {
+                    it.productParentId
+                } else it.productId
                 AddOnByProductRequest().apply {
-                    productId = it.productId
+                    productId = parentId
                     warehouseId = addOnProductData.availableBottomSheetData.warehouseId
                     addOnLevel = if (addOnProductData.availableBottomSheetData.isTokoCabang) {
                         AddOnByProductRequest.ADD_ON_LEVEL_ORDER
@@ -210,6 +214,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                 warehouseId = addOnProductData.availableBottomSheetData.warehouseId.toLongOrZero()
                                 productName = it.productName
                                 productImageUrl = it.productImageUrl
+                                productParentId = it.productParentId
                             }
                         }
                         _addOnUiModel.value.let {

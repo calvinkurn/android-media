@@ -251,6 +251,7 @@ class ShipmentMapper @Inject constructor() {
                     if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
                         purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
                     }
+                    variantParentId = product.productVariantsResponse.parentId
                     variant = product.variantDescriptionDetail.variantDescription
                     productAlertMessage = product.productAlertMessage
                     productInformation = product.productInformation

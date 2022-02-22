@@ -38,6 +38,7 @@ data class OrderProduct(
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
         var variant: String = "",
+        var variantParentId: String = "",
         var productWarningMessage: String = "",
         var productAlertMessage: String = "",
         var slashPriceLabel: String = "",
