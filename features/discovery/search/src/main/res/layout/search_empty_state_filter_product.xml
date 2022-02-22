@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/imgNoResultFilter"
+        android:layout_width="258dp"
+        android:layout_height="185dp"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="45dp"
+        app:remoteFileName="filtered_product_empty_state.png"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtNoResultFilterTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/msg_empty_search_product_title_with_filter"
+        android:maxLines="2"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_2"
+        app:layout_constraintTop_toBottomOf="@id/imgNoResultFilter"
+        app:layout_constraintStart_toStartOf="@id/imgNoResultFilter"
+        app:layout_constraintEnd_toEndOf="@id/imgNoResultFilter" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtNoResultFilterDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/msg_empty_search_product_content_with_filter"
+        android:maxLines="2"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:layout_constraintTop_toBottomOf="@id/txtNoResultFilterTitle"
+        app:layout_constraintStart_toStartOf="@id/imgNoResultFilter"
+        app:layout_constraintEnd_toEndOf="@id/imgNoResultFilter" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnResetFilters"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/empty_search_product_reset_filter"
+        android:maxLines="2"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_96"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
+        app:layout_constraintTop_toBottomOf="@id/txtNoResultFilterDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
