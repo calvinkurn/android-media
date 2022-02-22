@@ -211,12 +211,16 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 setLoading(false)
-                if (msg.isEmpty()) {
+                if (msg.first.isEmpty()) {
                     showIndicatorIcon()
                     clearErrorState()
                 } else {
                     hideIndicatorIcon()
-                    setErrorInputField(msg)
+                    setErrorInputField(msg.first)
+                    if (msg.second){
+                        showErrorToaster(MessageErrorException(msg.first))
+                        onLoadingBuyWidget(false)
+                    }
                 }
             }
         })
@@ -553,6 +557,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
                 hideEmptyState()
             } else {
+                viewModel.isEligibleToBuy = false
                 showEmptyState()
             }
         }
@@ -735,6 +740,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     override fun onClickedButton() {
+        onLoadingBuyWidget(true)
         if (viewModel.isEligibleToBuy) {
             viewModel.updateCheckoutPassData(
                 userSession.userId.generateRechargeCheckoutToken(),
@@ -746,7 +752,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 navigateToLoginPage()
             }
         } else {
-            showErrorToaster(viewModel.getErrorMessageValidator())
+            viewModel.validateClientNumber(binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "", true)
         }
     }
 

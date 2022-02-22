@@ -70,8 +70,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val inquiry: LiveData<RechargeNetworkResult<TopupBillsEnquiryData>>
         get() = _inquiry
 
-    private val _clientNumberValidatorMsg = MutableLiveData<String>()
-    val clientNumberValidatorMsg: LiveData<String>
+    private val _clientNumberValidatorMsg = MutableLiveData<Pair<String, Boolean>>()
+    val clientNumberValidatorMsg: LiveData<Pair<String, Boolean>>
         get() = _clientNumberValidatorMsg
 
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
@@ -146,7 +146,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun validateClientNumber(clientNumber: String) {
+    fun validateClientNumber(clientNumber: String, isShowToaster: Boolean = false) {
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
             launchCatchError(dispatchers.main, block = {
@@ -160,7 +160,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 }
                 isEligibleToBuy = errorMessage.isEmpty()
                 delay(VALIDATOR_DELAY_TIME)
-                _clientNumberValidatorMsg.value = errorMessage
+                _clientNumberValidatorMsg.value = Pair(errorMessage, isShowToaster)
             }) {
                 if (it !is CancellationException) {
 
@@ -211,10 +211,6 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun getErrorMessageValidator(): Throwable {
-        return MessageErrorException(clientNumberValidatorMsg.value)
     }
 
     companion object {
