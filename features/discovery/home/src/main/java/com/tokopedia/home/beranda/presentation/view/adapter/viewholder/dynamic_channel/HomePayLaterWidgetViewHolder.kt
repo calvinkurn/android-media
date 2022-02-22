@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
 import androidx.annotation.LayoutRes

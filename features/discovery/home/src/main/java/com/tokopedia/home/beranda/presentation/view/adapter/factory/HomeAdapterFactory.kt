@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -466,7 +465,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 view,
                 cmHomeWidgetCallback
             )
-            HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder =HomePayLaterWidgetViewHolder(
+            HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
 
 
