@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.views.MvcDetailViewContract
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
@@ -31,6 +32,8 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val divider: View = itemView.findViewById(R.id.divider)
     private val REDIRECT_CHECK = "redirect"
     private val INFO_CHECK = "info"
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(itemView.context) }
+    private val KEY_REMOTE_CONFIG_ENABLE_MVC_DISCO_PAGE = "android_enable_shop_mvc_disco_page"
 
     init {
         rvImage.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -55,8 +58,12 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         rel_cta.setOnClickListener {
                             contract.getMvcTracker()?.userClickEntryPointOnMVCLockToProduct(
                                 shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
-                            val applinkUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://1028-staging-feature.tokopedia.com/toko-02/voucher/38356")
-                            RouteManager.route(itemView.context, applinkUrl)
+                            if(isMvcDiscoveryPageEnabled()){
+                                RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                            }else{
+                                val url = "${ApplinkConst.WEBVIEW}?titlebar=false&url=${data.ctaCatalog.url}"
+                                RouteManager.route(itemView.context, url)
+                            }
                         }
                     } else {
                         rel_cta.hide()
@@ -96,6 +103,10 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }else{
             view.visibility = View.VISIBLE
         }
+    }
+
+    private fun isMvcDiscoveryPageEnabled(): Boolean {
+        return remoteConfig.getBoolean(KEY_REMOTE_CONFIG_ENABLE_MVC_DISCO_PAGE,  true)
     }
 
     class ImageAdapter(val urlList: List<String?>) : RecyclerView.Adapter<ListItemImageVH>() {
