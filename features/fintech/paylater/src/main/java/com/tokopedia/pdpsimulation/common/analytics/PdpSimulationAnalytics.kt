@@ -193,14 +193,14 @@ class PdpSimulationAnalytics @Inject constructor(
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
-        const val BUSINESS_UNIT_FINTECH = "fintechPayLater"
+        const val BUSINESS_UNIT_FINTECH = "fintechPaylater"
         const val CURRENT_SITE_FINTECH = "TokopediaFintech"
         const val EVENT_NAME_FIN_TECH = "clickFintech"
         const val IRIS_EVENT_NAME_FIN_TECH_V3 = "viewFintechIris"
         const val CLICK_EVENT_NAME_FIN_TECH_V3 = "clickFintech"
         const val EVENT_CATEGORY_FIN_TECH = "fin - info page"
 
-        const val CLICK_CTA_PARTNER_CARD = "bnpl partner card CTA - click"
+        const val CLICK_CTA_PARTNER_CARD = "sim bnpl - click partner card CTA"
         const val IMPRESSION_PAYLATER = "sim bnpl - impression status buyers"
 
         const val OCC_EVENT_ACTION = "pre occ page - impression activated buyer"
