@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.BasePayLaterOptimizedModel
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
@@ -83,16 +84,17 @@ class OccViewModelTest {
     @Test
     fun successPayLaterActivation()
     {
-        val basePayLaterOptimized = mockk<PaylaterGetOptimizedModel>(relaxed = true)
+        val checkoutData =mockk< CheckoutData>(relaxed = true)
+        val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData),"")
         coEvery {
             paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0,"","")
         } coAnswers {
-            firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimized)
+            firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
         }
         viewModel.getOptimizedCheckoutDetail("",0.0,"")
         Assert.assertEquals(
             (viewModel.payLaterActivationDetailLiveData.value as Success).data,
-            basePayLaterOptimized
+            basePayLaterOptimizedModel
         )
     }
 
