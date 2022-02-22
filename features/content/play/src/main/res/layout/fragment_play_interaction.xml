@@ -149,7 +149,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
-        app:layout_goneMarginBottom="@dimen/spacing_lvl3"
+        app:layout_goneMarginBottom="@dimen/play_offset_12"
         tools:visibility="visible"
         />
 
