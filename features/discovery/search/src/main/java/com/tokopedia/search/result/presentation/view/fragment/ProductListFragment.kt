@@ -66,7 +66,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.video.BaseProductVideoAutoplayFilter
-import com.tokopedia.productcard.video.ProductCardVideoAutoplayHelper
+import com.tokopedia.productcard.video.ProductVideoAutoplay
+import com.tokopedia.productcard.video.ProductVideoAutoplayFilter
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -304,7 +305,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
-        productCardVideoAutoplayHelper.registerLifecycleObserver(viewLifecycleOwner)
+        productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
 
         presenter?.onViewCreated()
     }
@@ -439,7 +440,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
-            productCardVideoAutoplayHelper.setUpProductVideoAutoplayListener(this)
+            productVideoAutoplay.setUpProductVideoAutoplayListener(this)
         }
     }
 
@@ -484,8 +485,9 @@ class ProductListFragment: BaseDaggerFragment(),
     //endregion
 
     //region product video autoplay
-    private val productCardVideoAutoplayHelper : ProductCardVideoAutoplayHelper by lazy {
-        ProductCardVideoAutoplayHelper(remoteConfig, ProductListProductVideoAutoplayFilter(), this)
+    private val videoAutoplayFilter : ProductVideoAutoplayFilter = ProductListProductVideoAutoplayFilter()
+    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
+        ProductVideoAutoplay(remoteConfig, videoAutoplayFilter, this)
     }
     //endregion
 
@@ -1110,7 +1112,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.clearData()
         productListAdapter?.clearData()
-        productCardVideoAutoplayHelper.stopVideoAutoplay()
+        productVideoAutoplay.stopVideoAutoplay()
 
         hideSearchSortFilter()
 
