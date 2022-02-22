@@ -14,6 +14,7 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -79,6 +80,18 @@ abstract class DigitalPDPViewModelTestFixture {
 
     protected fun onGetSelectedGridProduct_thenReturn(result: SelectedProduct) {
         viewModel.selectedGridProduct = result
+    }
+
+    protected fun verifyGetMenuDetailRepoGetCalled() {
+        coVerify { repo.getMenuDetail(any(), any(), any()) }
+    }
+
+    protected fun verifyGetFavoriteNumberRepoGetCalled() {
+        coVerify { repo.getFavoriteNumber(any()) }
+    }
+
+    protected fun verifyGetOperatorListRepoGetCalled() {
+        coVerify { repo.getOperatorList(any()) }
     }
 
     protected fun verifyGetFavoriteNumberSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {

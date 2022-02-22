@@ -22,6 +22,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetMenuDetail_thenReturn(response)
 
         viewModel.getMenuDetail(MENU_ID, false)
+        verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailSuccess(response)
     }
 
@@ -30,6 +31,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetMenuDetail_thenReturn(NullPointerException())
 
         viewModel.getMenuDetail(MENU_ID, false)
+        verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailFail()
     }
 
@@ -39,6 +41,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetFavoriteNumber_thenReturn(response)
 
         viewModel.getFavoriteNumber(listOf())
+        verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
 
@@ -47,6 +50,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
         viewModel.getFavoriteNumber(listOf())
+        verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberFail()
     }
 
@@ -59,6 +63,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
             viewModel.getPrefixOperator(MENU_ID)
             skipPrefixOperatorDelay()
 
+            verifyGetOperatorListRepoGetCalled()
             verifyGetPrefixOperatorSuccess(response)
         }
 
@@ -70,6 +75,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
             viewModel.getPrefixOperator(MENU_ID)
             skipPrefixOperatorDelay()
 
+            verifyGetOperatorListRepoGetCalled()
             verifyGetPrefixOperatorFail()
         }
 
