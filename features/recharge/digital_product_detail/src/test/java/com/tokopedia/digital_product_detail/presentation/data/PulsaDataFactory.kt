@@ -128,12 +128,12 @@ class PulsaDataFactory {
     }
 
     companion object {
-        const val GET_FAVORITE_NUMBER = "get_favorite_number_mock.json"
-        const val GET_PREFIX_OPERATOR = "get_prefix_operator_mock.json"
-        const val GET_CATALOG_INPUT_MULTITAB = "get_catalog_input_multitab_mock.json"
-        const val GET_ADD_TO_CART = "get_add_to_cart_mock.json"
-        const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "get_prefix_operator_empty_validation_mock.json"
-        const val GET_MENU_DETAIL = "get_menu_detail_mock.json"
+        const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
+        const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
+        const val GET_CATALOG_INPUT_MULTITAB = "pulsa/get_catalog_input_multitab_mock.json"
+        const val GET_ADD_TO_CART = "pulsa/get_add_to_cart_mock.json"
+        const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
+        const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
 
         const val CATEGORY_ID = "1"
         const val OPERATOR_ID = "5"
