@@ -71,6 +71,7 @@ open class DynamicPostUIViewHolder(v: View,
     lateinit var adapter: PostPagerAdapter
 
     companion object {
+        const val FEED_X_CARD_TYPE_ASGC ="FeedXCardProductsHighlight"
         @LayoutRes
         val LAYOUT = R.layout.item_dynamic_ui_post
 
@@ -348,8 +349,9 @@ open class DynamicPostUIViewHolder(v: View,
 
     private fun bindContentList(postId: Int,
                                 feedXCard: FeedXCard) {
-        var contentList = mapPostContent(feedXCard)
-        itemView.contentLayout.shouldShowWithAction(contentList.size !=0) {
+        var contentList = if (feedXCard.typename == FEED_X_CARD_TYPE_ASGC) mapASGCPostContent(feedXCard) else mapPostContent(feedXCard)
+        val shouldShow = contentList.isNotEmpty()
+        itemView.contentLayout.shouldShowWithAction(shouldShow) {
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
@@ -384,6 +386,15 @@ open class DynamicPostUIViewHolder(v: View,
                     }
                 }
             }
+        }
+
+        return list
+    }
+    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
+        val list: MutableList<BasePostViewModel> = ArrayList()
+        for (product in feedXCard.products) {
+            val mediaFromProduct = FeedXMedia(id = product.id,type = TYPE_IMAGE,appLink = product.appLink, mediaUrl = product.coverURL, webLink = product.webLink)
+            mapPostImage(mediaFromProduct)
         }
 
         return list
@@ -434,7 +445,6 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.likeGroup.hide()
             }
 
-            if (feedXCard.comments.count > 0) {
                 itemView.commentGroup.show()
                 itemView.commentIcon.setOnClickListener {
                     listener.onCommentClick(
@@ -456,9 +466,7 @@ open class DynamicPostUIViewHolder(v: View,
                     )
                 }
                 bindComment(feedXCard.comments)
-            } else {
-                itemView.commentGroup.hide()
-            }
+
 
                 itemView.shareGroup.show()
                 val desc = getString(R.string.feed_share_detail_format_text)

@@ -258,8 +258,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindTracking(feedXCard: FeedXCard) {
                 addOnImpressionListener(feedXCard.impressHolder) {
+                    val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
                         imagePostListener.userCarouselImpression(
                                 feedXCard.id,
                                 feedXCard.media.first(),
@@ -273,7 +274,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                     }
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC ) {
                         listener?.onImpressionTracking(feedXCard, positionInFeed)
                     }
 
