@@ -11,22 +11,28 @@ class DataPlanDataFactory {
 
     fun getFavoriteNumberData(): TopupBillsPersoFavNumberData {
         return gson.fromJson(
-            gson.JsonToString(PulsaDataFactory.GET_FAVORITE_NUMBER),
+            gson.JsonToString(GET_FAVORITE_NUMBER),
             TopupBillsPersoFavNumberData::class.java
         )
     }
 
     fun getPrefixOperatorData(): TelcoCatalogPrefixSelect {
         return gson.fromJson(
-            gson.JsonToString(PulsaDataFactory.GET_PREFIX_OPERATOR),
+            gson.JsonToString(GET_PREFIX_OPERATOR),
             TelcoCatalogPrefixSelect::class.java
         )
     }
 
     fun getPrefixOperatorEmptyValData(): TelcoCatalogPrefixSelect {
         return gson.fromJson(
-            gson.JsonToString(PulsaDataFactory.GET_PREFIX_OPERATOR_EMPTY_VALIDATION),
+            gson.JsonToString(GET_PREFIX_OPERATOR_EMPTY_VALIDATION),
             TelcoCatalogPrefixSelect::class.java
         )
+    }
+
+    companion object {
+        const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
+        const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
+        const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
     }
 }
