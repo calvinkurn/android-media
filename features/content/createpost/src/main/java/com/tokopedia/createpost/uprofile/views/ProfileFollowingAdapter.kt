@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.uprofile.model.ProfileFollowerListBase
 import com.tokopedia.createpost.uprofile.model.ProfileFollowerV2
+import com.tokopedia.createpost.uprofile.model.ProfileFollowingListBase
 import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
@@ -19,10 +19,10 @@ import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-open class ProfileFollowersAdapter(
+open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
     val callback: AdapterCallback,
-    private val userId: String
+    private val userId : String
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -53,13 +53,13 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int) {
         super.loadData(pageNumber)
-        viewModel.getFollowers(userId,cursor,10)
+        viewModel.getFollowings(userId,cursor,10)
     }
 
-    fun onSuccess(data: ProfileFollowerListBase) {
-        loadCompleted(data.profileFollowers.profileFollower, data)
-        isLastPage = data.profileFollowers.newCursor.isEmpty();
-        cursor = data.profileFollowers.newCursor
+    fun onSuccess(data: ProfileFollowingListBase) {
+        loadCompleted(data.profileFollowings.profileFollower, data)
+        isLastPage = data.profileFollowings.newCursor.isEmpty();
+        cursor = data.profileFollowings.newCursor
     }
 
     fun onError() {
@@ -89,6 +89,5 @@ open class ProfileFollowersAdapter(
             //listener.shopProductImpressed(holder.adapterPosition, data)
         }
     }
-
 }
 

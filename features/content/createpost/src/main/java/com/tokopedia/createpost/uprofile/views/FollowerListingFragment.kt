@@ -36,10 +36,14 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 
-class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    val userSessionInterface: UserSession by lazy {
+         UserSession(context)
+    }
 
     private val mPresenter: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
@@ -49,7 +53,8 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
     private val mAdapter: ProfileFollowersAdapter by lazy {
         ProfileFollowersAdapter(
             mPresenter,
-            this
+            this,
+            userSessionInterface.userId
         )
     }
 
@@ -68,9 +73,8 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //initObserver()
+        initObserver()
         //initListener()
-        val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
         initMainUi()
         mPresenter.getFollowers(userSessionInterface.userId, "", 1)
@@ -78,7 +82,7 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
     }
 
     private fun initObserver() {
-        //observeUserProfile()
+        addListObserver()
     }
 
     private fun initMainUi() {
@@ -101,20 +105,22 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
 //        mAdapter.startDataLoading()
     }
 
-//    private fun observeUserProfile() =
-//        mPresenter.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
-//            it?.let {
-//                when (it) {
-//                    is Loading -> showLoader()
-//                    is ErrorMessage -> {
-//
-//                    }
-//                    is Success -> {
-//                        setMainUi(it.data)
-//                    }
-//                }
-//            }
-//        })
+    private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is Loading -> {
+                    mAdapter.resetAdapter()
+                    mAdapter.notifyDataSetChanged()
+                }
+                is Success -> {
+                    mAdapter.onSuccess(it.data)
+                }
+                is ErrorMessage -> {
+                    mAdapter.onError()
+                }
+            }
+        }
+    })
 
     private fun setMainUi(data: ProfileHeaderBase) {
 
@@ -162,7 +168,7 @@ class FollowerFollowingListingPagerFragment : BaseDaggerFragment(), View.OnClick
 
     companion object {
         fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowerFollowingListingPagerFragment()
+            val fragment = FollowerListingFragment()
             fragment.arguments = extras
             return fragment
         }

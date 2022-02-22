@@ -66,7 +66,7 @@ open class UserPostBaseAdapter(
 
     private fun setData(holder: ViewHolder, item: PlayPostContentItem) {
         val itemContext = holder.itemView.context
-         holder.imgCover.setImageUrl(item.coverUrl)
+        holder.imgCover.setImageUrl(item.coverUrl)
         holder.textName.text = item.title
         holder.textUsername.text = item.description
         holder.textLiveCount.text = item.stats.view.formatted
