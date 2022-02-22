@@ -186,7 +186,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         }
 
                     /* validate client number */
-                    viewModel.validateClientNumber(rechargePdpPulsaClientNumberWidget.getInputNumber())
+                    viewModel.run {
+                        cancelValidatorJob()
+                        validateClientNumber(rechargePdpPulsaClientNumberWidget.getInputNumber())
+                    }
+
                     hitTrackingForInputNumber(
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         selectedOperator.operator.attributes.name

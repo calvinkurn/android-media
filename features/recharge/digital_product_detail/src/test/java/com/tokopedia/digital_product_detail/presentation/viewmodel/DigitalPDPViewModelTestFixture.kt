@@ -158,7 +158,7 @@ abstract class DigitalPDPViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Fail).error)
     }
 
-    protected fun verifyGetCatalogInputMultitabErrorCancellation(){
+    protected fun verifyGetCatalogInputMultitabErrorCancellation() {
         val actualResponse = viewModel.observableDenomMCCMData.value
         Assert.assertNull(actualResponse)
     }
@@ -236,12 +236,40 @@ abstract class DigitalPDPViewModelTestFixture {
         Assert.assertEquals(viewModel.selectedGridProduct.position, POSITION_DEFAULT)
     }
 
+    protected fun verifyGetSelectedPositionNull(pos: Int?) {
+        Assert.assertEquals(pos, null)
+    }
+
     protected fun verifyIsAutoSelectedProductTrue(isAutoSelect: Boolean) {
         Assert.assertTrue(isAutoSelect)
     }
 
     protected fun verifyIsAutoSelectedProductFalse(isAutoSelect: Boolean) {
         Assert.assertFalse(isAutoSelect)
+    }
+
+    protected fun verifyCatalogProductJobIsNull() {
+        Assert.assertNull(viewModel.catalogProductJob)
+    }
+
+    protected fun verifyCatalogProductJobIsNotNull() {
+        Assert.assertNotNull(viewModel.catalogProductJob)
+    }
+
+    protected fun verifyCatalogProductJobIsCancelled() {
+        Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
+    }
+
+    protected fun verifyValidatorJobIsNull() {
+        Assert.assertNull(viewModel.validatorJob)
+    }
+
+    protected fun verifyValidatorJobIsNotNull() {
+        Assert.assertNotNull(viewModel.validatorJob)
+    }
+
+    protected fun verifyValidatorJobIsCancelled() {
+        Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
