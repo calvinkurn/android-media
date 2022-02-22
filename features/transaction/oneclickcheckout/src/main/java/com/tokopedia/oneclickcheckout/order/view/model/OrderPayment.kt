@@ -242,9 +242,5 @@ data class OrderPaymentGoCicilTerms(
         val isRecommended: Boolean = false,
 ) {
     val hasPromoLabel: Boolean
-        get() = labelType == LABEL_TYPE_PROMO && labelMessage.isNotBlank()
-
-    companion object {
-        private const val LABEL_TYPE_PROMO = "promo"
-    }
+        get() = labelMessage.isNotBlank()
 }
