@@ -73,8 +73,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
-
-        viewModel.submitAction(ProductSetupAction.PrepareProductSummary)
     }
 
     override fun onDestroyView() {
@@ -123,12 +121,6 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is ProductTagSummaryUiModel.Loading -> {
                         showLoading(true)
                         binding.globalError.visibility = View.GONE
-                    }
-                    is ProductTagSummaryUiModel.LoadingWithPlaceholder -> {
-                        showLoading(false)
-                        binding.globalError.visibility = View.GONE
-
-                        productSummaryListView.setLoading()
                     }
                     is ProductTagSummaryUiModel.Success -> {
                         mListener?.onProductChanged(state.productTagSectionList)

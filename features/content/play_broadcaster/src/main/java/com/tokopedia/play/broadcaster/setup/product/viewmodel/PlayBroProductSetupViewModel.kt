@@ -71,8 +71,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _selectedProductSectionList = MutableStateFlow(productSectionList)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
-    private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
-    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
+    private val _productTagSectionList = MutableStateFlow(productSectionList)
+    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Success)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
     private val _config = MutableStateFlow(
         ProductSetupConfig(shopName = userSession.shopName, maxProduct = configStore.getMaxProduct())
@@ -162,8 +162,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
             ProductSetupAction.SaveProducts -> handleSaveProducts()
-            ProductSetupAction.PrepareProductSummary -> handlePrepareProductSummary()
-            is ProductSetupAction.LoadProductSummary -> handleLoadProductSummary()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
     }
@@ -224,7 +222,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) = whenProductsNotSaving {
-        if (product.stock <= 0) return@whenProductsNotSaving
+//        if (product.stock <= 0) return@whenProductsNotSaving
 
         _selectedProductSectionList.update { sections ->
             var hasProduct = false
@@ -351,28 +349,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
-    private fun handlePrepareProductSummary() {
-        if(_productTagSummary.value is ProductTagSummaryUiModel.Unknown) {
-            _productTagSectionList.value = productSectionList
-            _productTagSummary.value = ProductTagSummaryUiModel.Success
-        }
-    }
-
-    private fun handleLoadProductSummary() {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
-
-            getProductTagSummary()
-        }) {
-            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
-            _uiEvent.emit(
-                PlayBroProductChooserEvent.GetDataError(it) {
-                    submitAction(ProductSetupAction.LoadProductSummary)
-                }
-            )
-        }
-    }
-
     private fun handleDeleteProduct(product: ProductUiModel) {
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading

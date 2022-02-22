@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
-import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryPlaceholderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
@@ -20,20 +19,6 @@ import com.tokopedia.unifycomponents.Label
  * Created By : Jonathan Darwin on February 07, 2022
  */
 internal class ProductSummaryViewHolder private constructor() {
-
-    internal class Placeholder(
-        binding: ItemProductSummaryPlaceholderBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        companion object {
-            fun create(parent: ViewGroup): Placeholder {
-                return Placeholder(
-                    ItemProductSummaryPlaceholderBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    ),
-                )
-            }
-        }
-    }
 
     internal class Header(
         private val binding: ItemProductSummaryHeaderListBinding,
