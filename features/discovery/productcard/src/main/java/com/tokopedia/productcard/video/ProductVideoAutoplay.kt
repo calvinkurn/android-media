@@ -72,23 +72,6 @@ class ProductVideoAutoplay(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onViewDestroyed() {
-        unregisterVideoAutoplayAdapterObserver()
-        stopVideoAutoplay()
-    }
-
-    private fun unregisterVideoAutoplayAdapterObserver() {
-        if (isAutoplayProductVideoEnabled) {
-            try {
-                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
-        recyclerView = null
-    }
-
     private fun startVideoAutoplay() {
         productVideoAutoPlayJob?.cancel()
         val currentlyVisibleVideoPlayers = productVideoAutoplayFilter
@@ -102,33 +85,6 @@ class ProductVideoAutoplay(
                 playNextVideo(visibleItemIterable)
             }
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun resumeVideoAutoplay() {
-        val visibleItemIterator = videoPlayerIterator ?: return
-        if (isPaused && visibleItemIterator.hasNext()) {
-            productVideoAutoPlayJob = launch {
-                isPaused = false
-                playNextVideo(visibleItemIterator)
-            }
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun pauseVideoAutoplay() {
-        if (!isPaused) {
-            isPaused = true
-            productVideoPlayer?.stopVideo()
-            productVideoAutoPlayJob?.cancel()
-        }
-    }
-
-    fun stopVideoAutoplay() {
-        productVideoPlayer?.stopVideo()
-        productVideoPlayer = null
-        productVideoAutoPlayJob?.cancel()
-        clearQueue()
     }
 
     private suspend fun playNextVideo(visibleItemIterator: Iterator<ProductVideoPlayer>) {
@@ -175,6 +131,50 @@ class ProductVideoAutoplay(
                     clearQueue()
                 }
             }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun resumeVideoAutoplay() {
+        val visibleItemIterator = videoPlayerIterator ?: return
+        if (isPaused && visibleItemIterator.hasNext()) {
+            productVideoAutoPlayJob = launch {
+                isPaused = false
+                playNextVideo(visibleItemIterator)
+            }
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun pauseVideoAutoplay() {
+        if (!isPaused) {
+            isPaused = true
+            productVideoPlayer?.stopVideo()
+            productVideoAutoPlayJob?.cancel()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onViewDestroyed() {
+        unregisterVideoAutoplayAdapterObserver()
+        stopVideoAutoplay()
+    }
+
+    private fun unregisterVideoAutoplayAdapterObserver() {
+        if (isAutoplayProductVideoEnabled) {
+            try {
+                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
+        recyclerView = null
+    }
+
+    fun stopVideoAutoplay() {
+        productVideoPlayer?.stopVideo()
+        productVideoPlayer = null
+        productVideoAutoPlayJob?.cancel()
+        clearQueue()
     }
 
     private fun clearQueue() {
