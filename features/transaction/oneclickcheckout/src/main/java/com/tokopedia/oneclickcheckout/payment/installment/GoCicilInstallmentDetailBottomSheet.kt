@@ -130,9 +130,6 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 }
             } else if (installment.isActive && selectedTerm == installment.installmentTerm) {
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                viewInstallmentDetailItem.cardItemInstallmentDetail.setCardBackgroundColor(
-                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-                )
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = true
                 viewInstallmentDetailItem.cardItemInstallmentDetail.setOnClickListener {
                     listener.onSelectInstallment(installment, installmentDetails)
