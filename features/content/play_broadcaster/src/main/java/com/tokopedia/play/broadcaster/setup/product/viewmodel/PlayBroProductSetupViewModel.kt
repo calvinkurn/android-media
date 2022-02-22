@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted productSectionList: List<ProductTagSectionUiModel>,
+    @Assisted private val productSectionList: List<ProductTagSectionUiModel>,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
@@ -162,6 +162,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
             ProductSetupAction.SaveProducts -> handleSaveProducts()
+            ProductSetupAction.PrepareProductSummary -> handlePrepareProductSummary()
             is ProductSetupAction.LoadProductSummary -> handleLoadProductSummary()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
@@ -334,6 +335,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     section.products.map { it.id }
                 },
             )
+
+            getProductTagSummary()
+
             _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
         }) {
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
@@ -347,6 +351,13 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
+    private fun handlePrepareProductSummary() {
+        if(_productTagSummary.value is ProductTagSummaryUiModel.Unknown) {
+            _productTagSectionList.value = productSectionList
+            _productTagSummary.value = ProductTagSummaryUiModel.Success
+        }
+    }
+
     private fun handleLoadProductSummary() {
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder

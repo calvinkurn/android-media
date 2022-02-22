@@ -74,7 +74,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupView()
         setupObserve()
 
-        viewModel.submitAction(ProductSetupAction.LoadProductSummary)
+        viewModel.submitAction(ProductSetupAction.PrepareProductSummary)
     }
 
     override fun onDestroyView() {
