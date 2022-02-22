@@ -12,6 +12,7 @@ import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -116,6 +117,18 @@ abstract class DigitalPDPViewModelTestFixture {
 
     protected fun verifyGetOperatorListRepoGetCalled() {
         coVerify { repo.getOperatorList(any()) }
+    }
+
+    protected fun verifyGetProductInputMultiTabRepoGetCalled() {
+        coVerify { repo.getProductInputMultiTabDenomGrid(any(), any(), any()) }
+    }
+
+    protected fun verifyGetProductInputMultiTabRepoWasNotCalled() {
+        coVerify { repo.getProductInputMultiTabDenomGrid(any(), any(), any()) wasNot Called }
+    }
+
+    protected fun verifyAddToCartRepoGetCalled() {
+        coVerify { repo.addToCart(any(), any(), any(), any()) }
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){

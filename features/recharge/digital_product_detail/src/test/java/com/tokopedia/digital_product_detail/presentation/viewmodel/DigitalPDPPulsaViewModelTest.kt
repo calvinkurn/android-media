@@ -328,6 +328,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
         skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoGetCalled()
         verifyGetCatalogInputMultitabSuccess(mappedResponse)
     }
 
@@ -346,6 +347,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
         skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoGetCalled()
         verifyGetCatalogInputMultitabError(errorResponse)
     }
 
@@ -356,6 +358,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
 
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
         viewModel.cancelCatalogProductJob()
+        verifyGetProductInputMultiTabRepoWasNotCalled()
         verifyGetCatalogInputMultitabErrorCancellation()
     }
 
@@ -368,6 +371,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
         viewModel.cancelCatalogProductJob()
         verifyCatalogProductJobIsCancelled()
+        verifyGetProductInputMultiTabRepoWasNotCalled()
         verifyGetCatalogInputMultitabErrorCancellation()
     }
 
@@ -389,6 +393,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(response)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
 
@@ -400,6 +405,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(errorResponseException)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
 
@@ -411,6 +417,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(errorResponseException)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
 
@@ -420,6 +427,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPViewModelTestFixture() {
         onGetAddToCart_thenReturn(errorMessageException)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
 
