@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +62,11 @@ internal class ProductSummaryViewHolder private constructor() {
         private val binding: ItemProductSummaryBodyListBinding,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.tvProductSummaryOriginalPrice.paintFlags =
+                binding.tvProductSummaryOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
 
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
