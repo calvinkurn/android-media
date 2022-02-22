@@ -33,6 +33,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
+import com.tokopedia.vouchercreation.common.tracker.CouponPreviewTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -99,6 +100,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker : CouponPreviewTracker
 
     private var nullableBinding by autoClearedNullable<FragmentCouponPreviewBinding>()
     private val binding: FragmentCouponPreviewBinding
@@ -179,6 +183,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
 
         if (viewModel.isCreateMode(pageMode)){
+            tracker.sendCreationPageImpression()
             viewModel.checkCouponCreationEligibility()
         } else {
             viewModel.getCouponDetail(couponId, pageMode)
@@ -279,14 +284,26 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun setupViews() {
         binding.tpgReadArticle.setOnClickListener { redirectToSellerEduPage() }
-        binding.tpgCouponInformation.setOnClickListener { onNavigateToCouponInformationPage() }
-        binding.tpgCouponSetting.setOnClickListener { onNavigateToCouponSettingsPage() }
-        binding.tpgAddProduct.setOnClickListener { navigateToAddProductPage() }
+        binding.tpgCouponInformation.setOnClickListener {
+            tracker.sendChangeCouponInformationClickEvent()
+            onNavigateToCouponInformationPage()
+        }
+        binding.tpgCouponSetting.setOnClickListener {
+            tracker.sendChangeCouponSettingClickEvent()
+            onNavigateToCouponSettingsPage()
+        }
+        binding.tpgAddProduct.setOnClickListener {
+            tracker.sendAddProductClickEvent()
+            navigateToAddProductPage()
+        }
         binding.tpgUpdateProduct.setOnClickListener { navigateToManageProductPage() }
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
         binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
-        binding.header.setNavigationOnClickListener { activity?.onBackPressed() }
+        binding.header.setNavigationOnClickListener {
+            tracker.sendBackToPreviousPageEvent()
+            activity?.onBackPressed()
+        }
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
             override fun onLinkClick(url: String?) {
                 displayTermAndConditionBottomSheet()
@@ -332,6 +349,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     )
 
                     if (viewModel.isCreateMode(pageMode)) {
+                        tracker.sendCreateCouponEvent()
                         onCreateCouponSuccess(coupon)
                     } else {
                         onDuplicateCouponSuccess()
