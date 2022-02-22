@@ -440,7 +440,7 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = DynamicHeaderUiModel(
-                title = widgetResponse.header.title,
+                title = widgetResponse.data.firstOrNull()?.name.orEmpty(),
                 subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
                 ctaText = widgetResponse.header.ctaText,
                 ctaTextLink = widgetResponse.header.ctaLink,
