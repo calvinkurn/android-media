@@ -65,6 +65,7 @@ import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -618,7 +619,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             AtcVariantHelper.goToAtcVariant(
                 context = ctx,
                 productId = productId,
-                pageSource = AtcVariantHelper.NOTIFCENTER_PAGESOURCE,
+                pageSource = VariantPageSource.NOTIFCENTER_PAGESOURCE,
                 isTokoNow = isTokonow,
                 shopId = shopId,
                 startActivitResult = { intent, requestCode ->

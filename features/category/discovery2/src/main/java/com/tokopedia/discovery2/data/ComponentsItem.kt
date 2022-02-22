@@ -28,6 +28,9 @@ data class ComponentsItem(
         @SerializedName("id")
         var id: String = "",
 
+        @SerializedName("section_id")
+        var sectionId: String = "",
+
         @SerializedName("title")
         val title: String? = "",
 
@@ -83,6 +86,7 @@ data class ComponentsItem(
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
         var tabName: String? = "",
+        var parentSectionId: String? = "",
         var isSticky : Boolean = false,
         var description : String? = "",
         var showFilterCount: Boolean = true,

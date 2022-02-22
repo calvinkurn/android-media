@@ -21,7 +21,6 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState

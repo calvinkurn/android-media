@@ -157,6 +157,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
 
     override fun onPostResume() {
         super.onPostResume()
+
         if (isResultAfterAskPermission) {
             if (isRequiredPermissionGranted()) configureChannelType(channelType)
             else showPermissionPage()
@@ -274,6 +275,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 is NetworkResult.Success -> {
                     showLoading(false)
                     if (!isRecreated) handleChannelConfiguration(result.data)
+                    else if(result.data.channelType == ChannelType.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
@@ -338,7 +340,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         )
     }
 
-    private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
+    fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
     fun startPreview() {
         if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(surfaceView)

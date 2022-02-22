@@ -52,7 +52,6 @@ import kotlin.collections.set
 
 const val CLICK_GRUP_AKTIF_IKLANKAN = "click - iklankan - grup iklan aktif"
 const val BUAT_GRUP_IKLANKAN = "click - iklankan - buat grup iklan"
-
 class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
@@ -96,6 +95,10 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         adapter = TopadsProductRecomAdapter(userSession, ::itemCheckedUnchecked, ::enableButton)
+        val dummyId: MutableList<String> = mutableListOf()
+        val suggestions = ArrayList<DataSuggestions>()
+        suggestions.add(DataSuggestions(PRODUCT, dummyId))
+        topAdsDashboardPresenter.getBidInfo(suggestions, ::getMaxBid)
     }
 
     private fun getMaxBid(list: List<TopadsBidInfo.DataItem>) {
@@ -112,9 +115,6 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        topAdsDashboardPresenter.getGroupList("", ::getBidInfo)
-
         getDataFromArgument()
         rvProductRecom.setMargin(0, 0, 0, height ?: 0)
         swipeRefreshLayout?.setOnRefreshListener {
@@ -126,15 +126,6 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             setAdapterData(productRecommendData?.products)
         }
         checkUnchekAll()
-    }
-
-    private fun getBidInfo(list: List<GroupListDataItem>) {
-        val suggestions = ArrayList<DataSuggestions>()
-        list.forEach {
-            suggestions.add(DataSuggestions("", listOf(it.groupId)))
-        }
-
-        topAdsDashboardPresenter.getBidInfo(suggestions, ::getMaxBid)
     }
 
     private fun getDataFromArgument() {

@@ -1,11 +1,13 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.NoValueException
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.andWhen
+import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
@@ -32,9 +34,10 @@ class PlayViewModelCreatePageTest {
     val coroutineTestRule = CoroutineTestRule()
 
     private val pinnedBuilder = PlayPinnedModelBuilder()
-    private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
+
+    private val uiModelBuilder = UiModelBuilder.get()
 
     @Test
     fun `given channel data is set, when page is created, then video stream value should be the same as in channel data`() {
@@ -69,49 +72,24 @@ class PlayViewModelCreatePageTest {
         val quickReplyList = listOf("Wah keren", "Bagus Sekali", "<3")
 
         val channelData = channelDataBuilder.buildChannelData(
-                quickReplyInfo = quickReplyBuilder.build(quickReplyList)
+                quickReplyInfo = uiModelBuilder.buildQuickReply(quickReplyList)
         )
 
-        val expectedModel = quickReplyBuilder.build(quickReplyList)
+        val expectedModel = uiModelBuilder.buildQuickReply(quickReplyList)
 
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            viewModel.observableQuickReply.getOrAwaitValue()
-                    .isEqualTo(expectedModel)
-        }
-    }
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
 
-    @Test
-    fun `given channel data is set, when page is created, then pinned value should be the same as in channel data`() {
-        val pinnedMessage = "Saksikan keseruan BTS di sini"
-        val shouldShowPinnedProduct = pinnedMessage.isEmpty()
-
-        val channelData = channelDataBuilder.buildChannelData(
-                pinnedInfo = pinnedBuilder.buildInfo(
-                        pinnedMessage = pinnedBuilder.buildPinnedMessage(
-                                title = pinnedMessage
-                        ),
-                        pinnedProduct = pinnedBuilder.buildPinnedProduct(
-                                shouldShow = shouldShowPinnedProduct
-                        )
-                )
+        val robot = createPlayViewModelRobot(
+            repo = repo
         )
 
-        val expectedModel = pinnedBuilder.buildPinnedMessage(
-                title = pinnedMessage
-        )
+        robot.use {
+            val state = it.recordState {
+                createPage(channelData)
+            }
 
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            viewModel.observablePinnedMessage.getOrAwaitValue()
-                    .isEqualTo(expectedModel)
-
-            viewModel.observablePinnedProduct.getOrAwaitValue()
-                    .isEqualTo(channelData.pinnedInfo.pinnedProduct)
+            state.quickReply.isEqualTo(expectedModel)
         }
     }
 

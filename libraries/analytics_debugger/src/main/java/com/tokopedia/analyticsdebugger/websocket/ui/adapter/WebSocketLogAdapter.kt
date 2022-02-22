@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
+import com.tokopedia.logger.LogManager
 
 /**
  * Created By : Jonathan Darwin on December 03, 2021
