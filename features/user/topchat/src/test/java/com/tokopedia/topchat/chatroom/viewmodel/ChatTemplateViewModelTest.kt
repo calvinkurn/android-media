@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -14,10 +14,10 @@ class ChatTemplateViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_template_list_when_success_get_template_buyer_and_template_enabled() {
         //Given
-        val expectedResponse = GetTemplateUiModel().also {
+        val expectedResponse = GetTemplateResultModel().also {
             it.isSuccess = true
             it.isEnabled = true
-            it.listTemplate = listOf(TemplateChatModel("Test Buyer"))
+            it.listTemplate = arrayListOf(TemplateChatUiModel("Test Buyer"))
         }
         coEvery {
             getTemplateChatRoomUseCase.getTemplateChat(any())
@@ -36,10 +36,10 @@ class ChatTemplateViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_template_list_when_success_get_template_buyer_and_template_disabled() {
         //Given
-        val expectedResponse = GetTemplateUiModel().also {
+        val expectedResponse = GetTemplateResultModel().also {
             it.isSuccess = true
             it.isEnabled = false
-            it.listTemplate = listOf(TemplateChatModel("Test Buyer"))
+            it.listTemplate = arrayListOf(TemplateChatUiModel("Test Buyer"))
         }
         coEvery {
             getTemplateChatRoomUseCase.getTemplateChat(any())
@@ -58,10 +58,10 @@ class ChatTemplateViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_template_list_when_success_get_template_seller_and_template_enabled() {
         //Given
-        val expectedResponse = GetTemplateUiModel().also {
+        val expectedResponse = GetTemplateResultModel().also {
             it.isSuccess = true
             it.isEnabled = true
-            it.listTemplate = listOf(TemplateChatModel("Test Seller"))
+            it.listTemplate = arrayListOf(TemplateChatUiModel("Test Seller"))
         }
         coEvery {
             getTemplateChatRoomUseCase.getTemplateChat(any())
@@ -80,10 +80,10 @@ class ChatTemplateViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_template_list_when_success_get_template_seller_and_template_disabled() {
         //Given
-        val expectedResponse = GetTemplateUiModel().also {
+        val expectedResponse = GetTemplateResultModel().also {
             it.isSuccess = true
             it.isEnabled = false
-            it.listTemplate = listOf(TemplateChatModel("Test Seller"))
+            it.listTemplate = arrayListOf(TemplateChatUiModel("Test Seller"))
         }
         coEvery {
             getTemplateChatRoomUseCase.getTemplateChat(any())
@@ -102,10 +102,10 @@ class ChatTemplateViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_template_list_when_success_get_template_but_empty() {
         //Given
-        val expectedResponse = GetTemplateUiModel().also {
+        val expectedResponse = GetTemplateResultModel().also {
             it.isSuccess = true
             it.isEnabled = true
-            it.listTemplate = null
+            it.listTemplate = arrayListOf()
         }
         coEvery {
             getTemplateChatRoomUseCase.getTemplateChat(any())

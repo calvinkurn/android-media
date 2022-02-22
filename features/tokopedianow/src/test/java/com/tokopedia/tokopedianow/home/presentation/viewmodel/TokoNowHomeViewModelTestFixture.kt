@@ -22,6 +22,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
@@ -87,7 +89,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase
     @RelaxedMockK
     lateinit var getQuestWidgetListUseCase: GetQuestWidgetListUseCase
-
+    @RelaxedMockK
+    lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
@@ -116,6 +119,7 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getChooseAddressWarehouseLocUseCase,
                 getRepurchaseWidgetUseCase,
                 getQuestWidgetListUseCase,
+                setUserPreferenceUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
@@ -241,6 +245,13 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun verifyGetQuestWidgetListUseCaseCalled() {
         coVerify { getQuestWidgetListUseCase.execute(any()) }
+    }
+
+    protected fun verifySetUserPreferenceUseCaseCalled(
+        localCacheModel: LocalCacheModel,
+        serviceType: String
+    ) {
+        coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
     }
 
     protected fun verifyGetQuestWidgetListUseCaseNotCalled() {
@@ -395,6 +406,14 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetRepurchaseWidget_thenReturn(error: Throwable) {
         coEvery { getRepurchaseWidgetUseCase.execute(any()) } throws error
+    }
+
+    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreferenceData) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
+    }
+
+    protected fun onSetUserPreference_thenReturn(error: Throwable) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
     protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel) {

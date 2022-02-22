@@ -25,12 +25,17 @@ class ListProductItemViewHolder(
     override val productCardView: IProductCardView?
         get() = binding?.productCardView
 
+    init {
+        initVideoHelper()
+    }
+
     override fun bind(productItemData: ProductItemDataView?) {
         if (productItemData == null) return
 
         val productCardView = binding?.productCardView ?: return
         val productCardModel =
             productItemData.toProductCardModel(productItemData.imageUrl, true)
+        this.productCardModel = productCardModel
 
         registerLifecycleObserver(productCardModel)
 

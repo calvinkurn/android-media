@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUse
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -37,6 +38,9 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
@@ -96,6 +100,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
     private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
+    private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
@@ -124,6 +129,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _atcQuantity
     val openScreenTracker: LiveData<String>
         get() = _openScreenTracker
+    val setUserPreference: LiveData<Result<SetUserPreferenceData>>
+        get() = _setUserPreference
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -135,6 +142,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
+    private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -142,6 +150,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var channelToken = ""
 
     private var getHomeLayoutJob: Job? = null
+    private var getMiniCartJob: Job? = null
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -158,9 +167,9 @@ class TokoNowHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun getEmptyState(id: String) {
+    fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         homeLayoutItemList.clear()
-        homeLayoutItemList.addEmptyStateIntoList(id)
+        homeLayoutItemList.addEmptyStateIntoList(id, serviceType)
         val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.HIDE
@@ -203,7 +212,9 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutResponse,
                 hasTickerBeenRemoved,
                 removeAbleWidgets,
-                miniCartSimplifiedData
+                miniCartSimplifiedData,
+                localCacheModel,
+                userSession.isLoggedIn
             )
 
             getLayoutComponentData(warehouseId)
@@ -226,6 +237,7 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param lastVisibleItemIndex last item index visible on user screen
      * @param localCacheModel address data cache from choose address widget
+     * @param removeAbleWidgets list of widgets that can be dismissed by user
      */
     fun onScrollTokoMartHome(
         lastVisibleItemIndex: Int,
@@ -246,7 +258,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
                     removeAbleWidgets,
-                    miniCartSimplifiedData
+                    miniCartSimplifiedData,
+                    localCacheModel.service_type
                 )
 
                 getLayoutComponentData(warehouseId)
@@ -274,6 +287,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            getMiniCartJob?.cancel()
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
@@ -284,6 +298,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 })
             }) {
                 _miniCart.postValue(Fail(it))
+            }.let {
+                getMiniCartJob = it
             }
         }
     }
@@ -415,6 +431,30 @@ class TokoNowHomeViewModel @Inject constructor(
             }) {
                 removeWidget(item.id)
             }
+        }
+    }
+
+    /***
+     * Switch between NOW 15 minutes/2 hours
+     * @param localCacheModel local data from choose address
+     */
+    fun switchService(localCacheModel: LocalCacheModel) {
+        launchCatchError(block = {
+            val currentServiceType = localCacheModel.service_type
+
+            val serviceType = if (
+                currentServiceType == ServiceType.NOW_15M ||
+                currentServiceType == ServiceType.NOW_OOC
+            ) {
+                ServiceType.NOW_2H
+            } else {
+                ServiceType.NOW_15M
+            }
+
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+            _setUserPreference.postValue(Success(userPreference))
+        }) {
+            _setUserPreference.postValue(Fail(it))
         }
     }
 

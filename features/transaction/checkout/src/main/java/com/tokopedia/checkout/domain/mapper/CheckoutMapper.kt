@@ -15,7 +15,6 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
             isError = checkoutDataResponse.success != 1
             errorMessage = checkoutDataResponse.error
             priceValidationData = mapPriceValidationData(checkoutDataResponse.data.priceValidation)
-            errorReporter = mapErrorReporter(checkoutResponse.errorReporter)
             if (!isError) {
                 transactionId = checkoutDataResponse.data.parameter.transactionId
                 paymentId = checkoutDataResponse.data.parameter.transactionId
@@ -23,6 +22,8 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
                 redirectUrl = checkoutDataResponse.data.redirectUrl
                 callbackSuccessUrl = checkoutDataResponse.data.callbackUrl
                 callbackFailedUrl = checkoutDataResponse.data.callbackUrl
+            } else {
+                prompt = mapPrompt(checkoutResponse.data.prompt)
             }
         }
     }
@@ -55,19 +56,15 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
         }
     }
 
-    private fun mapErrorReporter(errorReporterResponse: ErrorReporterResponse): ErrorReporter {
-        return ErrorReporter().apply {
-            eligible = errorReporterResponse.eligible
-            texts = mapErrorReporterText(errorReporterResponse.texts)
-        }
-    }
-
-    private fun mapErrorReporterText(texts: ErrorReporterTextResponse): ErrorReporterText {
-        return ErrorReporterText().apply {
-            submitTitle = texts.submitTitle
-            submitDescription = texts.submitDescription
-            submitButton = texts.submitButton
-            cancelButton = texts.cancelButton
+    private fun mapPrompt(promptResponse: PromptResponse): Prompt {
+        return Prompt().apply {
+            eligible = promptResponse.title.isNotBlank() && promptResponse.description.isNotBlank()
+            title = promptResponse.title
+            description = promptResponse.description
+            button = PromptButton().apply {
+                text = promptResponse.buttons.firstOrNull()?.text ?: ""
+                link = promptResponse.buttons.firstOrNull()?.link ?: ""
+            }
         }
     }
 }

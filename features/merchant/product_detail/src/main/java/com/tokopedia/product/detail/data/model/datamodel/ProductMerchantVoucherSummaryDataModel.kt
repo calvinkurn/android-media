@@ -10,7 +10,8 @@ data class ProductMerchantVoucherSummaryDataModel(
         val name: String = "",
         var animatedInfos: List<AnimatedInfos> = listOf(),
         var isShown: Boolean = false,
-        var shopId: String = ""
+        var shopId: String = "",
+        var productIdMVC: String = ""
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
