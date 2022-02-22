@@ -2,9 +2,11 @@ package com.tokopedia.gopayhomewidget.presentation
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.AttrRes
 import com.tokopedia.gopayhomewidget.R
+import com.tokopedia.gopayhomewidget.databinding.LayoutGopayHomeWidgetBinding
 import com.tokopedia.gopayhomewidget.presentation.domain.data.PayLaterWidgetData
 import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -16,14 +18,14 @@ class PayLaterWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var payLaterWidgetListener: PayLaterWidgetListener? = null
-    private var baseView: View? =null
+    private lateinit var layoutGopayBinding :LayoutGopayHomeWidgetBinding
 
     init {
         initView()
     }
 
     private fun initView() {
-        baseView = inflate(context, R.layout.layout_gopay_home_widget, this)
+        layoutGopayBinding = LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this,true)
         this.visibility = INVISIBLE
     }
 
@@ -32,8 +34,24 @@ class PayLaterWidget @JvmOverloads constructor(
     }
 
     fun setData(payLaterWidgetData: PayLaterWidgetData) {
-        this.visibility = VISIBLE
-    }
+        if(payLaterWidgetData.isShow == true)
+        {
+            this.visibility = VISIBLE
+            layoutGopayBinding.gopayDetail.text = payLaterWidgetData.description
+            payLaterWidgetData.imageLight?.let { imageUrl->
+                layoutGopayBinding.gatewayIcon.setImageUrl(imageUrl)
+            }
+            layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
+            when(payLaterWidgetData.button?.ctaType)
+            {
 
+            }
+            layoutGopayBinding.crossIcon.setOnClickListener {
+                payLaterWidgetListener?.onClosePayLaterWidget()
+            }
+
+        }
+
+    }
 
 }
