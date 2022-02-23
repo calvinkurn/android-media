@@ -97,7 +97,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_QUERY,
                     ALL_BRANDS_REQUEST_SIZE,
                     ALPHABETIC_ASC_SORT,
-                    INITIAL_LETTER.toString()).await()))
+                    INITIAL_LETTER).await()))
 
         }, onError = {})
     }
@@ -130,7 +130,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_QUERY,
                     ALL_BRANDS_REQUEST_SIZE,
                     ALPHABETIC_ASC_SORT,
-                    INITIAL_LETTER.toString()).await()))
+                    INITIAL_LETTER).await()))
         }, onError = {})
     }
 
@@ -245,6 +245,6 @@ class BrandlistPageViewModel @Inject constructor(
         private const val ALL_BRANDS_HEADER_REQUEST_SIZE = 1
         private const val ALL_BRANDS_REQUEST_SIZE = 30
         private const val ALPHABETIC_ASC_SORT = 3
-        private const val INITIAL_LETTER = 'a'
+        private const val INITIAL_LETTER = ""
     }
 }
