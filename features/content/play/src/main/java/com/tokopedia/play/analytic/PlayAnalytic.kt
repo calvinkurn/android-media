@@ -223,7 +223,7 @@ class PlayAnalytic(
                     "ecommerce" to hashMapOf(
                         "click" to hashMapOf(
                             "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                            "products" to  listOf(convertProductToHashMapWithList(product, (position + 1), "bottom sheet"))
+                            "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
                         )
                     )
                 ),
