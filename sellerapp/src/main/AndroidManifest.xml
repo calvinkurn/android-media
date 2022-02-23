@@ -718,9 +718,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_sa" />
         <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@xml/actions" />
-        <meta-data
             android:name="HANSEL_APP_ID"
             android:value="@string/hansel_app_id_sa"
             tools:replace="android:value" />

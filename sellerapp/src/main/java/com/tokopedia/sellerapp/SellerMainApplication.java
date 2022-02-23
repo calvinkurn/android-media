@@ -18,7 +18,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -39,7 +39,6 @@ import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -52,7 +51,6 @@ import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.utils.permission.SlicePermission;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,11 +61,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
-
-import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -79,7 +74,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
-    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
 
     static {
@@ -111,7 +105,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         TokopediaUrl.Companion.init(this);
         initRemoteConfig();
         initCacheManager();
-        initEmbrace();
 
         TrackApp.initTrackApp(this);
 
@@ -131,10 +124,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         TokoPatch.init(this);
-        initSlicePermission();
 
         Loader.init(this);
-        setEmbraceUserId();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -232,13 +223,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             @NotNull
             @Override
             public String getEmbraceConfig() {
-                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
+                return "";
             }
         });
-    }
-
-    private void initEmbrace() {
-        Embrace.getInstance().start(this);
     }
 
     private void setVersionName() {
@@ -325,24 +312,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
-    }
-
-    private void initSlicePermission() {
-        if (getSliceRemoteConfig()) {
-            SlicePermission slicePermission = new SlicePermission();
-            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
-        }
-    }
-
-    private void setEmbraceUserId() {
-        if (getUserSession().isLoggedIn()) {
-            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
-        }
-    }
-
-    private Boolean getSliceRemoteConfig() {
-        return remoteConfig != null
-                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
 
     @SuppressLint("RestrictedApi")
