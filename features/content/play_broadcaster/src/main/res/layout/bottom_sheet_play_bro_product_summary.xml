@@ -54,8 +54,7 @@
         android:id="@+id/toaster_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/play_bro_product_summary_toaster_container_elevation"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fl_btn_done_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
