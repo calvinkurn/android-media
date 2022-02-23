@@ -2738,8 +2738,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          isMoveToWishlist: Boolean,
                                          isFromGlobalCheckbox: Boolean,
-                                         isFromEditBundle: Boolean,
-                                         hasAddOns: Boolean) {
+                                         isFromEditBundle: Boolean) {
         var message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
 
         if (isMoveToWishlist) {
@@ -2763,7 +2762,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setTopLayoutVisibility()
 
         when {
-            removeAllItems || hasAddOns -> {
+            removeAllItems -> {
                 refreshCartWithSwipeToRefresh()
             }
             isFromEditBundle -> {
