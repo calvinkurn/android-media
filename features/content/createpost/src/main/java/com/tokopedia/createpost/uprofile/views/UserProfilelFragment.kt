@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.uprofile.views
 
+import PostItemDecoration
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +22,8 @@ import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
+import com.tokopedia.feedcomponent.util.util.convertDpToPixel
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
@@ -63,6 +66,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initListener()
+        setHeader()
         val userSessionInterface = UserSession(context)
         mPresenter.getUserDetails(userSessionInterface.userId)
         mPresenter.getUPlayVideos( "feeds-profile","","buyer","5510248")
@@ -89,6 +93,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private fun initUserPost() {
         val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
         postRv?.layoutManager = GridLayoutManager(activity, 2)
+        postRv?.addItemDecoration(PostItemDecoration(convertDpToPixel(8F, requireContext())))
         postRv?.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.startDataLoading()
@@ -153,6 +158,23 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         } else {
             viewLiveRing?.show()
             textLive?.show()
+        }
+    }
+
+    private fun setHeader() {
+        val header = view?.findViewById<HeaderUnify>(R.id.header_profile)
+        header?.apply {
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+
+            addRightIcon(R.drawable.ic_arrow_down).setOnClickListener {
+                Toast.makeText(this.context,"arrow down ", Toast.LENGTH_SHORT).show()
+            }
+
+            addRightIcon(R.drawable.ic_af_check_gray).setOnClickListener {
+                Toast.makeText(this.context,"arrow grey ", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

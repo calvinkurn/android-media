@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
-    android:layout_width="@dimen/dp_160"
-    android:layout_height="240dp"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/cp_dp_284"
     android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -19,20 +19,27 @@
         android:id="@+id/text_live_view_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="12dp"
-        android:drawableLeft="@drawable/ic_play_eye_white"
+        android:background="@drawable/cp_bg_totalview"
+        android:padding="@dimen/unify_space_4"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/cp_dp_12"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N0"
+        android:drawableStart="@drawable/ic_play_eye_white"
         android:text="500"
-        android:drawablePadding="@dimen/dp_4"
+        android:drawablePadding="@dimen/unify_space_4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_display_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
         android:text="Selenkapnya"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintBottom_toTopOf="@+id/text_user_name"
         app:layout_constraintStart_toStartOf="@+id/text_user_name" />
 
@@ -40,9 +47,12 @@
         android:id="@+id/text_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
         android:text="Selenkapnya"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

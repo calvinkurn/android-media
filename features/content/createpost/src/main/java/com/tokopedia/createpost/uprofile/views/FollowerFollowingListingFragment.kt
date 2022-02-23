@@ -11,10 +11,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.TabsUnify
@@ -58,6 +60,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         super.onViewCreated(view, savedInstanceState)
         //initObserver()
         //initListener()
+        setHeader()
         val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
         //initUserPost()
@@ -102,6 +105,15 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 //        tabLayout?.addNewTab("Followers")
 //        tabLayout?.addNewTab("Followings")
         tabLayout?.visibility = View.VISIBLE
+        tabLayout?.apply {
+            tabLayout.setTabTextColors(
+                MethodChecker.getColor(
+                    activity,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                ),
+                MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            )
+        }
 //        tabLayout?.addNewTab("Followers")
 //        tabLayout?.addNewTab("Followings")
 
@@ -144,6 +156,21 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     private fun showLoader() {
 
+    }
+
+
+    private fun setHeader() {
+        val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
+        header?.apply {
+
+            title = "Something"
+            subtitle = "Something else"
+
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+
+        }
     }
 
     override fun onDestroy() {

@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/containerMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Background">
+    android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tp_follow"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_48"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabGravity="center"
-        app:tabMode="fixed">
-
-    </com.tokopedia.unifycomponents.TabsUnify>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_follower"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_follow" />
+        android:layout_height="?actionBarSize"
+        android:elevation="@dimen/unify_space_4"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:elevation="@dimen/unify_space_4"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title=""
+        app:unify_header_transparent_mode="false" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Background">
+
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/tp_follow"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabGravity="center"
+            app:tabMode="fixed">
+
+        </com.tokopedia.unifycomponents.TabsUnify>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tp_follow" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

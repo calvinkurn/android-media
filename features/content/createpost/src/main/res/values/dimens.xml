@@ -6,4 +6,11 @@
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_260">260dp</dimen>
     <dimen name="dp_100">100dp</dimen>
+    <dimen name="cp_dp_6">6dp</dimen>
+    <dimen name="cp_dp_2">2dp</dimen>
+    <dimen name="cp_dp_88">88dp</dimen>
+    <dimen name="cp_dp_160">160dp</dimen>
+    <dimen name="cp_dp_284">284dp</dimen>
+    <dimen name="cp_dp_12">12dp</dimen>
+
 </resources>

@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -21,6 +22,7 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
         super.onCreate(savedInstanceState)
+        toolbar.hide()
         setResult(Activity.RESULT_OK, intent)
     }
 

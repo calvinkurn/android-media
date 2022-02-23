@@ -57,6 +57,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.list
+    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
