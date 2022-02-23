@@ -3,23 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/dp_130"
     android:layout_height="wrap_content"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    tools:layout_height="wrap_content">
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageShop"
-            android:layout_width="130dp"
+            android:layout_width="match_parent"
             android:layout_height="130dp"
             android:adjustViewBounds="true"
             android:gravity="center"
@@ -29,7 +27,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
 
         <androidx.legacy.widget.Space
             android:id="@+id/marginSpacer"
@@ -55,9 +54,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_sub_logo"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:adjustViewBounds="true"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:gravity="center"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@id/shop_logo"
@@ -70,19 +68,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:gravity="center"
+            android:maxLength="20"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/imageShop"
+            app:layout_constraintStart_toStartOf="@id/imageShop"
             app:layout_constraintTop_toBottomOf="@id/shop_logo"
             app:layout_goneMarginTop="4dp"
             app:typographyType="small"
-            tools:text="Abditama Official"
+            tools:text="Abditama Officialkhfjajksda"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -94,6 +93,7 @@
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:gravity="center"
+            android:maxLength="20"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
@@ -135,6 +135,7 @@
                 android:id="@+id/benefit_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
@@ -180,12 +181,14 @@
                 android:id="@+id/tv_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
+                android:maxLength="20"
                 android:textColor="@color/Unify_RN600"
                 android:visibility="gone"
-                app:typographyType="small"
+                app:typographyType="heading_6"
                 app:typographyWeight="bold"
                 tools:text="Sisa 24 Menit"
                 tools:visibility="visible" />
