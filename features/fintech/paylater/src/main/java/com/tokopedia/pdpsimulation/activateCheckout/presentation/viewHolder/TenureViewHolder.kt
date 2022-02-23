@@ -9,6 +9,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.unifycomponents.CardUnify
+import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
 class TenureViewHolder(itemView: View, private val tenureSelectListener: ActivationListner) :
@@ -25,10 +26,10 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             updateData(tenureDetail)
             if (!tenureSelectListener.isDisable()) {
                 if (tenureDetail.isSelectedTenure) {
-                    individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
                     radioSelector.isChecked = true
                 } else {
-                    individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
+                    containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                     radioSelector.isChecked = false
                 }
                 individualTenureItemContainer.isClickable = true
@@ -40,7 +41,6 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
                 }
             } else {
-                individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioSelector.isChecked = false
                 individualTenureItemContainer.isClickable = false
                 radioSelector.isClickable = false

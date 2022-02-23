@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+
+<com.tokopedia.unifycomponents.CardUnify android:id="@+id/individualGatewayItemContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/individualGatewayItemContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:card_type="border"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    app:card_type="border"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:id="@+id/individualInsideCardContainer"
             android:layout_height="match_parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -121,4 +119,3 @@
 
 
 
-</LinearLayout>

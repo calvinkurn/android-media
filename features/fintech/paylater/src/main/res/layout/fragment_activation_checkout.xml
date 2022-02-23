@@ -38,7 +38,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_0"
-        android:paddingBottom="5dp"
+        android:paddingBottom="@dimen/unify_space_12"
         app:layout_constraintBottom_toTopOf="@id/ctaDivider"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -132,7 +132,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/amountToPay"
         app:layout_constraintLeft_toRightOf="@id/amountToPay"
         app:layout_constraintTop_toTopOf="@id/amountToPay"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         tools:text="x12" />
 
     <com.tokopedia.unifycomponents.DividerUnify

@@ -24,30 +24,28 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
 
             if(!checkoutData.disable && checkoutData.selectedGateway)
             {
-                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
                 radioGatewaySelector.isChecked = true
             }
             else {
-                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
+                individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
                 radioGatewaySelector.isChecked = false
             }
 
             if(!checkoutData.disable && !checkoutData.selectedGateway) {
                 itemView.radioGatewaySelector.setOnClickListener {
-                    individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50)))
                     radioGatewaySelector.isChecked = true
                     gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
                 }
                 itemView.setOnClickListener {
-                    individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50)))
                     radioGatewaySelector.isChecked = true
                     gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
 
                 }
             }
         }
-
-
 
     }
 
