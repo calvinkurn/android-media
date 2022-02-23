@@ -128,7 +128,9 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!fm.isStateSaved) {
+            show(fm, TAG)
+        }
     }
 
     private fun showFilterItems() {
