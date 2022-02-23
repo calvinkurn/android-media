@@ -37,7 +37,6 @@ class CatalogDetailProductListingViewModel
     val mProductCount = MutableLiveData<String>()
     val mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     val mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
-    val mCatalogComparisonSuccess = MutableLiveData(false)
 
     val selectedSortIndicatorCount = MutableLiveData<Int>()
     val searchParametersMap = MutableLiveData<HashMap<String, String>>()
@@ -54,6 +53,9 @@ class CatalogDetailProductListingViewModel
     var isPagingAllowed: Boolean = true
     var catalogUrl = ""
     var catalogName = ""
+    var catalogId = ""
+    var categoryId = ""
+    var brand  = ""
     var comparisonCardIsAdded = false
 
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
@@ -122,9 +124,9 @@ class CatalogDetailProductListingViewModel
         if (!comparisonCardIsAdded){
             comparisonCardIsAdded = true
             if(list.size - 1 >= CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX){
-                list.add(CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX,CatalogForYouContainerDataModel(catalogComparisonProductsResponse?.catalogComparisonList) as Visitable<CatalogTypeFactory>)
+                list.add(CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX,CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>)
             }else {
-                list.add(CatalogForYouContainerDataModel(catalogComparisonProductsResponse?.catalogComparisonList) as Visitable<CatalogTypeFactory>)
+                list.add(CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>)
             }
         }
     }

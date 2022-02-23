@@ -44,7 +44,7 @@
         app:layout_constrainedHeight="true"
         android:paddingBottom="@dimen/unify_space_96"
         tools:listitem="@layout/item_catalog_preffered_product"
-        app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"/>
+        app:layout_constraintTop_toBottomOf="@+id/layout_no_data"/>
 
     <include
         android:id="@+id/layout_no_data"

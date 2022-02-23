@@ -4,7 +4,9 @@ import android.os.Bundle
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 
 data class CatalogProductsContainerDataModel (val name : String = "", val type : String = "",
-                                    val catalogId: String, val catalogUrl : String?)
+                                              val catalogId: String, val catalogUrl : String?,
+                                              val categoryId : String?,
+                                              val catalogBrand : String?)
     : BaseCatalogDataModel {
 
     override fun name(): String = name

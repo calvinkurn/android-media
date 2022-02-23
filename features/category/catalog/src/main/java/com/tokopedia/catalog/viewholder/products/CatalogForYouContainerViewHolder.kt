@@ -24,6 +24,8 @@ import com.tokopedia.kotlin.extensions.view.show
 class CatalogForYouContainerViewHolder(private val view : View,
                                        private val lifecycleOwner : FragmentActivity,
                                        private val catalogId : String = "",
+                                       private val categoryId : String = "",
+                                       private val brand : String = "",
                                        private val catalogProductCardListener: CatalogProductCardListener?
 ): AbstractViewHolder<CatalogForYouContainerDataModel>(view) , CatalogDetailListener{
 
@@ -114,13 +116,13 @@ class CatalogForYouContainerViewHolder(private val view : View,
     }
 
     private fun handleError(){
-        itemView.findViewById<LinearLayout>(R.id.catalog_for_you_container_parent)?.hide()
+        itemView.findViewById<LinearLayout>(R.id.catalog_for_you_container_parent).hide()
     }
 
     private fun makeApiCall(page : Int) {
         catalogForYouViewModel?.getComparisonProducts("",
-            "71980","Apple",
-            "24", 10 ,page,"")
+            catalogId,brand,
+            categoryId, 10 ,page,"")
     }
 
     override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {

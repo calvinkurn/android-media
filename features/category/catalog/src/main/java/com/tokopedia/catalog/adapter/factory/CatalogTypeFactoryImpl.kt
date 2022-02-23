@@ -10,6 +10,9 @@ import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.BaseProductTypeFactoryImpl
 
 class CatalogTypeFactoryImpl(private var catalogProductCardListener : CatalogProductCardListener,
+                             private val catalogId : String = "",
+                             private val categoryId : String = "",
+                             private val brand : String = "",
                              private val lifeCycleOwner : FragmentActivity) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
 
     override fun type(listShimmerModel: CatalogListShimmerModel): Int {
@@ -32,7 +35,9 @@ class CatalogTypeFactoryImpl(private var catalogProductCardListener : CatalogPro
             CatalogForYouContainerViewHolder.LAYOUT -> CatalogForYouContainerViewHolder(
                 view,
                 lifeCycleOwner,
-                "71980",
+                catalogId,
+                categoryId,
+                brand,
                 catalogProductCardListener
             )
             CatalogListShimmerViewHolder.LAYOUT -> CatalogListShimmerViewHolder(view)
