@@ -12,7 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_1"
-        app:typographyWeight="bold"
         tools:text="1" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
