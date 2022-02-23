@@ -65,6 +65,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -880,13 +881,26 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     )
                     adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                     val errorCode = adsStatus.data.status.error_code
-                    if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
+                    val isTopAds = adsStatus.data.productList[0].isCharge
+                    if (errorCode in CODE_200..CODE_300 && isTopAds) {
                         _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
                     }
+                    ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                            true,
+                            "",
+                            errorCode.toString(),
+                            isTopAds
+                    )
                 }
             }) {
                 it.printStackTrace()
                 _topAdsRecomChargeData.postValue(it.asFail())
+                ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                        false,
+                        it.message,
+                        "",
+                        false
+                )
                 //nothing to do since fire and forget
             }
         }

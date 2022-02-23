@@ -43,7 +43,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
@@ -130,18 +129,28 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
-import com.tokopedia.product.detail.data.util.*
+import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
+import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
+import com.tokopedia.product.detail.data.util.DynamicProductDetailSwipeTrackingState
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyDiscussion
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
+import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
+import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -210,10 +219,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Separator Rule
@@ -453,6 +462,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         uuid = UUID.randomUUID().toString()
         firstOpenPage = true
         super.onCreate(savedInstanceState)
+
+        context?.let {
+            ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
+                    productId,
+                    shopDomain,
+                    productKey,
+                    ChooseAddressUtils.getLocalizingAddressData(it)
+            )
+        }
+
         assignDeviceId()
         loadData()
     }
@@ -716,6 +735,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.getUserLocationCache())
         if (isUserLocationChanged) {
             refreshPage()
+            context?.let {
+                ProductDetailServerLogger.logBreadCrumbAddressChanged(
+                        ChooseAddressUtils.getLocalizingAddressData(it)
+                )
+            }
         }
     }
 
@@ -1735,19 +1759,39 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     view?.showToasterError(it.data.errorReporter.texts.submitTitle, ctaText = getString(R.string.label_oke_pdp))
                 } else {
                     onSuccessAtc(it.data)
+                    ProductDetailServerLogger.logBreadCrumbAtc(
+                            true,
+                            "",
+                            buttonActionType
+                    )
                 }
             }, {
                 DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(it.message
                         ?: "", viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: "", viewModel.userId)
-                logException(it)
-                if (it is AkamaiErrorException && it.message != null) {
-                    view?.showToasterError(it.message
-                            ?: "", ctaText = getString(R.string.label_oke_pdp))
-                } else {
-                    view?.showToasterError(getErrorMessage(it), ctaText = getString(R.string.label_oke_pdp))
-                }
+                handleAtcError(it)
             })
+        }
+    }
+
+    private fun handleAtcError(t: Throwable) {
+        logException(t)
+        if (t is AkamaiErrorException && t.message != null) {
+            view?.showToasterError(t.message
+                    ?: "", ctaText = getString(R.string.label_oke_pdp))
+            ProductDetailServerLogger.logBreadCrumbAtc(
+                    false,
+                    t.message ?: "",
+                    buttonActionType
+            )
+        } else {
+            val errorMessage = getErrorMessage(t)
+            view?.showToasterError(errorMessage, ctaText = getString(R.string.label_oke_pdp))
+            ProductDetailServerLogger.logBreadCrumbAtc(
+                    false,
+                    errorMessage,
+                    buttonActionType
+            )
         }
     }
 
@@ -1758,6 +1802,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 firstOpenPage = false
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
+                ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
+                        isSuccess = true
+                )
             }, {
                 ServerLogger.log(Priority.P2, "LOAD_PAGE_FAILED",
                         mapOf("type" to "pdp",
@@ -1766,7 +1814,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         ))
                 logException(it)
                 context?.let { ctx ->
-                    renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
+                    val errorModel = ProductDetailErrorHelper.getErrorType(
+                            ctx,
+                            it,
+                            isFromDeeplink,
+                            deeplinkUrl
+                    )
+                    renderPageError(errorModel)
+                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+                            isSuccess = false,
+                            errorMessage = errorModel.errorMessage,
+                            errorCode = errorModel.errorCode
+                    )
                 }
             })
             (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
@@ -1810,6 +1869,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             onSuccessGetDataP2(it, boeData, ratesData)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
+            ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
+                    isSuccess = it.shopInfo.shopCore.shopID.isEmpty()
+            )
             stickyLoginView?.loadContent()
         }
     }
