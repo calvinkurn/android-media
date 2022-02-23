@@ -236,6 +236,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.playChannelID
         )
         bindTracking(feedXCard)
+        val url = if (feedXCard.isTopAds) {
+            feedXCard.webLink
+        } else feedXCard.appLink
         shareButton.setOnClickListener {
             val desc = context.getString(R.string.feed_share_default_text)
             listener?.onShareClick(
@@ -243,7 +246,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.id.toIntOrZero(),
                 feedXCard.author.name + " `post",
                 desc.replace("%s", feedXCard.author.name),
-                feedXCard.appLink,
+                url,
                 feedXCard.media.firstOrNull()?.mediaUrl ?: "",
                 feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
                 feedXCard.typename,
@@ -258,8 +261,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindTracking(feedXCard: FeedXCard) {
                 addOnImpressionListener(feedXCard.impressHolder) {
+                    val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
                         imagePostListener.userCarouselImpression(
                                 feedXCard.id,
                                 feedXCard.media.first(),
@@ -273,7 +277,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                     }
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC ) {
                         listener?.onImpressionTracking(feedXCard, positionInFeed)
                     }
 
