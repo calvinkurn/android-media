@@ -16,7 +16,8 @@ data class VoucherPreview(
         val voucherType: Int = -1,
         val isPublic: Int = 1,
         val isLockToProduct: Int = 0,
-        var applink: String = ""
+        var applink: String = "",
+        var weblink: String = ""
 ) {
         fun isLockToProduct() = isLockToProduct == 1
 }

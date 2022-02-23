@@ -42,7 +42,8 @@ class VoucherMapper @Inject constructor() {
                     isPublic = voucher.isPublic,
                     remainingQuota = voucher.remainingQuota,
                     isLockToProduct = voucher.isLockToProduct,
-                    applink = voucher.applink
+                    applink = voucher.applink,
+                    weblink = voucher.weblink
             )
             vouchers.add(voucherUiModel)
         }

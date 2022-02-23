@@ -83,7 +83,8 @@ class SendableVoucherPreview(
                 voucherPreview.voucherType,
                 voucherPreview.isPublic,
                 voucherPreview.isLockToProduct,
-                voucherPreview.applink
+                voucherPreview.applink,
+                voucherPreview.weblink
         )
         val data = WebsocketAttachmentData(
             message_id = messageId.toLongOrZero(),
@@ -140,6 +141,7 @@ class SendableVoucherPreview(
             val voucher_type: Int,
             val is_public: Int,
             val is_lock_to_product: Int,
-            val applink: String
+            val applink: String,
+            val weblink: String
     )
 }

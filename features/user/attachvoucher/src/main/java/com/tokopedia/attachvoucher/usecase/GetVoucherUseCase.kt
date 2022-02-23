@@ -115,6 +115,7 @@ open class GetVoucherUseCase @Inject constructor(
                         }
                         is_lock_to_product
                         applink
+                        weblink
                     }
                 }
             }

@@ -21,7 +21,8 @@ open class VoucherUiModel constructor(
         val isPublic: Int = 1,
         val remainingQuota: Int = 0,
         val isLockToProduct: Int = 0,
-        val applink: String = ""
+        val applink: String = "",
+        val weblink: String = ""
 ) : MerchantVoucherModel(
         voucherId,
         voucherName,

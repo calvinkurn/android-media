@@ -172,7 +172,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
                 voucherType = voucher.type ?: -1,
                 isPublic = voucher.isPublic,
                 isLockToProduct = voucher.isLockToProduct,
-                applink = voucher.applink
+                applink = voucher.applink,
+                weblink = voucher.weblink
         )
         val stringVoucherPreview = CommonUtil.toJson(voucherPreview)
         return Intent().apply {
