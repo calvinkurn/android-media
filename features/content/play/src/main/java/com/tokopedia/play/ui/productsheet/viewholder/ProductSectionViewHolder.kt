@@ -136,9 +136,6 @@ class ProductSectionViewHolder(
                 add(Calendar.HOUR, (((diff / 1000) / 60) / 60).toInt())
             }
             timerSection.targetDate = dt
-            timerSection.onFinish = {
-                listener.onTimerExpired(item)
-            }
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
