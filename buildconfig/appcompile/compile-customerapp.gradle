@@ -214,6 +214,7 @@ includeIfEnabled("features:transaction:oneclickcheckout")
 includeIfEnabled("features:transaction:minicart")
 includeIfEnabled("features:transaction:unifyorderhistory")
 includeIfEnabled("features:transaction:wishlist")
+includeIfEnabled("features:transaction:addOnGifting")
 
 includeIfEnabled("features:communication:push-notification-common")
 includeIfEnabled("features:communication:attachproduct")
