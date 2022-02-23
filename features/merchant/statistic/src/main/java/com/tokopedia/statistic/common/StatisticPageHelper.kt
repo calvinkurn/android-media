@@ -26,6 +26,8 @@ class StatisticPageHelper @Inject constructor(
 ) {
 
     companion object {
+        private const val TRAFFIC_TAG_REMOVE_AFTER = 1649606400000
+
         fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
             val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
             val isOfficialStore = userSession.isShopOfficialStore
@@ -433,8 +435,7 @@ class StatisticPageHelper @Inject constructor(
 
     private fun getTrafficShowTagStatus(): Boolean {
         //the new tag won't be shown after 30 days (11 Apr 2022), start from release date
-        val removeTagAfter: Long = 1649606400000
         val now = Date().time
-        return now <= removeTagAfter
+        return now <= TRAFFIC_TAG_REMOVE_AFTER
     }
 }
