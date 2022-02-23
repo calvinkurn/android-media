@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.model.MvcLockedToProductAddToCartTracker
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
@@ -32,7 +31,6 @@ import javax.inject.Inject
 class MvcLockedToProductViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val mvcLockedToProductUseCase: MvcLockedToProductUseCase,
-    private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
@@ -56,14 +54,6 @@ class MvcLockedToProductViewModel @Inject constructor(
         get() = _productListData
     private val _productListData =
         MutableLiveData<Result<List<MvcLockedToProductGridProductUiModel>>>()
-
-    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
-        get() = _miniCart
-    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
-
-//    val atcQuantity: LiveData<Result<HomeLayoutListUiModel>>
-//        get() = _atcQuantity
-//    private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
@@ -137,28 +127,7 @@ class MvcLockedToProductViewModel @Inject constructor(
         return nextPage.isMoreThanZero()
     }
 
-    fun getMiniCart(shopId: List<String>) {
-        if (!shopId.isNullOrEmpty() && userSession.isLoggedIn) {
-            launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId)
-                getMiniCartUseCase.execute({
-                    setMiniCartAndProductQuantity(it)
-                    _miniCart.postValue(Success(it))
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
-            }) {
-                _miniCart.postValue(Fail(it))
-            }
-        }
-    }
-
-    private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
-        setMiniCartSimplifiedData(miniCart)
-//        updateProductQuantity(miniCart)
-    }
-
-    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
+    fun setMiniCartData(miniCart: MiniCartSimplifiedData) {
         miniCartSimplifiedData = miniCart
     }
 
@@ -166,7 +135,7 @@ class MvcLockedToProductViewModel @Inject constructor(
         val miniCartItem = getMiniCartItem(productId)
         when {
             miniCartItem == null -> addItemToCart(productId, shopId, quantity)
-            quantity.isZero() -> removeItemCart(miniCartItem, quantity)
+            quantity.isZero() -> removeItemCart(miniCartItem)
             else -> updateItemCart(miniCartItem, quantity)
         }
     }
@@ -189,7 +158,6 @@ class MvcLockedToProductViewModel @Inject constructor(
                 it.data.quantity,
                 MvcLockedToProductAddToCartTracker.AtcType.ADD
             )
-            updateAddToCartQuantity(productId, quantity)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -211,7 +179,7 @@ class MvcLockedToProductViewModel @Inject constructor(
         _mvcAddToCartTracker.postValue(mvcLockedToProductAddToCartTracker)
     }
 
-    private fun removeItemCart(miniCartItem: MiniCartItem, quantity: Int) {
+    private fun removeItemCart(miniCartItem: MiniCartItem) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -224,7 +192,6 @@ class MvcLockedToProductViewModel @Inject constructor(
                 miniCartItem.quantity,
                 MvcLockedToProductAddToCartTracker.AtcType.REMOVE
             )
-            updateAddToCartQuantity(productId, quantity)
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
@@ -238,8 +205,6 @@ class MvcLockedToProductViewModel @Inject constructor(
         val existingQuantity = miniCartItem.quantity
         miniCartItem.quantity = quantity
         val cartId = miniCartItem.cartId
-        val productId = miniCartItem.productId
-
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
             quantity = miniCartItem.quantity,
@@ -261,25 +226,13 @@ class MvcLockedToProductViewModel @Inject constructor(
                 miniCartItem.quantity,
                 atcType
             )
-            updateAddToCartQuantity(productId, quantity)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
     }
 
-    private fun updateAddToCartQuantity(productId: String, quantity: Int) {
-//        homeLayoutItemList.updateProductQuantity(productId, quantity, type)
-
-//        val data = HomeLayoutListUiModel(
-//            items = getHomeVisitableList(),
-//            state = TokoNowLayoutState.SHOW
-//        )
-
-//        _atcQuantity.postValue(Success(data))
-    }
-
-    fun getMiniCartItem(productId: String): MiniCartItem? {
+    private fun getMiniCartItem(productId: String): MiniCartItem? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.firstOrNull { it.productId == productId }
     }
