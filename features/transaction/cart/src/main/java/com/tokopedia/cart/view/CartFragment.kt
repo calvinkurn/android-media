@@ -1295,8 +1295,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onClickAddOnCart(productId: String) {
         activity?.let {
-            RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, productId))
+            // TODO: open when merge with merchant
+            // RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, productId))
         }
+        cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun addOnImpression(productId: String) {
+        cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {

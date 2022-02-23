@@ -261,6 +261,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
             buttonGiftingAddOnProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
             buttonGiftingAddOnProductLevel.setOnClickListener { shipmentItemListener?.openAddOnProductLevelBottomSheet(cartItemModel, addOnWordingModel) }
+            shipmentItemListener?.addOnProductLevelImpression(cartItemModel.productId.toString())
         }
     }
 
@@ -268,6 +269,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(cartItem: CartItemModel)
         fun openAddOnProductLevelBottomSheet(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel)
+        fun addOnProductLevelImpression(productId: String)
     }
 
     companion object {

@@ -1238,6 +1238,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
                     AddOnMapper.mapAddOnBottomSheetParam(addOn, product, shop, viewModel.orderCart)
             )
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
             startActivityForResult(intent, REQUEST_CODE_ADD_ON)
         }
     }
