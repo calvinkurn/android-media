@@ -13,7 +13,7 @@
         android:layout_width="10dp"
         android:layout_height="10dp"
         app:icon_name="CLOCK"
-        app:icon_color_light_enable="@color/Unify_RN600"
+        app:icon_color_light_enable="@color/Unify_RN500"
         app:icon_color_night_enable="@color/Unify_RN500"
         />
     <com.tokopedia.unifyprinciples.Typography
@@ -26,6 +26,6 @@
         app:typographyWeight="bold"
         app:typographyType="small"
         tools:text="Sisa 24 Menit"
-        android:textColor="@color/Unify_RN600"
+        android:textColor="@color/Unify_RN500"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

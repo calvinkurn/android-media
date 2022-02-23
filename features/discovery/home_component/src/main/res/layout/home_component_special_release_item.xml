@@ -27,6 +27,17 @@
             android:layout_width="128dp"
             android:layout_height="128dp"/>
 
+        <View
+            android:id="@+id/special_release_shop_image_border"
+            app:layout_constraintStart_toStartOf="@id/special_release_shop_image"
+            app:layout_constraintTop_toTopOf="@id/special_release_shop_image"
+            app:layout_constraintEnd_toEndOf="@id/special_release_shop_image"
+            app:layout_constraintBottom_toBottomOf="@id/special_release_shop_image"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:background="@drawable/special_release_shop_border_image"
+            />
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/special_release_shop_image"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +70,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Shop name"
             app:typographyType="small"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:maxLines="1"
             android:ellipsize="end"
             />
@@ -100,7 +111,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:layout_width="100dp"
-            tools:layout_height="20dp"
             android:layout_marginTop="4dp"
             android:maxLines="1"
             android:ellipsize="end"
