@@ -4,13 +4,13 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class GetAddOnResponse {
-    @SerializedName("GetAddOnByProduct")
+    @SerializedName("GetAddOnByID")
     @Expose
-    var getAddOnByProduct: GetAddOnByProduct = GetAddOnByProduct()
+    var getAddOnByID: GetAddOnByID = GetAddOnByID()
 }
 
-class GetAddOnByProduct {
-    @SerializedName("error")
+class GetAddOnByID {
+    @SerializedName("Error")
     @Expose
     var error: Error = Error()
 
@@ -18,29 +18,7 @@ class GetAddOnByProduct {
     @Expose
     var staticInfo: StaticInfo = StaticInfo()
 
-    @SerializedName("AddOnByProductResponse")
+    @SerializedName("AddOnByIDResponse")
     @Expose
-    var addOnByProductResponse: List<AddOnByProductResponse> = emptyList()
-}
-
-class AddOnByProductResponse {
-    @SerializedName("ProductID")
-    @Expose
-    var productID: String? = null
-
-    @SerializedName("WarehouseID")
-    @Expose
-    var warehouseID: String? = null
-
-    @SerializedName("AddOnLevel")
-    @Expose
-    var addOnLevel: String? = null
-
-    @SerializedName("CouponText")
-    @Expose
-    var couponText: String? = null
-
-    @SerializedName("Addons")
-    @Expose
-    var addons: List<Addon> = emptyList()
+    var addOnByIDResponse: List<Addon> = emptyList()
 }

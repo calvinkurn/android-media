@@ -6,37 +6,37 @@ import com.google.gson.annotations.SerializedName
 class Basic {
     @SerializedName("ID")
     @Expose
-    var id: String? = null
+    var id: String = ""
 
     @SerializedName("ShopID")
     @Expose
-    var shopID: String? = null
+    var shopID: String = ""
 
     @SerializedName("Name")
     @Expose
-    var name: String? = null
+    var name: String = ""
 
     @SerializedName("Type")
     @Expose
-    var type: String? = null
+    var type: String = ""
 
     @SerializedName("Status")
     @Expose
-    var status: String? = null
+    var status: String = ""
 
     @SerializedName("OwnerWarehouseID")
     @Expose
-    var ownerWarehouseID: String? = null
+    var ownerWarehouseID: String = ""
 
     @SerializedName("IsEligible")
     @Expose
-    var isEligible: Boolean? = null
+    var isEligible: Boolean = false
 
     @SerializedName("Rules")
     @Expose
-    var rules: Rules? = null
+    var rules: Rules = Rules()
 
     @SerializedName("Metadata")
     @Expose
-    var metadata: Metadata? = null
+    var metadata: Metadata = Metadata()
 }

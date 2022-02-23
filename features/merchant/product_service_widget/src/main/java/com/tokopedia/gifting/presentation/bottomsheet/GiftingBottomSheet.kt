@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gifting.di.DaggerGiftingComponent
-import com.tokopedia.gifting.domain.model.AddOnByProductResponse
+import com.tokopedia.gifting.domain.model.Addon
 import com.tokopedia.gifting.domain.model.Basic
 import com.tokopedia.gifting.domain.model.Inventory
 import com.tokopedia.gifting.domain.model.Shop
@@ -25,7 +25,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
+class GiftingBottomSheet(private val addOnId: Long) : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: GiftingViewModel
@@ -53,11 +53,10 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
         initInjector()
         setPageLoading(true)
 
-        observeGetWarehouseIdResult()
         observeGetAddOnByProduct()
         observeErrorThrowable()
 
-        viewModel.getWarehouseId(requireContext())
+        viewModel.getAddOn(addOnId)
     }
 
     private fun initInjector() {
@@ -67,22 +66,16 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun observeGetWarehouseIdResult() {
-        viewModel.getWarehouseIdResult.observe(viewLifecycleOwner) { warehouseId ->
-            viewModel.getAddOn(productId, warehouseId)
-        }
-    }
-
     private fun observeGetAddOnByProduct() {
-        viewModel.getAddOnByProduct.observe(viewLifecycleOwner) {
+        viewModel.getAddOnResult.observe(viewLifecycleOwner) {
             setPageLoading(false)
             setTextShopLocationAction(it.staticInfo.infoURL.orEmpty())
-            setupPageFromResponseData(it.addOnByProductResponse.firstOrNull())
+            setupPageFromResponseData(it.addOnByIDResponse.firstOrNull())
         }
     }
 
-    private fun setupPageFromResponseData(addOnByProductResponse: AddOnByProductResponse?) {
-        addOnByProductResponse?.addons?.firstOrNull()?.let {
+    private fun setupPageFromResponseData(addon: Addon?) {
+        addon?.let {
             setupCardAddOn(it.basic, it.inventory)
             setupShopSection(it.shop)
         }
@@ -90,17 +83,19 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
 
     private fun setupCardAddOn(basic: Basic, inventory: Inventory) {
         priceAddOn?.text = inventory.price.orZero().getCurrencyFormatted()
-        imageAddOn?.loadImageRounded(basic.metadata?.pictures?.firstOrNull()?.url200.orEmpty())
+        imageAddOn?.loadImageRounded(basic.metadata.pictures.firstOrNull()?.url200.orEmpty())
     }
 
     private fun setupShopSection(shop: Shop) {
-        textShopName?.text = shop.name.orEmpty()
+        textShopName?.text = shop.name
     }
 
     private fun observeErrorThrowable() {
         viewModel.errorThrowable.observe(viewLifecycleOwner) {
             val errorMessage = ErrorHandler.getErrorMessage(context, it)
-            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).apply {
+                anchorView = layoutShimmer
+            }.show()
         }
     }
 
