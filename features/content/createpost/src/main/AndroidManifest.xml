@@ -55,6 +55,41 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="com.tokopedia.createpost.uprofile.views.UserProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/up_path_user_profile_landing"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.createpost.uprofile.views.FollowerFollowingListingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/up_path_user_profile_follower"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.tokopedia.createpost.view.plist.ShopProductListActivity"
             android:label="@string/cp_title_edit"
