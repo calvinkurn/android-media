@@ -20,4 +20,11 @@
     <dimen name="campaign_widget_card_height">235dp</dimen>
     <dimen name="campaign_widget_card_width">@dimen/product_card_flashsale_width</dimen>
 
+    <dimen name="special_release_padding_bottom">12dp</dimen>
+    <dimen name="special_release_shop_product_height">128dp</dimen>
+    <dimen name="special_release_shop_image_offset_height">42dp</dimen>
+    <dimen name="special_release_shop_name_height">18dp</dimen>
+    <dimen name="special_release_tag_height">22dp</dimen>
+    <dimen name="special_release_price_height">28dp</dimen>
+    <dimen name="special_release_timer_height">16dp</dimen>
 </resources>

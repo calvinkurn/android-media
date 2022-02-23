@@ -13,7 +13,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class CarouselSpecialReleaseDataModel(
     val grid: ChannelGrid,
     val parentPosition: Int,
-    val listener: CommonProductCardCarouselListener
+    val listener: CommonProductCardCarouselListener,
+    val channel: ChannelModel
 ) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
     companion object {
         const val CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND = "timer_bind_item"

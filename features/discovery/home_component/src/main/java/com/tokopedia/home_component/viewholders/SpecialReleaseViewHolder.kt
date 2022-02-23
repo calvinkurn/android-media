@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -23,24 +24,33 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.SpecialReleaseItemViewHolder
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.calculator.calculateHeight
 import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.SpecialReleaseAdapter
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class SpecialReleaseViewHolder(
         itemView: View,
         val homeComponentListener: HomeComponentListener?,
         val specialReleaseComponentListener: SpecialReleaseComponentListener?
-) : AbstractViewHolder<SpecialReleaseDataModel>(itemView), CommonProductCardCarouselListener {
+) : AbstractViewHolder<SpecialReleaseDataModel>(itemView), CommonProductCardCarouselListener,
+    CoroutineScope {
     private var binding: HomeComponentSpecialReleaseBinding? by viewBinding()
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private var adapter: SpecialReleaseAdapter? = null
     private var isCacheData = false
-
+    private val masterJob = SupervisorJob()
+    override val coroutineContext = masterJob + Dispatchers.Main
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_component_special_release
@@ -113,10 +123,21 @@ class SpecialReleaseViewHolder(
 
     private fun mappingView(channel: ChannelModel) {
         valuateRecyclerViewDecoration()
-        val visitableList: MutableList<Visitable<*>> = channel.channelGrids.map {
-            CarouselSpecialReleaseDataModel(it, adapterPosition, this)
+        val carouselDataModelList: MutableList<CarouselSpecialReleaseDataModel> = channel.channelGrids.map {
+            CarouselSpecialReleaseDataModel(it, adapterPosition, this, channel)
         }.toMutableList()
 
+//        launch {
+//            try {
+//                binding?.homeComponentSpecialReleaseRv?.
+//                setHeightBasedOnProductCardMaxHeight(carouselDataModelList)
+//            }
+//            catch (throwable: Throwable) {
+//                throwable.printStackTrace()
+//            }
+//        }
+
+        val visitableList: MutableList<Visitable<*>> = carouselDataModelList.map { it }.toMutableList()
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
                 visitableList.add(
@@ -135,6 +156,15 @@ class SpecialReleaseViewHolder(
             }
         }
         mappingItem(channel, visitableList)
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+        cardModelList: List<CarouselSpecialReleaseDataModel>) {
+        val cardHeight = cardModelList.calculateHeight(context, Dispatchers.Default)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = cardHeight
+        this.layoutParams = carouselLayoutParams
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {

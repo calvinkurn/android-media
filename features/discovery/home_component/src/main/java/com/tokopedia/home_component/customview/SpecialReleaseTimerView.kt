@@ -9,6 +9,7 @@ import androidx.annotation.AttrRes
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
@@ -48,8 +49,8 @@ class SpecialReleaseTimerView: FrameLayout {
     }
 
     private fun hideTimer() {
-        timerText?.invisible()
-        timerIcon?.invisible()
+        timerText?.gone()
+        timerIcon?.gone()
     }
 
     private fun showTimer() {
