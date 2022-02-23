@@ -6,20 +6,18 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.video.ProductVideoPlayer
-import com.tokopedia.productcard.video.VideoPlayerState
+import com.tokopedia.productcard.video.ProductVideoPlayerProvider
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener,
-) : AbstractViewHolder<ProductItemDataView>(itemView), ProductVideoPlayer {
+) : AbstractViewHolder<ProductItemDataView>(itemView), ProductVideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?
 
@@ -92,14 +90,6 @@ abstract class ProductItemViewHolder(
         productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
 
-    override val hasProductVideo: Boolean
-        get() = productCardView?.getProductCardVideo()?.hasProductVideo == true
-
-    override fun playVideo(): Flow<VideoPlayerState> {
-        return productCardView?.getProductCardVideo()?.playVideo() ?: flowOf(VideoPlayerState.NoVideo)
-    }
-
-    override fun stopVideo() {
-        productCardView?.getProductCardVideo()?.stopVideo()
-    }
+    override val productVideoPlayer : ProductVideoPlayer?
+        get() = productCardView?.getProductCardVideo()
 }

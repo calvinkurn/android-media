@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.utils.LayoutManagerUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,6 @@ import timber.log.Timber
 
 class ProductVideoAutoplay(
     private val remoteConfig: RemoteConfig,
-    private val productVideoAutoplayFilter: ProductVideoAutoplayFilter,
     scope: CoroutineScope,
 ) : CoroutineScope by scope, LifecycleObserver {
     private var productVideoAutoPlayJob: Job? = null
@@ -34,6 +34,8 @@ class ProductVideoAutoplay(
     }
 
     private var recyclerView: RecyclerView? = null
+    private val layoutManager: RecyclerView.LayoutManager?
+        get() = recyclerView?.layoutManager
 
     private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -74,8 +76,7 @@ class ProductVideoAutoplay(
 
     private fun startVideoAutoplay() {
         productVideoAutoPlayJob?.cancel()
-        val currentlyVisibleVideoPlayers = productVideoAutoplayFilter
-            .filterVisibleProductVideoPlayer()
+        val currentlyVisibleVideoPlayers = filterVisibleProductVideoPlayer()
         if (currentlyVisibleVideoPlayers != visibleVideoPlayers) {
             visibleVideoPlayers = currentlyVisibleVideoPlayers
             val visibleItemIterable = currentlyVisibleVideoPlayers.iterator()
@@ -85,6 +86,40 @@ class ProductVideoAutoplay(
                 playNextVideo(visibleItemIterable)
             }
         }
+    }
+
+    private fun filterVisibleProductVideoPlayer(): List<ProductVideoPlayer> {
+        val itemCount = recyclerView?.adapter?.itemCount ?: return emptyList()
+        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
+        val lastVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
+        if (itemCount > 0
+            && firstVisibleItemIndex != -1
+            && lastVisibleItemIndex != -1
+        ) {
+            return getVisibleViewHolderList(
+                firstVisibleItemIndex,
+                lastVisibleItemIndex
+            )
+        }
+        return emptyList()
+    }
+
+    private fun getVisibleViewHolderList(
+        firstVisibleItemIndex: Int,
+        lastVisibleItemIndex: Int,
+    ): List<ProductVideoPlayer> {
+        val visibleVideoPlayerProviders = mutableListOf<ProductVideoPlayerProvider>()
+        for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
+            val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: continue
+            if (viewHolder is ProductVideoPlayerProvider) {
+                visibleVideoPlayerProviders.add(viewHolder)
+            }
+        }
+        return visibleVideoPlayerProviders
+            .mapNotNull {
+                it.productVideoPlayer
+            }
+            .filter { it.hasProductVideo }
     }
 
     private suspend fun playNextVideo(visibleItemIterator: Iterator<ProductVideoPlayer>) {
@@ -125,11 +160,7 @@ class ProductVideoAutoplay(
             }
             .collect {
                 productVideoPlayer = null
-                if (canPlayNextVideo(visibleItemIterator)) {
-                    playNextVideo(visibleItemIterator)
-                } else if (!visibleItemIterator.hasNext()) {
-                    clearQueue()
-                }
+                playNextVideo(visibleItemIterator)
             }
     }
 

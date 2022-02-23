@@ -65,9 +65,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
-import com.tokopedia.productcard.video.BaseProductVideoAutoplayFilter
 import com.tokopedia.productcard.video.ProductVideoAutoplay
-import com.tokopedia.productcard.video.ProductVideoAutoplayFilter
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -229,6 +227,10 @@ class ProductListFragment: BaseDaggerFragment(),
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
+
+    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
+        ProductVideoAutoplay(remoteConfig, this)
+    }
 
     private lateinit var masterJob: Job
 
@@ -482,13 +484,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun getSearchParameterMap(): Map<String, Any> =
         searchParameter?.getSearchParameterMap() ?: mapOf()
-    //endregion
-
-    //region product video autoplay
-    private val videoAutoplayFilter : ProductVideoAutoplayFilter = ProductListProductVideoAutoplayFilter()
-    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
-        ProductVideoAutoplay(remoteConfig, videoAutoplayFilter, this)
-    }
     //endregion
 
     //region onAttach
@@ -2077,13 +2072,4 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.closeLastFilter(searchParameterMap)
     }
     //endregion
-
-    inner class ProductListProductVideoAutoplayFilter : BaseProductVideoAutoplayFilter() {
-        override val recyclerView: RecyclerView?
-            get() = this@ProductListFragment.recyclerView
-        override val layoutManager: RecyclerView.LayoutManager?
-            get() = recyclerView?.layoutManager
-        override val itemList: List<Visitable<*>>?
-            get() = productListAdapter?.itemList
-    }
 }
