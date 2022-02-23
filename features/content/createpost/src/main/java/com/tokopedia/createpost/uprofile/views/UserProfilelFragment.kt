@@ -47,6 +47,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     var landedUserName: String? = null
     var idFollowed: Boolean = false
+    var displayName: String = ""
+    var userName: String = ""
     var userSession: UserSessionInterface? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
@@ -228,6 +230,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         textFollowingCount?.text = data.profileHeader.stats.totalFollowingFmt
 
         setProfileImg(data.profileHeader.profile)
+
+        displayName = data.profileHeader.profile.name
+        userName = data.profileHeader.profile.username
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
@@ -335,7 +340,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onClick(source: View) {
         when (source.id) {
             R.id.text_following_count, R.id.text_following_label -> {
-                startActivity(Intent(activity, FollowerFollowingListingActivity::class.java))
+                val bundle = Bundle()
+                bundle.putString(EXTRA_DISPLAY_NAME, displayName)
+                bundle.putString(EXTRA_USER_NAME, userName)
+                startActivity(activity?.let { FollowerFollowingListingActivity.getCallingIntent(it,bundle) })
             }
 
             R.id.text_follower_count, R.id.text_follower_label -> {
@@ -385,6 +393,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     companion object {
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
+        const val EXTRA_DISPLAY_NAME = "display_name"
+        const val EXTRA_USER_NAME = "user_name"
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
