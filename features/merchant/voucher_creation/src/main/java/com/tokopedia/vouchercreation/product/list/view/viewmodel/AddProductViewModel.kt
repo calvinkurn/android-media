@@ -30,6 +30,7 @@ class AddProductViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
+        private const val FIRST_PAGE = 1
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"

@@ -247,7 +247,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
 
                     val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
-                    this.selectedProducts = selectedProducts.toMutableList()
                     refreshProductsSection(selectedProducts)
 
                     binding.tpgMaxProduct.text = String.format(
