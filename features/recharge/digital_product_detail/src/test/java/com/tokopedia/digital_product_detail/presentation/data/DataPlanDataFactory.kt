@@ -5,6 +5,8 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -35,6 +37,50 @@ class DataPlanDataFactory {
             gson.JsonToString(GET_PREFIX_OPERATOR_EMPTY_VALIDATION),
             TelcoCatalogPrefixSelect::class.java
         )
+    }
+
+    fun getCatalogInputMultiTabData(): DigitalCatalogProductInputMultiTab {
+        return gson.fromJson(
+            gson.JsonToString(GET_CATALOG_INPUT_MULTITAB),
+            DigitalCatalogProductInputMultiTab::class.java
+        )
+    }
+
+    fun getFilterTagListSelectedData(): List<TelcoFilterTagComponent> {
+         return getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.apply {
+             this.first().filterTagDataCollections.first().isSelected = true
+             this[1].filterTagDataCollections[1].isSelected = true
+         }
+    }
+
+    fun getFilterParamsEmpty(): ArrayList<HashMap<String, Any>> {
+        val valueItemsParams = ArrayList<HashMap<String, Any>>()
+
+        val valueItemQuota = HashMap<String, Any>()
+        valueItemQuota[FILTER_PARAM_NAME] = FILTER_QUOTA
+        valueItemQuota[FILTER_VALUE] = emptyList<String>()
+        valueItemsParams.add(valueItemQuota)
+
+        val valueItemFeature = HashMap<String, Any>()
+        valueItemFeature[FILTER_PARAM_NAME] = FILTER_FEATURE
+        valueItemFeature[FILTER_VALUE] = emptyList<String>()
+        valueItemsParams.add(valueItemFeature)
+        return valueItemsParams
+    }
+
+    fun getFilterParams(): ArrayList<HashMap<String, Any>> {
+        val valueItemsParams = ArrayList<HashMap<String, Any>>()
+
+        val valueItemQuota = HashMap<String, Any>()
+        valueItemQuota[FILTER_PARAM_NAME] = FILTER_QUOTA
+        valueItemQuota[FILTER_VALUE] = listOf(FILTER_ID_QUOTA)
+        valueItemsParams.add(valueItemQuota)
+
+        val valueItemFeature = HashMap<String, Any>()
+        valueItemFeature[FILTER_PARAM_NAME] = FILTER_FEATURE
+        valueItemFeature[FILTER_VALUE] = listOf(FILTER_ID_FEATURE)
+        valueItemsParams.add(valueItemFeature)
+        return valueItemsParams
     }
 
     fun getMenuDetail(): MenuDetailModel {
@@ -128,8 +174,15 @@ class DataPlanDataFactory {
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
+        const val GET_CATALOG_INPUT_MULTITAB = "dataplan/get_catalog_input_multitab_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
 
+        const val FILTER_PARAM_NAME = "param_name"
+        const val FILTER_VALUE = "value"
+        const val FILTER_QUOTA = "filter_tag_kuota"
+        const val FILTER_FEATURE = "filter_tag_feature"
+        const val FILTER_ID_QUOTA = "1157"
+        const val FILTER_ID_FEATURE = "1131"
         const val CATEGORY_ID = "2"
         const val OPERATOR_ID = "5"
         const val PRODUCT_ID = "1136"

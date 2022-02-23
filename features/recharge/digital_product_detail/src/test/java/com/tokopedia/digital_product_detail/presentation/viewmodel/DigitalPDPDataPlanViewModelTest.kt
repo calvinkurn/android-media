@@ -6,13 +6,15 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
+import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
+import kotlinx.coroutines.CancellationException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import org.junit.Test
+import kotlinx.coroutines.Job
 
 @ExperimentalCoroutinesApi
 class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() {
@@ -229,6 +231,34 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val id = viewModel.getSelectedPositionId(dataFactory.getInvalidListDenomData())
         verifyGetSelectedPositionNull(id)
     }
+    @Test
+    fun `when getting catalogInputMultitab should run and give success result and updated data filter`() = testCoroutineRule.runBlockingTest {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = true
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        val filterResponse = mappedResponse.filterTagComponents
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoGetCalled()
+        verifyGetCatalogInputMultitabSuccess(mappedResponse)
+        verifyGetFilterTagComponentSuccess(filterResponse)
+    }
+
+    @Test
+    fun `when getting catalogInputMultitab should run and give success result and empty data filter`() = testCoroutineRule.runBlockingTest {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = false
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        onGetCatalogInputMultitabisFiltered_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "", isRefreshedFilter)
+        skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoIsRefreshedGetCalled()
+        verifyGetCatalogInputMultitabSuccess(mappedResponse)
+        verifyGetFilterTagComponentEmpty()
+    }
 
     @Test
     fun `given selectedFullProduct non-empty when onResetSelectedProduct should reset product`() {
@@ -319,10 +349,6 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         }
     }
 
-    /*
-    * TODO: Unit Test Multi Tab Here
-    * */
-
     @Test
     fun `given catalogProductJob null when cancelCatalogProductJob called should do nothing`() {
         viewModel.cancelCatalogProductJob()
@@ -385,6 +411,71 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
         viewModel.setAddToCartLoading()
         verifyAddToCartErrorLoading(loadingResponse)
+    }
+
+    @Test
+    fun `given catalogInputMultitab loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeCatalogInputMultiTabLoading()
+        verifyGetCatalogInputMultitabLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting catalogInputMultitab should run and give error result`() = testCoroutineRule.runBlockingTest {
+        val errorResponse = MessageErrorException("")
+        onGetCatalogInputMultitab_thenReturn(errorResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        skipMultitabDelay()
+        verifyGetProductInputMultiTabRepoGetCalled()
+        verifyGetCatalogInputMultitabError(errorResponse)
+    }
+
+    @Test
+    fun `given CancellationException to catalogInputMultitab and should return empty result`() {
+        val errorResponse = CancellationException()
+        onGetCatalogInputMultitab_thenReturn(errorResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        viewModel.cancelCatalogProductJob()
+        verifyGetProductInputMultiTabRepoWasNotCalled()
+        verifyGetCatalogInputMultitabErrorCancellation()
+    }
+
+    @Test
+    fun `when cancelCatalogProductJob called the job should be cancelled and live data should not emit value`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = true
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        viewModel.cancelCatalogProductJob()
+        verifyCatalogProductJobIsCancelled()
+        verifyGetProductInputMultiTabRepoWasNotCalled()
+        verifyGetCatalogInputMultitabErrorCancellation()
+    }
+
+    @Test
+    fun `given filterData with some isSelected and should updated filterDataParams` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        viewModel.updateFilterData(initialFilter)
+        verifyGetFilterTagComponentSuccess(initialFilter)
+        verifyGetFilterParamEmpty(dataFactory.getFilterParamsEmpty())
+
+        val selectedFilter = dataFactory.getFilterTagListSelectedData()
+        viewModel.updateFilterData(selectedFilter)
+        verifyGetFilterTagComponentSuccess(selectedFilter)
+        verifyGetFilterParam(dataFactory.getFilterParams())
+    }
+
+    @Test
+    fun `given filterData and should return that same filterData`() {
+       val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+       viewModel.filterData = initialFilter
+
+       verifyGetFilterTagComponentSuccess(initialFilter)
     }
 
     companion object {

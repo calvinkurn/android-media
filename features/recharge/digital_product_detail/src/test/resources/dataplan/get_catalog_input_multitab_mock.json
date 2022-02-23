@@ -1,0 +1,1122 @@
+{
+    "rechargeCatalogProductInputMultiTab": {
+      "productInputs": [
+        {
+          "filterTagComponents": [
+            {
+              "name": "filter_tag_kuota",
+              "param_name": "filter_tag_kuota",
+              "text": "Kuota",
+              "data_collections": [
+                {
+                  "key": "1157",
+                  "value": "< 1GB"
+                },
+                {
+                  "key": "1158",
+                  "value": "1-5GB"
+                }
+              ]
+            },
+            {
+              "name": "filter_tag_feature",
+              "param_name": "filter_tag_feature",
+              "text": "Feature",
+              "data_collections": [
+                {
+                  "key": "613",
+                  "value": "Telepon"
+                },
+                {
+                  "key": "1131",
+                  "value": "Produk Promo"
+                }
+              ]
+            }
+          ],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "help": "Input Nominal",
+            "dataCollections": [
+              {
+                "name": "Flash Sale",
+                "products": [
+                  {
+                    "id": "10930",
+                    "attributes": {
+                      "custom_attributes": [
+                        {
+                          "name": "product_paket_data_expire",
+                          "value": "30 Hari"
+                        },
+                        {
+                          "name": "product_paket_data_kuota",
+                          "value": "4GB"
+                        }
+                      ],
+                      "price": "Rp18.400",
+                      "desc": "AIGO Bronet Mini 2GB 7 Hari",
+                      "detail": "Kuota Utama 2GB, Kuota Lokal mulai 1GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 7hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 2GB, Kuota Lokal mulai 1GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 7hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": "Rp 18.400",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "DISKON"
+                      ],
+                      "promo": {
+                        "id": "6051",
+                        "new_price": "Rp17.112",
+                        "discount": "7%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "10931",
+                    "attributes": {
+                      "custom_attributes": [
+                        {
+                          "name": "product_paket_data_expire",
+                          "value": "30 Hari"
+                        },
+                        {
+                          "name": "product_paket_data_kuota",
+                          "value": "4GB"
+                        }
+                      ],
+                      "price": "Rp22.900",
+                      "desc": "AIGO Bronet Mini 3GB 15 Hari",
+                      "detail": "Kuota Utama 3GB, Kuota Lokal mulai 2GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 15hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 3GB, Kuota Lokal mulai 2GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 15hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": "Rp 22.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "DISKON"
+                      ],
+                      "promo": {
+                        "id": "6052",
+                        "new_price": "Rp21.068",
+                        "discount": "8%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "10933",
+                    "attributes": {
+                      "custom_attributes": [
+                        {
+                          "name": "product_paket_data_expire",
+                          "value": "30 Hari"
+                        },
+                        {
+                          "name": "product_paket_data_kuota",
+                          "value": "4GB"
+                        }
+                      ],
+                      "price": "Rp16.000",
+                      "desc": "AIGO Bronet 24Jam 1GB 30 Hari",
+                      "detail": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB berlaku di area tertentu, masa aktif paket 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB berlaku di area tertentu, masa aktif paket 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "info": "Rp 16.000",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "DISKON"
+                      ],
+                      "promo": {
+                        "id": "6053",
+                        "new_price": "Rp14.880",
+                        "discount": "7%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "10929",
+                    "attributes": {
+                      "custom_attributes": [
+                        {
+                          "name": "product_paket_data_expire",
+                          "value": "30 Hari"
+                        },
+                        {
+                          "name": "product_paket_data_kuota",
+                          "value": "4GB"
+                        }
+                      ],
+                      "price": "Rp10.400",
+                      "desc": "AIGO Bronet Mini 1GB 5 Hari",
+                      "detail": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 5hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 5hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": " Rp 10.400",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "DISKON"
+                      ],
+                      "promo": {
+                        "id": "6050",
+                        "new_price": "Rp9.672",
+                        "discount": "7%"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "AIGO",
+                "products": [
+                  {
+                    "id": "10805",
+                    "attributes": {
+                      "custom_attributes": [
+                        {
+                          "name": "product_paket_data_expire",
+                          "value": "30 Hari"
+                        },
+                        {
+                          "name": "product_paket_data_kuota",
+                          "value": "4GB"
+                        }
+                      ],
+                      "price": "Rp10.400",
+                      "desc": "AIGO Bronet Mini 1GB 5 Hari",
+                      "detail": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 5hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 5hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": " Rp 10.400",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10807",
+                    "attributes": {
+                      "custom_attributes": [
+                        {
+                          "name": "product_paket_data_expire",
+                          "value": "30 Hari"
+                        },
+                        {
+                          "name": "product_paket_data_kuota",
+                          "value": "4GB"
+                        }
+                      ],
+                      "price": "Rp18.400",
+                      "desc": "AIGO Bronet Mini 2GB 7 Hari",
+                      "detail": "Kuota Utama 2GB, Kuota Lokal mulai 1GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 7hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 2GB, Kuota Lokal mulai 1GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 7hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": "Rp 18.400",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10808",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp22.900",
+                      "desc": "AIGO Bronet Mini 3GB 15 Hari",
+                      "detail": "Kuota Utama 3GB, Kuota Lokal mulai 2GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 15hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 3GB, Kuota Lokal mulai 2GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 15hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": "Rp 22.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10809",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp34.900",
+                      "desc": "AIGO Bronet Mini 5GB 15 Hari",
+                      "detail": "Kuota Utama 5GB, Kuota Lokal mulai 4GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 15hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 5GB, Kuota Lokal mulai 4GB dan Bonus kuota video/sosmed/games di area tertentu, masa aktif paket 15hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet Mini tidak berlaku perpanjangan",
+                      "info": "Rp 34.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10812",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp32.900",
+                      "desc": "AIGO Bronet 24Jam 3GB 30 Hari",
+                      "detail": "Kuota Utama 3GB, Kuota Lokal mulai 2GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 3GB, Kuota Lokal mulai 2GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "info": "Rp 32.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10810",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp16.000",
+                      "desc": "AIGO Bronet 24Jam 1GB 30 Hari",
+                      "detail": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB berlaku di area tertentu, masa aktif paket 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 1GB, Kuota Lokal mulai 0,5GB berlaku di area tertentu, masa aktif paket 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "info": "Rp 16.000",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10811",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp25.900",
+                      "desc": "AIGO Bronet 24Jam 2GB 30 Hari",
+                      "detail": "Kuota Utama 2GB, Kuota Lokal mulai 1GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 2GB, Kuota Lokal mulai 1GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "info": "Rp 25.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10813",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp47.900",
+                      "desc": "AIGO Bronet 24Jam 5GB 30 Hari",
+                      "detail": "Kuota Utama 5GB, Kuota Lokal mulai 3GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan.",
+                      "detail_compact": "Kuota Utama 5GB, Kuota Lokal mulai 3GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan.",
+                      "info": "Rp 47.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "10814",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp64.900",
+                      "desc": "AIGO Bronet 24Jam 8GB 30 Hari",
+                      "detail": "Kuota Utama 8GB, Kuota Lokal mulai 4GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "detail_compact": "Kuota Utama 8GB, Kuota Lokal mulai 4GB berlaku di area tertentu, 30hari. Cek Kuota Utama/Lokal/sisa kuota di AXISnet. Unduh AXISnet dari Google Play atau Apple Store. Bronet 30hari tidak berlaku perpanjangan",
+                      "info": "Rp 64.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Produk Eksklusif",
+                "products": [
+                  {
+                    "id": "4277",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp75.900",
+                      "desc": "2GB Games + BRONET 24 Jam 8GB ",
+                      "detail": "8GB Kuota Utama + 2GB Games (FreeFire, Mobile Legends, AOV, Vainglory, L2R, Modern Combat 5, Hago, Aspalt 9) . Masa aktif 60 hari",
+                      "detail_compact": "8GB Kuota Utama + 2GB Games (FreeFire, Mobile Legends, AOV, Vainglory, L2R, Modern Combat 5, Hago, Aspalt 9) . Masa aktif 60 hari",
+                      "info": "Rp 75.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4278",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp87.900",
+                      "desc": "2GB Games + BRONET 24 Jam 10GB",
+                      "detail": "10GB Kuota Utama + 2GB Games (FreeFire, Mobile Legends, AOV, Vainglory, L2R, Modern Combat 5, Hago, Aspalt 9) . Masa aktif 60 hari",
+                      "detail_compact": "10GB Kuota Utama + 2GB Games (FreeFire, Mobile Legends, AOV, Vainglory, L2R, Modern Combat 5, Hago, Aspalt 9) . Masa aktif 60 hari",
+                      "info": "Rp 87.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4279",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp97.900",
+                      "desc": "2GB Games + BRONET 24 Jam 12GB",
+                      "detail": "12GB Kuota Utama + 2GB Games (FreeFire, Mobile Legends, AOV, Vainglory, L2R, Modern Combat 5, Hago, Aspalt 9) . Masa aktif 60 hari",
+                      "detail_compact": "12GB Kuota Utama + 2GB Games (FreeFire, Mobile Legends, AOV, Vainglory, L2R, Modern Combat 5, Hago, Aspalt 9) . Masa aktif 60 hari",
+                      "info": "Rp 97.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "BRONET",
+                "products": [
+                  {
+                    "id": "5982",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp19.900",
+                      "desc": "BRONET Mini 2GB / 7 Hari",
+                      "detail": "Kuota Internet 2GB berlaku di semua Jaringan 2G/3G/4G (NATIONAL Wide) dari jam 00-23.59 untuk 7 Hari",
+                      "detail_compact": "Kuota Internet 2GB berlaku di semua Jaringan 2G/3G/4G (NATIONAL Wide) dari jam 00-23.59 untuk 7 Hari",
+                      "info": "Rp 19.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp18.900",
+                        "discount": "5%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2873",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp37.000",
+                      "desc": "BRONET 24Jam 3GB 60hr",
+                      "detail": "3GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "3GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 37.000",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp33.500",
+                        "discount": "9%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2877",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp54.900",
+                      "desc": "BRONET 24Jam 5GB 60Hr",
+                      "detail": "5GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "5GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 54.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp50.300",
+                        "discount": "8%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2871",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp87.900",
+                      "desc": "BRONET 24Jam 10GB 60hr",
+                      "detail": "10GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "10GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 87.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "2876",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp119.900",
+                      "desc": "BRONET 24Jam 16GB 60hr",
+                      "detail": "16GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "16GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 119.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "5980",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp13.900",
+                      "desc": "BRONET Mini 1GB / 7 hari",
+                      "detail": "Kuota Internet 1GB berlaku di semua Jaringan 2G/3G/4G (NATIONAL Wide) dari jam 00-23.59 untuk 7 Hari",
+                      "detail_compact": "Kuota Internet 1GB berlaku di semua Jaringan 2G/3G/4G (NATIONAL Wide) dari jam 00-23.59 untuk 7 Hari",
+                      "info": "Rp 13.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "5981",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp15.900",
+                      "desc": "BRONET Mini 1.5GB / 7 Hari",
+                      "detail": "",
+                      "detail_compact": "",
+                      "info": "Rp 15.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "5984",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp24.900",
+                      "desc": "BRONET Mini 3GB / 7 Hari",
+                      "detail": "Kuota Internet 3GB berlaku di semua Jaringan 2G/3G/4G (NATIONAL Wide) dari jam 00-23.59 untuk 7 Hari",
+                      "detail_compact": "Kuota Internet 3GB berlaku di semua Jaringan 2G/3G/4G (NATIONAL Wide) dari jam 00-23.59 untuk 7 Hari",
+                      "info": "Rp 24.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp24.500",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "5985",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp29.900",
+                      "desc": "BRONET Mini 5GB / 7 Hari",
+                      "detail": "",
+                      "detail_compact": "",
+                      "info": "Rp 29.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp28.050",
+                        "discount": "6%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "5987",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp34.900",
+                      "desc": "BRONET Mini 8GB / 7 Hari",
+                      "detail": "8GB 24Jam all Network, selama 7hr",
+                      "detail_compact": "8GB 24Jam all Network, selama 7hr",
+                      "info": "Rp 34.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp32.050",
+                        "discount": "8%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2875",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp29.400",
+                      "desc": "BRONET 24Jam, 2GB, 60hr",
+                      "detail": "2GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "2GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 29.400",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "2878",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp75.900",
+                      "desc": "BRONET 24Jam 8GB 60Hr",
+                      "detail": "8GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "8GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 75.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "2874",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp97.900",
+                      "desc": "BRONET 24Jam 12GB 60hr",
+                      "detail": "12GB Kuota Utama. Masa aktif 60 hari",
+                      "detail_compact": "12GB Kuota Utama. Masa aktif 60 hari",
+                      "info": "Rp 97.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp92.500",
+                        "discount": "6%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "7036",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp75.900",
+                      "desc": "BRONET 24 Jam 8GB 60 Hari + 2GB Sosmed",
+                      "detail": "8GB 24 Jam all Network, 60hr + 2GB SosMed 30 hr (Facebook/Instagram/Twitter/TikTok)",
+                      "detail_compact": "8GB 24 Jam all Network, 60hr + 2GB SosMed 30 hr (Facebook/Instagram/Twitter/TikTok)",
+                      "info": "Rp 75.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "7037",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp87.900",
+                      "desc": "BRONET 24Jam 10GB 60 Hari + 2GB Sosmed",
+                      "detail": "10GB 24 Jam all Network, 60hr + 2GB SosMed 30 hr (Facebook/Instagram/Twitter/TikTok)",
+                      "detail_compact": "10GB 24 Jam all Network, 60hr + 2GB SosMed 30 hr (Facebook/Instagram/Twitter/TikTok)",
+                      "info": "Rp 87.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "7038",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp97.900",
+                      "desc": "BRONET 24Jam 12GB 60 Hari + 2GB Sosmed",
+                      "detail": "12GB 24 Jam all Network, 60hr + 2GB SosMed 30 hr (Facebook/Instagram/Twitter/TikTok)",
+                      "detail_compact": "12GB 24 Jam all Network, 60hr + 2GB SosMed 30 hr (Facebook/Instagram/Twitter/TikTok)",
+                      "info": "Rp 97.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "OWSEM",
+                "products": [
+                  {
+                    "id": "3395",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp43.900",
+                      "desc": "OWSEM 16GB + Unlimited Games 30 hari",
+                      "detail": "2GB Kuota Utama + 4GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 4GB Kuota Musik (Joox, Smule) + 6GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "detail_compact": "2GB Kuota Utama + 4GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 4GB Kuota Musik (Joox, Smule) + 6GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "info": "Rp 43.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3397",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp65.900",
+                      "desc": "OWSEM 32GB + Unlimited Games 30 hari",
+                      "detail": "4GB Kuota Utama + 8GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 8GB Kuota Musik (Joox, Smule) + 12GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "detail_compact": "4GB Kuota Utama + 8GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 8GB Kuota Musik (Joox, Smule) + 12GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "info": "Rp 65.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3399",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp104.900",
+                      "desc": "OWSEM 80GB + Unlimited Games 30 hari",
+                      "detail": "10GB Kuota Utama + 20GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 20GB Kuota Musik (Joox, Smule) + 30GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "detail_compact": "10GB Kuota Utama + 20GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 20GB Kuota Musik (Joox, Smule) + 30GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "info": "Rp 104.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3396",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp54.000",
+                      "desc": "OWSEM 24GB + Unlimited Games 30 hari",
+                      "detail": "3GB Kuota Utama + 6GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 6GB Kuota Musik (Joox, Smule) + 9GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "detail_compact": "3GB Kuota Utama + 6GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 6GB Kuota Musik (Joox, Smule) + 9GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "info": "Rp 50.000",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3398",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp83.900",
+                      "desc": "OWSEM 48GB + Unlimited Games 30 hari",
+                      "detail": "6GB Kuota Utama + 12GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 12GB Kuota Musik (Joox, Smule) + 18GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "detail_compact": "6GB Kuota Utama + 12GB Kuota Sosmed (FB, Twitter, IG, Tiktok) + 12GB Kuota Musik (Joox, Smule) + 18GB Kuota Malam (00.00 - 06.00) + 1GB/hari Kuota Games (FreeFire, Mobile Legends, AOV, ASPHALT Legends, Vain Glory, Modern Combat 5). Masa aktif 30 hari",
+                      "info": "Rp 83.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "BRONET+OWSEM",
+                "products": [
+                  {
+                    "id": "1719",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp23.900",
+                      "desc": "BRONET 4G OWSEM 1GB + 1GB",
+                      "detail": "1GB Kuota Utama + 1GB 4G. Masa aktif 30 hari",
+                      "detail_compact": "1GB Kuota Utama + 1GB 4G. Masa aktif 30 hari",
+                      "info": "Rp 23.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp20.900",
+                        "discount": "13%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "1721",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp61.900",
+                      "desc": "BRONET 4G OWSEM, 2GB + 6GB",
+                      "detail": "2GB Kuota Utama + 6GB 4G. Masa aktif 30 hari",
+                      "detail_compact": "2GB Kuota Utama + 6GB 4G. Masa aktif 30 hari",
+                      "info": "Rp 61.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1722",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp80.900",
+                      "desc": "BRONET 4G OWSEM, 3GB + 9GB",
+                      "detail": "3GB Kuota Utama + 9GB 4G. Masa aktif 30 hari",
+                      "detail_compact": "3GB Kuota Utama + 9GB 4G. Masa aktif 30 hari",
+                      "info": "Rp 80.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Paket KZL",
+                "products": [
+                  {
+                    "id": "6204",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp4.900",
+                      "desc": "Paket KZL Games (Vainglory) 500MB / 7 hari ",
+                      "detail": "Kuota Vainglory 500MB, masa aktif 7 hari",
+                      "detail_compact": "Kuota Vainglory 500MB, masa aktif 7 hari",
+                      "info": "Rp 4.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp4.800",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6205",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp9.900",
+                      "desc": "Paket KZL Games (Vainglory) 1GB / 30 hari ",
+                      "detail": "Kuota Vainglory 1GB, masa aktif 30 hari",
+                      "detail_compact": "Kuota Vainglory 1GB, masa aktif 30 hari",
+                      "info": "Rp 9.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp9.700",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6202",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp4.900",
+                      "desc": "Paket KZL Games (AOV+FreeFire) 500MB / 7 hari ",
+                      "detail": "Kuota AOV+FreeFire 500MB, masa aktif 7 hari",
+                      "detail_compact": "Kuota AOV+FreeFire 500MB, masa aktif 7 hari",
+                      "info": "Rp 4.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp4.800",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6203",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp9.900",
+                      "desc": "Paket KZL Games (AOV+FreeFire) 1GB / 30 hari ",
+                      "detail": "Kuota AOV+FreeFire 1GB, masa aktif 30 hari",
+                      "detail_compact": "Kuota AOV+FreeFire 1GB, masa aktif 30 hari",
+                      "info": "Rp 9.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp9.700",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6210",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp6.900",
+                      "desc": "Paket KZL Combo SocMed+Chat Unlimited / 7 hari ",
+                      "detail": "Unlimited SocMed (FB/IG/Twitter) + Chat (WhatsApp/LINE/BBM); masa aktif 7 hari",
+                      "detail_compact": "Unlimited SocMed (FB/IG/Twitter) + Chat (WhatsApp/LINE/BBM); masa aktif 7 hari",
+                      "info": "Rp 6.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp6.700",
+                        "discount": "3%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6207",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp14.900",
+                      "desc": "Paket KZL SocMed (FB/IG/Twitter) Unlimited / 30 hari ",
+                      "detail": "Unlimited SocMed (FB/Twitter), masa aktif 30 hari",
+                      "detail_compact": "Unlimited SocMed (FB/Twitter), masa aktif 30 hari",
+                      "info": "Rp 14.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp14.500",
+                        "discount": "3%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6208",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp4.900",
+                      "desc": "Paket KZL Chat (WhatsApp/LINE) Unlimited / 7 hari ",
+                      "detail": "Unlimited chat (WhatsApp/LINE/BBM); masa aktif 7 hari",
+                      "detail_compact": "Unlimited chat (WhatsApp/LINE/BBM); masa aktif 7 hari",
+                      "info": "Rp 4.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp4.800",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6209",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp14.900",
+                      "desc": "Paket KZL Chat (WhatsApp/LINE) Unlimited / 30 hari ",
+                      "detail": "Unlimited chat (WhatsApp/LINE/BBM); masa aktif 30 hari",
+                      "detail_compact": "Unlimited chat (WhatsApp/LINE/BBM); masa aktif 30 hari",
+                      "info": "Rp 14.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp14.500",
+                        "discount": "3%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6206",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp4.900",
+                      "desc": "Paket KZL SocMed (FB/IG/Twitter) Unlimited / 7 hari ",
+                      "detail": "Unlimited SocMed (FB/IG/Twitter), masa aktif 7 hari",
+                      "detail_compact": "Unlimited SocMed (FB/IG/Twitter), masa aktif 7 hari",
+                      "info": "Rp 4.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp4.800",
+                        "discount": "2%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "6211",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp19.900",
+                      "desc": "Paket KZL Combo SocMed+Chat Unlimited / 30 hari ",
+                      "detail": "Unlimited SocMed (FB/Twitter) + Chat (WhatsApp/LINE/BBM); masa aktif 30 hari",
+                      "detail_compact": "Unlimited SocMed (FB/Twitter) + Chat (WhatsApp/LINE/BBM); masa aktif 30 hari",
+                      "info": "Rp 19.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp19.300",
+                        "discount": "3%"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Paket KANGEN",
+                "products": [
+                  {
+                    "id": "3400",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp9.900",
+                      "desc": "Paket KANGEN 24 Jam 30 menit 7 hari",
+                      "detail": "Paket Offnet (Onnet pakai PAYU)",
+                      "detail_compact": "Paket Offnet (Onnet pakai PAYU)",
+                      "info": "Rp 9.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp9.500",
+                        "discount": "4%"
+                      }
+                    }
+                  },
+                  {
+                    "id": "3401",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp27.900",
+                      "desc": "Paket KANGEN 24 Jam 100 menit 30 hari",
+                      "detail": "Paket Offnet (Onnet pakai PAYU)",
+                      "detail_compact": "Paket Offnet (Onnet pakai PAYU)",
+                      "info": "Rp 27.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0",
+                        "new_price": "Rp26.400",
+                        "discount": "5%"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "1720",
+                    "attributes": {
+                      "custom_attributes": [],
+                      "price": "Rp38.900",
+                      "desc": "BRONET 4G OWSEM, 1GB + 3GB",
+                      "detail": "1GB Kuota Utama + 3GB 4G. Masa aktif 30 hari",
+                      "detail_compact": "1GB Kuota Utama + 3GB 4G. Masa aktif 30 hari",
+                      "info": "38.900",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 2,
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+}

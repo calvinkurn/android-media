@@ -40,11 +40,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val _filterDataParams = ArrayList<HashMap<String, Any>>()
+
+    val filterDataParams = ArrayList<HashMap<String, Any>>()
+    var filterData = emptyList<TelcoFilterTagComponent>()
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
-
-    var filterData = emptyList<TelcoFilterTagComponent>()
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedFullProduct = SelectedProduct()
@@ -110,7 +110,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
             val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber,
-                _filterDataParams, isFilterRefreshed
+                filterDataParams, isFilterRefreshed
             )
             if (isFilterRefreshed) {
                 setFilterDataParam(denomFull.filterTagComponents)
@@ -283,7 +283,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         val valueItem = HashMap<String, Any>()
         valueItem[FILTER_PARAM_NAME] = paramName
         valueItem[FILTER_VALUE] = listKey
-        _filterDataParams.add(valueItem)
+        filterDataParams.add(valueItem)
     }
 
     private fun updateFilterParam(paramName: String, listKey: ArrayList<String>) {
@@ -292,7 +292,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     }
 
     private fun removeFilterParam(paramName: String) {
-        val iterator = _filterDataParams.iterator()
+        val iterator = filterDataParams.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (item.containsValue(paramName)) {
