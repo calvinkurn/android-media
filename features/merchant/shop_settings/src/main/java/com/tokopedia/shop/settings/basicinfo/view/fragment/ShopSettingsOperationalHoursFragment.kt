@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,6 +49,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -351,7 +353,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun setupToolbar() {
         headerOpsHour?.apply {
-            addRightIcon(R.drawable.ic_ops_hour_header_help_circle)
+            val rightIconDrawableColor = if (context.isDarkMode()) {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N700)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            }
+            addRightIcon(R.drawable.ic_ops_hour_header_help_circle).setColorFilter(rightIconDrawableColor)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
