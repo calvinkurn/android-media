@@ -15,9 +15,9 @@ import javax.inject.Inject
 class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapSection(input: Section) = ProductSectionUiModel.Section(
-        productList = if (input.listOfProducts.isNotEmpty()) input.listOfProducts.map {
+        productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
-        } else emptyList(),
+        },
         config = mapConfig(input),
         id = input.id,
     )
@@ -35,34 +35,29 @@ class PlayProductTagUiMapper @Inject constructor() {
         ),
     )
 
-    private fun mapProduct(
-        input: Product,
-        sectionType: ProductSectionType = ProductSectionType.Unknown
-    ): PlayProductUiModel.Product {
+    private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
-            id = input.id,
-            shopId = input.shopId,
-            imageUrl = input.image,
-            title = input.name,
-            price = if (input.discount != 0) {
-                DiscountedPrice(
-                    originalPrice = input.originalPriceFormatted,
-                    discountedPrice = input.priceFormatted,
-                    discountedPriceNumber = input.price,
-                    discountPercent = input.discount
-                )
-            } else {
-                OriginalPrice(
-                    price = input.originalPriceFormatted,
-                    priceNumber = input.originalPrice
-                )
-            },
-            isVariantAvailable = input.isVariant,
-            stock = if (sectionType == ProductSectionType.Upcoming) ComingSoon else
-                if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
-            minQty = input.minimumQuantity,
-            isFreeShipping = input.isFreeShipping,
-            applink = input.appLink,
+                id = input.id,
+                shopId = input.shopId,
+                imageUrl = input.image,
+                title = input.name,
+                price = if (input.discount != 0) {
+                    DiscountedPrice(
+                            originalPrice = input.originalPriceFormatted,
+                            discountedPrice = input.priceFormatted,
+                            discountedPriceNumber = input.price,
+                            discountPercent = input.discount
+                    )
+                } else {
+                    OriginalPrice(price = input.originalPriceFormatted,
+                            priceNumber = input.originalPrice)
+                },
+                isVariantAvailable = input.isVariant,
+                stock = if (sectionType == ProductSectionType.Upcoming) ComingSoon else
+                    if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
+                minQty = input.minimumQuantity,
+                isFreeShipping = input.isFreeShipping,
+                applink = input.appLink,
         )
     }
 }
