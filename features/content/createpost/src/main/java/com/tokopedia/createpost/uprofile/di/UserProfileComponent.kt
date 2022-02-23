@@ -1,7 +1,8 @@
 package com.tokopedia.createpost.uprofile.di
 
 import com.tokopedia.createpost.uprofile.views.FollowerFollowingListingFragment
-import com.tokopedia.createpost.uprofile.views.FollowerFollowingListingPagerFragment
+import com.tokopedia.createpost.uprofile.views.FollowerListingFragment
+import com.tokopedia.createpost.uprofile.views.FollowingListingFragment
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment
 import dagger.Component
 
@@ -10,5 +11,6 @@ import dagger.Component
 interface UserProfileComponent {
     fun inject(fragment: UserProfileFragment)
     fun inject(fragment: FollowerFollowingListingFragment)
-    fun inject(fragment: FollowerFollowingListingPagerFragment)
+    fun inject(fragment: FollowingListingFragment)
+    fun inject(fragment: FollowerListingFragment)
 }

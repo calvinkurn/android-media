@@ -7,41 +7,45 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.uprofile.ErrorMessage
+import com.tokopedia.createpost.uprofile.Loading
+import com.tokopedia.createpost.uprofile.Success
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
+import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
-import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    val userSessionInterface: UserSession by lazy {
+        UserSession(context)
+    }
 
     private val mPresenter: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
-    var tabLayout : TabsUnify? = null
-    var ffViewPager : ViewPager? = null
 
-//    private val mAdapter: UserPostBaseAdapter by lazy {
-//        UserPostBaseAdapter(
-//            mPresenter,
-//            this
-//        )
-//    }
+    private val mAdapter: ProfileFollowingAdapter by lazy {
+        ProfileFollowingAdapter(
+            mPresenter,
+            this,
+            userSessionInterface.userId
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,22 +57,29 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         savedInstanceState: Bundle?
     ): View? {
         initInjector()
-        return inflater.inflate(R.layout.up_fragment_follower_following_listing, container, false)
+        return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //initObserver()
+        initObserver()
         //initListener()
-        setHeader()
         val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
-        //initUserPost()
-        setMainUi()
+        initMainUi()
+        mPresenter.getFollowers(userSessionInterface.userId, "", 1)
+        mPresenter.getFollowings(userSessionInterface.userId, "", 1)
     }
 
     private fun initObserver() {
-        //observeUserProfile()
+        addListObserver()
+    }
+
+    private fun initMainUi() {
+        val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
+        rvFollowers?.adapter = mAdapter
+        mAdapter.resetAdapter()
+        mAdapter.startDataLoading()
     }
 
     private fun initListener() {
@@ -84,93 +95,29 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 //        mAdapter.startDataLoading()
     }
 
-//    private fun observeUserProfile() =
-//        mPresenter.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
-//            it?.let {
-//                when (it) {
-//                    is Loading -> showLoader()
-//                    is ErrorMessage -> {
-//
-//                    }
-//                    is Success -> {
-//                        setMainUi(it.data)
-//                    }
-//                }
-//            }
-//        })
-
-    private fun setMainUi() {
-        ffViewPager = view?.findViewById(R.id.view_pager)
-        tabLayout = view?.findViewById(R.id.tp_follow)
-//        tabLayout?.addNewTab("Followers")
-//        tabLayout?.addNewTab("Followings")
-        tabLayout?.visibility = View.VISIBLE
-        tabLayout?.apply {
-            tabLayout.setTabTextColors(
-                MethodChecker.getColor(
-                    activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                ),
-                MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            )
+    private fun addListObserver() = mPresenter.profileFollowingsListLiveData.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is Loading -> {
+                    mAdapter.resetAdapter()
+                    mAdapter.notifyDataSetChanged()
+                }
+                is Success -> {
+                    mAdapter.onSuccess(it.data)
+                }
+                is ErrorMessage -> {
+                    mAdapter.onError()
+                }
+            }
         }
-//        tabLayout?.addNewTab("Followers")
-//        tabLayout?.addNewTab("Followings")
+    })
 
-        initViewPager(ffViewPager!!)
-//
-//        // If we dont use setupWithViewPager() method then
-//        // tabs are not used or shown when activity opened
-        tabLayout?.setupWithViewPager(ffViewPager!!)
-        tabLayout?.getUnifyTabLayout()?.setupWithViewPager(ffViewPager!!)
-        tabLayout?.show()
-    }
+    private fun setMainUi(data: ProfileHeaderBase) {
 
-    var adapter: ProfileFollowUnfollowViewPagerAdapter? = null
-    private fun initViewPager(viewPager: ViewPager) {
-        adapter = ProfileFollowUnfollowViewPagerAdapter( requireFragmentManager())
-
-        // LoginFragment is the name of Fragment and the Login
-        // is a title of tab
-        adapter?.addFragment(FollowingListingFragment(), "Follower")
-        adapter?.addFragment(FollowingListingFragment(), "Following")
-
-        // setting adapter to view pager.
-        viewPager.adapter = adapter
-
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-
-            }
-
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
     }
 
     private fun showLoader() {
 
-    }
-
-
-    private fun setHeader() {
-        val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
-        header?.apply {
-
-            title = "Something"
-            subtitle = "Something else"
-
-            setNavigationOnClickListener {
-                activity?.onBackPressed()
-            }
-
-        }
     }
 
     override fun onDestroy() {
@@ -211,7 +158,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     companion object {
         fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowerFollowingListingFragment()
+            val fragment = FollowingListingFragment()
             fragment.arguments = extras
             return fragment
         }
@@ -244,6 +191,5 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
     override fun onError(pageNumber: Int) {
         // TODO("Not yet implemented")
     }
-
 }
 

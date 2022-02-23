@@ -30,12 +30,11 @@ data class ProfileFollowingList (
 )
 
 data class ProfileFollowerV2 (
-//    @SerializedName("profile")
-//    val profile: Profile,
-//
-//    @SerializedName("isFollow")
-//    val isFollow: Boolean
-val name: String
+    @SerializedName("profile")
+    val profile: Profile,
+
+    @SerializedName("isFollow")
+    val isFollow: Boolean
 ) : BaseItem()
 
 
