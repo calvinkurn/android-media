@@ -1771,7 +1771,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                     .setName(title)
                     .setDescription(description)
-                    .setDesktopUrl(url)
+                    .setDesktopUrl(urlString)
                     .setType(LinkerData.FEED_TYPE)
                     .setImgUri(imageUrl)
                     .setDeepLink(url)
@@ -1780,7 +1780,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
-                    setUri(urlString)
+                    setDesktopUrl(url)
+                    setUri(url)
                 }
             } else {
                 shareBottomSheetProduct = false
