@@ -96,7 +96,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation project(rootProject.ext.features.homeWishlist)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
