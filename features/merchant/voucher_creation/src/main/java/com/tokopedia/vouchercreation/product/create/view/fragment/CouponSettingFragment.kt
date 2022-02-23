@@ -24,6 +24,7 @@ import com.tokopedia.vouchercreation.common.extension.DECIMAL_FORMAT_PATTERN
 import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
+import com.tokopedia.vouchercreation.common.tracker.CouponSettingTracker
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -70,6 +71,9 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracker : CouponSettingTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponSettingViewModel::class.java) }
@@ -136,6 +140,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     private fun observeSaveCoupon() {
         viewModel.saveCoupon.observe(viewLifecycleOwner, { coupon ->
+            tracker.sendChangeCouponSettingClick()
             onCouponSaved(coupon)
         })
     }
@@ -482,17 +487,9 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
             }
         }
 
-        binding.chipFreeShipping.selectedChangeListener = { isActive ->
-            if (isActive) {
-                binding.groupFreeShipping.visible()
-            } else {
-                binding.groupFreeShipping.gone()
-            }
-        }
-
         binding.chipCashback.chip_container.setOnClickListener {
             binding.chipCashback.chipType = ChipsUnify.TYPE_SELECTED
-            binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
+            binding.chipFreeShipping.chipType = ChipsUnify.TYPE_DISABLE
 
             binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
@@ -504,20 +501,6 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
             viewModel.couponTypeChanged(selectedCouponType)
             calculateMaxExpenseEstimation()
             showCashbackCouponTypeWidget()
-        }
-
-        binding.chipFreeShipping.chip_container.setOnClickListener {
-            binding.chipCashback.chipType = ChipsUnify.TYPE_NORMAL
-            binding.chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
-
-            selectedCouponType = CouponType.FREE_SHIPPING
-            selectedDiscountType = DiscountType.NONE
-            selectedMinimumPurchaseType = MinimumPurchaseType.NONE
-
-            viewModel.couponTypeChanged(selectedCouponType)
-
-            calculateMaxExpenseEstimation()
-            showFreeShippingCouponTypeWidget()
         }
     }
 
@@ -877,7 +860,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
     private fun displayFreeShippingDiscountTypeData(coupon: CouponSettings) {
         with(binding) {
             showFreeShippingCouponTypeWidget()
-            chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
+            chipFreeShipping.chipType = ChipsUnify.TYPE_DISABLE
 
             textAreaFreeShippingDiscountAmount.textAreaInput.setText(coupon.discountAmount.splitByThousand())
             textAreaFreeShippingMinimumPurchase.textAreaInput.setText(coupon.minimumPurchase.splitByThousand())

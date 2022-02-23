@@ -64,7 +64,6 @@ class CouponFilterBottomSheet : BottomSheetUnify() {
         showCloseIcon = false
         setChild(binding.root)
         clearContentPadding = true
-        setupResetMenu()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -74,6 +73,7 @@ class CouponFilterBottomSheet : BottomSheetUnify() {
         setupViews()
         displayPreviouslySelectedTypeFilter()
         displayPreviousSelectedTargetFilter()
+        setupResetMenu()
     }
 
 
