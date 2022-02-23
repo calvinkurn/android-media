@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Pair
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
-import com.tokopedia.user.session.datastore.UserSessionKeyMapper
 import com.tokopedia.user.session.util.EncoderDecoder
 
 open class MigratedUserSession(var context: Context?) {
@@ -95,13 +94,18 @@ open class MigratedUserSession(var context: Context?) {
     }
 
     private fun internalGetString(prefName: String?, keyName: String?, defValue: String): String? {
+
 	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
 	return sharedPrefs?.getString(keyName, defValue)
     }
 
     protected fun setString(prefName: String?, keyName: String?, value: String?) {
-	if(keyName != null && value != null) {
-	    UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
+	try {
+	    if (keyName != null && value != null) {
+//		UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
+	    }
+	} catch (e: Exception) {
+	    // Log here
 	}
 	var prefName = prefName
 	var keyName = keyName
@@ -197,8 +201,12 @@ open class MigratedUserSession(var context: Context?) {
     }
 
     protected fun setBoolean(prefName: String?, keyName: String?, value: Boolean) {
-	if(keyName != null) {
-	    UserSessionKeyMapper.mapUserSessionKeyBoolean(keyName, userSessionDataStore, value)
+	try {
+	    if (keyName != null) {
+//		UserSessionKeyMapper.mapUserSessionKeyBoolean(keyName, userSessionDataStore, value)
+	    }
+	} catch (e: Exception) {
+	    // Log Here
 	}
 	var prefName = prefName
 	var keyName = keyName

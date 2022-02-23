@@ -50,7 +50,6 @@ object UserSessionKeyMapper {
 	    IS_SHOP_ADMIN -> runBlocking { userSessionDataStore?.setIsShopAdmin(value) }
 	    IS_LOCATION_ADMIN -> runBlocking { userSessionDataStore?.setIsLocationAdmin(value) }
 	    IS_MULTI_LOCATION_SHOP -> runBlocking { userSessionDataStore?.setIsMultiLocationShop(value) }
-
 	}
     }
 }

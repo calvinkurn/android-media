@@ -15,22 +15,22 @@ class UserSessionSerializer(private val aead: Aead): Serializer<UserSessionProto
 
     override suspend fun readFrom(input: InputStream): UserSessionProto {
         try {
-//            val encryptedInput = input.readBytes()
-//            val decryptedInput = if (encryptedInput.isNotEmpty()) {
-//                aead.decrypt(encryptedInput, null)
-//            } else {
-//                encryptedInput
-//            }
-            return UserSessionProto.parseFrom(input)
+            val encryptedInput = input.readBytes()
+            val decryptedInput = if (encryptedInput.isNotEmpty()) {
+                aead.decrypt(encryptedInput, null)
+            } else {
+                encryptedInput
+            }
+            return UserSessionProto.parseFrom(decryptedInput)
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto.", exception)
         }
     }
 
     override suspend fun writeTo(t: UserSessionProto, output: OutputStream) {
-//        val byteArray = t.toByteArray()
-//        val encryptedBytes = aead.encrypt(byteArray, null)
-//        output.write(encryptedBytes)
-        t.writeTo(output)
+        val byteArray = t.toByteArray()
+        val encryptedBytes = aead.encrypt(byteArray, null)
+        output.write(encryptedBytes)
+//        t.writeTo(output)
     }
 }

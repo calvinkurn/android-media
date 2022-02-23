@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-
 class UserSessionDataStoreImpl (val context: Context):
     UserSessionDataStore {
 
@@ -97,11 +96,11 @@ class UserSessionDataStoreImpl (val context: Context):
         return getUserSessionFlow().map { it.tempPhoneNumber }
     }
 
-    override suspend fun isMsisdnVerified(): Flow<Boolean> {
+    override fun isMsisdnVerified(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isMSISDNVerified }
     }
 
-    override suspend fun hasShownSaldoWithdrawalWarning(): Flow<Boolean> {
+    override fun hasShownSaldoWithdrawalWarning(): Flow<Boolean> {
         return getUserSessionFlow().map { it.saldoWithdrawalWaring }
     }
 
@@ -117,11 +116,11 @@ class UserSessionDataStoreImpl (val context: Context):
         TODO("Refresh Token IV")
     }
 
-    override suspend fun isFirstTimeUser(): Flow<Boolean> {
+    override fun isFirstTimeUser(): Flow<Boolean> {
         return getUserSessionFlow().map { it.firstTimeUser }
     }
 
-    override suspend fun isGoldMerchant(): Flow<Boolean> {
+    override fun isGoldMerchant(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isGoldMerchant }
     }
 
@@ -129,13 +128,13 @@ class UserSessionDataStoreImpl (val context: Context):
         return getUserSessionFlow().map { it.shopName }
     }
 
-    override suspend fun hasShop(): Flow<Boolean> {
+    override fun hasShop(): Flow<Boolean> {
         return getUserSessionFlow().map {
             it.shopId.isNotEmpty() && it.shopId != "0"
         }
     }
 
-    override suspend fun hasPassword(): Flow<Boolean> {
+    override fun hasPassword(): Flow<Boolean> {
         return getUserSessionFlow().map { it.hasPassword }
     }
 
@@ -147,7 +146,7 @@ class UserSessionDataStoreImpl (val context: Context):
         return getUserSessionFlow().map { it.shopAvatar }
     }
 
-    override suspend fun isPowerMerchantIdle(): Flow<Boolean> {
+    override fun isPowerMerchantIdle(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isPowerMerchantIdle }
     }
 
@@ -428,7 +427,7 @@ class UserSessionDataStoreImpl (val context: Context):
         }
     }
 
-    override suspend fun isShopOfficialStore(): Flow<Boolean> {
+    override fun isShopOfficialStore(): Flow<Boolean> {
          TODO()
     }
 
@@ -460,15 +459,15 @@ class UserSessionDataStoreImpl (val context: Context):
         TODO("ads Id")
     }
 
-    override suspend fun isAffiliate(): Flow<Boolean> {
+    override fun isAffiliate(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isAffiliateStatus }
     }
 
-    override suspend fun hasShownSaldoIntroScreen(): Flow<Boolean> {
+    override fun hasShownSaldoIntroScreen(): Flow<Boolean> {
         return getUserSessionFlow().map { it.saldoIntroPageStatus }
     }
 
-    override suspend fun isShopOwner(): Flow<Boolean> {
+    override fun isShopOwner(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isShopOwner }
     }
 
@@ -478,7 +477,7 @@ class UserSessionDataStoreImpl (val context: Context):
         }
     }
 
-    override suspend fun isShopAdmin(): Flow<Boolean> {
+    override fun isShopAdmin(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isShopAdmin }
     }
 
@@ -488,7 +487,7 @@ class UserSessionDataStoreImpl (val context: Context):
         }
     }
 
-    override suspend fun isLocationAdmin(): Flow<Boolean> {
+    override fun isLocationAdmin(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isLocationAdmin }
     }
 
@@ -498,13 +497,19 @@ class UserSessionDataStoreImpl (val context: Context):
         }
     }
 
-    override suspend fun isMultiLocationShop(): Flow<Boolean> {
+    override fun isMultiLocationShop(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isMultiLocationShop }
     }
 
     override suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean) {
         userSessionSetter {
             setIsMultiLocationShop(isMultiLocationShop)
+        }
+    }
+
+    override suspend fun clearDataStore() {
+        context.userSessionStore.updateData {
+            it.toBuilder().clear().build()
         }
     }
     

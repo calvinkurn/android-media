@@ -42,6 +42,10 @@ fun Flow<String>.toBlocking(): String {
     }
 }
 
+suspend fun Flow<String>.value(): String {
+    return this.first()
+}
+
 fun Flow<Boolean>.toBlocking(): Boolean {
     return runBlocking {
 	this@toBlocking.first()

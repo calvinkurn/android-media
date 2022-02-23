@@ -11,71 +11,6 @@ interface UserSessionDataStore {
 	const val LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock"
     }
 
-    fun getUserSession(): Flow<UserData>
-
-    fun getAccessToken(): Flow<String>
-
-    fun getTokenType(): Flow<String>
-
-    fun getRefreshToken(): Flow<String>
-
-    fun getUserId(): Flow<String>
-
-    fun isLoggedIn(): Flow<Boolean>
-
-    fun getShopId(): Flow<String>
-
-    fun getName(): Flow<String>
-
-    fun getProfilePicture(): Flow<String>
-
-    fun getTemporaryUserId(): Flow<String>
-
-    fun getDeviceId(): Flow<String>
-
-    fun getTempEmail(): Flow<String>
-
-    fun getTempPhoneNumber(): Flow<String>
-
-    suspend fun isMsisdnVerified(): Flow<Boolean>
-
-    suspend fun hasShownSaldoWithdrawalWarning(): Flow<Boolean>
-
-    fun getPhoneNumber(): Flow<String>
-
-    fun getEmail(): Flow<String>
-
-    fun getRefreshTokenIV(): Flow<String>
-
-    suspend fun isFirstTimeUser(): Flow<Boolean>
-
-    suspend fun isGoldMerchant(): Flow<Boolean>
-
-    fun getShopName(): Flow<String>
-
-    suspend fun hasShop(): Flow<Boolean>
-
-    suspend fun hasPassword(): Flow<Boolean>
-
-    fun getGCToken(): Flow<String>
-
-    fun getShopAvatar(): Flow<String>
-
-    suspend fun isPowerMerchantIdle(): Flow<Boolean>
-
-    fun getAutofillUserData(): Flow<String>
-
-    fun getTwitterAccessToken(): Flow<String>
-
-    fun getTwitterAccessTokenSecret(): Flow<String>
-
-    fun getTwitterShouldPost(): Flow<Boolean>
-
-    /**
-     * @return method name from this class
-     */
-    fun getLoginMethod(): Flow<String>
-
     /**
      * SETTER METHOD
      */
@@ -116,6 +51,8 @@ interface UserSessionDataStore {
     suspend fun clearToken()
 
     suspend fun logoutSession()
+
+    suspend fun clearDataStore()
 
     suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean)
 
@@ -167,11 +104,75 @@ interface UserSessionDataStore {
 
     suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean)
 
-    suspend fun isShopOfficialStore(): Flow<Boolean>
-
     suspend fun setDeviceId(deviceId: String)
 
     suspend fun setFcmTimestamp()
+
+
+    // Getter
+    fun getUserSession(): Flow<UserData>
+
+    fun getAccessToken(): Flow<String>
+
+    fun getTokenType(): Flow<String>
+
+    fun getRefreshToken(): Flow<String>
+
+    fun getUserId(): Flow<String>
+
+    fun isLoggedIn(): Flow<Boolean>
+
+    fun getShopId(): Flow<String>
+
+    fun getName(): Flow<String>
+
+    fun getProfilePicture(): Flow<String>
+
+    fun getTemporaryUserId(): Flow<String>
+
+    fun getDeviceId(): Flow<String>
+
+    fun getTempEmail(): Flow<String>
+
+    fun getTempPhoneNumber(): Flow<String>
+
+    fun isMsisdnVerified(): Flow<Boolean>
+
+    fun getPhoneNumber(): Flow<String>
+
+    fun getEmail(): Flow<String>
+
+    fun getRefreshTokenIV(): Flow<String>
+
+    fun isFirstTimeUser(): Flow<Boolean>
+
+    fun isGoldMerchant(): Flow<Boolean>
+
+    fun getShopName(): Flow<String>
+
+    fun hasShop(): Flow<Boolean>
+
+    fun hasPassword(): Flow<Boolean>
+
+    fun getGCToken(): Flow<String>
+
+    fun getShopAvatar(): Flow<String>
+
+    fun isPowerMerchantIdle(): Flow<Boolean>
+
+    fun getAutofillUserData(): Flow<String>
+
+    fun getTwitterAccessToken(): Flow<String>
+
+    fun getTwitterAccessTokenSecret(): Flow<String>
+
+    fun getTwitterShouldPost(): Flow<Boolean>
+
+    fun getLoginMethod(): Flow<String>
+
+    fun isShopOfficialStore(): Flow<Boolean>
+
+    fun hasShownSaldoWithdrawalWarning(): Flow<Boolean>
 
     fun getFcmTimestamp(): Flow<Long>
 
@@ -181,23 +182,23 @@ interface UserSessionDataStore {
 
     fun getAdsId(): Flow<String>
 
-    suspend fun isAffiliate(): Flow<Boolean>
+    fun isAffiliate(): Flow<Boolean>
 
-    suspend fun hasShownSaldoIntroScreen(): Flow<Boolean>
+    fun hasShownSaldoIntroScreen(): Flow<Boolean>
 
-    suspend fun isShopOwner(): Flow<Boolean>
+    fun isShopOwner(): Flow<Boolean>
 
     suspend fun setIsShopOwner(isShopOwner: Boolean)
 
-    suspend fun isShopAdmin(): Flow<Boolean>
+    fun isShopAdmin(): Flow<Boolean>
 
     suspend fun setIsShopAdmin(isShopAdmin: Boolean)
 
-    suspend fun isLocationAdmin(): Flow<Boolean>
+    fun isLocationAdmin(): Flow<Boolean>
 
     suspend fun setIsLocationAdmin(isLocationAdmin: Boolean)
 
-    suspend fun isMultiLocationShop(): Flow<Boolean>
+    fun isMultiLocationShop(): Flow<Boolean>
 
     suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
 
