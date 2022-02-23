@@ -80,7 +80,7 @@
                 android:layout_height="@dimen/layout_lvl4"
                 android:layout_gravity="center"
                 android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 tools:src="@drawable/ic_action_x" />
 
         </androidx.cardview.widget.CardView>
