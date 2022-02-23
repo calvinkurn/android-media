@@ -3312,6 +3312,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     product.setProductQuantity(cartItemModel.getQuantity());
                     product.setProductName(addOnProductItemModel.getProductName());
                     product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
                     listUnavailableProduct.add(product);
                 }
                 unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
@@ -3346,6 +3347,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
                         product.setProductQuantity(cartItemModel.getQuantity());
                         product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
+                        product.setProductParentId(cartItemModel.getVariantParentId());
                         listProduct.add(product);
                     }
                 }
@@ -3415,6 +3417,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     product.setProductQuantity(cartItemModel.getQuantity());
                     product.setProductName(cartItemModel.getName());
                     product.setProductImageUrl(cartItemModel.getImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
                     listUnavailableProduct.add(product);
                 }
                 unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
@@ -3440,6 +3443,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
                     product.setProductQuantity(cartItemModel.getQuantity());
                     product.setProductImageUrl(cartItemModel.getImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
                     listProduct.add(product);
                 }
                 availableBottomSheetData.setProducts(listProduct);
