@@ -49,7 +49,7 @@ internal class PlayBroadcastViewModelRobot(
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
     productMapper: PlayBroProductUiMapper = mockk(relaxed = true),
-    channelInteractiveMapper: PlayChannelInteractiveMapper = mockk(relaxed = true),
+    channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
 ) : Closeable {

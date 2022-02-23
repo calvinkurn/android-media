@@ -54,8 +54,8 @@ class PlaySetupSaveProductViewModelTest {
             }
 
             state[1].saveState.isLoading.assertEqualTo(true)
-            state[2].saveState.isLoading.assertEqualTo(false)
             state[2].selectedProductSectionList.assertEqualTo(mockProductTagSectionList)
+            state[3].saveState.isLoading.assertEqualTo(false)
             event.last().assertEqualTo(PlayBroProductChooserEvent.SaveProductSuccess)
         }
     }

@@ -398,7 +398,7 @@ class WebSocketUiModelBuilder {
         title: String = "",
         status: Int = 0,
         countdownStart: Int = 0,
-        countdownEnd: Int = 0,
+        countdownEnd: Int = 1,
         countdownEndDelay: Int = 0,
         waitingDuration: Int = 0,
     ) = """
@@ -424,7 +424,7 @@ class WebSocketUiModelBuilder {
         title: String = "",
         timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Scheduled(
             timeToStartInMs = 0,
-            interactiveDurationInMs = 0,
+            interactiveDurationInMs = 1000,
         ),
         endGameDelayInMs: Long = 0L,
     ) = PlayCurrentInteractiveModel(
