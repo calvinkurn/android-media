@@ -37,7 +37,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     copy
                   }
                   background {
-                    gradient
+                    gradients: gradient
                     imageUrl
                   }
                   startTime
