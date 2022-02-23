@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/unify_space_8"
-    android:paddingVertical="@dimen/unify_space_12">
+    android:paddingHorizontal="@dimen/unify_space_8">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_three_icons"
