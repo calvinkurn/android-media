@@ -203,16 +203,23 @@ data class ShopInfo(
         @Expose
         val badge: String = ""
     ) {
+
+        companion object{
+            private const val IS_OFFICIAL_STORE_VALUE = 1
+            private const val IS_GOLD_MERCHANT_VALUE = 1
+        }
         //for tracking purpose
         val shopTypeString: String
             get() {
-                return if (isOfficial == 1)
+                return if (isOfficial == IS_OFFICIAL_STORE_VALUE)
                     "official_store"
-                else if (isGold == 1)
+                else if (isGold == IS_GOLD_MERCHANT_VALUE)
                     "gold_merchant"
                 else
                     "reguler"
             }
+        fun isOfficialStore() = isOfficial == IS_OFFICIAL_STORE_VALUE
+        fun isGoldMerchant() = isGold == IS_GOLD_MERCHANT_VALUE
     }
 
     var allowManage: Boolean = (isAllowManage == 1)
