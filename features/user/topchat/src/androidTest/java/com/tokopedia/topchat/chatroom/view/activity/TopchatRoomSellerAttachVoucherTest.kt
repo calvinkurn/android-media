@@ -35,11 +35,45 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         GeneralRobot.doScrollChatToPosition(0)
         onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPosition(1)).perform(click())
+            .atPosition(0)).perform(click())
 
         // Then
         val intent = Intent(context, MerchantVoucherDetailActivity::class.java)
         GeneralResult.openPageWithIntent(intent)
+    }
+
+    @Test
+    fun should_open_merchant_voucher_page_when_click_product_voucher_on_sellerapp() {
+        // Given
+        getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
+        launchChatRoomActivity(isSellerApp = true)
+
+        //When
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        GeneralRobot.doScrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPosition(1)).perform(click())
+
+        // Then
+        GeneralResult.openPageWithApplink("sellerapp://voucher-product-detail/7050189")
+    }
+
+    @Test
+    fun should_show_toaster_when_click_product_voucher_on_seller() {
+        // Given
+        getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
+        launchChatRoomActivity(isSellerApp = false)
+
+        //When
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        GeneralRobot.doScrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPosition(1)).perform(click())
+
+        // Then
+        assertSnackbarText(context.getString(R.string.topchat_mvc_not_available))
     }
 
     @Test
