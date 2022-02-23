@@ -1,7 +1,9 @@
 package com.tokopedia.product.detail.tracking
 
+import android.content.Context
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import org.json.JSONObject
 
 object ProductDetailServerLogger {
@@ -28,12 +30,10 @@ object ProductDetailServerLogger {
     fun logBreadCrumbFirstOpenPage(productId: String?,
                                    shopName: String?,
                                    productName: String?,
-                                   localizationChooseAddress: LocalCacheModel) {
-        val localizationString = "addressId:${localizationChooseAddress.address_id}, " +
-                "cityId: ${localizationChooseAddress.city_id}, " +
-                "districtId: ${localizationChooseAddress.district_id}, " +
-                "whId: ${localizationChooseAddress.warehouse_id}, " +
-                "serviceType: ${localizationChooseAddress.service_type}"
+                                   context: Context?) {
+        val localizationString = context?.let {
+            generateLocalizationString(ChooseAddressUtils.getLocalizingAddressData(it))
+        } ?: ""
 
         val jsonObject = JSONObject().apply {
             put(PRODUCT_ID_KEY, productId)
@@ -86,8 +86,10 @@ object ProductDetailServerLogger {
         logBreadCrumb(PDP_SUCCESS_ATC_STATE, jsonObject)
     }
 
-    fun logBreadCrumbAddressChanged(localizationChooseAddress: LocalCacheModel) {
-        val localizationString = generateLocalizationString(localizationChooseAddress)
+    fun logBreadCrumbAddressChanged(context: Context?) {
+        val localizationString = context?.let {
+            generateLocalizationString(ChooseAddressUtils.getLocalizingAddressData(it))
+        } ?: ""
 
         val jsonObject = JSONObject().apply {
             put(LOCALIZATION_STRING_KEY, localizationString)

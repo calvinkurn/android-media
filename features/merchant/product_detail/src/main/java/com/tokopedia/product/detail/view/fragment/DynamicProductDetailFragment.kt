@@ -463,15 +463,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         firstOpenPage = true
         super.onCreate(savedInstanceState)
 
-        context?.let {
-            ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
-                    productId,
-                    shopDomain,
-                    productKey,
-                    ChooseAddressUtils.getLocalizingAddressData(it)
-            )
-        }
-
+        ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
+                productId,
+                shopDomain,
+                productKey,
+                context
+        )
         assignDeviceId()
         loadData()
     }
@@ -735,11 +732,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.getUserLocationCache())
         if (isUserLocationChanged) {
             refreshPage()
-            context?.let {
-                ProductDetailServerLogger.logBreadCrumbAddressChanged(
-                        ChooseAddressUtils.getLocalizingAddressData(it)
-                )
-            }
+            ProductDetailServerLogger.logBreadCrumbAddressChanged(context)
         }
     }
 
