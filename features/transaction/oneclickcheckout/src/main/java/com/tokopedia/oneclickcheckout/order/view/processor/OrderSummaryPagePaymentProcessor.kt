@@ -90,7 +90,6 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                                         profileCode = orderPayment.creditCard.additionalData.profileCode,
                                         userId = userId,
                                         paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                                        signature = orderPayment.walletData.goCicilData.paymentSignature,
                                         merchantType = orderCart.shop.merchantType
                                 )
                         )

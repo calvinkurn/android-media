@@ -10,7 +10,6 @@ class GoCicilInstallmentRequest(
         val profileCode: String = "",
         val userId: String = "",
         val paymentAmount: Double = 0.0,
-        val signature: String = "",
         val merchantType: String = "",
 ) {
     val userDefinedValue

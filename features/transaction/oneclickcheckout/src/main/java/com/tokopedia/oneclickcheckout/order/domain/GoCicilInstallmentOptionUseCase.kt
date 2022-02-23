@@ -40,7 +40,6 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
         private const val PARAM_PROFILE_CODE = "profileCode"
         private const val PARAM_USER_DEFINED_VALUE = "userDefinedValue"
         private const val PARAM_PAYMENT_AMOUNT = "paymentAmount"
-        private const val PARAM_SIGNATURE = "signature"
         private const val PARAM_ORDER_METADATA = "orderMetadata"
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"

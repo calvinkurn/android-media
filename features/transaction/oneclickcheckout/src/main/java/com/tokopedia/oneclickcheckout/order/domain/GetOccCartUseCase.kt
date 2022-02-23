@@ -406,7 +406,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 error_message_top_limit
                 error_message_bottom_limit
                 error_message_unavailable_tenure
-                payment_signature
                 selected_tenure
             }
           }

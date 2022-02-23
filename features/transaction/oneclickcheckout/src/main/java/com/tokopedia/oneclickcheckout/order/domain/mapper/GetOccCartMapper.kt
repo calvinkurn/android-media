@@ -399,7 +399,6 @@ class GetOccCartMapper @Inject constructor() {
                 errorMessageBottomLimit = goCicilData.errorMessageBottomLimit,
                 errorMessageTopLimit = goCicilData.errorMessageTopLimit,
                 errorMessageUnavailableTenures = goCicilData.errorMessageUnavailableTenures,
-                paymentSignature = goCicilData.paymentSignature,
                 selectedTenure = goCicilData.selectedTenure,
         )
     }
