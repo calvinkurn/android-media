@@ -6,9 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.URLUtil;
-import android.widget.Toast;
 
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
