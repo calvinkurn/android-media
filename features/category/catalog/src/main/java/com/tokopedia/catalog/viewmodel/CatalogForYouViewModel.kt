@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 
-class CatalogForYouViewModel constructor(): BaseViewModel() {
+class CatalogForYouViewModel : BaseViewModel() {
 
     private var shimmerData = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
     private var dataList = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
@@ -23,7 +23,7 @@ class CatalogForYouViewModel constructor(): BaseViewModel() {
     private var error = MutableLiveData<Throwable>()
     private val pageFirst = 1
 
-    private val catalogComparisonProductUseCase =  CatalogComparisonProductUseCase(CatalogComparisonProductRepository())
+    val catalogComparisonProductUseCase =  CatalogComparisonProductUseCase(CatalogComparisonProductRepository())
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : Int, name : String) {
         addShimmer(page)

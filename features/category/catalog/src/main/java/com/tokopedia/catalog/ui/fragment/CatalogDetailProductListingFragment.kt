@@ -103,7 +103,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
-        const val PAGING_ROW_COUNT = 20
+        private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
         const val MORE_CATALOG_WIDGET_INDEX = 2
 
@@ -158,8 +158,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun setUpAdapter() {
         activity?.let {
             catalogTypeFactory = CatalogTypeFactoryImpl(this, it)
+            productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
         }
-        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
         productNavListAdapter?.changeListView()
         if(viewModel.list.size == 0)
             productNavListAdapter?.addShimmer()

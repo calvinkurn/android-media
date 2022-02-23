@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.viewholder.products
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -17,6 +18,7 @@ import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.viewmodel.CatalogForYouViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class CatalogForYouContainerViewHolder(private val view : View,
@@ -69,6 +71,7 @@ class CatalogForYouContainerViewHolder(private val view : View,
         observeShimmerData()
         observerDataItems()
         observerHasMoreItems()
+        observeErrorMessage()
     }
 
     private fun observeShimmerData() {
@@ -83,6 +86,8 @@ class CatalogForYouContainerViewHolder(private val view : View,
         catalogForYouViewModel?.getDataItems()?.observe(lifecycleOwner ,{ dataList ->
             if (dataList.isNotEmpty()) {
                 onFetchData(dataList)
+            }else {
+                handleError()
             }
         })
     }
@@ -95,11 +100,21 @@ class CatalogForYouContainerViewHolder(private val view : View,
 
     }
 
+    private fun observeErrorMessage() {
+        catalogForYouViewModel?.getError()?.observe(lifecycleOwner, { errorMessage ->
+            handleError()
+        })
+    }
+
     private fun onFetchData(dataList : ArrayList<BaseCatalogDataModel>){
         recyclerView?.show()
         catalogDetailAdapter.submitList(dataList)
         catalogDetailAdapter.notifyDataSetChanged()
         loadMoreTriggerListener?.updateStateAfterGetData()
+    }
+
+    private fun handleError(){
+        itemView.findViewById<LinearLayout>(R.id.catalog_for_you_container_parent)?.hide()
     }
 
     private fun makeApiCall(page : Int) {
