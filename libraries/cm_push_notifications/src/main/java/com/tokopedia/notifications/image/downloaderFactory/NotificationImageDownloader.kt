@@ -134,7 +134,6 @@ enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Lon
     CAROUSEL(720, 360, 10L, true),
     VISUAL_COLLAPSED(360, 64, 5L, false),
     VISUAL_EXPANDED(720, 360, 10L, true),
-    BANNER_COLLAPSED(180, 64, 5L),
     FREE_ONGKIR(290, 60, 5L),
     STAR_REVIEW(60, 60, 5L)
 }

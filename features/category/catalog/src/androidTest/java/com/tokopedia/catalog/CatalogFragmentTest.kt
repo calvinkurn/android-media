@@ -112,7 +112,7 @@ class CatalogFragmentTest
         }.assertTest {
             val query = listOf(
                     mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                             Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                             Event.ACTION_KEY to Event.ALL_STAR,
                             Event.LABEL_KEY to Event.ALL_STAR
@@ -164,7 +164,7 @@ class CatalogFragmentTest
         }.assertTest {
             val query = listOf(
                     mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                             Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                             Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
                             Event.LABEL_KEY to Event.ALL_STAR
@@ -202,7 +202,7 @@ class CatalogFragmentTest
         }.assertTest {
             val query = listOf(
                     mapOf(
-                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                         Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                         Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
                         Event.LABEL_KEY to Event.ALL_STAR

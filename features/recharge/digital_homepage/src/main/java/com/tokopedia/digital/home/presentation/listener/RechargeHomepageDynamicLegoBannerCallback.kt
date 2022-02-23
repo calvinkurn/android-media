@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -10,15 +11,15 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
         DynamicLegoBannerListener,
         HomeComponentListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        // Do nothing
+        listener.onRechargeBannerAllItemClicked(RechargeHomepageSections.Section(applink = channelModel.channelHeader.applink))
     }
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-        // Do nothing
+        listener.onRechargeBannerAllItemClicked(RechargeHomepageSections.Section(applink = channelModel.channelHeader.applink))
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-        // Do nothing
+        listener.onRechargeBannerAllItemClicked(RechargeHomepageSections.Section(applink = channelModel.channelHeader.applink))
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -65,6 +66,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
         listener.loadRechargeSectionData(channelModel.id)
     }
     override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
+        RechargeHomepageSections.Section(applink = channelModel.channelHeader.applink)
     }
 
     override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
