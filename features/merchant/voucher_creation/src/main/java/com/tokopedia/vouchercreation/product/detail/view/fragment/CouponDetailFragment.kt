@@ -47,6 +47,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.tracker.CouponDetailTracker
+import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -127,6 +128,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var tracker: CouponDetailTracker
 
+    @Inject
+    lateinit var sharingComponentTracker: SharingComponentTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponDetailViewModel::class.java) }
@@ -489,6 +492,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
                 binding.button.text = getString(R.string.mvc_share)
                 binding.button.setOnClickListener {
+                    sharingComponentTracker.sendShareClickEvent(
+                        ShareComponentConstant.ENTRY_POINT_DETAIL,
+                        coupon.id.toString()
+                    )
                     viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
                 }
             }
@@ -752,9 +759,15 @@ class CouponDetailFragment : BaseDaggerFragment() {
             title,
             coupon.id.toLong(),
             onShareOptionsClicked = { shareModel ->
+                sharingComponentTracker.sendSelectShareChannelClickEvent(shareModel.channel.orEmpty(), coupon.id.toString())
                 handleShareOptionSelection(coupon.id.toLong(), shareModel, title, description, shop.shopDomain)
-            }, onCloseOptionClicked = {}
+            }, onCloseOptionClicked = {
+                sharingComponentTracker.sendShareBottomSheetDismissClickEvent(coupon.id.toString())
+            }
         )
+
+        sharingComponentTracker.sendShareBottomSheetDisplayedEvent(coupon.id.toString())
+
         shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
     }
 

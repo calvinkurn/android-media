@@ -10,7 +10,6 @@ class CouponDetailTracker @Inject constructor() {
         private const val EMPTY_STRING = ""
     }
 
-    
     fun sendDownloadCouponImageClickEvent(couponStatus: String) {
         sendGeneralTracking(
             event = "clickPG",
