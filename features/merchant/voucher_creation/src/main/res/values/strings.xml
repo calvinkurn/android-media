@@ -463,7 +463,6 @@
     <string name="mvc_no_access">Oops, kamu nggak punya izin untuk mengakses halaman ini</string>
     <string name="mvc_no_access_description">Hubungi pemilik toko untuk mendapatkan akses halaman ini, ya.</string>
     <string name="mvc_understand">Oke, Saya mengerti</string>
-    <string name="error_message_exceed_max_coupon">Kupon Aktif Maksimal 10</string>
     <string name="mvc_free_shipping_coming_soon">Gratis Ongkir (Akan Datang)</string>
 
     <!--create coupon-->
