@@ -1,6 +1,7 @@
 package com.tokopedia.digital_product_detail.presentation.data
 
 import com.google.gson.Gson
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -119,17 +120,26 @@ class TokenListrikDataFactory {
         )
     }
 
+    fun getOperatorSelectGroupEmptyValidation(): DigitalCatalogOperatorSelectGroup {
+        return gson.fromJson(
+            gson.JsonToString(GET_EMPTY_VALIDATOR),
+            DigitalCatalogOperatorSelectGroup::class.java
+        )
+    }
+
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
         const val GET_MENU_DETAIL = "token_listrik/get_menu_detail_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "token_listrik/get_catalog_input_multitab_mock.json"
-        const val GET_OPERATOR_SELECT_GROUP = "token_listrik/get_operator_select_group.json"
+        const val GET_OPERATOR_SELECT_GROUP = "token_listrik/get_operator_select_group_mock.json"
+        const val GET_EMPTY_VALIDATOR = "token_listrik/get_empty_validation_operator_select_group_mock.json"
 
         const val CATEGORY_ID = "1"
         const val OPERATOR_ID = "5"
         const val PRODUCT_ID = "1136"
-        const val VALID_CLIENT_NUMBER = "081208120812"
+        const val VALID_CLIENT_NUMBER = "121212121212"
+        const val INVALID_CLIENT_NUMBER = "121212"
         const val IS_NOT_PROMO = "0"
         const val UTM_CAMPAIGN = "1"
         const val IS_NOT_SPECIAL_PRODUCT = false

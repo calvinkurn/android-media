@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
@@ -91,6 +92,18 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         } throws errorThrowable
     }
 
+    protected fun onGetOperatorSelectGroup_thenReturn(response: DigitalCatalogOperatorSelectGroup) {
+        coEvery {
+            repo.getOperatorSelectGroup(any())
+        } returns response
+    }
+
+    protected fun onGetOperatorSelectGroup_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getOperatorSelectGroup(any())
+        } throws error
+    }
+
     protected fun onGetSelectedGridProduct_thenReturn(result: SelectedProduct) {
         viewModel.selectedGridProduct = result
     }
@@ -113,6 +126,10 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun verifyAddToCartRepoGetCalled() {
         coVerify { repo.addToCart(any(), any(), any(), any()) }
+    }
+
+    protected fun verifyGetOperatorSelectGroupRepoGetCalled() {
+        coVerify { repo.getOperatorSelectGroup(any()) }
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){
@@ -222,6 +239,55 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun verifyCatalogProductJobIsNull() {
         Assert.assertNull(viewModel.catalogProductJob)
+    }
+
+    protected fun verifyGetOperatorSelectGroupLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.catalogSelectGroup.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetOperatorSelectGroupSuccess(expectedResponse: DigitalCatalogOperatorSelectGroup) {
+        val actualResponse = viewModel.catalogSelectGroup.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetOperatorSelectGroupFail() {
+        val actualResponse = viewModel.catalogSelectGroup.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyValidateClientNumberTrue() {
+        Assert.assertTrue(viewModel.isEligibleToBuy)
+        Assert.assertEquals(viewModel.clientNumberValidatorMsg.value, EMPTY)
+    }
+
+    protected fun verifyValidateClientNumberFalse() {
+        Assert.assertFalse(viewModel.isEligibleToBuy)
+        Assert.assertNotEquals(viewModel.clientNumberValidatorMsg.value, EMPTY)
+    }
+
+    protected fun verifyValidatorJobIsNull() {
+        Assert.assertNull(viewModel.validatorJob)
+    }
+
+    protected fun verifyValidatorJobIsCancelled() {
+        Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
+    }
+
+    protected fun verifyIsAutoSelectedProductTrue(isAutoSelect: Boolean) {
+        Assert.assertTrue(isAutoSelect)
+    }
+
+    protected fun verifyIsAutoSelectedProductFalse(isAutoSelect: Boolean) {
+        Assert.assertFalse(isAutoSelect)
+    }
+
+    protected fun verifyValidatorJobIsNotNull() {
+        Assert.assertNotNull(viewModel.validatorJob)
+    }
+
+    protected fun verifyCatalogProductJobIsNotNull() {
+        Assert.assertNotNull(viewModel.catalogProductJob)
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {

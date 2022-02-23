@@ -4,13 +4,14 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
 import com.tokopedia.digital_product_detail.presentation.data.TokenListrikDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -77,9 +78,9 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val denomData = dataFactory.getDenomData()
         viewModel.updateCheckoutPassData(
             denomData,
-            DataPlanDataFactory.IDEM_POTENCY_KEY,
-            DataPlanDataFactory.VALID_CLIENT_NUMBER,
-            DataPlanDataFactory.OPERATOR_ID
+            TokenListrikDataFactory.IDEM_POTENCY_KEY,
+            TokenListrikDataFactory.VALID_CLIENT_NUMBER,
+            TokenListrikDataFactory.OPERATOR_ID
         )
 
         val expectedResult = dataFactory.getCheckoutPassData()
@@ -91,7 +92,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val recomData = dataFactory.getRecomCardWidgetModelData()
         viewModel.updateCheckoutPassData(
             recomData,
-            DataPlanDataFactory.IDEM_POTENCY_KEY
+            TokenListrikDataFactory.IDEM_POTENCY_KEY
         )
 
         val expectedResult = dataFactory.getCheckoutPassData()
@@ -102,8 +103,8 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when updateCategoryCheckoutPassData called should update digitalCheckoutPassData`() {
         verifyCheckoutPassDataCategoryIdEmpty()
 
-        viewModel.updateCategoryCheckoutPassData(DataPlanDataFactory.CATEGORY_ID)
-        verifyCheckoutPassDataCategoryIdUpdated(DataPlanDataFactory.CATEGORY_ID)
+        viewModel.updateCategoryCheckoutPassData(TokenListrikDataFactory.CATEGORY_ID)
+        verifyCheckoutPassDataCategoryIdUpdated(TokenListrikDataFactory.CATEGORY_ID)
     }
 
     @Test
@@ -252,6 +253,180 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         verifyCatalogProductJobIsNull()
     }
 
+    @Test
+    fun `given catalogSelectGroup loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setOperatorSelectGroupLoading()
+        verifyGetOperatorSelectGroupLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting catalogSelectGroup should run and give success result`() {
+        val response = dataFactory.getOperatorSelectGroup()
+        onGetOperatorSelectGroup_thenReturn(response)
+
+        viewModel.getOperatorSelectGroup(MENU_ID)
+        verifyGetOperatorSelectGroupRepoGetCalled()
+        verifyGetOperatorSelectGroupSuccess(response)
+    }
+
+    @Test
+    fun `when getting catalogSelectGroup should run and give fail result`() {
+        onGetOperatorSelectGroup_thenReturn(NullPointerException())
+
+        viewModel.getOperatorSelectGroup(MENU_ID)
+        verifyGetOperatorSelectGroupRepoGetCalled()
+        verifyGetOperatorSelectGroupFail()
+    }
+
+    @Test
+    fun `given empty validator when validateClientNumber should set isEligibleToBuy true`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getOperatorSelectGroupEmptyValidation()
+            onGetOperatorSelectGroup_thenReturn(response)
+
+            viewModel.getOperatorSelectGroup(MENU_ID)
+            viewModel.validateClientNumber(TokenListrikDataFactory.VALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            verifyGetOperatorSelectGroupSuccess(response)
+            verifyValidateClientNumberTrue()
+        }
+
+    @Test
+    fun `given non-empty validator when validateClientNumber with valid number should set isEligibleToBuy true`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getOperatorSelectGroup()
+            onGetOperatorSelectGroup_thenReturn(response)
+
+            viewModel.getOperatorSelectGroup(MENU_ID)
+            viewModel.validateClientNumber(TokenListrikDataFactory.VALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            verifyGetOperatorSelectGroupSuccess(response)
+            verifyValidateClientNumberTrue()
+        }
+
+    @Test
+    fun `given non-empty validator when validateClientNumber with non-valid number should set isEligibleToBuy false`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getOperatorSelectGroup()
+            onGetOperatorSelectGroup_thenReturn(response)
+
+            viewModel.getOperatorSelectGroup(MENU_ID)
+            viewModel.validateClientNumber(TokenListrikDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            verifyGetOperatorSelectGroupSuccess(response)
+            verifyValidateClientNumberFalse()
+        }
+
+    @Test
+    fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
+        testCoroutineRule.runBlockingTest {
+            viewModel.validateClientNumber(TokenListrikDataFactory.VALID_CLIENT_NUMBER)
+            viewModel.cancelValidatorJob()
+            verifyValidatorJobIsCancelled()
+        }
+    }
+
+    @Test
+    fun `given validatorJob null when cancelValidatorJob called should do nothing`() {
+        viewModel.cancelValidatorJob()
+        verifyValidatorJobIsNull()
+    }
+
+    @Test
+    fun `given layoutType is not match & other condition fulfilled when call isAutoSelectedProduct should return false`() {
+        onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+        val result = viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)
+        verifyIsAutoSelectedProductFalse(result)
+    }
+
+    @Test
+    fun `given layoutType is match & other condition fulfilled when call isAutoSelectedProduct should return true`() =
+        testCoroutineRule.runBlockingTest {
+            // use empty validator to make isEligibleToBuy true
+            val response = dataFactory.getOperatorSelectGroupEmptyValidation()
+            onGetOperatorSelectGroup_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+            viewModel.validateClientNumber(TokenListrikDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+
+            verifyIsAutoSelectedProductTrue(isAutoSelect)
+        }
+
+    @Test
+    fun `given empty selectedGridProduct & other condition fulfilled when isAutoSelectedProduct should return false`() {
+        onGetSelectedGridProduct_thenReturn(SelectedProduct())
+
+        val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+        verifyIsAutoSelectedProductFalse(isAutoSelect)
+    }
+
+    @Test
+    fun `given isEligibleToBuy true & other condition fulfilled when isAutoSelectedProduct should return true`() =
+        testCoroutineRule.runBlockingTest {
+            // use empty validator & dummy selectedProduct to make isEligibleToBuy true
+            val response = dataFactory.getOperatorSelectGroupEmptyValidation()
+            onGetOperatorSelectGroup_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+            viewModel.validateClientNumber(TokenListrikDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+
+            verifyIsAutoSelectedProductTrue(isAutoSelect)
+        }
+
+    @Test
+    fun `given isEligibleToBuy false & other condition fulfilled when isAutoSelectedProduct should return false`() =
+        testCoroutineRule.runBlockingTest {
+            // use empty validator & dummy selectedProduct to make isEligibleToBuy true
+            val response = dataFactory.getOperatorSelectGroup()
+            onGetOperatorSelectGroup_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
+
+            viewModel.getOperatorSelectGroup(MENU_ID)
+            viewModel.validateClientNumber(TokenListrikDataFactory.INVALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+            verifyIsAutoSelectedProductFalse(isAutoSelect)
+        }
+
+    @Test
+    fun `given selectedGridProduct pos less than 0 & other condition fulfilled when isAutoSelectedProduct should return false`() {
+        testCoroutineRule.runBlockingTest {
+            // use empty validator & empty selectedProduct to make position < 0
+            val response = dataFactory.getOperatorSelectGroupEmptyValidation()
+            onGetOperatorSelectGroup_thenReturn(response)
+            onGetSelectedGridProduct_thenReturn(dataFactory.getInvalidPositionSelectedProduct())
+
+            viewModel.getOperatorSelectGroup(MENU_ID)
+            viewModel.validateClientNumber(TokenListrikDataFactory.VALID_CLIENT_NUMBER)
+            skipValidatorDelay()
+
+            val isAutoSelect = viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)
+            verifyIsAutoSelectedProductFalse(isAutoSelect)
+        }
+    }
+
+    @Test
+    fun `given validatorJob null when implicit setValidatorJob executed should update validatorJob to non-null`() {
+        viewModel.validatorJob = Job()
+        verifyValidatorJobIsNotNull()
+    }
+
+    @Test
+    fun `given catalogProductJob null when implicit setCatalogProductJob called should update catalogProductJob to non-null`() {
+        viewModel.catalogProductJob = Job()
+        verifyCatalogProductJobIsNotNull()
+    }
 
     companion object {
         const val MENU_ID = 291
