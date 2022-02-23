@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tokopedia.unifycomponents.ImageUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/image_my_coupon"
+    android:layout_width="160dp"
+    android:layout_height="80dp"
+    android:contentDescription="@string/content_desc_appCompatImageViewDouble"
+    android:scaleType="fitXY"
+    android:visibility="gone"
+    app:layout_constraintDimensionRatio="H,2:1"
+    app:unify_image_corner_radius="8"
+    tools:background="@color/Unify_N100"
+    tools:visibility="visible" />

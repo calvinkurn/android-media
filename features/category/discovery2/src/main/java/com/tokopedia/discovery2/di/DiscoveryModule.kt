@@ -183,8 +183,8 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideMyCouponRepository(): MyCouponRepository {
-        return MyCouponGQLRepository()
+    fun provideMyCouponRepository(@ApplicationContext context: Context): MyCouponRepository {
+        return MyCouponGQLRepository(provideGetStringMethod(context))
     }
 
     @DiscoveryScope

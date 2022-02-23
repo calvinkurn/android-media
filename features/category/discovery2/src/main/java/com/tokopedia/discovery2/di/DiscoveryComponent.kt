@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.clai
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
@@ -48,6 +49,6 @@ interface DiscoveryComponent {
     fun inject(quickFilterViewModel: QuickFilterViewModel)
     fun inject(emptyStateViewModel: EmptyStateViewModel)
     fun inject(myCouponViewModel: MyCouponViewModel)
-
+    fun inject(myCouponItemViewModel: MyCouponItemViewModel)
     fun provideSubComponent() : UIWidgetComponent
 }

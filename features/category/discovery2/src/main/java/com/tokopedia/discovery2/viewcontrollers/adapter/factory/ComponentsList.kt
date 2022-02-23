@@ -107,5 +107,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TopQuestWidget(R.layout.disco_top_quest,ComponentNames.TopQuestWidget.componentName),
 
     MyCoupon(R.layout.component_claim_coupon_layout,ComponentNames.MyCoupon.componentName),
+    MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
 
 }

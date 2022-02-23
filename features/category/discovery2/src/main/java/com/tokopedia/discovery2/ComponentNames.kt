@@ -107,6 +107,7 @@ enum class ComponentNames(val componentName: String) {
     TopQuestWidget("top_quest"),
 
     //my coupon
-    MyCoupon("tokopoint_coupon")
+    MyCoupon("my_coupon"),
+    MyCouponItem("my_coupon_item")
 
 }
