@@ -79,4 +79,5 @@
     <string name="discovery_calendar_push_unsubscribe">Pengingat berhasil dibatalkan.</string>
     <string name="discovery_calendar_push_action">Oke</string>
     <string name="discovery_calendar_line">────</string>
+    <string name="discovery_this_section_is_still_empty">Oops, bagian ini masih kosong.</string>
 </resources>

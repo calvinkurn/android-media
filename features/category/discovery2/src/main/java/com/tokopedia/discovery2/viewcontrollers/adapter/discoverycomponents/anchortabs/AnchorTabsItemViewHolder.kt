@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ScrollData
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -60,6 +61,7 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as AnchorTabsItemViewModel
+        getSubComponent().inject(viewModel)
         setupCardType()
         setupView()
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewAnchorTabs(viewModel.components)

@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anc
 
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -11,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ScrollData
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.unifycomponents.Toaster
 
 
 class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
@@ -28,8 +31,8 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     val observer = Observer<ScrollData> { data ->
         data?.let {
             if(::viewModel.isInitialized){
-                if (viewModel.isClickNotify) {
-                    viewModel.isClickNotify = false
+                if (viewModel.pauseDispatchChanges) {
+                    viewModel.pauseDispatchChanges = false
                     viewModel.updateSelectedSection(viewModel.selectedSectionId,false)
                 }
             }
@@ -61,6 +64,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as AnchorTabsViewModel
+        getSubComponent().inject(viewModel)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -79,10 +83,23 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
             })
-            viewModel.getUpdatePositionsLD().observe(it, { (oldPos, newPos) ->
-                updatePositionChanged(oldPos,newPos)
+
+            viewModel.getUpdatePositionsLD().observe(it, { shouldUpdate ->
+                if (shouldUpdate)
+                    updatePositionChanged()
             })
-            (fragment as DiscoveryFragment).getScrollLiveData().observe(it,observer)
+
+            (fragment as DiscoveryFragment).getScrollLiveData().observe(it, observer)
+
+            viewModel.shouldShowMissingSectionToaster().observe(it, { shouldShowToast ->
+                if (shouldShowToast)
+                    Toaster.build(
+                        itemView,
+                        itemView.context.getString(R.string.discovery_this_section_is_still_empty),
+                        Toast.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+            })
 
         }
     }
@@ -92,23 +109,19 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
         lifecycleOwner?.let {
             viewModel.getCarouselItemsListData().removeObservers(it)
             viewModel.getUpdatePositionsLD().removeObservers(it)
+            viewModel.shouldShowMissingSectionToaster().removeObservers(it)
             (fragment as DiscoveryFragment).getScrollLiveData().removeObserver(observer)
         }
     }
 
-    private fun updatePositionChanged(oldPos:Int, newPos:Int){
-        if (oldPos < viewModel.getListSize())
-            mDiscoveryRecycleAdapter.notifyItemChanged(oldPos)
-
-        if (newPos < viewModel.getListSize())
-            mDiscoveryRecycleAdapter.notifyItemChanged(newPos)
-
-        anchorRV.post {
-            if (newPos < viewModel.getListSize()) {
-                smoothScroller.targetPosition = newPos
+    private fun updatePositionChanged(){
+        mDiscoveryRecycleAdapter.submitList(ArrayList(viewModel.components.getComponentsItem()!!))
+        anchorRV.postDelayed({
+            if (viewModel.selectedSectionPos < viewModel.getListSize()) {
+                smoothScroller.targetPosition = viewModel.selectedSectionPos
                 linearLayoutManager.startSmoothScroll(smoothScroller)
             }
-        }
+        },200)
     }
 
 }
