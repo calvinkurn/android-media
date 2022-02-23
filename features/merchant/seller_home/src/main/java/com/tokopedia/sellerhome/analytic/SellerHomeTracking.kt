@@ -7,6 +7,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiM
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
@@ -18,6 +19,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -901,27 +903,31 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel) {
-        val isEmpty = element.data?.eventGroups.isNullOrEmpty()
-        val emptyLabel = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
-        val dateRage = "${element.filter.startDate} - ${element.filter.endDate}"
-        val eventMap = createEventMap(
-            event = TrackingConstant.CLICK_PG,
-            category = arrayOf(
-                TrackingConstant.SELLER_APP,
-                TrackingConstant.HOME
-            ).joinDashSeparator(),
-            action = TrackingConstant.CLICK_WIDGET_CALENDAR_SELECT_DATE_RANGE,
-            label = arrayOf(
-                element.dataKey,
-                emptyLabel,
-                dateRage
-            ).joinDashSeparator(),
-            businessUnit = TrackingConstant.PG,
-            currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
-        )
+    fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
+        val startDate = dateFilter.startDate
+        val endDate = dateFilter.endDate
+        if (startDate != null && endDate != null) {
+            val startDateStr = DateTimeUtil.format(startDate.time, DateTimeUtil.FORMAT_DD_MM_YYYY)
+            val endDateStr = DateTimeUtil.format(endDate.time, DateTimeUtil.FORMAT_DD_MM_YYYY)
+            val dateRage = "$startDateStr - $endDateStr"
+            val eventMap = createEventMap(
+                event = TrackingConstant.CLICK_PG,
+                category = arrayOf(
+                    TrackingConstant.SELLER_APP,
+                    TrackingConstant.HOME
+                ).joinDashSeparator(),
+                action = TrackingConstant.CLICK_WIDGET_CALENDAR_SELECT_DATE_RANGE,
+                label = arrayOf(
+                    element.dataKey,
+                    TrackingConstant.NOT_EMPTY,
+                    dateRage
+                ).joinDashSeparator(),
+                businessUnit = TrackingConstant.PG,
+                currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
+            )
 
-        TrackingHelper.sendGeneralEvent(eventMap)
+            TrackingHelper.sendGeneralEvent(eventMap)
+        }
     }
 
     fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
