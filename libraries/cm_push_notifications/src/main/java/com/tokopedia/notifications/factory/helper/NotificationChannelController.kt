@@ -9,12 +9,44 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 
 class NotificationChannelController(private val context: Context) {
 
 
     private val vibratePattern: LongArray
         get() = longArrayOf(500, 500)
+
+
+    private val ringtoneUri: Uri
+        get() = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+
+    fun setPreOreoSilentSound(builder : NotificationCompat.Builder){
+        builder.setSound(null)
+        builder.setVibrate(null)
+    }
+
+    fun setPreOreoSound(builder : NotificationCompat.Builder, soundFileName: String?){
+        if(soundFileName == null || isSoundFileNotExists(soundFileName)){
+            builder.setSound(ringtoneUri)
+        }else {
+            val soundUri = Uri.parse(
+                "android.resource://" + context.packageName +
+                        "/raw/" + soundFileName
+            )
+            builder.setSound(soundUri)
+        }
+        builder.setVibrate(vibratePattern)
+    }
+
+    fun getChannelID(channelName: String?, soundFileName: String?) : String{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            createNotificationChannel(channelName, soundFileName)
+        }else {
+            return NotificationChannelConstant.CHANNEL_DEFAULT_ID
+        }
+    }
 
 
     /*
@@ -24,9 +56,8 @@ class NotificationChannelController(private val context: Context) {
      * case 2: ChannelName is `Notifikasi` then create Default Channel ignore sound file
      * case 3: if SoundFile doesn't exists in system create use `Default Channel`
      * case 4: Channel Name and Sound file not belongs to `Default Channel`
-     *         a. Check for validity if channel and get Channel ID (every new channel will have channel id end with _v1)
-     *         b. create new channel
-     * return channel id
+     *          - create new channel
+     * return channel id (channelName)
     * */
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun createNotificationChannel(channelName: String?, soundFileName: String?): String {
@@ -37,33 +68,26 @@ class NotificationChannelController(private val context: Context) {
         } else if (isSoundFileNotExists(soundFileName)) {
             return createDefaultChannel()
         } else {
-            val channelId = resetAndGetChannelID(channelName, soundFileName)
             val importance = NotificationManager.IMPORTANCE_HIGH
-
             val channel = NotificationChannel(
-                channelId,
+                channelName,
                 channelName, importance
             )
-
             channel.description = NotificationChannelConstant.CHANNEL_DESCRIPTION
-
             val att = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build()
-
             channel.setSound(
                 Uri.parse(
-                    "android.resource://" + context.packageName + "/" +
-                            "raw/" + soundFileName
+                    "android.resource://" + context.packageName +
+                            "/raw/" + soundFileName
                 ), att
             )
-
             channel.vibrationPattern = vibratePattern
             channel.setShowBadge(true)
-
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
-            return channelId
+            return channelName
         }
     }
 
@@ -76,45 +100,6 @@ class NotificationChannelController(private val context: Context) {
         return checkExistence == 0
     }
 
-
-    /**
-     * - if channel not found then new Channel id will ends with _v1
-     * - if channel is created
-     *          case 1: Channel id ends with _v1 - return same channel id
-     *          case 2: sound file is different - delete channel and create Channel id with post fix _v1 and return it
-     *          case 3: return old channel id
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun resetAndGetChannelID(channelName: String, soundFileName: String): String {
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val channel = getNotificationChannelByName(channelName)
-        if (channel == null)
-            return channelName + "_v1"
-        else {
-            return when {
-                channel.id.endsWith("_v1") -> return channel.id
-                channel.sound.lastPathSegment != soundFileName -> {
-                    notificationManager.deleteNotificationChannel(channel.id)
-                    channelName + "_v1"
-                }
-                else -> channel.id
-            }
-
-        }
-    }
-
-
-    /*Search Channel Name in All existing Channels*/
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun getNotificationChannelByName(channelName: String): NotificationChannel? {
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val channels = notificationManager.notificationChannels
-        channels?.forEach { channel: NotificationChannel? ->
-            if (channel != null && channel.name == channelName)
-                return channel
-        }
-        return null
-    }
 
     /*
      * Default Channel(Name : Notifikasi, Sound : Default System Sound)
@@ -181,3 +166,4 @@ object NotificationChannelConstant {
 
 
 }
+

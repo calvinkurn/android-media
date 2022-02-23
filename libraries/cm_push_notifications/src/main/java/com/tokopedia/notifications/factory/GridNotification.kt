@@ -21,7 +21,7 @@ import com.tokopedia.notifications.model.Grid
 class GridNotification internal constructor(context: Context, baseNotificationModel: BaseNotificationModel) : BaseNotification(context, baseNotificationModel) {
 
     override fun createNotification(): Notification {
-        val builder = notificationBuilder
+        val builder = builder
         val collapsedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         else RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed_pre_dark_mode)

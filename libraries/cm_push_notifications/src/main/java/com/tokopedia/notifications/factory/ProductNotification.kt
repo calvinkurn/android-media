@@ -40,7 +40,7 @@ internal class ProductNotification(
             setExpandedViewData(expandedView)
         }
 
-        return notificationBuilder
+        return builder
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(productWidget.collapsedView)
                 .setCustomBigContentView(productWidget.expandedView)

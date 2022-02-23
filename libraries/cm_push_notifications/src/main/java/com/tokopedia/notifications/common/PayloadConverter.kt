@@ -39,14 +39,15 @@ object PayloadConverter {
         if (data.containsKey(NOTIFICATION_PRIORITY)) {
             model.priorityPreOreo = data.getString(NOTIFICATION_PRIORITY, "2").toIntOrZero()
         }
-        model.soundFileName = data.getString(SOUND, "")
         model.notificationId = data.getString(NOTIFICATION_ID, "500").toIntOrZero()
         model.campaignId = data.getString(CAMPAIGN_ID, "0").toLongOrZero()
         model.parentId = data.getString(PARENT_ID, "0").toLongOrZero()
         model.elementId = data.getString(ELEMENT_ID, "")
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
-        model.channelName = data.getString(CHANNEL, "")
+
+        setNotificationSound(model= model, extras = data)
+
         model.title = data.getString(TITLE, "")
         model.detailMessage = data.getString(DESCRIPTION, "")
         model.message = data.getString(MESSAGE, "")
@@ -112,14 +113,15 @@ object PayloadConverter {
         val model = BaseNotificationModel()
         model.icon = data.icon
         model.priorityPreOreo = data.priorityPreOreo ?: 2
-        model.soundFileName = data.soundFileName
         model.notificationId = data.notificationId ?: 500
         model.campaignId = data.campaignId ?: 0
         model.parentId = data.parentId ?: 0
         model.elementId = data.elementId
         model.tribeKey = data.tribeKey
         model.type = data.type
-        model.channelName = data.channelName
+
+        setNotificationSound(model, data.notificationSound)
+
         model.title = data.title
         model.detailMessage = data.detailMessage
         model.message = data.message
@@ -250,6 +252,34 @@ object PayloadConverter {
             NotificationMode.OFFLINE
         } else {
             NotificationMode.POST_NOW
+        }
+    }
+
+
+
+    private fun setNotificationSound(model: BaseNotificationModel,
+                                     extras: Bundle) {
+        model.soundFileName = ""
+        model.channelName = ""
+
+        val soundStr = extras.getString(NOTIFICATION_CHANNEL_SOUND)
+        try {
+            val notificationSound =  Gson().fromJson(soundStr, NotificationSound::class.java)
+            notificationSound?.let {
+                model.channelName = notificationSound.channelName ?: ""
+                model.soundFileName = notificationSound.channelSound ?: ""
+            }
+        }catch (ignore : Throwable){ }
+    }
+
+
+    private fun setNotificationSound(model: BaseNotificationModel,
+                                     notificationSound: NotificationSound?){
+        model.soundFileName = ""
+        model.channelName = ""
+        notificationSound?.let {
+            model.channelName = notificationSound.channelName ?: ""
+            model.soundFileName = notificationSound.channelSound ?: ""
         }
     }
 

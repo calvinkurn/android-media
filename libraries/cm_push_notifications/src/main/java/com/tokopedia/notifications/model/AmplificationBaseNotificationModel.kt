@@ -240,8 +240,11 @@ data class AmplificationBaseNotificationModel(
 
         @SerializedName("is_amplification")
         @ColumnInfo(name = "is_amplification")
-        var isAmplification: Boolean? = false
+        var isAmplification: Boolean? = false,
 
+        @SerializedName(NOTIFICATION_CHANNEL_SOUND)
+        @Expose
+        var notificationSound: NotificationSound? = null
 ) : Parcelable {
 
     fun webHookParamData(): String? {

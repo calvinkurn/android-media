@@ -140,6 +140,8 @@ public interface CMConstant {
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
         String ADVANCE_TARGET = "isAdvanceTarget";
+
+        String NOTIFICATION_CHANNEL_SOUND = "nf_channel";
     }
 
     interface NotificationProductType {

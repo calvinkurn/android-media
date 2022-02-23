@@ -8,8 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
@@ -21,7 +19,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
-import com.tokopedia.notifications.factory.helper.NotificationChannelConstant
 import com.tokopedia.notifications.factory.helper.NotificationChannelController
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver
@@ -42,101 +39,88 @@ interface BaseNotificationContract {
 }
 
 abstract class BaseNotification internal constructor(
-        protected var context: Context,
-        var baseNotificationModel: BaseNotificationModel
-): BaseNotificationContract {
+    protected var context: Context,
+    var baseNotificationModel: BaseNotificationModel
+) : BaseNotificationContract {
 
-    private val notificationChannelController  by lazy {
+    private val notificationChannelController by lazy {
         NotificationChannelController.getNotificationController(context = context)
     }
 
-    private var cacheHandler: CMNotificationCacheHandler? = null
-    val NOTIFICATION_NUMBER = 1
+    private val cacheHandler: CMNotificationCacheHandler by lazy {
+        CMNotificationCacheHandler(context)
+    }
+
+    private val NOTIFICATION_NUMBER = 1
+
+
+    abstract fun createNotification(): Notification?
 
     protected val builder: NotificationCompat.Builder
         get() {
-            val builder: NotificationCompat.Builder =
-                    if (baseNotificationModel.channelName != null && baseNotificationModel.channelName!!.isNotEmpty()) {
-                        NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
-                    } else {
-                        NotificationCompat.Builder(context, NotificationChannelConstant.CHANNEL_DEFAULT_ID)
-                    }
+            val channelID = notificationChannelController.getChannelID(
+                baseNotificationModel.channelName,
+                baseNotificationModel.soundFileName
+            )
+
+            val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+                context, channelID
+            )
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
                 builder.setSubText(baseNotificationModel.subText)
             }
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-
-            if (baseNotificationModel.isUpdateExisting) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder.setChannelId(notificationChannelController.createAndGetSilentChannel())
-                } else {
-                    builder.setSound(null)
-                    builder.setVibrate(null)
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val channelId = notificationChannelController.createNotificationChannel(
-                        channelName = baseNotificationModel.channelName,
-                        soundFileName = baseNotificationModel.soundFileName)
-                    builder.setChannelId(channelId)
-                    builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-                    builder.setNumber(NOTIFICATION_NUMBER)
-                } else {
-                    setNotificationSound(builder)
-                    setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
-                }
-            }
-
-            if (baseNotificationModel.icon!!.isEmpty()) {
-                builder.setLargeIcon(bitmapLargeIcon)
-            } else {
-                builder.setLargeIcon(getBitmap(baseNotificationModel.icon))
-            }
-            builder.setSmallIcon(drawableIcon)
+            setSoundProperties(builder)
+            setNotificationIcon(builder)
             return builder
         }
 
-    protected val notificationBuilder: NotificationCompat.Builder
-        get() {
-
-            val builder: NotificationCompat.Builder = if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-                NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
+    /*
+    *
+    * 1. In this function we are updating channel if Notification UI update required (setting silent Channel)
+    * 2. Setting sound for PreOreo
+    * 3. Setting PreOreo Notification Priority
+    * 4. Setting Badge Icon and Notification count for OS above Marshmallow
+    *
+    * */
+    private fun setSoundProperties(builder: NotificationCompat.Builder) {
+        if (baseNotificationModel.isUpdateExisting) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val silentChannelId = notificationChannelController.createAndGetSilentChannel()
+                builder.setChannelId(silentChannelId)
             } else {
-                NotificationCompat.Builder(context,  NotificationChannelConstant.CHANNEL_DEFAULT_ID)
+                notificationChannelController.setPreOreoSilentSound(builder)
             }
-
-            if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
-                builder.setSubText(baseNotificationModel.subText)
-            }
-
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            builder.setSmallIcon(drawableIcon)
-
-
-            if (baseNotificationModel.isUpdateExisting) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder.setChannelId(notificationChannelController.createAndGetSilentChannel())
-                } else {
-                    builder.setSound(null)
-                    builder.setVibrate(null)
-                }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                builder.setNumber(NOTIFICATION_NUMBER)
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    notificationChannelController.createNotificationChannel(
-                        channelName = baseNotificationModel.channelName,
-                        soundFileName = baseNotificationModel.soundFileName)
-                    builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-                    builder.setNumber(1)
-                } else {
-                    setNotificationSound(builder)
-                    setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
-                }
+                notificationChannelController.setPreOreoSound(
+                    builder,
+                    baseNotificationModel.soundFileName
+                )
+                builder.priority = baseNotificationModel.priorityPreOreo
             }
-            builder.setSmallIcon(drawableIcon)
-            return builder
         }
+    }
+
+
+    /**
+     * 1. Setting Large icon to default Notification style
+     * 2. Setting Small icon to notification
+     *
+     * */
+    private fun setNotificationIcon(builder: NotificationCompat.Builder) {
+        if (baseNotificationModel.icon!!.isEmpty()) {
+            builder.setLargeIcon(bitmapLargeIcon)
+        } else {
+            builder.setLargeIcon(getBitmap(baseNotificationModel.icon))
+        }
+        builder.setSmallIcon(drawableIcon)
+    }
 
     internal val drawableIcon: Int
         get() = if (GlobalConfig.isSellerApp())
@@ -146,6 +130,7 @@ abstract class BaseNotification internal constructor(
 
     private val drawableLargeIcon: Int
         get() = GlobalConfig.LAUNCHER_ICON_RES_ID
+
     internal val bitmapLargeIcon: Bitmap
         get() = createBitmap()
 
@@ -156,7 +141,11 @@ abstract class BaseNotification internal constructor(
     private fun createBitmap(): Bitmap {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val drawable = context.resources.getDrawable(drawableLargeIcon)
-            val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val bmp = Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
             val canvas = Canvas(bmp)
             drawable.setBounds(0, 0, canvas.width, canvas.height)
             drawable.draw(canvas)
@@ -172,43 +161,19 @@ abstract class BaseNotification internal constructor(
     private val imageHeight: Int
         get() = context.resources.getDimensionPixelSize(R.dimen.cm_notif_height)
 
-    private val vibratePattern: LongArray
-        get() = longArrayOf(500, 500)
-
-    private val ringtoneUri: Uri
-        get() = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
     val requestCode: Int
         get() {
-            if (cacheHandler == null)
-                cacheHandler = CMNotificationCacheHandler(context)
-            var requestCode = cacheHandler!!.getIntValue(CM_REQUEST_CODE)
+            var requestCode = cacheHandler.getIntValue(CM_REQUEST_CODE)
             if (requestCode < 3000 || requestCode > 4000) {
                 requestCode = 3000
             }
-            cacheHandler!!.saveIntValue(CM_REQUEST_CODE, requestCode + 1)
+            cacheHandler.saveIntValue(CM_REQUEST_CODE, requestCode + 1)
             return requestCode
         }
 
-    abstract fun createNotification(): Notification?
 
-    private fun setNotificationPriorityPreOreo(builder: NotificationCompat.Builder, priority: Int) {
-        builder.priority = priority
-    }
-
-    private fun setNotificationSound(builder: NotificationCompat.Builder) {
-        if (baseNotificationModel.soundFileName != null && !baseNotificationModel.soundFileName!!.isEmpty()) {
-            val soundUri = Uri.parse("android.resource://" + context.packageName + "/" +
-                    "/raw/" + baseNotificationModel.soundFileName)
-            builder.setSound(soundUri)
-        } else {
-            builder.setSound(ringtoneUri)
-        }
-        builder.setVibrate(vibratePattern)
-    }
-
-    fun loadBitmap(url: String?) : Bitmap?{
-        if(url.isNullOrBlank())
+    fun loadBitmap(url: String?): Bitmap? {
+        if (url.isNullOrBlank())
             return null
         return try {
             Glide.with(context)
@@ -216,7 +181,7 @@ abstract class BaseNotification internal constructor(
                 .load(url)
                 .submit(imageWidth, imageHeight)
                 .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
-        }catch (e : Exception){
+        } catch (e: Exception) {
             null
         }
     }
@@ -224,10 +189,10 @@ abstract class BaseNotification internal constructor(
     override fun getBitmap(url: String?): Bitmap {
         return try {
             Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .into(imageWidth, imageHeight)
-                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+                .asBitmap()
+                .load(url)
+                .into(imageWidth, imageHeight)
+                .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -241,19 +206,21 @@ abstract class BaseNotification internal constructor(
 
     override fun loadResourceAsBitmap(resId: Int, result: (Bitmap) -> Unit) {
         Glide.with(context)
-                .asBitmap()
-                .load(resId)
-                .placeholder(resId)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        result(resource)
-                    }
-                })
+            .asBitmap()
+            .load(resId)
+            .placeholder(resId)
+            .diskCacheStrategy(DiskCacheStrategy.DATA)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    result(resource)
+                }
+            })
     }
 
-    internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, reqCode: Int): PendingIntent {
+    internal fun createMainPendingIntent(
+        baseNotificationModel: BaseNotificationModel, reqCode: Int
+    ): PendingIntent {
         var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
         intent = updateIntentWithCouponCode(baseNotificationModel, intent)
@@ -270,32 +237,43 @@ abstract class BaseNotification internal constructor(
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
 
-        fun getBaseBroadcastIntent(context: Context, baseNotificationModel: BaseNotificationModel): Intent {
+        fun getBaseBroadcastIntent(
+            context: Context,
+            baseNotificationModel: BaseNotificationModel
+        ): Intent {
             val intent = Intent(context, CMBroadcastReceiver::class.java)
-            intent.putExtra(CMConstant.EXTRA_BASE_MODEL,baseNotificationModel)
+            intent.putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
             intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
             intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
             return intent
         }
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
-                PendingIntent.getBroadcast(
-                        context,
-                        reqCode,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                )
+            PendingIntent.getBroadcast(
+                context,
+                reqCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
-        fun updateIntentWithCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
+        fun updateIntentWithCouponCode(
+            baseNotificationModel: BaseNotificationModel,
+            intent: Intent
+        ): Intent {
             baseNotificationModel.customValues?.let {
                 if (it.isNotEmpty()) {
-                    val couponCode = (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE)
-                    val gratificationId = (JSONObject(it)).optString(CMConstant.CustomValuesKeys.GRATIFICATION_ID)
+                    val couponCode =
+                        (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE)
+                    val gratificationId =
+                        (JSONObject(it)).optString(CMConstant.CustomValuesKeys.GRATIFICATION_ID)
                     if (!couponCode.isNullOrEmpty()) {
                         intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, couponCode)
                     }
                     if (!gratificationId.isNullOrEmpty()) {
-                        intent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID, gratificationId)
+                        intent.putExtra(
+                            CMConstant.CouponCodeExtra.GRATIFICATION_ID,
+                            gratificationId
+                        )
                     }
                 }
             }
