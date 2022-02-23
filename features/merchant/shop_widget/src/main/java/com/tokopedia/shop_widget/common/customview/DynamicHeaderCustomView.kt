@@ -8,9 +8,7 @@ import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
 import com.tokopedia.shop_widget.common.util.DateHelper
@@ -25,7 +23,7 @@ class DynamicHeaderCustomView: FrameLayout {
 
     companion object {
         private const val Hour24 = 24
-        private const val INVALID_TIMER_COUNTER = "-1"
+        private const val INVALID_TIMER_COUNTER = 0
     }
 
     private var listener: HeaderCustomViewListener? = null
@@ -76,7 +74,7 @@ class DynamicHeaderCustomView: FrameLayout {
     }
 
     private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String, timerCounter: String) {
-        if (subtitle.isNotBlank() && timerCounter != INVALID_TIMER_COUNTER) {
+        if (subtitle.isNotBlank() && timerCounter.toLongOrZero() > INVALID_TIMER_COUNTER) {
             tpSubtitle?.text = subtitle
             handleCountDownTimer(statusCampaign, endDate)
         } else {
