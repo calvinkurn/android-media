@@ -29,7 +29,6 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 26/01/22
  */
 class EtalaseListBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
     private val analyticManager: EtalaseListAnalyticManager,
 ) : BaseProductSetupBottomSheet() {
@@ -54,8 +53,6 @@ class EtalaseListBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)
-            .get(PlayBroProductSetupViewModel::class.java)
         setupBottomSheet()
     }
 

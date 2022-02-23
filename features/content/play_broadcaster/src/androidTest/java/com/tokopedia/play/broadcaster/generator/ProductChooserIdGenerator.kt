@@ -6,22 +6,35 @@ import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
+import com.tokopedia.play.broadcaster.helper.FileWriter
 import com.tokopedia.play.broadcaster.helper.PrintCondition
 import com.tokopedia.play.broadcaster.helper.ScreenshotTestRule
 import com.tokopedia.play.broadcaster.helper.ViewHierarchyPrinter
-import com.tokopedia.play.broadcaster.helper.FileWriter
-import com.tokopedia.play.broadcaster.R as R
+import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -29,6 +42,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -68,6 +82,30 @@ class ProductChooserIdGenerator {
 //        )
 //    )
 
+    private val campaignList = listOf(
+        CampaignUiModel(
+            id = "1",
+            title = "Campaign 1",
+            imageUrl = "",
+            startDateFmt = "",
+            endDateFmt = "",
+            status = CampaignStatusUiModel(
+                status = CampaignStatus.Ongoing,
+                text = "Berlangsung",
+            ),
+            totalProduct = 50,
+        )
+    )
+
+    private val etalaseList = listOf(
+        EtalaseUiModel(
+            id = "1",
+            imageUrl = "",
+            title = "Etalase 1",
+            totalProduct = 50,
+        )
+    )
+
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
@@ -105,6 +143,15 @@ class ProductChooserIdGenerator {
                         CoroutineDispatchersProvider,
                     )
                 )
+            },
+            EtalaseListBottomSheet::class.java to {
+                EtalaseListBottomSheet(
+                    NavigationBarColorDialogCustomizer(),
+                    EtalaseListAnalyticManager(
+                        mockk(relaxed = true),
+                        CoroutineDispatchersProvider,
+                    ),
+                )
             }
         )
     )
@@ -131,11 +178,13 @@ class ProductChooserIdGenerator {
             dataList = mockSelectedProducts,
             hasNextPage = false,
         )
+
+        coEvery { repo.getEtalaseList() } returns etalaseList
+        coEvery { repo.getCampaignList() } returns campaignList
     }
 
     @Test
-    fun testEventFragment() {
-
+    fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
             themeResId = R.style.AppTheme,
@@ -147,9 +196,64 @@ class ProductChooserIdGenerator {
             val bottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
             fileWriter.write(
-                fileName = "id_list-${dateFormatter.format(Date())}.csv",
+                fileName = "product_chooser-${dateFormatter.format(Date())}.csv",
                 text = info
             )
+        }
+    }
+
+    @Test
+    fun sortFilterBottomSheet() {
+        val scenario = launchFragment<ProductSetupFragment>(
+            factory = fragmentFactory,
+            themeResId = R.style.AppTheme,
+        )
+
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.chips_sort)).perform(click())
+
+        scenario.onFragment {
+            val chooserBottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
+            val sortBottomSheet = ProductSortBottomSheet.getFragment(chooserBottomSheet.childFragmentManager, it.requireActivity().classLoader)
+            val info = viewPrinter.printAsCSV(view = sortBottomSheet.requireView())
+            fileWriter.write(
+                fileName = "product_sort-${dateFormatter.format(Date())}.csv",
+                text = info
+            )
+        }
+    }
+
+    @Test
+    fun etalaseListBottomSheet() {
+        val scenario = launchFragment<ProductSetupFragment>(
+            factory = fragmentFactory,
+            themeResId = R.style.AppTheme,
+        )
+
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.chips_etalase)).perform(click())
+
+        scenario.onFragment {
+            val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
+            val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
+            fileWriter.write(
+                fileName = "etalase_list-${dateFormatter.format(Date())}.csv",
+                text = info
+            )
+        }
+    }
+
+    private fun waitFor(delay: Long): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isRoot()
+            override fun getDescription(): String = "wait for $delay milliseconds"
+            override fun perform(uiController: UiController, v: View?) {
+                uiController.loopMainThreadForAtLeast(delay)
+            }
         }
     }
 }
