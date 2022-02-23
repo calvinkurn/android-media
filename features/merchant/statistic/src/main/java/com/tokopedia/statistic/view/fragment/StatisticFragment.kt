@@ -669,10 +669,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
-        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
+        dateFilterBottomSheet?.setOnApplyChanges {
             setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
             applyDateRange(it)
-        }?.show()
+        }?.show(childFragmentManager)
 
         val tabName = statisticPage?.pageTitle.orEmpty()
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
