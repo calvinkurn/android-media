@@ -282,6 +282,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dateFilterBottomSheet = null
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         handleMilestoneWidgetFinishedMission(requestCode)
