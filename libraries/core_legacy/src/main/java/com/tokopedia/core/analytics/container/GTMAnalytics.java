@@ -1178,16 +1178,16 @@ public class GTMAnalytics extends ContextAnalytics {
             publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
-            trackEmbraceBreadcrumb();
+            trackEmbraceBreadcrumb(bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     private void trackEmbraceBreadcrumb(Bundle bundle) {
-        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_GTM_BREADCRUMB_CATEGORY_CONFIG);
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
         EmbraceGTMBreadcrumConfig config =
-                Gson().fromJson(logEmbraceConfigString, EmbraceGTMBreadcrumConfig.class);
+                new Gson().fromJson(logEmbraceConfigString, EmbraceGTMBreadcrumConfig.class);
         if (bundle.containsKey(KEY_CATEGORY)) {
             String eventCategoryValue = bundle.getString(KEY_CATEGORY);
             if (config.getAllowed_category().contains(eventCategoryValue)) {
