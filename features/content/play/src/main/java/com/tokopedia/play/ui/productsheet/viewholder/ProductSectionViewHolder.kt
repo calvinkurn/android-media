@@ -45,7 +45,7 @@ class ProductSectionViewHolder(
     private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
         itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
-                itemView.isVisibleOnTheScreen(onViewVisible = { listener.onProductImpressed(getVisibleVouchers(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
+                itemView.isVisibleOnTheScreen(onViewVisible = { listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
                     onViewNotVisible = {
                         itemView.viewTreeObserver.removeOnScrollChangedListener(this)
                     })
@@ -56,7 +56,7 @@ class ProductSectionViewHolder(
     private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
-            listener.onProductImpressed(getVisibleVouchers(this), sectionInfo)
+            listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
         }
     }
 
@@ -153,7 +153,7 @@ class ProductSectionViewHolder(
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
     }
 
-    fun getVisibleVouchers(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
+    private fun getVisibleProducts(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
