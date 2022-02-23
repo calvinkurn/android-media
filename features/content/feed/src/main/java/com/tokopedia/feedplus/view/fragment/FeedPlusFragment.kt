@@ -111,7 +111,6 @@ import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -1772,7 +1771,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                     .setName(title)
                     .setDescription(description)
-                    .setDesktopUrl(urlString)
+                    .setDesktopUrl(url)
                     .setType(LinkerData.FEED_TYPE)
                     .setImgUri(imageUrl)
                     .setDeepLink(url)
@@ -2294,6 +2293,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         shopId: String,
         isTopads:Boolean = false,
+        shopName: String,
         mediaType: String
     ) {
         feedAnalytics.eventonShareProductClicked(
@@ -2309,7 +2309,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
-            String.format(getString(R.string.feed_share_pdp), id.toString())
+            //set product name
+            String.format(getString(R.string.feed_share_pdp), shopName,"productName")
         } else{
             shareBottomSheetProduct = false
             url
@@ -2369,6 +2370,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.isFollowed,
                 item.shopId,
                 item.isTopads,
+                item.shopName,
                 item.mediaType
             )
         }
