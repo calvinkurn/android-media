@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.InputType
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -402,46 +403,55 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
             setupTimeTextField(startTimeTextField, endTimeTextField, opsHour)
             setupApplyToAllButton(icCopyToAll, tvCopyToAll)
-            tvCanAtcDescription?.text = OperationalHoursUtil.getClickableSpanText(
-                    fulltext = getString(R.string.shop_operational_hour_holiday_can_atc_description),
-                    keyword = getString(R.string.shop_operational_hour_read_tnc_label),
-                    clickableSpan = object : ClickableSpan() {
-                        override fun onClick(textView: View) {
-                            // go to seller education page
-                            RouteManager.route(context, String.format(
-                                    WEBVIEW_APPLINK_FORMAT,
-                                    ApplinkConst.WEBVIEW,
-                                    getString(R.string.shop_operational_hour_seller_edu_revamp)
-                            ))
-                        }
+            tvCanAtcDescription?.apply {
+                text = OperationalHoursUtil.getClickableSpanText(
+                        fulltext = getString(R.string.shop_operational_hour_holiday_can_atc_description),
+                        keyword = getString(R.string.shop_operational_hour_read_tnc_label),
+                        clickableSpan = object : ClickableSpan() {
+                            override fun onClick(textView: View) {
+                                // go to seller education page
+                                RouteManager.route(context, String.format(
+                                        WEBVIEW_APPLINK_FORMAT,
+                                        ApplinkConst.WEBVIEW,
+                                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                                ))
+                            }
 
-                        override fun updateDrawState(ds: TextPaint) {
-                            ds.isUnderlineText = false
-                            ds.typeface = Typeface.DEFAULT_BOLD
-                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                            override fun updateDrawState(ds: TextPaint) {
+                                ds.isUnderlineText = false
+                                ds.typeface = Typeface.DEFAULT_BOLD
+                                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                            }
                         }
-                    }
-            )
-            tvCannotAtcDescription?.text = OperationalHoursUtil.getClickableSpanText(
-                    fulltext = getString(R.string.shop_operational_hour_holiday_cannot_atc_description),
-                    keyword = getString(R.string.shop_operational_hour_read_tnc_label),
-                    clickableSpan = object : ClickableSpan() {
-                        override fun onClick(textView: View) {
-                            // go to seller education page
-                            RouteManager.route(context, String.format(
-                                    WEBVIEW_APPLINK_FORMAT,
-                                    ApplinkConst.WEBVIEW,
-                                    getString(R.string.shop_operational_hour_seller_edu_revamp)
-                            ))
-                        }
+                )
+                isClickable = true
+                movementMethod = LinkMovementMethod.getInstance()
+            }
 
-                        override fun updateDrawState(ds: TextPaint) {
-                            ds.isUnderlineText = false
-                            ds.typeface = Typeface.DEFAULT_BOLD
-                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            tvCannotAtcDescription?.apply {
+                text = OperationalHoursUtil.getClickableSpanText(
+                        fulltext = getString(R.string.shop_operational_hour_holiday_cannot_atc_description),
+                        keyword = getString(R.string.shop_operational_hour_read_tnc_label),
+                        clickableSpan = object : ClickableSpan() {
+                            override fun onClick(textView: View) {
+                                // go to seller education page
+                                RouteManager.route(context, String.format(
+                                        WEBVIEW_APPLINK_FORMAT,
+                                        ApplinkConst.WEBVIEW,
+                                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                                ))
+                            }
+
+                            override fun updateDrawState(ds: TextPaint) {
+                                ds.isUnderlineText = false
+                                ds.typeface = Typeface.DEFAULT_BOLD
+                                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                            }
                         }
-                    }
-            )
+                )
+                isClickable = true
+                movementMethod = LinkMovementMethod.getInstance()
+            }
 
             when (OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime, opsHour.status)) {
                 OperationalHoursUtil.ALL_DAY -> allDayRadioButton.isChecked = true
