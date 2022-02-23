@@ -3,7 +3,7 @@
     <string name="add_on_gifting_activity_add_on_label">Add on activity</string>
     <string name="add_on_gifting_activity_add_on_gallery_label">Add on gallery activity</string>
     <string name="add_on_toaster_message_failed_save_add_on">Gagal menyimpan pelengkap. Silakan coba lagi.</string>
-    <string name="add_on_bottomsheet_title">Atur pelengkap barang</string>
+    <string name="add_on_bottomsheet_title">Atur pelengkap produk</string>
     <string name="add_on_label_total_amount">Total Pelengkap Produk</string>
     <string name="add_on_label_total_amount_cta_save">Simpan</string>
     <string name="add_on_label_total_amount_cta_save_with_quantity">Simpan (%d)</string>
@@ -18,7 +18,7 @@
     <string name="add_on_label_message_pre_defined_note">Menggunakan pesan yang disediakan</string>
     <string name="add_on_label_note_filled">Pesan</string>
     <string name="add_on_label_note_empty">Tulis pesan di kartu ucapan</string>
-    <string name="add_on_label_header_product_from_toko_cabang">Eksklusif dari Tokocabang</string>
+    <string name="add_on_label_header_product_from_toko_cabang">Dilayani Tokopedia</string>
     <string name="add_on_label_header_product">Disediakan oleh %s</string>
     <string name="add_on_label_other_product">+%d Barang Lainnya</string>
 

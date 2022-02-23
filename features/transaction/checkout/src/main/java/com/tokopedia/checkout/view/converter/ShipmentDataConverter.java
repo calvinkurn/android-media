@@ -315,6 +315,7 @@ public class ShipmentDataConverter {
         cartItemModel.setProductId(product.getProductId());
         cartItemModel.setProductCatId(product.getProductCatId());
         cartItemModel.setName(product.getProductName());
+        cartItemModel.setShopName(groupShop.getShop().getShopName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
         if (product.getProductWholesalePrice() != 0) {
