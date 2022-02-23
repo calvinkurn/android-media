@@ -17,12 +17,13 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 26/01/22
  */
 class ProductSetupFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
 ) : Fragment() {
 
     private var mDataSource: DataSource? = null
 
-    private lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var productSetupViewModelProviderFactory: ViewModelProvider.Factory
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -63,7 +64,7 @@ class ProductSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(requireActivity(), getViewModelFactory())[PlayBroadcastViewModel::class.java]
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[PlayBroadcastViewModel::class.java]
 
         if (parentViewModel.productSectionList.isEmpty()) openProductChooser(ChooserSource.Preparation)
         else openProductSummary()
@@ -110,9 +111,9 @@ class ProductSetupFragment @Inject constructor(
         mDataSource = dataSource
     }
 
-    fun getViewModelFactory(): ViewModelProvider.Factory {
-        if (!::viewModelFactory.isInitialized) {
-            viewModelFactory = object : ViewModelProvider.Factory {
+    fun getProductSetupViewModelFactory(): ViewModelProvider.Factory {
+        if (!::productSetupViewModelProviderFactory.isInitialized) {
+            productSetupViewModelProviderFactory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return productSetupViewModelFactory.create(
                         mDataSource?.getProductSectionList().orEmpty()
@@ -120,7 +121,7 @@ class ProductSetupFragment @Inject constructor(
                 }
             }
         }
-        return viewModelFactory
+        return productSetupViewModelProviderFactory
     }
 
     private enum class ChooserSource {
