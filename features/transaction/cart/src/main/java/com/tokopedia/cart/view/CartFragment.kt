@@ -37,10 +37,8 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -1290,6 +1288,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onShowAllItem(appLink: String) {
         routeToApplink(appLink)
+    }
+
+    override fun onClickAddOnCart(productId: String) {
+        activity?.let {
+            // TODO: open when merge with merchant
+            // RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, productId))
+        }
+        cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun addOnImpression(productId: String) {
+        cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
