@@ -36,49 +36,6 @@ class PlaySetupProductSummaryViewModelTest {
 
     /** Summary Page */
     @Test
-    fun `when user successfully load product section, it should emit success state`() {
-
-        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
-
-        val robot = PlayBroProductSetupViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo
-        )
-
-        robot.use {
-            val state = robot.recordSummaryState{
-                robot.submitAction(ProductSetupAction.LoadProductSummary)
-            }
-
-            state.productCount.assertEqualTo(mockProductTagSectionList.sumOf { it.products.size })
-            state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Success)
-            state.productTagSectionList.assertEqualTo(mockProductTagSectionList)
-        }
-    }
-
-    @Test
-    fun `when user failed load product section, it should emit error state`() {
-
-        coEvery { mockRepo.getProductTagSummarySection(any()) } throws mockException
-
-        val robot = PlayBroProductSetupViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo
-        )
-
-        robot.use {
-            val (state, event) = robot.recordSummaryStateAndEvent{
-                robot.submitAction(ProductSetupAction.LoadProductSummary)
-            }
-
-            state.productCount.assertEqualTo(0)
-            state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
-            state.productTagSectionList.assertEqualTo(emptyList())
-            Assertions.assertTrue(event[0] is PlayBroProductChooserEvent.GetDataError)
-        }
-    }
-
-    @Test
     fun `when user successfully delete product, it should emit success state`() {
 
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
