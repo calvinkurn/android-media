@@ -10,10 +10,7 @@ import com.tokopedia.createpost.uprofile.domains.PlayPostContentUseCase
 import com.tokopedia.createpost.uprofile.domains.ProfileDoFollowUseCase
 import com.tokopedia.createpost.uprofile.domains.ProfileTheyFollowedUseCase
 import com.tokopedia.createpost.uprofile.domains.UserDetailsUseCase
-import com.tokopedia.createpost.uprofile.model.ProfileDoFollowModelBase
-import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
-import com.tokopedia.createpost.uprofile.model.ProfileIsFollowing
-import com.tokopedia.createpost.uprofile.model.UserPostModel
+import com.tokopedia.createpost.uprofile.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.Dispatchers
 
@@ -31,14 +28,14 @@ class UserProfileViewModel @Inject constructor(
     public val userDetailsLiveData = MutableLiveData<Resources<ProfileHeaderBase>>()
     public val playPostContentLiveData = MutableLiveData<Resources<UserPostModel>>()
     public val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
-    public val profileTheyFollowLiveData = MutableLiveData<Resources<ProfileIsFollowing>>()
+    public val profileTheyFollowLiveData = MutableLiveData<Resources<UserProfileIsFollow>>()
 
     public fun getUserDetails(userName: String) {
         launchCatchError(block = {
-            val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf())
+            val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
             if (data != null) {
                 userDetailsLiveData.value = Success(data.getData(ProfileHeaderBase::class.java))
-                profileTheyFollowLiveData.value = Success(data.getData(ProfileIsFollowing::class.java))
+                profileTheyFollowLiveData.value = Success(data.getData(UserProfileIsFollow::class.java))
             } else throw NullPointerException("data is null")
         }) {
         }
@@ -60,16 +57,6 @@ class UserProfileViewModel @Inject constructor(
             val data = useCaseDoFollow.doFollow(followingUserId, followStatus)
             if (data != null) {
                 profileDoFollowLiveData.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }) {
-        }
-    }
-
-    fun theyFollowed(profileIds: MutableList<String>) {
-        launchCatchError(block = {
-            val data = theyFollowedUseCase.profileTheyFollowed(profileIds)
-            if (data != null) {
-                profileTheyFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
         }) {
         }

@@ -13,7 +13,7 @@ data class ProfileUserFollowing(
 )
 
 data class ProfileIsFollowing(
-    @SerializedName("feedXProfileIsFollowing")
+    @SerializedName("isUserFollowing")
     val items: MutableList<FollowingProfile>
 )
 

@@ -127,8 +127,8 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         return ViewHolder(itemView)
     }
 
-    override fun loadData(pageNumber: Int) {
-        super.loadData(pageNumber)
+    override fun loadData(pageNumber: Int, vararg args: String?) {
+        super.loadData(pageNumber, *args)
         mPresenter.getList(pageNumber)
     }
 

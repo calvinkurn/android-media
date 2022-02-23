@@ -47,8 +47,8 @@ class MerchantCouponListAdapter(
         vh.multiShopView.setMultiShopModel(item,source)
     }
 
-    override fun loadData(currentPageIndex: Int) {
-        super.loadData(currentPageIndex)
+    override fun loadData(currentPageIndex: Int,vararg args: String?) {
+        super.loadData(currentPageIndex, *args)
         viewmodel.merchantCouponData(currentPageIndex)
     }
 

@@ -51,8 +51,8 @@ open class ProfileFollowingAdapter(
         return ViewHolder(itemView)
     }
 
-    override fun loadData(pageNumber: Int) {
-        super.loadData(pageNumber)
+    override fun loadData(pageNumber: Int, vararg args: String?) {
+        super.loadData(pageNumber, *args)
         viewModel.getFollowings(userId,cursor,10)
     }
 

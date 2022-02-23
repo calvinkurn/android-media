@@ -30,8 +30,14 @@ class UserProfileActivity : BaseSimpleActivity() {
     private fun forDeeplink() {
         bundle = intent.extras
         if (intent.data != null) {
-            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalGlobal.USER_PROFILE_LANDING, intent.data, bundle)
+            bundle = UriUtil.destructiveUriBundle(
+                ApplinkConstInternalGlobal.USER_PROFILE_LANDING,
+                intent.data,
+                bundle
+            )
         }
+
+        bundle?.putString(EXTRA_USERNAME, intent.data?.pathSegments?.get(0))
     }
 
     override fun getNewFragment(): Fragment? {
@@ -39,7 +45,10 @@ class UserProfileActivity : BaseSimpleActivity() {
         return if (userSession.isLoggedIn) {
             UserProfileFragment.newInstance(bundle ?: Bundle())
         } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            startActivityForResult(
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
             null
         }
     }
@@ -49,7 +58,7 @@ class UserProfileActivity : BaseSimpleActivity() {
     }
 
     companion object {
-
+        val EXTRA_USERNAME = "userName"
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, UserProfileActivity::class.java)
             intent.putExtras(extras)

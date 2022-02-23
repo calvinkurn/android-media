@@ -23,9 +23,9 @@ import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.Profile
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
-import com.tokopedia.createpost.uprofile.model.ProfileIsFollowing
 import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
+import com.tokopedia.createpost.uprofile.views.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.header.HeaderUnify
@@ -87,9 +87,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         landedUserName = requireArguments().getString(EXTRA_USERNAME)
 
         landedUserName?.let {
-            initUserPost()
             mPresenter.getUserDetails(it)
-            mPresenter.getUPlayVideos(VAL_FEEDS_PROFILE, "", VAL_SOURCE_BUYER, it)
             userSession = UserSession(context)
         }
     }
@@ -106,19 +104,20 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
     }
 
-    private fun initUserPost() {
+    private fun initUserPost(userId: String) {
         val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
         postRv?.layoutManager = GridLayoutManager(activity, 2)
         postRv?.addItemDecoration(PostItemDecoration(convertDpToPixel(8F, requireContext())))
         postRv?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading()
+        mAdapter.startDataLoading(userId)
     }
 
     private fun initObserver() {
         addUserProfileObserver()
         addListObserver()
         addDoFollowedObserver()
+        addTheyFollowedObserver()
     }
 
     private fun addUserProfileObserver() =
@@ -208,10 +207,12 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun addDoFollowClickListener(userId: String) = View.OnClickListener {
-        mPresenter.doFollow(userId, idFollowed)
+        mPresenter.doFollow(userId, !idFollowed)
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
+        initUserPost(data.profileHeader.profile.userID)
+
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
         val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
         val textDisplayName = view?.findViewById<TextView>(R.id.text_display_name)
@@ -229,17 +230,22 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         setProfileImg(data.profileHeader.profile)
     }
 
-    private fun setActionButton(followProfile: ProfileIsFollowing) {
+    private fun setActionButton(followProfile: UserProfileIsFollow) {
         val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
 
-        if (followProfile.items[0].userID == userSession?.userId) {
+        if (followProfile.profileHeader.items[0].userID == userSession?.userId) {
             btnAction?.text = "Ubah Profil"
             btnAction?.buttonVariant = UnifyButton.Variant.GHOST
             btnAction?.buttonType = UnifyButton.Type.ALTERNATE
 
-            btnAction?.setOnClickListener(addProfileClickListener("applink", followProfile.items[0].userID))
+            btnAction?.setOnClickListener(
+                addProfileClickListener(
+                    "applink",
+                    followProfile.profileHeader.items[0].userID
+                )
+            )
         } else {
-            idFollowed = followProfile.items[0].status
+            idFollowed = followProfile.profileHeader.items[0].status
             if (idFollowed) {
                 btnAction?.text = "Following"
                 btnAction?.buttonVariant = UnifyButton.Variant.GHOST
@@ -250,14 +256,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 btnAction?.buttonType = UnifyButton.Type.MAIN
             }
 
-            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.items[0].userID))
+            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].userID))
         }
     }
 
     private fun setProfileImg(profile: Profile) {
         if (profile == null
             || profile.liveplaychannel == null
-            || !URLUtil.isValidUrl(profile.imageCover)
             || profile.liveplaychannel.liveplaychannellink == null
         ) {
             return
@@ -277,7 +282,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             textLive?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
             imgProfile?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
         } else {
-            viewLiveRing?.hide()
+            viewLiveRing?.visibility = View.INVISIBLE
             textLive?.hide()
 
             textLive?.setOnClickListener(null)
@@ -337,16 +342,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 startActivity(Intent(activity, FollowerFollowingListingActivity::class.java))
             }
 
-            R.id.text_live, R.id.img_profile_image, R.id.view_profile_outer_ring -> {
-                Toast.makeText(context, "Profile image", Toast.LENGTH_SHORT).show()
-            }
-
             R.id.text_see_more -> {
                 Toast.makeText(context, "See All", Toast.LENGTH_SHORT).show()
-            }
-
-            R.id.btn_action_follow -> {
-                Toast.makeText(context, "Follow/Unfollow", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -386,7 +383,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     companion object {
-        const val EXTRA_USERNAME = "userName"
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
 

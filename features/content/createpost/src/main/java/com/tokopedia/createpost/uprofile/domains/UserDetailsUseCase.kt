@@ -2,7 +2,7 @@ package com.tokopedia.createpost.uprofile.domains
 
 import com.tokopedia.createpost.uprofile.model.FeedXProfileHeader
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
-import com.tokopedia.createpost.uprofile.model.ProfileIsFollowing
+import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -18,8 +18,8 @@ class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUse
         )
 
         val request2 = GraphqlRequest(
-            getQuery(),
-            ProfileIsFollowing::class.java,
+            getQueryTheyFollowed(),
+            UserProfileIsFollow::class.java,
             getRequestParams(profileId)
         )
 

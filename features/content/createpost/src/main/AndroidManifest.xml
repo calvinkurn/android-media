@@ -67,8 +67,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:path="@string/up_path_user_profile_landing"
+                    android:host="@string/host_profile"
+                    android:pathPattern="@string/path_profile_detail"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

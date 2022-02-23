@@ -13,6 +13,8 @@ import com.tokopedia.createpost.uprofile.model.PlayPostContent
 import com.tokopedia.createpost.uprofile.model.PlayPostContentItem
 import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
@@ -49,9 +51,9 @@ open class UserPostBaseAdapter(
         return ViewHolder(itemView)
     }
 
-    override fun loadData(pageNumber: Int) {
-        super.loadData(pageNumber)
-        viewModel.getUPlayVideos( "feeds-profile",cursor,"buyer","5510248")
+    override fun loadData(currentPageIndex: Int, vararg args: String?) {
+        super.loadData(currentPageIndex, *args)
+        args[0]?.let { viewModel.getUPlayVideos(VAL_FEEDS_PROFILE, cursor, VAL_SOURCE_BUYER, it) }
     }
 
     fun onSuccess(data: UserPostModel) {
@@ -72,7 +74,7 @@ open class UserPostBaseAdapter(
         holder.textLiveCount.text = item.stats.view.formatted
 
         holder.itemView.setOnClickListener { v ->
-           RouteManager.route(itemContext, item.appLink)
+            RouteManager.route(itemContext, item.appLink)
         }
     }
 

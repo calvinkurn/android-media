@@ -245,6 +245,21 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     }
 
     /**
+     * Method to invoke page loading
+     */
+    public final void startDataLoading(String ... args) {
+        if (mCallback != null) {
+            if (mCurrentPageIndex == 1) {
+                mCallback.onStartFirstPageLoad();
+            } else {
+                mCallback.onStartPageLoad(mCurrentPageIndex);
+            }
+        }
+
+        loadData(mCurrentPageIndex, args);
+    }
+
+    /**
      * <b>PLEASE DO NOT OVERRIDE<b/>
      *
      * @param parent   Parent view
@@ -310,7 +325,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      * @param currentPageIndex
      */
     @CallSuper
-    public void loadData(int currentPageIndex) {
+    public void loadData(int currentPageIndex, String ... args) {
         setLoading(true);
     }
 
