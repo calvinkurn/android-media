@@ -18,7 +18,8 @@ class PlayProductTagUiMapper @Inject constructor() {
         productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
-        config = mapConfig(input)
+        config = mapConfig(input),
+        id = input.id,
     )
 
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
@@ -56,7 +57,7 @@ class PlayProductTagUiMapper @Inject constructor() {
                     if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
-                applink = input.appLink
+                applink = input.appLink,
         )
     }
 }

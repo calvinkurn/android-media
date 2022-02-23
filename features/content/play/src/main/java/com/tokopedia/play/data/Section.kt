@@ -30,6 +30,9 @@ data class Section (
     @SerializedName("countdown")
     val countdown: Countdown = Countdown(),
 
+    @SerializedName("sourceID")
+    val id: String = "",
+
 ){
     data class Background(
         @SerializedName("gradient")

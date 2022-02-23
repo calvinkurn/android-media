@@ -46,7 +46,8 @@ sealed class ProductSectionUiModel {
 
     data class Section(
         val productList: List<PlayProductUiModel.Product>,
-        val config: ConfigUiModel
+        val config: ConfigUiModel,
+        val id: String
     ): ProductSectionUiModel() {
 
         data class ConfigUiModel(
@@ -57,7 +58,19 @@ sealed class ProductSectionUiModel {
             val endTime: String, // RFC3339
             val timerInfo: String,
             val background: BackgroundUiModel
-        )
+        ){
+            companion object{
+                val Empty: Section
+                    get() = Section(
+                        productList = emptyList(),
+                        config = ConfigUiModel(
+                            type = ProductSectionType.Unknown, title = "", startTime = "", timerInfo = "", serverTime = "", background = BackgroundUiModel(
+                                gradients = emptyList(), imageUrl = ""
+                            ), endTime = ""),
+                        id = ""
+                    )
+            }
+        }
 
         data class BackgroundUiModel(
             val gradients: List<String>,
@@ -79,7 +92,8 @@ sealed class ProductSectionUiModel {
                             emptyList(),
                             ""
                         )
-                    )
+                    ),
+                    id = ""
                 )
         }
     }
