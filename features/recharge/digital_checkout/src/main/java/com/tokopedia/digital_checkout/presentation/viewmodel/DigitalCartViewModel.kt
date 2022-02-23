@@ -435,7 +435,7 @@ class DigitalCartViewModel @Inject constructor(
 
                 }) {
                     _showLoading.postValue(false)
-                    if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                    if (it is ResponseErrorException) {
                         _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
                     } else _errorThrowable.postValue(Fail(it))
                 }
