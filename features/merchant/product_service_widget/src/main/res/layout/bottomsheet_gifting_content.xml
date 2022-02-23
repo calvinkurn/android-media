@@ -87,7 +87,7 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.gifting.presentation.customview.SpannableTypography
-        android:id="@+id/text_tips_4s"
+        android:id="@+id/text_tips_1_footnote_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
@@ -96,7 +96,20 @@
         app:layout_constraintEnd_toEndOf="@+id/card_add_on"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
         app:layout_constraintTop_toBottomOf="@+id/card_add_on"
-        app:spannable_text="@string/gifting_tips_detail"
+        app:spannable_text="@string/gifting_tips_footnote1"
+        app:spannable_use_small_text="true" />
+
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
+        android:id="@+id/text_tips_1_footnote_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="4dp"
+        android:alpha="0.68"
+        app:layout_constraintEnd_toEndOf="@+id/card_add_on"
+        app:layout_constraintStart_toEndOf="@+id/number_tips_1"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_1_footnote_1"
+        app:spannable_text="@string/gifting_tips_footnote2"
         app:spannable_use_small_text="true" />
 
     <com.tokopedia.gifting.presentation.customview.NumberView
@@ -116,7 +129,7 @@
         android:layout_marginTop="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
-        app:layout_constraintTop_toBottomOf="@+id/text_tips_4s"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_1_footnote_2"
         app:spannable_text="@string/gifting_tips_text_2" />
 
     <com.tokopedia.unifycomponents.DividerUnify

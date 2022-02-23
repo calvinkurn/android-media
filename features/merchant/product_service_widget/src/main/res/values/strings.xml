@@ -4,8 +4,9 @@
     <string name="gifting_title_bottomsheet">Cara kirim sebagai hadiah</string>
     <string name="gifting_tips_text_1"><![CDATA[Di halaman Pengiriman atau Beli Langsung, klik <b>Kirim sebagai Hadiah</b> untuk pilih pelengkap (opsional).]]></string>
     <string name="gifting_tips_text_2"><![CDATA[Kalau kamu memilih kartu ucapan, jangan lupa tuliskan pesan spesialmu.]]></string>
-    <string name="gifting_title_tips_text"><![CDATA[Kamu bisa <b>kirim barang sebagai hadiah</b> dengan langkah-langkah ini:]]></string>
-    <string name="gifting_tips_detail"> <![CDATA[<i>*Invoice tidak dikirim ke penerima pesanan</i>]]></string>
+    <string name="gifting_title_tips_text"><![CDATA[Ikuti langkah-langkah ini:]]></string>
+    <string name="gifting_tips_footnote1"> <![CDATA[*Invoice tidak dikirim ke penerima pesanan.]]></string>
+    <string name="gifting_tips_footnote2"> <![CDATA[*Pelengkap tidak tersedia untuk Paket Bundling.]]></string>
     <string name="gifting_shop_caption">Disediakan oleh</string>
     <string name="gifting_shop_location">Tersedia di wilayah tertentu. <![CDATA[<font color=\'#42b549\'><b>Info Selengkapnya</b></font>]]>.</string>
 
