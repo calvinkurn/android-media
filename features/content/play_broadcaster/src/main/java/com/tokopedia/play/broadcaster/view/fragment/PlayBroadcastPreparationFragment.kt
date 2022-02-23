@@ -87,10 +87,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Lifecycle */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
