@@ -682,23 +682,35 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun onSelectedHolidayStartDate(date: Date) {
         selectedStartDate = OperationalHoursUtil.setDefaultServerTimeForSelectedDate(date)
-        startDateTextField?.textFieldInput?.setText(getString(
-                R.string.shop_operational_hour_selected_holiday_date_text,
-                OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
-                OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
-        ))
-        endDateTextField?.textFieldInput?.text?.clear()
-        endDateTextField?.textFieldInput?.requestFocus()
+        startDateTextField?.textFieldInput?.apply {
+            setText(getString(
+                    R.string.shop_operational_hour_selected_holiday_date_text,
+                    OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
+                    OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
+            ))
+            isFocusable = false
+            isFocusableInTouchMode = false
+        }
+        endDateTextField?.textFieldInput?.apply {
+            text.clear()
+            isFocusable = true
+            isFocusableInTouchMode = true
+            requestFocus()
+        }
     }
 
     private fun onSelectedHolidayEndDate(date: Date) {
         selectedEndDate = OperationalHoursUtil.setDefaultServerTimeForSelectedDate(date)
-        endDateTextField?.textFieldInput?.setText(getString(
-                R.string.shop_operational_hour_selected_holiday_date_text,
-                OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
-                OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
-        ))
-        endDateTextField?.textFieldInput?.clearFocus()
+        endDateTextField?.textFieldInput?.apply {
+            setText(getString(
+                    R.string.shop_operational_hour_selected_holiday_date_text,
+                    OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
+                    OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
+            ))
+            clearFocus()
+            isFocusable = false
+            isFocusableInTouchMode = false
+        }
     }
 
     private fun resetSelectedDates(isActionEdit: Boolean) {
