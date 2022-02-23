@@ -35,8 +35,6 @@ class PartialProductItemViewHolder(
         itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
     private val itemBomDetailProductViewStub =
         itemView?.findViewById<View>(R.id.itemBomDetailProductViewStub)
-    private val btnBuyerOrderDetailBuyProductAgain =
-        itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
 
     private val context = itemView?.context
 
@@ -84,25 +82,8 @@ class PartialProductItemViewHolder(
         }
     }
 
-    private fun onActionButtonClicked() {
-        when (element.button.key) {
-            BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
-            BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
-        }
-    }
-
-    private fun addToCart() {
-        listener.onBuyAgainButtonClicked(element)
-    }
-
-    private fun seeSimilarProducts() {
-        navigator.openAppLink(element.button.url, false)
-        BuyerOrderDetailTracker.eventClickSimilarProduct(element.orderStatusId, element.orderId)
-    }
-
     private fun setupClickListeners() {
         itemBomDetailProductViewStub?.setOnClickListener(this)
-        btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this)
     }
 
     private fun setupProductName(productName: String) {
@@ -134,6 +115,25 @@ class PartialProductItemViewHolder(
                 }
             }
         }
+    }
+
+    private fun onActionButtonClicked() {
+        when (element.button.key) {
+            BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
+            BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
+        }
+    }
+
+    private fun addToCart() {
+        listener.onBuyAgainButtonClicked(element)
+    }
+
+    private fun seeSimilarProducts() {
+        navigator.openAppLink(element.button.url, false)
+        BuyerOrderDetailTracker.eventClickSimilarProduct(
+            element.orderStatusId,
+            element.orderId
+        )
     }
 
     override fun onClick(v: View?) {

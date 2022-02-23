@@ -5,8 +5,6 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
-import com.tokopedia.buyerorderdetail.domain.models.AddonInfo
-import com.tokopedia.buyerorderdetail.domain.models.Details
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -71,8 +69,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun getAddonsSectionProductLevel(
-        details: Details,
-        addonSummary: Details.NonBundle.AddonSummary?
+        details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
+        addonSummary: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.AddonSummary?
     ): AddonsListUiModel {
         return AddonsListUiModel(
             addonsTitle = details.addonLabel,
@@ -97,7 +95,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun getAddonsSectionOrderLevel(
-        addonInfo: AddonInfo?
+        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?
     ): AddonsListUiModel? {
         return if (addonInfo != null) {
             AddonsListUiModel(
@@ -105,6 +103,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 addonsLogoUrl = addonInfo.iconUrl,
                 totalPriceText = addonInfo.orderLevel?.totalPriceStr.orEmpty(),
                 addonsItemList = addonInfo.orderLevel?.addons?.map {
+                    val addonNote = it.metadata?.addonNote
                     AddonsListUiModel.AddonItemUiModel(
                         priceText = it.priceStr,
                         addOnsName = it.name,
@@ -112,10 +111,10 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                         addonsId = it.id,
                         quantity = it.quantity,
                         addOnsThumbnailUrl = it.imageUrl,
-                        isCustomNote = it.metadata?.addonNote?.isCustomNote.orFalse(),
-                        toStr = it.metadata?.addonNote?.to.orEmpty(),
-                        fromStr = it.metadata?.addonNote?.from.orEmpty(),
-                        message = it.metadata?.addonNote?.notes.orEmpty()
+                        isCustomNote = addonNote?.isCustomNote.orFalse(),
+                        toStr = addonNote?.to.orEmpty(),
+                        fromStr = addonNote?.from.orEmpty(),
+                        message = addonNote?.notes.orEmpty()
                     )
                 }.orEmpty()
             )
@@ -124,7 +123,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     private fun mapToRecommendationWidgetUiModel(
         adsPageName: String,
-        productsList: List<Details.NonBundle>
+        productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle>
     ): PGRecommendationWidgetUiModel {
         val productIdList = arrayListOf<String>()
         productsList.forEach { product ->
@@ -181,10 +180,10 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProductListUiModel(
-        details: Details?,
+        details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details?,
         bundleIcon: String,
         shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop,
-        addonInfo: AddonInfo?,
+        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         orderId: String,
         orderStatusId: String
     ): ProductListUiModel {
@@ -246,22 +245,22 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
     }
 
-    private fun mapActionButton(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button): ActionButtonsUiModel.ActionButton {
+    private fun mapActionButton(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button?): ActionButtonsUiModel.ActionButton {
         return ActionButtonsUiModel.ActionButton(
-            key = button.key,
-            label = button.displayName,
-            popUp = mapPopUp(button.popup),
-            variant = button.variant,
-            type = button.type,
-            url = button.url
+            key = button?.key.orEmpty(),
+            label = button?.displayName.orEmpty(),
+            popUp = mapPopUp(button?.popup),
+            variant = button?.variant.orEmpty(),
+            type = button?.type.orEmpty(),
+            url = button?.url.orEmpty()
         )
     }
 
-    private fun mapPopUp(popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup): ActionButtonsUiModel.ActionButton.PopUp {
+    private fun mapPopUp(popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup?): ActionButtonsUiModel.ActionButton.PopUp {
         return ActionButtonsUiModel.ActionButton.PopUp(
-            actionButton = mapPopUpButtons(popup.actionButton),
-            body = popup.body,
-            title = popup.title
+            actionButton = mapPopUpButtons(popup?.actionButton.orEmpty()),
+            body = popup?.body.orEmpty(),
+            title = popup?.title.orEmpty()
         )
     }
 
@@ -405,7 +404,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProductList(
-        details: Details,
+        details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
         orderId: String,
         orderStatusId: String
     ): List<ProductListUiModel.ProductUiModel> {
@@ -414,7 +413,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 details,
                 it,
                 it.addonSummary,
-                it.button ?: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button(),
                 orderId,
                 orderStatusId
             )
@@ -422,7 +420,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProductBundleItem(
-        product: Details.Bundle.OrderDetail,
+        product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle.OrderDetail,
         orderId: String,
         orderStatusId: String
     ): ProductListUiModel.ProductUiModel {
@@ -446,15 +444,14 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProduct(
-        details: Details,
-        product: Details.NonBundle,
-        addonSummary: Details.NonBundle.AddonSummary?,
-        button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button,
+        details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
+        product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle,
+        addonSummary: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.AddonSummary?,
         orderId: String,
         orderStatusId: String
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
-            button = mapActionButton(button),
+            button = mapActionButton(product.button),
             category = product.category,
             categoryId = product.categoryId,
             orderDetailId = product.orderDetailId,
@@ -474,7 +471,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProductBundle(
-        bundleDetail: List<Details.Bundle>?,
+        bundleDetail: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle>?,
         bundleIcon: String,
         orderId: String,
         orderStatusId: String

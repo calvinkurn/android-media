@@ -25,11 +25,9 @@ open class ProductViewHolder(
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
 
-    private val ivBuyerOrderDetailProductThumbnail =
-        itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailProductThumbnail)
+    private var ivBuyerOrderDetailProductThumbnail: ImageUnify? = null
 
-    protected val btnBuyerOrderDetailBuyProductAgain =
-        itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
+    protected var btnBuyerOrderDetailBuyProductAgain: UnifyButton? = null
 
     private var element: ProductListUiModel.ProductUiModel? = null
 
@@ -43,8 +41,8 @@ open class ProductViewHolder(
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
-            setupProductList(element)
-            setupAddonSection(element.addonsListUiModel)
+            setupProductList(it)
+            setupAddonSection(it.addonsListUiModel)
         }
     }
 
@@ -67,13 +65,22 @@ open class ProductViewHolder(
         super.bind(element, payloads)
     }
 
-    private fun setupProductList(element: ProductListUiModel.ProductUiModel) {
+    private fun setupProductList(item: ProductListUiModel.ProductUiModel) {
+        inflateViewStub()
+        partialProductItemViewHolder = PartialProductItemViewHolder(itemView, listener, navigator, item)
+        setupProductThumbnail(item.productThumbnailUrl)
+        setupButton(item.button, item.isProcessing)
+    }
+
+    private fun inflateViewStub() {
         val productListViewStub: View = itemView.findViewById(R.id.itemBomDetailProductViewStub)
-        if (productListViewStub is ViewStub) productListViewStub.inflate() else productListViewStub.show()
-        partialProductItemViewHolder =
-            PartialProductItemViewHolder(itemView, listener, navigator, element)
-        setupProductThumbnail(element.productThumbnailUrl)
-        setupButton(element.button, element.isProcessing)
+        if (productListViewStub is ViewStub) {
+            val viewStub = productListViewStub.inflate()
+            ivBuyerOrderDetailProductThumbnail = viewStub.findViewById(R.id.ivBuyerOrderDetailProductThumbnail)
+            btnBuyerOrderDetailBuyProductAgain = viewStub.findViewById(R.id.btnBuyerOrderDetailBuyProductAgain)
+        } else {
+            productListViewStub.show()
+        }
     }
 
     private fun setupAddonSection(addonsListUiModel: AddonsListUiModel?) {
