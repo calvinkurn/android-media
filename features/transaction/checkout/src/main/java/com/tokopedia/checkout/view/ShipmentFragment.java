@@ -3311,19 +3311,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 availableBottomSheetData.setShopName(cartItemModel.getShopName());
 
                 ArrayList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listProduct = new ArrayList<>();
-                if (!addOnBottomSheetModel.getProducts().isEmpty()) {
-                    for (AddOnProductItemModel addOnProductItemModel : addOnBottomSheetModel.getProducts()) {
-                        com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
-                        product.setCartId(String.valueOf(cartItemModel.getCartId()));
-                        product.setProductId(String.valueOf(cartItemModel.getProductId()));
-                        product.setProductName(addOnProductItemModel.getProductName());
-                        product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
-                        product.setProductQuantity(cartItemModel.getQuantity());
-                        product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
-                        product.setProductParentId(cartItemModel.getVariantParentId());
-                        listProduct.add(product);
-                    }
-                }
+                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
+                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
+                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
+                    product.setProductName(cartItemModel.getName());
+                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
+                    product.setProductQuantity(cartItemModel.getQuantity());
+                    product.setProductImageUrl(cartItemModel.getImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
+                    listProduct.add(product);
                 availableBottomSheetData.setProducts(listProduct);
 
                 if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
