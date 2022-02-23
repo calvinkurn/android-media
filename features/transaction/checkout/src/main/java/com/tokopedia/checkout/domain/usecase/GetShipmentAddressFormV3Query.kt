@@ -278,6 +278,9 @@ fun getQueryShipmentAddressFormV3(): String {
                         protection_opt_in
                         protection_checkbox_disabled
                       }
+                      product_variants {
+                        parent_id
+                      }
                       product_tracker_data {
                         attribution
                         tracker_list_name

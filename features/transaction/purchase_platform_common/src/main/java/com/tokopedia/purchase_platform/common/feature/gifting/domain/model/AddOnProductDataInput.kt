@@ -30,7 +30,8 @@ data class Product(
         var productName: String = "",
         var productImageUrl: String = "",
         var productPrice: Long = 0,
-        var productQuantity: Int = 0
+        var productQuantity: Int = 0,
+        var productParentId: String = ""
 ) : Parcelable
 
 @Parcelize
