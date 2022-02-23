@@ -69,17 +69,9 @@ class ProductSectionViewHolder(
         tvTimerInfo.text = item.config.timerInfo
 
         when (item.config.type) {
-            ProductSectionType.Active -> {
+            ProductSectionType.Active, ProductSectionType.Upcoming -> {
                 tvTimerInfo.show()
                 timerSection.show()
-                timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
-                setupBackground(item.config.background)
-                setupTimer(item)
-            }
-            ProductSectionType.Upcoming -> {
-                tvTimerInfo.show()
-                timerSection.show()
-                timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
                 setupBackground(item.config.background)
                 setupTimer(item)
             }
@@ -112,6 +104,8 @@ class ProductSectionViewHolder(
 
     private fun setupTimer(item : ProductSectionUiModel.Section) {
         timerTime = if(item.config.type == ProductSectionType.Active) item.config.endTime else item.config.startTime
+
+        timerSection.timerVariant = if(item.config.type == ProductSectionType.Active) TimerUnifySingle.VARIANT_MAIN else TimerUnifySingle.VARIANT_INFORMATIVE
 
         val convertedServerTime = item.config.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val convertedTimerTime = timerTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
