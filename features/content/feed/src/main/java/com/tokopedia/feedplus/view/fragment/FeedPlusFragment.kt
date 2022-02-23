@@ -2310,7 +2310,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
             //set product name
-            String.format(getString(R.string.feed_share_pdp), shopName,"productName")
+            String.format(getString(R.string.feed_share_pdp), shopName.toLowerCase().replace("_",""),title.toLowerCase().replace(" ","-"))
         } else{
             shareBottomSheetProduct = false
             url
