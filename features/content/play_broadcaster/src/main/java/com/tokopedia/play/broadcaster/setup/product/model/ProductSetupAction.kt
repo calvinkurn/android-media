@@ -19,6 +19,6 @@ sealed class ProductSetupAction {
     ) : ProductSetupAction()
     data class SearchProduct(val keyword: String) : ProductSetupAction()
     object SaveProducts : ProductSetupAction()
+
     data class DeleteSelectedProduct(val product: ProductUiModel) : ProductSetupAction()
-    object LoadProductSummary : ProductSetupAction()
 }

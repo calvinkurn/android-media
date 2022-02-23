@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,6 +17,8 @@ import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
 import kotlinx.coroutines.*
 
 /**
@@ -121,7 +124,14 @@ class TitleFormView : ConstraintLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        binding.root.requestApplyInsetsWhenAttached()
+        binding.icCloseTitleForm.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {

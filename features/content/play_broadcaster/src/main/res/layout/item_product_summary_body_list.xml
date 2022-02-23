@@ -13,8 +13,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product_summary_image"
-            android:layout_width="@dimen/layout_lvl7"
-            android:layout_height="@dimen/layout_lvl7"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl8"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -134,6 +134,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:icon_name="DELETE"
+            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_product_summary_name"
             app:layout_constraintTop_toBottomOf="@id/tv_product_summary_price" />

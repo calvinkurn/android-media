@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted productSectionList: List<ProductTagSectionUiModel>,
+    @Assisted private val productSectionList: List<ProductTagSectionUiModel>,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
@@ -71,8 +71,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private val _selectedProductSectionList = MutableStateFlow(productSectionList)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
-    private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
-    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
+    private val _productTagSectionList = MutableStateFlow(productSectionList)
+    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Success)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
     private val _config = MutableStateFlow(
         ProductSetupConfig(shopName = userSession.shopName, maxProduct = configStore.getMaxProduct())
@@ -162,7 +162,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
             ProductSetupAction.SaveProducts -> handleSaveProducts()
-            is ProductSetupAction.LoadProductSummary -> handleLoadProductSummary()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
     }
@@ -334,6 +333,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     section.products.map { it.id }
                 },
             )
+
+            getProductTagSummary()
+
             _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
         }) {
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
@@ -347,21 +349,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
-    private fun handleLoadProductSummary() {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
-
-            getProductTagSummary()
-        }) {
-            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
-            _uiEvent.emit(
-                PlayBroProductChooserEvent.GetDataError(it) {
-                    submitAction(ProductSetupAction.LoadProductSummary)
-                }
-            )
-        }
-    }
-
     private fun handleDeleteProduct(product: ProductUiModel) {
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
