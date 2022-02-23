@@ -45,6 +45,7 @@ class CatalogForYouContainerViewHolder(private val view : View,
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var recyclerView : RecyclerView? = null
     private val firstPage = 1
+    private val rowLimit = 10
 
     companion object {
         val LAYOUT = R.layout.item_catalog_for_you_container
@@ -54,8 +55,13 @@ class CatalogForYouContainerViewHolder(private val view : View,
         catalogForYouViewModel = ViewModelProviders.of(lifecycleOwner).get(CatalogForYouViewModel::class.java)
         setUpRecyclerView(itemView)
         setObservers()
-        makeApiCall(firstPage)
-   }
+        if(!initialApiCall())
+            makeApiCall(catalogForYouViewModel?.page ?: firstPage)
+    }
+
+    private fun initialApiCall() : Boolean {
+        return catalogForYouViewModel?.lastScrollIndex ?: 0 < catalogForYouViewModel?.getLoadedItemsSize() ?: 0
+    }
 
     private fun setUpRecyclerView(view : View) {
         view.findViewById<RecyclerView>(R.id.catalog_for_you_rv)?.let { rV ->
@@ -65,6 +71,10 @@ class CatalogForYouContainerViewHolder(private val view : View,
                 loadMoreTriggerListener = getEndlessRecyclerViewListener(myLayoutManger)
                 adapter = catalogDetailAdapter
                 loadMoreTriggerListener?.let { addOnScrollListener(it) }
+                if(catalogForYouViewModel?.lastScrollIndex ?: 0 > 0){
+                    (layoutManager as? LinearLayoutManager)?.scrollToPosition(
+                        catalogForYouViewModel?.lastScrollIndex ?: 0)
+                }
             }
         }
     }
@@ -120,9 +130,13 @@ class CatalogForYouContainerViewHolder(private val view : View,
     }
 
     private fun makeApiCall(page : Int) {
-        catalogForYouViewModel?.getComparisonProducts("",
-            catalogId,brand,
-            categoryId, 10 ,page,"")
+        if(catalogForYouViewModel?.isLoading == false) {
+            catalogForYouViewModel?.getComparisonProducts(
+                "",
+                catalogId, brand,
+                categoryId, rowLimit, page, ""
+            )
+        }
     }
 
     override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
@@ -133,8 +147,16 @@ class CatalogForYouContainerViewHolder(private val view : View,
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if(hasNextPage)
-                    makeApiCall(page)
+                    makeApiCall(catalogForYouViewModel?.page ?: firstPage)
             }
         }
+    }
+
+    fun removeObservers(){
+        catalogForYouViewModel?.lastScrollIndex = (recyclerView?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: 0
+        catalogForYouViewModel?.getDataItems()?.removeObservers(lifecycleOwner)
+        catalogForYouViewModel?.getHasMoreItems()?.removeObservers(lifecycleOwner)
+        catalogForYouViewModel?.getError()?.removeObservers(lifecycleOwner)
+        catalogForYouViewModel?.getShimmerData()?.removeObservers(lifecycleOwner)
     }
 }

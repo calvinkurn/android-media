@@ -173,7 +173,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun setUpAdapter() {
         activity?.let {
             catalogTypeFactory = CatalogTypeFactoryImpl(this,
-                catalogId,categoryId,brand, it)
+                viewModel.catalogId,viewModel.categoryId,viewModel.brand, it)
             productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
         }
         productNavListAdapter?.changeListView()

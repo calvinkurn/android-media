@@ -163,9 +163,6 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
-        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
-            setUpBottomSheet()
-        }
         setUpUniversalShare()
     }
 
@@ -320,6 +317,9 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun updateUi() {
+        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
+            setUpBottomSheet()
+        }
         hideShimmer()
         catalogPageRecyclerView?.show()
         bottom_sheet_fragment_container.show()

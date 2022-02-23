@@ -14,6 +14,7 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.viewholder.containers.CatalogProductsContainerViewHolder
+import com.tokopedia.catalog.viewholder.products.CatalogForYouContainerViewHolder
 
 class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener, val catalogId: String ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
@@ -59,6 +60,8 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.showFloatingLayout()
+        }else if(holder is CatalogForYouContainerViewHolder){
+            holder.removeObservers()
         }
         super.onViewDetachedFromWindow(holder)
     }

@@ -22,19 +22,25 @@ class CatalogForYouViewModel : BaseViewModel() {
     private var hasMoreItems = MutableLiveData<Boolean>()
     private var error = MutableLiveData<Throwable>()
     private val pageFirst = 1
+    var page = 1
+    var lastScrollIndex = 0
+    var isLoading = false
 
     val catalogComparisonProductUseCase =  CatalogComparisonProductUseCase(CatalogComparisonProductRepository())
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : Int, name : String) {
+        isLoading = true
         addShimmer(page)
         viewModelScope.launchCatchError(block = {
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page.toString(),name)
             removeShimmer()
             processResult(recommendedCatalogId, result)
+            isLoading = false
         }, onError = {
             it.printStackTrace()
             error.value = it
+            isLoading = false
         })
     }
 
@@ -48,6 +54,7 @@ class CatalogForYouViewModel : BaseViewModel() {
                     addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
                     dataList.value = masterDataList
                     hasMoreItems.value = true
+                    page ++
                 }
             }
 
@@ -88,6 +95,10 @@ class CatalogForYouViewModel : BaseViewModel() {
     private fun removeShimmer() {
         masterDataList.removeAll(shimmerList)
         shimmerList.clear()
+    }
+
+    fun getLoadedItemsSize() : Int{
+        return dataList.value?.size ?: 0
     }
 
 
