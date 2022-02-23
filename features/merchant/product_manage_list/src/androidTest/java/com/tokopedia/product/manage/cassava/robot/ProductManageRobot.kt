@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -13,16 +12,12 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 class ProductManageRobot {
 
@@ -69,11 +64,6 @@ class ProductManageRobot {
                     CommonActions.clickChildViewWithId(id)
                 )
             )
-    }
-
-    fun scrollRecyclerView() {
-        onView(withId(R.id.recycler_view))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(8))
     }
 
 }

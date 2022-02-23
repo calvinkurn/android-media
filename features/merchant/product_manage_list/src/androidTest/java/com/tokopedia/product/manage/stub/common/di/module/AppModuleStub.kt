@@ -28,11 +28,7 @@ class AppModuleStub(private val context: Context) {
     @ApplicationScope
     @Provides
     fun provideAbstractionRouter(@ApplicationContext context: Context?): AbstractionRouter? {
-        return if (context is AbstractionRouter) {
-            context
-        } else {
-            null
-        }
+        return context as? AbstractionRouter
     }
 
     @ApplicationScope
