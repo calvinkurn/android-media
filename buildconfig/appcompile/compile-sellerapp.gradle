@@ -138,6 +138,7 @@ includeIfEnabled("features:transaction:purchase_platform_common")
 includeIfEnabled("features:transaction:sellerorder")
 includeIfEnabled("features:transaction:minicart")
 includeIfEnabled("features:transaction:cart_common")
+includeIfEnabled("features:transaction:addOnGifting")
 includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 
