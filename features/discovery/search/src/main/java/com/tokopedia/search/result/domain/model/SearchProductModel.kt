@@ -7,12 +7,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.T
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
-import java.util.ArrayList
 
 data class SearchProductModel(
         @SerializedName("ace_search_product_v4")
@@ -55,12 +53,6 @@ data class SearchProductModel(
     }
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
-
-    fun isAdvancedNegativeKeywordSearch(): Boolean {
-        val keywordProcessed = searchProduct.header.keywordProcess
-        if (keywordProcessed.isEmpty()) return false
-        return keywordProcessed.toIntOrZero() in 16..31
-    }
 
     data class SearchProduct (
             @SerializedName("header")
@@ -137,7 +129,11 @@ data class SearchProductModel(
 
             @SerializedName("products")
             @Expose
-            val productList: List<Product> = listOf()
+            val productList: List<Product> = listOf(),
+
+            @SerializedName("violation")
+            @Expose
+            val violation: Violation = Violation(),
     )
 
     data class Redirection(
@@ -447,7 +443,11 @@ data class SearchProductModel(
 
             @SerializedName("applink")
             @Expose
-            val applink: String = ""
+            val applink: String = "",
+
+            @SerializedName("customVideoURL")
+            @Expose
+            val customVideoURL: String = "",
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -930,4 +930,29 @@ data class SearchProductModel(
         @Expose
         val value: String = "",
     )
+
+    data class Violation(
+        @SerializedName("headerText")
+        @Expose
+        val headerText: String = "",
+        @SerializedName("descriptionText")
+        @Expose
+        val descriptionText: String = "",
+        @SerializedName("imageURL")
+        @Expose
+        val imageUrl: String = "",
+        @SerializedName("ctaURL")
+        @Expose
+        val ctaUrl: String = "",
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = "",
+        @SerializedName("buttonType")
+        @Expose
+        val buttonType: String = "",
+    ) {
+        fun isValid(): Boolean {
+            return headerText.isNotEmpty() && descriptionText.isNotEmpty()
+        }
+    }
 }

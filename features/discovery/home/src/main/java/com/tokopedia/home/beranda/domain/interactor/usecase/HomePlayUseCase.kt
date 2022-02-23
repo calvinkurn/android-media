@@ -6,7 +6,6 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import dagger.Lazy
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class HomePlayUseCase @Inject constructor(
             channelId: String,
             reminderType: PlayWidgetReminderType
     ): PlayWidgetState {
-        return playWidgetTools.updateActionReminder(playWidgetState, channelId, reminderType.switch())
+        return playWidgetTools.updateActionReminder(playWidgetState, channelId, reminderType)
     }
 
     fun onUpdatePlayTotalView(

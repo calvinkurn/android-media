@@ -146,7 +146,12 @@ class PlayChatListView : ConstraintLayout {
     }
 
     private fun scrollToLatest() {
-        rvChatList.scrollBy(0, Integer.MAX_VALUE)
+        try {
+            rvChatList.post {
+                rvChatList.scrollBy(0, Integer.MAX_VALUE)
+            }
+        } catch (ignored: Throwable) {}
+
     }
 
     private fun isChatPositionBeyondOffset(recyclerView: RecyclerView): Boolean {

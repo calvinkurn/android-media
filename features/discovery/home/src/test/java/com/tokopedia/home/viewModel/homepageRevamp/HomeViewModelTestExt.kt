@@ -5,6 +5,8 @@ import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -72,7 +74,9 @@ fun createHomeViewModel(
         homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
         homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
         homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
-        homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true)
+        homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true),
+        getCMHomeWidgetDataUseCase : GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
+        deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -90,7 +94,9 @@ fun createHomeViewModel(
             homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
             homeSearchUseCase = Lazy { homeSearchUseCase },
             homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
-            homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase }
+            homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase },
+            getCMHomeWidgetDataUseCase = Lazy{ getCMHomeWidgetDataUseCase },
+            deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase }
     )
 }
 
@@ -347,19 +353,19 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
 }
 
 fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
-    data: List<Visitable<*>>
+    data: HomeDynamicChannelModel
 ) {
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
 }
 
 fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(
-    data: List<Visitable<*>>
+    data: HomeDynamicChannelModel
 ) {
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_FALSE
 }
 
 fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(
-    data: List<Visitable<*>>
+    data: HomeDynamicChannelModel
 ) {
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_NOT_SET
 }
