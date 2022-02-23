@@ -349,7 +349,6 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         }
     }
 
-
     @Test
     fun `given catalogProductJob null when cancelCatalogProductJob called should do nothing`() {
         viewModel.cancelCatalogProductJob()
@@ -469,6 +468,14 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         viewModel.updateFilterData(selectedFilter)
         verifyGetFilterTagComponentSuccess(selectedFilter)
         verifyGetFilterParam(dataFactory.getFilterParams())
+    }
+
+    @Test
+    fun `given filterData and should return that same filterData`() {
+       val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+       viewModel.filterData = initialFilter
+
+       verifyGetFilterTagComponentSuccess(initialFilter)
     }
 
     companion object {

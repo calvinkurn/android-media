@@ -16,7 +16,7 @@ import org.junit.Test
 
 
 @ExperimentalCoroutinesApi
-class DigitalPDPPulsaPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
+class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
     private val mapperFactory = DigitalDenomMapper()
