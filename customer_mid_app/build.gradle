@@ -255,7 +255,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.measurementApi
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
-    implementation project(rootProject.ext.features.addOnGifting)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
 
     // lint checks
