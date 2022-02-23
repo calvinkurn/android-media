@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -46,6 +47,12 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
+    public static final String GOOGLE_ANALYTICS_DEFERRED_DEEPLINK_PREFERENCE= "google.analytics.deferred.deeplink.prefs";
+    public static final String GOOGLE_DDL_DEEPLINK_KEY = "deeplink";
+    public static final String TYPE_KEY = "type";
+    public static final String GOOGLE_DDL_KEY = "GOOGLE_DDL";
+    public static final String SPLASH_SCREEN_TYPE = "splash_screen";
+
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -62,14 +69,11 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void setUpGoogleDeeplinkListener(){
-        preferences = getSharedPreferences("google.analytics.deferred.deeplink.prefs", MODE_PRIVATE);
+        preferences = getSharedPreferences(GOOGLE_ANALYTICS_DEFERRED_DEEPLINK_PREFERENCE, MODE_PRIVATE);
         deepLinkListener = (sharedPreferences, key) -> {
-            Log.d("DEEPLINK_LISTENER", "Deep link changed");
-            if ("deeplink".equals(key)) {
+            if (GOOGLE_DDL_DEEPLINK_KEY.equals(key)) {
                 String deeplink = sharedPreferences.getString(key, null);
-                Double cTime = Double.longBitsToDouble(sharedPreferences.getLong("timestamp", 0));
-                Log.d("DEEPLINK_LISTENER", "Deep link retrieved: " + deeplink);
-                showDeepLinkResult(deeplink);
+                navigateToDeeplink(deeplink);
             } };
     }
 
@@ -86,41 +90,30 @@ public class ConsumerSplashScreen extends SplashScreen {
         deepLinkListener = null;
     }
 
-    public void showDeepLinkResult(String result) {
-        String toastText = result;
-        if (toastText == null) {
-            toastText = "The deep link retrieval failed";
-        } else if (toastText.isEmpty()) {
-            toastText = "Deep link empty";
-        }else{
-            navigateToDeeplink(result);
-        }
-        Toast.makeText(ConsumerSplashScreen.this, toastText, Toast.LENGTH_LONG).show();
-        Log.d("DEEPLINK", toastText);
-    }
-
     private void navigateToDeeplink(String deeplink){
-        Intent intent = new Intent();
-        String tokopediaDeeplink = deeplink;
-        if (URLUtil.isNetworkUrl(deeplink)) {
-            intent.setClassName(ConsumerSplashScreen.this.getPackageName(),
-                    com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
-        } else {
-            if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
-                tokopediaDeeplink = deeplink;
+        if(!TextUtils.isEmpty(deeplink)) {
+            Intent intent = new Intent();
+            String tokopediaDeeplink = deeplink;
+            if (URLUtil.isNetworkUrl(deeplink)) {
+                intent.setClassName(ConsumerSplashScreen.this.getPackageName(),
+                        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
             } else {
-                tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                    tokopediaDeeplink = deeplink;
+                } else {
+                    tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                }
+                intent.setClassName(ConsumerSplashScreen.this.getPackageName(),
+                        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
             }
-            intent.setClassName(ConsumerSplashScreen.this.getPackageName(),
-                    com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put(TYPE_KEY, SPLASH_SCREEN_TYPE);
+            messageMap.put(GOOGLE_DDL_DEEPLINK_KEY, tokopediaDeeplink);
+            ServerLogger.log(Priority.P2, GOOGLE_DDL_KEY, messageMap);
+            intent.setData(Uri.parse(tokopediaDeeplink));
+            startActivity(intent);
+            finish();
         }
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", "splash_screen");
-        messageMap.put("deeplink", tokopediaDeeplink);
-        ServerLogger.log(Priority.P2, "GOOGLE_DDL", messageMap);
-        intent.setData(Uri.parse(tokopediaDeeplink));
-        startActivity(intent);
-        finish();
     }
 
     private void checkInstallReferrerInitialised() {
