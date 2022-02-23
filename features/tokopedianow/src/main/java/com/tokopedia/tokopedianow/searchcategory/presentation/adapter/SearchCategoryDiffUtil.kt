@@ -67,7 +67,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                 } else if (oldItem is TokoNowRecommendationCarouselUiModel && newItem is TokoNowRecommendationCarouselUiModel) {
                     oldItem.pageName == newItem.pageName
                 } else {
-                    true
+                    oldItem == newItem
                 }
             }
 
