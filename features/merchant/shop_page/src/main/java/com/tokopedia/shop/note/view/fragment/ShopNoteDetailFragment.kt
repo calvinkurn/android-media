@@ -164,7 +164,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
         setViewState(VIEW_CONTENT)
         shopNoteDetail?.run {
             (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title
-            val latestUpdate  = shopNoteDetail.updateTime.toIntOrZero()
+            val latestUpdate  = shopNoteDetail.updateTimeUtc.toIntOrZero()
             textViewDate?.text = getString(
                     R.string.shop_note_detail_date_format,
                     NoteUtil.convertUnixToFormattedDate(latestUpdate),
