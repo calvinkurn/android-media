@@ -1795,10 +1795,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 firstOpenPage = false
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
-                ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                        isSuccess = true
-                )
+                ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(isSuccess = true)
             }, {
                 ServerLogger.log(Priority.P2, "LOAD_PAGE_FAILED",
                         mapOf("type" to "pdp",
