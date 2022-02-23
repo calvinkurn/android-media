@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
-    private val _productCardVideo: ProductCardVideo by lazy{
+    private val video: ProductCardVideo by lazy{
         ProductCardVideo(this)
     }
 
@@ -108,7 +108,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
 
         cartExtension.setProductModel(productCardModel)
-        _productCardVideo.setProductModel(productCardModel)
+        video.setProductModel(productCardModel)
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -171,7 +171,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
         cartExtension.clear()
-        _productCardVideo.clear()
+        video.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
@@ -185,6 +185,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun getProductCardVideo(): ProductCardVideo {
-        return _productCardVideo
+        return video
     }
 }

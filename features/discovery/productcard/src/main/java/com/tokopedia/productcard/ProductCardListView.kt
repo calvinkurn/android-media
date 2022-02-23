@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
-    private val _productCardVideo: ProductCardVideo by lazy{
+    private val video: ProductCardVideo by lazy{
         ProductCardVideo(this)
     }
 
@@ -101,7 +101,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
-        _productCardVideo.setProductModel(productCardModel)
+        video.setProductModel(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -183,7 +183,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         cartExtension.clear()
-        _productCardVideo.clear()
+        video.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
@@ -197,7 +197,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     override fun getProductCardVideo(): ProductCardVideo {
-        return _productCardVideo
+        return video
     }
 
     /**
