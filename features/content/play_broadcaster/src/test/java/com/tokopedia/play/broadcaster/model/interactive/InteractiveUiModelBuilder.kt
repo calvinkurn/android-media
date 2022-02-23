@@ -15,7 +15,7 @@ import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 class InteractiveUiModelBuilder {
 
     fun buildLeaderboardInfoModel(
-        leaderboardWinners: List<PlayLeaderboardUiModel> = buildLeaderboardWinnerList(3),
+        leaderboardWinners: List<PlayLeaderboardUiModel> = buildLeaderboardWinnerList(3, 3),
         totalParticipant: String = "1",
         config: PlayLeaderboardConfigUiModel = buildLeaderboardConfigModel(),
     ) = PlayLeaderboardInfoUiModel(
@@ -26,10 +26,11 @@ class InteractiveUiModelBuilder {
 
     fun buildLeaderboardWinnerList(
         size: Int,
+        winnerSize: Int,
     ) = List(size) {
         PlayLeaderboardUiModel(
             title = "Giveaway $it",
-            winners = buildWinnerList(it),
+            winners = buildWinnerList(winnerSize),
             otherParticipantText = "",
             otherParticipant = 0,
         )
