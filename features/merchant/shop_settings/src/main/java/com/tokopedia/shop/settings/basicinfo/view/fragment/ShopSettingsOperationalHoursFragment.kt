@@ -193,6 +193,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         component?.inject(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        removeObservers(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel)
+        removeObservers(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule)
+        removeObservers(shopSettingsOperationalHoursViewModel.shopInfoAbortSchedule)
+    }
+
     private fun checkAbTestRollenceVariant() {
         shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
             requestParams = ShopAbTestPlatform.createRequestParam(

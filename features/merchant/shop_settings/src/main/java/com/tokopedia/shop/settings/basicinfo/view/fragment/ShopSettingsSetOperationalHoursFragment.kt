@@ -151,6 +151,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        removeObservers(shopSetOperationalHoursViewModel.setShopOperationalHoursData)
+        removeObservers(shopSetOperationalHoursViewModel.shopOperationalHoursListData)
+    }
+
     private fun initView(view: View) = with(view) {
         opsHourListContainer = findViewById(R.id.ops_hour_list_content_view)
         headerSetOpsHour = findViewById(R.id.header_shop_set_operational_hours)
