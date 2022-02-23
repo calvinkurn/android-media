@@ -22,10 +22,10 @@ class GiftingViewModel @Inject constructor(
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
-    fun getAddOn(addOnId: Long) {
+    fun getAddOn(addOnId: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(addOnId.toString())
+                getAddOnUseCase.setParams(addOnId)
                 getAddOnUseCase.executeOnBackground().getAddOnByID
             }
             mGetAddOnResult.value = result

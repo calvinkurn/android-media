@@ -25,7 +25,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class GiftingBottomSheet(private val addOnId: Long) : BottomSheetUnify() {
+class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: GiftingViewModel
