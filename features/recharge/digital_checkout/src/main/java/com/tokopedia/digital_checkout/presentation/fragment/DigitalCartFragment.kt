@@ -3,12 +3,10 @@ package com.tokopedia.digital_checkout.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.LeadingMarginSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,9 +42,9 @@ import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
+import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
-import com.tokopedia.digital_checkout.utils.NumberIndentSpan
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -740,41 +738,28 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun renderSubscriptionMoreInfoBottomSheet() {
         context?.let {
-            // setup subscriptions description text
-            val descriptionArray =
-                resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
-            val description = SpannableStringBuilder()
-            descriptionArray.forEachIndexed { index, text ->
-                val contentStart = description.length
-
-                description.append(text)
-                description.setSpan(
-                    NumberIndentSpan(LEADING_MARGIN_SPAN, LEADING_MARGIN_SPAN, index+1),
-                    contentStart,
-                    description.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-
-            val typographyContent = Typography(it)
-            typographyContent.setPadding(
+            val linearLayout = LinearLayout(it)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.setPadding(
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 0,
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
             )
-            typographyContent.fontType = Typography.BODY_2
-            typographyContent.setTextColor(
-                MethodChecker.getColor(
-                    it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                )
-            )
-            typographyContent.text = description.toString()
+
+            val descriptionArray =
+                resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
+            descriptionArray.forEachIndexed { index, text ->
+                val simpleWidget = DigitalCheckoutSimpleWidget(it)
+                simpleWidget.setContent((index + 1).toString(), text)
+
+                linearLayout.addView(simpleWidget)
+            }
+
 
             val bottomSheetUnify = BottomSheetUnify()
             bottomSheetUnify.setTitle(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_title))
-            bottomSheetUnify.setChild(typographyContent)
+            bottomSheetUnify.setChild(linearLayout)
             bottomSheetUnify.setCloseClickListener {
                 digitalAnalytics.eventSubscriptionMoreInfoCloseClicked(
                     userSession.userId,
