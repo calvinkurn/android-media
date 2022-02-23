@@ -4,7 +4,7 @@
     <string name="add_on_gifting_activity_add_on_gallery_label">Add on gallery activity</string>
     <string name="add_on_toaster_message_failed_save_add_on">Gagal menyimpan pelengkap. Silakan coba lagi.</string>
     <string name="add_on_bottomsheet_title">Atur pelengkap barang</string>
-    <string name="add_on_label_total_amount">Total Pelengkap</string>
+    <string name="add_on_label_total_amount">Total Pelengkap Produk</string>
     <string name="add_on_label_total_amount_cta_save">Simpan</string>
     <string name="add_on_label_total_amount_cta_save_with_quantity">Simpan (%d)</string>
     <string name="add_on_label_dialog_confirmation_title">Batal tambah pelengkap?</string>
