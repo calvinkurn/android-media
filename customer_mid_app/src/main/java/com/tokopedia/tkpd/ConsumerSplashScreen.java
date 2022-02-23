@@ -1,12 +1,18 @@
 package com.tokopedia.tkpd;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.webkit.URLUtil;
+import android.widget.Toast;
 
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
@@ -15,6 +21,8 @@ import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
@@ -26,6 +34,9 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -40,10 +51,76 @@ public class ConsumerSplashScreen extends SplashScreen {
     private PerformanceMonitoring splashTrace;
     private boolean isApkTempered;
 
+    private SharedPreferences preferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener deepLinkListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         executeInBackground();
+        setUpGoogleDeeplinkListener();
+    }
+
+    private void setUpGoogleDeeplinkListener(){
+        preferences = getSharedPreferences("google.analytics.deferred.deeplink.prefs", MODE_PRIVATE);
+        deepLinkListener = (sharedPreferences, key) -> {
+            Log.d("DEEPLINK_LISTENER", "Deep link changed");
+            if ("deeplink".equals(key)) {
+                String deeplink = sharedPreferences.getString(key, null);
+                Double cTime = Double.longBitsToDouble(sharedPreferences.getLong("timestamp", 0));
+                Log.d("DEEPLINK_LISTENER", "Deep link retrieved: " + deeplink);
+                showDeepLinkResult(deeplink);
+            } };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        preferences.registerOnSharedPreferenceChangeListener(deepLinkListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        preferences.unregisterOnSharedPreferenceChangeListener(deepLinkListener);
+        deepLinkListener = null;
+    }
+
+    public void showDeepLinkResult(String result) {
+        String toastText = result;
+        if (toastText == null) {
+            toastText = "The deep link retrieval failed";
+        } else if (toastText.isEmpty()) {
+            toastText = "Deep link empty";
+        }else{
+            navigateToDeeplink(result);
+        }
+        Toast.makeText(ConsumerSplashScreen.this, toastText, Toast.LENGTH_LONG).show();
+        Log.d("DEEPLINK", toastText);
+    }
+
+    private void navigateToDeeplink(String deeplink){
+        Intent intent = new Intent();
+        String tokopediaDeeplink = deeplink;
+        if (URLUtil.isNetworkUrl(deeplink)) {
+            intent.setClassName(ConsumerSplashScreen.this.getPackageName(),
+                    com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+        } else {
+            if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                tokopediaDeeplink = deeplink;
+            } else {
+                tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+            }
+            intent.setClassName(ConsumerSplashScreen.this.getPackageName(),
+                    com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+        }
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "splash_screen");
+        messageMap.put("deeplink", tokopediaDeeplink);
+        ServerLogger.log(Priority.P2, "GOOGLE_DDL", messageMap);
+        intent.setData(Uri.parse(tokopediaDeeplink));
+        startActivity(intent);
+        finish();
     }
 
     private void checkInstallReferrerInitialised() {
