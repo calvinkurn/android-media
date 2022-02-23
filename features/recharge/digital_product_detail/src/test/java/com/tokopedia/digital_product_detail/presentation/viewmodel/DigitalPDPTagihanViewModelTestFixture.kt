@@ -78,7 +78,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         } throws error
     }
 
-    protected fun onGetTagihanProduct_thenReturn(response: RechargeProduct) {
+    protected fun onGetTagihanProduct_thenReturn(response: RechargeProduct?) {
         coEvery {
             repo.getProductTagihanListrik(any(), any(), any())
         } returns response

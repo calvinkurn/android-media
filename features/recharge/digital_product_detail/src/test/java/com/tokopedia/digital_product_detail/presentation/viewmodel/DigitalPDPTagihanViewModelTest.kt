@@ -124,6 +124,15 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting null tagihanProduct should not emit anything`() {
+        onGetTagihanProduct_thenReturn(null)
+
+        viewModel.getTagihanProduct(MENU_ID, TagihanDataFactory.VALID_CLIENT_NUMBER, "")
+        verifyGetTagihanProductRepoGetCalled()
+        verifyGetTagihanProductFail()
+    }
+
+    @Test
     fun `when getting addToCart should run and return success`() {
         val response = dataFactory.getAddToCartData().relationships?.category?.data?.id ?: ""
         onGetAddToCart_thenReturn(response)
