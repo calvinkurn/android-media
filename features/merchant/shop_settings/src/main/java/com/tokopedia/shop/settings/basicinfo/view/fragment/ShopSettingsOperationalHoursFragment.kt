@@ -642,6 +642,15 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     handleDismissCalendarPickerBottomSheet()
                 }
             }
+            holidayBottomSheet?.setShowListener {
+                holidayBottomSheet?.dialog?.setOnKeyListener { _, keyCode, event ->
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+                        // handle dialog if bottomSheet dismissed through device back button
+                        handleDismissCalendarPickerBottomSheet()
+                    }
+                    true
+                }
+            }
         }
     }
 
