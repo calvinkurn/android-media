@@ -2,6 +2,7 @@ package com.tokopedia.createpost.uprofile.domains
 
 import com.tokopedia.createpost.uprofile.model.FeedXProfileHeader
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
+import com.tokopedia.createpost.uprofile.model.ProfileIsFollowing
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -9,15 +10,23 @@ import javax.inject.Inject
 
 class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun getUserProfileDetail(userName: String) : ProfileHeaderBase {
-            val request = GraphqlRequest(getQuery(),
-                ProfileHeaderBase::class.java,
-                getRequestParams(userName))
+    suspend fun getUserProfileDetail(userName: String, profileId: MutableList<String>): GraphqlResponse {
+        val request = GraphqlRequest(
+            getQuery(),
+            ProfileHeaderBase::class.java,
+            getRequestParams(userName)
+        )
+
+        val request2 = GraphqlRequest(
+            getQuery(),
+            ProfileIsFollowing::class.java,
+            getRequestParams(profileId)
+        )
 
         useCase.clearRequest()
-            useCase.addRequest(request)
-            val response = useCase.executeOnBackground()
-            return response.getData(ProfileHeaderBase::class.java)
+        useCase.addRequest(request)
+        useCase.addRequest(request2)
+        return useCase.executeOnBackground()
     }
 
     private fun getRequestParams(userName: String): MutableMap<String, Any?> {
@@ -30,7 +39,7 @@ class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUse
         const val KEY_USERNAME = "userName"
     }
 
-     private fun getQuery(): String {
+    private fun getQuery(): String {
         return "query ProfileHeader(\$userName: String!) {\n" +
                 "  feedXProfileHeader(username:\$userName) {\n" +
                 "    profile {\n" +
@@ -66,5 +75,23 @@ class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUse
                 "    shouldSeoIndex\n" +
                 "  }\n" +
                 "}"
+    }
+
+    private fun getQueryTheyFollowed(): String {
+        return "query ProfileIsFollowing(\$userIds: [String!]!) {\n" +
+                "  feedXProfileIsFollowing(followingUserIDs: \$userIds) {\n" +
+                "    isUserFollowing {\n" +
+                "      userID\n" +
+                "      encryptedUserID\n" +
+                "      status\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n"
+    }
+
+    private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {
+        val requestMap = mutableMapOf<String, Any?>()
+        requestMap[ProfileTheyFollowedUseCase.KEY_USERIDS] = profileIds
+        return requestMap
     }
 }

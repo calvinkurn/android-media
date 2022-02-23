@@ -23,6 +23,8 @@ import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.Profile
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
+import com.tokopedia.createpost.uprofile.model.ProfileIsFollowing
+import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
@@ -33,6 +35,7 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.up_layout_user_profile_header.*
 import javax.inject.Inject
 
@@ -43,6 +46,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     lateinit var viewModelFactory: ViewModelFactory
 
     var landedUserName: String? = null
+    var idFollowed: Boolean = false
+    var userSession: UserSessionInterface? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -81,11 +86,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
         landedUserName = requireArguments().getString(EXTRA_USERNAME)
 
-
         landedUserName?.let {
             initUserPost()
             mPresenter.getUserDetails(it)
             mPresenter.getUPlayVideos(VAL_FEEDS_PROFILE, "", VAL_SOURCE_BUYER, it)
+            userSession = UserSession(context)
         }
     }
 
@@ -113,6 +118,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private fun initObserver() {
         addUserProfileObserver()
         addListObserver()
+        addDoFollowedObserver()
     }
 
     private fun addUserProfileObserver() =
@@ -148,10 +154,62 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
         })
 
+    private fun addDoFollowedObserver() =
+        mPresenter.profileDoFollowLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+
+                    }
+                    is Success -> {
+                        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
+
+                        idFollowed = it.data.profileFollowers.status
+                        if (idFollowed) {
+                            btnAction?.text = "Following"
+                            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+                            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+                        } else {
+                            btnAction?.text = "Follow"
+                            btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+                            btnAction?.buttonType = UnifyButton.Type.MAIN
+                        }
+                    }
+                    is ErrorMessage -> {
+
+                    }
+                }
+            }
+        })
+
+    private fun addTheyFollowedObserver() =
+        mPresenter.profileTheyFollowLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+
+                    }
+                    is Success -> {
+                        setActionButton(it.data)
+                    }
+                    is ErrorMessage -> {
+
+                    }
+                }
+            }
+        })
+
     private fun addLiveClickListener(appLink: String) = View.OnClickListener {
         RouteManager.route(context, appLink)
     }
 
+    private fun addProfileClickListener(appLink: String, userId: String) = View.OnClickListener {
+        //TODO navigate to edit profile page
+    }
+
+    private fun addDoFollowClickListener(userId: String) = View.OnClickListener {
+        mPresenter.doFollow(userId, idFollowed)
+    }
 
     private fun setMainUi(data: ProfileHeaderBase) {
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
@@ -160,7 +218,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
-        val btnActionFollow = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
 
         textBio?.text = data.profileHeader.profile.biography
         textUserName?.text = data.profileHeader.profile.username
@@ -170,6 +227,31 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         textFollowingCount?.text = data.profileHeader.stats.totalFollowingFmt
 
         setProfileImg(data.profileHeader.profile)
+    }
+
+    private fun setActionButton(followProfile: ProfileIsFollowing) {
+        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
+
+        if (followProfile.items[0].userID == userSession?.userId) {
+            btnAction?.text = "Ubah Profil"
+            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+
+            btnAction?.setOnClickListener(addProfileClickListener("applink", followProfile.items[0].userID))
+        } else {
+            idFollowed = followProfile.items[0].status
+            if (idFollowed) {
+                btnAction?.text = "Following"
+                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+            } else {
+                btnAction?.text = "Follow"
+                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+                btnAction?.buttonType = UnifyButton.Type.MAIN
+            }
+
+            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.items[0].userID))
+        }
     }
 
     private fun setProfileImg(profile: Profile) {
