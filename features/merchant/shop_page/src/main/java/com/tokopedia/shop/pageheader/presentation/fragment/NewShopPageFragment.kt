@@ -793,7 +793,6 @@ class NewShopPageFragment :
         getShopShareAndOperationalHourStatusData()
         getFollowStatus()
         getSellerPlayWidget()
-        getShopOperationalHoursData()
     }
 
     private fun getShopShareAndOperationalHourStatusData() {
@@ -811,10 +810,6 @@ class NewShopPageFragment :
             shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
             shopViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
         }
-    }
-
-    private fun getShopOperationalHoursData() {
-        shopViewModel?.getShopOperationalHoursList(shopId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

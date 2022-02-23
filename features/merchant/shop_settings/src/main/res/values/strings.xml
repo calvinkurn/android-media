@@ -66,9 +66,9 @@
     <string name="shop_operational_hour_endtime_info">Pilih antara jam %1$s - %2$s</string>
     <string name="shop_operational_hour_dialog_title">Simpan perubahan jam\noperasional tokomu?</string>
     <string name="shop_operational_hour_dialog_data_change_title">Yakin hapus perubahan?</string>
-    <string name="shop_operational_hour_dialog_description">Info jam operasional toko akan langsung\nberubah sesuai dengan pengaturanmu.</string>
+    <string name="shop_operational_hour_dialog_description">Info jam operasional toko akan langsung\nberubah sesuai pengaturanmu.</string>
     <string name="shop_operational_hour_dialog_data_change_description">Semua pengaturan jam operasional toko\nyang sudah dibuat akan hilang, lho.</string>
-    <string name="shop_operational_hour_dialog_data_change_holiday_description">Semua pengaturan tanggal libur tokomu\nyang sudah dibuat akan hilang, lho.</string>
+    <string name="shop_operational_hour_dialog_data_change_holiday_description">Semua pengaturan tanggal libur tokomu\nyang dibuat akan hilang, lho.</string>
     <string name="shop_operational_hour_is_on_holiday">Toko sedang libur</string>
     <string name="shop_operational_hour_close_now_text">Tutup sekarang</string>
     <string name="shop_operational_hour_is_on_holiday_until">sampai %1$s</string>
@@ -86,7 +86,7 @@
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus tanggal libur tokomu?</string>
     <string name="shop_operational_hour_abort_shop_holiday_dialog_title">Tokomu siap beroperasi lagi?</string>
     <string name="shop_operational_hour_abort_shop_holiday_dialog_desc">Yuk, bersiap untuk terima pesanan pembeli.\nCek jam operasional tokomu hari ini, ya.</string>
-    <string name="shop_operational_hour_set_holiday_schedule_dialog_desc">Pembeli tidak bisa berbelanja selama\ntokomu libur. Jangan lupa proses pesanan\nyang sudah masuk sebelumnya.</string>
+    <string name="shop_operational_hour_set_holiday_schedule_dialog_desc">Pembeli tidak bisa membeli produk selama\ntokomu libur. Jangan lupa proses pesanan\nyang sudah masuk sebelumnya.</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_desc">Tokomu akan kembali beroperasi dan dapat\nmenerima pesanan dari pembeli, ya.</string>
     <string name="shop_operational_hour_holiday_warning_dialog_title">Ingin libur tiap hari?</string>
     <string name="shop_operational_hour_holiday_warning_dialog_desc">Libur rutin tidak bisa diterapkan setiap hari,\nya. Pengaturan tidak tersimpan, tapi kamu\nbisa jadwalkan di pengaturan tanggal libur.</string>

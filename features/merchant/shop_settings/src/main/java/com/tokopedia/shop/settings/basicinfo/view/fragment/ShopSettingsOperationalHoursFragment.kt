@@ -639,11 +639,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
                 setChild(bottomSheetEditView)
                 setCloseClickListener {
-                    if (isDateChanged) {
-                        showConfirmDialogForDataChanged()
-                    } else {
-                        dismiss()
-                    }
+                    handleDismissCalendarPickerBottomSheet()
                 }
             }
         }
