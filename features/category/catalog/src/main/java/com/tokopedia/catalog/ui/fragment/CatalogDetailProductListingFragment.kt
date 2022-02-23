@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory

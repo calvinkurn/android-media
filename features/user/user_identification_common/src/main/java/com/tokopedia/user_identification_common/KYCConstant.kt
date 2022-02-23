@@ -44,5 +44,7 @@ interface KYCConstant {
         const val HOME_CREDIT_PROJECT_ID = "16"
         const val CO_BRAND_PROJECT_ID = "18"
         const val GO_CICIL_PROJECT_ID = "21"
+
+        const val LIVENESS_TAG = "LIVENESS_TAG"
     }
 }

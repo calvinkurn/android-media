@@ -45,6 +45,7 @@ object Tracker {
         const val CLICK_SHOP_NAME = "click shop name"
         const val CLICK_COUPON_TITLE = "click coupon title"
         const val EVENT_VIEW_PROMO = "promoView"
+        const val CLICK_MVC_PRODUCT_ID = "productId"
     }
 
     object Category {

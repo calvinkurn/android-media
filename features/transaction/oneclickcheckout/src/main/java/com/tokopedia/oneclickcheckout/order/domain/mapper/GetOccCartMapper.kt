@@ -231,8 +231,13 @@ class GetOccCartMapper @Inject constructor() {
                 state = address.state,
                 stateDetail = address.stateDetail,
                 status = address.status,
-                tokoNowShopId = address.tokoNow.shopId,
-                tokoNowWarehouseId = address.tokoNow.warehouseId
+                tokoNow = OrderProfileAddressTokoNow(
+                    isModified = address.tokoNow.isModified,
+                    shopId = address.tokoNow.shopId,
+                    warehouseId = address.tokoNow.warehouseId,
+                    warehouses = address.tokoNow.warehouses,
+                    serviceType = address.tokoNow.serviceType
+                )
         )
     }
 

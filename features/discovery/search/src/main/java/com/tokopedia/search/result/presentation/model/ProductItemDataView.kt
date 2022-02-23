@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.getFormattedPositionName
-import com.tokopedia.search.utils.safeCastRupiahToInt
 import com.tokopedia.utils.text.currency.StringUtils
 
 class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductListTypeFactory> {
@@ -63,6 +62,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     var dimension90: String = ""
     var topadsTag: Int = 0
     var applink: String = ""
+    var customVideoURL: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -123,6 +123,9 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
             isShopPowerMerchant -> "gold_merchant"
             else -> "reguler"
         }
+
+    val hasVideo : Boolean
+        get() = customVideoURL.isNotBlank()
 
     override fun describeContents(): Int {
         return 0
