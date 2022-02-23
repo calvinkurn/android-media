@@ -60,6 +60,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.tracker.CouponListTracker
+import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
@@ -126,6 +127,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     @Inject
     lateinit var linkerDataGenerator: LinkerDataGenerator
+
+    @Inject
+    lateinit var sharingComponentTracker : SharingComponentTracker
+
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -566,6 +571,11 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun shareCoupon(coupon: VoucherUiModel) {
+        sharingComponentTracker.sendShareClickEvent(
+            ShareComponentConstant.ENTRY_POINT_COUPON_LIST,
+            coupon.id.orZero().toString()
+        )
+
         if (!isAdded) return
         viewModel.getCouponDetail(coupon.id.toLong())
     }
@@ -815,15 +825,20 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             .parseTo(DateTimeUtils.HOUR_FORMAT)
         val description = String.format(getString(R.string.placeholder_share_component_text_description), shop.shopName, endDate, endHour)
 
-
         shareComponentBottomSheet = buildShareComponentInstance(
             imageUrl,
             title,
             coupon.id.toLong(),
             onShareOptionsClicked = { shareModel ->
+                sharingComponentTracker.sendSelectShareChannelClickEvent(shareModel.channel.orEmpty(), coupon.id.toString())
                 handleShareOptionSelection(coupon.id.toLong(), shareModel, title, description, shop.shopDomain)
-            }, onCloseOptionClicked = {}
+            }, onCloseOptionClicked = {
+                sharingComponentTracker.sendShareBottomSheetDismissClickEvent(coupon.id.toString())
+            }
         )
+
+        sharingComponentTracker.sendShareBottomSheetDisplayedEvent(coupon.id.toString())
+
         shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
     }
 
