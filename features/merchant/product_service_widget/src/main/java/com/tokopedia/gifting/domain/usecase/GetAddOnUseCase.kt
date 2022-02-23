@@ -23,7 +23,10 @@ class GetAddOnUseCase @Inject constructor(
                   errorCode
                   messages
                   reason
-                },
+                }
+                StaticInfo {
+                  InfoURL
+                }
                 AddOnByIDResponse{
                   Basic{
                     ID

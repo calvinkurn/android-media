@@ -8,15 +8,11 @@ class Basic {
     @Expose
     var id: String = ""
 
-    @SerializedName("ShopID")
-    @Expose
-    var shopID: String = ""
-
     @SerializedName("Name")
     @Expose
     var name: String = ""
 
-    @SerializedName("Type")
+    @SerializedName("AddOnType")
     @Expose
     var type: String = ""
 
@@ -27,10 +23,6 @@ class Basic {
     @SerializedName("OwnerWarehouseID")
     @Expose
     var ownerWarehouseID: String = ""
-
-    @SerializedName("IsEligible")
-    @Expose
-    var isEligible: Boolean = false
 
     @SerializedName("Rules")
     @Expose
