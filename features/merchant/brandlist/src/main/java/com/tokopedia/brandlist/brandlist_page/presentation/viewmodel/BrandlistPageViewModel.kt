@@ -46,6 +46,10 @@ class BrandlistPageViewModel @Inject constructor(
     val getAllBrandResult: LiveData<Result<OfficialStoreAllBrands>>
         get() = _getAllBrandResult
 
+    private val _remindingRequestSize = MutableLiveData<Pair<Int, String>>()
+    val remindingRequestSize : LiveData<Pair<Int, String>>
+        get() = _remindingRequestSize
+
     private var firstLetterChanged = false
     private var totalBrandSize = 0
     private var currentOffset = INITIAL_OFFSET
@@ -130,17 +134,28 @@ class BrandlistPageViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun loadMoreAllBrands(category: Category?, brandFirstLetter: String) {
+    fun loadMoreAllBrands(brandFirstLetter: String) {
         val requestSize = geRequestSize(totalBrandSize, currentOffset)
-        launchCatchError(block = {
-            _getAllBrandResult.postValue(Success(getAllBrandAsync(
-                    category?.categoryId,
-                    currentOffset,
-                    ALL_BRANDS_QUERY,
-                    requestSize,
-                    ALPHABETIC_ASC_SORT,
-                    brandFirstLetter).await()))
-        }, onError = {})
+        _remindingRequestSize.value = Pair(requestSize, brandFirstLetter)
+    }
+
+    fun loadMoreAllBrandsReminding(requestSize: Int, category: Category?, brandFirstLetter: String) {
+        if (requestSize > 0) {
+            launchCatchError(block = {
+                _getAllBrandResult.postValue(
+                    Success(
+                        getAllBrandAsync(
+                            category?.categoryId,
+                            currentOffset,
+                            ALL_BRANDS_QUERY,
+                            requestSize,
+                            ALPHABETIC_ASC_SORT,
+                            brandFirstLetter
+                        ).await()
+                    )
+                )
+            }, onError = {})
+        }
     }
 
     private fun geRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
@@ -149,7 +164,7 @@ class BrandlistPageViewModel @Inject constructor(
         return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
             ALL_BRANDS_REQUEST_SIZE
         } else {
-            remainingBrands
+            if (remainingBrands > 0) remainingBrands else 0
         }
     }
 
