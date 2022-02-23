@@ -60,7 +60,7 @@ object ProductDetailRestrictionHelper {
                                             isShopOwner: Boolean,
                                             shopFollowersView: PartialButtonShopFollowersView?) {
         val shouldShow = !reData.isEligible
-        if (shouldShow && !isShopOwner && reData.restrictionCategoriesType()) {
+        if (shouldShow && !isShopOwner) {
             if (shopFollowersView?.view?.isShown == false) {
                 shopFollowersView.view.translationY = 100.toPx().toFloat()
             }
