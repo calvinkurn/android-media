@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.digital.home.presentation.util.ParallaxScrollEffectListener
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardAdapterTypeFactory
@@ -25,9 +26,9 @@ import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalU
 class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     val view: View,
     val listener: RechargeHomepageItemListener
-): AbstractViewHolder<RechargeHomepageProductCardCustomBannerV2Model>(view) {
+) : AbstractViewHolder<RechargeHomepageProductCardCustomBannerV2Model>(view) {
 
-    companion object{
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_product_card_custom_banner_v2
     }
@@ -38,12 +39,12 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     override fun bind(element: RechargeHomepageProductCardCustomBannerV2Model) {
         val bind = ViewRechargeHomeProductCardCustomBannerV2Binding.bind(itemView)
         section = element.section
-        if (section.items.isNotEmpty()){
+        if (section.items.isNotEmpty()) {
             hideShimmer(bind)
             setupInitialView(bind, section)
             setupList(bind, element.digitalUnifyItems)
             setSnapEffect(bind)
-        }else{
+        } else {
             showShimmer(bind)
             listener.loadRechargeSectionData(element.visitableId())
         }
@@ -52,16 +53,28 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     private fun setupInitialView(
         bind: ViewRechargeHomeProductCardCustomBannerV2Binding,
         section: RechargeHomepageSections.Section
-    ){
-        with(bind){
+    ) {
+        with(bind) {
             try {
                 contentContainer.setCardBackgroundColor(Color.parseColor(section.label2))
-            }catch (e: Throwable){
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
             parallaxImage.loadImage(section.mediaUrl)
-            tvSectionTitle.text = section.title
-            tvSectionSeeAll.text = section.textLink
+
+            if (section.title.isNotEmpty()) {
+                tvSectionTitle.text = section.title
+                tvSectionTitle.show()
+            } else {
+                tvSectionTitle.hide()
+            }
+
+            if (section.textLink.isNotEmpty()) {
+                tvSectionSeeAll.text = section.textLink
+                tvSectionSeeAll.show()
+            } else {
+                tvSectionSeeAll.hide()
+            }
 
             tvSectionSeeAll.setOnClickListener {
                 listener.onRechargeBannerAllItemClicked(section)
@@ -72,11 +85,12 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     private fun setupList(
         bind: ViewRechargeHomeProductCardCustomBannerV2Binding,
         element: List<DigitalUnifyModel>
-    ){
-        val layoutManagers = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        with(bind){
+    ) {
+        val layoutManagers =
+            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        with(bind) {
             parallaxImage.alpha = 1f
-            with(rvRechargeProduct){
+            with(rvRechargeProduct) {
                 resetLayout()
                 setRecycledViewPool(rvPool)
                 layoutManager = layoutManagers
@@ -84,7 +98,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     DigitalUnifyCardAdapterTypeFactory(digitalUnifyCardListener),
                     element
                 )
-                addOnScrollListener(object : ParallaxScrollEffectListener(layoutManagers){
+                addOnScrollListener(object : ParallaxScrollEffectListener(layoutManagers) {
                     override fun translatedX(translatedX: Float) {
                         bind.parallaxView.translationX = translatedX
                     }
@@ -100,13 +114,13 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
         }
     }
 
-    private fun setSnapEffect(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
+    private fun setSnapEffect(bind: ViewRechargeHomeProductCardCustomBannerV2Binding) {
         val snapHelper = GravitySnapHelper(Gravity.START)
         snapHelper.attachToRecyclerView(bind.rvRechargeProduct)
     }
 
-    private fun showShimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
-        with(bind){
+    private fun showShimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding) {
+        with(bind) {
             tvSectionSeeAll.hide()
             tvSectionTitle.hide()
             contentContainer.hide()
@@ -114,8 +128,8 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
         }
     }
 
-    private fun hideShimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
-        with(bind){
+    private fun hideShimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding) {
+        with(bind) {
             tvSectionSeeAll.visible()
             tvSectionTitle.visible()
             contentContainer.visible()
