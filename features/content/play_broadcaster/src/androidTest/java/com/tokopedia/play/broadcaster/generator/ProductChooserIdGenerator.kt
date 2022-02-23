@@ -2,21 +2,10 @@ package com.tokopedia.play.broadcaster.generator
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.launchFragment
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -25,6 +14,7 @@ import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.play.broadcaster.helper.PrintCondition
 import com.tokopedia.play.broadcaster.helper.ScreenshotTestRule
 import com.tokopedia.play.broadcaster.helper.ViewHierarchyPrinter
+import com.tokopedia.play.broadcaster.helper.FileWriter
 import com.tokopedia.play.broadcaster.R as R
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -38,12 +28,12 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogC
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by kenny.hadisaputra on 23/02/22
@@ -119,19 +109,22 @@ class ProductChooserIdGenerator {
         )
     )
 
-    private val viewPrinter = ViewHierarchyPrinter(
-        listOf(
-            PrintCondition { view ->
-                val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
-                val packageName = parent::class.java.`package`?.name.orEmpty()
-                val className = parent::class.java.name
-                !packageName.startsWith("com.tokopedia") || !className.contains("unify", ignoreCase = true)
-            },
-            PrintCondition { view ->
-                view.id != View.NO_ID || view is ViewGroup
-            }
-        )
+    private val printConditions = listOf(
+        PrintCondition { view ->
+            val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
+            val packageName = parent::class.java.`package`?.name.orEmpty()
+            val className = parent::class.java.name
+            !packageName.startsWith("com.tokopedia") || !className.contains("unify", ignoreCase = true)
+        },
+        PrintCondition { view ->
+            view.id != View.NO_ID || view is ViewGroup
+        }
     )
+
+    private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val fileWriter = FileWriter()
+
+    private val dateFormatter = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
 
     init {
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
@@ -152,7 +145,11 @@ class ProductChooserIdGenerator {
 
         scenario.onFragment {
             val bottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
-            viewPrinter.print(view = bottomSheet.requireView())
+            val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
+            fileWriter.write(
+                fileName = "id_list-${dateFormatter.format(Date())}.csv",
+                text = info
+            )
         }
     }
 }
