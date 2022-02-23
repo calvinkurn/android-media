@@ -281,6 +281,24 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name="com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity"
+            android:label="@string/change_profile_info"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_edit_profile_info"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:theme="@style/Theme.White"
             android:name=".common.webview.ProfileSettingWebViewActivity"

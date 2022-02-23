@@ -11,6 +11,7 @@ import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
+import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
@@ -73,5 +74,10 @@ abstract class ProfileCompletionViewModelsModule {
     @IntoMap
     @ViewModelKey(ProfileViewModel::class)
     internal abstract fun profileViewModel(viewModel: ProfileViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChangeBioUsernameViewModel::class)
+    internal abstract fun changeBioUsernameViewModel(viewModel: ChangeBioUsernameViewModel): ViewModel
 
 }

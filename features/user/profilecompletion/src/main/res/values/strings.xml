@@ -173,4 +173,9 @@
     <string name="add_pin_success_button_title">Selesai</string>
     <string name="profile_completion_detail_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
     <string name="text_change_name_warning_message">Ubah nama akunmu jadi nama asli untuk meningkatkan keamanan akun.</string>
+    <string name="change_username">Username</string>
+    <string name="change_profile_info">Ubah Info Profil</string>
+    <string name="description_textfield_username">Username hanya bisa diubah 1 kali</string>
+    <string name="label_bio">Bio</string>
+    <string name="key_error_biography">Biography</string>
 </resources>
