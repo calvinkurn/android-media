@@ -75,6 +75,7 @@ class ProductTagViewComponent(
         }
 
         adapter.setItemsAndAnimateChanges(products)
+        rvProductTag.invalidateItemDecorations()
     }
 
     private fun setLoading() {

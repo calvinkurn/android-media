@@ -4,6 +4,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -27,7 +28,7 @@ class ProductErrorViewComponent(
     }
 
     private fun GlobalError.productNotFoundState() {
-        errorIllustration.setImageResource(com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)
+        errorIllustration.loadImage(getString(R.string.img_search_product_empty))
         errorTitle.text = context.getString(R.string.play_product_not_found_title)
         errorDescription.text = context.getString(R.string.play_product_not_found_desc)
         errorAction.gone()

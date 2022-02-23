@@ -14,7 +14,6 @@ internal class ProductSummaryAdapter(
 
     init {
         delegatesManager
-            .addDelegate(ProductSummaryAdapterDelegate.Placeholder())
             .addDelegate(ProductSummaryAdapterDelegate.Header())
             .addDelegate(ProductSummaryAdapterDelegate.Body(listener))
     }
@@ -30,7 +29,6 @@ internal class ProductSummaryAdapter(
     }
 
     sealed class Model {
-        object Placeholder: Model()
         data class Header(val text: String, val status: CampaignStatus): Model()
         data class Body(val product: ProductUiModel): Model()
     }

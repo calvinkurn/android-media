@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMap
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -15,7 +16,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -54,7 +54,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             it.nextPageKey = nextPage
             if (productListData.isEmpty()) return true
             if(it.properties?.tokonowATCActive == true)
-                updateProductAddedInCart(productListData, getCartData(pageEndPoint))
+                Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
             it.pageLoadedCounter = 2
             it.verticalProductFailState = false
             return true
@@ -89,8 +89,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
+                updatePaginatedData(productListData,component1)
                 if(component1.properties?.tokonowATCActive == true)
-                    updateProductAddedInCart(productListData, getCartData(pageEndPoint))
+                    Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             }
             component1.verticalProductFailState = false
@@ -123,8 +124,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     it.name)
             component.nextPageKey = nextPage
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
+            updatePaginatedData(productListData,it)
             if(it.properties?.tokonowATCActive == true)
-                updateProductAddedInCart(productListData, getCartData(pageEndPoint))
+                Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
             (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             return true
         }
@@ -193,21 +195,12 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return queryParameterMap
     }
 
-    private fun updateProductAddedInCart(products:List<ComponentsItem>,
-                                         map: Map<String, MiniCartItem>?) {
-        if (map == null) return
-        products.forEach { componentsItem ->
-            componentsItem.data?.firstOrNull()?.let { dataItem ->
-                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
-                    map[dataItem.parentProductId]?.quantity?.let { quantity ->
-                        dataItem.quantity = quantity
-                    }
-                }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
-                    map[dataItem.productId]?.quantity?.let { quantity ->
-                        dataItem.quantity = quantity
-                    }
-                }
-            }
+    private fun updatePaginatedData(voucherListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
+        voucherListData.forEach {
+            it.parentComponentId = parentComponentsItem.id
+            it.pageEndPoint = parentComponentsItem.pageEndPoint
+            it.parentComponentPosition = parentComponentsItem.position
         }
     }
+
 }

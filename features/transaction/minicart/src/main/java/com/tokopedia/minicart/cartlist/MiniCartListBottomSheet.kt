@@ -36,7 +36,11 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecoration: MiniCartListDecoration,
@@ -522,9 +526,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         analytics.eventClickDeleteAllUnavailableProduct()
         val unavailableProducts = viewModel?.miniCartListBottomSheetUiModel?.value?.getUnavailableProduct()
                 ?: emptyList()
+        val hiddenUnavailableProducts = viewModel?.tmpHiddenUnavailableItems ?: emptyList()
+        val allUnavailableProducts = unavailableProducts + hiddenUnavailableProducts
         bottomSheet?.context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(it.getString(R.string.mini_cart_label_dialog_title_delete_unavailable_multiple_item, unavailableProducts.size))
+                setTitle(it.getString(R.string.mini_cart_label_dialog_title_delete_unavailable_multiple_item, allUnavailableProducts.size))
                 setDescription(it.getString(R.string.mini_cart_label_dialog_message_remove_cart_unavailable_multiple_item))
                 setPrimaryCTAText(it.getString(R.string.mini_cart_label_dialog_action_delete))
                 setSecondaryCTAText(it.getString(R.string.mini_cart_label_dialog_action_cancel))

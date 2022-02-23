@@ -27,10 +27,6 @@ internal class ProductSummaryListViewComponent(
         view.layoutManager = LinearLayoutManager(view.context)
     }
 
-    fun setLoading() {
-        adapter.setItemsAndAnimateChanges(List(2){ ProductSummaryAdapter.Model.Placeholder })
-    }
-
     @OptIn(ExperimentalStdlibApi::class)
     /** TODO: gonna delete this later */
     fun setProductList(productSectionList: List<ProductTagSectionUiModel>) {

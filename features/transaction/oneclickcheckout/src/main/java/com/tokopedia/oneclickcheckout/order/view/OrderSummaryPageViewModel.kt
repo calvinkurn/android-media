@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
@@ -477,11 +479,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
                     source = SOURCE_UPDATE_OCC_ADDRESS)
             val chosenAddress = ChosenAddress(
-                    addressId = addressModel.id,
-                    districtId = addressModel.destinationDistrictId,
-                    postalCode = addressModel.postalCode,
-                    geolocation = if (addressModel.latitude.isNotBlank() && addressModel.longitude.isNotBlank()) addressModel.latitude + "," + addressModel.longitude else "",
-                    mode = ChosenAddress.MODE_ADDRESS
+                addressId = newChosenAddress.addressId.toString(),
+                districtId = newChosenAddress.districtId.toString(),
+                postalCode = newChosenAddress.postalCode,
+                geolocation = if (newChosenAddress.latitude.isNotBlank() && newChosenAddress.longitude.isNotBlank()) newChosenAddress.latitude + "," + newChosenAddress.longitude else "",
+                mode = ChosenAddress.MODE_ADDRESS,
+                tokonow = ChosenAddressTokonow(
+                    shopId = newChosenAddress.tokonowModel.shopId.toString(),
+                    warehouseId = newChosenAddress.tokonowModel.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(newChosenAddress.tokonowModel.warehouses),
+                    serviceType = newChosenAddress.tokonowModel.serviceType
+                )
             )
             param.chosenAddress = chosenAddress
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
@@ -791,6 +799,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         afpbJob?.cancel()
+        eligibleForAddressUseCase.cancelJobs()
         super.onCleared()
     }
 

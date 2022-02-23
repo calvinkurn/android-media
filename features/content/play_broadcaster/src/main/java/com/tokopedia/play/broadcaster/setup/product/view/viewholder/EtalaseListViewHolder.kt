@@ -38,7 +38,7 @@ internal class EtalaseListViewHolder private constructor() {
     }
 
     internal class Body(
-        private val binding: ItemEtalaseListBodyBinding,
+        internal val binding: ItemEtalaseListBodyBinding,
         private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 

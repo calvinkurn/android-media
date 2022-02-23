@@ -29,6 +29,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -336,7 +337,7 @@ class AtcVariantViewModel @Inject constructor(
             )
             aggregatorData = result.variantAggregator
             minicartData = result.miniCartData?.toMutableMap()
-            if (aggregatorParams.pageSource == AtcVariantHelper.PDP_PAGESOURCE) {
+            if (aggregatorParams.pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
             }
         } else {

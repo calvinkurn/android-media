@@ -6,10 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
 import com.tokopedia.search.result.domain.model.HeadlineAdsModel
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
-import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
-import java.util.HashMap
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
         mutableListOf<GraphqlRequest>().apply {
@@ -203,6 +200,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     }
                     wishlist
                     applink
+                    customVideoURL
+                }
+                violation {
+                    headerText
+                    descriptionText
+                    imageURL
+                    ctaURL
+                    buttonText
+                    buttonType
                 }
             }
         }
