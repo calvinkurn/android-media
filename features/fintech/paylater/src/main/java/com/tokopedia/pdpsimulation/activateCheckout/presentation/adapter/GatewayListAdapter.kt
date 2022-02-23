@@ -34,7 +34,7 @@ class GatewayListAdapter(
         holder.bindData(gatewayDetailList[position],position)
     }
 
-    fun updateList(listOfGateway: List<CheckoutData>) {
+    fun updateFullList(listOfGateway: List<CheckoutData>) {
         this.gatewayDetailList = listOfGateway
         notifyDataSetChanged()
     }

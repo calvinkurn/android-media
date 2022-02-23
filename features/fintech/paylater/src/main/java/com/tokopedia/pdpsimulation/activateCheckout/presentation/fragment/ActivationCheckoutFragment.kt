@@ -678,8 +678,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         listOfTenureDetail[selectedTenurePosition].isSelectedTenure = false
         listOfTenureDetail[newPositionToSelect].isSelectedTenure = true
+        activationTenureAdapter.updatePartialList(listOfTenureDetail)
+        activationTenureAdapter.notifyItemChanged(selectedTenurePosition)
+        activationTenureAdapter.notifyItemChanged(newPositionToSelect)
         selectedTenurePosition = newPositionToSelect
         payLaterActivationViewModel.setTenure(tenureSelectedModel.tenure.toString())
-        activationTenureAdapter.updateList(listOfTenureDetail)
     }
 }

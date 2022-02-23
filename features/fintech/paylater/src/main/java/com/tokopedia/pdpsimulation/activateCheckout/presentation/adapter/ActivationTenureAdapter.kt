@@ -27,9 +27,14 @@ class ActivationTenureAdapter(
         return tenureDetailList.size
     }
 
-    fun updateList(newTenureList: List<TenureDetail>,) {
+    fun updateList(newTenureList: List<TenureDetail>) {
         this.tenureDetailList = newTenureList
         notifyDataSetChanged()
+    }
+
+    fun updatePartialList(newTenureList: List<TenureDetail>)
+    {
+        this.tenureDetailList = newTenureList
     }
 
     override fun onBindViewHolder(holder: TenureViewHolder, position: Int) {

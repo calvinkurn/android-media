@@ -84,7 +84,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                         if (listOfGateway.size > newPosition) {
                             sendClickAnalytics(listOfGateway[newPosition])
                         }
-                        gatewayListAdapter?.updateList(listOfGateway)
+                        gatewayListAdapter?.updateFullList(listOfGateway)
 
                     }
 
