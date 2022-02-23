@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
+import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
@@ -12,10 +13,7 @@ import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
-import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
-import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.getOrAwaitValue
+import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
@@ -135,27 +133,22 @@ class PlayBroadcastPrepareViewModelTest {
     }
 
     @Test
-    fun `when create livestream with uncropped cover, it should return error`() {
-        coverDataStore.setFullCover(PlayCoverUiModel.empty())
+    fun `given cover validation before livestream, when cover is uploaded, it should return true`() {
+        val mockUri = mockk<Uri>(relaxed = true)
 
-        viewModel.createLiveStream()
+        every { mockUri.toString().isEmpty() } returns false
 
-        val result = viewModel.observableCreateLiveStream.value
+        coverDataStore.setFullCover(PlayCoverUiModel(
+            croppedCover = CoverSetupState.Cropped.Uploaded(mockUri, mockUri, CoverSource.Camera),
+            state = SetupDataState.Uploaded
+        ))
 
-        Assertions
-                .assertThat(result)
-                .isInstanceOf(NetworkResult.Fail::class.java)
+        viewModel.isCoverAvailable().assertTrue()
     }
 
     @Test
-    fun `when create livestream with no cover, it should return error`() {
-        viewModel.createLiveStream()
-
-        val result = viewModel.observableCreateLiveStream.value
-
-        Assertions
-                .assertThat(result)
-                .isInstanceOf(NetworkResult.Fail::class.java)
+    fun `given cover validation before livestream, when cover is empty, it should return false`() {
+        viewModel.isCoverAvailable().assertFalse()
     }
 
     @Test
@@ -180,17 +173,6 @@ class PlayBroadcastPrepareViewModelTest {
     /** Setup Title */
     @Test
     fun `when user successfully upload title, it should emit network result success`() {
-        viewModel = PlayBroadcastPrepareViewModel(
-            dispatcher = dispatcherProvider,
-            hydraConfigStore = mockHydraDataStore,
-            setupDataStore = mockBroadcastSetupDataStore,
-            userSession = userSession,
-            channelConfigStore = channelConfigStore,
-            createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
-            mDataStore = dataStore,
-            playBroadcastMapper = playBroadcastMapper
-        )
-
         viewModel.uploadTitle("Test Title")
 
         val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
