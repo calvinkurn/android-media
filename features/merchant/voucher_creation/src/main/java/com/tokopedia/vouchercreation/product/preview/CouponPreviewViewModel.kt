@@ -215,24 +215,26 @@ class CouponPreviewViewModel @Inject constructor(
         val couponProductData = mutableListOf<CouponProduct>()
         selectedProducts.forEach { selectedProduct ->
             val isParentProductSelected = selectedProduct.isSelected
+
             if (isParentProductSelected) {
-                couponProductData.add(CouponProduct(
-                        id = selectedProduct.id,
-                        imageUrl = selectedProduct.imageUrl,
-                        soldCount = selectedProduct.sold
-                ))
-            }
-            if (selectedProduct.hasVariant) {
                 val variants = selectedProduct.variants
-                variants.forEach { variant ->
-                    val isVariantSelected = variant.isSelected
-                    if (isVariantSelected) {
-                        couponProductData.add(CouponProduct(
-                                id = variant.variantId,
-                                imageUrl = selectedProduct.imageUrl,
-                                soldCount = selectedProduct.sold
-                        ))
+                if (variants.isNotEmpty()) {
+                    variants.forEach { variant ->
+                        val isVariantSelected = variant.isSelected
+                        if (isVariantSelected) {
+                            couponProductData.add(CouponProduct(
+                                    id = variant.variantId,
+                                    imageUrl = selectedProduct.imageUrl,
+                                    soldCount = selectedProduct.sold
+                            ))
+                        }
                     }
+                } else {
+                    couponProductData.add(CouponProduct(
+                            id = selectedProduct.id,
+                            imageUrl = selectedProduct.imageUrl,
+                            soldCount = selectedProduct.sold
+                    ))
                 }
             }
         }

@@ -17,7 +17,6 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDe
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
-import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
@@ -127,7 +126,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
-        val couponInfoFragment = CreateCouponDetailFragment(couponInformationData)
+        val couponInfoFragment = CreateCouponDetailFragment(couponInformationData,
+            CreateCouponDetailFragment.PageMode.ADD)
         couponInfoFragment.setOnCouponSaved { coupon ->
             router.popFragment(supportFragmentManager)
             couponPreviewFragment.setCouponInformationData(coupon)

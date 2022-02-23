@@ -59,6 +59,7 @@ import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
+import com.tokopedia.vouchercreation.common.tracker.CouponListTracker
 import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
@@ -366,8 +367,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun setupFilterChips(view: View) {
-        val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
-        chip.parentListener = {
+        val sfVoucherList = view.findViewById<SortFilter>(R.id.sf_voucher_list)
+        sfVoucherList.parentListener = {
             val bottomSheet = CouponFilterBottomSheet.newInstance(
                 viewModel.selectedFilterType.value ?: CouponFilterBottomSheet.FilterType.NOT_SELECTED,
                 viewModel.selectedFilterTarget.value ?: CouponFilterBottomSheet.FilterTarget.NOT_SELECTED,
@@ -375,6 +376,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                 ::onResetFilter
             )
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
+            CouponListTracker().sendClickFilterImpression()
         }
 
         filterStatus.chevronListener = {
@@ -382,7 +384,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
 
         val sortFilterItems = arrayListOf(filterStatus, filterType, filterTarget)
-        chip.addItem(sortFilterItems)
+        sfVoucherList.addItem(sortFilterItems)
         filterTarget.initRemovableFilterItem {
             viewModel.setSelectedFilterTarget(CouponFilterBottomSheet.FilterTarget.NOT_SELECTED)
         }

@@ -58,6 +58,14 @@
         app:tickerType="error"
         app:titleText="@string/mvc_product_seller_location_warning_title" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/top_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="ticker_max_product_wording,ticker_seller_location_change"
+        app:layout_constraintTop_toBottomOf="@id/ticker_max_product_wording" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/empty_products_layout"
         android:layout_width="match_parent"
@@ -106,7 +114,7 @@
         android:layout_marginTop="@dimen/mvc_dimen_24dp"
         android:paddingBottom="@dimen/unify_space_8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sf_product_list">
+        app:layout_constraintTop_toTopOf="@id/top_barrier">
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cbu_select_all_product"
@@ -162,12 +170,12 @@
         android:id="@+id/product_list_swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_4"
         app:layout_constraintBottom_toTopOf="@id/du_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sf_product_list">
+        app:layout_constraintTop_toBottomOf="@id/selection_bar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product_list"

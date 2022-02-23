@@ -500,8 +500,8 @@
     <string name="mvc_max_product_limit_reached_message">Kamu tidak bisa tambah produk lagi, ya</string>
     <string name="mvc_no_products">Nggak ada Produk</string>
     <string name="mvc_add_coupon_product">Yuk, mulai tambah produk untuk kuponmu</string>
-    <string name="mvc_product_seller_location_warning_title">Kupon hanya bisa dipasang ke produk dari satu lokasi</string>
-    <string name="mvc_product_seller_location_warning_message">%s produk sudah ditambahkan\ndari %s. Hapus dulu produk yang\nterdaftar untuk mengubah lokasi,ya.</string>
+    <string name="mvc_product_seller_location_warning_title">Kupon hanya bisa dipasang ke produk\ndari satu lokasi</string>
+    <string name="mvc_product_seller_location_warning_message">%s produk sudah ditambahkan dari\n %s. Hapus dulu produk yang\nterdaftar untuk mengubah lokasi,ya.</string>
 
     <!-- more menu bottom sheet -->
     <string name="coupon_toaster_cta_oke">Oke</string>
