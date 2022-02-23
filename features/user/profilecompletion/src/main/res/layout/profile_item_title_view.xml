@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal"
+    android:gravity="center_vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/unify_space_16"
+    android:layout_marginRight="@dimen/unify_space_16"
+    android:layout_marginTop="@dimen/unify_space_12"
+    android:layout_marginBottom="@dimen/unify_space_24"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/profileItemTitle"
+        app:typographyType="heading_3"
+        tools:text="Info Pribadi"
+        android:textColor="@color/Unify_NN950"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:id="@+id/profileItemTitleIcon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"/>
+
+</LinearLayout>

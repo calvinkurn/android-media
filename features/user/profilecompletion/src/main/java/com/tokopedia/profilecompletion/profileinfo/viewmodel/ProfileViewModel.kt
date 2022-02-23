@@ -41,6 +41,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 val profileInfo = async { profileInfoUseCase(Unit) }
                 val profileRole = async { profileRoleUseCase(Unit) }
+
                 mutableProfileInfoUiData.value = ProfileInfoUiModel(
                     profileInfo.await().profileInfoData,
                     profileRole.await().profileRole
