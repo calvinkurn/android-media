@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="@+id/iv_product_image"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="Stok 5"
+        tools:text="Sisa 5"
         tools:visibility="visible" />
 
     <View
@@ -129,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
         android:orientation="horizontal"
         android:weightSum="10"
         app:layout_constraintBottom_toBottomOf="parent"

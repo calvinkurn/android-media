@@ -25,6 +25,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import java.util.Date
 import java.util.Calendar
+
 /**
  * @author by astidhiyaa on 27/01/22
  */
@@ -87,16 +88,10 @@ class ProductSectionViewHolder(
         tvTimerInfo.text = item.config.timerInfo
 
         when (item.config.type) {
-            ProductSectionType.Active -> {
+            ProductSectionType.Active, ProductSectionType.Upcoming -> {
                 tvTimerInfo.show()
                 timerSection.show()
-                timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
-                setupTimer(item)
-            }
-            ProductSectionType.Upcoming -> {
-                tvTimerInfo.show()
-                timerSection.show()
-                timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+                setupBackground(item.config.background)
                 setupTimer(item)
             }
             ProductSectionType.Other -> {
@@ -107,7 +102,6 @@ class ProductSectionViewHolder(
                 // todo: handle unknown section
             }
         }
-        setupBackground(item.config.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
     }
@@ -130,16 +124,21 @@ class ProductSectionViewHolder(
     private fun setupTimer(item : ProductSectionUiModel.Section) {
         timerTime = if(item.config.type == ProductSectionType.Active) item.config.endTime else item.config.startTime
 
+        timerSection.timerVariant = if(item.config.type == ProductSectionType.Active) TimerUnifySingle.VARIANT_MAIN else TimerUnifySingle.VARIANT_INFORMATIVE
+
         val convertedServerTime = item.config.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val convertedTimerTime = timerTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
         val dt = DateUtil.getCurrentCalendar().apply {
                 val diff = convertedTimerTime.time - getTimeDiff(serverTime = convertedServerTime, currentTime = time).time
-                add(Calendar.MILLISECOND, diff.toInt())
+                add(Calendar.SECOND, ((diff / 1000) % 60).toInt())
+                add(Calendar.MINUTE, (((diff / 1000) / 60) % 60).toInt())
+                add(Calendar.HOUR, (((diff / 1000) / 60) / 60).toInt())
             }
-            timerSection.pause()
             timerSection.targetDate = dt
-            timerSection.resume()
+            timerSection.onFinish = {
+                listener.onTimerExpired(item)
+            }
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
