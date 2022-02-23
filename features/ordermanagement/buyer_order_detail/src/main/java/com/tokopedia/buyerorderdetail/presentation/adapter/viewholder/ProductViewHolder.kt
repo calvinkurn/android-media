@@ -35,6 +35,8 @@ open class ProductViewHolder(
 
     private var partialProductAddonViewHolder: PartialProductAddonViewHolder? = null
 
+    private var partialProductItemViewStub: View? = null
+
     private var partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding? =
         null
 
@@ -67,7 +69,13 @@ open class ProductViewHolder(
 
     private fun setupProductList(item: ProductListUiModel.ProductUiModel) {
         inflateViewStub()
-        partialProductItemViewHolder = PartialProductItemViewHolder(itemView, listener, navigator, item)
+        partialProductItemViewHolder = PartialProductItemViewHolder(
+            itemView,
+            partialProductItemViewStub,
+            listener,
+            navigator,
+            item
+        )
         setupProductThumbnail(item.productThumbnailUrl)
         setupButton(item.button, item.isProcessing)
     }
@@ -75,9 +83,11 @@ open class ProductViewHolder(
     private fun inflateViewStub() {
         val productListViewStub: View = itemView.findViewById(R.id.itemBomDetailProductViewStub)
         if (productListViewStub is ViewStub) {
-            val viewStub = productListViewStub.inflate()
-            ivBuyerOrderDetailProductThumbnail = viewStub.findViewById(R.id.ivBuyerOrderDetailProductThumbnail)
-            btnBuyerOrderDetailBuyProductAgain = viewStub.findViewById(R.id.btnBuyerOrderDetailBuyProductAgain)
+            partialProductItemViewStub = productListViewStub.inflate()
+            ivBuyerOrderDetailProductThumbnail =
+                partialProductItemViewStub?.findViewById(R.id.ivBuyerOrderDetailProductThumbnail)
+            btnBuyerOrderDetailBuyProductAgain =
+                partialProductItemViewStub?.findViewById(R.id.btnBuyerOrderDetailBuyProductAgain)
         } else {
             productListViewStub.show()
         }

@@ -11,13 +11,12 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class PartialProductItemViewHolder(
     private val itemView: View?,
+    partialProductItemViewStub: View?,
     private val listener: ProductViewListener,
     private val navigator: BuyerOrderDetailNavigator,
     private var element: ProductListUiModel.ProductUiModel
@@ -26,15 +25,15 @@ class PartialProductItemViewHolder(
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
     private val tvBuyerOrderDetailProductName =
-        itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductName)
+        partialProductItemViewStub?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductName)
     private val tvBuyerOrderDetailProductPriceQuantity =
-        itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceQuantity)
+        partialProductItemViewStub?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceQuantity)
     private val tvBuyerOrderDetailProductNote =
-        itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductNote)
+        partialProductItemViewStub?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductNote)
     private val tvBuyerOrderDetailProductPriceValue =
-        itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
+        partialProductItemViewStub?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
     private val itemBomDetailProductViewStub =
-        itemView?.findViewById<View>(R.id.itemBomDetailProductViewStub)
+        partialProductItemViewStub?.findViewById<View>(R.id.itemBomDetailProductViewStub)
 
     private val context = itemView?.context
 
