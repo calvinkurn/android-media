@@ -181,6 +181,44 @@ class PlayBroInteractiveViewModel {
     }
 
     @Test
+    fun `when user starts livestreaming, get interactive config and interactive config is active & finish, it should emit interactive finish state`() {
+
+        val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
+            timeStatus = PlayInteractiveTimeStatus.Finished
+        )
+
+        val mockCoachMark = BroadcastInteractiveCoachMark.HasCoachMark("", "")
+        val mockHasPrevious = BroadcastInteractiveInitState.HasPrevious(
+            coachMark = mockCoachMark
+        )
+        val mockExpectedState = BroadcastInteractiveState.Allowed.Init(
+            state = mockHasPrevious
+        )
+
+        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getCurrentInteractive(any()) } returns mockCurrentInteractive
+        coEvery { mockRepo.getInteractiveLeaderboard(any(), any()) } returns mockLeaderboardInfoResponse
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
+
+        rule.runBlockingTest {
+            robot.getViewModel().startLiveStream(true)
+            advanceTimeBy(interactiveGqlLeaderboardDelay)
+
+            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
+            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
+
+            configResult.assertEqualTo(mockInteractiveConfigResponse)
+            stateResult.assertEqualTo(mockExpectedState)
+        }
+    }
+
+    @Test
     fun `when user starts livestreaming, get interactive config and interactive config is active but the status is unknown, it should emit interactive with no previous state`() {
         val mockIsFirstInteractive = true
         val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
@@ -329,7 +367,7 @@ class PlayBroInteractiveViewModel {
             sharedPref = mockSharedPref,
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getViewModelPrivateField<Long>("INTERACTIVE_GQL_LEADERBOARD_DELAY")
+        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
 
         rule.runBlockingTest {
             launch {
@@ -361,7 +399,7 @@ class PlayBroInteractiveViewModel {
             sharedPref = mockSharedPref,
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getViewModelPrivateField<Long>("INTERACTIVE_GQL_LEADERBOARD_DELAY")
+        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
 
         rule.runBlockingTest {
             launch {
@@ -391,7 +429,7 @@ class PlayBroInteractiveViewModel {
             sharedPref = mockSharedPref,
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getViewModelPrivateField<Long>("INTERACTIVE_GQL_LEADERBOARD_DELAY")
+        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
 
         rule.runBlockingTest {
             launch {
