@@ -126,6 +126,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private var couponId : Long = -1
     private var maxAllowedProduct = 0
     private var showCouponDuplicatedToaster : () -> Unit = {}
+    private var selectedProductCount = 0
 
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
@@ -252,8 +253,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
 
                     val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
-                    this.selectedProducts = selectedProducts.toMutableList()
-                    refreshProductsSection(selectedProducts)
+                    this.selectedProductCount = selectedProducts.size
+
+                    refreshProductsSection(selectedProducts.size)
 
                     binding.tpgMaxProduct.text = String.format(
                         getString(R.string.placeholder_max_product),
@@ -387,7 +389,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun refreshCouponDetail() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
-        refreshProductsSection(selectedProducts)
+        refreshProductsSection(selectedProductCount)
         viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
         hideLoading()
         showContent()
@@ -510,14 +512,15 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun refreshProductsSection(selectedProducts: List<ProductUiModel>) {
-        binding.tpgUpdateProduct.isVisible = selectedProducts.isNotEmpty()
-        if (selectedProducts.isNotEmpty()) {
+    private fun refreshProductsSection(selectedProductsCount : Int) {
+        binding.tpgUpdateProduct.isVisible = selectedProductsCount > 0
+
+        if (selectedProductsCount > 0) {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.completed))
 
             binding.tpgProductCount.text =
-                    String.format(getString(R.string.placeholder_registered_product), selectedProducts.size, maxAllowedProduct)
+                    String.format(getString(R.string.placeholder_registered_product), selectedProductsCount, maxAllowedProduct)
         } else {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.incomplete))
@@ -786,10 +789,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         onNavigateToManageProductPage(coupon)
     }
 
-
-    private fun showLoading() {
-        binding.loader.visible()
-    }
 
     private fun hideLoading() {
         binding.loader.gone()
