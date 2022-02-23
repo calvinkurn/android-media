@@ -231,6 +231,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val id = viewModel.getSelectedPositionId(dataFactory.getInvalidListDenomData())
         verifyGetSelectedPositionNull(id)
     }
+
     @Test
     fun `when getting catalogInputMultitab should run and give success result and updated data filter`() = testCoroutineRule.runBlockingTest {
         val response = dataFactory.getCatalogInputMultiTabData()

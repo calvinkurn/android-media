@@ -139,10 +139,6 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any()) }
     }
 
-    protected fun verifyGetProductInputMultiTabRepoIsRefreshedWasNotCalled() {
-        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any()) wasNot Called }
-    }
-
     protected fun verifyAddToCartRepoGetCalled() {
         coVerify { repo.addToCart(any(), any(), any(), any()) }
     }
@@ -263,32 +259,32 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyCheckoutPassDataCategoryIdEmpty() {
         val actualCategoryId = viewModel.digitalCheckoutPassData.categoryId
-        Assert.assertTrue(actualCategoryId == DigitalPDPPulsaViewModelTestFixture.EMPTY || actualCategoryId == null)
+        Assert.assertTrue(actualCategoryId == EMPTY || actualCategoryId == null)
     }
 
     protected fun verifyValidateClientNumberTrue() {
         Assert.assertTrue(viewModel.isEligibleToBuy)
         Assert.assertEquals(viewModel.clientNumberValidatorMsg.value,
-            DigitalPDPPulsaViewModelTestFixture.EMPTY
+            EMPTY
         )
     }
 
     protected fun verifyValidateClientNumberFalse() {
         Assert.assertFalse(viewModel.isEligibleToBuy)
         Assert.assertNotEquals(viewModel.clientNumberValidatorMsg.value,
-            DigitalPDPPulsaViewModelTestFixture.EMPTY
+            EMPTY
         )
     }
 
     protected fun verifySelectedFullProductNonEmpty() {
         Assert.assertEquals(viewModel.selectedFullProduct.position,
-            DigitalPDPPulsaViewModelTestFixture.POSITION_0
+            POSITION_0
         )
     }
 
     protected fun verifySelectedFullProductEmpty() {
         Assert.assertEquals(viewModel.selectedFullProduct.position,
-            DigitalPDPPulsaViewModelTestFixture.POSITION_DEFAULT
+            POSITION_DEFAULT
         )
     }
 
