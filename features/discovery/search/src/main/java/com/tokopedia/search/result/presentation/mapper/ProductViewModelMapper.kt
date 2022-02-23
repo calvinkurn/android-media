@@ -24,7 +24,6 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
@@ -34,7 +33,9 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.violation.ViolationDataView
 
 class ProductViewModelMapper {
 
@@ -100,6 +101,7 @@ class ProductViewModelMapper {
         productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
         productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
+        productDataView.violation = convertToViolationView(searchProductData.violation)
 
         return productDataView
     }
@@ -254,6 +256,7 @@ class ProductViewModelMapper {
         productItem.pageTitle = pageTitle
         productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
+        productItem.customVideoURL = productModel.customVideoURL
         return productItem
     }
 
@@ -400,5 +403,9 @@ class ProductViewModelMapper {
             filterList = lastFilterData.filters,
             title = lastFilterData.title,
         )
+    }
+
+    private fun convertToViolationView(violation: SearchProductModel.Violation) : ViolationDataView? {
+        return ViolationDataView.create(violation)
     }
 }

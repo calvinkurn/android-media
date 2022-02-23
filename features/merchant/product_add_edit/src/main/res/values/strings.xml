@@ -490,4 +490,14 @@
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
 
+    <!-- CPL -->
+    <string name="title_cpl">Layanan Pengiriman</string>
+    <string name="description_cpl">Atur layanan pengiriman sesuai jenis produkmu.</string>
+    <string name="cpl_standard_shipment">Standar</string>
+    <string name="cpl_custom_shipment">Custom</string>
+    <string name="cpl_custom_on_demand">Dijemput Kurir</string>
+    <string name="cpl_custom_on_demand_button">Ubah</string>
+    <string name="cpl_custom_agen">Antar ke Kantor Agen</string>
+    <string name="cpl_custom_agen_button">Ubah</string>
+
 </resources>

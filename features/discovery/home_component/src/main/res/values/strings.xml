@@ -7,6 +7,7 @@
     <string name="discovery_home_see_more_dc_mix">Lihat Produk Lainnya</string>
 
     <string name="discovery_home_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
+    <string name="discovery_home_product_highlight_title_with_ellipsize_format">%s…</string>
 
     <string name="content_desc_lego_image">image lego item</string>
 

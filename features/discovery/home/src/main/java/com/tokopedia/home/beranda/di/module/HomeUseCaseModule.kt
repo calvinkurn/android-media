@@ -57,6 +57,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
@@ -319,8 +320,8 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
     }
 
     @HomeScope

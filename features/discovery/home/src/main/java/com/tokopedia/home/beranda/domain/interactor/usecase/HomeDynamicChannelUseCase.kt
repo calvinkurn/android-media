@@ -275,15 +275,16 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         )
                         newFindRechargeRecommendationViewModel
                     }
-                }
 
-                emit(dynamicChannelPlainResponse.copy(
+
+                    emit(dynamicChannelPlainResponse.copy(
                         isCache = false
-                ))
+                    ))
 
-                val needToGetRecom = dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
-                if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
-                    getFeedTabData(dynamicChannelPlainResponse)
+                    val needToGetRecom = dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
+                    if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
+                        getFeedTabData(dynamicChannelPlainResponse)
+                    }
                 }
 
                 emit(dynamicChannelPlainResponse.copy(
