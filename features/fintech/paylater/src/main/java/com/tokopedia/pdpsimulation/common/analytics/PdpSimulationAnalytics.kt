@@ -119,8 +119,8 @@ class PdpSimulationAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
-            OCC_CHANGE_PARTNER_ACTION,
             OCC_EVENT_CATEGORY,
+            OCC_CHANGE_PARTNER_ACTION,
             " $productId -$userStatus -LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
@@ -139,8 +139,8 @@ class PdpSimulationAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
-            BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION,
             OCC_EVENT_CATEGORY,
+            BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION,
             " $productId -$userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
@@ -160,8 +160,8 @@ class PdpSimulationAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
-            OCC_CHANGE_VARIANT_ACTION,
             OCC_EVENT_CATEGORY,
+            OCC_CHANGE_VARIANT_ACTION,
             " $productId - $userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )
@@ -181,8 +181,8 @@ class PdpSimulationAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
-            OCC_EVENT_ACTION,
             OCC_EVENT_CATEGORY,
+            OCC_EVENT_ACTION,
             " $productId -$userStatus - LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
 
         )

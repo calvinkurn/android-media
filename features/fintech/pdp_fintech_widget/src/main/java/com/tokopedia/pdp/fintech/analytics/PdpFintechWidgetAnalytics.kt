@@ -38,8 +38,8 @@ class PdpFintechWidgetAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             clickEvent,
-            clickActivationAction,
             eventCategoryBottomSheet,
+            clickActivationAction,
             "$userStatus - $linkingStatus - $partner - $userStatus - $ctaWording"
 
         )
@@ -64,8 +64,8 @@ class PdpFintechWidgetAnalytics @Inject constructor(
     ) {
         val map = TrackAppUtils.gtmData(
             viewEvent,
-            pdpBnplImpression,
             eventCategory,
+            pdpBnplImpression,
             "$productId - Yes - ${linkingStatus} - ${userSession.get().userId} - $userStatus - $chipType - $partnerId"
 
         )
