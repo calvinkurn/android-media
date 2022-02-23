@@ -17,6 +17,8 @@ class PlayVideoLiveListActivity : BaseSimpleActivity() {
             val bundle = Bundle()
             intent.extras?.let {
                 bundle.putString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE, it.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE))
+                bundle.putString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE, it.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE))
+                bundle.putString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID, it.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID))
             }
             return PlayFeedSeeMoreFragment.createInstance(bundle)
         }

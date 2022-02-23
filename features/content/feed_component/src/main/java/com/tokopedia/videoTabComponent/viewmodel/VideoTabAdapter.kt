@@ -3,12 +3,16 @@ package com.tokopedia.videoTabComponent.viewmodel
 import android.app.Activity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
+import com.tokopedia.videoTabComponent.domain.mapper.WIDGET_UPCOMING
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
@@ -54,29 +58,32 @@ class VideoTabAdapter(
 
     fun getCurrentHeader() = mCurrentHeader
 
-    fun updateList(mappedData: List<PlayFeedUiModel>) {
+    fun updateList(mappedData: List<PlayFeedUiModel>, sourceId: String, sourceType: String) {
+        val feedPlayLehatSemuaApplink = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID}=$sourceId&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE}=$sourceType"
+
         val newList = mutableListOf<PlayFeedUiModel>()
         for (item in itemList) {
             newList.add(item)
             if (item is PlaySlotTabMenuUiModel) break
         }
         if (slotPosition == null) slotPosition = newList.size - 1
-        newList.addAll(mappedData)
+        mappedData.forEach {  playFeedUiModel ->
+            if (playFeedUiModel is PlayWidgetMediumUiModel) {
+                val model: PlayWidgetUiModel = if (isUpcomingChannel(playFeedUiModel))
+                    playFeedUiModel.model.copy(actionAppLink = feedPlayLehatSemuaApplink)
+                else
+                    playFeedUiModel.model.copy()
+                val updatedItem = playFeedUiModel.copy(model = model)
+                newList.add(updatedItem)
+            } else {
+                newList.add(playFeedUiModel)
+            }
+
+        }
         setItems(newList)
         notifyDataSetChanged()
 
-        /*itemList.forEachIndexed { index, playFeedUiModel ->
-            if (getItem(index) is PlayWidgetLargeUiModel && getItem(index - 1) is PlaySlotTabMenuUiModel) {
-                var item: PlayWidgetLargeUiModel ?= null
-                mappedData.forEach { if (it is PlayWidgetLargeUiModel) item = it }
 
-                item?.let {
-                    (getItem(index) as PlayWidgetLargeUiModel).model = it.model
-                }
-                notifyItemChanged(index)
-                return@forEachIndexed
-            }
-        }*/
     }
 
     fun isStickyHeaderView(it: Int): Boolean {
@@ -101,6 +108,7 @@ class VideoTabAdapter(
 
     fun updateItemInList(position: Int, channelId: String, reminderType: PlayWidgetReminderType) {
         val list = mutableListOf<PlayFeedUiModel>()
+        //update adapter list item at a particular position
         itemList.forEachIndexed { index, playFeedUiModel ->
             if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
                 val model = (itemList[position] as PlayWidgetMediumUiModel)
@@ -121,5 +129,15 @@ class VideoTabAdapter(
                     else mediumWidget
                 }
         )
+    }
+    private fun isUpcomingChannel(playFeedUiModel: PlayWidgetMediumUiModel): Boolean {
+        val channelList = playFeedUiModel.model.items
+        if (channelList.isNotEmpty()){
+            val firstChannelItem =  playFeedUiModel.model.items.first()
+         return firstChannelItem is PlayWidgetChannelUiModel && firstChannelItem.channelType == PlayWidgetChannelType.Upcoming
+        }
+
+        return false
+
     }
 }

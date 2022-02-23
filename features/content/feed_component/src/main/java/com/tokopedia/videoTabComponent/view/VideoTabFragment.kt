@@ -25,6 +25,7 @@ import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
@@ -53,6 +54,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var isScrollingUp = false
 
     companion object {
 
@@ -73,6 +75,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     @Inject
     lateinit var analyticListener: PlayAnalyticsTracker
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var playWidgetAnalyticsListenerImp: PlayWidgetAnalyticsListenerImp
@@ -118,7 +123,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         playFeedVideoTabViewModel.run {
             reminderObservable.observe(viewLifecycleOwner, Observer {
                 when (it) {
-                    is Success -> if (it.data != null) onSuccessReminderSet(it.data)
+                    is Success -> onSuccessReminderSet(it.data)
                     else -> {
                         showToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), Toaster.TYPE_ERROR)
                     }
@@ -208,7 +213,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         adapter.addItemsAndAnimateChanges(
             FeedPlayVideoTabMapper.map(
                 playDataResponse.data,
-                playDataResponse.meta
+                playDataResponse.meta,
+                shopId = userSession.shopId
             )
         )
 
@@ -220,16 +226,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     ) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta)
+        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, shopId = userSession.shopId)
 
-        adapter.updateList(mappedData)
-        //adapter.setItemsAndAnimateChanges(mappedData)
+        adapter.updateList(mappedData, playFeedVideoTabViewModel.currentSourceId, playFeedVideoTabViewModel.currentSourceType)
 
-        /*mappedData.forEachIndexed { index, playFeedUiModel ->
-            if(playFeedUiModel is PlaySlotTabMenuUiModel) {
-                rvWidget?.scrollLayout(index)
-            }
-        }*/
     }
 
     override fun onToggleReminderClicked(
@@ -349,13 +349,22 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
-                rvWidget?.setShouldShowStickyHeaderValue(false)
+                if (dy > 0) {
+                    // Scrolling up
+                        isScrollingUp = true
+                    rvWidget?.setShouldShowStickyHeaderValue(false, 0L)
+                } else {
+                    // Scrolling down
+                        isScrollingUp = false
+                    rvWidget?.setShouldShowStickyHeaderValue(true, 0L)
+                }
+
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    rvWidget?.setShouldShowStickyHeaderValue(true)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isScrollingUp)
+                    rvWidget?.setShouldShowStickyHeaderValue(true, 3000)
             }
         }
     }
@@ -384,7 +393,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
         adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
-//        adapter.notifyItemChanged(adapterPositionForItem)
 
     }
 

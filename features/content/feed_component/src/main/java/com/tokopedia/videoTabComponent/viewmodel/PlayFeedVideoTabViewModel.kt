@@ -47,8 +47,8 @@ class PlayFeedVideoTabViewModel@Inject constructor(
      var currentCursor = ""
      var currentLivePageCursor = ""
 
-    private var currentSourceType = ""
-    private var currentSourceId = ""
+     var currentSourceType = ""
+     var currentSourceId = ""
     private var currentGroup = DEFAULT_GROUP_VALUE
     private var currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
     val getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
@@ -96,18 +96,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             getPlayInitialDataRsp.value = Fail(it)
         }
     }
-    private fun getAppendedList(data: ContentSlotResponse) : List<PlaySlot>{
-        val dataList = mutableListOf<PlaySlot>()
-        if (getPlayInitialDataRsp.value != null && getPlayInitialDataRsp.value is Success) {
-            val initialResponse = (getPlayInitialDataRsp.value as Success<ContentSlotResponse>).data
-            dataList.addAll(initialResponse.playGetContentSlot.data)
-        }
-        if (getPlayDataRsp.value != null && getPlayDataRsp.value is Success) {
-            val secondResponse = (getPlayDataRsp.value as Success<ContentSlotResponse>).data
-            dataList.addAll(secondResponse.playGetContentSlot.data)
-        }
-        return dataList
-    }
+
 
     fun getPlayData(isClickFromTabMenu: Boolean, videoPageParams: VideoPageParams?) {
         if (isClickFromTabMenu){
@@ -125,11 +114,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             currentCursor = results.playGetContentSlot.meta.next_cursor
             if (isClickFromTabMenu) {
                 getPlayDataForSlotRsp.value = Success(results)
-                /*var data = results
-                val appendedList = getAppendedList(data)
-                data.isDataFromTabClick = isClickFromTabMenu
-                data.playGetContentSlot.appendeList = appendedList
-                getPlayDataRsp.value = Success(data)*/
+
             } else {
                 getPlayDataRsp.value = Success(results)
             }
@@ -138,7 +123,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             getPlayDataRsp.value = Fail(it)
         }
     }
-    fun getLivePlayData(widgetType: String){
+    fun getLivePlayData(widgetType: String, sourceId: String = "", sourceType: String) {
         if (widgetType == WIDGET_LIVE)
             currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
         else if (widgetType == WIDGET_UPCOMING)
@@ -147,7 +132,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
 
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                getLivePlayPageDataResult()
+                getLivePlayPageDataResult(sourceId, sourceType)
             }
             currentLivePageCursor = results.playGetContentSlot.meta.next_cursor
 
@@ -217,9 +202,9 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             throw e
         }
     }
-    private suspend fun getLivePlayPageDataResult(): ContentSlotResponse {
+    private suspend fun getLivePlayPageDataResult(sourceId: String, sourceType: String): ContentSlotResponse {
         try {
-            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = "", sourceType = "", group = currentGroupSeeMorePage))
+            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = sourceId, sourceType = sourceType, group = currentGroupSeeMorePage))
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e

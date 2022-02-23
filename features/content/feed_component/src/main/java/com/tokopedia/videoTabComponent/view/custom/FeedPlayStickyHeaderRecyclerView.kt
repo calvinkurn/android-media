@@ -71,13 +71,13 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
             recyclerView.scrollLayout(position)
     }
 
-    fun setShouldShowStickyHeaderValue(shouldShow: Boolean) {
+    fun setShouldShowStickyHeaderValue(shouldShow: Boolean, time: Long) {
         this.shouldShowStickyHeader = shouldShow
         if (shouldShowStickyHeader){
 
             handlerView?.postDelayed(
                 runnable
-            , 3000)
+            , time)
         }else {
             handlerView?.removeCallbacks(runnable)
         }

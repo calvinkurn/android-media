@@ -80,6 +80,7 @@ const val GQL_QUERY : String = """
             }
             promo_labels {
               text
+              type
             }
           }
           app_link

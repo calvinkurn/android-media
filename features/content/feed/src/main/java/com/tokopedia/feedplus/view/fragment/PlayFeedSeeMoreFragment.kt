@@ -24,6 +24,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.*
@@ -38,8 +39,9 @@ import javax.inject.Inject
 class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     private val rvWidgetSample by lazy(LazyThreadSafetyMode.NONE) { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
-    private val widgetType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE)?:""
-    }
+    private val widgetType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE)?:""}
+    private val sourceType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE)?:""}
+    private val sourceId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID)?:"" }
 
     private lateinit var adapter: PlaySeeMoreAdapter
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
@@ -55,6 +57,9 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var playWidgetAnalyticsListenerImp: PlayWidgetAnalyticsListenerImp
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
 
 
@@ -114,7 +119,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentLivePageCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta))
+        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, shopId = userSession.shopId))
 
     }
 
@@ -123,7 +128,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setUpShopDataHeader()
-        playFeedVideoTabViewModel.getLivePlayData(widgetType)
+        playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
     }
     private fun setupView(view: View) {
         adapter = PlaySeeMoreAdapter(
@@ -140,7 +145,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {
         return object : EndlessRecyclerViewScrollListener(rvWidgetSample?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                playFeedVideoTabViewModel.getLivePlayData(widgetType)
+                playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
             }
         }
     }
