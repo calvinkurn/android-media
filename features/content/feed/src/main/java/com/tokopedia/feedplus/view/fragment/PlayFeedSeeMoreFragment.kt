@@ -21,7 +21,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.playseemore.PlaySeeMoreAda
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -102,8 +101,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                 when (it) {
                     is Success -> {
                         onSuccessPlayTabData(
-                                it.data.playGetContentSlot,
-                                it.data.playGetContentSlot.meta.next_cursor
+                                it.data.playGetContentSlot
                         )
                     }
                     is Fail -> {
@@ -116,7 +114,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
         }
     }
-    private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
+    private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentLivePageCursor.isNotEmpty())
         adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, shopId = userSession.shopId))
@@ -142,7 +140,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
         rvWidgetSample?.adapter = adapter
     }
-    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener? {
+    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(rvWidgetSample?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
@@ -150,16 +148,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         }
     }
 
-    private fun getSampleWidgets(): List<PlayFeedUiModel> {
-        return listOf(
-                PlayWidgetLargeUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget()
-                ),
-                PlayWidgetLargeUiModel(
-                        PlayWidgetUiMock.getSamplePlayWidget()
-                )
-        )
-    }
     private fun setUpShopDataHeader() {
         (activity as PlayVideoLiveListActivity).getShopInfoLayout()?.run {
             shopHeader.text =

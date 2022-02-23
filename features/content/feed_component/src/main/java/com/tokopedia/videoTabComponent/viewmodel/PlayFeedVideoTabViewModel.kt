@@ -69,6 +69,13 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         get() = _reminderObservable
 
 
+    fun setDefaultValuesOnRefresh(){
+        currentCursor = ""
+        currentGroup = DEFAULT_GROUP_VALUE
+        currentSourceId = ""
+        currentSourceType = ""
+
+    }
 
     fun getInitialPlayData(){
         launchCatchError(block = {

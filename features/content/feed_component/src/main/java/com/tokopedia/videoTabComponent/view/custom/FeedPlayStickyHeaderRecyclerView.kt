@@ -25,7 +25,6 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
     private val headerRecyclerView: FrameLayout
-    private val headerVisibilityJob: Job
     private val recyclerView: RecyclerView
     private var headerItemDecoration: FeedHeaderItemDecoration? = null
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -39,10 +38,6 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
         with(view) {
             headerRecyclerView = findViewById(R.id.header_recycler_view)
             recyclerView = findViewById(R.id.recycler_view)
-        }
-        headerVisibilityJob = scope.launch {
-            delay(3000)
-            headerRecyclerView.visible()
         }
 
     }
@@ -63,6 +58,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
 
     }
     private fun getRunnableForHeaderVisibility() = Runnable {
+            if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE)
             headerRecyclerView.visible()
     }
 

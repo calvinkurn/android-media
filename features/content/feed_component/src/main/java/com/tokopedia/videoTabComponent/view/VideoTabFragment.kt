@@ -11,9 +11,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
@@ -43,9 +45,10 @@ import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import javax.inject.Inject
 
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
-    PlaySlotTabCallback {
+    PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener {
 
     private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_widget_sample_feed) }
+    private val swipeToRefresh by lazy { view?.findViewById<SwipeToRefresh>(R.id.video_tab_swipe_refresh_layout) }
 
     private lateinit var adapter: VideoTabAdapter
     private val playFeedVideoTabViewModel: PlayFeedVideoTabViewModel by lazy {
@@ -130,42 +133,43 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 }
             })
             getPlayInitialDataRsp.observe(lifecycleOwner, Observer {
-//                hideAdapterLoading()
                 when (it) {
                     is Success -> {
                         setAdapter()
                         playWidgetAnalyticsListenerImp.filterCategory =
                             FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)[0].title
-                        onSuccessPlayTabData(
-                            it.data.playGetContentSlot,
-                            it.data.playGetContentSlot.meta.next_cursor
+                        onSuccessInitialPlayTabData(
+                            it.data.playGetContentSlot
                         )
                     }
                     is Fail -> {
+                        hideLoading()
+
                         //TODO implement error case
 //                        fetchFirstPage()
                     }
                 }
             })
             getPlayDataForSlotRsp.observe(lifecycleOwner) {
+                hideLoading()
                 when (it) {
                     is Success -> {
                         onSuccessPlayTabDataFromChipClick(
-                            it.data.playGetContentSlot,
-                            it.data.playGetContentSlot.meta.next_cursor
+                            it.data.playGetContentSlot
                         )
                     }
                     is Fail -> {
+                        //TODO implement error case
 
                     }
                 }
             }
             getPlayDataRsp.observe(lifecycleOwner, Observer {
+                hideLoading()
                 when (it) {
                     is Success -> {
                         onSuccessPlayTabData(
-                            it.data.playGetContentSlot,
-                            it.data.playGetContentSlot.meta.next_cursor
+                            it.data.playGetContentSlot
                         )
                     }
                     is Fail -> {
@@ -182,6 +186,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         analyticListener.visitVideoTabPageOnFeed(2)
+        swipeToRefresh?.isRefreshing = true
+        swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
         setupView(view)
         playWidgetCoordinator.onResume()
@@ -193,6 +199,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             rvWidget?.addOnScrollListener(it)
             it.resetState()
         }
+        swipeToRefresh?.setOnRefreshListener(this)
 
         setAdapter()
     }
@@ -206,8 +213,20 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             }
         }
     }
+    private fun onSuccessInitialPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
 
-    private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse, cursor: String) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
+        adapter.setItemsAndAnimateChanges(
+                FeedPlayVideoTabMapper.map(
+                        playDataResponse.data,
+                        playDataResponse.meta,
+                        shopId = userSession.shopId
+                )
+        )
+    }private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
+
+        swipeToRefresh?.isEnabled = true
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
         adapter.addItemsAndAnimateChanges(
@@ -221,8 +240,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun onSuccessPlayTabDataFromChipClick(
-        playDataResponse: PlayGetContentSlotResponse,
-        cursor: String
+        playDataResponse: PlayGetContentSlotResponse
     ) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
@@ -394,6 +412,19 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
         adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
 
+    }
+
+    override fun onRefresh() {
+        playFeedVideoTabViewModel.setDefaultValuesOnRefresh()
+        requireActivity().clearTabMenuPosition()
+        swipeToRefresh?.isRefreshing = true
+        swipeToRefresh?.isEnabled = false
+        playFeedVideoTabViewModel.getInitialPlayData()
+    }
+
+    private fun hideLoading() {
+        swipeToRefresh?.isRefreshing = false
+        swipeToRefresh?.isEnabled = true
     }
 
 
