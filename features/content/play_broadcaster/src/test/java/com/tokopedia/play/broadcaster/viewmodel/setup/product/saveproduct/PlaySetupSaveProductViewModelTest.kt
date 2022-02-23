@@ -35,12 +35,14 @@ class PlaySetupSaveProductViewModelTest {
     private val mockException = uiModelBuilder.buildException()
 
     @Test
-    fun `when user wants to save products and success, it should trigger trigger event success`() {
+    fun `when user wants to save products and success, it should trigger event success`() {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
+
+        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
 
         robot.use {
             runBlockingTest {
@@ -53,7 +55,31 @@ class PlaySetupSaveProductViewModelTest {
 
             state[1].saveState.isLoading.assertEqualTo(true)
             state[2].saveState.isLoading.assertEqualTo(false)
+            state[2].selectedProductSectionList.assertEqualTo(mockProductTagSectionList)
             event.last().assertEqualTo(PlayBroProductChooserEvent.SaveProductSuccess)
+        }
+    }
+
+    @Test
+    fun `when user wants to save products and success, it should load product section tag`() {
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockProductTagSectionList,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
+
+        robot.use {
+            runBlockingTest {
+                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+            }
+
+            val state = robot.recordSummaryState {
+                robot.submitAction(ProductSetupAction.SaveProducts)
+            }
+
+            state.productTagSectionList.assertEqualTo(mockProductTagSectionList)
         }
     }
 
