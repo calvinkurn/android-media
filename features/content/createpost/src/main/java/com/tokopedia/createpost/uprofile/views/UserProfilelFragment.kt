@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,14 +16,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.*
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
+import com.tokopedia.createpost.uprofile.model.Profile
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
+import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
@@ -37,6 +41,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    var landedUserName: String? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -67,15 +73,20 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         initObserver()
         initListener()
         setHeader()
-        val userSessionInterface = UserSession(context)
-        mPresenter.getUserDetails(userSessionInterface.userId)
-        mPresenter.getUPlayVideos( "feeds-profile","","buyer","5510248")
-        initUserPost()
-    }
 
-    private fun initObserver() {
-        observeUserProfile()
-        addListObserver()
+        if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
+            //TODO show error page
+            activity?.finish()
+        }
+
+        landedUserName = requireArguments().getString(EXTRA_USERNAME)
+
+
+        landedUserName?.let {
+            initUserPost()
+            mPresenter.getUserDetails(it)
+            mPresenter.getUPlayVideos(VAL_FEEDS_PROFILE, "", VAL_SOURCE_BUYER, it)
+        }
     }
 
     private fun initListener() {
@@ -99,13 +110,18 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         mAdapter.startDataLoading()
     }
 
-    private fun observeUserProfile() =
+    private fun initObserver() {
+        addUserProfileObserver()
+        addListObserver()
+    }
+
+    private fun addUserProfileObserver() =
         mPresenter.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> showLoader()
                     is ErrorMessage -> {
-
+                        //TODO show error page
                     }
                     is Success -> {
                         setMainUi(it.data)
@@ -114,22 +130,28 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
         })
 
-    private fun addListObserver() = mPresenter.playPostContentLiveData.observe(this, Observer {
-        it?.let {
-            when (it) {
-                is Loading -> {
-                    mAdapter.resetAdapter()
-                    mAdapter.notifyDataSetChanged()
-                }
-                is Success -> {
-                    mAdapter.onSuccess(it.data)
-                }
-                is ErrorMessage -> {
-                    mAdapter.onError()
+    private fun addListObserver() =
+        mPresenter.playPostContentLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+                        mAdapter.resetAdapter()
+                        mAdapter.notifyDataSetChanged()
+                    }
+                    is Success -> {
+                        mAdapter.onSuccess(it.data)
+                    }
+                    is ErrorMessage -> {
+                        mAdapter.onError()
+                    }
                 }
             }
-        }
-    })
+        })
+
+    private fun addLiveClickListener(appLink: String) = View.OnClickListener {
+        RouteManager.route(context, appLink)
+    }
+
 
     private fun setMainUi(data: ProfileHeaderBase) {
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
@@ -138,10 +160,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
-        val textLive = view?.findViewById<TextView>(R.id.text_live)
         val btnActionFollow = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
-        val viewLiveRing = view?.findViewById<View>(R.id.view_profile_outer_ring)
-        val imgProfile = view?.findViewById<ImageUnify>(R.id.img_profile_image)
 
         textBio?.text = data.profileHeader.profile.biography
         textUserName?.text = data.profileHeader.profile.username
@@ -150,16 +169,41 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         textFollowerCount?.text = data.profileHeader.stats.totalFollowerFmt
         textFollowingCount?.text = data.profileHeader.stats.totalFollowingFmt
 
-        imgProfile?.urlSrc = data.profileHeader.profile.imageCover
+        setProfileImg(data.profileHeader.profile)
+    }
 
-        if (data.profileHeader.profile.liveplaychannel.islive) {
+    private fun setProfileImg(profile: Profile) {
+        if (profile == null
+            || profile.liveplaychannel == null
+            || !URLUtil.isValidUrl(profile.imageCover)
+            || profile.liveplaychannel.liveplaychannellink == null
+        ) {
+            return
+        }
+
+        val textLive = view?.findViewById<TextView>(R.id.text_live)
+        val viewLiveRing = view?.findViewById<View>(R.id.view_profile_outer_ring)
+        val imgProfile = view?.findViewById<ImageUnify>(R.id.img_profile_image)
+
+        imgProfile?.urlSrc = profile.imageCover
+
+        if (profile.liveplaychannel.islive) {
             viewLiveRing?.show()
             textLive?.show()
+
+            textLive?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
+            textLive?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
+            imgProfile?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
         } else {
-            viewLiveRing?.show()
-            textLive?.show()
+            viewLiveRing?.hide()
+            textLive?.hide()
+
+            textLive?.setOnClickListener(null)
+            textLive?.setOnClickListener(null)
+            imgProfile?.setOnClickListener(null)
         }
     }
+
 
     private fun setHeader() {
         val header = view?.findViewById<HeaderUnify>(R.id.header_profile)
@@ -169,11 +213,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
 
             addRightIcon(R.drawable.ic_arrow_down).setOnClickListener {
-                Toast.makeText(this.context,"arrow down ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context, "arrow down ", Toast.LENGTH_SHORT).show()
             }
 
             addRightIcon(R.drawable.ic_af_check_gray).setOnClickListener {
-                Toast.makeText(this.context,"arrow grey ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context, "arrow grey ", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -215,11 +259,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 Toast.makeText(context, "Profile image", Toast.LENGTH_SHORT).show()
             }
 
-            R.id.text_see_more-> {
+            R.id.text_see_more -> {
                 Toast.makeText(context, "See All", Toast.LENGTH_SHORT).show()
             }
 
-            R.id.btn_action_follow-> {
+            R.id.btn_action_follow -> {
                 Toast.makeText(context, "Follow/Unfollow", Toast.LENGTH_SHORT).show()
             }
         }
@@ -228,14 +272,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
 
-        }
-    }
-
-    companion object {
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = UserProfileFragment()
-            fragment.arguments = extras
-            return fragment
         }
     }
 
@@ -265,6 +301,18 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     override fun onError(pageNumber: Int) {
         // TODO("Not yet implemented")
+    }
+
+    companion object {
+        const val EXTRA_USERNAME = "userName"
+        const val VAL_FEEDS_PROFILE = "feeds-profile"
+        const val VAL_SOURCE_BUYER = "buyer"
+
+        fun newInstance(extras: Bundle): Fragment {
+            val fragment = UserProfileFragment()
+            fragment.arguments = extras
+            return fragment
+        }
     }
 }
 

@@ -130,18 +130,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.tokopedia.createpost.uprofile.views.UserProfileActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            />
 
-        <activity android:name="com.tokopedia.createpost.uprofile.views.FollowerFollowingListingActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            />
 
     </application>
 </manifest>

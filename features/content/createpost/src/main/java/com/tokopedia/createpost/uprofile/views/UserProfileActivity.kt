@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +30,7 @@ class UserProfileActivity : BaseSimpleActivity() {
     private fun forDeeplink() {
         bundle = intent.extras
         if (intent.data != null) {
-            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_DETAIL, intent.data, bundle)
+            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalGlobal.USER_PROFILE_LANDING, intent.data, bundle)
         }
     }
 
