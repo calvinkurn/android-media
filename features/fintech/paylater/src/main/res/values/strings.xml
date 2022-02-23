@@ -25,5 +25,6 @@
     <string name="paylater_see_more_offers">Lihat %1$d Lainnya</string>
     <string name="paylater_occ_quantity_overflow">Oops, stoknya tinggal</string>
     <string name="paylater_occ_min_quantity">Min. beli 1 barang</string>
+    <string name="paylater_occ_change">Ganti</string>
 
 </resources>

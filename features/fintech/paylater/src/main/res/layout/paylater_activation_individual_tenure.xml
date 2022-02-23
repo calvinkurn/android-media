@@ -52,7 +52,7 @@
                 tools:text="Cicil 2x Rp6.480.000"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_4" />
+                app:typographyType="heading_5" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/paymentDetailSubHeader"
@@ -65,7 +65,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/paymentDetailHeader"
-                app:typographyType="body_2" />
+                app:typographyType="body_3" />
 
 
             <RadioButton
