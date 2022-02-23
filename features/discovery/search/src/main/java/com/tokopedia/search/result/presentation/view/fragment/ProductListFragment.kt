@@ -134,14 +134,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class ProductListFragment: BaseDaggerFragment(),
     OnItemChangeView,
@@ -160,8 +155,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener,
-    CoroutineScope {
+    ProductListParameterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -229,18 +223,12 @@ class ProductListFragment: BaseDaggerFragment(),
         private set
 
     private val productVideoAutoplay : ProductVideoAutoplay by lazy {
-        ProductVideoAutoplay(remoteConfig, this)
+        ProductVideoAutoplay(remoteConfig)
     }
-
-    private lateinit var masterJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.Main
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        masterJob = Job()
 
         loadDataFromArguments()
         initTrackingQueue()
@@ -1183,7 +1171,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onDestroyView() {
-        masterJob.cancelChildren()
         super.onDestroyView()
         presenter?.detachView()
     }

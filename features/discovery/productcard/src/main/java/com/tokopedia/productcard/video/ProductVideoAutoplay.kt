@@ -10,6 +10,7 @@ import com.tokopedia.productcard.utils.LayoutManagerUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -17,11 +18,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 class ProductVideoAutoplay(
     private val remoteConfig: RemoteConfig,
-    scope: CoroutineScope,
-) : CoroutineScope by scope, LifecycleObserver {
+) : CoroutineScope, LifecycleObserver {
     private var productVideoAutoPlayJob: Job? = null
     private var productVideoPlayer: ProductVideoPlayer? = null
 
@@ -36,6 +37,11 @@ class ProductVideoAutoplay(
     private var recyclerView: RecyclerView? = null
     private val layoutManager: RecyclerView.LayoutManager?
         get() = recyclerView?.layoutManager
+
+    private lateinit var masterJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.Main
 
     private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -164,6 +170,11 @@ class ProductVideoAutoplay(
             }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onViewCreated() {
+        masterJob = Job()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun resumeVideoAutoplay() {
         val visibleItemIterator = videoPlayerIterator ?: return
@@ -188,6 +199,7 @@ class ProductVideoAutoplay(
     fun onViewDestroyed() {
         unregisterVideoAutoplayAdapterObserver()
         stopVideoAutoplay()
+        masterJob.cancel()
     }
 
     private fun unregisterVideoAutoplayAdapterObserver() {
