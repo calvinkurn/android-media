@@ -8,7 +8,10 @@ import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
 import com.tokopedia.shop_widget.common.util.DateHelper
