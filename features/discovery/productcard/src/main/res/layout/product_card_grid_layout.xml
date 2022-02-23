@@ -20,6 +20,18 @@
         android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
+        <View
+            android:id="@+id/mediaAnchorProduct"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/imageProduct"
             android:contentDescription="@string/content_desc_imageProduct"
@@ -55,8 +67,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/imageProduct"
-            app:layout_constraintEnd_toEndOf="@+id/imageProduct"
+            app:layout_constraintTop_toTopOf="@+id/mediaAnchorProduct"
+            app:layout_constraintEnd_toEndOf="@+id/mediaAnchorProduct"
             android:src="@drawable/product_card_ic_video_identifier"
             tools:visibility="visible"/>
 
@@ -67,7 +79,7 @@
             android:visibility="gone"
             android:contentDescription="null"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/mediaAnchorProduct"
             app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible" />
 
@@ -129,10 +141,10 @@
             android:layout_height="0dp"
             android:background="@color/Unify_N700_44"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/imageProduct"
-            app:layout_constraintBottom_toBottomOf="@+id/imageProduct"
-            app:layout_constraintStart_toStartOf="@+id/imageProduct"
-            app:layout_constraintEnd_toEndOf="@+id/imageProduct"/>
+            app:layout_constraintTop_toTopOf="@+id/mediaAnchorProduct"
+            app:layout_constraintBottom_toBottomOf="@+id/mediaAnchorProduct"
+            app:layout_constraintStart_toStartOf="@+id/mediaAnchorProduct"
+            app:layout_constraintEnd_toEndOf="@+id/mediaAnchorProduct"/>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelProductStatus"
@@ -144,8 +156,8 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
-            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+            app:layout_constraintLeft_toLeftOf="@id/mediaAnchorProduct"
             tools:text="Preorder"
             tools:visibility="visible"/>
 
@@ -166,8 +178,8 @@
             android:shadowColor="@color/Unify_N700_44"
             android:shadowDy="1"
             android:shadowRadius="2"
-            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
-            app:layout_constraintRight_toRightOf="@id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+            app:layout_constraintRight_toRightOf="@id/mediaAnchorProduct"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:visibility="visible"/>
@@ -180,9 +192,9 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="@dimen/product_card_content_margin_top"
             android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
             app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
-            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
             app:layout_goneMarginTop="8dp"
             layout="@layout/product_card_content_layout" />
 
@@ -244,9 +256,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
             app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
-            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="1.0"
             app:layout_goneMarginTop="8dp"

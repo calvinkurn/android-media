@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.video
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
@@ -15,6 +16,10 @@ class ProductCardVideo(
 ) : ExoPlayerListener, ProductVideoPlayer {
     private val videoProduct by lazy(LazyThreadSafetyMode.NONE) {
         productCardView.findViewById<ProductCardVideoView>(R.id.videoProduct)
+    }
+
+    private val imageProduct by lazy(LazyThreadSafetyMode.NONE) {
+        productCardView.findViewById<ImageView>(R.id.imageProduct)
     }
 
     private var videoURL = ""
@@ -34,6 +39,7 @@ class ProductCardVideo(
     }
 
     override fun onPlayerIdle() {
+        imageProduct?.show()
         videoProduct?.hide()
     }
 
@@ -42,16 +48,19 @@ class ProductCardVideo(
     }
 
     override fun onPlayerPlaying() {
+        imageProduct?.hide()
         videoProduct?.show()
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Playing)
     }
 
     override fun onPlayerPaused() {
+        imageProduct?.show()
         videoProduct?.hide()
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Paused)
     }
 
     override fun onPlayerEnded() {
+        imageProduct?.show()
         videoProduct?.hide()
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Ended)
     }
