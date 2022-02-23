@@ -88,6 +88,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
 
     private fun initRecyclerView() {
         recyclerView?.apply {
+            isNestedScrollingEnabled = false
             setHasFixedSize(true)
             layoutManager = when (layoutManagerType) {
                 LAYOUT_TYPE_LINEAR_HORIZONTAL -> {
