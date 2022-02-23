@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.adapter.factory
 
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
@@ -8,7 +9,8 @@ import com.tokopedia.catalog.viewholder.products.*
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.BaseProductTypeFactoryImpl
 
-class CatalogTypeFactoryImpl(private var catalogProductCardListener : CatalogProductCardListener) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
+class CatalogTypeFactoryImpl(private var catalogProductCardListener : CatalogProductCardListener,
+                             private val lifeCycleOwner : FragmentActivity) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
 
     override fun type(listShimmerModel: CatalogListShimmerModel): Int {
         return CatalogListShimmerViewHolder.LAYOUT
@@ -29,6 +31,8 @@ class CatalogTypeFactoryImpl(private var catalogProductCardListener : CatalogPro
         return when (type) {
             CatalogForYouContainerViewHolder.LAYOUT -> CatalogForYouContainerViewHolder(
                 view,
+                lifeCycleOwner,
+                "71980",
                 catalogProductCardListener
             )
             CatalogListShimmerViewHolder.LAYOUT -> CatalogListShimmerViewHolder(view)

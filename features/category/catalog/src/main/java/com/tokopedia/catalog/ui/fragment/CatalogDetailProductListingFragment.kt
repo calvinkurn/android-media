@@ -105,7 +105,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
         const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
-        const val MORE_CATALOG_WIDGET_INDEX = 4
+        const val MORE_CATALOG_WIDGET_INDEX = 2
 
         @JvmStatic
         fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
@@ -156,7 +156,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setUpAdapter() {
-        catalogTypeFactory = CatalogTypeFactoryImpl(this)
+        activity?.let {
+            catalogTypeFactory = CatalogTypeFactoryImpl(this, it)
+        }
         productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
         productNavListAdapter?.changeListView()
         if(viewModel.list.size == 0)
@@ -416,12 +418,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    override fun onCatalogProductClicked(model: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison?) {
-        context?.let { context ->
-            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${model?.id}")
-        }
-    }
-
     override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
         val intent = getProductIntent(item.id, "")
 
@@ -440,6 +436,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onLongClick(item: CatalogProductItem, adapterPosition: Int) {
 
+    }
+
+    override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
+        context?.let { context ->
+            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
+        }
     }
 
     /*********************************   WishList  ******************************/

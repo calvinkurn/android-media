@@ -1,6 +1,8 @@
 package com.tokopedia.catalog.listener
 
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.ComparisionModel
 import com.tokopedia.catalog.model.raw.VideoComponentData
@@ -53,6 +55,8 @@ interface CatalogDetailListener {
      */
     fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
                              isFromBottomSheet : Boolean = true){}
+
+    fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 
     fun getChildsFragmentManager() : FragmentManager? {
         return null

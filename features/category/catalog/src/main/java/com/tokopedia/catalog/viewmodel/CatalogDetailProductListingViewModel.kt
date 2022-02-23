@@ -54,12 +54,13 @@ class CatalogDetailProductListingViewModel
     var isPagingAllowed: Boolean = true
     var catalogUrl = ""
     var catalogName = ""
+    var comparisonCardIsAdded = false
 
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
     var catalogComparisonProductsResponse : CatalogComparisonProductsResponse?  = null
 
     fun fetchProductListing(params: RequestParams) {
-        if(pageCount == 0){ fetchComparisonProducts() }
+        if(pageCount == 0){ comparisonCardIsAdded = false }
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
@@ -67,13 +68,12 @@ class CatalogDetailProductListingViewModel
                         searchProduct.data.catalogProductItemList.let { productList ->
                             mProductList.value = Success((productList) as List<CatalogProductItem>)
                             list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
-                            addComparisonProductsResult()
                             pageCount++
                         }
                         mProductCount.value = searchProduct.data.totalData.toString()
                     }
                 }
-
+                addCatalogForYouCard()
             }
 
             override fun onCompleted() {
@@ -81,6 +81,7 @@ class CatalogDetailProductListingViewModel
             }
 
             override fun onError(e: Throwable) {
+                addCatalogForYouCard()
                 mProductList.value = Fail(e)
             }
         })
@@ -117,29 +118,9 @@ class CatalogDetailProductListingViewModel
         })
     }
 
-    private fun fetchComparisonProducts(){
-        getComparisonProducts("71980","63","Apple","24",10,1,"");
-    }
-
-    private fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
-                                      limit: Int, page : Int, name : String) {
-        if(mCatalogComparisonSuccess.value == false){
-            viewModelScope.launchCatchError(block = {
-                val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
-                    categoryId,limit.toString(),page.toString(),name)
-                if (result is Success){
-                    catalogComparisonProductsResponse = result.data
-                    mCatalogComparisonSuccess.value = true
-                    addComparisonProductsResult()
-                }
-            }, onError = {
-                it.printStackTrace()
-            })
-        }
-    }
-
-    private fun addComparisonProductsResult() {
-        if (pageCount == 0 && !catalogComparisonProductsResponse?.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
+    private fun addCatalogForYouCard() {
+        if (!comparisonCardIsAdded){
+            comparisonCardIsAdded = true
             if(list.size - 1 >= CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX){
                 list.add(CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX,CatalogForYouContainerDataModel(catalogComparisonProductsResponse?.catalogComparisonList) as Visitable<CatalogTypeFactory>)
             }else {

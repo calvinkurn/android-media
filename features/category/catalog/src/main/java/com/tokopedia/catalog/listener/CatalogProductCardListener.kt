@@ -20,5 +20,5 @@ interface CatalogProductCardListener {
 
     fun hasThreeDots() = false
 
-    fun onCatalogProductClicked(model : CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison?)
+    fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 }
