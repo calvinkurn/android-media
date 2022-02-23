@@ -553,7 +553,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
         if (cartItemModelList.size() > 0) {
-            renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
+            renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT), shipmentCartItemModel.getAddOnWordingModel());
         }
         if (shipmentCartItemModel.getCartItemModels().size() > 1) {
             rlExpandOtherProduct.setVisibility(View.VISIBLE);
@@ -636,7 +636,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     @SuppressLint("StringFormatInvalid")
-    private void renderFirstCartItem(CartItemModel cartItemModel) {
+    private void renderFirstCartItem(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
         if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);
         } else {
@@ -660,7 +660,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderProductTicker(cartItemModel);
         renderProductProperties(cartItemModel);
         renderBundlingInfo(cartItemModel);
-        renderAddOnProductLevel(cartItemModel);
+        renderAddOnProductLevel(cartItemModel, addOnWordingModel);
     }
 
     private void renderBundlingInfo(CartItemModel cartItemModel) {
@@ -701,7 +701,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderAddOnProductLevel(CartItemModel cartItemModel) {
+    private void renderAddOnProductLevel(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
         AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
         int status = addOnsDataModel.getStatus();
         if (status == 0) {
@@ -717,6 +717,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             buttonGiftingAddonProductLevel.setDesc(addOnsDataModel.getAddOnsButtonModel().getDescription());
             buttonGiftingAddonProductLevel.setUrlLeftIcon(addOnsDataModel.getAddOnsButtonModel().getLeftIconUrl());
             buttonGiftingAddonProductLevel.setUrlRightIcon(addOnsDataModel.getAddOnsButtonModel().getRightIconUrl());
+            buttonGiftingAddonProductLevel.setOnClickListener(view -> mActionListener.openAddOnProductLevelBottomSheet(cartItemModel, addOnWordingModel));
         }
     }
 
