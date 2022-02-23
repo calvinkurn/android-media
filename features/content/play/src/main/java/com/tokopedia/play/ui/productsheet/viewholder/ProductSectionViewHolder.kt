@@ -43,6 +43,15 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
+    init {
+        ivBg.setImageResource(0)
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        ivBg.setImageResource(0)
+    }
+
     private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
         itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
