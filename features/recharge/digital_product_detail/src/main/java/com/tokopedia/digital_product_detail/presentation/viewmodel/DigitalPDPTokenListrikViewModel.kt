@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -194,7 +195,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
                     }
                 }
                 isEligibleToBuy = errorMessage.isEmpty()
-                delay(DigitalPDPTagihanViewModel.VALIDATOR_DELAY_TIME)
+                delay(VALIDATOR_DELAY_TIME)
                 _clientNumberValidatorMsg.value = errorMessage
             }) {
                 if (it !is CancellationException) {

@@ -1,0 +1,65 @@
+{
+  "digiPersoGetPersonalizedItems": {
+    "trackingData": {
+      "userType": "new user"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "111122223333",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+        "trackingData": {
+          "clientNumber": "111122223333",
+          "lastOrderDate": "20200717040948",
+          "totalTransaction": "1",
+          "productID": "176",
+          "operatorID": "6",
+          "categoryID": "3"
+        }
+      },
+      {
+        "id": 2,
+        "title": "102111106111",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
+        "trackingData": {
+          "clientNumber": "102111106111",
+          "lastOrderDate": "20200213135311",
+          "totalTransaction": "2",
+          "productID": "291",
+          "operatorID": "18",
+          "categoryID": "3"
+        }
+      },
+      {
+        "id": 3,
+        "title": "111111111111",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+        "trackingData": {
+          "clientNumber": "111111111111",
+          "lastOrderDate": "20190618140309",
+          "totalTransaction": "8",
+          "productID": "182",
+          "operatorID": "6",
+          "categoryID": "3"
+        }
+      },
+      {
+        "id": 4,
+        "title": "111111111112",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+        "trackingData": {
+          "clientNumber": "111111111112",
+          "lastOrderDate": "20180925170814",
+          "totalTransaction": "1",
+          "productID": "182",
+          "operatorID": "6",
+          "categoryID": "3"
+        }
+      }
+    ]
+  }
+}
