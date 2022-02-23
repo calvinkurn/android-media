@@ -391,8 +391,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                         setAddOnButtonData(addOn)
                         setOnClickListener {
                             listener.onClickAddOnButton(addOn, product, shop)
+                            orderSummaryAnalytics.eventClickAddOnsDetail(product.productId.toString())
                         }
                         show()
+                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
                     }
                 }
                 AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON -> {
@@ -400,6 +402,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                         state = ButtonGiftingAddOnView.State.INACTIVE
                         setAddOnButtonData(addOn)
                         show()
+                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
                     }
                 }
                 else -> {

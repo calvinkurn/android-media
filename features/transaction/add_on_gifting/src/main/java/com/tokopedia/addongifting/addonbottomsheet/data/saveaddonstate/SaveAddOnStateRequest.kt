@@ -34,7 +34,9 @@ data class CartProduct(
         @SerializedName("product_name")
         var productName: String = "",
         @SerializedName("product_image_url")
-        var productImageUrl: String = ""
+        var productImageUrl: String = "",
+        @SerializedName("product_parent_id")
+        var productParentId: String = ""
 )
 
 data class AddOnDataRequest(

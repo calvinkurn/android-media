@@ -23,7 +23,8 @@ object AddOnMapper {
                                 productName = orderProduct.productName,
                                 productImageUrl = orderProduct.productImageUrl,
                                 productPrice = orderProduct.productPrice,
-                                productQuantity = orderProduct.orderQuantity
+                                productQuantity = orderProduct.orderQuantity,
+                                productParentId = orderProduct.parentId
                         )),
                         isTokoCabang = orderShop.isFulfillment,
                         cartString = orderCart.cartString,

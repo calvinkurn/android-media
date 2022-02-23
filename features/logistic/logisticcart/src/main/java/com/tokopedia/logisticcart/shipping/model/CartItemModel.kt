@@ -16,6 +16,7 @@ data class CartItemModel(
         var originalPrice: Double = 0.0,
         var currency: Int = 0,
         var variant: String = "",
+        var variantParentId: String = "",
         var weightUnit: Int = 0,
         var weight: Double = 0.0,
         var weightFmt: String = "",

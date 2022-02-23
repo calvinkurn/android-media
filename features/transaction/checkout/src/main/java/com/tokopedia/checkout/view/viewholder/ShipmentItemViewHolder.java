@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -415,6 +416,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @Override
     public void openAddOnProductLevelBottomSheet(@NotNull CartItemModel cartItem, @NotNull AddOnWordingModel addOnWordingModel) {
         mActionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWordingModel);
+    }
+
+    @Override
+    public void addOnProductLevelImpression(@NonNull String productId) {
+        mActionListener.addOnProductLevelImpression(productId);
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
@@ -1135,6 +1141,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 buttonGiftingAddonOrderLevel.setUrlLeftIcon(addOnButtonModel.getLeftIconUrl());
                 buttonGiftingAddonOrderLevel.setUrlRightIcon(addOnButtonModel.getRightIconUrl());
                 buttonGiftingAddonOrderLevel.setOnClickListener(openAddOnOrderLevelBottomSheet(shipmentCartItemModel, addOnWordingModel));
+                mActionListener.addOnOrderLevelImpression(shipmentCartItemModel.getCartItemModels());
             }
         }
     }

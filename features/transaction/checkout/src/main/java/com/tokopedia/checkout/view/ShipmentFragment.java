@@ -3285,6 +3285,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     product.setProductQuantity(cartItemModel.getQuantity());
                     product.setProductName(addOnProductItemModel.getProductName());
                     product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
                     listUnavailableProduct.add(product);
                 }
                 unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
@@ -3319,6 +3320,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
                         product.setProductQuantity(cartItemModel.getQuantity());
                         product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
+                        product.setProductParentId(cartItemModel.getVariantParentId());
                         listProduct.add(product);
                     }
                 }
@@ -3362,7 +3364,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT);
             startActivityForResult(intent, REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET);
+            checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(String.valueOf(cartItemModel.getProductId()));
         }
     }
 
@@ -3388,11 +3392,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     product.setProductQuantity(cartItemModel.getQuantity());
                     product.setProductName(cartItemModel.getName());
                     product.setProductImageUrl(cartItemModel.getImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
                     listUnavailableProduct.add(product);
                 }
                 unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
             }
 
+            ArrayList<String> listProductId = new ArrayList<>();
             if (addOnsDataModel.getStatus() == 1) {
                 AddOnWordingData addOnWordingData = new AddOnWordingData();
                 addOnWordingData.setOnlyGreetingCard(addOnWordingModel.getOnlyGreetingCard());
@@ -3413,7 +3419,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
                     product.setProductQuantity(cartItemModel.getQuantity());
                     product.setProductImageUrl(cartItemModel.getImageUrl());
+                    product.setProductParentId(cartItemModel.getVariantParentId());
                     listProduct.add(product);
+                    listProductId.add(String.valueOf(cartItemModel.getProductId()));
                 }
                 availableBottomSheetData.setProducts(listProduct);
 
@@ -3458,7 +3466,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
             startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET);
+            checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(listProductId.toString());
         }
+    }
+
+    @Override
+    public void addOnProductLevelImpression(String productId) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId);
+    }
+
+    @Override
+    public void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList) {
+        ArrayList<String> listProductId = new ArrayList<>();
+        for (CartItemModel cartItemModel : cartItemModelList) {
+            listProductId.add(String.valueOf(cartItemModel.getProductId()));
+        }
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listProductId.toString());
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {

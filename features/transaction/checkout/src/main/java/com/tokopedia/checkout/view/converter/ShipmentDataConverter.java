@@ -346,6 +346,7 @@ public class ShipmentDataConverter {
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
         cartItemModel.setVariant(product.getVariant());
+        cartItemModel.setVariantParentId(product.getVariantParentId());
         cartItemModel.setProductAlertMessage(product.getProductAlertMessage());
         cartItemModel.setProductInformation(product.getProductInformation());
 

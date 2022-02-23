@@ -131,4 +131,8 @@ public interface ShipmentAdapterActionListener {
     void openAddOnProductLevelBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
 
     void openAddOnOrderLevelBottomSheet(ShipmentCartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
+
+    void addOnProductLevelImpression(String productId);
+
+    void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList);
 }

@@ -47,6 +47,7 @@ data class Product(
         var isShowTicker: Boolean = false,
         var tickerMessage: String = "",
         var variant: String = "",
+        var variantParentId: String = "",
         var productAlertMessage: String = "",
         var productInformation: List<String> = emptyList(),
         var analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData(),

@@ -916,4 +916,30 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
+    // gifting
+    // tracker id : 28310
+    fun eventViewAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.CART,
+                ConstantTransactionAnalytics.EventAction.VIEW_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 28311
+    fun eventClickAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_PP,
+                ConstantTransactionAnalytics.EventCategory.CART,
+                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
 }

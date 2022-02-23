@@ -37,10 +37,8 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -555,6 +553,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
                         productPrice = 10000
                         productQuantity = 11
+                        productParentId = "11001"
                     }
                     val product2 = Product().apply {
                         cartId = "456"
@@ -563,6 +562,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
                         productPrice = 20000
                         productQuantity = 22
+                        productParentId = "11002"
                     }
                     val product3 = Product().apply {
                         cartId = "789"
@@ -571,6 +571,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
                         productPrice = 30000
                         productQuantity = 33
+                        productParentId = "11003"
                     }
                     products = listOf(product1, product2, product3)
                     isTokoCabang = false
@@ -1290,6 +1291,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onShowAllItem(appLink: String) {
         routeToApplink(appLink)
+    }
+
+    override fun onClickAddOnCart(productId: String) {
+        activity?.let {
+            // TODO: open when merge with merchant
+            // RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, productId))
+        }
+        cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun addOnImpression(productId: String) {
+        cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {

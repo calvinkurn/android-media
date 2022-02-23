@@ -706,4 +706,46 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         sendGeneralEvent(gtmMap)
     }
+
+    // gifting
+    // tracker id : 28312
+    fun eventViewAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 28313
+    fun eventClickAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_PP,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 28314
+    fun eventSaveAddOnsBottomSheet(isChecked: Boolean, source: String) {
+        val label = if (isChecked) ConstantTransactionAnalytics.EventLabel.ADD_ON_CHECKED
+        else ConstantTransactionAnalytics.EventLabel.ADD_ON_NOT_CHECKED
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_PP,
+                source,
+                ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_ON_ADD_ONS_BOTTOMSHEET,
+                label
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
 }

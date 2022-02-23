@@ -36,13 +36,15 @@ import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
@@ -51,7 +53,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
+class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: String) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
     companion object {
         const val DELAY_ADJUST_RECYCLER_VIEW_MARGIN = 200L
@@ -60,11 +62,15 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
+
     private var adapter: AddOnListAdapter? = null
     private var viewBinding: LayoutAddOnBottomSheetBinding? = null
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
     private var delayScrollJob: Job? = null
     private var isKeyboardOpened = false
+    private var isChecked = false
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddOnViewModel::class.java)
@@ -249,6 +255,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                     val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
                     viewBinding.totalAmount.amountCtaView.isLoading = true
                     viewModel.saveAddOnState(addOnProductData, mockSaveAddOnStateResponse)
+                    checkoutAnalyticsCourierSelection.eventSaveAddOnsBottomSheet(isChecked, source)
                 } else {
                     dismiss()
                 }
@@ -361,6 +368,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             adjustRecyclerViewPaddingBottom(it)
         }
         viewModel.updateFragmentUiModel(addOnUiModel)
+        if (addOnUiModel.isAddOnSelected) isChecked = true
     }
 
     override fun onAddOnImageClicked(addOnUiModel: AddOnUiModel) {
