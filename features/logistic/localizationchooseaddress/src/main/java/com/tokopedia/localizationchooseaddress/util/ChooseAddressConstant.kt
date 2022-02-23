@@ -13,6 +13,8 @@ class ChooseAddressConstant {
         const val ERROR_CODE_FAILED_GET_DISTRICT_DATA = 5
         const val ERROR_CODE_EMPTY_DISTRICT_DATA = 6
         const val ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS = 9
+        const val DEFAULT_LCA_VERSION = "1"
+        const val LCA_VERSION = "1.1"
 
         val defaultAddress = LocalCacheModel(
                 address_id = "",
@@ -23,7 +25,10 @@ class ChooseAddressConstant {
                 postal_code = "",
                 label = "Jakarta Pusat",
                 shop_id = "",
-                warehouse_id = ""
+                warehouse_id = "",
+                warehouses = listOf(),
+                service_type = "",
+                version = LCA_VERSION
         )
 
         val emptyAddress = LocalCacheModel(
@@ -35,7 +40,10 @@ class ChooseAddressConstant {
                 postal_code = "",
                 label = "Pilih Alamat Pengirimanmu",
                 shop_id = "",
-                warehouse_id = ""
+                warehouse_id = "",
+                service_type = "",
+                warehouses = listOf(),
+                version = LCA_VERSION
         )
     }
 }

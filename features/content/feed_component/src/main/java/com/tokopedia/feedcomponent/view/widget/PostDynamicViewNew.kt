@@ -257,10 +257,26 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW ) {
                 addOnImpressionListener(feedXCard.impressHolder) {
-                    listener?.onImpressionTracking(feedXCard, positionInFeed)
-                }
+
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                        imagePostListener.userCarouselImpression(
+                                feedXCard.id,
+                                feedXCard.media.first(),
+                                0,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.id,
+                                positionInFeed,
+                                feedXCard.cpmData,
+                                feedXCard.listProduct
+                        )
+                    }
+
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                        listener?.onImpressionTracking(feedXCard, positionInFeed)
+                    }
+
             }
         }
 
@@ -818,49 +834,36 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO){
                 setVODLayout(feedXCard)
             } else {
-                val globalCardProductList = feedXCard.tags
-                gridList.gone()
-                carouselView.visible()
-                commentButton.visible()
-                carouselView.apply {
-                    stage.removeAllViews()
-                    indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-                    if (media.size > 1) {
-                        pageControl.show()
-                        pageControl.setIndicator(media.size)
-                        pageControl.indicatorCurrentPosition = activeIndex
-                        pageControl.setCurrentIndicator(feedXCard.lastCarouselIndex)
-                        carouselView.activeIndex = feedXCard.lastCarouselIndex
-                    } else {
-                        pageControl.hide()
-                    }
-                    if (media.isNotEmpty()) {
-                        imagePostListener.userCarouselImpression(
-                                feedXCard.id,
-                                media[0],
-                                0,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                feedXCard.author.id,
-                                positionInFeed,
-                                feedXCard.cpmData,
-                                feedXCard.listProduct
-                        )
-                    }
-                    val orientation = getOrientation(feedXCard.mediaRatio)
-                    var ratio = if (orientation == PORTRAIT)
-                        getRatioIfPortrait(feedXCard.mediaRatio)
-                    else
-                        getRatioIfLandscape(feedXCard.mediaRatio)
+            val globalCardProductList = feedXCard.tags
+            gridList.gone()
+            carouselView.visible()
+            commentButton.visible()
+            carouselView.apply {
+                stage.removeAllViews()
+                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
+                if (media.size > 1) {
+                    pageControl.show()
+                    pageControl.setIndicator(media.size)
+                    pageControl.indicatorCurrentPosition = feedXCard.lastCarouselIndex
+                    pageControl.setCurrentIndicator(feedXCard.lastCarouselIndex)
+                    carouselView.activeIndex = feedXCard.lastCarouselIndex
+                } else {
+                    pageControl.hide()
+                }
+                val orientation = getOrientation(feedXCard.mediaRatio)
+                var ratio = if (orientation == PORTRAIT)
+                    getRatioIfPortrait(feedXCard.mediaRatio)
+                else
+                    getRatioIfLandscape(feedXCard.mediaRatio)
 
-                    media.forEachIndexed {  index, feedMedia ->
-                        val tags = feedMedia.tagging
-                        val tagProducts = mutableListOf<FeedXProduct>()
-                        tags.map {
-                            if (!ifProductAlreadyPresent(globalCardProductList[it.tagIndex],
-                                            tagProducts))
-                                tagProducts.add(globalCardProductList[it.tagIndex])
-                        }
+                media.forEachIndexed {  index, feedMedia ->
+                    val tags = feedMedia.tagging
+                    val tagProducts = mutableListOf<FeedXProduct>()
+                    tags.map {
+                        if (!ifProductAlreadyPresent(globalCardProductList[it.tagIndex],
+                                tagProducts))
+                        tagProducts.add(globalCardProductList[it.tagIndex])
+                    }
 
                         feedMedia.isImageImpressedFirst = true
 
@@ -1090,31 +1093,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }
                         }
                     }
-                    onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-                        override fun onActiveIndexChanged(prev: Int, current: Int) {
-                            pageControl.setCurrentIndicator(current)
-                            imagePostListener.userCarouselImpression(
-                                    feedXCard.id,
-                                    media[current],
-                                    current,
-                                    feedXCard.typename,
-                                    feedXCard.followers.isFollowed,
-                                    feedXCard.author.id,
-                                    positionInFeed,
-                                    feedXCard.cpmData,
-                                    feedXCard.listProduct
-                            )
-                            if (media[current].type == TYPE_IMAGE) {
-                                videoPlayer?.pause()
-                                bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
-                            } else {
-                                detach(true)
-                                media[current].canPlay = true
-                                playVideo(feedXCard, current)
-                            }
-                        }
-                    }
                 }
+               resetCaraouselActiveListener(feedXCard)
             }
 
         } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
@@ -1162,19 +1142,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
                     var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
 
-                    if (media.isNotEmpty()) {
-                        imagePostListener.userCarouselImpression(
-                                finalId,
-                                media[0],
-                                0,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                feedXCard.author.id,
-                                positionInFeed,
-                                feedXCard.cpmData,
-                                feedXCard.listProduct
-                        )
-                    }
                     feedMedia.isImageImpressedFirst = true
                         setVODView(
                                 feedXCard,
@@ -2198,6 +2165,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         if (feedXCard?.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
                             val list = mutableListOf<FeedXProduct>()
                             list.add(feedXCard.products[current])
+                            if (list.isNotEmpty())
                             imagePostListener.userProductImpression(
                                     positionInFeed,
                                     feedXCard.id,
@@ -2205,28 +2173,30 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     feedXCard.author.id,
                                     list
                             )
-
+                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current)
                             bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
                         } else if (feedXCard != null) {
-                            imagePostListener.userCarouselImpression(
-                                    feedXCard.id,
-                                    feedXCard.media[current],
-                                    current,
-                                    feedXCard.typename,
-                                    feedXCard.followers.isFollowed,
-                                    feedXCard.author.id,
-                                    positionInFeed,
-                                    feedXCard.cpmData,
-                                    feedXCard.listProduct
-                            )
+                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current) {
+                                imagePostListener.userCarouselImpression(
+                                        feedXCard.id,
+                                        feedXCard.media[current],
+                                        current,
+                                        feedXCard.typename,
+                                        feedXCard.followers.isFollowed,
+                                        feedXCard.author.id,
+                                        positionInFeed,
+                                        feedXCard.cpmData,
+                                        feedXCard.listProduct
+                                )
 
-                            if (feedXCard.media[current].type == TYPE_IMAGE) {
-                                videoPlayer?.pause()
-                                bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
-                            } else {
-                                detach(true)
-                                feedXCard.media[current].canPlay = true
-                                playVideo(feedXCard, current)
+                                if (feedXCard.media[current].type == TYPE_IMAGE) {
+                                    videoPlayer?.pause()
+                                    bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
+                                } else {
+                                    detach(true)
+                                    feedXCard.media[current].canPlay = true
+                                    playVideo(feedXCard, current)
+                                }
                             }
                         }
                     }

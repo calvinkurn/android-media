@@ -65,10 +65,12 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
+import com.tokopedia.productcard.video.ProductVideoAutoplay
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -96,7 +98,6 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -110,9 +111,7 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ProductListParameterListener
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
@@ -136,11 +135,14 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class ProductListFragment: BaseDaggerFragment(),
     OnItemChangeView,
@@ -159,7 +161,8 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener {
+    ProductListParameterListener,
+    CoroutineScope {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -226,9 +229,15 @@ class ProductListFragment: BaseDaggerFragment(),
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
+    private lateinit var masterJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.Main
+
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        masterJob = Job()
 
         loadDataFromArguments()
         initTrackingQueue()
@@ -295,6 +304,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
+        viewLifecycleOwner.lifecycle.addObserver(productVideoAutoplay)
 
         presenter?.onViewCreated()
     }
@@ -429,6 +439,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
+            setUpProductVideoAutoplayListener(this)
         }
     }
 
@@ -470,6 +481,61 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun getSearchParameterMap(): Map<String, Any> =
         searchParameter?.getSearchParameterMap() ?: mapOf()
+    //endregion
+
+    //region product video autoplay
+    private val productVideoAutoplay : ProductVideoAutoplay<Visitable<*>, ProductItemDataView> by lazy {
+        ProductVideoAutoplay(this)
+    }
+
+    private val isAutoplayProductVideoEnabled : Boolean by lazy {
+        remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MPC_VIDEO_AUTOPLAY, true)
+    }
+
+    private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                startVideoAutoplayWhenRecyclerViewIsIdle()
+            }
+        }
+    }
+
+    private val autoPlayAdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            if (positionStart == 0) {
+                recyclerView?.viewTreeObserver
+                    ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            startVideoAutoplayWhenRecyclerViewIsIdle()
+                            recyclerView?.viewTreeObserver
+                                ?.removeOnGlobalLayoutListener(this)
+                        }
+                    })
+            }
+        }
+    }
+
+    private fun setUpProductVideoAutoplayListener(recyclerView: RecyclerView) {
+        if(isAutoplayProductVideoEnabled) {
+            recyclerView.addOnScrollListener(autoPlayScrollListener)
+            recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
+        }
+    }
+
+    private fun startVideoAutoplayWhenRecyclerViewIsIdle() {
+        productVideoAutoplay.startVideoAutoplay(
+            recyclerView,
+            staggeredGridLayoutManager,
+            productListAdapter?.itemList
+        ) { visitableList ->
+            visitableList.filterIsInstance<ProductItemDataView>()
+                .filter {
+                    it.hasVideo
+                }
+        }
+    }
     //endregion
 
     //region onAttach
@@ -1093,6 +1159,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.clearData()
         productListAdapter?.clearData()
+        productVideoAutoplay.stopVideoAutoplay()
 
         hideSearchSortFilter()
 
@@ -1168,8 +1235,20 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onDestroyView() {
+        unregisterVideoAutoplayAdapterObserver()
+        masterJob.cancelChildren()
         super.onDestroyView()
         presenter?.detachView()
+    }
+
+    private fun unregisterVideoAutoplayAdapterObserver() {
+        if (isAutoplayProductVideoEnabled) {
+            try {
+                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 
     override fun getScreenName(): String {

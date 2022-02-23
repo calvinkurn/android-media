@@ -252,7 +252,9 @@ class AddEditProductVariantFragment :
         } else {
             viewModel.isSingleVariantTypeIsSelected = false
 
-            val renderedAdapterPosition = viewModel.getRenderedLayoutAdapterPosition()
+            val renderedAdapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.firstOrNull {
+                it != adapterPosition
+            }.orZero()
 
             if (adapterPosition < renderedAdapterPosition) {
                 // get rendered variant detail
