@@ -57,12 +57,12 @@ class DataPlanDataFactory {
         val valueItemsParams = ArrayList<HashMap<String, Any>>()
 
         val valueItemQuota = HashMap<String, Any>()
-        valueItemQuota[FILTER_PARAM_NAME] = "filter_tag_kuota"
+        valueItemQuota[FILTER_PARAM_NAME] = FILTER_QUOTA
         valueItemQuota[FILTER_VALUE] = emptyList<String>()
         valueItemsParams.add(valueItemQuota)
 
         val valueItemFeature = HashMap<String, Any>()
-        valueItemFeature[FILTER_PARAM_NAME] = "filter_tag_feature"
+        valueItemFeature[FILTER_PARAM_NAME] = FILTER_FEATURE
         valueItemFeature[FILTER_VALUE] = emptyList<String>()
         valueItemsParams.add(valueItemFeature)
         return valueItemsParams
@@ -72,13 +72,13 @@ class DataPlanDataFactory {
         val valueItemsParams = ArrayList<HashMap<String, Any>>()
 
         val valueItemQuota = HashMap<String, Any>()
-        valueItemQuota[FILTER_PARAM_NAME] = "filter_tag_kuota"
-        valueItemQuota[FILTER_VALUE] = listOf("1157")
+        valueItemQuota[FILTER_PARAM_NAME] = FILTER_QUOTA
+        valueItemQuota[FILTER_VALUE] = listOf(FILTER_ID_QUOTA)
         valueItemsParams.add(valueItemQuota)
 
         val valueItemFeature = HashMap<String, Any>()
-        valueItemFeature[FILTER_PARAM_NAME] = "filter_tag_feature"
-        valueItemFeature[FILTER_VALUE] = listOf("1131")
+        valueItemFeature[FILTER_PARAM_NAME] = FILTER_FEATURE
+        valueItemFeature[FILTER_VALUE] = listOf(FILTER_ID_FEATURE)
         valueItemsParams.add(valueItemFeature)
         return valueItemsParams
     }
@@ -179,6 +179,10 @@ class DataPlanDataFactory {
 
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"
+        const val FILTER_QUOTA = "filter_tag_kuota"
+        const val FILTER_FEATURE = "filter_tag_feature"
+        const val FILTER_ID_QUOTA = "1157"
+        const val FILTER_ID_FEATURE = "1131"
         const val CATEGORY_ID = "2"
         const val OPERATOR_ID = "5"
         const val PRODUCT_ID = "1136"
