@@ -88,7 +88,7 @@ data class CheckoutGiftingAddOn(
         @SerializedName("item_id")
         var itemId: String = "",
         @SerializedName("item_qty")
-        var itemQty: String = "",
+        var itemQty: Int = 0,
         @SerializedName("item_metadata")
         var itemMetadata: String = ""
 )
@@ -326,7 +326,7 @@ object CheckoutRequestMapper {
             val addOnRequest = CheckoutGiftingAddOn().apply {
                 itemType = it.itemType
                 itemId = it.itemId
-                itemQty = it.itemQty.toString()
+                itemQty = it.itemQty
                 itemMetadata = it.itemMetadata
             }
             listCheckoutGiftingAddOn.add(addOnRequest)

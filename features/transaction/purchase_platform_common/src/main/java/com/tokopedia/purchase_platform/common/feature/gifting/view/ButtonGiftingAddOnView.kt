@@ -80,7 +80,11 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
     }
 
     private fun loadRightImage() {
-        binding?.iconRight?.loadImage(urlRightIcon)
+        if (urlRightIcon.isEmpty()) binding?.iconRight?.gone()
+        else {
+            binding?.iconRight?.visible()
+            binding?.iconRight?.loadImage(urlRightIcon)
+        }
     }
 
     private fun setViewActive() {
@@ -88,8 +92,11 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
             titleAddon.visible()
             titleAddon.text = title
 
-            descAddon.visible()
-            descAddon.text = desc
+            if (desc.isEmpty()) descAddon.gone()
+            else {
+                descAddon.visible()
+                descAddon.text = desc
+            }
         }
     }
 
@@ -98,8 +105,12 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
             titleAddon.text = title
             titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
 
-            descAddon.text = desc
-            descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+            if (desc.isEmpty()) descAddon.gone()
+            else {
+                descAddon.visible()
+                descAddon.text = desc
+                descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+            }
         }
     }
 
