@@ -113,6 +113,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private static long gtmSizeThresholdLog = 0;
     private static final String EMBRACE_BREADCRUMB_FORMAT = "%s, %s";
     private static final String EMBRACE_KEY = "GTMAnalytics";
+    private static final String EMBRACE_EVENT_NAME = "eventName";
+    private static final String EMBRACE_EVENT_ACTION = "eventAction";
+    private static final String EMBRACE_EVENT_LABEL = "eventLabel";
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -1178,13 +1181,13 @@ public class GTMAnalytics extends ContextAnalytics {
             publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
-            trackEmbraceBreadcrumb(bundle);
+            trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void trackEmbraceBreadcrumb(Bundle bundle) {
+    private void trackEmbraceBreadcrumb(String eventName, Bundle bundle) {
         String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
         EmbraceConfig config =
                 new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
@@ -1195,23 +1198,30 @@ public class GTMAnalytics extends ContextAnalytics {
                         String.format(
                                 EMBRACE_BREADCRUMB_FORMAT,
                                 EMBRACE_KEY,
-                                createJsonFromBundle(bundle)
+                                createJsonFromBundle(eventName, bundle)
                         )
                 );
             }
         }
     }
 
-    private JSONObject createJsonFromBundle(Bundle bundle) {
+    private JSONObject createJsonFromBundle(String eventName, Bundle bundle) {
         JSONObject json = new JSONObject();
         Set<String> keys = bundle.keySet();
-        for (String key : keys) {
-            try {
-                // json.put(key, bundle.get(key)); see edit below
-                json.put(key, JSONObject.wrap(bundle.get(key)));
-            } catch(JSONException e) {
-                //Handle exception here
+        try {
+            json.put(EMBRACE_EVENT_NAME, eventName);
+
+            if (bundle.containsKey(KEY_ACTION)) {
+                String action = bundle.getString(KEY_ACTION);
+                json.put(EMBRACE_EVENT_ACTION, action);
             }
+
+            if (bundle.containsKey(KEY_LABEL)) {
+                String label = bundle.getString(KEY_LABEL);
+                json.put(EMBRACE_EVENT_LABEL, label);
+            }
+        } catch(JSONException e) {
+            //Handle exception here
         }
         return json;
     }

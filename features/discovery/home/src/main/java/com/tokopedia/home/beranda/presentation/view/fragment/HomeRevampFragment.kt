@@ -374,6 +374,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var chooseAddressWidgetInitialized: Boolean = false
     private var fragmentCurrentCacheState: Boolean = true
     private var fragmentCurrentVisitableCount: Int = -1
+    private var fragmentCurrentScrollPosition: Int = -1
 
     @Suppress("TooGenericExceptionCaught")
     private fun isEligibleForBeautyFest(): Boolean {
@@ -536,13 +537,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                HomeServerLogger.sendEmbraceBreadCrumb(
-                    fragment = this@HomeRevampFragment,
-                    isLoggedIn = userSession.isLoggedIn,
-                    isCache = fragmentCurrentCacheState,
-                    visitableListCount = fragmentCurrentVisitableCount,
-                    scrollPosition = layoutManager?.findLastVisibleItemPosition()
-                )
+                if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
+                    fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition()?:-1
+                    HomeServerLogger.sendEmbraceBreadCrumb(
+                        fragment = this@HomeRevampFragment,
+                        isLoggedIn = userSession.isLoggedIn,
+                        isCache = fragmentCurrentCacheState,
+                        visitableListCount = fragmentCurrentVisitableCount,
+                        scrollPosition = fragmentCurrentScrollPosition
+                    )
+                }
             }
         })
 
