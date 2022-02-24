@@ -253,7 +253,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         )
         displayCouponSettingsSection(coupon)
         displayQuotaUsage(coupon)
-        refreshProductsSection(coupon.productIds.size, maxProduct)
+        refreshProductsSection(coupon.products.size, maxProduct)
         this.bannerImageUrl = coupon.image
         this.squareImageUrl = coupon.imageSquare
         this.portraitImageUrl = coupon.imagePortrait
@@ -619,6 +619,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
     override fun onPause() {
         super.onPause()
         timer?.stopCountdown()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        timer?.startCountdown()
     }
 
     private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String, portraitImageUrl : String) {
