@@ -53,18 +53,19 @@ class GenerateImageParamsBuilder @Inject constructor() {
             else -> EMPTY_STRING
         }
 
-        val symbol = when {
-            couponSettings.discountAmount < THOUSAND -> "rb"
-            couponSettings.discountAmount >= MILLION -> "jt"
-            couponSettings.discountAmount >= THOUSAND -> "rb"
-            else -> EMPTY_STRING
-        }
 
         val amount = when {
             couponSettings.type == CouponType.FREE_SHIPPING -> couponSettings.discountAmount
             couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> couponSettings.discountAmount
             couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> couponSettings.maxDiscount
             else -> couponSettings.discountAmount
+        }
+
+        val symbol = when {
+            amount < THOUSAND -> "rb"
+            amount >= MILLION -> "jt"
+            amount >= THOUSAND -> "rb"
+            else -> "rb"
         }
 
         val formattedDiscountAmount : Float = when {
