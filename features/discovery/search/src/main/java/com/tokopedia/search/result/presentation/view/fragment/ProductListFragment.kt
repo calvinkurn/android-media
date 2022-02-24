@@ -295,7 +295,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
-        productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
+        initProductVideoAutoplayLifecycleObserver()
 
         presenter?.onViewCreated()
     }
@@ -310,6 +310,10 @@ class ProductListFragment: BaseDaggerFragment(),
         val searchParameter = searchParameter ?: return
         if (searchParameter.get(SearchApiConst.OB).isEmpty())
             searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+    }
+
+    private fun initProductVideoAutoplayLifecycleObserver() {
+        productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
     }
     //endregion
 
@@ -430,7 +434,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
-            productVideoAutoplay.setUpProductVideoAutoplayListener(this)
+            productVideoAutoplay.setUp(this)
         }
     }
 

@@ -69,12 +69,13 @@ class ProductVideoAutoplay(
     }
 
     fun registerLifecycleObserver(lifecycleOwner: LifecycleOwner) {
+        if(!isAutoplayProductVideoEnabled) return
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    fun setUpProductVideoAutoplayListener(recyclerView: RecyclerView) {
-        this.recyclerView = recyclerView
+    fun setUp(recyclerView: RecyclerView) {
         if (isAutoplayProductVideoEnabled) {
+            this.recyclerView = recyclerView
             recyclerView.addOnScrollListener(autoPlayScrollListener)
             recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
         }
@@ -131,14 +132,8 @@ class ProductVideoAutoplay(
     private suspend fun playNextVideo(visibleItemIterator: Iterator<ProductVideoPlayer>) {
         if (canPlayNextVideo(visibleItemIterator)) {
             val visibleItem = visibleItemIterator.next()
-            if (visibleItem.hasProductVideo) {
-                productVideoPlayer = visibleItem
-                playVideo(visibleItem, visibleItemIterator)
-            } else if (canPlayNextVideo(visibleItemIterator)) {
-                playNextVideo(visibleItemIterator)
-            } else if (!visibleItemIterator.hasNext()) {
-                clearQueue()
-            }
+            productVideoPlayer = visibleItem
+            playVideo(visibleItem, visibleItemIterator)
         } else if (!visibleItemIterator.hasNext()) {
             clearQueue()
         }
