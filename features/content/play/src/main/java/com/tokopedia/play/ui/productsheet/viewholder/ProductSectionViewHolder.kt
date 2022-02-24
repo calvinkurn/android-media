@@ -44,14 +44,12 @@ class ProductSectionViewHolder(
     private lateinit var adapter: ProductLineAdapter
 
     init {
-        ivBg.setImageResource(0)
-        itemView.setBackgroundResource(0)
+        resetBackground()
     }
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        ivBg.setImageResource(0)
-        itemView.setBackgroundResource(0)
+        resetBackground()
     }
 
     private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
@@ -172,6 +170,11 @@ class ProductSectionViewHolder(
                 }
         }
         return emptyList()
+    }
+
+    private fun resetBackground(){
+        ivBg.setImageResource(0)
+        itemView.setBackgroundResource(0)
     }
 
     companion object {
