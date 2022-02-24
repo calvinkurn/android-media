@@ -280,20 +280,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
 
         thanksPageDataViewModel.membershipRegisterData.observe(viewLifecycleOwner){
-            when(it) {
+            when (it) {
                 is Success -> {
-                   openTokomemberBottomsheet()
+                    if (it.data.resultStatus?.code == "200") {
+                        openTokomemberBottomsheet()
+                    } else {
+                        showErrorToasterRegister()
+                    }
                 }
                 is Fail -> {
-                    Toaster.build(
-                        requireView(),
-                        getString(R.string.thank_tokomember_register_fail),
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_ERROR,
-                        getString(R.string.thank_coba_lagi)
-                    ) {
-                        thanksPageDataViewModel.registerTokomember(memberShipCardId)
-                    }.show()
+                    showErrorToasterRegister()
                 }
             }
         }
@@ -613,6 +609,18 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 REQUEST_CODE_TOKOMEMBER
             )
         }
+    }
+
+    private fun showErrorToasterRegister(){
+        Toaster.build(
+            requireView(),
+            getString(R.string.thank_tokomember_register_fail),
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(R.string.thank_coba_lagi)
+        ) {
+            thanksPageDataViewModel.registerTokomember(memberShipCardId)
+        }.show()
     }
 
     companion object {

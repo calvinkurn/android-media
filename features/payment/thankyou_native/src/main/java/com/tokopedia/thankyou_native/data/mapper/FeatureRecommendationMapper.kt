@@ -54,20 +54,26 @@ object FeatureRecommendationMapper {
         var amount: Float
         var sectionTitle = ""
         var sectionSubTitle = ""
+        var isFirstElement = false
+        var shopId = 0
 
         thanksPageData.shopOrder.forEach {
             amount = 0F
             it.purchaseItemList.forEach { orderItem ->
                 amount += orderItem.totalPrice
             }
-            shopParams.add(index, MembershipOrderData(it.storeId.toInt(), amount))
+            shopId = it.storeId.toInt()
+            shopParams.add(index, MembershipOrderData(shopId, amount))
             index++
         }
         if (!engineData.featureEngineItem.isNullOrEmpty()) {
-            engineData.featureEngineItem.forEach { featureEngineItem ->
+            engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
                     if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                        if (i == 0){
+                            isFirstElement = true
+                        }
                         sectionTitle = jsonObject[KEY_TITLE].toString()
                         sectionSubTitle = jsonObject[KEY_SUBTITLE].toString()
                     }
@@ -80,7 +86,9 @@ object FeatureRecommendationMapper {
             paymentID = thanksPageData.paymentID,
             orderData = shopParams,
             sectionSubtitle = sectionSubTitle,
-            sectionTitle = sectionTitle
+            sectionTitle = sectionTitle,
+            isFirstElement = isFirstElement,
+            shopID = shopId
         )
     }
 

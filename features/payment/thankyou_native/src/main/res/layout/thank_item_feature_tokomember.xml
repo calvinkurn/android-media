@@ -54,7 +54,7 @@
                 app:layout_constraintStart_toEndOf="@id/tvFeatureItemTitleToko"
                 app:layout_constraintTop_toTopOf="parent"
                 app:icon_name="STAR_FILLED"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginStart="@dimen/unify_space_2"
                 app:icon_color_light_enable="@color/Unify_Y300"
                 app:icon_color_night_enable="@color/Unify_Y300"

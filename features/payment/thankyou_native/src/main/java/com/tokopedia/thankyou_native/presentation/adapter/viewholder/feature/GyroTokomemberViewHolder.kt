@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.OPEN_MEMBERSHIP
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
 import kotlinx.android.synthetic.main.thank_item_feature_tokomember.view.*
@@ -50,26 +52,28 @@ class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener
                 tvFeatureItemTitle.text = Html.fromHtml(title ?: "")
                 tvFeatureItemDescription.text = Html.fromHtml(description ?: "")
 
-                if (this.successRegister) {
-                    iconStar.show()
-                } else {
+                if (this.successRegister && membershipType == OPEN_MEMBERSHIP) {
                     iconStar.hide()
+                } else if (membershipType == CLOSE_MEMBERSHIP) {
+                    iconStar.hide()
+                } else {
+                    iconStar.show()
                 }
 
-                view.setOnClickListener {
-                    if (element.isOpenBottomSheet) {
-                        listener.onItemClicked(element, adapterPosition)
-                    } else {
-                        if (!urlApp.isNullOrBlank()) {
-                            listener.openAppLink(urlApp)
-                        } else if (!url.isNullOrBlank()) {
-                            listener.openWebUrl(url)
+                    view.setOnClickListener {
+                        if (element.isOpenBottomSheet) {
+                            listener.onItemClicked(element, adapterPosition)
+                        } else {
+                            if (!urlApp.isNullOrBlank()) {
+                                listener.openAppLink(urlApp)
+                            } else if (!url.isNullOrBlank()) {
+                                listener.openWebUrl(url)
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
     private fun showShimmer() {
         viewFlipperItemContainer.displayedChild = SHIMMER

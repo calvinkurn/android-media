@@ -50,17 +50,29 @@ class GyroEngineMapperUseCase @Inject constructor(
         }
     }
 
-    /** When Tokomember is on engine data make Tokomember first item in list and update title and subtitle
+    /** When Tokomember is on first index of engine data make Tokomember first item in list and update title and subtitle
     of section **/
 
     private fun setTokomemberData(gyroRecommendationListItem: GyroRecommendation?) {
         tokomemberModel?.also { tokomemberModel ->
 
-            gyroRecommendationListItem?.gyroVisitable?.add(0,
-                tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_WAITING_WIDGET)?:GyroTokomemberItem())
-
-            gyroRecommendationListItem?.title = queryParamTokomember?.sectionTitle ?: ""
-            gyroRecommendationListItem?.description = queryParamTokomember?.sectionSubtitle ?: ""
+            if (queryParamTokomember?.isFirstElement == true) {
+                gyroRecommendationListItem?.gyroVisitable?.add(
+                    0,
+                    tokomemberModel.listOfTokomemberItem.getOrNull(
+                        TOKOMEMBER_WAITING_WIDGET
+                    ) ?: GyroTokomemberItem()
+                )
+                gyroRecommendationListItem?.title = queryParamTokomember?.sectionTitle ?: ""
+                gyroRecommendationListItem?.description =
+                    queryParamTokomember?.sectionSubtitle ?: ""
+            } else {
+                gyroRecommendationListItem?.gyroVisitable?.add(
+                    tokomemberModel.listOfTokomemberItem.getOrNull(
+                        TOKOMEMBER_WAITING_WIDGET
+                    ) ?: GyroTokomemberItem()
+                )
+            }
             gyroRecommendationListItem?.gyroMembershipSuccessWidget =
                 tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)
                     ?: GyroTokomemberItem()
