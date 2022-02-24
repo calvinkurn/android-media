@@ -1456,6 +1456,34 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //getProductTopadsStatus
     @Test
+    fun `when get topads status then verify error response`() = runBlockingTest {
+        val productId = "12345"
+        val paramsTest = "txsc=asdf"
+
+        val isSuccess = slot<Boolean>()
+        val errorMessage = slot<String>()
+
+        coEvery {
+            getTopadsIsAdsUseCase.executeOnBackground()
+        } throws Throwable("error")
+
+        viewModel.getProductTopadsStatus(productId, paramsTest)
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
+        verify(exactly = 1) {
+            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                    isSuccess = capture(isSuccess),
+                    errorMessage = capture(errorMessage))
+        }
+
+        Assert.assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
+        Assert.assertEquals(isSuccess.captured, false)
+        Assert.assertEquals(errorMessage.captured, "error")
+
+        Assert.assertEquals((viewModel.topAdsRecomChargeData.value as Fail).throwable.message,
+                "error")
+    }
+
+    @Test
     fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
         val productId = "12345"
         val paramsTest = "txsc=asdf"
@@ -1486,34 +1514,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(isSuccess.captured, true)
         Assert.assertEquals(errorCode.captured, 200)
         Assert.assertEquals(isTopAds.captured, true)
-    }
-
-    @Test
-    fun `when get topads status then verify error response`() = runBlockingTest {
-        val productId = "12345"
-        val paramsTest = "txsc=asdf"
-
-        val isSuccess = slot<Boolean>()
-        val errorMessage = slot<String>()
-
-        coEvery {
-            getTopadsIsAdsUseCase.executeOnBackground()
-        } throws Throwable("error")
-
-        viewModel.getProductTopadsStatus(productId, paramsTest)
-        coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
-        verify(exactly = 1) {
-            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                    isSuccess = capture(isSuccess),
-                    errorMessage = capture(errorMessage))
-        }
-
-        Assert.assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
-        Assert.assertEquals(isSuccess.captured, false)
-        Assert.assertEquals(errorMessage.captured, "error")
-
-        Assert.assertEquals((viewModel.topAdsRecomChargeData.value as Fail).throwable.message,
-                "error")
     }
 
     /**

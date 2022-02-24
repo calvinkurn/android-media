@@ -1753,9 +1753,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 } else {
                     onSuccessAtc(it.data)
                     ProductDetailServerLogger.logBreadCrumbAtc(
-                            true,
-                            "",
-                            buttonActionType
+                            isSuccess = true,
+                            atcType = buttonActionType
                     )
                 }
             }, {
@@ -1781,9 +1780,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val errorMessage = getErrorMessage(t)
             view?.showToasterError(errorMessage, ctaText = getString(R.string.label_oke_pdp))
             ProductDetailServerLogger.logBreadCrumbAtc(
-                    false,
-                    errorMessage,
-                    buttonActionType
+                    isSuccess = false,
+                    errorMessage = errorMessage,
+                    atcType = buttonActionType
             )
         }
     }

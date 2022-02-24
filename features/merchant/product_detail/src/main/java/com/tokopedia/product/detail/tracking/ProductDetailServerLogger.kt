@@ -76,7 +76,7 @@ object ProductDetailServerLogger {
     }
 
     fun logBreadCrumbAtc(isSuccess: Boolean,
-                         errorMessage: String,
+                         errorMessage: String = "",
                          atcType: Int) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
