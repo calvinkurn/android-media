@@ -1,6 +1,7 @@
 package com.tokopedia.digital_product_detail.data.mapper
 
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCustomAttributes
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.RechargeCatalogDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
@@ -20,7 +21,7 @@ class DigitalDenomMapper @Inject constructor() {
 
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomFullMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
+            getDenomFullMapper(dataCollectionMCCM?.firstOrNull()?.name,
                 dataCollectionMCCM, true),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
             isRefresheedFilter
@@ -34,23 +35,36 @@ class DigitalDenomMapper @Inject constructor() {
 
         return DenomMCCMModel(
             getDenomGridMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomGridMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
+            getDenomGridMapper(dataCollectionMCCM?.firstOrNull()?.name,
                 dataCollectionMCCM, true)
         )
     }
 
-    private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
+    fun mapTokenListrikDenom(inputMultiTab: DigitalCatalogProductInputMultiTab): DenomWidgetModel {
         val productsDenom = inputMultiTab.multitabData.productInputs.firstOrNull()?.product
-        val dataCollections = productsDenom?.dataCollections
+        return getDenomGridMapper(productsDenom?.text, getProductDataCollection(productsDenom?.dataCollections))
+    }
 
-        val dataCollectionMCCM = dataCollections?.filter {
+    fun mapTagihanListrikProduct(inputMultiTab: DigitalCatalogProductInputMultiTab): RechargeProduct? {
+        val product = inputMultiTab.multitabData.productInputs.firstOrNull()?.product
+        return getProductDataCollection(product?.dataCollections)?.firstOrNull()?.products?.firstOrNull()
+    }
+
+    private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
+        val dataCollections = inputMultiTab.multitabData.productInputs.firstOrNull()?.product?.dataCollections
+        return Pair(getProductDataCollection(dataCollections), getMCCMDataCollection(dataCollections))
+    }
+
+    private fun getProductDataCollection(dataCollections: List<RechargeCatalogDataCollection>?): List<RechargeCatalogDataCollection>? {
+       return dataCollections?.filterNot {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
         }
+    }
 
-        val dataCollectionProduct = dataCollections?.filterNot {
+    private fun getMCCMDataCollection(dataCollections: List<RechargeCatalogDataCollection>?): List<RechargeCatalogDataCollection>? {
+        return dataCollections?.filter {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
         }
-        return Pair(dataCollectionProduct, dataCollectionMCCM)
     }
 
     private fun getDenomGridMapper(title: String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?, isMCCM: Boolean = false): DenomWidgetModel {
@@ -122,23 +136,22 @@ class DigitalDenomMapper @Inject constructor() {
                 slashPrice = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price else "",
                 slashPricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
                 isShowChevron = true,
-                quotaInfo = "30 GB", //todo add from gql
-                expiredDays = "30 Days", // todo add from gql
+                quotaInfo = getMapCustomAttributes(it.attributes.customAttributes, QUOTA_NAME_KEY),
+                expiredDays = getMapCustomAttributes(it.attributes.customAttributes, EXPIRED_DAYS_NAME_KEY),
                 discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
                 productDescriptions = it.attributes.productDescriptions
             )
         }
     }
 
-    private fun mappingMCCMTitle(mccmTitle: String?): String {
-        return if (!mccmTitle.isNullOrEmpty())
-            mccmTitle.split(MCCM_LIMITER).get(1)
-        else ""
+    private fun getMapCustomAttributes(customAttributes: List<DigitalCustomAttributes>?, keyName: String): String {
+        return customAttributes?.filter {
+            it.name.equals(keyName)
+        }?.firstOrNull()?.value ?: ""
     }
 
     companion object {
         const val CLUSTER_MCCM_TYPE = "MCCM"
-        const val MCCM_LIMITER = "_"
         const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
         const val EMPTY_PRICE = "0"
         const val EMPTY_PRICE_PLAIN = 0
@@ -146,5 +159,7 @@ class DigitalDenomMapper @Inject constructor() {
         const val PROMO_STATUS_TRUE = "1"
         const val PROMO_STATUS_FALSE = "0"
 
+        const val QUOTA_NAME_KEY = "product_paket_data_kuota"
+        const val EXPIRED_DAYS_NAME_KEY = "product_paket_data_expire"
     }
 }

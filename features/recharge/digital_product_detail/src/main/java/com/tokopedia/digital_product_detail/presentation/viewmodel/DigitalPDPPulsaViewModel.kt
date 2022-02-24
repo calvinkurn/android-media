@@ -36,8 +36,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var loadingJob: Job? = null
-    private var catalogProductJob: Job? = null
+    var validatorJob: Job? = null
+    var catalogProductJob: Job? = null
 
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
@@ -77,8 +77,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
@@ -87,21 +90,26 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
-        catalogProductJob?.cancel()
+    fun setRechargeCatalogInputMultiTabLoading(){
         _observableDenomMCCMData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
-                delay(DELAY_MULTI_TAB)
-                val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
-                _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
-            }){
-                if (it !is CancellationException)
-                    _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
-            }
+            delay(DELAY_MULTI_TAB)
+            val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
+            _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
+        }){
+            if (it !is CancellationException)
+                _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setFavoriteNumberLoading(){
+        _favoriteNumberData.value = RechargeNetworkResult.Loading
     }
 
     fun getFavoriteNumber(categoryIds: List<Int>) {
-        _favoriteNumberData.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
@@ -111,11 +119,14 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getPrefixOperator(menuId: Int) {
+    fun setPrefixOperatorLoading(){
         _catalogPrefixSelect.value = RechargeNetworkResult.Loading
+    }
+
+    fun getPrefixOperator(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            operatorData = repo.getOperatorList(menuId)
             delay(DELAY_PREFIX_TIME)
+            operatorData = repo.getOperatorList(menuId)
             _catalogPrefixSelect.value = RechargeNetworkResult.Success(operatorData)
         }) {
             _catalogPrefixSelect.value = RechargeNetworkResult.Fail(it)
@@ -126,11 +137,18 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelValidatorJob() {
+        validatorJob?.cancel()
+    }
+
+    fun setAddToCartLoading(){
+        _addToCartResult.value = RechargeNetworkResult.Loading
+    }
+
     fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
                   digitalSubscriptionParams: DigitalSubscriptionParams,
                   userId: String
     ){
-        _addToCartResult.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
@@ -174,8 +192,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String) {
-        loadingJob?.cancel()
-        loadingJob = viewModelScope.launch {
+        validatorJob = viewModelScope.launch {
             var errorMessage = ""
             for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
                 val phoneIsValid = Pattern.compile(validation.rule)

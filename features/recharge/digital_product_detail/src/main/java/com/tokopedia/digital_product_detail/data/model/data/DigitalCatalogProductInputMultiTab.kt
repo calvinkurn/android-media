@@ -150,9 +150,11 @@ data class RechargeAttributesProduct(
     val operatorId: String = "",
     @SerializedName("product_descriptions")
     @Expose
-    val productDescriptions: List<String> = listOf()
+    val productDescriptions: List<String> = listOf(),
+    @SerializedName("custom_attributes")
+    @Expose
+    val customAttributes: List<DigitalCustomAttributes> = listOf(),
 )
-
 
 data class RechargeProductPromo(
     @SerializedName("id")
@@ -188,6 +190,18 @@ data class TelcoFilterTagComponent(
     @SerializedName("data_collections")
     @Expose
     var filterTagDataCollections: List<FilterTagDataCollection> = mutableListOf()
+)
+
+data class DigitalCustomAttributes(
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("value")
+    @Expose
+    val value: String = "",
+    @SerializedName("id")
+    @Expose
+    val id: String = "",
 )
 
 data class FilterTagDataCollection(

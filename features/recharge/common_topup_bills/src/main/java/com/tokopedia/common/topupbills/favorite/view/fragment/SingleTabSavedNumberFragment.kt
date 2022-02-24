@@ -28,7 +28,6 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
     private var currentCategoryName = ""
     private var number: String = ""
     private var loyaltyStatus: String = ""
-    private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
 
     private var binding: FragmentPersoSingleTabSavedNumberBinding? = null
@@ -45,11 +44,9 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
             number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
-            operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
-        operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +82,6 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
         val favoriteNumberFragment = TopupBillsPersoFavoriteNumberFragment.newInstance(
             clientNumberType,
             number,
-            operatorData,
             currentCategoryName,
             dgCategoryIds,
             loyaltyStatus
@@ -160,7 +156,6 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
     companion object {
         fun newInstance(
             clientNumberType: String, number: String,
-            operatorData: TelcoCatalogPrefixSelect?,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
             loyaltyStatus: String
         ): Fragment {
@@ -172,7 +167,6 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
             bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
-            bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
             fragment.arguments = bundle
             return fragment
         }

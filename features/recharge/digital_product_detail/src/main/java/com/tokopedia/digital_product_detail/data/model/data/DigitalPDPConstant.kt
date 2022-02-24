@@ -14,6 +14,7 @@ object DigitalPDPConstant {
     const val INPUT_ACTION_TRACKING_DELAY = 1000L
 
     const val MINIMUM_OPERATOR_PREFIX = 4
+    const val MINIMUM_OPERATOR_PREFIX_LISTRIK = 1
     const val MINIMUM_VALID_NUMBER_LENGTH = 10
     const val MAXIMUM_VALID_NUMBER_LENGTH = 14
     const val DEFAULT_ICON_RES = 0

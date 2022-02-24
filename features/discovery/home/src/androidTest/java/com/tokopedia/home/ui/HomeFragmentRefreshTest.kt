@@ -24,6 +24,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -67,6 +68,8 @@ class HomeFragmentRefreshTest {
         private const val ADDRESS_1_POSTAL_CODE = ""
         private const val ADDRESS_1_SHOP_ID = "11530573"
         private const val ADDRESS_1_WAREHOUE_ID = "0"
+        private val ADDRESS_1_WAREHOUSES = listOf(LocalWarehouseModel(warehouse_id = 12345, service_type = "2h"), LocalWarehouseModel(warehouse_id = 0, service_type = "15m"))
+        private const val ADDRESS_1_SERVICE_TYPE = "15m"
 
         private const val ADDRESS_2_ID = "0"
         private const val ADDRESS_2_CITY_ID = "463"
@@ -77,6 +80,8 @@ class HomeFragmentRefreshTest {
         private const val ADDRESS_2_POSTAL_CODE = ""
         private const val ADDRESS_2_SHOP_ID = "11530573"
         private const val ADDRESS_2_WAREHOUE_ID = "0"
+        private val ADDRESS_2_WAREHOUSES = listOf(LocalWarehouseModel(warehouse_id = 12345, service_type = "2h"), LocalWarehouseModel(warehouse_id = 0, service_type = "15m"))
+        private const val ADDRESS_2_SERVICE_TYPE = "15m"
     }
 
     @get:Rule
@@ -220,7 +225,9 @@ class HomeFragmentRefreshTest {
                 label = ADDRESS_1_LABEL,
                 postalCode = ADDRESS_1_POSTAL_CODE,
                 shopId = ADDRESS_1_SHOP_ID,
-                warehouseId = ADDRESS_1_WAREHOUE_ID
+                warehouseId = ADDRESS_1_WAREHOUE_ID,
+                warehouses = ADDRESS_1_WAREHOUSES,
+                serviceType = ADDRESS_1_SERVICE_TYPE
         )
     }
 
@@ -235,7 +242,9 @@ class HomeFragmentRefreshTest {
                 label = ADDRESS_2_LABEL,
                 postalCode = ADDRESS_2_POSTAL_CODE,
                 shopId = ADDRESS_2_SHOP_ID,
-                warehouseId = ADDRESS_2_WAREHOUE_ID
+                warehouseId = ADDRESS_2_WAREHOUE_ID,
+                warehouses = ADDRESS_2_WAREHOUSES,
+                serviceType = ADDRESS_2_SERVICE_TYPE
         )
     }
 

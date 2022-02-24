@@ -216,7 +216,10 @@ class DigitalPDPDataPlanFragment :
                         }
 
                     /* validate client number */
-                    viewModel.validateClientNumber(selectedClientNumber)
+                    viewModel.run {
+                        cancelValidatorJob()
+                        validateClientNumber(selectedClientNumber)
+                    }
                     hitTrackingForInputNumber(
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         selectedOperator.operator.attributes.name
@@ -354,23 +357,36 @@ class DigitalPDPDataPlanFragment :
         isOperatorChanged: Boolean,
         clientNumber: String
     ) {
-        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber, isOperatorChanged)
+        viewModel.run {
+            cancelCatalogProductJob()
+            setRechargeCatalogInputMultiTabLoading()
+            getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber, isOperatorChanged)
+        }
     }
 
     private fun getCatalogMenuDetail() {
-        viewModel.getMenuDetail(menuId)
+        viewModel.run {
+            setMenuDetailLoading()
+            getMenuDetail(menuId)
+        }
     }
 
     private fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(menuId)
+        viewModel.run {
+            setPrefixOperatorLoading()
+            getPrefixOperator(menuId)
+        }
     }
 
     private fun getFavoriteNumber() {
-        viewModel.getFavoriteNumber(listOf(
-            TelcoCategoryType.CATEGORY_PULSA,
-            TelcoCategoryType.CATEGORY_PAKET_DATA,
-            TelcoCategoryType.CATEGORY_ROAMING
-        ))
+        viewModel.run {
+            setFavoriteNumberLoading()
+            getFavoriteNumber(listOf(
+                TelcoCategoryType.CATEGORY_PULSA,
+                TelcoCategoryType.CATEGORY_PAKET_DATA,
+                TelcoCategoryType.CATEGORY_ROAMING
+            ))
+        }
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
@@ -504,8 +520,12 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onChipClicked(){
-        viewModel.updateFilterData()
-        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+        viewModel.run {
+            updateFilterData()
+            cancelCatalogProductJob()
+            setRechargeCatalogInputMultiTabLoading()
+            getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+        }
     }
 
     private fun onSuccessDenomFull(denomData: DenomWidgetModel, selectedPosition: Int?) {
@@ -856,13 +876,16 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun addToCart() {
-        viewModel.addToCart(
-            viewModel.digitalCheckoutPassData,
-            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId
-        )
+    private fun addToCart(){
+        viewModel.run {
+            setAddToCartLoading()
+            addToCart(
+                viewModel.digitalCheckoutPassData,
+                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams(),
+                userSession.userId
+            )
+        }
     }
 
     private fun addToCartFromUrl() {
@@ -1166,7 +1189,11 @@ class DigitalPDPDataPlanFragment :
     override fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int) {
         viewModel.updateFilterData(filterTagComponents)
         onSuccessSortFilter(initialSelectedCounter)
-        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+        viewModel.run {
+            cancelCatalogProductJob()
+            setRechargeCatalogInputMultiTabLoading()
+            getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+        }
     }
 
     override fun onChipClicked(chipName: String) {

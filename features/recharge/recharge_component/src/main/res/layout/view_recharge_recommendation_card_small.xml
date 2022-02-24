@@ -53,7 +53,7 @@
             android:layout_marginLeft="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_12"
             tools:text="Rp100.000"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_96"
             />

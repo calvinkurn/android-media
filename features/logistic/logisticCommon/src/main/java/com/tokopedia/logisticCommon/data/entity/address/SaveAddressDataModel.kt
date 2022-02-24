@@ -31,4 +31,6 @@ data class SaveAddressDataModel (
         var setAsPrimaryAddresss: Boolean = false,
         var isAnaPositive: String = "",
         var shopId: Long = 0,
-        var warehouseId: Long = 0) : Parcelable
+        var warehouseId: Long = 0,
+        var warehouses: List<WarehouseDataModel> = listOf(),
+        var serviceType: String = "") : Parcelable

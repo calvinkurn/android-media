@@ -219,6 +219,11 @@ data class AmplificationBaseNotificationModel(
         var shopId: String? = null,
 
         @Expose
+        @SerializedName(IS_BIG_IMAGE)
+        @ColumnInfo(name = "is_big_image")
+        var isBigImage: Boolean? = false,
+
+        @Expose
         @SerializedName(BLAST_ID)
         @ColumnInfo(name = "notifcenterBlastId")
         var blastId: String? = null,

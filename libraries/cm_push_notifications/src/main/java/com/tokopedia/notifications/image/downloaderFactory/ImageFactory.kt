@@ -21,7 +21,6 @@ class ImageFactory (val baseNotificationModel: BaseNotificationModel){
             CMConstant.NotificationType.CAROUSEL_NOTIFICATION -> CarouselImageDownloader(baseNotificationModel)
             CMConstant.NotificationType.PRODUCT_NOTIIFICATION -> ProductImageDownloader(baseNotificationModel)
             CMConstant.NotificationType.VISUAL_NOTIIFICATION -> VisualImageDownloader(baseNotificationModel)
-            CMConstant.NotificationType.BIG_IMAGE_BANNER -> BigBannerImageDownloader(baseNotificationModel)
             else -> null
         }
     }
