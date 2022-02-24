@@ -10,7 +10,6 @@ const val GQL_CATALOG_COMPARISON_PRODUCT_QUERY: String = """query catalogCompari
         id
         name
         brand
-        appLink
         catalogImage {
           imageUrl
           isPrimary

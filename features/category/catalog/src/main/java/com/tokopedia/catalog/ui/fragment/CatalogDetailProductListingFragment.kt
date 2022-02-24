@@ -109,7 +109,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
         private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
-        const val MORE_CATALOG_WIDGET_INDEX = 2
+        const val MORE_CATALOG_WIDGET_INDEX = 3
 
         @JvmStatic
         fun newInstance(catalogId: String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
@@ -446,7 +446,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
         context?.let { context ->
-            RouteManager.route(context,catalogComparison.appLink)
+            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
+            // TODO CHANGE
+        //RouteManager.route(context,catalogComparison.appLink)
         }
     }
 
