@@ -286,6 +286,7 @@ object CommonTopupBillsGqlQuery {
                 productID
                 operatorID
                 categoryID
+                operatorName
               }
             }
           }
