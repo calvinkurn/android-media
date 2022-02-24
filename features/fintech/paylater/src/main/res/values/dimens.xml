@@ -15,6 +15,6 @@
 
 
     <dimen name="pay_later_simulation_dp_38">38dp</dimen>
-    <dimen name="paylater_occ_lable_20dp">20dp</dimen>
+    <dimen name="paylater_occ_lable_25dp">25dp</dimen>
 
 </resources>

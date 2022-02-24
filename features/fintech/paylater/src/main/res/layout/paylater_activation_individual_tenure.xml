@@ -8,8 +8,8 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tenureRecommendation"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:typographyType="body_3"
+        android:layout_height="@dimen/paylater_occ_lable_25dp"
+        app:typographyType="small"
         android:gravity="center"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,7 +19,6 @@
         android:paddingTop="@dimen/unify_space_4"
         android:elevation="@dimen/dp_1"
         android:paddingRight="@dimen/unify_space_2"
-        android:visibility="gone"
         android:paddingLeft="@dimen/unify_space_2"
         android:background="@drawable/bg_occ_tenure_recommended"
         tools:text="sfgvdfgs dfvsdf sdfavsdv"
