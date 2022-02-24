@@ -3546,5 +3546,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition());
         }
+        shipmentAdapter.updateShipmentCostModel();
     }
 }
