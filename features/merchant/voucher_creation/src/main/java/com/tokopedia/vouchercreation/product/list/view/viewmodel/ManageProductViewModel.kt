@@ -103,15 +103,6 @@ class ManageProductViewModel @Inject constructor(
         return mutableProductList.toList()
     }
 
-    private fun getVariantName(combination: List<Int>, selections: List<Selection>): String {
-        val sb = StringBuilder()
-        combination.forEach { index ->
-            sb.append(selections[index].options[index].value)
-            sb.append(" ")
-        }
-        return sb.toString().trim()
-    }
-
     fun mapProductDataToProductUiModel(isViewing: Boolean, isEditing: Boolean, productDataList: List<ProductData>): List<ProductUiModel> {
         return productDataList.map { productData ->
             // TODO: implement proper string formatting
@@ -164,9 +155,7 @@ class ManageProductViewModel @Inject constructor(
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
                     priceTxt = data.priceFormat,
-                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
-                    isError = !data.is_eligible,
-                    errorMessage = data.reason
+                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString()
             )
         }
     }

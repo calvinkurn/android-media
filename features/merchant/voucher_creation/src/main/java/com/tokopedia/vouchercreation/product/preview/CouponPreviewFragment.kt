@@ -245,6 +245,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     this.selectedProductIds = result.data.coupon.productIds.toMutableList()
                     this.maxAllowedProduct = result.data.maxProduct
 
+                    viewModel.selectedWarehouseId = result.data.selectedWarehouseId
+
                     adjustCouponDefaultCouponStartEndDate(
                         pageMode,
                         couponInformation ?: return@observe

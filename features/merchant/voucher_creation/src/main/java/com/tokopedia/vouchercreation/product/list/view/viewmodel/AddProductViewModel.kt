@@ -31,6 +31,7 @@ class AddProductViewModel @Inject constructor(
 
     companion object {
         private const val FIRST_PAGE = 1
+        private const val PAGE_SIZE = 10
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
@@ -85,6 +86,7 @@ class AddProductViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 val params = GetProductListUseCase.createRequestParams(
                         page = page,
+                        pageSize = PAGE_SIZE,
                         keyword = keyword,
                         shopId = shopId,
                         warehouseId = warehouseLocationId.toString(),

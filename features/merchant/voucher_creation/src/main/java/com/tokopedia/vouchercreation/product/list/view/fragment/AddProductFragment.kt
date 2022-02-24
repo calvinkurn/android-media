@@ -141,14 +141,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
                 val keyword = textView.text.toString().lowercase()
                 viewModel.setSearchKeyword(keyword)
-                viewModel.getProductList(
-                        keyword = keyword,
-                        shopId = userSession.shopId,
-                        warehouseLocationId = viewModel.getWarehouseLocationId(),
-                        shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                        categoryList = viewModel.getSelectedCategoryIds(),
-                        sort = viewModel.getSelectedSort()
-                )
+                loadInitialData()
                 return@setOnEditorActionListener true
             } else return@setOnEditorActionListener false
         }
@@ -210,10 +203,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             viewModel.setSearchKeyword("")
             viewModel.setWarehouseLocationId(viewModel.getSellerWarehouseId())
             viewModel.setSelectedShowCases(listOf())
-            viewModel.getProductList(
-                    shopId = userSession.shopId,
-                    warehouseLocationId = viewModel.getSellerWarehouseId()
-            )
+            viewModel.setSelectedSort(listOf())
+            loadInitialData()
         }
     }
 
@@ -231,11 +222,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     private fun setupSortBottomSheet(sortSelections: List<SortSelection>) {
         sortBottomSheet = SortBottomSheet.createInstance(sortSelections, this)
-    }
-
-    private fun setupSellerLocationTicker(binding: FragmentMvcAddProductBinding?, warehouseName: String, productSize: Int) {
-        val description = getString(R.string.mvc_product_seller_location_warning_message, productSize.toString(), warehouseName)
-        binding?.tickerSellerLocationChange?.setTextDescription(description)
     }
 
     private fun setupSelectionBar(binding: FragmentMvcAddProductBinding?) {
@@ -405,21 +391,13 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
         val isSelectionChanged = viewModel.getWarehouseLocationId() != selectedWarehouseLocation.warehouseId
         if (viewModel.getSelectedProducts().isNotEmpty() && isSelectionChanged) {
-            val warehouseName = selectedWarehouseLocation.warehouseName
-            val productSize = viewModel.getSelectedProducts().size
-            setupSellerLocationTicker(binding, warehouseName, productSize)
             binding?.tickerSellerLocationChange?.show()
+            binding?.buttonAddProduct?.isEnabled = false
         } else {
             binding?.tickerSellerLocationChange?.hide()
+            binding?.buttonAddProduct?.isEnabled = true
             viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
-            viewModel.getProductList(
-                    keyword = viewModel.getSearchKeyWord(),
-                    shopId = userSession.shopId,
-                    warehouseLocationId = viewModel.getWarehouseLocationId(),
-                    shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                    categoryList = viewModel.getSelectedCategoryIds(),
-                    sort = viewModel.getSelectedSort()
-            )
+            loadInitialData()
         }
     }
 
@@ -427,42 +405,21 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         if (selectedShowCases.isNotEmpty()) showCaseFilter?.type = ChipsUnify.TYPE_SELECTED
         else showCaseFilter?.type = ChipsUnify.TYPE_NORMAL
         viewModel.setSelectedShowCases(selectedShowCases)
-        viewModel.getProductList(
-                keyword = viewModel.getSearchKeyWord(),
-                shopId = userSession.shopId,
-                warehouseLocationId = viewModel.getWarehouseLocationId(),
-                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                categoryList = viewModel.getSelectedCategoryIds(),
-                sort = viewModel.getSelectedSort()
-        )
+        loadInitialData()
     }
 
     override fun onApplyCategoryFilter(selectedCategories: List<CategorySelection>) {
         if (selectedCategories.isNotEmpty()) categoryFilter?.type = ChipsUnify.TYPE_SELECTED
         else categoryFilter?.type = ChipsUnify.TYPE_NORMAL
         viewModel.setSelectedCategories(selectedCategories)
-        viewModel.getProductList(
-                keyword = viewModel.getSearchKeyWord(),
-                shopId = userSession.shopId,
-                warehouseLocationId = viewModel.getWarehouseLocationId(),
-                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                categoryList = viewModel.getSelectedCategoryIds(),
-                sort = viewModel.getSelectedSort()
-        )
+        loadInitialData()
     }
 
     override fun onApplySortFilter(selectedSort: List<SortSelection>) {
         if (selectedSort.isNotEmpty()) sortFilter?.type = ChipsUnify.TYPE_SELECTED
         else sortFilter?.type = ChipsUnify.TYPE_NORMAL
         viewModel.setSelectedSort(selectedSort)
-        viewModel.getProductList(
-                keyword = viewModel.getSearchKeyWord(),
-                shopId = userSession.shopId,
-                warehouseLocationId = viewModel.getWarehouseLocationId(),
-                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                categoryList = viewModel.getSelectedCategoryIds(),
-                sort = viewModel.getSelectedSort()
-        )
+        loadInitialData()
     }
 
     override fun createAdapter() = ProductListAdapter(this)
