@@ -387,6 +387,9 @@ object HomeLayoutMapper {
                 val recommendationItem = recommendationItemList.firstOrNull {
                     it.productId.toString() == productId
                 }
+
+                if (recommendationItem?.quantity == quantity) return
+
                 val index = recommendationItemList.indexOf(recommendationItem)
 
                 recommendationItemList.getOrNull(index)?.copy(quantity = quantity)?.let {
