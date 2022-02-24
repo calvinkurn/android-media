@@ -133,9 +133,6 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
                     incomeTax
                     serviceTax
                   }
-                  warehouse {
-                      id
-                  }
                   topads {
                     status
                     management

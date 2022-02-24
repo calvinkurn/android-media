@@ -47,7 +47,7 @@ class GetCouponFacadeUseCase @Inject constructor(
 
         val coupon = couponMapper.map(couponDetail, couponProducts)
 
-        val selectedWarehouseId = products.data.firstOrNull()?.warehouse?.id ?: ""
+        val selectedWarehouseId = products.data.firstOrNull()?.warehouses?.firstOrNull()?.id ?: ""
 
         return CouponWithMetadata(coupon, voucher.maxProducts, selectedWarehouseId)
     }

@@ -418,11 +418,16 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         refreshCouponDetail()
     }
 
+    fun setSelectedWarehouseId(selectedWarehouseId: String) {
+        viewModel.selectedWarehouseId = selectedWarehouseId
+    }
+
     fun getCouponInformationData() = this.couponInformation
     fun getCouponSettingsData() = this.couponSettings
     fun getMaxAllowedProduct() = this.maxAllowedProduct
     fun getSelectedProducts() = this.selectedProducts
     fun getSelectedProductIds() = this.selectedProductIds
+    fun getSelectedWarehouseId() = viewModel.selectedWarehouseId
 
     fun getSelectedProducts(selectedProductIds: List<ProductId>): List<ProductUiModel> {
         return viewModel.mapSelectedProductIdsToProductUiModels(selectedProductIds)

@@ -47,7 +47,7 @@ data class GetProductsByProductIdResponse(
         @Expose val txStats: TxStats = TxStats(),
 
         @SerializedName("warehouse")
-        @Expose val warehouse: GoodsWarehouse
+        @Expose val warehouses: List<GoodsWarehouse>
     )
 
     data class TxStats(
