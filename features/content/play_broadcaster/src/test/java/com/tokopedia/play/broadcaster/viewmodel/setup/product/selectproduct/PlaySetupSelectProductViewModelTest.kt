@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.product.viewmodel.selectproduct
+package com.tokopedia.play.broadcaster.viewmodel.setup.product.selectproduct
 
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository

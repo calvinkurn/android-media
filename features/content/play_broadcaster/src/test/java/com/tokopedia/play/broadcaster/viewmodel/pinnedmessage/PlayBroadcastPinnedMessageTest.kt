@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pinnedmessage
+package com.tokopedia.play.broadcaster.viewmodel.pinnedmessage
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository

@@ -24,6 +24,7 @@ import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiv
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -45,10 +46,10 @@ internal class PlayBroadcastViewModelRobot(
     getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
+    playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
     productMapper: PlayBroProductUiMapper = mockk(relaxed = true),
-    channelInteractiveMapper: PlayChannelInteractiveMapper = mockk(relaxed = true),
+    channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
 ) : Closeable {
@@ -130,6 +131,12 @@ internal class PlayBroadcastViewModelRobot(
         val field = viewModel.javaClass.getDeclaredField(name)
         field.isAccessible = true
         return field.get(viewModel) as T
+    }
+
+    fun executeViewModelPrivateFunction(name: String) {
+        val method = viewModel.javaClass.getDeclaredMethod(name)
+        method.isAccessible = true
+        method.invoke(viewModel)
     }
 
     override fun close() {

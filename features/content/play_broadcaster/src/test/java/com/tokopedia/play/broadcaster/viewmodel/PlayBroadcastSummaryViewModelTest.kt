@@ -9,8 +9,10 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
+import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -38,6 +40,8 @@ class PlayBroadcastSummaryViewModelTest {
 
     private val modelBuilder = UiModelBuilder()
     private val mockLiveStats by lazy { modelBuilder.buildLiveStats() }
+
+    private val mockException = modelBuilder.buildException()
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
 
@@ -84,5 +88,57 @@ class PlayBroadcastSummaryViewModelTest {
         Assertions
                 .assertThat(result)
                 .isInstanceOf(NetworkResult.Fail::class.java)
+    }
+
+    @Test
+    fun `when save video success, then it should return success`() {
+        coEvery { broadcastUpdateChannelUseCase.executeOnBackground() } returns ChannelId("1")
+
+        viewModel.saveVideo()
+
+        val result = viewModel.observableSaveVideo.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Success::class.java)
+    }
+
+    @Test
+    fun `when save video failed, then it should return fail`() {
+        coEvery { broadcastUpdateChannelUseCase.executeOnBackground() } throws mockException
+
+        viewModel.saveVideo()
+
+        val result = viewModel.observableSaveVideo.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Fail::class.java)
+    }
+
+    @Test
+    fun `when delete video success, then it should return success`() {
+        coEvery { broadcastUpdateChannelUseCase.executeOnBackground() } returns ChannelId("1")
+
+        viewModel.deleteVideo()
+
+        val result = viewModel.observableDeleteVideo.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Success::class.java)
+    }
+
+    @Test
+    fun `when delete video failed, then it should return fail`() {
+        coEvery { broadcastUpdateChannelUseCase.executeOnBackground() } throws mockException
+
+        viewModel.deleteVideo()
+
+        val result = viewModel.observableDeleteVideo.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Fail::class.java)
     }
 }
