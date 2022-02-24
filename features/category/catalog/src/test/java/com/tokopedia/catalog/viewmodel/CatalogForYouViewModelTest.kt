@@ -8,6 +8,7 @@ import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -28,8 +29,10 @@ class CatalogForYouViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private var viewModel = CatalogForYouViewModel()
-    private var useCase = mockk<CatalogComparisonProductUseCase>()
+    private val repository : CatalogComparisonProductRepository = mockk(relaxed = true)
+    private var useCase = spyk(CatalogComparisonProductUseCase(repository))
+
+    private lateinit var viewModel : CatalogForYouViewModel
     private var catalogDetailObserver = mockk<Observer<ArrayList<BaseCatalogDataModel>>>(relaxed = true)
     private var catalogDetailObserverHasMoreItems = mockk<Observer<Boolean>>(relaxed = true)
     private var catalogDetailObserverError= mockk<Observer<Throwable>>(relaxed = true)
@@ -37,6 +40,7 @@ class CatalogForYouViewModelTest {
 
     @Before
     fun setUp() {
+        viewModel = CatalogForYouViewModel()
         viewModel.catalogComparisonProductUseCase = useCase
         viewModel.getDataItems().observeForever(catalogDetailObserver)
         viewModel.getHasMoreItems().observeForever(catalogDetailObserverHasMoreItems)

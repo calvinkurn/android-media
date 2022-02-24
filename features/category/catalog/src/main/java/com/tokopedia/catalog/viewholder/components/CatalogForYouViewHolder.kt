@@ -34,7 +34,7 @@ class CatalogForYouViewHolder(itemView: View, private val catalogDetailListener:
             }
         }
         itemView.setOnClickListener {
-            catalogDetailListener?.onCatalogForYouClick(model.item)
+            catalogDetailListener?.onCatalogForYouClick(adapterPosition,model.item)
         }
     }
 }
