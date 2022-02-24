@@ -37,6 +37,7 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
             false)
         source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY)
                 ?: ""
+        maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED) ?: MAX_CHECKED_DEFAULT
         shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
                 ?: ""
         hiddenProducts.addAll(intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
