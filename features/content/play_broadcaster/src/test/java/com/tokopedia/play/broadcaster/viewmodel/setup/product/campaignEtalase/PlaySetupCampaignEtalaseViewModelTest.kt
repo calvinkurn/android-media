@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.product.viewmodel.campaignEtalase
+package com.tokopedia.play.broadcaster.viewmodel.setup.product.campaignEtalase
 
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder

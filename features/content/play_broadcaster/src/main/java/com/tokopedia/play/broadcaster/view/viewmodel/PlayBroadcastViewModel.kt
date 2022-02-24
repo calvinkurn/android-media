@@ -94,9 +94,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         fun create(handle: SavedStateHandle): PlayBroadcastViewModel
     }
 
-    val isFirstStreaming: Boolean
-        get() = sharedPref.isFirstStreaming()
-
     val channelId: String
         get() = hydraConfigStore.getChannelId()
     val channelTitle: String
@@ -182,9 +179,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLivePusherStats = MutableLiveData<LivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveLogState>()
 
-    /** Preparation */
-    private val _titleForm = MutableStateFlow(PlayTitleFormUiModel())
-
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
@@ -205,15 +199,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
             editStatus = it.editStatus
-        )
-    }
-
-    val preparationUiState = combine(
-        _titleForm,
-        _isExiting
-    ) { titleForm, _ ->
-        PlayBroadcastPreparationUiState(
-            titleForm = titleForm
         )
     }
 
@@ -381,14 +366,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
-    }
-
-    fun getHydraSetupData(): SerializableHydraSetupData {
-        return mDataStore.getSerializableData()
-    }
-
-    fun setHydraSetupData(setupData: SerializableHydraSetupData) {
-        mDataStore.setSerializableData(setupData)
     }
 
     suspend fun getChannelDetail() = getChannelById(channelId)
@@ -790,7 +767,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
-//        getCurrentSetupDataStore().setSelectedProducts(products)
         _productSectionList.value = productSectionList
     }
 
