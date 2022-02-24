@@ -19,8 +19,7 @@ class UserProfileViewModel @Inject constructor(
     private val userDetailsUseCase: UserDetailsUseCase,
     private var playVodUseCase: PlayPostContentUseCase,
     private val useCaseDoFollow: ProfileFollowUseCase,
-    private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
-    private val theyFollowedUseCase: ProfileTheyFollowedUseCase
+    private val useCaseDoUnFollow: ProfileUnfollowedUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
     public val userDetailsLiveData = MutableLiveData<Resources<ProfileHeaderBase>>()

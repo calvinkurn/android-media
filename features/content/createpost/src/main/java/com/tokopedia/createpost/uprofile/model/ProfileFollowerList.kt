@@ -34,7 +34,7 @@ data class ProfileFollowerV2 (
     val profile: Profile,
 
     @SerializedName("isFollow")
-    val isFollow: Boolean
+    var isFollow: Boolean
 ) : BaseItem()
 
 
