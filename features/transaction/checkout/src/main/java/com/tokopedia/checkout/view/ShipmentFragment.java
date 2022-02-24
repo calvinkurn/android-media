@@ -202,6 +202,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
+    private static final int ADD_ON_STATUS_ACTIVE = 1;
+    private static final int ADD_ON_STATUS_DISABLE = 2;
 
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
@@ -3272,7 +3274,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
 
-            if (addOnsDataModel.getStatus() == 2) {
+            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
                 unavailableBottomSheetData.setDescription(addOnBottomSheetModel.getDescription());
                 unavailableBottomSheetData.setTickerMessage(addOnBottomSheetModel.getTicker().getText());
 
@@ -3291,7 +3293,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
             }
 
-            if (cartItemModel.getAddOnProductLevelModel().getStatus() == 1) {
+            if (cartItemModel.getAddOnProductLevelModel().getStatus() == ADD_ON_STATUS_ACTIVE) {
                 AddOnWordingData addOnWordingData = new AddOnWordingData();
                 String onlyGreetingCard = addOnWordingModel.getOnlyGreetingCard();
                 if (onlyGreetingCard.contains(_qty)) {
