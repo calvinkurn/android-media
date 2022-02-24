@@ -111,17 +111,18 @@ class ManageProductFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
+
+        val isViewing = arguments?.getBoolean(BUNDLE_KEY_IS_VIEWING, false) ?: false
+        val isEditing = arguments?.getBoolean(BUNDLE_KEY_IS_EDITING, false) ?: false
+        val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
+        viewModel.setIsViewing(isViewing)
+        viewModel.setIsEditing(isEditing)
+        viewModel.setMaxProductLimit(maxProductLimit)
+
         setupViews(binding)
         observeLiveData()
 
         val shopId = userSession.shopId
-        val isViewing = arguments?.getBoolean(BUNDLE_KEY_IS_VIEWING, false) ?: false
-        val isEditing = arguments?.getBoolean(BUNDLE_KEY_IS_EDITING, false) ?: false
-        val maxProductLimit = arguments?.getInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT) ?: ZERO
-
-        viewModel.setIsViewing(isViewing)
-        viewModel.setIsEditing(isEditing)
-        viewModel.setMaxProductLimit(maxProductLimit)
         val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
         viewModel.setCouponSettings(couponSettings)
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)

@@ -410,6 +410,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     fun addProducts(selectedProducts: List<ProductUiModel>) {
         val couponProductData = viewModel.mapSelectedProductsToCouponProductData(selectedProducts)
         this.selectedProducts.addAll(selectedProducts)
+        this.selectedProductCount = selectedProducts.size
         this.couponProducts.addAll(couponProductData)
         refreshCouponDetail()
     }
@@ -417,6 +418,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     fun setProducts(selectedProducts: List<ProductUiModel>) {
         val couponProductData = viewModel.mapSelectedProductsToCouponProductData(selectedProducts)
         this.selectedProducts = selectedProducts.toMutableList()
+        this.selectedProductCount = selectedProducts.size
         this.couponProducts = couponProductData.toMutableList()
         refreshCouponDetail()
     }
