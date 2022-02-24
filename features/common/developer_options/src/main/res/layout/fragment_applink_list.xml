@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/appLinkSearchbar"
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:text="@string/applink_no_data"
         android:visibility="gone"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@id/appLinkSearchbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
