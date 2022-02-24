@@ -148,7 +148,7 @@ class BrandlistPageViewModel @Inject constructor(
                             category?.categoryId,
                             currentOffset,
                             ALL_BRANDS_QUERY,
-                            requestSize,
+                            ALL_BRANDS_REQUEST_SIZE,
                             ALPHABETIC_ASC_SORT,
                             brandFirstLetter
                         ).await()
