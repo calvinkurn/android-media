@@ -162,7 +162,7 @@ object HomeServerLogger {
                 if (isCache) {
                     embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
                 } else {
-                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_FALSE)
                 }
             }
 
