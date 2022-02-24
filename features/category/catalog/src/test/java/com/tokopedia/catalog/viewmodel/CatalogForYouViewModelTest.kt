@@ -56,6 +56,7 @@ class CatalogForYouViewModelTest {
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
             assertEquals(viewModel.getDataItems().value?.get(0).toString(), arrayOfModel[0].toString())
             assertEquals(viewModel.getHasMoreItems().value , true)
+            assert(viewModel.getLoadedItemsSize() > 0)
             every {
                 viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
             }.just(Runs)
@@ -72,7 +73,7 @@ class CatalogForYouViewModelTest {
        runBlocking {
             coEvery { viewModel.catalogComparisonProductUseCase.getCatalogComparisonProducts(any(),any(), any(),any(),any(), any()) } returns result
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
-            assertEquals(viewModel.getHasMoreItems().value , false)
+           assertEquals(viewModel.getHasMoreItems().value , false)
         }
     }
 

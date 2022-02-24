@@ -23,8 +23,9 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:gravity="center"
-            tools:text="Apple iPhone 11"
-            app:typographyType="body_2"
+            android:lines="2"
+            tools:text="Apple iPhone 12 Pro Max"
+            app:typographyType="body_3"
             app:typographyWeight="bold"
             />
 
@@ -36,7 +37,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:unify_image_corner_radius="0"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>
