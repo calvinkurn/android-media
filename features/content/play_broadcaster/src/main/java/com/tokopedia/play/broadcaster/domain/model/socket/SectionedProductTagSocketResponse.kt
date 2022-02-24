@@ -24,7 +24,7 @@ data class SectionedProductTagSocketResponse(
     )
 
     data class Product(
-        @SerializedName("product_id")
+        @SerializedName("id")
         val id: String = "",
 
         @SerializedName("name")
@@ -36,7 +36,7 @@ data class SectionedProductTagSocketResponse(
         @SerializedName("original_price")
         val originalPrice: Double = 0.0,
 
-        @SerializedName("original_price_fmt")
+        @SerializedName("original_price_formatted")
         val originalPriceFmt: String = "",
 
         @SerializedName("discount")
@@ -45,7 +45,7 @@ data class SectionedProductTagSocketResponse(
         @SerializedName("price")
         val price: Double = 0.0,
 
-        @SerializedName("price_fmt")
+        @SerializedName("price_formatted")
         val priceFmt: String = "",
 
         @SerializedName("quantity")

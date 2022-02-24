@@ -20,4 +20,6 @@ enum class CampaignStatus(val id: Int) {
             return Unknown
         }
     }
+
+    fun isNotUpcoming(): Boolean = id != Ready.id && id != ReadyLocked.id
 }

@@ -761,7 +761,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
-        productTagView.setProducts(state.flatMap { it.products })
+        productTagView.setProducts(state.filter { it.campaignStatus.isNotUpcoming() }.flatMap { it.products })
     }
 
     private fun isPinnedFormVisible(): Boolean {
