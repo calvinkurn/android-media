@@ -886,20 +886,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
                     }
                     ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                            true,
-                            "",
-                            errorCode.toString(),
-                            isTopAds
+                            isSuccess = true,
+                            errorCode = errorCode.toString(),
+                            isTopAds = isTopAds
                     )
                 }
             }) {
                 it.printStackTrace()
                 _topAdsRecomChargeData.postValue(it.asFail())
                 ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                        false,
-                        it.message,
-                        "",
-                        false
+                        isSuccess = false,
+                        errorMessage = it.message,
                 )
                 //nothing to do since fire and forget
             }
