@@ -32,8 +32,10 @@ class GetCouponFacadeUseCase @Inject constructor(
         val couponDetailDeferred = scope.async { getCouponDetail(couponId) }
         val couponDetail = couponDetailDeferred.await()
 
-        val productsDeferred = scope.async { getProducts(couponDetail.productIds) }
+        val parentProductIds = couponDetail.products.map { it.parentProductId }
+        val productsDeferred = scope.async { getProducts(parentProductIds) }
         val products = productsDeferred.await()
+
         val voucher = initiateVoucherDeferred.await()
 
         val couponProducts = mutableListOf<CouponProduct>()
