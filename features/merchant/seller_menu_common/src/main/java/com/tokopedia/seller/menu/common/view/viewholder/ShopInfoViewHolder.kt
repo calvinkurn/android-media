@@ -361,7 +361,7 @@ class ShopInfoViewHolder(
         userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
     ): View {
         val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
-        val eligiblePmIcon = findViewById<IconUnify>(R.id.iconEligiblePm)
+        val eligiblePmIconView = findViewById<IconUnify>(R.id.iconEligiblePm)
 
         val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
@@ -369,48 +369,48 @@ class ShopInfoViewHolder(
         when {
             pmProEligibleIcon != null -> {
                 when (regularMerchant) {
-                    is RegularMerchant.Verified -> setVerificationRegularMerchant(
+                    is RegularMerchant.Verified -> setRegularMerchantVerification(
                         regularMerchantStatus,
-                        eligiblePmIcon,
+                        eligiblePmIconView,
                         pmProEligibleIcon
                     )
-                    is RegularMerchant.Pending -> setPendingRegularMerchant(
+                    is RegularMerchant.Pending -> setRegularMerchantPending(
                         regularMerchantStatus,
-                        eligiblePmIcon,
+                        eligiblePmIconView,
                         pmProEligibleIcon
                     )
-                    is RegularMerchant.NeedUpgrade -> setNeedUpgradeRegularMerchant(
+                    is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade(
                         regularMerchantStatus,
-                        eligiblePmIcon
+                        eligiblePmIconView
                     )
                 }
             }
             pmEligibleIcon != null -> {
                 when (regularMerchant) {
-                    is RegularMerchant.Verified -> setVerificationRegularMerchant(
+                    is RegularMerchant.Verified -> setRegularMerchantVerification(
                         regularMerchantStatus,
-                        eligiblePmIcon,
+                        eligiblePmIconView,
                         pmEligibleIcon
                     )
-                    is RegularMerchant.Pending -> setPendingRegularMerchant(
+                    is RegularMerchant.Pending -> setRegularMerchantPending(
                         regularMerchantStatus,
-                        eligiblePmIcon,
+                        eligiblePmIconView,
                         pmEligibleIcon
                     )
-                    is RegularMerchant.NeedUpgrade -> setNeedUpgradeRegularMerchant(
+                    is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade(
                         regularMerchantStatus,
-                        eligiblePmIcon
+                        eligiblePmIconView
                     )
                 }
             }
-            else -> setNeedUpgradeRegularMerchant(regularMerchantStatus, eligiblePmIcon)
+            else -> setRegularMerchantNeedUpgrade(regularMerchantStatus, eligiblePmIconView)
         }
 
         setupTransactionSection(userShopInfoUiModel)
         return this
     }
 
-    private fun setNeedUpgradeRegularMerchant(
+    private fun setRegularMerchantNeedUpgrade(
         regularMerchantStatus: Typography,
         eligiblePmIcon: IconUnify
     ) {
@@ -426,12 +426,12 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun setPendingRegularMerchant(
+    private fun setRegularMerchantPending(
         regularMerchantStatus: Typography,
-        eligiblePmIcon: IconUnify,
+        eligiblePmIconView: IconUnify,
         pmIcon: Int
     ) {
-        eligiblePmIcon.run {
+        eligiblePmIconView.run {
             show()
             setImage(pmIcon)
         }
@@ -447,12 +447,12 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun setVerificationRegularMerchant(
+    private fun setRegularMerchantVerification(
         regularMerchantStatus: Typography,
-        pmEligibleIcon: IconUnify,
+        eligiblePmIconView: IconUnify,
         pmIcon: Int
     ) {
-        pmEligibleIcon.run {
+        eligiblePmIconView.run {
             show()
             setImage(pmIcon)
         }
