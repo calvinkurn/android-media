@@ -446,7 +446,6 @@
     <string name="update_active_coupon_period">Ubah periode kupon aktif</string>
     <string name="start">Mulai</string>
     <string name="end">Selesai</string>
-    <string name="update">Ubah</string>
     <string name="download_coupon_product_success">Download Kupon Produk berhasil</string>
     <string name="download_coupon_product_failed">Download Kupon Produk tidak berhasil</string>
     <string name="download_coupon">Download Kupon</string>
@@ -464,6 +463,7 @@
     <string name="mvc_no_access_description">Hubungi pemilik toko untuk mendapatkan akses halaman ini, ya.</string>
     <string name="mvc_understand">Oke, Saya mengerti</string>
     <string name="mvc_free_shipping_coming_soon">Gratis Ongkir (Akan Datang)</string>
+    <string name="mvc_update">Ubah</string>
 
     <!--create coupon-->
     <string name="mvc_coupon_information_title">Informasi Kupon</string>
