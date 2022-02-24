@@ -139,8 +139,6 @@ class BrandlistPageViewModelTest {
             val mockedZeroRequestSize = 0
 
             viewModel.loadMoreAllBrands(brandFirstLetter)
-
-            coVerify { getBrandListAllBrandUseCase.executeOnBackground() }
             viewModel.loadMoreAllBrandsReminding(mockedZeroRequestSize, category = mockedCategory, brandFirstLetter)
             Assert.assertTrue(viewModel.getAllBrandResult.value !is Success)
         }
