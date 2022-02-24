@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
+import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.*
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
@@ -33,7 +34,7 @@ import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import javax.inject.Inject
 
 /**
- * Created by meyta.taliti on 27/01/22.
+ * Created by shruti on 20/02/22.
  */
 class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
@@ -41,6 +42,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     private val widgetType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE)?:""}
     private val sourceType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE)?:""}
     private val sourceId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID)?:"" }
+    private val filterCategory by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY)?:"" }
 
     private lateinit var adapter: PlaySeeMoreAdapter
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinatorVideoTab
@@ -59,6 +61,8 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var analyticListener: PlayAnalyticsTracker
 
 
 
@@ -161,6 +165,13 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
             show()
         }
     }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        analyticListener.clickOnSeeAllOnLagiLiveCarousel(widgetType, filterCategory)
+
+    }
+
     companion object{
         const val WIDGET_LIVE ="live"
         const val WIDGET_UPCOMING ="upcoming"

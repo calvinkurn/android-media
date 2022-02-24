@@ -19,6 +19,7 @@ class PlayVideoLiveListActivity : BaseSimpleActivity() {
                 bundle.putString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE, it.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE))
                 bundle.putString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE, it.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE))
                 bundle.putString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID, it.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID))
+                bundle.putString(ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY, it.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY))
             }
             return PlayFeedSeeMoreFragment.createInstance(bundle)
         }

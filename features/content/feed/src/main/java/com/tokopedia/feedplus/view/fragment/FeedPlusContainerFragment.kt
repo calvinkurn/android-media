@@ -498,6 +498,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
+                 toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
                     if (position == 1) {
                         context?.let {
                             val intent = Intent(BROADCAST_VISIBLITY)
@@ -544,7 +545,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 //        val feedDatæfeedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
 //
         var feedData = mutableListOf<FeedTabs.FeedData>()
-         feedData.addAll(data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO })
+         feedData.addAll(data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM  })
         feedData.add(FeedTabs.FeedData(title = "Video", key = "video", type = "custom",position = 4,isActive = true))
 
         pagerAdapter.setItemList(feedData)

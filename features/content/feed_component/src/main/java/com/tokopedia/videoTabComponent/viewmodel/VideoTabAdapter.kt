@@ -58,8 +58,8 @@ class VideoTabAdapter(
 
     fun getCurrentHeader() = mCurrentHeader
 
-    fun updateList(mappedData: List<PlayFeedUiModel>, sourceId: String, sourceType: String) {
-        val feedPlayLehatSemuaApplink = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID}=$sourceId&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE}=$sourceType"
+    fun updateList(mappedData: List<PlayFeedUiModel>, sourceId: String, sourceType: String, filterCategory: String) {
+        val feedPlayLehatSemuaApplink = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID}=$sourceId&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE}=$sourceType&${ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY}=$filterCategory"
 
         val newList = mutableListOf<PlayFeedUiModel>()
         for (item in itemList) {

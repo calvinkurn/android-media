@@ -7,8 +7,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import javax.inject.Inject
 
 //slot click and impression
@@ -115,16 +113,37 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isAutoPlay: Boolean
     ) {
         super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
-        tracker.impressOnLagiLiveCarouselContentCards(
-            item.channelId,
-            shopId,
-            listOf(item.promoType),
-            item.channelType.toString().lowercase()
-        )
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
+            if (channelPositionInList == 0)
+                tracker.impressOnUpcomingContentCarouselWidget(filterCategory)
             tracker.impressOnUpcomingCarouselContentCards(
-                item.channelId, shopId, listOf(item.promoType),
-                item.channelType.toString().lowercase(), filterCategory
+                    item.channelId, shopId, listOf(item.promoType),
+                    item.channelType.toString().lowercase(), filterCategory
+            )
+        } else if (item.channelType == PlayWidgetChannelType.Live) {
+            if (channelPositionInList == 0)
+                tracker.impressOnLagiLiveContentCarouselWidget()
+            tracker.impressOnLagiLiveCarouselContentCards(
+                    item.channelId,
+                    shopId,
+                    listOf(item.promoType),
+                    item.channelType.toString().lowercase()
+            )
+        }
+
+    }
+
+    override fun onClickToggleReminderChannel(view: PlayWidgetJumboView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
+        super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
+        if (isRemindMe) {
+            tracker.clickOnRemindMeButtonOnPlayCardInContentHighlight(
+                    item.channelId, shopId, listOf(item.promoType),
+                    item.channelType.toString().lowercase(), filterCategory
+            )
+        } else {
+            tracker.clickOnUnRemindMeButtonOnPlayCardInContentHighlight(
+                    item.channelId, shopId, listOf(item.promoType),
+                    item.channelType.toString().lowercase(), filterCategory
             )
         }
     }
@@ -165,6 +184,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
 
     override fun onClickViewAll(view: PlayWidgetMediumView) {
         super.onClickViewAll(view)
-        tracker.clickOnSeeAllOnLagiLiveCarousel()
+
+
     }
 }

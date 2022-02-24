@@ -7,10 +7,14 @@ package com.tokopedia.explore.analytics;
 public interface ContentExloreEventTracking {
     interface Screen {
         String SCREEN_CONTENT_STREAM = "explore page - inspiration";
+        String SCREEN_NAME = "/feed - explore tab";
     }
 
     interface Event {
         String EXPLORE = "clickExplore";
+        String OPEN_SCREEN = "openScreen";
+        String SCREEN_NAME = "screenName";
+        String IS_LOGGED_IN = "isLoggedInStatus";
     }
 
     interface Category {

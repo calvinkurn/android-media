@@ -11,4 +11,5 @@ object ApplinkConstInternalFeed {
     const val PLAY_LIVE_PARAM_WIDGET_TYPE = "widgetType"
     const val PLAY_UPCOMING_SOURCE_TYPE = "source_type"
     const val PLAY_UPCOMING_SOURCE_ID = "source_id"
+    const val PLAY_UPCOMING_FILTER_CATEGORY = "filter_category"
 }
