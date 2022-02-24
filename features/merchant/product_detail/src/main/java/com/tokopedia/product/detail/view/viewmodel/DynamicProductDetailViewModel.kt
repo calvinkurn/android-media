@@ -90,7 +90,6 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -872,14 +871,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             queryParams: String = "") {
         if (queryParams.contains(PARAM_TXSC)) {
             launchCatchError(coroutineContext, block = {
-                var adsStatus = TopadsIsAdsQuery()
                 val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
                     getTopadsIsAdsUseCase.get().setParams(
                             productId = productId,
                             urlParam = queryParams,
                             pageName = "im_pdp"
                     )
-                    adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
+                    val adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                     val errorCode = adsStatus.data.status.error_code
                     val isTopAds = adsStatus.data.productList[0].isCharge
                     if (errorCode in CODE_200..CODE_300 && isTopAds) {
@@ -887,7 +885,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     }
                     ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
                             isSuccess = true,
-                            errorCode = errorCode.toString(),
+                            errorCode = errorCode,
                             isTopAds = isTopAds
                     )
                 }

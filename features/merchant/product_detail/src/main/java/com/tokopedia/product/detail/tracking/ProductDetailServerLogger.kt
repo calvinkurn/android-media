@@ -64,7 +64,7 @@ object ProductDetailServerLogger {
 
     fun logBreadCrumbTopAdsIsAds(isSuccess: Boolean = false,
                                  errorMessage: String? = "",
-                                 errorCode: String = "",
+                                 errorCode: Int = 0,
                                  isTopAds: Boolean = false) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
