@@ -35,13 +35,7 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        val userSession: UserSessionInterface = UserSession(this)
-        return if (userSession.isLoggedIn) {
-            FollowerFollowingListingFragment.newInstance(bundle ?: Bundle())
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            null
-        }
+        return FollowerFollowingListingFragment.newInstance(bundle ?: Bundle())
     }
 
     override fun onBackPressed() {
