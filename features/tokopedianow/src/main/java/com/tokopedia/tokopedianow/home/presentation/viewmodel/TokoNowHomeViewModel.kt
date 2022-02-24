@@ -366,7 +366,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
-                state = TokoNowLayoutState.SHOW
+                state = TokoNowLayoutState.UPDATE
             )
 
             _homeLayoutList.postValue(Success(data))
@@ -607,7 +607,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
         val data = HomeLayoutListUiModel(
             items = getHomeVisitableList(),
-            state = TokoNowLayoutState.SHOW
+            state = TokoNowLayoutState.UPDATE
         )
 
         _atcQuantity.postValue(Success(data))
