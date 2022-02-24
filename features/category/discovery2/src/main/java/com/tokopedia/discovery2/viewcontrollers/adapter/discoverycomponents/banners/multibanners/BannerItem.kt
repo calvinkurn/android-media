@@ -46,33 +46,6 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
             constraintSet.setHorizontalWeight(bannerImageView.id, 1.0f)
         }
 
-        if (previousBannerItem == null) {
-            constraintSet.connect(bannerImageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START,
-                    bannerItemData.leftMargin)
-        } else {
-            constraintSet.connect(previousBannerItem.bannerImageView.id, ConstraintSet.END, bannerImageView.id, ConstraintSet.START,
-                    previousBannerItem.bannerItemData.rightMargin)
-            constraintSet.connect(bannerImageView.id, ConstraintSet.START, previousBannerItem.bannerImageView.id, ConstraintSet.END,
-                    bannerItemData.leftMargin)
-        }
-
-        if (islastItem) {
-            constraintSet.connect(bannerImageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END,
-                    bannerItemData.rightMargin)
-        }
-        constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
-            try {
-                if (context.isValidGlideContext())
-                    if (bannerItemData.imageUrlDynamicMobile == DUMMY) {
-                        (bannerImageView as ImageUnify).loadImage(bannerItemData.imageUrlDynamicMobile)
-                    } else {
-                        (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
-                    }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-            }
-        }
         if (compType == SHOP_CARD) {
             (bannerImageView as ImageUnify).cornerRadius = RADIUS
             if (previousBannerItem == null) {
@@ -87,6 +60,35 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
             if (islastItem)
                 constraintSet.connect(bannerImageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END,
                         MARGIN_16)
+        } else {
+
+            if (previousBannerItem == null) {
+                constraintSet.connect(bannerImageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START,
+                        bannerItemData.leftMargin)
+            } else {
+                constraintSet.connect(previousBannerItem.bannerImageView.id, ConstraintSet.END, bannerImageView.id, ConstraintSet.START,
+                        previousBannerItem.bannerItemData.rightMargin)
+                constraintSet.connect(bannerImageView.id, ConstraintSet.START, previousBannerItem.bannerImageView.id, ConstraintSet.END,
+                        bannerItemData.leftMargin)
+            }
+
+            if (islastItem) {
+                constraintSet.connect(bannerImageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END,
+                        bannerItemData.rightMargin)
+            }
+        }
+        constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
+            try {
+                if (context.isValidGlideContext())
+                    if (bannerItemData.imageUrlDynamicMobile == DUMMY) {
+                        (bannerImageView as ImageUnify).loadImage(bannerItemData.imageUrlDynamicMobile)
+                    } else {
+                        (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
+                    }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
         }
         constraintSet.applyTo(constraintLayout)
     }

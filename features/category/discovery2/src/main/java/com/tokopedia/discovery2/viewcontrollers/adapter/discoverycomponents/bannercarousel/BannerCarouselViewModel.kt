@@ -57,15 +57,16 @@ class BannerCarouselViewModel(application: Application, val component: Component
         if (component.properties?.dynamic == true) {
             launchCatchError(block = {
                 if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint)) {
-                    component.data?.let {
-                        if (it.isNotEmpty()) {
-                            bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BannerCarouselItemView.componentName,
-                                    component.name, position, component.properties?.design
-                                    ?: "")
-                            componentData.value = component
-                        }
+                    if (!component.data.isNullOrEmpty()) {
+                        bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(component.data!!, ComponentNames.BannerCarouselItemView.componentName,
+                                component.name, position, component.properties?.design
+                                ?: "")
+                        title.value = component.properties?.bannerTitle ?: ""
+                    } else {
+                        _hideShimmer.value = true
+                        title.value = ""
                     }
-                    title.value = component.properties?.bannerTitle ?: ""
+                    componentData.value = component
                 }
             }, onError = {
                 component.noOfPagesLoaded = 1
@@ -74,6 +75,7 @@ class BannerCarouselViewModel(application: Application, val component: Component
                     _showErrorState.value = true
                 } else {
                     _hideShimmer.value = true
+                    title.value = ""
                 }
             })
         }
