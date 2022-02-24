@@ -14,11 +14,14 @@ import com.tokopedia.createpost.uprofile.model.ProfileFollowerV2
 import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
 
 open class ProfileFollowersAdapter(
     val viewModel: FollowerFollowingViewModel,
@@ -72,10 +75,29 @@ open class ProfileFollowersAdapter(
         holder.textName.text = item.profile.name
         holder.textUsername.text = item.profile.username
 
+        if (item.profile.userID == UserSession(itemContext).userId) {
+            holder.btnAction.hide()
+        } else {
+            holder.btnAction.show()
+
+            if (item.isFollow) {
+                holder.btnAction.text = "Following"
+                holder.btnAction.buttonVariant = UnifyButton.Variant.GHOST
+                holder.btnAction.buttonType = UnifyButton.Type.ALTERNATE
+            } else {
+                holder.btnAction.text = "Follow"
+                holder.btnAction.buttonVariant = UnifyButton.Variant.FILLED
+                holder.btnAction.buttonType = UnifyButton.Type.MAIN
+            }
+        }
+
+        holder.btnAction.setOnClickListener { v ->
+            viewModel.doFollow(item.profile.userID, !item.isFollow)
+        }
+
         holder.itemView.setOnClickListener { v ->
             RouteManager.route(itemContext, item.profile.sharelink.applink)
         }
-
     }
 
 
