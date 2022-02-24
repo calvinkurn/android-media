@@ -2,6 +2,7 @@ package com.tokopedia.tokomember
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.tokopedia.tokomember.TokomemberActivity.Companion.KEY_MEMBERSHIP
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
 import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.tokomember.trackers.TokomemberTracker
+import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_OPEN
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
@@ -88,7 +90,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
     }
 
     private fun setBottomSheetData() {
-        textTitle?.text = bottomSheetData?.title
+        textTitle?.text = Html.fromHtml(bottomSheetData?.title ?: "")
         textDesc?.text = bottomSheetData?.description
         button?.text = bottomSheetData?.cta?.text
 
@@ -98,7 +100,11 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
                 bottomSheetData?.shopID?.toString() ?: "",
                 bottomSheetData?.paymentID ?: "", bottomSheetData?.source ?: 0
             )
-            RouteManager.route(context, bottomSheetData?.cta?.appLink)
+            if (bottomSheetData?.membershipType == MEMBERSHIP_OPEN) {
+                RouteManager.route(context, bottomSheetData?.cta?.appLink)
+            } else {
+                this.dismiss()
+            }
         }
     }
 

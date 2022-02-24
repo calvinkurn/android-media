@@ -107,7 +107,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private var membershipBottomSheetData: BottomSheetContentItem? = null
     private var mTokomemberItemPosition = -1
     private var gyroTokomemberItemSuccess: GyroTokomemberItem? = null
-    private var gyroTokomemberItemFail: GyroTokomemberItem? = null
     private var memberShipCardId: String = ""
 
     override fun initInjector() {
@@ -253,7 +252,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         })
         thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
             gyroTokomemberItemSuccess = it?.gyroMembershipSuccessWidget
-            gyroTokomemberItemFail = it?.gyroMembershipFailWidget
             addDataToGyroRecommendationView(it)
         })
 
@@ -287,11 +285,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                    openTokomemberBottomsheet()
                 }
                 is Fail -> {
-                    gyroTokomemberItemFail?.failRegister = true
-                    getFeatureListingContainer()?.updateTokoMemberWidget(
-                        position = mTokomemberItemPosition,
-                        gyroTokomemberItemFail
-                    )
                     Toaster.build(
                         requireView(),
                         getString(R.string.thank_tokomember_register_fail),

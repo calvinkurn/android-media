@@ -23,18 +23,13 @@ class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener
     private val tvFeatureItemDescription = itemView.tvFeatureItemDescriptionToko
     private val viewFlipperItemContainer = itemView.containerViewFlipper
     private val iconStar = itemView.tvFeatureItemIconToko
-    private val tvErrorTitle = itemView.tvTitleError
-    private val tvErrorSubtitle = itemView.tvSubtitleError
     private val iconError = itemView.tvFeatureItemIconTokoError
-
 
     override fun bind(element: GyroTokomemberItem?) {
         showShimmer()
         element?.apply {
             if (element.failRegister) {
                 showError()
-                tvErrorTitle.text = title ?: ""
-                tvErrorSubtitle.text = Html.fromHtml(description ?: "")
                 iconError?.setOnClickListener {
                     if (!urlApp.isNullOrBlank()) {
                         listener.openAppLink(urlApp)
@@ -52,7 +47,7 @@ class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener
                     ivFeatureItem.setImageUrl(imageURL)
                 } ?: run { ivFeatureItem.gone() }
 
-                tvFeatureItemTitle.text = title ?: ""
+                tvFeatureItemTitle.text = Html.fromHtml(title ?: "")
                 tvFeatureItemDescription.text = Html.fromHtml(description ?: "")
 
                 if (this.successRegister) {
@@ -87,7 +82,6 @@ class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener
     private fun showError() {
         viewFlipperItemContainer.displayedChild = ERROR
     }
-
 
     companion object {
         val LAYOUT_ID = R.layout.thank_item_feature_tokomember

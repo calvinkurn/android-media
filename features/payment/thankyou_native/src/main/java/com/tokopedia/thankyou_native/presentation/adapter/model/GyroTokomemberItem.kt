@@ -43,5 +43,4 @@ data class TokomemberModel(
 
 const val TOKOMEMBER_WAITING_WIDGET = 0
 const val TOKOMEMBER_SUCCESS_WIDGET = 1
-const val TOKOMEMBER_FAIL_WIDGET = 2
 const val TOKOMEMBER_SUCCESS_BOTTOMSHEET = 0

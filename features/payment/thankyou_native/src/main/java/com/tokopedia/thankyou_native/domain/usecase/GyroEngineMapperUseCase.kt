@@ -64,9 +64,6 @@ class GyroEngineMapperUseCase @Inject constructor(
             gyroRecommendationListItem?.gyroMembershipSuccessWidget =
                 tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)
                     ?: GyroTokomemberItem()
-            gyroRecommendationListItem?.gyroMembershipFailWidget =
-                tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_FAIL_WIDGET)
-                    ?: GyroTokomemberItem()
         }
     }
 

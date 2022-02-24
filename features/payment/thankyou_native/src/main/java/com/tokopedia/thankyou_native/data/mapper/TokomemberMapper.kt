@@ -10,7 +10,6 @@ import com.tokopedia.tokomember.model.WidgetContentItem
 object TokomemberMapper {
     var waitingWidgetData = WidgetContentItem()
     var successWidgetData = WidgetContentItem()
-    var failWidgetData = WidgetContentItem()
     fun getGyroTokomemberItem(
         shopRegisterResponse: MembershipGetShopRegistrationWidget?,
         tokomemberRequestParam: TokoMemberRequestParam
@@ -23,7 +22,6 @@ object TokomemberMapper {
         }
         else if (membershipType ==  OPEN_MEMBERSHIP) {
             populateWidgetContent(shopRegisterResponse)
-            failWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
         }
         val bottomSheetContentItem = shopRegisterResponse?.bottomSheetContent?.getOrNull(TOKOMEMBER_SUCCESS_BOTTOMSHEET) ?: BottomSheetContentItem()
 
@@ -31,7 +29,6 @@ object TokomemberMapper {
         bottomSheetContentItem.shopID = tokomemberRequestParam.shopID
         bottomSheetContentItem.paymentID = tokomemberRequestParam.paymentID
         bottomSheetContentItem.membershipType = membershipType
-
 
         return TokomemberModel(
             listOfTokomemberItem = listOf(
@@ -46,11 +43,6 @@ object TokomemberMapper {
                     membershipType,
                     bottomSheetContentItem,
                     cardId
-                ),
-                getWidgetData(
-                    failWidgetData,
-                    membershipType,
-                    cardId = cardId
                 )
             )
         )

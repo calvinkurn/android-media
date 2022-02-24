@@ -34,8 +34,6 @@ data class GyroRecommendationListItem(
         val sectionTitle : String?,
         @SerializedName("section_desc")
         val sectionDescription : String?,
-        @SerializedName("type")
-        val type : String?
 ) : Visitable<GyroRecommendationFactory>, GyroModel() {
 
     override fun type(typeFactory: GyroRecommendationFactory): Int {
