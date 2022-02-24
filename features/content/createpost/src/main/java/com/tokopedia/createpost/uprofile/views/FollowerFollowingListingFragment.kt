@@ -16,6 +16,10 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_USER_NAME
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -24,7 +28,8 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListener,
+    AdapterCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -33,8 +38,8 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
-    var tabLayout : TabsUnify? = null
-    var ffViewPager : ViewPager? = null
+    var tabLayout: TabsUnify? = null
+    var ffViewPager: ViewPager? = null
 
 //    private val mAdapter: UserPostBaseAdapter by lazy {
 //        UserPostBaseAdapter(
@@ -128,18 +133,28 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     var adapter: ProfileFollowUnfollowViewPagerAdapter? = null
     private fun initViewPager(viewPager: ViewPager) {
-        adapter = ProfileFollowUnfollowViewPagerAdapter( requireFragmentManager())
+        adapter = ProfileFollowUnfollowViewPagerAdapter(requireFragmentManager())
 
         // LoginFragment is the name of Fragment and the Login
         // is a title of tab
-        adapter?.addFragment(FollowingListingFragment(), "Follower")
-        adapter?.addFragment(FollowingListingFragment(), "Following")
+        adapter?.addFragment(
+            FollowingListingFragment(),
+            arguments?.getString(EXTRA_TOTAL_FOLLOWERS, "Followers") + " " + "Followers"
+        )
+        adapter?.addFragment(
+            FollowingListingFragment(),
+            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, "Followings") + " " + "Following"
+        )
 
         // setting adapter to view pager.
         viewPager.adapter = adapter
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
 
             }
 
@@ -163,8 +178,8 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
         header?.apply {
 
-            title = "Something"
-            subtitle = "Something else"
+            title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
+            subtitle = arguments?.getString(EXTRA_USER_NAME).toString()
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()

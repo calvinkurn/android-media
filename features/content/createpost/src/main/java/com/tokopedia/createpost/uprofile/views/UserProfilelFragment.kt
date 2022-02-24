@@ -49,6 +49,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var idFollowed: Boolean = false
     var displayName: String = ""
     var userName: String = ""
+    var totalFollowings: String = ""
+    var totalFollowers: String = ""
     var userSession: UserSessionInterface? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
@@ -233,6 +235,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
         displayName = data.profileHeader.profile.name
         userName = data.profileHeader.profile.username
+        totalFollowers = data.profileHeader.stats.totalFollowerFmt
+        totalFollowings = data.profileHeader.stats.totalFollowingFmt
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
@@ -340,20 +344,37 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onClick(source: View) {
         when (source.id) {
             R.id.text_following_count, R.id.text_following_label -> {
-                val bundle = Bundle()
-                bundle.putString(EXTRA_DISPLAY_NAME, displayName)
-                bundle.putString(EXTRA_USER_NAME, userName)
-                startActivity(activity?.let { FollowerFollowingListingActivity.getCallingIntent(it,bundle) })
+                startActivity(activity?.let {
+                    FollowerFollowingListingActivity.getCallingIntent(
+                        it,
+                        getFollowersBundle(false)
+                    )
+                })
             }
 
             R.id.text_follower_count, R.id.text_follower_label -> {
-                startActivity(Intent(activity, FollowerFollowingListingActivity::class.java))
+                startActivity(activity?.let {
+                    FollowerFollowingListingActivity.getCallingIntent(
+                        it,
+                        getFollowersBundle(true)
+                    )
+                })
             }
-
+-
             R.id.text_see_more -> {
                 Toast.makeText(context, "See All", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun getFollowersBundle(isFollowers: Boolean) : Bundle {
+        val bundle = Bundle()
+        bundle.putString(EXTRA_DISPLAY_NAME, displayName)
+        bundle.putString(EXTRA_USER_NAME, userName)
+        bundle.putString(EXTRA_TOTAL_FOLLOWINGS, totalFollowings)
+        bundle.putString(EXTRA_TOTAL_FOLLOWERS, totalFollowers)
+        bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
+        return bundle
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -394,7 +415,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
         const val EXTRA_DISPLAY_NAME = "display_name"
+        const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
+        const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
         const val EXTRA_USER_NAME = "user_name"
+        const val EXTRA_IS_FOLLOWERS = "is_followers"
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
