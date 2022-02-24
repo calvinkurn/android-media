@@ -31,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -62,7 +61,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.play
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -156,13 +154,13 @@ class DiscoveryFragment :
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
-    private var shouldShowChooseAddressWidget: Boolean = true
-    private lateinit var coordinatorLayout: CoordinatorLayout
+    private var shouldShowChooseAddressWidget:Boolean = true
+    private lateinit var coordinatorLayout:CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
-    private var pageInfoHolder: PageInfo? = null
+    private var pageInfoHolder:PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
-    private var miniCartData: MiniCartSimplifiedData? = null
-    private var miniCartInitialized: Boolean = false
+    private var miniCartData:MiniCartSimplifiedData? = null
+    private var miniCartInitialized:Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -190,10 +188,7 @@ class DiscoveryFragment :
     private var stickyHeaderShowing = false
 
     companion object {
-        fun getInstance(
-            endPoint: String?,
-            queryParameterMap: Map<String, String?>?
-        ): DiscoveryFragment {
+        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
             if (!endPoint.isNullOrEmpty()) {
@@ -218,10 +213,8 @@ class DiscoveryFragment :
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -281,10 +274,7 @@ class DiscoveryFragment :
         } else {
             navToolbar.visibility = View.VISIBLE
             oldToolbar.visibility = View.GONE
-            navToolbar.setOnBackButtonClickListener(
-                disableDefaultGtmTracker = true,
-                backButtonClickListener = ::handleBackPress
-            )
+            navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
 
         bottomNav = view.findViewById(R.id.bottomNav)
@@ -359,11 +349,10 @@ class DiscoveryFragment :
     }
 
     private fun calculateScrollDepth(recyclerView: RecyclerView) {
-        if (::discoveryViewModel.isInitialized) {
+        if(::discoveryViewModel.isInitialized){
             val offset =
                 recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
-            val extent =
-                recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+            val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
             val range = recyclerView.computeVerticalScrollRange() // max scroll height
 
             val currentScrollDepth = discoveryViewModel.getScrollDepth(offset, extent, range)
@@ -425,23 +414,20 @@ class DiscoveryFragment :
         }
     }
 
-    private fun getLayoutManager(): StaggeredGridLayoutManager {
-        return object : StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
-            override fun supportsPredictiveItemAnimations(): Boolean {
-                return false
-            }
+    private fun getLayoutManager():StaggeredGridLayoutManager{
+       return object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+           override fun supportsPredictiveItemAnimations():Boolean {
+               return false
+           }
 
-            override fun onLayoutChildren(
-                recycler: RecyclerView.Recycler?,
-                state: RecyclerView.State?
-            ) {
-                try {
-                    super.onLayoutChildren(recycler, state)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
+           override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+               try {
+                   super.onLayoutChildren(recycler, state)
+               } catch (e: Exception) {
+                   e.printStackTrace()
+               }
+           }
+       }
     }
 
     fun reSync() {
@@ -537,41 +523,40 @@ class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.checkAddressVisibility()
-            .observe(viewLifecycleOwner, { widgetVisibilityStatus ->
-                context?.let {
-                    if (widgetVisibilityStatus) {
-                        if (shouldShowChooseAddressWidget) {
-                            chooseAddressWidget?.show()
-                            chooseAddressWidgetDivider?.show()
-                        }
-                        if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
-                            ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
-                            showLocalizingAddressCoachMark()
-                        }
-                        fetchUserLatestAddressData()
-                    } else {
-                        chooseAddressWidget?.hide()
-                        chooseAddressWidgetDivider?.hide()
+        discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
+            context?.let {
+                if (widgetVisibilityStatus) {
+                    if (shouldShowChooseAddressWidget) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
                     }
+                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
+                        showLocalizingAddressCoachMark()
+                    }
+                    fetchUserLatestAddressData()
+                } else {
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
                 }
-            })
+            }
+        })
 
         discoveryViewModel.miniCart.observe(viewLifecycleOwner, {
-            if (it is Success) {
+            if(it is Success) {
                 setupMiniCart(it.data)
             }
         })
 
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
-            if (it is Success) {
+            if(it is Success) {
                 getMiniCart()
                 showToaster(
                     message = it.data.errorMessage.joinToString(separator = ", "),
                     type = Toaster.TYPE_NORMAL
                 )
-            } else if (it is Fail) {
-                if (it.throwable is ResponseErrorException)
+            }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
                     showToaster(
                         message = it.throwable.message.orEmpty(),
                         type = Toaster.TYPE_ERROR
@@ -580,49 +565,46 @@ class DiscoveryFragment :
         })
 
         discoveryViewModel.miniCartUpdate.observe(viewLifecycleOwner, {
-            if (it is Success) {
+            if(it is Success) {
                 getMiniCart()
-            } else if (it is Fail) {
-                if (it.throwable is ResponseErrorException)
-                    showToaster(
-                        message = it.throwable.message.orEmpty(),
-                        type = Toaster.TYPE_ERROR
-                    )
+            }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
+                showToaster(
+                    message = it.throwable.message.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
             }
         })
 
         discoveryViewModel.miniCartRemove.observe(viewLifecycleOwner, {
-            if (it is Success) {
+            if(it is Success) {
                 getMiniCart()
                 showToaster(
                     message = it.data.second,
                     type = Toaster.TYPE_NORMAL
                 )
-            } else if (it is Fail) {
-                if (it.throwable is ResponseErrorException)
-                    showToaster(
-                        message = it.throwable.message.orEmpty(),
-                        type = Toaster.TYPE_ERROR
-                    )
+            }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
+                showToaster(
+                    message = it.throwable.message.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
             }
         })
 
-        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner,
-            { (parentPosition, position) ->
-                if (parentPosition >= 0) {
-                    discoveryAdapter.getViewModelAtPosition(parentPosition)
-                        ?.let { discoveryBaseViewModel ->
-                            if (discoveryBaseViewModel is ProductCardCarouselViewModel)
-                                discoveryBaseViewModel.handleAtcFailed(position)
-                        }
-                } else if (position >= 0) {
-                    discoveryAdapter.getViewModelAtPosition(position)
-                        ?.let { discoveryBaseViewModel ->
-                            if (discoveryBaseViewModel is MasterProductCardItemViewModel)
-                                discoveryBaseViewModel.handleATCFailed()
-                        }
+        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner,{ (parentPosition,position) ->
+            if (parentPosition >= 0) {
+                discoveryAdapter.getViewModelAtPosition(parentPosition)?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ProductCardCarouselViewModel)
+                        discoveryBaseViewModel.handleAtcFailed(position)
                 }
-            })
+            } else if (position >= 0) {
+                discoveryAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is MasterProductCardItemViewModel)
+                        discoveryBaseViewModel.handleATCFailed()
+                }
+            }
+        })
     }
 
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
@@ -644,7 +626,7 @@ class DiscoveryFragment :
                 anchorViewHolder?.setUpObservers(viewLifecycleOwner)
             if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
                 mAnchorHeaderView.removeAllViews()
-//            call remove on parent of itemView
+                (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(anchorViewHolder?.itemView)
                 mAnchorHeaderView.addView(it.itemView)
             }
         }
@@ -691,8 +673,7 @@ class DiscoveryFragment :
                 it.data.data!!.forEach { item ->
                     if (item.image.isNotEmpty()) {
                         val tab = bottomTabHolder.tabLayout.newTab()
-                        tab.customView = LayoutInflater.from(this.context)
-                            .inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
+                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
                             findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
                             findViewById<Typography>(R.id.tab_text).apply {
                                 text = item.name
@@ -731,22 +712,9 @@ class DiscoveryFragment :
             } else {
                 navToolbar.setIcon(
                     IconBuilder()
-                        .addIcon(
-                            iconId = IconList.ID_SHARE,
-                            disableRouteManager = true,
-                            onClick = { handleShareClick(data) },
-                            disableDefaultGtmTracker = true
-                        )
-                        .addIcon(
-                            iconId = IconList.ID_CART,
-                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
-                            disableDefaultGtmTracker = true
-                        )
-                        .addIcon(
-                            iconId = IconList.ID_NAV_GLOBAL,
-                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                            disableDefaultGtmTracker = true
-                        )
+                        .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
                 navToolbar.updateNotification()
             }
@@ -770,7 +738,7 @@ class DiscoveryFragment :
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
             sendUnifyShareGTM()
             showUniversalShareBottomSheet(data)
-        } else {
+        }else{
             discoDefaultShare(data)
         }
     }
@@ -820,9 +788,8 @@ class DiscoveryFragment :
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
                 init(this@DiscoveryFragment)
                 setUtmCampaignData(
-                    this@DiscoveryFragment.context?.resources?.getString(R.string.discovery)
-                        ?: UTM_DISCOVERY,
-                    if (UserSession(this@DiscoveryFragment.context).userId.isNullOrEmpty()) "0"
+                    this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
+                    if(UserSession(this@DiscoveryFragment.context).userId.isNullOrEmpty()) "0"
                     else UserSession(this@DiscoveryFragment.context).userId,
                     discoveryViewModel.getShareUTM(pageInfo),
                     this@DiscoveryFragment.context?.resources?.getString(R.string.share) ?: SHARE
@@ -833,11 +800,7 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(
-                fragmentManager,
-                this@DiscoveryFragment,
-                screenshotDetector
-            )
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -866,8 +829,7 @@ class DiscoveryFragment :
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString =
-                        "${pageInfoHolder?.share?.description} ${linkerShareData?.url}"
+                    val shareString = "${pageInfoHolder?.share?.description} ${linkerShareData?.url}"
                     shareModel.subjectName = pageInfoHolder?.share?.title ?: ""
                     SharingUtil.executeShareIntent(
                         shareModel,
@@ -888,20 +850,14 @@ class DiscoveryFragment :
     }
 
     override fun onCloseOptionClicked() {
-        getDiscoveryAnalytics().trackUnifyShare(
-            EVENT_CLICK_DISCOVERY,
+        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY,
             if (shareType == CUSTOM_SHARE_SHEET) UNIFY_CLOSE_SHARE else UNIFY_CLOSE_SCREENSHOT_SHARE,
-            getUserID()
-        )
+            getUserID())
         universalShareBottomSheet?.dismiss()
     }
 
     private fun sendUnifyShareGTM() {
-        getDiscoveryAnalytics().trackUnifyShare(
-            EVENT_CLICK_DISCOVERY,
-            UNIFY_CLICK_SHARE,
-            getUserID()
-        )
+        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLICK_SHARE, getUserID())
     }
 
     override fun screenShotTaken() {
@@ -924,28 +880,16 @@ class DiscoveryFragment :
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
             IconBuilder()
-                .addIcon(
-                    iconId = IconList.ID_CART,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
-                    disableDefaultGtmTracker = true
-                )
-                .addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
+                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
         navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
         navToolbar.setupSearchbar(
-            hints = listOf(
-                HintData(
-                    placeholder = data?.searchTitle
-                        ?: getString(R.string.discovery_default_search_title)
-                )
-            ),
+            hints = listOf(HintData(placeholder = data?.searchTitle
+                ?: getString(R.string.discovery_default_search_title))),
             searchbarClickCallback = {
                 handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
                 handleSearchClick(data)
@@ -985,15 +929,13 @@ class DiscoveryFragment :
             }
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
-                ServerLogger.log(
-                    Priority.P2, "DISCOVERY_PAGE_ERROR",
+                ServerLogger.log(Priority.P2, "DISCOVERY_PAGE_ERROR",
                     mapOf(
                         "identifier" to discoveryViewModel.pageIdentifier,
                         "path" to discoveryViewModel.pagePath,
                         "type" to discoveryViewModel.pageType,
                         "err" to Log.getStackTraceString(it.throwable)
-                    )
-                )
+                    ))
             }
         }
         globalError.show()
@@ -1008,19 +950,14 @@ class DiscoveryFragment :
     }
 
     private fun fetchDiscoveryPageData() {
-        discoveryViewModel.getDiscoveryData(
-            discoveryViewModel.getQueryParameterMapFromBundle(
-                arguments
-            ), userAddressData
-        )
+        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
 
     private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
         if (!pinnedAlreadyScrolled) {
             val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
-                val position =
-                    discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
                     recyclerView.smoothScrollToPosition(position)
                     isManualScroll = false
@@ -1039,10 +976,8 @@ class DiscoveryFragment :
             show()
             showTextAnimation(data)
             data.thumbnailUrlMobile?.let { showImageOnFab(context, it) }
-            setClick(
-                data.applinks?.toEmptyStringIfNull().toString(), data.shopId?.toIntOrNull()
-                    ?: 0
-            )
+            setClick(data.applinks?.toEmptyStringIfNull().toString(), data.shopId?.toIntOrNull()
+                ?: 0)
         }
     }
 
@@ -1092,10 +1027,7 @@ class DiscoveryFragment :
 
     fun openLoginScreen(componentPosition: Int = -1) {
         this.componentPosition = componentPosition
-        startActivityForResult(
-            RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-            LOGIN_REQUEST_CODE
-        )
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
     }
 
     fun openMobileVerificationWithBottomSheet(componentPosition: Int = -1) {
@@ -1109,12 +1041,8 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
-    fun startMVCTransparentActivity(
-        componentPosition: Int = -1,
-        shopId: String,
-        hashCodeForMVC: Int
-    ) {
-        this.componentPosition = componentPosition
+    fun startMVCTransparentActivity(componentPosition: Int = -1, shopId:String, hashCodeForMVC:Int) {
+        this.componentPosition =componentPosition
         context?.let {
             startActivityForResult(
                 TransParentActivity.getIntent(
@@ -1131,8 +1059,7 @@ class DiscoveryFragment :
 
     fun refreshCarouselData(componentPosition: Int = -1) {
         if (componentPosition >= 0) {
-            discoveryAdapter.getViewModelAtPosition(componentPosition)
-                ?.refreshProductCarouselError()
+            discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
         }
     }
 
@@ -1171,66 +1098,47 @@ class DiscoveryFragment :
             OPEN_PLAY_CHANNEL -> {
                 if (data == null)
                     return
-                val channelId =
-                    data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
-                        .orEmpty()
-                val totalView =
-                    data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
-                        .orEmpty()
-                val isReminder = data.getBooleanExtra(
-                    PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER,
-                    false
-                )
-                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel) {
-                    val discoveryPlayWidgetViewModel =
-                        (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
+                    val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
                     discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
                     discoveryPlayWidgetViewModel.updatePlayWidgetReminder(channelId, isReminder)
                 }
             }
-            MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK) {
-                    data?.let {
+            MvcView.REQUEST_CODE ->{
+                if(resultCode == MvcView.RESULT_CODE_OK){
+                    data?.let{
                         val bundle = data.getBundleExtra(REGISTER_MEMBER_SUCCESS)
                         bundle?.let {
                             val listInfo =
-                                bundle.getParcelableArrayList<AnimatedInfos>(IntentManger.Keys.ANIMATED_INFO)
-                                    ?: ArrayList()
-                            val isShown = bundle.getBoolean(IntentManger.Keys.IS_SHOWN, true)
-                            val shopID = bundle.getString(IntentManger.Keys.SHOP_ID, "")
-                            (discoveryBaseViewModel as? DiscoMerchantVoucherViewModel)?.updateData(
-                                shopID,
-                                isShown,
-                                listInfo
-                            )
+                                bundle.getParcelableArrayList<AnimatedInfos>(IntentManger.Keys.ANIMATED_INFO)?: ArrayList()
+                            val isShown = bundle.getBoolean(IntentManger.Keys.IS_SHOWN,true)
+                            val shopID = bundle.getString(IntentManger.Keys.SHOP_ID,"")
+                            (discoveryBaseViewModel as? DiscoMerchantVoucherViewModel)?.updateData(shopID,isShown,listInfo)
                         }
                     }
                 }
             }
         }
-        AdultManager.handleActivityResult(
-            activity,
-            requestCode,
-            resultCode,
-            data,
-            object : AdultManager.Callback {
-                override fun onFail() {
-                    activity?.finish()
-                }
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
 
-                override fun onVerificationSuccess(message: String?) {
-                }
+            override fun onVerificationSuccess(message: String?) {
+            }
 
-                override fun onLoginPreverified() {
-                }
+            override fun onLoginPreverified() {
+            }
 
-            })
+        })
     }
 
     private fun showVerificationBottomSheet() {
         val closeableBottomSheetDialog = BottomSheetUnify()
-        val childView =
-            View.inflate(context, R.layout.mobile_verification_bottom_sheet_layout, null)
+        val childView = View.inflate(context, R.layout.mobile_verification_bottom_sheet_layout, null)
         this.fragmentManager?.let {
             closeableBottomSheetDialog.apply {
                 showCloseIcon = true
@@ -1240,10 +1148,7 @@ class DiscoveryFragment :
         }
         childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
             closeableBottomSheetDialog.dismiss()
-            startActivityForResult(
-                RouteManager.getIntent(activity, ADD_PHONE),
-                MOBILE_VERIFICATION_REQUEST_CODE
-            )
+            startActivityForResult(RouteManager.getIntent(activity, ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
             getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
         }
         closeableBottomSheetDialog.setCloseClickListener {
@@ -1301,16 +1206,9 @@ class DiscoveryFragment :
         addMiniCartToPage()
     }
 
-    private fun sendOpenScreenAnalytics(
-        identifier: String?,
-        additionalInfo: AdditionalInfo? = null
-    ) {
+    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(
-                discoveryViewModel.pageIdentifier,
-                additionalInfo,
-                isUserLoggedIn()
-            )
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn())
         } else {
             getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn())
         }
@@ -1320,14 +1218,10 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
-        if (lastVisibleComponent == null) {
+        if(lastVisibleComponent == null){
             updateLastVisibleComponent()
         }
-        getDiscoveryAnalytics().trackScrollDepth(
-            screenScrollPercentage,
-            lastVisibleComponent,
-            isManualScroll
-        )
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent, isManualScroll)
         openScreenStatus = false
     }
 
@@ -1368,9 +1262,9 @@ class DiscoveryFragment :
 
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
-            if (textColor.isNullOrEmpty()) {
+            if(textColor.isNullOrEmpty()){
                 ContextCompat.getColor(context, RUnify.color.Unify_G500)
-            } else {
+            }else{
                 Color.parseColor(textColor)
             }
         } catch (exception: Exception) {
@@ -1398,17 +1292,17 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return if ((context as DiscoveryActivity).isFromCategory())
-            Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
-        else
-            Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return if ((context as DiscoveryActivity).isFromCategory())
-            Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
-        else
-            Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -1419,10 +1313,10 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return if ((context as DiscoveryActivity).isFromCategory())
-            (context as DiscoveryActivity).getPageIdentifier()
-        else
-            EMPTY_STRING
+        return if((context as DiscoveryActivity).isFromCategory())
+                (context as DiscoveryActivity).getPageIdentifier()
+            else
+                EMPTY_STRING
     }
 
     private fun fetchUserLatestAddressData() {
@@ -1446,7 +1340,7 @@ class DiscoveryFragment :
         chooseAddressWidget?.updateWidget()
     }
 
-    fun showCustomContent(view: View) {
+    fun showCustomContent(view: View){
         hideSystemUi()
         coordinatorLayout.hide()
         view.rotation = ROTATION
@@ -1455,49 +1349,39 @@ class DiscoveryFragment :
             val metrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getRealMetrics(metrics)
             metrics.heightPixels
-        } ?: Resources.getSystem().displayMetrics.heightPixels
-        val offset = width - height
+        }?:Resources.getSystem().displayMetrics.heightPixels
+        val offset = width-height
         view.translationX = offset.toFloat() / 2
         view.translationY = -offset.toFloat() / 2
 
-        val layoutParams = FrameLayout.LayoutParams(height, width)
+        val layoutParams = FrameLayout.LayoutParams(height,width)
         view.layoutParams = layoutParams
 
         context?.let {
-            parentLayout.setBackgroundColor(
-                MethodChecker.getColor(
-                    it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G900
-                )
-            )
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
         }
         parentLayout.addView(view)
         parentLayout.requestFocus()
     }
 
-    fun hideCustomContent() {
+    fun hideCustomContent(){
         showSystemUi()
         context?.let {
-            parentLayout.setBackgroundColor(
-                MethodChecker.getColor(
-                    it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
-                )
-            )
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
         coordinatorLayout.show()
-        if (parentLayout.childCount > 1) {
+        if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
         }
     }
 
-    private fun addMiniCartToPageFirstTime() {
+    private fun addMiniCartToPageFirstTime(){
         if (miniCartData == null)
             addMiniCartToPage()
     }
 
-    private fun addMiniCartToPage() {
-        if (pageInfoHolder?.tokonowMiniCartActive == true) {
+    private fun addMiniCartToPage(){
+        if(pageInfoHolder?.tokonowMiniCartActive == true){
             getMiniCart()
         }
     }
@@ -1519,7 +1403,7 @@ class DiscoveryFragment :
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
-        if (data.isShowMiniCartWidget) {
+        if(data.isShowMiniCartWidget) {
             val shopIds = listOf(userAddressData?.shop_id.orEmpty())
             if (!miniCartInitialized) {
                 miniCartWidget?.initialize(
@@ -1547,18 +1431,17 @@ class DiscoveryFragment :
         syncWithCart(miniCartSimplifiedData)
     }
 
-    private fun syncWithCart(data: MiniCartSimplifiedData) {
-        val map = HashMap<String, MiniCartItem>()
-        data.miniCartItems.associateByTo(map, { it.productId })
+    private fun syncWithCart(data:MiniCartSimplifiedData){
+        val map = HashMap<String,MiniCartItem>()
+        data.miniCartItems.associateByTo (map,{ it.productId })
         val variantMap = data.miniCartItems.groupBy { it.productParentId }
-        for ((parentProductId, list) in variantMap) {
-            if (parentProductId.isNotEmpty() && parentProductId != "0") {
+        for((parentProductId,list) in variantMap){
+            if(parentProductId.isNotEmpty() && parentProductId!="0"){
                 val quantity = list.sumOf { it.quantity }
-                map[parentProductId] =
-                    MiniCartItem(productParentId = parentProductId, quantity = quantity)
+                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
             }
         }
-        setCartData(map, pageEndPoint)
+        setCartData(map,pageEndPoint)
         miniCartData = data
         reSync()
     }
@@ -1573,8 +1456,7 @@ class DiscoveryFragment :
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 val params: WindowManager.LayoutParams = attributes
-                params.layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
                 attributes = params
             }
         }
@@ -1599,7 +1481,7 @@ class DiscoveryFragment :
                 productId,
                 VariantPageSource.DISCOVERY_PAGESOURCE,
                 true,
-                userAddressData?.shop_id ?: "",
+                userAddressData?.shop_id?: "",
                 startActivitResult = { intent, reqCode ->
                     startActivityForResult(intent, reqCode)
                 }
