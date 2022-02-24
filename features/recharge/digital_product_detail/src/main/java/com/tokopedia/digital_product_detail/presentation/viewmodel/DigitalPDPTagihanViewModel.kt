@@ -164,23 +164,17 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     fun validateClientNumber(clientNumber: String, isShowToaster: Boolean = false) {
         validatorJob = viewModelScope.launch {
-            launchCatchError(dispatchers.main, block = {
-                var errorMessage = ""
-                for (validation in validators) {
-                    val phoneIsValid = Pattern.compile(validation.rule)
-                        .matcher(clientNumber).matches()
-                    if (!phoneIsValid) {
-                        errorMessage = validation.message
-                    }
-                }
-                isEligibleToBuy = errorMessage.isEmpty()
-                delay(VALIDATOR_DELAY_TIME)
-                _clientNumberValidatorMsg.value = Pair(errorMessage, isShowToaster)
-            }) {
-                if (it !is CancellationException) {
-
+            var errorMessage = ""
+            for (validation in validators) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumber).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
                 }
             }
+            isEligibleToBuy = errorMessage.isEmpty()
+            delay(VALIDATOR_DELAY_TIME)
+            _clientNumberValidatorMsg.value = Pair(errorMessage, isShowToaster)
         }
     }
 
