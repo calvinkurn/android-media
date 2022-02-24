@@ -56,8 +56,6 @@ class ShopInfoViewHolder(
         private const val TAB_PM_PARAM = "tab"
         private const val TAB_PM = "pm"
         private const val TAB_PM_PRO = "pm_pro"
-
-        private const val SHOP_AGE_SIXTY = 60
     }
 
     private val context by lazy { itemView.context }
@@ -328,8 +326,10 @@ class ShopInfoViewHolder(
             else -> null
         }
 
-        val paddingTop = itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val paddingBottom = itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
+        val paddingTop =
+            itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+        val paddingBottom =
+            itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
         if (paddingTop != null && paddingBottom != null) {
             itemView.setPadding(0, paddingTop, 0, paddingBottom)
         }
@@ -360,74 +360,110 @@ class ShopInfoViewHolder(
         regularMerchant: RegularMerchant,
         userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
     ): View {
-        val iconPm = if (userShopInfoUiModel?.isEligiblePm == true) {
-            IconUnify.BADGE_PM_FILLED
-        } else {
-            null
-        }
+        val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
+        val eligiblePmIcon = findViewById<IconUnify>(R.id.iconEligiblePm)
 
-        val iconPmPro = if (userShopInfoUiModel?.isEligiblePmPro == true) {
-            IconUnify.BADGE_PMPRO_FILLED
-        } else {
-            null
-        }
+        val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
+        val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
 
         when {
-            iconPmPro != null -> {
+            pmProEligibleIcon != null -> {
                 when (regularMerchant) {
-                    is RegularMerchant.Verified -> setRegularMerchantVerification(iconPmPro)
-                    is RegularMerchant.Pending -> setRegularMerchantPending(iconPmPro)
-                    is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade()
+                    is RegularMerchant.Verified -> setVerificationRegularMerchant(
+                        regularMerchantStatus,
+                        eligiblePmIcon,
+                        pmProEligibleIcon
+                    )
+                    is RegularMerchant.Pending -> setPendingRegularMerchant(
+                        regularMerchantStatus,
+                        eligiblePmIcon,
+                        pmProEligibleIcon
+                    )
+                    is RegularMerchant.NeedUpgrade -> setNeedUpgradeRegularMerchant(
+                        regularMerchantStatus,
+                        eligiblePmIcon
+                    )
                 }
             }
-            iconPm != null -> {
+            pmEligibleIcon != null -> {
                 when (regularMerchant) {
-                    is RegularMerchant.Verified -> setRegularMerchantVerification(iconPm)
-                    is RegularMerchant.Pending -> setRegularMerchantPending(iconPm)
-                    is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade()
+                    is RegularMerchant.Verified -> setVerificationRegularMerchant(
+                        regularMerchantStatus,
+                        eligiblePmIcon,
+                        pmEligibleIcon
+                    )
+                    is RegularMerchant.Pending -> setPendingRegularMerchant(
+                        regularMerchantStatus,
+                        eligiblePmIcon,
+                        pmEligibleIcon
+                    )
+                    is RegularMerchant.NeedUpgrade -> setNeedUpgradeRegularMerchant(
+                        regularMerchantStatus,
+                        eligiblePmIcon
+                    )
                 }
             }
-            else -> setRegularMerchantNeedUpgrade()
+            else -> setNeedUpgradeRegularMerchant(regularMerchantStatus, eligiblePmIcon)
         }
 
         setupTransactionSection(userShopInfoUiModel)
         return this
     }
 
-    private fun View.setRegularMerchantNeedUpgrade() {
-        val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
-        val iconEligiblePm = findViewById<IconUnify>(R.id.iconEligiblePm)
-        iconEligiblePm.hide()
+    private fun setNeedUpgradeRegularMerchant(
+        regularMerchantStatus: Typography,
+        eligiblePmIcon: IconUnify
+    ) {
+        eligiblePmIcon.hide()
         regularMerchantStatus.run {
             text = context.resources.getString(R.string.setting_upgrade)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+            )
         }
     }
 
-    private fun View.setRegularMerchantPending(iconPm: Int) {
-        val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
-        val iconEligiblePm = findViewById<IconUnify>(R.id.iconEligiblePm)
-        iconEligiblePm.run {
+    private fun setPendingRegularMerchant(
+        regularMerchantStatus: Typography,
+        eligiblePmIcon: IconUnify,
+        pmIcon: Int
+    ) {
+        eligiblePmIcon.run {
             show()
-            setImage(iconPm)
+            setImage(pmIcon)
         }
         regularMerchantStatus.run {
             text = context.resources.getString(R.string.setting_verified)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                )
+            )
             isClickable = false
         }
     }
 
-    private fun View.setRegularMerchantVerification(iconPm: Int) {
-        val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
-        val iconEligiblePm = findViewById<IconUnify>(R.id.iconEligiblePm)
-        iconEligiblePm.run {
+    private fun setVerificationRegularMerchant(
+        regularMerchantStatus: Typography,
+        pmEligibleIcon: IconUnify,
+        pmIcon: Int
+    ) {
+        pmEligibleIcon.run {
             show()
-            setImage(iconPm)
+            setImage(pmIcon)
         }
         regularMerchantStatus.run {
             text = context.resources.getString(R.string.setting_verifikasi)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+            )
         }
     }
 
