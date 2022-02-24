@@ -254,6 +254,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
     }
 
+    protected fun verifyGetQuestWidgetListUseCaseNotCalled() {
+        coVerify(exactly = 0) { getQuestWidgetListUseCase.execute(any()) }
+    }
+
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
         coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
     }
