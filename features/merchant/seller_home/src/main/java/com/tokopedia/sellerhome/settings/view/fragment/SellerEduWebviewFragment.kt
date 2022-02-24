@@ -26,8 +26,6 @@ class SellerEduWebviewFragment : BaseSessionWebViewFragment() {
         private const val HTTP_SCHEME = "http://"
         private const val HTTPS_SCHEME = "https://"
 
-        private const val
-
         fun newInstance(url: String): SellerEduWebviewFragment {
             val fragment = SellerEduWebviewFragment()
             val args = Bundle().apply {
