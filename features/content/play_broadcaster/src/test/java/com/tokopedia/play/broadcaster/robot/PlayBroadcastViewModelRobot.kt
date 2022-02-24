@@ -142,8 +142,4 @@ internal class PlayBroadcastViewModelRobot(
     override fun close() {
         cancelRemainingTasks()
     }
-
-    fun getInteractiveGqlLeaderboardDelay(): Long {
-        return getViewModelPrivateField("INTERACTIVE_GQL_LEADERBOARD_DELAY")
-    }
 }

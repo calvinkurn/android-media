@@ -57,12 +57,10 @@ class PlayBroInteractiveFinishViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
-
         rule.runBlockingTest {
             launch {
                 robot.getViewModel().onInteractiveLiveEnded()
-                advanceTimeBy(interactiveGqlLeaderboardDelay)
+                advanceUntilIdle()
                 val state = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
 
                 state.assertEqualTo(
@@ -89,12 +87,10 @@ class PlayBroInteractiveFinishViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
-
         rule.runBlockingTest {
             launch {
                 robot.getViewModel().onInteractiveLiveEnded()
-                advanceTimeBy(interactiveGqlLeaderboardDelay)
+                advanceUntilIdle()
                 val state = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
 
                 state.assertEqualTo(
@@ -119,12 +115,10 @@ class PlayBroInteractiveFinishViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
-
         rule.runBlockingTest {
             launch {
                 robot.getViewModel().onInteractiveLiveEnded()
-                advanceTimeBy(interactiveGqlLeaderboardDelay)
+                advanceUntilIdle()
                 val state = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
 
                 state.assertEqualTo(

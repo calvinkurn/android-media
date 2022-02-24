@@ -159,11 +159,9 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
             channelRepo = mockRepo
         )
 
-        val interactiveGqlLeaderboardDelay = robot.getInteractiveGqlLeaderboardDelay()
-
         rule.runBlockingTest {
             robot.getViewModel().startLiveStream(true)
-            advanceTimeBy(interactiveGqlLeaderboardDelay)
+            advanceUntilIdle()
 
             val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
             val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
