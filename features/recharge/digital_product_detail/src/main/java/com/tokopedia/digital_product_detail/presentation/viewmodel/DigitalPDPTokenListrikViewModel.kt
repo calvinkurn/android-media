@@ -201,7 +201,6 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
 
     fun validateClientNumber(clientNumber: String) {
         validatorJob = viewModelScope.launch {
-            launchCatchError(dispatchers.main, block = {
                 var errorMessage = ""
                 for (validation in validators) {
                     val phoneIsValid = Pattern.compile(validation.rule)
@@ -213,11 +212,6 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
                 isEligibleToBuy = errorMessage.isEmpty()
                 delay(DigitalPDPTagihanViewModel.VALIDATOR_DELAY_TIME)
                 _clientNumberValidatorMsg.value = errorMessage
-            }) {
-                if (it !is CancellationException) {
-
-                }
-            }
         }
     }
 
