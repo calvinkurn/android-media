@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -301,8 +300,8 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `when updateCategoryCheckoutPassData called should update digitalCheckoutPassData`() {
         verifyCheckoutPassDataCategoryIdEmpty()
 
-        viewModel.updateCategoryCheckoutPassData(PulsaDataFactory.CATEGORY_ID)
-        verifyCheckoutPassDataCategoryIdUpdated(PulsaDataFactory.CATEGORY_ID)
+        viewModel.updateCategoryCheckoutPassData(TagihanDataFactory.CATEGORY_ID)
+        verifyCheckoutPassDataCategoryIdUpdated(TagihanDataFactory.CATEGORY_ID)
     }
 
     @Test

@@ -274,7 +274,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun verifyCheckoutPassDataCategoryIdEmpty() {
         val actualCategoryId = viewModel.digitalCheckoutPassData.categoryId
-        Assert.assertTrue(actualCategoryId == DigitalPDPPulsaViewModelTestFixture.EMPTY || actualCategoryId == null)
+        Assert.assertTrue(actualCategoryId == EMPTY || actualCategoryId == null)
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
