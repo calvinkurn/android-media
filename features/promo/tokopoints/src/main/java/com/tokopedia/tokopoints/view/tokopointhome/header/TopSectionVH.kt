@@ -542,7 +542,7 @@ class TopSectionVH(
     private fun progressBarAnimation(progressInfoList: List<ProgressInfoList>) {
 
         val container = progressBar?.progressBarContainer
-        val progress = getProgress(progressInfoList).second?:1
+        val progress = getProgress(progressInfoList).second ?: -1
         progressBar?.apply {
             progressBarHeight = ProgressBarUnify.SIZE_LARGE
             progressBarColorType = ProgressBarUnify.COLOR_GREEN

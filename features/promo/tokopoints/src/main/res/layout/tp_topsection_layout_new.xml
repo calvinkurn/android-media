@@ -58,6 +58,8 @@
         android:id="@+id/containerProgressComponent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_below="@id/img_egg"
         android:layout_alignStart="@id/img_egg">
 
@@ -120,7 +122,7 @@
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/progressbar_membership"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/tp_dp_30"
                 android:layout_gravity="center"
                 android:layout_marginTop="-6dp"
                 android:clipChildren="false"
