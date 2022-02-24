@@ -29,6 +29,9 @@ class GetProductsUseCase @Inject constructor(
                         txStats {
                             sold
                         }
+                        warehouse {
+                            id
+                        }
                     }
                     meta {
                         totalHits

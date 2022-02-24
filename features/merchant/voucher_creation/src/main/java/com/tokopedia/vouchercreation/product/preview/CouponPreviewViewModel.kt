@@ -57,6 +57,8 @@ class CouponPreviewViewModel @Inject constructor(
     val couponCreationEligibility: LiveData<Result<Int>>
         get() = _couponCreationEligibility
 
+    var selectedWarehouseId:String = ""
+
     fun validateCoupon(
         pageMode : CouponPreviewFragment.Mode,
         couponSettings: CouponSettings?,
