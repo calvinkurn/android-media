@@ -1,9 +1,7 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.common_tradein.model.TradeInPDPData
-import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tradein.model.Laku6DeviceModel
@@ -19,12 +17,10 @@ class TradeInHomePageFragmentVM @Inject constructor(val tradeInDetailUseCase: Tr
     var logisticData: ArrayList<LogisticOption> = arrayListOf()
     val tradeInDetailLiveData = MutableLiveData<TradeInDetailModel>()
 
-    fun getPDPData(context: Context, id : String) : TradeInPDPData? {
-        data = TradeInPDPHelper.getDataFromPDP(context, id) ?: data
+    fun getPDPData(tradeinPDPData: TradeInPDPData?) : TradeInPDPData? {
+        data = tradeinPDPData ?: data
         return data
     }
-
-    fun getTradeInPDPData() = data
 
     fun startProgressBar() {
         progBarVisibility.value = true

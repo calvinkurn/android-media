@@ -178,4 +178,8 @@
     <string name="tradein_terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="tradein_black_market">HP Black Market</string>
     <string name="tradein_imei_title">Masukkan no. IMEI</string>
+    <string name="tradein_imei_label">No. IMEI</string>
+    <string name="tradein_outside_coverage_heading">Toko ini belum melayani Tukar Tambah di wilayahmu</string>
+    <string name="tradein_outside_coverage_description">Coba cari barang serupa di toko lain yang melayani Tukar Tambah di wilayahmu, ya.</string>
+    <string name="tradein_similar_items">Cari di Toko Lain</string>
 </resources>

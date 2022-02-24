@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -141,7 +142,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     private fun setUpPdpData(id: String) {
         view?.apply {
-            viewModel.getPDPData(context, id)?.let {
+            viewModel.getPDPData(TradeInPDPHelper.getDataFromPDP(context, id))?.let {
                 findViewById<Typography>(R.id.slashed_price).let { price ->
                     price.text =
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productPrice, true)
@@ -165,7 +166,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     private fun addObservers() {
         tradeInHomePageVM.laku6DeviceModel.observe(viewLifecycleOwner, Observer {
             setUpLaku6Data(it)
-            viewModel.getTradeInPDPData()?.apply {
+            viewModel.data?.apply {
                 userAddressData?.let { address ->
                     viewModel.getTradeInDetail(it, productPrice, address)
                 }
@@ -352,7 +353,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     tradeInAnalytics.viewCoverageAreaBottomSheet()
                     val bottomSheet = TradeInOutsideCoverageBottomSheet
                         .newInstance(
-                            viewModel.getTradeInPDPData()?.productName
+                            viewModel.data?.productName
                                 ?: ""
                         )
                     bottomSheet.tradeInAnalytics = tradeInAnalytics

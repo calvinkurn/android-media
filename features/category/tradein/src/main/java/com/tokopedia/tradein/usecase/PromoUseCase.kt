@@ -16,7 +16,7 @@ class PromoUseCase @Inject constructor(
         return repository.getGQLData(GqlPromo.GQL_QUERY, PromoTradeInModel::class.java, createRequestParams(code))
     }
 
-    fun createRequestParams(code: String): Map<String, Any> {
+    private fun createRequestParams(code: String): Map<String, Any> {
         return mapOf(
             TradeinConstants.UseCase.KEY_CODE to code
         )

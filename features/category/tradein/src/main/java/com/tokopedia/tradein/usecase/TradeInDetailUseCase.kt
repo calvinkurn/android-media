@@ -25,7 +25,7 @@ class TradeInDetailUseCase @Inject constructor(
         return repository.getGQLData(GqlTradeInDetail.GQL_QUERY, TradeInDetailModel::class.java, createRequestParams(laku6DeviceModel, productPrice, userAddressData))
     }
 
-    fun createRequestParams(
+    private fun createRequestParams(
         laku6DeviceModel: Laku6DeviceModel,
         productPrice: Int,
         userAddressData: LocalCacheModel
