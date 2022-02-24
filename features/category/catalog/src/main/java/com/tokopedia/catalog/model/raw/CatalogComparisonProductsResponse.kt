@@ -21,6 +21,8 @@ data class CatalogComparisonProductsResponse(
             val catalogImage: List<CatalogImage?>?,
             @Expose @SerializedName("id")
             val id: String?,
+            @Expose @SerializedName("appLink")
+            val appLink: String?,
             @Expose @SerializedName("marketPrice")
             val marketPrice: List<MarketPrice?>?,
             @Expose @SerializedName("name")

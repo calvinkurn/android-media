@@ -446,7 +446,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
         context?.let { context ->
-            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
+            RouteManager.route(context,catalogComparison.appLink)
         }
     }
 

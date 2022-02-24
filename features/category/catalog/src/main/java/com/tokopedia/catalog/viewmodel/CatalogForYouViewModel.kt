@@ -26,7 +26,8 @@ class CatalogForYouViewModel : BaseViewModel() {
     var lastScrollIndex = 0
     var isLoading = false
 
-    val catalogComparisonProductUseCase =  CatalogComparisonProductUseCase(CatalogComparisonProductRepository())
+    var catalogComparisonProductUseCase =  CatalogComparisonProductUseCase(CatalogComparisonProductRepository())
+
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : Int, name : String) {
         isLoading = true

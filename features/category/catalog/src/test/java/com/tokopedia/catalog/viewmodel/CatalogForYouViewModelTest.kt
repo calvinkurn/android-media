@@ -8,11 +8,11 @@ import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.Assert.assertEquals
@@ -27,7 +27,8 @@ class CatalogForYouViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel : CatalogForYouViewModel
+    private var viewModel = CatalogForYouViewModel()
+    private var useCase = mockk<CatalogComparisonProductUseCase>()
     private var catalogDetailObserver = mockk<Observer<ArrayList<BaseCatalogDataModel>>>(relaxed = true)
     private var catalogDetailObserverHasMoreItems = mockk<Observer<Boolean>>(relaxed = true)
     private var catalogDetailObserverError= mockk<Observer<Throwable>>(relaxed = true)
@@ -35,7 +36,7 @@ class CatalogForYouViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = CatalogForYouViewModel()
+        viewModel.catalogComparisonProductUseCase = useCase
         viewModel.getDataItems().observeForever(catalogDetailObserver)
         viewModel.getHasMoreItems().observeForever(catalogDetailObserverHasMoreItems)
         viewModel.getError().observeForever(catalogDetailObserverError)
@@ -87,7 +88,7 @@ class CatalogForYouViewModelTest {
             coEvery { viewModel.catalogComparisonProductUseCase.getCatalogComparisonProducts(any(),any(), any(),any(),any(), any()) } returns result
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,2,"")
-            assertEquals(viewModel.getShimmerData().value?.size, 2)
+            assertEquals(viewModel.getShimmerData().value?.size, 1)
             assertEquals(viewModel.masterDataList.size, 2)
         }
     }
@@ -109,7 +110,6 @@ class CatalogForYouViewModelTest {
     @Test
     fun `Get Catalog Comparison Response Exception`() {
         val throwable = Throwable()
-        val result = Fail(throwable)
         runBlocking {
             coEvery { viewModel.catalogComparisonProductUseCase.getCatalogComparisonProducts(any(),any(), any(),any(),any(), any()) } throws throwable
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
