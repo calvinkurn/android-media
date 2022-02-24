@@ -138,8 +138,6 @@ class ManageProductViewModel @Inject constructor(
             val productUiModel = mutableProductList.first {
                 it.id == validationResult.parentProductId.toString()
             }
-            productUiModel.isError = !validationResult.isEligible
-            productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
             productUiModel.variants = mapVariantDataToUiModel(
                     isViewing = productUiModel.isViewing,

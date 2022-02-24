@@ -316,10 +316,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             )
                         }
                     } else {
-                        binding?.selectionBar?.hide()
-                        binding?.rvProductList?.hide()
-                        binding?.emptyProductsLayout?.show()
-                        binding?.buttonAddProduct?.isEnabled = false
+                        if (viewModel.isInitialLoad(viewModel.getPagingIndex())) {
+                            binding?.selectionBar?.hide()
+                            binding?.rvProductList?.hide()
+                            binding?.emptyProductsLayout?.show()
+                            binding?.buttonAddProduct?.isEnabled = false
+                        }
                     }
                 }
                 is Fail -> {
@@ -476,6 +478,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun loadData(page: Int) {
+        viewModel.setPagingIndex(page)
         viewModel.getSellerWarehouseId()?.run {
             viewModel.getProductList(
                     page = page,
