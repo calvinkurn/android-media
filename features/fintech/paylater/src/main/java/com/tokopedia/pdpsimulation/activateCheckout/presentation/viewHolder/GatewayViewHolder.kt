@@ -25,21 +25,25 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
             if(!checkoutData.disable && checkoutData.selectedGateway)
             {
                 individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 radioGatewaySelector.isChecked = true
             }
             else {
                 individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioGatewaySelector.isChecked = false
             }
 
             if(!checkoutData.disable && !checkoutData.selectedGateway) {
                 itemView.radioGatewaySelector.setOnClickListener {
                     individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50)))
+                    individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
                     gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
                 }
                 itemView.setOnClickListener {
                     individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50)))
+                    individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
                     gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
 

@@ -104,7 +104,7 @@
         android:id="@+id/priceBreakdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/pay_later_dp_20"
         android:text="@string/activation_paylater_breakdown"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@id/proceedToCheckout"
@@ -120,7 +120,7 @@
         app:layout_constraintTop_toTopOf="@+id/proceedToCheckout"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/pay_later_dp_20"
         tools:text="Rp1.250,00" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -131,7 +131,6 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@+id/amountToPay"
         app:layout_constraintLeft_toRightOf="@id/amountToPay"
-        app:layout_constraintTop_toTopOf="@id/amountToPay"
         app:typographyType="body_3"
         tools:text="x12" />
 

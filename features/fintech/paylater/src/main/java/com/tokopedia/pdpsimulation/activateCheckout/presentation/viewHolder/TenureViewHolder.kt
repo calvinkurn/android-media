@@ -27,9 +27,11 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             if (!tenureSelectListener.isDisable()) {
                 if (tenureDetail.isSelectedTenure) {
                     containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                    individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioSelector.isChecked = true
                 } else {
                     containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                     radioSelector.isChecked = false
                 }
                 individualTenureItemContainer.isClickable = true
