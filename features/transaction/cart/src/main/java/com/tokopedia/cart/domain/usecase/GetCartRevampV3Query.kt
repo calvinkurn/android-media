@@ -112,6 +112,7 @@ fun getQueryCartRevampV3(): String {
                   add_on {
                     ticker_text
                     icon_url
+                    add_on_ids
                  }
                   user_address_id
                   shipment_information {
