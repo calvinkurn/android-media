@@ -142,6 +142,32 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventVoucherThumbnailClicked(sourceVoucher: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_SHOP_VOUCHER_THUMBNAIL,
+                label = "$sourceVoucher - $voucherId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventViewVoucher(sourceVoucher: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_VOUCHER_THUMBNAIL,
+                label = "$sourceVoucher - $voucherId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -169,6 +195,8 @@ object TopChatAnalyticsKt {
 
     object Event {
         const val CHAT_DETAIL = "clickChatDetail"
+        const val CLICK_COMMUNICATION = "clickCommunication"
+        const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
     }
 
     object Category {
@@ -181,6 +209,8 @@ object TopChatAnalyticsKt {
         const val CLICK_CONFIRM_DELETE_MSG = "click confirm delete message"
         const val CLICK_CLOSE_REPLY_BUUBLE_PREVIEW = "click close preview replied bubble chat above keyboard"
         const val CLICK_REPLY_BUBBLE = "click view parent replied bubble chat"
+        const val CLICK_SHOP_VOUCHER_THUMBNAIL = "click shop voucher thumbnail"
+        const val VIEW_VOUCHER_THUMBNAIL = "view voucher thumbnail"
     }
 
     //Event Name

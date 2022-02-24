@@ -28,6 +28,7 @@ class ProductItemVariantViewHolder(
     }
 
     fun bindData(productVariant: VariantUiModel, variantIndex: Int) {
+        binding.root.setTag(R.id.product_variant, productVariant)
         this.variantIndex = variantIndex
         binding.root.setTag(R.id.product_variant, productVariant)
         binding.cbuVariantItem.isChecked = productVariant.isSelected

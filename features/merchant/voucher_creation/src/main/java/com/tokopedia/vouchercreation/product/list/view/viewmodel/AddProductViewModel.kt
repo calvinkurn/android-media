@@ -30,6 +30,7 @@ class AddProductViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
+        private const val FIRST_PAGE = 1
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
@@ -44,6 +45,7 @@ class AddProductViewModel @Inject constructor(
     private var maxProductLimit = 0
     private var couponSettings: CouponSettings? = null
     private var selectedProductIds = listOf<String>()
+    private var pageIndex = 1
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
@@ -391,6 +393,18 @@ class AddProductViewModel @Inject constructor(
 
     fun isMaxProductLimitReached(selectedProductsSize: Int): Boolean {
         return selectedProductsSize > maxProductLimit
+    }
+
+    fun isInitialLoad(pageIndex: Int): Boolean {
+        return pageIndex == FIRST_PAGE
+    }
+
+    fun setPagingIndex(pageIndex: Int) {
+        this.pageIndex = pageIndex
+    }
+
+    fun getPagingIndex(): Int {
+        return pageIndex
     }
 
     fun excludeSelectedProducts(productList: List<ProductUiModel>,
