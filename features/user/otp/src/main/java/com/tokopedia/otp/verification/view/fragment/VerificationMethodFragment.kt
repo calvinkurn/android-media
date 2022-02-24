@@ -36,6 +36,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialogUtils
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
+import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
@@ -75,6 +76,9 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var verificationPref: VerificationPref
 
     protected lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
@@ -211,9 +215,17 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
+    private fun isSameIdentifier(): Boolean {
+        val identifier = otpData.email.ifEmpty { otpData.msisdn }
+        return identifier.isNotEmpty() && verificationPref.userIdentifier == identifier
+    }
+
     open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
+                if(!isSameIdentifier()) {
+                    verificationPref.resetByMode(modeList.modeText)
+                }
                 viewmodel.done = true
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
                 try {

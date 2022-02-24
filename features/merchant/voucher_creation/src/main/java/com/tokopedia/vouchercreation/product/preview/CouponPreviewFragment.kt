@@ -33,6 +33,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
+import com.tokopedia.vouchercreation.common.tracker.CouponPreviewTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -63,7 +64,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
         private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
         private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
-        private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "kuota voucher aktif penuh"
+        private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "Kupon Aktif maksimal"
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -100,6 +101,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var tracker : CouponPreviewTracker
+
     private var nullableBinding by autoClearedNullable<FragmentCouponPreviewBinding>()
     private val binding: FragmentCouponPreviewBinding
         get() = requireNotNull(nullableBinding)
@@ -122,6 +126,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private var couponId : Long = -1
     private var maxAllowedProduct = 0
     private var showCouponDuplicatedToaster : () -> Unit = {}
+    private var selectedProductCount = 0
 
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
@@ -179,6 +184,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
 
         if (viewModel.isCreateMode(pageMode)){
+            tracker.sendCreationPageImpression()
             viewModel.checkCouponCreationEligibility()
         } else {
             viewModel.getCouponDetail(couponId, pageMode)
@@ -247,8 +253,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
 
                     val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
-                    this.selectedProducts = selectedProducts.toMutableList()
-                    refreshProductsSection(selectedProducts)
+                    this.selectedProductCount = selectedProducts.size
+
+                    refreshProductsSection(selectedProducts.size)
 
                     binding.tpgMaxProduct.text = String.format(
                         getString(R.string.placeholder_max_product),
@@ -279,16 +286,32 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun setupViews() {
         binding.tpgReadArticle.setOnClickListener { redirectToSellerEduPage() }
-        binding.tpgCouponInformation.setOnClickListener { onNavigateToCouponInformationPage() }
-        binding.tpgCouponSetting.setOnClickListener { onNavigateToCouponSettingsPage() }
-        binding.tpgAddProduct.setOnClickListener { navigateToAddProductPage() }
+        binding.tpgCouponInformation.setOnClickListener {
+            tracker.sendChangeCouponInformationClickEvent()
+            onNavigateToCouponInformationPage()
+        }
+        binding.tpgCouponSetting.setOnClickListener {
+            tracker.sendChangeCouponSettingClickEvent()
+            onNavigateToCouponSettingsPage()
+        }
+        binding.tpgAddProduct.setOnClickListener {
+            tracker.sendAddProductClickEvent()
+            navigateToAddProductPage()
+        }
         binding.tpgUpdateProduct.setOnClickListener { navigateToManageProductPage() }
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
-        binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
+        binding.btnPreviewCouponImage.setOnClickListener {
+            tracker.sendCouponImagePreviewClickEvent()
+            displayCouponPreviewBottomSheet()
+        }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
-        binding.header.setNavigationOnClickListener { activity?.onBackPressed() }
+        binding.header.setNavigationOnClickListener {
+            tracker.sendBackToPreviousPageEvent()
+            activity?.onBackPressed()
+        }
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
             override fun onLinkClick(url: String?) {
+                tracker.sendTermAndConditionClickEvent()
                 displayTermAndConditionBottomSheet()
             }
 
@@ -332,8 +355,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     )
 
                     if (viewModel.isCreateMode(pageMode)) {
+                        tracker.sendCreateCouponClickEvent()
                         onCreateCouponSuccess(coupon)
                     } else {
+                        tracker.sendUpdateCouponClickEvent(result.data.toLong())
                         onDuplicateCouponSuccess()
                     }
                 }
@@ -364,7 +389,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun refreshCouponDetail() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
-        refreshProductsSection(selectedProducts)
+        refreshProductsSection(selectedProductCount)
         viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
         hideLoading()
         showContent()
@@ -385,6 +410,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     fun addProducts(selectedProducts: List<ProductUiModel>) {
         val couponProductData = viewModel.mapSelectedProductsToCouponProductData(selectedProducts)
         this.selectedProducts.addAll(selectedProducts)
+        this.selectedProductCount = selectedProducts.size
         this.couponProducts.addAll(couponProductData)
         refreshCouponDetail()
     }
@@ -392,6 +418,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     fun setProducts(selectedProducts: List<ProductUiModel>) {
         val couponProductData = viewModel.mapSelectedProductsToCouponProductData(selectedProducts)
         this.selectedProducts = selectedProducts.toMutableList()
+        this.selectedProductCount = selectedProducts.size
         this.couponProducts = couponProductData.toMutableList()
         refreshCouponDetail()
     }
@@ -487,14 +514,15 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun refreshProductsSection(selectedProducts: List<ProductUiModel>) {
-        binding.tpgUpdateProduct.isVisible = selectedProducts.isNotEmpty()
-        if (selectedProducts.isNotEmpty()) {
+    private fun refreshProductsSection(selectedProductsCount : Int) {
+        binding.tpgUpdateProduct.isVisible = selectedProductsCount > 0
+
+        if (selectedProductsCount > 0) {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.completed))
 
             binding.tpgProductCount.text =
-                    String.format(getString(R.string.placeholder_registered_product), selectedProducts.size, maxAllowedProduct)
+                    String.format(getString(R.string.placeholder_registered_product), selectedProductsCount, maxAllowedProduct)
         } else {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.incomplete))
@@ -620,6 +648,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun redirectToSellerEduPage() {
         if (!isAdded) return
         val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.PRODUCT_COUPON
+        tracker.sendReadArticleClickEvent(getString(R.string.read_article), url)
         val encodedUrl = URLEncoder.encode(url, "utf-8")
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
@@ -731,12 +760,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun showError(throwable: Throwable) {
         val actionText = context?.getString(R.string.coupon_toaster_cta_oke).orEmpty()
-        if (throwable is MessageErrorException && throwable.message == ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT) {
-            Toaster.build(binding.root, getString(R.string.error_message_exceed_max_coupon), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
+        val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().withErrorCode(false).build())
+        Toaster.build(binding.root, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
+        if (message.contains(ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT)) {
             showEmptyState()
-        } else {
-            val message = ErrorHandler.getErrorMessage(requireActivity(), throwable)
-            Toaster.build(binding.root, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
         }
     }
 
@@ -762,10 +789,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         onNavigateToManageProductPage(coupon)
     }
 
-
-    private fun showLoading() {
-        binding.loader.visible()
-    }
 
     private fun hideLoading() {
         binding.loader.gone()

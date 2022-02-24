@@ -207,6 +207,7 @@
 /features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
 /features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
+/features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
 /features/user/attachvoucher/                           @tokopedia/android-minionkevin-dev
 /features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
@@ -350,6 +351,7 @@
 /libraries/screen_recorder                              @tokopedia/android-core-dev
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
+/libraries/macrobenchmark/								@tokopedia/android-core-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev

@@ -46,6 +46,8 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
+import com.tokopedia.vouchercreation.common.tracker.CouponDetailTracker
+import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -61,10 +63,8 @@ import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductAct
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_COUPON_SETTINGS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_IS_VIEWING
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
-import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
 import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
-import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import javax.inject.Inject
@@ -125,6 +125,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var linkerDataGenerator: LinkerDataGenerator
 
+    @Inject
+    lateinit var tracker: CouponDetailTracker
+
+    @Inject
+    lateinit var sharingComponentTracker: SharingComponentTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponDetailViewModel::class.java) }
@@ -171,6 +176,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 copyToClipboard(content)
             }
             btnDownload.setOnClickListener {
+                val couponStatus = binding.labelVoucherStatus.text.toString().trim()
+                tracker.sendDownloadCouponImageClickEvent(couponStatus)
                 downloadCoupon(
                     bannerImageUrl,
                     squareImageUrl,
@@ -178,6 +185,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
             }
             tpgViewProducts.setOnClickListener {
+                val couponStatus = binding.labelVoucherStatus.text.toString().trim()
+                tracker.sendViewAllProductsClickEvent(couponStatus)
                 viewModel.getCoupon()?.run {
                     val maxProductLimit = viewModel.getMaxProductLimit()
                     val couponSettings = viewModel.getCouponSettings(this)
@@ -244,7 +253,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         )
         displayCouponSettingsSection(coupon)
         displayQuotaUsage(coupon)
-        refreshProductsSection(coupon.productIds.size, maxProduct)
+        refreshProductsSection(coupon.products.size, maxProduct)
         this.bannerImageUrl = coupon.image
         this.squareImageUrl = coupon.imageSquare
         this.portraitImageUrl = coupon.imagePortrait
@@ -483,6 +492,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
                 binding.button.text = getString(R.string.mvc_share)
                 binding.button.setOnClickListener {
+                    sharingComponentTracker.sendShareClickEvent(
+                        ShareComponentConstant.ENTRY_POINT_DETAIL,
+                        coupon.id.toString()
+                    )
                     viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
                 }
             }
@@ -518,6 +531,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
                 binding.button.text = getString(R.string.mvc_duplicate)
                 binding.button.setOnClickListener {
+                    tracker.sendDuplicateCouponClickEvent()
                     val couponId = viewModel.getCoupon()?.id.orZero().toLong()
                     DuplicateCouponActivity.start(requireActivity(), couponId)
                 }
@@ -605,6 +619,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
     override fun onPause() {
         super.onPause()
         timer?.stopCountdown()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        timer?.startCountdown()
     }
 
     private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String, portraitImageUrl : String) {
@@ -745,9 +764,15 @@ class CouponDetailFragment : BaseDaggerFragment() {
             title,
             coupon.id.toLong(),
             onShareOptionsClicked = { shareModel ->
-                handleShareOptionSelection(coupon.id.toLong(), shareModel, title, description, shop.shopDomain)
-            }, onCloseOptionClicked = {}
+                sharingComponentTracker.sendSelectShareChannelClickEvent(shareModel.channel.orEmpty(), coupon.id.toString())
+                handleShareOptionSelection(coupon.galadrielVoucherId, shareModel, title, description, shop.shopDomain)
+            }, onCloseOptionClicked = {
+                sharingComponentTracker.sendShareBottomSheetDismissClickEvent(coupon.id.toString())
+            }
         )
+
+        sharingComponentTracker.sendShareBottomSheetDisplayedEvent(coupon.id.toString())
+
         shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
     }
 
@@ -787,7 +812,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun handleShareOptionSelection(
-        couponId: Long,
+        galadrielVoucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -811,7 +836,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
         val outgoingDescription = getString(R.string.share_component_outgoing_text_description)
         val linkerShareData = linkerDataGenerator.generate(
-            couponId,
+            galadrielVoucherId,
             userSession.shopId,
             shopDomain,
             shareModel,

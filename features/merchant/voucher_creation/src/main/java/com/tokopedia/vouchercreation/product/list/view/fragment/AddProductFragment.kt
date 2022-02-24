@@ -279,6 +279,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             if (selectedProducts.isEmpty()) {
                 viewModel.isSelectAllMode = false
                 binding?.cbuSelectAllProduct?.isChecked = false
+                binding?.buttonAddProduct?.isEnabled = false
                 val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
                 if (isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(false)
                 binding?.tpgSelectAll?.text = getString(R.string.mvc_select_all)
@@ -286,6 +287,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
             } else {
                 val size = selectedProducts.size
+                binding?.buttonAddProduct?.isEnabled = true
                 binding?.buttonAddProduct?.text = "Tambah $size Produk"
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
@@ -301,6 +303,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     if (productList.isNotEmpty()) {
                         binding?.selectionBar?.show()
                         binding?.emptyProductsLayout?.hide()
+                        binding?.buttonAddProduct?.isEnabled = false
                         viewModel.getCouponSettings()?.run {
                             viewModel.validateProductList(
                                     benefitType = viewModel.getBenefitType(this),
@@ -313,9 +316,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             )
                         }
                     } else {
-                        binding?.selectionBar?.hide()
-                        binding?.rvProductList?.hide()
-                        binding?.emptyProductsLayout?.show()
+                        if (viewModel.isInitialLoad(viewModel.getPagingIndex())) {
+                            binding?.selectionBar?.hide()
+                            binding?.rvProductList?.hide()
+                            binding?.emptyProductsLayout?.show()
+                            binding?.buttonAddProduct?.isEnabled = false
+                        }
                     }
                 }
                 is Fail -> {
@@ -472,6 +478,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun loadData(page: Int) {
+        viewModel.setPagingIndex(page)
         viewModel.getSellerWarehouseId()?.run {
             viewModel.getProductList(
                     page = page,
