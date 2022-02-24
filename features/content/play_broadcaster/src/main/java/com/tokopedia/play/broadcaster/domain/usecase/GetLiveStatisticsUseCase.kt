@@ -7,7 +7,6 @@ import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -48,7 +47,6 @@ class GetLiveStatisticsUseCase @Inject constructor(
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): GetLiveStatisticsResponse.ReportChannelSummary {
-        delay(LIVE_STATISTICS_DELAY)
         val gqlResponse = DefaultUseCaseHandler(
                 gqlRepository = graphqlRepository,
                 query = query,
@@ -64,7 +62,6 @@ class GetLiveStatisticsUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_CHANNEL_ID = "channelId"
-        private const val LIVE_STATISTICS_DELAY = 300L
 
         fun createParams(channelId: String): Map<String, Any> = mapOf(PARAM_CHANNEL_ID to channelId)
     }
