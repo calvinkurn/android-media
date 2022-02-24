@@ -95,7 +95,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false)
             shopId = savedInstanceState.getString(SHOP_ID, "")
             source = savedInstanceState.getString(SOURCE, "")
-            maxChecked = savedInstanceState.getInt(MAX_CHECKED,AttachProductActivity.MAX_CHECKED_DEFAULT)
+            maxChecked = savedInstanceState.getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS)
         } else if (arguments != null) {
             isSeller = requireArguments().getBoolean(IS_SELLER, false)
