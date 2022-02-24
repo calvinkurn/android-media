@@ -28,11 +28,12 @@ object MvcLockedToProductUtil {
         return GlobalConfig.isSellerApp()
     }
 
-    fun isMvcPhase2(): Boolean{
-        val shopMvcDiscoPhase2RollenceValue = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-            AB_TEST_SHOP_MVC_DISCO_PAGE_PHASE_2,
+    fun isMvcPhase2(): Boolean {
+        val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+        return abTestPlatform?.getFilteredKeyByKeyName(
             AB_TEST_SHOP_MVC_DISCO_PAGE_PHASE_2
-        ) ?: AB_TEST_SHOP_MVC_DISCO_PAGE_PHASE_2
-        return shopMvcDiscoPhase2RollenceValue.isNotEmpty()
+        )?.firstOrNull()?.let {
+            abTestPlatform.getString(it, "") == AB_TEST_SHOP_MVC_DISCO_PAGE_PHASE_2
+        } ?: false
     }
 }
