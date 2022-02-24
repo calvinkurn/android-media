@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_recharge_recom_banner_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:textColor="@color/Unify_NN950"
+        android:textSize="@dimen/unify_font_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_recharge_recom_banner_see_all"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Put max 1 line title here" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_recharge_recom_banner_see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/recharge_home_banner_see_all_label"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@id/tv_recharge_recom_banner_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_recharge_recom_banner_title"
+        app:typographyType="body_3" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recharge_recom_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:clipToPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_recharge_recom_banner_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,7 +47,6 @@ class DigitalUnifyCardViewHolder(
         with(binding.root) {
             setOnClickListener {
                 listener?.onItemClicked(element, adapterPosition)
-                RouteManager.route(context, element.actionButton.applink)
             }
         }
 

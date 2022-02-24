@@ -45,8 +45,8 @@ class CatalogViewModelTest {
     fun `Get Catalog Detail Response Success`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_detail_dummy_response.json"))
         runBlocking {
-            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any()) } returns mockGqlResponse
-            catalogDetailUseCase.getCatalogDetail(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE,viewModel.catalogDetailDataModel)
+            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(),any(), any()) } returns mockGqlResponse
+            catalogDetailUseCase.getCatalogDetail(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.COMPARISION_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE,viewModel.catalogDetailDataModel)
             if(viewModel.catalogDetailDataModel.value is Success){
                 assert(true)
             }else {
@@ -60,8 +60,8 @@ class CatalogViewModelTest {
     fun `Get Catalog Detail View Model Response Success`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_detail_dummy_response.json"))
         runBlocking {
-            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any()) } returns mockGqlResponse
-            viewModel.getProductCatalog(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE)
+            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(),any(), any()) } returns mockGqlResponse
+            viewModel.getProductCatalog(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.COMPARISION_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE)
             if(viewModel.getCatalogResponseData().value is Success){
                 assert(true)
             }else {
@@ -75,8 +75,8 @@ class CatalogViewModelTest {
     fun `Get Catalog Detail Response Fail`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_empty_dummy_response.json"))
         runBlocking {
-            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any()) } returns mockGqlResponse
-            catalogDetailUseCase.getCatalogDetail(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE,viewModel.catalogDetailDataModel)
+            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any(),any()) } returns mockGqlResponse
+            catalogDetailUseCase.getCatalogDetail(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.COMPARISION_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE,viewModel.catalogDetailDataModel)
             if(viewModel.catalogDetailDataModel.value is Fail){
                 assert(true)
             }else {
@@ -86,21 +86,33 @@ class CatalogViewModelTest {
         }
     }
 
-    private fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = response
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = CatalogResponseData::class.java
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
+    @Test
+    fun `Get Catalog Product Response Exception`() {
+        runBlocking {
+            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any(),any()) } throws Exception()
+            viewModel.getProductCatalog(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.COMPARISION_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE)
+            assert(viewModel.catalogDetailDataModel.value is Fail)
+        }
     }
 
-    private fun getJsonObject(pathString : String) : JsonObject {
-        return CommonUtils.fromJson(
-                CatalogTestUtils.getJsonFromFile(pathString),
-                JsonObject::class.java
-        )
+
+    companion object {
+        fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
+            val result = HashMap<Type, Any>()
+            val errors = HashMap<Type, List<GraphqlError>>()
+            val jsonObject: JsonObject = response
+            val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
+            val objectType = CatalogResponseData::class.java
+            val obj: Any = CommonUtils.fromJson(data, objectType)
+            result[objectType] = obj
+            return GraphqlResponse(result, errors, false)
+        }
+
+        fun getJsonObject(pathString : String) : JsonObject {
+            return CommonUtils.fromJson(
+                    CatalogTestUtils.getJsonFromFile(pathString),
+                    JsonObject::class.java
+            )
+        }
     }
 }

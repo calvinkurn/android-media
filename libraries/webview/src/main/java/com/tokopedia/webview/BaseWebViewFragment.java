@@ -203,8 +203,25 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             getActivity().finish();
             return null;
         } else {
-            return onCreateWebView(inflater, container, savedInstanceState);
+            try {
+                return onCreateWebView(inflater, container, savedInstanceState);
+            } catch (Exception e) {
+                redirectToWebViewPlaystore();
+                return null;
+            }
         }
+    }
+
+    private void redirectToWebViewPlaystore() {
+        //fix crash Failed to load WebView provider: No WebView installed
+        Intent webViewPlaystoreIntent = new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.webview")
+        );
+        Toast.makeText(getContext(), getString(com.tokopedia.webview.R.string.webview_need_install),
+                Toast.LENGTH_LONG).show();
+        startActivity(webViewPlaystoreIntent);
+        getActivity().finish();
     }
 
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
@@ -351,10 +368,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 webView.loadAuthUrl(getUrl(), userSession);
-            }else {
-                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+            } else {
+                if (getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
                     ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
             }
         } else if (requestCode == LOGIN_GPLUS) {
@@ -466,7 +483,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             Activity activity = getActivity();
-            if (activity instanceof AppCompatActivity) {
+            if (activity instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activityInstance = (BaseSimpleWebViewActivity) activity;
+                String activityTitle = activityInstance.getWebViewTitle();
+
                 ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
                 if (actionBar != null) {
                     String decodedUrl = Uri.decode(url).toLowerCase();
@@ -474,7 +494,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             && Uri.parse(title).getScheme() == null
                             && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
                         actionBar.setTitle(title);
-                    } else if (!isHelpUrl(decodedUrl)) {
+                    } else if ((TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE))
+                            && !isHelpUrl(decodedUrl)) {
                         actionBar.setTitle(getString(R.string.tokopedia));
                     }
                 }
@@ -665,7 +686,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            if (swipeRefreshLayout!= null) {
+            if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setVisibility(View.GONE);
             }
         }
@@ -695,6 +716,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (goToLoginGoogle(uri)) return true;
         if (uri.getHost() == null) {
             return false;
+        }
+        if (isBriIntent(uri)) {
+            return handlingBriIntent(url);
         }
 
         String queryParam = null;
@@ -800,19 +824,46 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
+    private boolean isBriIntent(Uri uri) {
+        return uri.getScheme().equals("intent") &&
+                uri.getHost().contains("kartukreditbri.co.id") &&
+                uri.toString().contains("browser_fallback_url=");
+    }
+
+    private boolean handlingBriIntent(String briUrl) {
+        String newUrl = briUrl.substring(briUrl.indexOf("browser_fallback_url=") + 21, briUrl.length() - 1);
+        newUrl = newUrl.substring(0, newUrl.indexOf(";"));
+        return launchWebviewForNewUrl(UrlEncoderExtKt.decode(newUrl));
+    }
+
+    private boolean launchWebviewForNewUrl(String newUrl) {
+        if (webView != null) {
+            if (Uri.parse(newUrl).getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(newUrl, userSession);
+            } else {
+                webView.loadUrl(newUrl);
+            }
+            return true;
+        } else {
+            // change first url directly
+            url = newUrl;
+            return false;
+        }
+    }
+
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
         String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
         String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 
-    private boolean isFDLHostEnabled(Uri uri){
-        if(remoteConfig != null){
+    private boolean isFDLHostEnabled(Uri uri) {
+        if (remoteConfig != null) {
             return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
                     && FDL_HOST.equalsIgnoreCase(uri.getHost());
-        }else{
+        } else {
             return FDL_HOST.equalsIgnoreCase(uri.getHost());
         }
     }
@@ -837,7 +888,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void routeToNativeBrowser(String browserUrl){
+    private void routeToNativeBrowser(String browserUrl) {
         RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
@@ -933,10 +984,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity instanceof BaseSimpleWebViewActivity) {
             ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        if (swipeRefreshLayout!= null) {
+        if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
-        if (globalError!= null) {
+        if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
         webView.reload();

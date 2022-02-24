@@ -10,37 +10,54 @@ interface CatalogDetailListener {
     /**
      * CatalogInfoViewHolder
      */
-    fun onViewMoreDescriptionClick()
+    fun onViewMoreDescriptionClick(){}
 
     /**
      * CatalogImageViewHolder
      */
-    fun onProductImageClick(catalogImage : CatalogImage, position: Int)
+    fun onProductImageClick(catalogImage : CatalogImage, position: Int){}
 
     /**
      * CatalogSpecificationsContainerViewHolder
      */
-    fun onViewMoreSpecificationsClick()
+    fun onViewMoreSpecificationsClick(){}
 
     /**
      * CatalogProductsContainerViewHolder
      */
-    fun hideFloatingLayout()
+    fun hideFloatingLayout(){}
 
-    fun showFloatingLayout()
+    fun showFloatingLayout(){}
 
     /**
      * CatalogVideoViewHolder
      */
-    fun playVideo(catalogVideo : VideoComponentData, position : Int)
+    fun playVideo(catalogVideo : VideoComponentData, position : Int){}
 
     /**
      * CatalogComparisionContainerViewHolder
      */
-    fun comparisionCatalogClicked(comparisionCatalogId : String)
+    fun comparisonCatalogClicked(comparisonCatalogId : String){}
 
-    val childsFragmentManager: FragmentManager?
+    fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?){}
 
-    val windowHeight: Int
+    fun changeComparison(comparedCatalogId: String){}
+
+    /**
+     * CatalogReviewContainerViewHolder
+     */
+    fun readMoreReviewsClicked(catalogId : String){}
+
+    /**
+     * CatalogReviewViewHolder
+     */
+    fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
+                             isFromBottomSheet : Boolean = true){}
+
+    fun getChildsFragmentManager() : FragmentManager? {
+        return null
+    }
+
+    fun getWindowHeight() : Int { return 0 }
 
 }

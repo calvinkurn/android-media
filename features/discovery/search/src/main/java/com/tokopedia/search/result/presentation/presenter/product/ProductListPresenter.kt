@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IDENTIFIER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
@@ -67,9 +67,7 @@ import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
@@ -82,6 +80,8 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.utils.SchedulersProvider
@@ -282,6 +282,8 @@ class ProductListPresenter @Inject constructor(
 
             if (isViewAdded && !hasLoadData)
                 onViewFirstTimeLaunch()
+
+            reCheckChooseAddressData()
         }
     }
 
@@ -776,14 +778,12 @@ class ProductListPresenter @Inject constructor(
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
-        if (productDataView.productList.isEmpty()) {
+        if (productDataView.productList.isEmpty())
             getViewToHandleEmptyProductList(searchProductModel.searchProduct, productDataView)
-        } else {
+        else
             getViewToShowProductList(searchParameter, searchProductModel, productDataView)
-            processDefaultQuickFilter(searchProductModel)
-            initFilterController(searchProductModel)
-            processQuickFilter(searchProductModel.quickFilterModel)
-        }
+
+        processFilters(searchProductModel)
 
         view.updateScrollListener()
 
@@ -806,8 +806,6 @@ class ProductListPresenter @Inject constructor(
             searchProduct: SearchProductModel.SearchProduct,
             productDataView: ProductDataView,
     ) {
-        view.hideQuickFilterShimmering()
-
         if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
@@ -908,33 +906,42 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
-        val globalNavDataView = getGlobalNavViewModel(productDataView)
-        val isBannerAdsAllowed = globalNavDataView == null
-
         clearData()
         view.removeLoading()
-        view.setEmptyProduct(globalNavDataView, createEmptySearchViewModel(isBannerAdsAllowed))
+        view.setProductList(constructEmptyStateProductList(productDataView))
     }
+
+    private fun constructEmptyStateProductList(
+        productDataView: ProductDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { add(it) }
+            add(createEmptyStateDataView())
+        }
 
     private fun getGlobalNavViewModel(productDataView: ProductDataView): GlobalNavDataView? {
         val isGlobalNavWidgetAvailable = productDataView.globalNavDataView != null && enableGlobalNavWidget
         return if (isGlobalNavWidgetAvailable) productDataView.globalNavDataView else null
     }
 
-    private fun createEmptySearchViewModel(isBannerAdsAllowed: Boolean): EmptySearchProductDataView {
-        val emptySearchViewModel = EmptySearchProductDataView()
-        emptySearchViewModel.isBannerAdsAllowed = isBannerAdsAllowed
-        emptySearchViewModel.isFilterActive = view.isAnyFilterActive
+    private fun createEmptyStateDataView(): EmptyStateDataView {
+        val isAnyFilterActive = view.isAnyFilterActive
 
-        if (isShowLocalSearchRecommendation() && !view.isAnyFilterActive) {
-            emptySearchViewModel.isLocalSearch = true
-            emptySearchViewModel.globalSearchApplink = constructGlobalSearchApplink()
-            emptySearchViewModel.keyword = view.queryKey
-            emptySearchViewModel.pageTitle = pageTitle
-        }
-
-        return emptySearchViewModel
+        return EmptyStateDataView.create(
+            isFilterActive = isAnyFilterActive,
+            keyword = view.queryKey,
+            localSearch = emptyStateLocalSearch(isAnyFilterActive),
+        )
     }
+
+    private fun emptyStateLocalSearch(isAnyFilterActive: Boolean): EmptyStateDataView.LocalSearch? =
+        if (isShowLocalSearchRecommendation() && !isAnyFilterActive)
+            EmptyStateDataView.LocalSearch(
+                applink = constructGlobalSearchApplink(),
+                pageTitle = pageTitle,
+            )
+        else
+            null
 
     private fun isShowBroadMatchWithEmptyLocalSearch() =
             responseCode == EMPTY_LOCAL_SEARCH_RESPONSE_CODE
@@ -945,13 +952,13 @@ class ProductListPresenter @Inject constructor(
                     && isLocalSearch()
 
     private fun getViewToShowRecommendationItem() {
-        view.addLoading()
-
         if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation()
-        else getGlobalSearchRecommendation()
+        else if (!view.isAnyFilterActive) getGlobalSearchRecommendation()
     }
 
     private fun getLocalSearchRecommendation() {
+        view.addLoading()
+
         getLocalSearchRecommendationUseCase.get().execute(
                 createLocalSearchRequestParams(),
                 createLocalSearchRecommendationSubscriber()
@@ -1011,6 +1018,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getGlobalSearchRecommendation() {
+        view.addLoading()
+
         recommendationUseCase.execute(
                 recommendationUseCase.getRecomParams(
                         pageNumber = 1,
@@ -1577,6 +1586,19 @@ class ProductListPresenter @Inject constructor(
         return !isCPMOrProductItem
     }
 
+    private fun processFilters(searchProductModel: SearchProductModel) {
+        view.hideQuickFilterShimmering()
+
+        val hasProducts = searchProductModel.searchProduct.data.productList.isNotEmpty()
+        val willProcessFilter = hasProducts || view.isAnyFilterActive
+
+        if (!willProcessFilter) return
+
+        processDefaultQuickFilter(searchProductModel)
+        initFilterController(searchProductModel)
+        processQuickFilter(searchProductModel.quickFilterModel)
+    }
+
     private fun processDefaultQuickFilter(searchProductModel: SearchProductModel) {
         val quickFilter = searchProductModel.quickFilterModel
 
@@ -1589,7 +1611,8 @@ class ProductListPresenter @Inject constructor(
         if (dynamicFilterModel != null) return
 
         val quickFilterList = searchProductModel.quickFilterModel.filter
-        val inspirationWidgetFilterList = searchProductModel.searchInspirationWidget.asFilterList()
+        val inspirationWidgetFilterList =
+            searchProductModel.searchInspirationWidget.asFilterList()
         val filterList = quickFilterList + inspirationWidgetFilterList
 
         view.initFilterController(filterList)
@@ -1605,16 +1628,14 @@ class ProductListPresenter @Inject constructor(
             sortFilterItems.addAll(convertToSortFilterItem(filter, options))
         }
 
-        if (sortFilterItems.isNotEmpty()) {
-            view.hideQuickFilterShimmering()
+        if (sortFilterItems.isNotEmpty())
             view.setQuickFilter(sortFilterItems)
-        }
     }
 
     private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
-            options.map { option ->
-                createSortFilterItem(filter, option)
-            }
+        options.map { option ->
+            createSortFilterItem(filter, option)
+        }
 
     private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
         val item = SortFilterItem(filter.title) {
@@ -2238,6 +2259,10 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    override fun onViewResumed() {
+        reCheckChooseAddressData()
+    }
+
     private fun switchToBigGridView(position: Int) {
         view.switchSearchNavigationLayoutTypeToBigGridView(position)
         view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID)
@@ -2263,9 +2288,8 @@ class ProductListPresenter @Inject constructor(
 
         view.reloadData()
     }
-    //endregion
 
-    override fun onViewResumed() {
+    private fun reCheckChooseAddressData() {
         if (isViewNotAttached) return
         val chooseAddressData = chooseAddressData ?: return
         val isAddressDataUpdated = view.getIsLocalizingAddressHasUpdated(chooseAddressData)
@@ -2273,6 +2297,7 @@ class ProductListPresenter @Inject constructor(
         if (isAddressDataUpdated)
             onLocalizingAddressSelected()
     }
+    //endregion
 
     //region Inspiration Carousel Chips
     override fun onInspirationCarouselChipsClick(
