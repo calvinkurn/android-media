@@ -1,5 +1,8 @@
 package com.tokopedia.catalog.analytics
 
+import android.os.Bundle
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.ActionKeys.Companion.KATALOG_PiILIHAN_UNTUKMU
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.KEYS.Companion.CATALOG_URL_KEY
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogUtil
@@ -128,6 +131,36 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun sendPromotionEvent (
+        event: String,
+        action: String,
+        category: String,
+        eventLabel: String,
+        catalogId: String,
+        catalogName : String,
+        position: Int,
+        userId: String
+    ){
+        val bundle = Bundle()
+        val itemBundle = Bundle().apply {
+            putString(EventKeys.KEY_ITEM_ID,catalogId)
+            putString(EventKeys.KEY_CREATIVE_NAME,catalogName)
+            putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
+            putString(EventKeys.KEY_ITEM_NAME,KATALOG_PiILIHAN_UNTUKMU)
+        }
+        bundle.putString(EventKeys.KEY_EVENT , event)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY,category)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
+        bundle.putString(EventKeys.KEY_CATALOG_ID,catalogId)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID,userId)
+        bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
+
+        getTracker().sendEnhanceEcommerceEvent(event,bundle)
+    }
+
     interface EventKeys {
         companion object {
             const val KEY_EVENT = "event"
@@ -143,6 +176,7 @@ object CatalogDetailAnalytics {
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
 
+            const val KEY_PROMOTIONS = "promotions"
             const val BUSINESS_UNIT_VALUE= "Physical Goods"
             const val SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE = "sharingexperience"
             const val CURRENT_SITE_VALUE = "tokopediamarketplace"
@@ -154,6 +188,12 @@ object CatalogDetailAnalytics {
             const val EVENT_NAME_VIEW_CATALOG_IRIS = "viewCatalogIris"
             const val EVENT_NAME_PRODUCT_VIEW = "productView"
             const val EVENT_NAME_CLICK_PG = "clickPG"
+
+            const val KEY_CREATIVE_NAME = "creative_name"
+            const val KEY_CREATIVE_SLOT = "creative_slot"
+            const val KEY_ITEM_ID = "item_id"
+            const val KEY_ITEM_NAME = "item_name"
+
         }
     }
 
@@ -200,6 +240,8 @@ object CatalogDetailAnalytics {
             const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
             const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
             const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
+
+            const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
         }
     }
 
