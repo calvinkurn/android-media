@@ -9,6 +9,10 @@
     <string name="gifting_tips_footnote2"> <![CDATA[*Pelengkap tidak tersedia untuk Paket Bundling.]]></string>
     <string name="gifting_shop_caption">Disediakan oleh</string>
     <string name="gifting_shop_location">Tersedia di wilayah tertentu. <![CDATA[<font color=\'#42b549\'><b>Info Selengkapnya</b></font>]]>.</string>
+    <string name="gifting_greeting_card_text">Kartu Ucapan</string>
+    <string name="gifting_greeting_card_and_package_text"><![CDATA[Kemasan & Kartu Ucapan]]></string>
+    <string name="gifting_title_tips_tokocabang"><![CDATA[Kamu bisa <b>bungkus barang-barang dari toko ini jadi 1 hadiah</b> dengan langkah-langkah ini:]]></string>
+    <string name="gifting_caption_shop_name_tokocabang">Dilayani Tokopedia</string>
 
     <!-- product bundle screen name -->
     <string name="product_bundle_page_title">Pilih Paket Bundling</string>

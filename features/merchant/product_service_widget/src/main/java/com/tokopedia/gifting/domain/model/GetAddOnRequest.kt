@@ -7,7 +7,7 @@ data class GetAddOnRequest(
     @SerializedName("RequestData")
     @Expose
     val requestData: RequestData = RequestData(),
-    @SerializedName("AddOnRequest")
+    @SerializedName("GetAddOnRequest")
     @Expose
     val addOnRequest: AddOnRequest = AddOnRequest(),
     @SerializedName("Source")
@@ -31,15 +31,9 @@ data class RequestData(
 )
 
 data class AddOnRequest(
-    @SerializedName("ProductID")
+    @SerializedName("AddOnID")
     @Expose
-    val productID: String = "",
-    @SerializedName("WarehouseID")
-    @Expose
-    val warehouseID: String = "",
-    @SerializedName("AddOnLevel")
-    @Expose
-    val addOnLevel: String = ""
+    val addOnID: String = ""
 )
 
 data class Source(
