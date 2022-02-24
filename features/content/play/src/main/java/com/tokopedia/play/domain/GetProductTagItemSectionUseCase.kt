@@ -38,11 +38,11 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                   }
                   background {
                     gradient
-                    imageUrl
+                    image_url: imageUrl
                   }
-                  startTime
-                  endTime
-                  serverTime
+                  start_time: startTime
+                  end_time: endTime
+                  server_time: serverTime
                   sourceID
                   products{
                     id: ID
