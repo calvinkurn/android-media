@@ -13,6 +13,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
 private const val SHOP_CARD = "shop_card"
+private const val DUMMY = "dummy"
+private const val MARGIN_16 = 16
+private const val MARGIN_4 = 4
+private const val RADIUS = 8
 
 class BannerItem(val bannerItemData: DataItem, private val constraintLayout: ConstraintLayout,
                  private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH,
@@ -39,7 +43,7 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         if (viewWeight != null) {
             constraintSet.setHorizontalWeight(bannerImageView.id, viewWeight)
         } else {
-            constraintSet.setHorizontalWeight(bannerImageView.id, 1.0F)
+            constraintSet.setHorizontalWeight(bannerImageView.id, 1.0f)
         }
 
         if (previousBannerItem == null) {
@@ -60,28 +64,29 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
             try {
                 if (context.isValidGlideContext())
-                    if (bannerItemData.imageUrlDynamicMobile == "dummy") {
+                    if (bannerItemData.imageUrlDynamicMobile == DUMMY) {
                         (bannerImageView as ImageUnify).loadImage(bannerItemData.imageUrlDynamicMobile)
                     } else {
                         (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
                     }
             } catch (e: Throwable) {
+                e.printStackTrace()
             }
         }
         if (compType == SHOP_CARD) {
-            (bannerImageView as ImageUnify).cornerRadius = 8
+            (bannerImageView as ImageUnify).cornerRadius = RADIUS
             if (previousBannerItem == null) {
                 constraintSet.connect(bannerImageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START,
-                        16)
-            }else{
+                        MARGIN_16)
+            } else {
                 constraintSet.connect(previousBannerItem.bannerImageView.id, ConstraintSet.END, bannerImageView.id, ConstraintSet.START,
-                        4)
+                        MARGIN_4)
                 constraintSet.connect(bannerImageView.id, ConstraintSet.START, previousBannerItem.bannerImageView.id, ConstraintSet.END,
-                        4)
+                        MARGIN_4)
             }
-            if(islastItem)
+            if (islastItem)
                 constraintSet.connect(bannerImageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END,
-                        16)
+                        MARGIN_16)
         }
         constraintSet.applyTo(constraintLayout)
     }

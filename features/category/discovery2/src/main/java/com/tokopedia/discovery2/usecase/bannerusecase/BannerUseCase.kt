@@ -34,28 +34,28 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
     }
 
 
-    private fun getPlaceHolderImage(listSize: Int, componentId: String, pageEndPoint: String): List<Pair<String?,Float>>? {
+    private fun getPlaceHolderImage(listSize: Int, componentId: String, pageEndPoint: String): List<Pair<String?, Float>>? {
         val component = getComponent(componentId, pageEndPoint)
         when (component?.name) {
             ComponentNames.DoubleBanner.componentName -> {
                 if (listSize == 1) {
-                    return listOf(Pair(DUMMY,1.0f))
+                    return listOf(COMP_PAIR)
                 }
             }
             ComponentNames.TripleBanner.componentName -> {
                 if (listSize == 1) {
-                    return listOf(Pair(DUMMY,1.0f),Pair(DUMMY,1.0f))
+                    return listOf(COMP_PAIR, COMP_PAIR)
                 } else if (listSize == 2) {
-                    return listOf(Pair("dummy",1.0f))
+                    return listOf(COMP_PAIR)
                 }
             }
             ComponentNames.QuadrupleBanner.componentName -> {
                 if (listSize == 1) {
-                    return listOf(Pair(DUMMY,1.0f),Pair(DUMMY,1.0f),Pair(DUMMY,1.0f))
+                    return listOf(COMP_PAIR, COMP_PAIR, COMP_PAIR)
                 } else if (listSize == 2) {
-                    return listOf(Pair(DUMMY,1.0f),Pair(DUMMY,1.0f))
+                    return listOf(COMP_PAIR, COMP_PAIR)
                 } else if (listSize == 3) {
-                    return listOf(Pair(DUMMY,1.0f))
+                    return listOf(COMP_PAIR)
                 }
             }
             else -> return null
@@ -63,8 +63,10 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         return null
     }
 
-    companion object{
+    companion object {
         const val DUMMY = "dummy"
+        const val WEIGHT = 1.0f
+        val COMP_PAIR = Pair(DUMMY, WEIGHT)
     }
 
 }
