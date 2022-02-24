@@ -157,5 +157,8 @@
     <string name="sah_social_fb_com_title">Keluarga Tokopedia</string>
     <string name="sah_social_fb_com_desc">Gabung grup Keluarga Tokopedia untuk berbagi info dan pengalaman ke sesama Seller.</string>
     <string name="sah_social_cta">Lihat</string>
+
+    <!-- Seller Edu Webview -->
+    <string name="sah_seller_edu_error_message">Error wrong supported url format: %s</string>
         
 </resources>
