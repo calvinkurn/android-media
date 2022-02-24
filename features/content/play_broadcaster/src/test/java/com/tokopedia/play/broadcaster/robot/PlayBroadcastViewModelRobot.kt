@@ -54,10 +54,6 @@ internal class PlayBroadcastViewModelRobot(
     logger: PlayLogger = mockk(relaxed = true),
 ) : Closeable {
 
-    init {
-
-    }
-
     private val viewModel = PlayBroadcastViewModel(
         handle,
         livePusherMediator,
