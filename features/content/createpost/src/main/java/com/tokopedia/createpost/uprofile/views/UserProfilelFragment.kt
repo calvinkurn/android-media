@@ -50,6 +50,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var totalFollowings: String = ""
     var totalFollowers: String = ""
     var userSession: UserSessionInterface? = null
+    var btnAction: UnifyButton? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -164,18 +165,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                     }
                     is Success -> {
-                        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
                         if (it.data.profileFollowers.errorCode.isBlank()) {
+                            updateToFollowUi()
                             isFollowed = !isFollowed
-                            if (isFollowed) {
-                                btnAction?.text = "Following"
-                                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-                                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
-                            } else {
-                                btnAction?.text = "Follow"
-                                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-                                btnAction?.buttonType = UnifyButton.Type.MAIN
-                            }
+                        } else {
+                            updateToUnFollowUi()
                         }
                     }
                     is ErrorMessage -> {
@@ -193,19 +187,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                     }
                     is Success -> {
-                        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
-
                         if (it.data.profileFollowers.errorCode.isBlank()) {
+                            updateToUnFollowUi()
                             isFollowed = !isFollowed
-                            if (isFollowed) {
-                                btnAction?.text = "Following"
-                                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-                                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
-                            } else {
-                                btnAction?.text = "Follow"
-                                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-                                btnAction?.buttonType = UnifyButton.Type.MAIN
-                            }
+                        } else {
+                            updateToFollowUi()
                         }
                     }
                     is ErrorMessage -> {
@@ -243,9 +229,23 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private fun addDoFollowClickListener(userIdEnc: String) = View.OnClickListener {
         if (isFollowed) {
             mPresenter.doUnFollow(userIdEnc)
+            updateToUnFollowUi()
         } else {
             mPresenter.doFollow(userIdEnc)
+            updateToFollowUi()
         }
+    }
+
+    private fun updateToFollowUi() {
+        btnAction?.text = "Following"
+        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun updateToUnFollowUi() {
+        btnAction?.text = "Follow"
+        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction?.buttonType = UnifyButton.Type.MAIN
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
@@ -257,6 +257,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
+        btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
 
         textBio?.text = data.profileHeader.profile.biography
         textUserName?.text = data.profileHeader.profile.username
@@ -274,7 +275,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
-        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
 
         if (followProfile.profileHeader.items[0].userID == userSession?.userId) {
             btnAction?.text = "Ubah Profil"
@@ -290,13 +290,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         } else {
             isFollowed = followProfile.profileHeader.items[0].status
             if (isFollowed) {
-                btnAction?.text = "Following"
-                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+                updateToFollowUi()
             } else {
-                btnAction?.text = "Follow"
-                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-                btnAction?.buttonType = UnifyButton.Type.MAIN
+                updateToUnFollowUi()
             }
 
             btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].encryptedUserID))
