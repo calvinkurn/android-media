@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 class Warehouse {
     @SerializedName("WarehouseName")
     @Expose
-    var warehouseName: String? = null
+    var warehouseName: String = ""
 
     @SerializedName("CityName")
     @Expose
-    var cityName: String? = null
+    var cityName: String = ""
 }

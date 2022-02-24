@@ -1,14 +1,13 @@
 package com.tokopedia.gifting.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gifting.domain.model.GetAddOnByProduct
+import com.tokopedia.gifting.domain.model.GetAddOnByID
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
+import com.tokopedia.gifting.presentation.uimodel.AddOnMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,31 +17,25 @@ class GiftingViewModel @Inject constructor(
     private val getAddOnUseCase: GetAddOnUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val mGetWarehouseIdResult = MutableLiveData<String>()
-    val getWarehouseIdResult: LiveData<String> get() = mGetWarehouseIdResult
-
-    private val mGetAddOnByProduct = MutableLiveData<GetAddOnByProduct>()
-    val getAddOnByProduct: LiveData<GetAddOnByProduct> get() = mGetAddOnByProduct
+    private val mGetAddOnResult = MutableLiveData<GetAddOnByID>()
+    val getAddOnResult: LiveData<GetAddOnByID> get() = mGetAddOnResult
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
-    fun getWarehouseId(context: Context) {
-        val addressData = ChooseAddressUtils.getLocalizingAddressData(context)
-        if (addressData != null) {
-            mGetWarehouseIdResult.value = addressData.warehouse_id
-        }
-    }
+    val isTokoCabang: LiveData<Boolean> = AddOnMapper.isTokoCabang(mGetAddOnResult)
 
-    fun getAddOn(productId: Long, warehouseId: String) {
+    fun getAddOn(addOnId: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(productId.toString(), warehouseId)
-                getAddOnUseCase.executeOnBackground().getAddOnByProduct
+                getAddOnUseCase.setParams(addOnId)
+                getAddOnUseCase.executeOnBackground().getAddOnByID
             }
-            mGetAddOnByProduct.value = result
-            if (result.error.messages.isNotEmpty()) {
-                mErrorThrowable.value = MessageErrorException(result.error.messages)
+            mGetAddOnResult.value = result
+            result.error.let {
+                if (it.messages.isNotEmpty()) {
+                    mErrorThrowable.value = MessageErrorException(it.messages, it.errorCode)
+                }
             }
         }, onError = {
             mErrorThrowable.value = it

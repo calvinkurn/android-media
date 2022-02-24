@@ -15,64 +15,57 @@ class GetAddOnUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val ADDON_TYPE_ADDON = "ORDER_ADDON"
         private val query =
             """ 
-            query getAddOnByProduct(${'$'}input: GetAddOnByProductRequest) {
-              GetAddOnByProduct(getAddOnByProductRequest: ${'$'}input) {
-                Error {
+            query getAddOn(${'$'}input: GetAddOnByIDRequest) {
+              GetAddOnByID(req: ${'$'}input){
+                Error{
+                  errorCode
                   messages
                   reason
-                  errorCode
-                }
-                AddOnByProductResponse {
-                  ProductID
-                  WarehouseID
-                  AddOnLevel
-                  CouponText
-                  Addons {
-                    Basic {
-                      ID
-                      ShopID
-                      Name
-                      AddOnType
-                      Status
-                      IsEligible
-                      Rules {
-                        MaxOrder
-                        CustomNotes
-                      }
-                      OwnerWarehouseID
-                      Metadata {
-                        NotesTemplate
-                        Pictures {
-                          FilePath
-                          FileName
-                          URL
-                          URL100
-                          URL200
-                        }
-                      }
-                    }
-                    Inventory {
-                      WarehouseID
-                      Price
-                      Stock
-                      UnlimitedStock
-                    }
-                    Warehouse {
-                      WarehouseName
-                      CityName
-                    }
-                    Shop {
-                      Name
-                      ShopTier
-                      ShopGrade
-                    }
-                  }
                 }
                 StaticInfo {
                   InfoURL
+                }
+                AddOnByIDResponse{
+                  Basic{
+                    ID
+                    ShopID
+                    Name
+                    Status
+                    AddOnLevel
+                    OwnerWarehouseID
+                    AddOnType
+                    Rules{
+                      MaxOrder
+                      CustomNotes
+                    }
+                    Metadata{
+                      Pictures{
+                        FilePath
+                        FileName
+                        URL
+                        URL100
+                        URL200
+                      }
+                      NotesTemplate
+                    }
+                  }
+                  Inventory{
+                    WarehouseID
+                    Price
+                    Stock
+                    UnlimitedStock
+                  }
+                  Warehouse{
+                    WarehouseName
+                    CityName
+                  }
+                  Shop{
+                    Name
+                    ShopTier
+                    ShopGrade
+                  }
                 }
               }
             }
@@ -84,13 +77,10 @@ class GetAddOnUseCase @Inject constructor(
         setTypeClass(GetAddOnResponse::class.java)
     }
 
-    fun setParams(productId: String, warehouseId: String) {
+    fun setParams(addOnId: String) {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_INPUT, GetAddOnRequest(
-            addOnRequest = AddOnRequest(
-                productID = productId,
-                warehouseID = warehouseId,
-                addOnLevel = ADDON_TYPE_ADDON),
+            addOnRequest = AddOnRequest(addOnId),
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
         ))
         setRequestParams(requestParams.parameters)
