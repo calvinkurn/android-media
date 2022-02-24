@@ -25,43 +25,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:id="@+id/creditLayout"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/credit_topads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:gravity="center_vertical"
-            app:layout_constraintBottom_toBottomOf="@id/creditHistoryImage"
+            android:text="@string/topads_dash_desc_credit_label"
             app:layout_constraintStart_toEndOf="@id/creditHistoryImage"
-            app:layout_constraintTop_toTopOf="@id/creditHistoryImage">
+            app:layout_constraintTop_toTopOf="@id/creditHistoryImage"
+            app:layout_constraintBottom_toTopOf="@id/creditAmount"
+            app:typographyType="small" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/credit_topads"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="bottom"
-                android:text="@string/topads_dash_desc_credit_label"
-                app:typographyType="small" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/creditAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/credit_topads"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/creditHistoryImage"
+            app:layout_constraintTop_toBottomOf="@id/credit_topads"
+            app:layout_constraintBottom_toBottomOf="@id/creditHistoryImage"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            tools:text="Rp 10.000.0000" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/creditAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/credit_topads"
-                android:textColor="@color/black"
-                app:typographyType="heading_6"
-                app:typographyWeight="bold"
-                tools:text="Rp 10.000.0000" />
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/btnRefreshCredits"
-                android:layout_width="@dimen/unify_space_12"
-                android:layout_height="@dimen/unify_space_12"
-                android:layout_alignBottom="@id/creditAmount"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_toEndOf="@id/creditAmount"
-                android:src="@drawable/topads_dash_auto_debit" />
-        </RelativeLayout>
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/btnRefreshCredits"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_toEndOf="@id/creditAmount"
+            android:src="@drawable/topads_dash_auto_debit"
+            app:layout_constraintBottom_toBottomOf="@id/creditAmount"
+            app:layout_constraintStart_toEndOf="@id/creditAmount"
+            app:layout_constraintTop_toTopOf="@id/creditAmount" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/addCredit"

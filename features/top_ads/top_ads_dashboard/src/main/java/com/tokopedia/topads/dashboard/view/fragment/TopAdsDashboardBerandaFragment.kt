@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.*
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
@@ -44,8 +45,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private val graphLayoutFragment by lazy { TopAdsMultiLineGraphFragment() }
 
-    private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
-    private lateinit var selectedAdType: Chip
+    private val summaryAdTypeList by lazy { context?.resources?.getSummaryAdTypes() ?: listOf() }
+    private var selectedAdType = Chip()
     private val summaryAdTypesBottomSheet by lazy {
         SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
     }
@@ -89,52 +90,61 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun kataKunciItemSelected(item: KataKunciHomePageBase) {
         when (item) {
             is KataKunciSimpleButton -> {
-                (requireActivity() as TopAdsDashboardActivity).switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(3)
             }
             is RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup -> {
-                kataKunciChipsDetailRvAdapter.addItems(item, resources)
+                context?.resources?.let {
+                    kataKunciChipsDetailRvAdapter.addItems(item, it)
+                }
             }
         }
     }
 
     private fun initializeView() {
-        with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
-            this.txtTitle.text = resources.getString(R.string.topads_dashboard_produk_berpotensi)
-            this.layoutRoundedView.txtTitle.text =
-                resources.getString(R.string.topads_dashboard_potensi_tampil)
-            this.layoutRoundedView.imageView.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
-                )
-            )
-            this.button.text = resources.getString(R.string.topads_dashboard_atur_iklannya)
-            rvVertical.hide()
-        }
+        context?.resources?.let { res ->
+            with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
+                this.txtTitle.text = res.getString(R.string.topads_dashboard_produk_berpotensi)
+                this.layoutRoundedView.txtTitle.text =
+                    res.getString(R.string.topads_dashboard_potensi_tampil)
+                context?.let {
+                    this.layoutRoundedView.imageView.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            it, com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
+                        )
+                    )
+                }
+                this.button.text = res.getString(R.string.topads_dashboard_atur_iklannya)
+                rvVertical.hide()
+            }
 
-        with(binding.layoutRecommendasi.layoutAnggaranHarian) {
-            this.layoutRoundedView.txtTitle.text =
-                resources.getString(R.string.topads_dash_potential_click)
-            this.txtTitle.text = resources.getString(R.string.topads_dash_anggaran_harian)
-            this.layoutRoundedView.imageView.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
-                )
-            )
-            this.button.text = resources.getString(R.string.topads_dashboard_atur_anggaran_harian)
-            recyclerView.hide()
-        }
+            with(binding.layoutRecommendasi.layoutAnggaranHarian) {
+                this.layoutRoundedView.txtTitle.text =
+                    res.getString(R.string.topads_dash_potential_click)
+                this.txtTitle.text = res.getString(R.string.topads_dash_anggaran_harian)
+                context?.let {
+                    this.layoutRoundedView.imageView.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            it, com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
+                        )
+                    )
+                }
+                this.button.text = res.getString(R.string.topads_dashboard_atur_anggaran_harian)
+                recyclerView.hide()
+            }
 
-        with(binding.layoutRecommendasi.layoutkataKunci) {
-            this.layoutRoundedView.txtTitle.text =
-                resources.getString(R.string.topads_dashboard_kata_kunci_yang)
-            this.txtTitle.text = resources.getString(R.string.label_top_ads_keyword)
-            this.layoutRoundedView.imageView.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
-                )
-            )
-            this.button.text = resources.getString(R.string.topads_dashboard_atur_kata_kunci)
+            with(binding.layoutRecommendasi.layoutkataKunci) {
+                this.layoutRoundedView.txtTitle.text =
+                    res.getString(R.string.topads_dashboard_kata_kunci_yang)
+                this.txtTitle.text = res.getString(R.string.label_top_ads_keyword)
+                context?.let {
+                    this.layoutRoundedView.imageView.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            it, com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
+                        )
+                    )
+                }
+                this.button.text = res.getString(R.string.topads_dashboard_atur_kata_kunci)
+            }
         }
     }
 
@@ -157,7 +167,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             topAdsDashboardViewModel.fetchShopDeposit()
         }
         binding.layoutLatestReading.btnReadMore.setOnClickListener {
-            requireContext().openWebView(READ_MORE_URL)
+            context?.openWebView(READ_MORE_URL)
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
             loadData()
@@ -167,13 +177,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
         binding.layoutRecommendasi.apply {
             layoutkataKunci.button.setOnClickListener {
-                (requireActivity() as TopAdsDashboardActivity).switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(3)
             }
             layoutProdukBerpostensi.button.setOnClickListener {
-                (requireActivity() as TopAdsDashboardActivity).switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(3)
             }
             layoutProdukBerpostensi.button.setOnClickListener {
-                (requireActivity() as TopAdsDashboardActivity).switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(3)
             }
         }
     }
@@ -217,30 +227,33 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun showFirstTimeDialog() {
-        requireActivity().showDialogWithCoachMark(
-            binding, (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
-        )
+        (activity as? TopAdsDashboardActivity)?.let {
+            requireActivity().showDialogWithCoachMark(
+                binding, it.ivEducationTopAdsActionBar
+            )
+        }
     }
 
     private fun hideShimmer() {
         if (!binding.shimmerView.root.isVisible) return
         binding.swipeRefreshLayout.isRefreshing = false
         binding.shimmerView.root.hide()
-        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
+        (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(true)
         binding.swipeRefreshLayout.show()
         showFirstTimeDialog()
     }
 
     private fun showShimmer() {
         binding.shimmerView.root.show()
-        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(false)
+        (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(false)
         binding.swipeRefreshLayout.hide()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        selectedAdType = summaryAdTypeList[0]
+        if (summaryAdTypeList.isNotEmpty())
+            selectedAdType = summaryAdTypeList[0]
 
         setUpRecyclerView()
         observeLiveData()
@@ -264,11 +277,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     graphLayoutFragment.setValue(it.data.cells)
-                    summaryRvAdapter.addItems(it.data.summary.mapToSummary(requireContext()))
-                    binding.layoutRingkasan.txtLastUpdated.text = String.format(
-                        resources.getString(R.string.topads_dashboard_last_update_text),
-                        it.data.summary.lastUpdate
-                    )
+                    context?.let { ctx ->
+                        summaryRvAdapter.addItems(it.data.summary.mapToSummary(ctx))
+                        binding.layoutRingkasan.txtLastUpdated.text = String.format(
+                            ctx.resources.getString(R.string.topads_dashboard_last_update_text),
+                            it.data.summary.lastUpdate
+                        )
+                    }
                 }
                 is Fail -> {}
             }
@@ -289,68 +304,74 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun setRecommendationProdukBerpostensi(item: RecommendationStatistics.Statistics.Data.ProductRecommendationStats) {
         with(binding.layoutRecommendasi.layoutProdukBerpostensi) {
-            layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
-                String.format(
-                    resources.getString(R.string.topads_dashboard_kali_hari_value),
-                    item.totalSearchCount
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            txtDescription.text = HtmlCompat.fromHtml(
-                String.format(
-                    resources.getString(R.string.topads_dashboard_produk_berpostensi_desc),
-                    item.count
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+            context?.resources?.let {
+                layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
+                    String.format(
+                        it.getString(R.string.topads_dashboard_kali_hari_value),
+                        item.totalSearchCount
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                txtDescription.text = HtmlCompat.fromHtml(
+                    String.format(
+                        it.getString(R.string.topads_dashboard_produk_berpostensi_desc),
+                        item.count
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            }
             produkBerpotensiAdapter.addItems(TopAdsDashboardBerandaUtils.mapImageModel(item.productList))
         }
     }
 
     private fun setRecommendationAnggaranHarian(item: RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats) {
         with(binding.layoutRecommendasi.layoutAnggaranHarian) {
-            layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
-                String.format(
-                    resources.getString(R.string.topads_dashboard_kali_hari_value), item.totalClicks
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            txtDescription.text = HtmlCompat.fromHtml(
-                String.format(
-                    resources.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            val list = item.groupList
-            if (list.isNotEmpty()) {
-                val items = mutableListOf<String>()
-                items.add(list[0].groupName)
+            context?.resources?.let {
+                layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
+                    String.format(
+                        it.getString(R.string.topads_dashboard_kali_hari_value), item.totalClicks
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                txtDescription.text = HtmlCompat.fromHtml(
+                    String.format(
+                        it.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                val list = item.groupList
+                if (list.isNotEmpty()) {
+                    val items = mutableListOf<String>()
+                    items.add(list[0].groupName)
 
-                val restCount = list.size - 1
-                if (restCount > 0) {
-                    items.add(
-                        String.format(
-                            resources.getString(R.string.topads_dashboard_grup_iklan), restCount
+                    val restCount = list.size - 1
+                    if (restCount > 0) {
+                        items.add(
+                            String.format(
+                                it.getString(R.string.topads_dashboard_grup_iklan), restCount
+                            )
                         )
-                    )
+                    }
+                    anggarnHarianAdapter.addItems(items)
                 }
-                anggarnHarianAdapter.addItems(items)
             }
         }
     }
 
     private fun setRecommendationKataKunci(item: RecommendationStatistics.Statistics.Data.KeywordRecommendationStats) {
         with(binding.layoutRecommendasi.layoutkataKunci) {
-            layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
-                String.format(
-                    resources.getString(R.string.topads_dashboard_n_grup_iklanmu), item.groupCount
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            txtDescription.text = HtmlCompat.fromHtml(
-                String.format(
-                    resources.getString(R.string.topads_dashboard_kata_kunci_desc), item.groupCount
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            kataKunciChipsRvAdapter.addItems(
-                item.topGroups,
-                binding.root.resources.getString(R.string.topads_dashboard_lihat_semua)
-            )
+            context?.resources?.let {
+                layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
+                    String.format(
+                        it.getString(R.string.topads_dashboard_n_grup_iklanmu), item.groupCount
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                txtDescription.text = HtmlCompat.fromHtml(
+                    String.format(
+                        it.getString(R.string.topads_dashboard_kata_kunci_desc), item.groupCount
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                kataKunciChipsRvAdapter.addItems(
+                    item.topGroups,
+                    it.getString(R.string.topads_dashboard_lihat_semua)
+                )
+            }
         }
     }
 
@@ -376,8 +397,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     fun loadSummaryStats() {
         topAdsDashboardViewModel.fetchSummaryStatistics(
-            (requireActivity() as? TopAdsDashboardActivity)?.startDate.asString(),
-            (requireActivity() as? TopAdsDashboardActivity)?.endDate.asString(),
+            (activity as? TopAdsDashboardActivity)?.startDate.asString(),
+            (activity as? TopAdsDashboardActivity)?.endDate.asString(),
             selectedAdType.adTypeId
         )
     }
@@ -403,7 +424,12 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun goToCreditHistory(isFromSelection: Boolean = false) {
         context?.let {
             startActivityForResult(
-                TopAdsCreditHistoryActivity.createInstance(it, isFromSelection,(requireActivity() as TopAdsDashboardActivity).datePickerIndex),
+                TopAdsCreditHistoryActivity.createInstance(
+                    it,
+                    isFromSelection,
+                    (activity as? TopAdsDashboardActivity)?.datePickerIndex
+                        ?: DATE_PICKER_DEFAULT_INDEX
+                ),
                 REQUEST_CODE_SET_AUTO_TOPUP
             )
         }

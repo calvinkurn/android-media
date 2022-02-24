@@ -9,7 +9,7 @@ data class TopadsWidgetSummaryStatisticsModel(
 ) {
     data class TopadsWidgetSummaryStatistics(
         @SerializedName("data")
-        val `data`: WidgetSummaryStatistics,
+        val widgetSummaryStatistics: WidgetSummaryStatistics,
         @SerializedName("header")
         val header: Header
     ) {

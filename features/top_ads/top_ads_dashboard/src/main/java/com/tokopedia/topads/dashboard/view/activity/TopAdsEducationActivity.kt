@@ -5,31 +5,41 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topads.dashboard.R
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.topads.dashboard.view.fragment.education.TopAdsEducationFragment
 
 
-class TopAdsEducationActivity : BaseActivity() {
+class TopAdsEducationActivity : BaseSimpleActivity() {
 
     private lateinit var headerToolbar: HeaderUnify
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_topads_dashboard_education)
 
         headerToolbar = findViewById(R.id.headerEducationActivity)
-
-        addFragment(TopAdsEducationFragment.createInstance(),false)
 
         headerToolbar.setNavigationOnClickListener {
             onBackPressed()
         }
     }
 
-    fun addFragment(fragment: Fragment, addToBackStack: Boolean = true) {
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_topads_dashboard_education
+    }
+
+    override fun getNewFragment(): Fragment {
+        return TopAdsEducationFragment.createInstance()
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.fragment_container
+    }
+
+    fun addFragment(fragment: Fragment) {
         val fm = supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, fragment, fragment.javaClass.name)
-        if (addToBackStack) fm.addToBackStack(null)
+            .addToBackStack(null)
         fm.commit()
     }
 }

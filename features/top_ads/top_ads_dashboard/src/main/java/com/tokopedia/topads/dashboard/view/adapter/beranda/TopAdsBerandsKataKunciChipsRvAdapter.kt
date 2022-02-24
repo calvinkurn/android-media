@@ -41,6 +41,7 @@ class TopAdsBerandsKataKunciChipsRvAdapter(private val itemClick: (KataKunciHome
     fun getSelectedItem() = list[selectedPosition]
 
     fun addItems(items: List<KataKunciHomePageBase>, lastItem: String) {
+        if (items.isEmpty()) return
         list.clear()
         (items[0] as RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup).isSelected =
             true

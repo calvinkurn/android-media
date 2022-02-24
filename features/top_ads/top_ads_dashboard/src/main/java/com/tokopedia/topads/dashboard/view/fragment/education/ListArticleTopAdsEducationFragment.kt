@@ -59,7 +59,7 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initView(data: ListArticle.ListArticleItem) {
-        if (data.description.isEmpty()) txtDescription.hide()
+        if (data.description.isNullOrEmpty()) txtDescription.hide()
         else txtDescription.text = data.description
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

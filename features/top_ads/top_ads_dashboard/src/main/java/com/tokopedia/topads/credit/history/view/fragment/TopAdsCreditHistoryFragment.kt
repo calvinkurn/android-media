@@ -21,6 +21,10 @@ import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryVie
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE_STATUS
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -49,7 +53,7 @@ class TopAdsCreditHistoryFragment :
     private var datePickerSheet: DatePickerSheet? = null
     internal var startDate: Date? = null
     internal var endDate: Date? = null
-    private var datePickerIndex = 2
+    private var datePickerIndex = DATE_PICKER_DEFAULT_INDEX
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 1
@@ -72,14 +76,14 @@ class TopAdsCreditHistoryFragment :
     }
 
     private fun initialDateSetup() {
-        datePickerIndex = arguments?.getInt(PARAM_DATE_PICKER_INDEX) ?: 2
+        datePickerIndex = arguments?.getInt(PARAM_DATE_PICKER_INDEX) ?: DATE_PICKER_DEFAULT_INDEX
         val dateList = Utils.getPeriodRangeList(requireContext())
         if (datePickerIndex < dateList.size) {
             startDate = Date(dateList[datePickerIndex].startDate)
             endDate = Date(dateList[datePickerIndex].endDate)
         }
         setDateRangeText(datePickerIndex)
-        loadData(0)
+        loadData(CONST_0)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -195,10 +199,10 @@ class TopAdsCreditHistoryFragment :
 
     private fun setDateRangeText(position: Int) {
         when (position) {
-            1 -> current_date.text =
+            CONST_1 -> current_date.text =
                 context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> current_date.text = context?.getString(R.string.topads_dash_hari_ini)
-            2 -> current_date.text =
+            CONST_0 -> current_date.text = context?.getString(R.string.topads_dash_hari_ini)
+            CONST_2 -> current_date.text =
                 context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text =

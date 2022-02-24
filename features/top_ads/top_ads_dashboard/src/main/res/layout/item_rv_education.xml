@@ -17,7 +17,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTitleEducation"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/top_ads_common_dp_10"
         android:textSize="@dimen/unify_font_14"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="1dp"
         android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"

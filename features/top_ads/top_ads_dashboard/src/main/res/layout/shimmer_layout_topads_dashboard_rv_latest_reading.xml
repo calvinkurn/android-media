@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="@dimen/topads_dashboard_dp_56"
     android:layout_marginTop="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.LoaderUnify

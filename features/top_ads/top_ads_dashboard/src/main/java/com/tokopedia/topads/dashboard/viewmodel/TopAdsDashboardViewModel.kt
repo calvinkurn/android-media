@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
@@ -66,10 +63,10 @@ class TopAdsDashboardViewModel @Inject constructor(
             val data =
                 summaryStatisticsUseCase.getSummaryStatistics(startDate, endDate, adTypes)
             _summaryStatisticsLiveData.value =
-                if (data?.topadsWidgetSummaryStatistics?.data == null)
+                if (data?.topadsWidgetSummaryStatistics?.widgetSummaryStatistics == null)
                     Fail(Throwable())
                 else
-                    Success(data.topadsWidgetSummaryStatistics.data)
+                    Success(data.topadsWidgetSummaryStatistics.widgetSummaryStatistics)
         }, onError = {
             _summaryStatisticsLiveData.postValue(Fail(it))
         })

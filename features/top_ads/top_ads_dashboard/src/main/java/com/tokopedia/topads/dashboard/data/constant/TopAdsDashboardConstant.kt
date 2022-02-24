@@ -121,4 +121,5 @@ object TopAdsDashboardConstant {
     const val CONST_PENDAPATAN = 3
     const val CONST_PENGELURAN = 4
     const val CONST_EFECTIVITAS_IKLAN = 5
+    const val DATE_PICKER_DEFAULT_INDEX = 2
 }

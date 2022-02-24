@@ -25,10 +25,10 @@ class ListArticleRvAdapter :
 
         holder.txtTitle.text = item.title
         holder.txtDescription.text = item.description
-        holder.thumbnail.urlSrc = item.thumbnail
+        holder.thumbnail.urlSrc = item.thumbnail ?: ""
 
         holder.itemView.setOnClickListener {
-            itemClick?.invoke(item.slug)
+            item.slug?.let { slug -> itemClick?.invoke(slug) }
         }
     }
 

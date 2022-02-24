@@ -8,19 +8,19 @@ class ListArticle : ArrayList<ListArticle.ListArticleItem>() {
         @SerializedName("articles")
         val articles: List<Article>,
         @SerializedName("categoryName")
-        val categoryName: String,
+        val categoryName: String?,
         @SerializedName("description")
-        val description: String
+        val description: String?
     ) {
         data class Article(
             @SerializedName("description")
-            val description: String,
+            val description: String?,
             @SerializedName("slug")
-            val slug: String,
+            val slug: String?,
             @SerializedName("thumbnail")
-            val thumbnail: String,
+            val thumbnail: String?,
             @SerializedName("title")
-            val title: String
+            val title: String?
         )
     }
 }

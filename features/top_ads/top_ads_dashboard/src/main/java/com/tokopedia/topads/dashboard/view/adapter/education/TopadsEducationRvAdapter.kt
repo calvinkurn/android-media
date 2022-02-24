@@ -8,6 +8,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
 import com.tokopedia.topads.dashboard.data.model.ListArticle
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -41,25 +47,25 @@ class TopadsEducationRvAdapter(private val list: ListArticle) :
 
     private fun Context.getIcon(id: Int): Drawable? {
         return when (id) {
-            0 -> ContextCompat.getDrawable(
+            CONST_0 -> ContextCompat.getDrawable(
                 this,
                 com.tokopedia.unifycomponents.R.drawable.iconunify_promo
             )
-            2 -> ContextCompat.getDrawable(
+            CONST_2 -> ContextCompat.getDrawable(
                 this, com.tokopedia.unifycomponents.R.drawable.iconunify_clipboard
             )
-            1 -> ContextCompat.getDrawable(
+            CONST_1 -> ContextCompat.getDrawable(
                 this,
                 com.tokopedia.unifycomponents.R.drawable.iconunify_wallet
             )
-            3 -> ContextCompat.getDrawable(
+            CONST_3 -> ContextCompat.getDrawable(
                 this,
                 com.tokopedia.unifycomponents.R.drawable.iconunify_graph
             )
-            5 -> ContextCompat.getDrawable(
+            CONST_5 -> ContextCompat.getDrawable(
                 this, com.tokopedia.unifycomponents.R.drawable.iconunify_user_success
             )
-            4 -> ContextCompat.getDrawable(
+            CONST_4 -> ContextCompat.getDrawable(
                 this, com.tokopedia.unifycomponents.R.drawable.iconunify_lightbulb
             )
             else -> ContextCompat.getDrawable(
