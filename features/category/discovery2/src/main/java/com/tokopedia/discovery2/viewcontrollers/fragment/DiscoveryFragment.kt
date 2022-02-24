@@ -424,9 +424,59 @@ class DiscoveryFragment :
                try {
                    super.onLayoutChildren(recycler, state)
                } catch (e: Exception) {
-                   e.printStackTrace()
+                   Utils.logException(e)
                }
            }
+
+           override fun onItemsUpdated(
+                recyclerView: RecyclerView,
+                positionStart: Int,
+                itemCount: Int,
+                payload: Any?
+            ) {
+                try {
+                    super.onItemsUpdated(recyclerView, positionStart, itemCount, payload)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
+
+            override fun onItemsAdded(
+                recyclerView: RecyclerView,
+                positionStart: Int,
+                itemCount: Int
+            ) {
+                try {
+                    super.onItemsAdded(recyclerView, positionStart, itemCount)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
+
+            override fun onItemsRemoved(
+                recyclerView: RecyclerView,
+                positionStart: Int,
+                itemCount: Int
+            ) {
+                try {
+                    super.onItemsRemoved(recyclerView, positionStart, itemCount)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
+
+            override fun onItemsMoved(
+                recyclerView: RecyclerView,
+                from: Int,
+                to: Int,
+                itemCount: Int
+            ) {
+                try {
+                    super.onItemsMoved(recyclerView, from, to, itemCount)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
        }
     }
 
