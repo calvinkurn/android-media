@@ -204,11 +204,12 @@ class ProductVideoAutoplay(
             } catch (t: Throwable) {
                 Timber.d(t)
             }
+            recyclerView = null
         }
-        recyclerView = null
     }
 
     fun stopVideoAutoplay() {
+        if(!isAutoplayProductVideoEnabled) return
         productVideoPlayer?.stopVideo()
         productVideoPlayer = null
         productVideoAutoPlayJob?.cancel()
