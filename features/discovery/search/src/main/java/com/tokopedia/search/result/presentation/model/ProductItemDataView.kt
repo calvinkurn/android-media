@@ -7,13 +7,12 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.video.ProductCardVideoItem
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.utils.text.currency.StringUtils
 
-class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductListTypeFactory>, ProductCardVideoItem {
+class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductListTypeFactory> {
     var productID: String = ""
     var warehouseID: String = ""
     var productName: String = ""
@@ -124,9 +123,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
             isShopPowerMerchant -> "gold_merchant"
             else -> "reguler"
         }
-
-    override val hasProductVideo : Boolean
-        get() = customVideoURL.isNotBlank()
 
     override fun describeContents(): Int {
         return 0
