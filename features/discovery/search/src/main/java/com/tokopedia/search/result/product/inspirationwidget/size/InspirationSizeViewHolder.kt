@@ -49,9 +49,31 @@ internal class InspirationSizeViewHolder(
 
     private fun createAdapter(element: InspirationSizeDataView) {
         val adapter = InspirationSizeOptionAdapter(inspirationSizeListener)
-        adapter.setItemList(element.optionSizeData)
+        val sortedSizeData = getSortedSizeData(element.optionSizeData)
+        adapter.setItemList(sortedSizeData)
         adapter.setInspirationSizeDataView(element)
 
         inspirationSizeOptionAdapter = adapter
+    }
+
+    private fun getSortedSizeData(
+        optionSizeData: List<InspirationSizeOptionDataView>
+    ) : List<InspirationSizeOptionDataView> {
+        val sortedSelectedSizeData = optionSizeData
+            .filter { inspirationSizeListener.isFilterSelected(it.option) }
+            .sortedByOptionValue()
+        val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData
+        val sortedNonSelectedSizeData = nonSelectedSizeData.sortedByOptionValue()
+        return sortedSelectedSizeData + sortedNonSelectedSizeData
+    }
+
+    private fun List<InspirationSizeOptionDataView>.sortedByOptionValue() : List<InspirationSizeOptionDataView> {
+        return sortedBy {
+            try {
+                it.option.value.toInt()
+            } catch (e: Throwable) {
+                0
+            }
+        }
     }
 }
