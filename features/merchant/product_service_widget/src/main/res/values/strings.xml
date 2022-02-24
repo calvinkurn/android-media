@@ -1,14 +1,12 @@
 <resources>
 
     <!-- gifting -->
-    <string name="gifting_title_bottomsheet">Cara atur bingkisan</string>
-    <string name="gifting_tips_text_1">Pilih barang <![CDATA[<b>kategori Bingkisan</b>]]>. Beli langsung atau masukkan ke keranjang.</string>
-    <string name="gifting_tips_text_2">Di halaman <![CDATA[<b>Keranjang</b>]]>, pilih barang bertanda khusus ( ) dan lanjut ke Pengiriman.</string>
-    <string name="gifting_tips_text_3">Di halaman <![CDATA[<b>Pengiriman</b> atau <b>Beli Langsung</b>]]>, tambah pelengkap bingkisan yang tersedia.</string>
-    <string name="gifting_tips_text_4">Tulis pesan spesial di kartu ucapan.</string>
-    <string name="gifting_tips_text_5">Lanjut bayar untuk kirim ke orang spesial.</string>
-    <string name="gifting_title_tips_text">Langkah mudah lengkapi bingkisanmu:</string>
-    <string name="gifting_tips_detail"> <![CDATA[<i>*Invoice tidak dikirim ke penerima pesanan</i>]]></string>
+    <string name="gifting_title_bottomsheet">Cara kirim sebagai hadiah</string>
+    <string name="gifting_tips_text_1"><![CDATA[Di halaman Pengiriman atau Beli Langsung, klik <b>Kirim sebagai Hadiah</b> untuk pilih pelengkap (opsional).]]></string>
+    <string name="gifting_tips_text_2"><![CDATA[Kalau kamu memilih kartu ucapan, jangan lupa tuliskan pesan spesialmu.]]></string>
+    <string name="gifting_title_tips_text"><![CDATA[Ikuti langkah-langkah ini:]]></string>
+    <string name="gifting_tips_footnote1"> <![CDATA[*Invoice tidak dikirim ke penerima pesanan.]]></string>
+    <string name="gifting_tips_footnote2"> <![CDATA[*Pelengkap tidak tersedia untuk Paket Bundling.]]></string>
     <string name="gifting_shop_caption">Disediakan oleh</string>
     <string name="gifting_shop_location">Tersedia di wilayah tertentu. <![CDATA[<font color=\'#42b549\'><b>Info Selengkapnya</b></font>]]>.</string>
 

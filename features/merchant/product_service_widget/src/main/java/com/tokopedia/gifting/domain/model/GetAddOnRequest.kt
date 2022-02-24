@@ -1,0 +1,52 @@
+package com.tokopedia.gifting.domain.model
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class GetAddOnRequest(
+    @SerializedName("RequestData")
+    @Expose
+    val requestData: RequestData = RequestData(),
+    @SerializedName("AddOnRequest")
+    @Expose
+    val addOnRequest: AddOnRequest = AddOnRequest(),
+    @SerializedName("Source")
+    @Expose
+    val source: Source = Source()
+)
+
+data class RequestData(
+    @SerializedName("Inventory")
+    @Expose
+    val inventory: Boolean = true,
+    @SerializedName("ShopInfo")
+    @Expose
+    val shopInfo: Boolean = true,
+    @SerializedName("WarehouseInfo")
+    @Expose
+    val warehouseInfo: Boolean = true,
+    @SerializedName("StaticInfo")
+    @Expose
+    val staticInfo: Boolean = true
+)
+
+data class AddOnRequest(
+    @SerializedName("ProductID")
+    @Expose
+    val productID: String = "",
+    @SerializedName("WarehouseID")
+    @Expose
+    val warehouseID: String = "",
+    @SerializedName("AddOnLevel")
+    @Expose
+    val addOnLevel: String = ""
+)
+
+data class Source(
+    @SerializedName("Usecase")
+    @Expose
+    val usecase: String = "",
+    @SerializedName("Squad")
+    @Expose
+    val squad: String = ""
+)

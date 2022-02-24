@@ -23,7 +23,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
-import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
+import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
@@ -160,8 +160,8 @@ class ProductBundleViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(
-                    squad = GetBundleInfoConstant.SQUAD_VALUE,
-                    usecase = GetBundleInfoConstant.USECASE_VALUE,
+                    squad = ProductServiceWidgetConstant.SQUAD_VALUE,
+                    usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
                     requestData = RequestData(
                         variantDetail = true,
                         CheckCampaign = true,
