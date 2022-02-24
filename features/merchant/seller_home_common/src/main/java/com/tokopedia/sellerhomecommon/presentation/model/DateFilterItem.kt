@@ -1,19 +1,20 @@
-package com.tokopedia.statistic.view.model
+package com.tokopedia.sellerhomecommon.presentation.model
 
 import android.content.Context
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.DateFilterAdapterFactory
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.statistic.R
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
-import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactory
 import kotlinx.parcelize.Parcelize
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
- * Created By @ilhamsuaib on 15/06/20
+ * Created by @ilhamsuaib on 09/02/22.
  */
 
 sealed class DateFilterItem(
@@ -41,47 +42,51 @@ sealed class DateFilterItem(
         when (type) {
             TYPE_TODAY -> {
                 val startDateMillis = startDate?.time ?: return ""
-                val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
+                val dateStr = DateTimeUtil.format(startDateMillis, DateTimeUtil.FORMAT_DD_MMM)
                 val hourStr = DateTimeUtil.format(
-                    System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00"
+                    System.currentTimeMillis()
+                        .minus(TimeUnit.HOURS.toMillis(ShcConst.INT_1.toLong())),
+                    DateTimeUtil.FORMAT_HOUR_24
                 )
-                return context.getString(R.string.stc_today_fmt, dateStr, hourStr)
+                return context.getString(R.string.shc_today_fmt, dateStr, hourStr)
             }
             TYPE_LAST_7_DAYS -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return context.getString(R.string.stc_last_7_days_fmt, dateRangeStr)
+                val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
+                return context.getString(R.string.shc_last_7_days_fmt, dateRangeStr)
             }
             TYPE_LAST_30_DAYS -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return context.getString(R.string.stc_last_30_days_fmt, dateRangeStr)
+                val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
+                return context.getString(R.string.shc_last_30_days_fmt, dateRangeStr)
             }
             TYPE_PER_DAY -> {
                 val startDateMillis = startDate?.time ?: return ""
-                val perDayFmt = DateTimeUtil.format(startDateMillis, "dd MMM yyyy")
-                return context.getString(R.string.stc_per_day_fmt, perDayFmt)
+                val perDayFmt = DateTimeUtil.format(
+                    startDateMillis, DateTimeUtil.FORMAT_DD_MMM_YYYY
+                )
+                return context.getString(R.string.shc_per_day_fmt, perDayFmt)
             }
             TYPE_PER_WEEK -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return context.getString(R.string.stc_per_week_fmt, dateRangeStr)
+                val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
+                return context.getString(R.string.shc_per_week_fmt, dateRangeStr)
             }
             TYPE_PER_MONTH -> {
                 startDate?.let {
-                    val monthFmt = DateTimeUtil.format(it.time, "MMMM yyyy")
-                    return context.getString(R.string.stc_per_month_fmt, monthFmt)
+                    val monthFmt = DateTimeUtil.format(it.time, DateTimeUtil.FORMAT_MMMM_YYYY)
+                    return context.getString(R.string.shc_per_month_fmt, monthFmt)
                 }
-                return context.getString(R.string.stc_per_month)
+                return context.getString(R.string.shc_per_month)
             }
             TYPE_CUSTOM -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return context.getString(R.string.stc_custom, dateRangeStr)
+                val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
+                return context.getString(R.string.shc_custom, dateRangeStr)
             }
         }
         return ""

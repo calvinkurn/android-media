@@ -1,4 +1,4 @@
-package com.tokopedia.statistic.view.adapter.viewholder
+package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,17 +9,17 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.sellerhomecommon.databinding.ItemShcMonthPickerBinding
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.statistic.R
-import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.common.utils.StatisticDateUtil
-import com.tokopedia.statistic.databinding.ItemStcMonthPickerBinding
-import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
-import com.tokopedia.statistic.view.model.DateFilterItem
 import java.util.*
 
 /**
- * Created By @ilhamsuaib on 27/07/20
+ * Created by @ilhamsuaib on 09/02/22.
  */
 
 class MonthPickerViewHolder(
@@ -29,11 +29,11 @@ class MonthPickerViewHolder(
 
     companion object {
         @LayoutRes
-        val RES_LAYOUT = R.layout.item_stc_month_picker
+        val RES_LAYOUT = R.layout.item_shc_month_picker
     }
 
     private val binding by lazy {
-        ItemStcMonthPickerBinding.bind(itemView)
+        ItemShcMonthPickerBinding.bind(itemView)
     }
 
     override fun bind(element: DateFilterItem.MonthPickerItem) {
@@ -120,7 +120,7 @@ class MonthPickerViewHolder(
 
             datePickerButton.setOnClickListener {
                 selectedMonth?.let { selectedMonth ->
-                    val (startDate, endDate) = StatisticDateUtil.getStartAndEndDateInAMonth(
+                    val (startDate, endDate) = DateFilterUtil.getStartAndEndDateInAMonth(
                         selectedMonth
                     )
                     element.startDate = startDate
@@ -138,7 +138,7 @@ class MonthPickerViewHolder(
             this@MonthPickerViewHolder.listener.dismissDateFilterBottomSheet()
             this@MonthPickerViewHolder.listener.showDateTimePickerBottomSheet(
                 this@with,
-                Const.BottomSheet.TAG_MONTH_PICKER
+                ShcConst.BottomSheet.TAG_MONTH_PICKER
             )
         }
     }
@@ -148,9 +148,8 @@ class MonthPickerViewHolder(
     }
 
     private fun showSelectedMonth(element: DateFilterItem.MonthPickerItem) {
-        binding.edtStcPerMonth.label = itemView.context.getString(R.string.stc_month)
-        val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, "MMMM yyyy")
+        binding.edtStcPerMonth.label = itemView.context.getString(R.string.shc_month)
+        val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, DateTimeUtil.FORMAT_MMMM_YYYY)
         binding.edtStcPerMonth.valueStr = selectedMonthFmt
     }
-
 }

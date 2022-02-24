@@ -1,17 +1,17 @@
-package com.tokopedia.statistic.view.adapter.viewholder
+package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.statistic.R
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
-import com.tokopedia.statistic.databinding.ItemStcDateRangeClickBinding
-import com.tokopedia.statistic.view.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
+import com.tokopedia.sellerhomecommon.databinding.ItemShcDateRangeClickBinding
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 
 /**
- * Created By @ilhamsuaib on 15/06/20
+ * Created by @ilhamsuaib on 09/02/22.
  */
 
 class DateFilterClickViewHolder(
@@ -21,11 +21,11 @@ class DateFilterClickViewHolder(
 
     companion object {
         @LayoutRes
-        val RES_LAYOUT = R.layout.item_stc_date_range_click
+        val RES_LAYOUT = R.layout.item_shc_date_range_click
     }
 
     private val binding by lazy {
-        ItemStcDateRangeClickBinding.bind(itemView)
+        ItemShcDateRangeClickBinding.bind(itemView)
     }
 
     override fun bind(element: DateFilterItem.Click) {
@@ -34,7 +34,7 @@ class DateFilterClickViewHolder(
 
             tvStcDateRangeLabel.text = element.label
             tvStcDefaultDateRange.text =
-                DateFilterFormatUtil.getDateRangeStr(element.startDate, element.endDate)
+                DateFilterUtil.getDateRangeStr(element.startDate, element.endDate)
             radStcDefaultDateRange.isChecked = element.isSelected
             radStcDefaultDateRange.setOnClickListener {
                 setOnSelected(element)

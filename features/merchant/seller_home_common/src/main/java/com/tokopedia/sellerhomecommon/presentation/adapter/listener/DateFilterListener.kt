@@ -1,10 +1,10 @@
-package com.tokopedia.statistic.view.adapter.listener
+package com.tokopedia.sellerhomecommon.presentation.adapter.listener
 
-import com.tokopedia.statistic.view.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
- * Created By @ilhamsuaib on 11/11/20
+ * Created by @ilhamsuaib on 09/02/22.
  */
 
 interface DateFilterListener {

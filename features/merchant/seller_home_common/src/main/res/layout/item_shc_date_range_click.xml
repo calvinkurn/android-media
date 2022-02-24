@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_stc_date_filter_height"
+    android:layout_height="@dimen/shc_dimen_date_filter_height"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl0">
 
@@ -45,7 +45,7 @@
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcDefaultDateRange"
         android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/dimen_stc_22dp"
+        android:layout_height="22dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toEndOf="parent"

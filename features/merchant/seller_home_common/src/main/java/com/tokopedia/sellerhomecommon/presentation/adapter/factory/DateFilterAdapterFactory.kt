@@ -1,9 +1,9 @@
-package com.tokopedia.statistic.view.adapter.factory
+package com.tokopedia.sellerhomecommon.presentation.adapter.factory
 
-import com.tokopedia.statistic.view.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 
 /**
- * Created By @ilhamsuaib on 15/06/20
+ * Created by @ilhamsuaib on 09/02/22.
  */
 
 interface DateFilterAdapterFactory {
