@@ -3,14 +3,39 @@ package com.tokopedia.createpost.uprofile.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem
 
-data class ProfileDoFollowModelBase (
-    @SerializedName("feedXProfileFollow")
-    val profileFollowers: ProfileDoFollowStatus,
+data class ProfileDoFollowModelBase(
+    @SerializedName("SocialNetworkFollow")
+    val profileFollowers: ProfileDoFollowedData,
 )
 
-data class ProfileDoFollowStatus (
-    @SerializedName("status")
-    val status: Boolean,
+data class ProfileDoUnFollowModelBase(
+    @SerializedName("SocialNetworkUnfollow")
+    val profileFollowers: ProfileDoFollowedData,
+)
+
+data class ProfileDoFollowedData(
+    @SerializedName("data")
+    val data: ProfileDoFollowedDataVal,
+
+    @SerializedName("messages")
+    val messages: List<String>,
+
+    @SerializedName("error_code")
+    val errorCode: String
+)
+
+data class ProfileDoFollowedDataVal(
+    @SerializedName("user_id_source")
+    val userIdSource: String,
+
+    @SerializedName("user_id_target")
+    val userIdTarget: String,
+
+    @SerializedName("relation")
+    val relation: String,
+
+    @SerializedName("is_success")
+    val isSuccess: String,
 )
 
 

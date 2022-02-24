@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -26,7 +25,6 @@ import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -46,7 +44,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     lateinit var viewModelFactory: ViewModelFactory
 
     var landedUserName: String? = null
-    var idFollowed: Boolean = false
+    var isFollowed: Boolean = false
     var displayName: String = ""
     var userName: String = ""
     var totalFollowings: String = ""
@@ -121,6 +119,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addUserProfileObserver()
         addListObserver()
         addDoFollowedObserver()
+        addDoUnFollowedObserver()
         addTheyFollowedObserver()
     }
 
@@ -166,16 +165,47 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     }
                     is Success -> {
                         val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
+                        if (it.data.profileFollowers.errorCode.isBlank()) {
+                            isFollowed = !isFollowed
+                            if (isFollowed) {
+                                btnAction?.text = "Following"
+                                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+                                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+                            } else {
+                                btnAction?.text = "Follow"
+                                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+                                btnAction?.buttonType = UnifyButton.Type.MAIN
+                            }
+                        }
+                    }
+                    is ErrorMessage -> {
 
-                        idFollowed = it.data.profileFollowers.status
-                        if (idFollowed) {
-                            btnAction?.text = "Following"
-                            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-                            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
-                        } else {
-                            btnAction?.text = "Follow"
-                            btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-                            btnAction?.buttonType = UnifyButton.Type.MAIN
+                    }
+                }
+            }
+        })
+
+    private fun addDoUnFollowedObserver() =
+        mPresenter.profileDoUnFollowLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+
+                    }
+                    is Success -> {
+                        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
+
+                        if (it.data.profileFollowers.errorCode.isBlank()) {
+                            isFollowed = !isFollowed
+                            if (isFollowed) {
+                                btnAction?.text = "Following"
+                                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+                                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+                            } else {
+                                btnAction?.text = "Follow"
+                                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+                                btnAction?.buttonType = UnifyButton.Type.MAIN
+                            }
                         }
                     }
                     is ErrorMessage -> {
@@ -210,8 +240,12 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         //TODO navigate to edit profile page
     }
 
-    private fun addDoFollowClickListener(userId: String) = View.OnClickListener {
-        mPresenter.doFollow(userId, !idFollowed)
+    private fun addDoFollowClickListener(userIdEnc: String) = View.OnClickListener {
+        if (isFollowed) {
+            mPresenter.doUnFollow(userIdEnc)
+        } else {
+            mPresenter.doFollow(userIdEnc)
+        }
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
@@ -254,8 +288,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 )
             )
         } else {
-            idFollowed = followProfile.profileHeader.items[0].status
-            if (idFollowed) {
+            isFollowed = followProfile.profileHeader.items[0].status
+            if (isFollowed) {
                 btnAction?.text = "Following"
                 btnAction?.buttonVariant = UnifyButton.Variant.GHOST
                 btnAction?.buttonType = UnifyButton.Type.ALTERNATE
@@ -265,7 +299,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 btnAction?.buttonType = UnifyButton.Type.MAIN
             }
 
-            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].userID))
+            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].encryptedUserID))
         }
     }
 
@@ -360,14 +394,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     )
                 })
             }
--
+            -
             R.id.text_see_more -> {
                 Toast.makeText(context, "See All", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun getFollowersBundle(isFollowers: Boolean) : Bundle {
+    private fun getFollowersBundle(isFollowers: Boolean): Bundle {
         val bundle = Bundle()
         bundle.putString(EXTRA_DISPLAY_NAME, displayName)
         bundle.putString(EXTRA_USER_NAME, userName)
