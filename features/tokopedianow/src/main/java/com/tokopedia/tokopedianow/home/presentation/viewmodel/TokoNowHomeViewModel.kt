@@ -62,6 +62,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
@@ -444,12 +445,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.setStateToLoading(it)
 
                 when (val item = it.layout) {
-                    is HomeLayoutUiModel -> {
-                        getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-                    }
-                    else -> {
-                        getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
-                    }
+                    is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
+                    else -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
                 }
 
                 val data = HomeLayoutListUiModel(
@@ -476,6 +473,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeTickerUiModel -> getTickerDataAsync(item).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, warehouseId).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
+            else -> removeUnsupportedLayout(item)
         }
     }
 
@@ -491,6 +489,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when(item) {
             is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
+            else -> removeUnsupportedLayout(item)
         }
     }
 
@@ -750,5 +749,9 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {
         return homeLayoutItemList.getItem(HomeQuestSequenceWidgetUiModel::class.java)
+    }
+
+    private fun removeUnsupportedLayout(item: Visitable<*>?) {
+        homeLayoutItemList.removeItem(item?.getVisitableId())
     }
 }

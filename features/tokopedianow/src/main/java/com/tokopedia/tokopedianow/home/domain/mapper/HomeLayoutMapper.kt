@@ -402,7 +402,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
+    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String?) {
         getItemIndex(id)?.let { removeAt(it) }
     }
 

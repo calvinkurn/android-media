@@ -2246,9 +2246,14 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             UnknownHomeLayout,
             HomeLayoutItemState.NOT_LOADED
         )
+        val nullHomeLayout = HomeLayoutItemUiModel(
+            null,
+            HomeLayoutItemState.NOT_LOADED
+        )
 
         addHomeLayoutItem(unknownLayout)
         addHomeLayoutItem(unknownHomeLayout)
+        addHomeLayoutItem(nullHomeLayout)
 
         viewModel.getLayoutComponentData(warehouseId = "1")
 
@@ -2256,8 +2261,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetRepurchaseWidgetUseCaseNotCalled()
         verifyGetMiniCartUseCaseNotCalled()
 
+        val expected = Success(
+            HomeLayoutListUiModel(
+                items = emptyList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
         viewModel.homeLayoutList
-            .verifyValueEquals(null)
+            .verifyValueEquals(expected)
     }
 
     @Test
