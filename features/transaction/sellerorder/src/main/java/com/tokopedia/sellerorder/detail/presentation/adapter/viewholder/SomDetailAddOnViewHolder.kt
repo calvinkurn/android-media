@@ -54,7 +54,7 @@ class SomDetailAddOnViewHolder(
     private fun setupProductAddOn(addOnUiModel: AddOnUiModel) {
         binding?.run {
             setupAddOnImage(addOnUiModel.addOn.imageUrl)
-            setupAddOnName(addOnUiModel.addOn.type, addOnUiModel.addOn.name)
+            setupAddOnName(addOnUiModel.addOn.type, addOnUiModel.addOn.name, addOnUiModel.providedByBranchShop)
             setupAddOnPrice(addOnUiModel.addOn.quantity, addOnUiModel.addOn.priceStr)
             setupAddOnDescriptions(addOnUiModel.addOn.metadata, addOnUiModel.descriptionExpanded, addOnUiModel.providedByBranchShop)
         }
@@ -65,8 +65,12 @@ class SomDetailAddOnViewHolder(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun ItemAddOnBinding.setupAddOnName(type: String, name: String) {
-        tvAddOnName.text = "$type - $name"
+    private fun ItemAddOnBinding.setupAddOnName(
+        type: String,
+        name: String,
+        providedByBranchShop: Boolean
+    ) {
+        tvAddOnName.text = composeAddOnName(type, name, providedByBranchShop)
     }
 
     @SuppressLint("SetTextI18n")
@@ -91,6 +95,14 @@ class SomDetailAddOnViewHolder(
                 show()
             }
         }
+    }
+
+    private fun composeAddOnName(
+        type: String,
+        name: String,
+        providedByBranchShop: Boolean
+    ): CharSequence {
+        return if (providedByBranchShop) type else "$type - $name"
     }
 
     interface Listener {
