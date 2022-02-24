@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -735,7 +734,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 restartLiveDuration(result)
             }
             is SectionedProductTagSocketResponse -> {
-                Log.d("<LOG>", "WEBSOCKET")
                 setSelectedProduct(productMapper.mapSectionedProduct(result))
             }
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
@@ -773,8 +771,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
-//        getCurrentSetupDataStore().setSelectedProducts(products)
-        Log.d("<LOG>", "Product Size : ${productSectionList.flatMap { it.products }.size}")
         _productSectionList.value = productSectionList
     }
 
@@ -889,7 +885,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
-        Log.d("<LOG>", "handleSetProduct")
         setSelectedProduct(productSectionList)
     }
 
