@@ -118,18 +118,6 @@
         app:layout_constraintTop_toBottomOf="@id/box_6"
         app:loader_type="rect" />
 
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/circle_1"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/box_4"
-        app:layout_constraintCircleRadius="5dp"
-        app:layout_constraintEnd_toEndOf="@id/box_4"
-        app:layout_constraintTop_toTopOf="@id/box_4"
-        app:loader_type="circle" />
-
     <View
         android:id="@+id/box_7"
         android:layout_width="match_parent"

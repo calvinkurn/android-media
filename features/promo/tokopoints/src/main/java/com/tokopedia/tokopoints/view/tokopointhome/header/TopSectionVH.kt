@@ -22,7 +22,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
@@ -43,6 +42,7 @@ import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
+import com.tokopedia.tokopoints.view.model.rewardtopsection.ProgressInfoList
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.MetadataItem
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
@@ -56,7 +56,6 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
-import kotlin.math.roundToInt
 
 class TopSectionVH(
     itemView: View,
@@ -64,6 +63,7 @@ class TopSectionVH(
     private val refreshOnTierUpgrade: RefreshOnTierUpgrade,
     private val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
 
+    private var arrowIcon: AppCompatImageView? = null
     lateinit var cardTierInfo: ConstraintLayout
     private var dynamicAction: DynamicItemActionView? = null
     private var mTextMembershipLabel: TextView? = null
@@ -118,6 +118,7 @@ class TopSectionVH(
         tierIconProgress = itemView.findViewById(R.id.tier_icon_progressbar)
         digitContainer = itemView.findViewById(R.id.digitContainer)
         currentTier = itemView.findViewById(R.id.text_current_tier)
+        arrowIcon = itemView.findViewById(R.id.ic_arrow_icon)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -140,42 +141,28 @@ class TopSectionVH(
         cardTierInfo.doOnLayout {
             cardRuntimeHeightListener.setCardLayoutHeight(it.height)
         }
+        arrowIcon?.setOnClickListener {
+            gotoMembershipPage()
+        }
         mTextMembershipLabel?.text = data?.introductionText
-        currentTier?.text = data?.progressInfoList?.get(0)?.nextTierName
+        currentTier?.text = data?.progressInfoList?.getOrNull(1)?.nextTierName?:""
 
-        val diffAmount = data?.progressInfoList?.get(0)?.differenceAmountStr
-        val diffAmountStr = diffAmount?.split(" ")?.get(1)
+        val diffAmount = data?.progressInfoList?.getOrNull(1)?.differenceAmountStr?:""
 
-        tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.nextTierIconImageURL ?: "")
-        var getDigitValue = diffAmountStr?.toCharArray()
+        tierIconProgress?.loadImage(data?.progressInfoList?.get(1)?.nextTierIconImageURL ?: "")
 
         if (digitContainer?.childCount == 0) {
-            getDigitValue = if (isContainsRp(diffAmountStr)) {
+            if (isContainsRp(diffAmount)) {
                 addRPToTransaction()
-                diffAmountStr?.removePrefix("Rp")?.toCharArray()
+                setDigitContainerView(diffAmount.removePrefix("Rp").toCharArray())
             } else {
-                diffAmountStr?.removeSuffix("x")?.toCharArray()
-            }
-            if (getDigitValue != null) {
-                setDigitContainerView(getDigitValue)
-            }
-            if (!isContainsRp(diffAmountStr)) {
+                setDigitContainerView(diffAmount.toCharArray())
                 addXToTransaction()
             }
         }
-        progressBarAnimation()
+        progressBarAnimation(data?.progressInfoList?: listOf())
 
-        progressBar?.apply {
-            setValue(
-                getProgress(
-                    data?.progressInfoList?.get(0)?.currentAmount?.toFloat() ?: 0F,
-                    data?.progressInfoList?.get(0)?.nextAmount?.toFloat() ?: 1F
-                ), true
-            )
-            progressBarColorType = ProgressBarUnify.COLOR_GREEN
-        }
-
-        data?.target?.let {
+        data?.targetV2?.let {
             if (!it.textColor.isNullOrEmpty()) {
                 mTargetText?.setTextColor(Color.parseColor("#" + it.textColor))
             }
@@ -188,11 +175,7 @@ class TopSectionVH(
                 customBackground(cardTierInfo, Color.parseColor("#" + it.backgroundColor), MEMBER_STATUS_BG_RADII)
             }
             cardTierInfo.setOnClickListener {
-                RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
-                AnalyticsTrackerUtil.sendEvent(itemView.context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, mValueMembershipDescription)
+                gotoMembershipPage()
             }
         }
 
@@ -201,7 +184,7 @@ class TopSectionVH(
             mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
 
-        ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.profilePicture)
+        ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.progressInfoList?.get(0)?.iconImageURL)
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
@@ -476,11 +459,21 @@ class TopSectionVH(
         return upgradeValue?.startsWith("Rp")?:false
     }
 
-    private fun getProgress(current:Float,next:Float) : Int{
-        val progressPercentage = 100 - (((next-current)/next) * 100).roundToInt()
-        return if (progressPercentage == 0){
-            5
-        } else progressPercentage
+    private fun getProgress(progressInfoList: List<ProgressInfoList>) : Pair<Int?,Int?> {
+
+        val startPercentage =
+            ((progressInfoList[1].currentAmount)?.div(
+                (progressInfoList[1].nextAmount ?: 1)
+            ))?.times(
+                100
+            )
+        val endPercentage =
+            (progressInfoList[0].currentAmount?.div(progressInfoList[0].nextAmount ?: 1))?.times(
+                100
+            )
+
+        return Pair(startPercentage,endPercentage)
+
     }
 
     private fun setDigitContainerView(getDigitValue: CharArray) {
@@ -502,65 +495,87 @@ class TopSectionVH(
     }
 
     private fun addRPToTransaction(){
-        val dotView =Typography(itemView.context)
-        dotView.text="Rp"
-        dotView.setWeight(Typography.BOLD)
-        dotView.setType(Typography.BODY_3)
-        dotView.gravity = Gravity.CENTER
-        dotView.setTextColor(Color.WHITE)
-        digitContainer?.addView(dotView)
+        val rpView =Typography(itemView.context)
+        rpView.apply {
+            text="Rp"
+            setWeight(Typography.BOLD)
+            setType(Typography.BODY_3)
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+        }
+        digitContainer?.addView(rpView)
     }
 
     private fun addXToTransaction(){
         val dotView =Typography(itemView.context)
-        dotView.text="x"
-        dotView.setWeight(Typography.BOLD)
-        dotView.setType(Typography.BODY_3)
-        dotView.setTextColor(Color.WHITE)
+        dotView.apply {
+            text = "x"
+            setWeight(Typography.BOLD)
+            setType(Typography.BODY_3)
+            setTextColor(Color.WHITE)
+        }
         digitContainer?.addView(dotView)
     }
 
-    private fun progressBarAnimation(){
+    private fun progressBarAnimation(progressInfoList: List<ProgressInfoList>) {
 
         val container = progressBar?.progressBarContainer
-        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_LARGE
-        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
-        (progressBar?.progressBarWrapper)?.clipChildren = false
-        (progressBar?.progressBarIndicatorWrapper)?.clipChildren = false
-        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipToPadding = false
-        progressBar?.gravity = Gravity.CENTER_VERTICAL
-        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
-
-        if(container?.childCount?.minus(1) ?:0  >= 0){
-            val target = container?.getChildAt(container.childCount - 1)
-            val moveXX = ObjectAnimator.ofFloat(target, View.SCALE_X, 2f).setDuration(ANIMATION_DURATION)
-            val animatorContainerX =
-                ObjectAnimator.ofFloat(target, View.SCALE_Y, 2f).setDuration(ANIMATION_DURATION)
-            val animSet = AnimatorSet()
-
-            animSet.addListener(object :Animator.AnimatorListener{
-                override fun onAnimationStart(p0: Animator?) {
-                }
-
-                override fun onAnimationEnd(p0: Animator?) {
-                    progressBar?.setProgressIcon(null)
-                    if (!isNextTier) {
-                        topSectionData?.popupNotification = null
-                        refreshOnTierUpgrade.refreshReward(popupNotification)
-                    }
-                }
-
-                override fun onAnimationCancel(p0: Animator?) {
-                }
-
-                override fun onAnimationRepeat(p0: Animator?) {
-                }
-
-            })
-            animSet.playTogether(animatorContainerX,moveXX)
-            animSet.start()
-
+        val progress = getProgress(progressInfoList).second?:1
+        progressBar?.apply {
+            progressBarHeight = ProgressBarUnify.SIZE_LARGE
+            progressBarColorType = ProgressBarUnify.COLOR_GREEN
+            clipChildren = false
+            (progressBarWrapper.parent as ViewGroup).clipChildren = false
+            (progressBarIndicatorWrapper).clipChildren = false
+            (progressBarWrapper.parent as ViewGroup).clipToPadding = false
+            gravity = Gravity.CENTER_VERTICAL
+            if (progress > 0) {
+                setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                setValue(progress, true)
+            } else {
+                setProgressIcon(null)
+            }
         }
+        if (container?.childCount?.minus(1) ?: 0 >= 0) {
+                val target = container?.getChildAt(container.childCount - 1)
+                val moveXX =
+                    ObjectAnimator.ofFloat(target, View.SCALE_X, 2f).setDuration(ANIMATION_DURATION)
+                val animatorContainerX =
+                    ObjectAnimator.ofFloat(target, View.SCALE_Y, 2f).setDuration(ANIMATION_DURATION)
+                val animSet = AnimatorSet()
+
+                animSet.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(p0: Animator?) {
+                    }
+                    override fun onAnimationEnd(p0: Animator?) {
+                        progressBar?.setProgressIcon(null)
+                        if (!isNextTier) {
+                            topSectionData?.popupNotification = null
+                            refreshOnTierUpgrade.refreshReward(popupNotification)
+                        }
+                    }
+                    override fun onAnimationCancel(p0: Animator?) {
+                    }
+                    override fun onAnimationRepeat(p0: Animator?) {
+                    }
+                })
+                animSet.playTogether(animatorContainerX, moveXX)
+                animSet.start()
+            }
+        }
+
+    private fun gotoMembershipPage(){
+        RouteManager.route(
+            itemView.context,
+            ApplinkConstInternalGlobal.WEBVIEW_TITLE,
+            itemView.context.resources.getString(R.string.tp_label_membership),
+            CommonConstant.WebLink.MEMBERSHIP
+        )
+
+        AnalyticsTrackerUtil.sendEvent(itemView.context,
+            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+            AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, mValueMembershipDescription)
     }
 
     interface CardRuntimeHeightListener {
