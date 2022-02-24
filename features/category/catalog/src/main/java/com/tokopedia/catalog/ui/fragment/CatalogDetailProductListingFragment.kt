@@ -27,6 +27,7 @@ import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogProductCardListener
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
@@ -459,8 +460,21 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             adapterPosition,
             userSession.userId)
         context?.let { context ->
-            RouteManager.route(context,catalogComparison.appLink)
+            if(!catalogComparison.appLink.isNullOrBlank()){
+                RouteManager.route(context,catalogComparison.appLink)
+            }
         }
+    }
+
+    override fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {
+        CatalogDetailAnalytics.sendPromotionEvent(CatalogDetailAnalytics.EventKeys.EVENT_VIEW_ITEM,
+            CatalogDetailAnalytics.ActionKeys.IMPRESSION_KATALOG_PILIHAN_UNTUKMU,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            "current catalog-id: $catalogId - impress catalog-id: ${model.item.id}",
+            catalogId,
+            catalogName,
+            adapterPosition,
+            userSession.userId)
     }
 
     /*********************************   WishList  ******************************/

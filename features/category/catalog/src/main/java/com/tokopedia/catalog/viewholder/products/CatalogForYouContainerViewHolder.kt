@@ -19,6 +19,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.catalog.viewmodel.CatalogForYouViewModel
@@ -159,6 +160,10 @@ class CatalogForYouContainerViewHolder(private val view : View,
 
     override fun onCatalogForYouClick(adapterPosition : Int, catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
         catalogProductCardListener?.onCatalogForYouClick(adapterPosition, catalogComparison)
+    }
+
+    override fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {
+        catalogProductCardListener?.onCatalogForYouImpressed(model,adapterPosition)
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {

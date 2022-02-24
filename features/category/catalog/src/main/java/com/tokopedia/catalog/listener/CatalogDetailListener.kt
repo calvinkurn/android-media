@@ -58,6 +58,8 @@ interface CatalogDetailListener {
 
     fun onCatalogForYouClick(adapterPosition : Int , catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 
+    fun onCatalogForYouImpressed(model : CatalogForYouModel , adapterPosition: Int){}
+
     fun getChildsFragmentManager() : FragmentManager? {
         return null
     }

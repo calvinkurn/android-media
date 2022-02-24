@@ -153,7 +153,7 @@ object CatalogDetailAnalytics {
         bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
         bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
         bundle.putString(EventKeys.KEY_CATALOG_ID,catalogId)
-        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE_CATALOG)
         bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
         bundle.putString(EventKeys.KEY_USER_ID,userId)
         bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
@@ -178,6 +178,7 @@ object CatalogDetailAnalytics {
 
             const val KEY_PROMOTIONS = "promotions"
             const val BUSINESS_UNIT_VALUE= "Physical Goods"
+            const val BUSINESS_UNIT_VALUE_CATALOG= "catalog"
             const val SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE = "sharingexperience"
             const val CURRENT_SITE_VALUE = "tokopediamarketplace"
 
@@ -195,6 +196,7 @@ object CatalogDetailAnalytics {
             const val KEY_ITEM_NAME = "item_name"
 
             const val EVENT_SELECT_CONTENT = "select_content"
+            const val EVENT_VIEW_ITEM = "view_item"
 
         }
     }
@@ -245,6 +247,7 @@ object CatalogDetailAnalytics {
 
             const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
             const val CLICK_KATALOG_PILIHAN_UNTUKMU = "click katalog pilihan untukmu"
+            const val IMPRESSION_KATALOG_PILIHAN_UNTUKMU = "impression katalog pilihan untukmu"
         }
     }
 
