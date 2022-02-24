@@ -64,7 +64,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
         private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
         private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
-        private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "kuota voucher aktif penuh"
+        private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "Kupon Aktif maksimal"
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -760,12 +760,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun showError(throwable: Throwable) {
         val actionText = context?.getString(R.string.coupon_toaster_cta_oke).orEmpty()
-        if (throwable is MessageErrorException && throwable.message == ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT) {
-            Toaster.build(binding.root, getString(R.string.error_message_exceed_max_coupon), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
+        val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().withErrorCode(false).build())
+        Toaster.build(binding.root, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
+        if (message.contains(ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT)) {
             showEmptyState()
-        } else {
-            val message = ErrorHandler.getErrorMessage(requireActivity(), throwable)
-            Toaster.build(binding.root, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
         }
     }
 

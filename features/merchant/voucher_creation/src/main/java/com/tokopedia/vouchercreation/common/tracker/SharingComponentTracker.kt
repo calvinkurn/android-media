@@ -16,7 +16,8 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
             VoucherCreationAnalyticConstant.Key.EVENT_LABEL to "$entryPoint - $couponId",
             VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.SHARING_EXPERIENCE,
             VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
-            VoucherCreationAnalyticConstant.Key.SHOP_ID to userSession.shopId
+            VoucherCreationAnalyticConstant.Key.SHOP_ID to userSession.shopId,
+            VoucherCreationAnalyticConstant.Key.USER_ID to userSession.userId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(payload)
