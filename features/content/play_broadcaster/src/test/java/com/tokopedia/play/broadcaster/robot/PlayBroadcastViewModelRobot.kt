@@ -1,16 +1,14 @@
 package com.tokopedia.play.broadcaster.robot
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
-import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
-import com.tokopedia.play.broadcaster.logger.PlayLoggerTest
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -20,17 +18,18 @@ import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
-import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -38,6 +37,7 @@ import java.io.Closeable
  */
 internal class PlayBroadcastViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
+    handle: SavedStateHandle = SavedStateHandle(),
     livePusherMediator: PusherMediator = mockk(relaxed = true),
     mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
@@ -54,7 +54,12 @@ internal class PlayBroadcastViewModelRobot(
     logger: PlayLogger = mockk(relaxed = true),
 ) : Closeable {
 
+    init {
+
+    }
+
     private val viewModel = PlayBroadcastViewModel(
+        handle,
         livePusherMediator,
         mDataStore,
         hydraConfigStore,
