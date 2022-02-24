@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -130,6 +131,20 @@ class BrandlistPageViewModelTest {
         Assert.assertTrue(viewModel.getAllBrandResult.value is Success)
     }
 
+    @Test
+    fun `given zero request size when load more brand reminding then get brand all brand will not success`() {
+        runBlockingTest {
+            val brandFirstLetter = "b"
+            val mockedCategory = Category()
+            val mockedZeroRequestSize = 0
+
+            viewModel.loadMoreAllBrands(brandFirstLetter)
+
+            coVerify { getBrandListAllBrandUseCase.executeOnBackground() }
+            viewModel.loadMoreAllBrandsReminding(mockedZeroRequestSize, category = mockedCategory, brandFirstLetter)
+            Assert.assertTrue(viewModel.getAllBrandResult.value !is Success)
+        }
+    }
 
     @Test
     fun `load brand per-alphabet when category and first letter are provided should return success value`() {
