@@ -44,11 +44,11 @@ class BannerCarouselViewModelTest {
         every { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) } returns ArrayList()
         every { componentsItem.data } returns null
         var viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
-        assert(viewModelTest.getTitleLiveData().value == null)
+        assert(viewModelTest.getTitleLiveData().value == "")
         every { componentsItem.data } returns ArrayList()
         every { componentsItem.properties?.bannerTitle } returns null
         viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
-        assert(viewModelTest.getTitleLiveData().value == null)
+        assert(viewModelTest.getTitleLiveData().value == "")
         every { componentsItem.data } returns dataList
         viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
         assert(viewModelTest.getTitleLiveData().value == "")

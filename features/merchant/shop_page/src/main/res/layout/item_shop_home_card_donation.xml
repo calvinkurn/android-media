@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_home_card_donation_card_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    app:card_background_color="@color/Unify_Background"
+    app:card_type="border">
+
+    <LinearLayout
+        android:id="@+id/shop_home_card_donation_linear_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_home_card_donation_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_home_card_donation_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
+            tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
+
+    </LinearLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

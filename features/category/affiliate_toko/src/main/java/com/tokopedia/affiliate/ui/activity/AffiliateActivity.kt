@@ -137,7 +137,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun showAffiliatePortal() {
         initRollence()
         initBottomNavigationView()
-        clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         if(findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.visibility !=  View.VISIBLE)
             affiliateBottomNavigation?.populateBottomNavigationView()
@@ -280,6 +279,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun setObservers() {
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+                clearBackStack()
                 showAffiliatePortal()
             } else if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
                 validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false
@@ -338,6 +338,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showSplashScreen() {
+        clearBackStack()
         findViewById<Typography>(R.id.splash_title).text =
             getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
                 "{name}",

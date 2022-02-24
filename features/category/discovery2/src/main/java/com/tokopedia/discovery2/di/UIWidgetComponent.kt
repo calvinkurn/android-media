@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.di
 
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
@@ -67,6 +68,6 @@ interface UIWidgetComponent {
     fun inject(sectionViewModel: SectionViewModel)
     fun inject(viewModel: AnchorTabsItemViewModel)
     fun inject(viewModel: AnchorTabsViewModel)
-
+    fun inject(bannerCarouselViewModel: BannerCarouselViewModel)
 
 }

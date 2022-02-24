@@ -53,6 +53,7 @@ class Utils {
         const val TIMER_SPRINT_SALE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val DEFAULT_BANNER_WIDTH = 800
         const val DEFAULT_BANNER_HEIGHT = 150
+        const val DEFAULT_BANNER_WEIGHT = 1.0f
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
         const val CART_CACHE_NAME = "CART"

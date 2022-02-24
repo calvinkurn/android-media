@@ -39,4 +39,6 @@ interface WidgetAdapterFactory {
     fun type(recommendationWidget: RecommendationWidgetUiModel): Int
 
     fun type(milestoneWidgetUiModel: MilestoneWidgetUiModel): Int
+
+    fun type(calendarWidgetUiModel: CalendarWidgetUiModel): Int
 }

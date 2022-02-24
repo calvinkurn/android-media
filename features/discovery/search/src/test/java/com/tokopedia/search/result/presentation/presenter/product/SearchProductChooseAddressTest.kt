@@ -52,7 +52,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         `Then verify top of visitable list is choose address widget`()
     }
 
-    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel?) {
+    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel) {
         `Given choose address is enabled`()
         `Given chosen address data`(chooseAddressModel)
     }
@@ -100,12 +100,11 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     @Test
-    fun `Test choose address data is null`() {
-        `Setup choose address`(null)
+    fun `Test choose address data with empty values`() {
+        `Setup choose address`(LocalCacheModel())
         setUp()
 
         `Given search product API will return data`()
-        `Given visitable list will be captured`()
 
         `When load data`()
 
@@ -120,18 +119,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         parameters.shouldNotContain(SearchApiConst.USER_DISTRICT_ID)
         parameters.shouldNotContain(SearchApiConst.USER_POST_CODE)
         parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
-    }
-
-    @Test
-    fun `Test choose address data with empty values`() {
-        `Setup choose address`(LocalCacheModel())
-        setUp()
-
-        `Given search product API will return data`()
-
-        `When load data`()
-
-        `Then verify choose address data is not sent`(requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, String>)
     }
 
     @Test
