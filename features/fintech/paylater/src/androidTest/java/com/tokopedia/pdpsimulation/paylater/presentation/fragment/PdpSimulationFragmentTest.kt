@@ -72,14 +72,6 @@ class PdpSimulationFragmentTest {
     @Test
     fun check_pay_later_partner_button_click() {
         assert(true)
-        /*actionTest {
-
-            clickPartnerButton()
-
-        } assertTest {
-            hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
-            clearData()
-        }*/
     }
 
 
