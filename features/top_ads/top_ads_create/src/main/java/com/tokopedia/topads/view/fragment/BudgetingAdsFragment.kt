@@ -340,10 +340,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             minBid = it.minBid
         }
 
-        if (stepperModel?.finalBidPerClick != -1 && stepperModel?.finalBidPerClick != 0)
-            budget.textFieldInput.setText(stepperModel?.finalBidPerClick.toString())
-        else
-            budget.textFieldInput.setText(suggestBidPerClick)
+        budget.textFieldInput.setText(suggestBidPerClick)
 
         if (budget.textFieldInput.text.toString().removeCommaRawString().toDouble() > minBid.toDouble() && budget.textFieldInput.text.toString().removeCommaRawString().toDouble() < maxBid.toDouble()) {
             setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick, false)

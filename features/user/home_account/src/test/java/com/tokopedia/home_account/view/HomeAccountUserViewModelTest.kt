@@ -14,6 +14,9 @@ import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
+import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.navigation_common.model.DebitInstantData
 import com.tokopedia.navigation_common.model.DebitInstantModel
 import com.tokopedia.navigation_common.model.ProfileModel
@@ -65,6 +68,7 @@ class HomeAccountUserViewModelTest {
     private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val userProfileSafeModeUseCase = mockk<UserProfileSafeModeUseCase>(relaxed = true)
+    private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -81,6 +85,7 @@ class HomeAccountUserViewModelTest {
 
     private val throwable = Fail(Throwable(message = "Error"))
     private var buyerAccountObserver = mockk<Observer<Result<UserAccountDataModel>>>(relaxed = true)
+    private var checkFingerprintResult = mockk<Observer<Result<CheckFingerprintResult>>>(relaxed = true)
 
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
@@ -106,6 +111,7 @@ class HomeAccountUserViewModelTest {
             getLinkStatusUseCase,
             getPhoneUseCase,
             userProfileSafeModeUseCase,
+            checkFingerprintToggleUseCase,
             walletPref,
             dispatcher
         )
@@ -113,6 +119,7 @@ class HomeAccountUserViewModelTest {
         viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
         viewModel.shortcutData.observeForever(shortCutResponse)
         viewModel.safeModeStatus.observeForever(safeStatusResponse)
+        viewModel.checkFingerprintStatus.observeForever(checkFingerprintResult)
     }
 
     @Test
@@ -285,6 +292,74 @@ class HomeAccountUserViewModelTest {
 
         Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
     }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - less than tdn_index`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - less than check first false`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3)
+        )
+        val testPage = 2
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - check first false`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
+        )
+        val testPage = 2
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
+    }
+
 
     @Test
     fun `Failed to get first recommendation`() {
@@ -558,11 +633,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Success get gopay balance and point`() {
+    fun `Success get gopay balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false)
 
         verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -572,11 +647,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get gopay balance and point`() {
+    fun `Failed get gopay balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -586,11 +661,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Success get gopaylater balance and point`() {
+    fun `Success get gopaylater balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false)
 
         verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -600,11 +675,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get gopaylater balance and point`() {
+    fun `Failed get gopaylater balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -614,11 +689,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Success get ovo balance and point`() {
+    fun `Success get ovo balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false)
 
         verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -628,11 +703,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get ovo balance and point`() {
+    fun `Failed get ovo balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -642,11 +717,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Success get tokopoint balance and point`() {
+    fun `Success get tokopoint balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } returns successGetTokopointBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false)
 
         verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -656,11 +731,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get tokopoint balance and point`() {
+    fun `Failed get tokopoint balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -670,11 +745,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Success get saldo balance and point`() {
+    fun `Success get saldo balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { saldoBalanceUseCase(Unit) } returns successGetSaldoBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false)
 
         verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -684,11 +759,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get saldo balance and point`() {
+    fun `Failed get saldo balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { saldoBalanceUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -698,11 +773,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Success get co brand cc balance and point`() {
+    fun `Success get co brand cc balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetCoBrandCCBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false)
 
         verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -712,11 +787,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get co brand cc balance and point`() {
+    fun `Failed get co brand cc balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
         coEvery { coBrandCCBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -726,16 +801,79 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Failed get balance and point`() {
+    fun `Failed get balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
 
-        viewModel.getBalanceAndPoint("")
+        viewModel.getBalanceAndPoint("", false)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
 
         val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
         assert(result.throwable is IllegalArgumentException)
+    }
+
+    @Test
+    fun `Get fingerprint status success`() {
+        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false, errorMessage = "")
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        verify {
+            checkFingerprintResult.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `Get fingerprint status fail - success trie, has errors `() {
+        val errorMsg = "error"
+        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false, errorMessage = errorMsg)
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+    }
+
+    @Test
+    fun `Get fingerprint status fail - has errors `() {
+        val errorMsg = "error"
+        val data = CheckFingerprintResult(isSuccess = false, isRegistered = false, errorMessage = errorMsg)
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+    }
+
+    @Test
+    fun `Get fingerprint status fail - throw exception `() {
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } throws throwableMock
+
+        viewModel.getFingerprintStatus()
+
+        verify {
+            checkFingerprintResult.onChanged(Fail(throwableMock))
+        }
     }
 
     companion object {

@@ -15,6 +15,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInp
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -203,7 +204,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS)
 
         viewModel.updateVariantDetailHeaderMap(0, true)
-        viewModel.increaseCollapsedFields(EXPECTED_AVAILABLE_FIELDS/ 2)
+        viewModel.increaseCollapsedFields(EXPECTED_AVAILABLE_FIELDS)
         assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS/ 2)
 
         viewModel.updateVariantDetailHeaderMap(3, true)
@@ -252,6 +253,25 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         }
         assert(!isAllField1SkuVisible)
         assert(!isAllField2SkuVisible)
+    }
+
+    @Test
+    fun `When update productInputModel Expect update main product price`() {
+        val expectedPrice = 100.toBigInteger()
+        initVariantDetailInputMap()
+        viewModel.updateVariantDetailInputMap(1,
+            VariantDetailInputLayoutModel(
+                headerPosition=0,
+                visitablePosition=1,
+                unitValueLabel="8",
+                price=expectedPrice.toString(),
+                stock="1",
+                isActive = false,
+                combination= listOf(0, 0)))
+        viewModel.updateProductInputModel()
+
+        val mainPrice = viewModel.productInputModel.getOrAwaitValue().detailInputModel.price
+        assertEquals(expectedPrice, mainPrice)
     }
 
     @Test

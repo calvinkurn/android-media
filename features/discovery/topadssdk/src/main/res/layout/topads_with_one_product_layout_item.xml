@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shopProductRoot"
+    android:layout_width="@dimen/layout_5_item_width"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/unify_space_8"
+    app:cardElevation="@dimen/unify_space_4"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/unify_space_16">
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            tools:background="@color/Unify_N200"
+            tools:visibility="visible"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/containerProductLogoShop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_3"
+            android:background="@drawable/featured_shop_border_image"
+            app:layout_constraintBottom_toBottomOf="@+id/productImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productImage">
+
+            <ImageView
+                android:id="@+id/productLogoShop"
+                android:layout_width="@dimen/layout_5_item_shop_logo_size"
+                android:layout_height="@dimen/layout_5_item_shop_logo_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/containerProductShopBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/containerProductLogoShop"
+            app:layout_constraintEnd_toEndOf="@+id/containerProductLogoShop"
+            android:background="@drawable/featured_shop_border_image"
+            android:padding="@dimen/margin_3">
+
+            <ImageView
+                android:id="@+id/productShopBadge"
+                android:layout_width="@dimen/margin_18"
+                android:layout_height="@dimen/margin_18"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                />
+        </FrameLayout>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/productShopTopAds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_card_topads"
+            android:textColor="@color/Unify_N0"
+            android:visibility="gone"
+            android:shadowColor="@color/Unify_N700_32"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            app:layout_constraintBottom_toBottomOf="@id/productImage"
+            app:layout_constraintRight_toRightOf="@id/productImage"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_N700_96"
+            android:id="@+id/productShopName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:minLines="1"
+            android:textStyle="bold"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/unify_space_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/containerProductLogoShop"
+            tools:text="Shop Name"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/shopProductReviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintEnd_toStartOf="@+id/reviewCount"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productShopName" >
+
+            <ImageView
+                android:id="@+id/shopProductReviews1"
+                android:layout_width="@dimen/rating_star_size"
+                android:layout_height="@dimen/rating_star_size"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/product_card_ic_rating_active" />
+
+            <ImageView
+                android:id="@+id/shopProductReviews2"
+                android:layout_width="@dimen/rating_star_size"
+                android:layout_height="@dimen/rating_star_size"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/product_card_ic_rating_active" />
+
+            <ImageView
+                android:id="@+id/shopProductReviews3"
+                android:layout_width="@dimen/rating_star_size"
+                android:layout_height="@dimen/rating_star_size"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/product_card_ic_rating_active" />
+
+            <ImageView
+                android:id="@+id/shopProductReviews4"
+                android:layout_width="@dimen/rating_star_size"
+                android:layout_height="@dimen/rating_star_size"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/product_card_ic_rating_active" />
+
+            <ImageView
+                android:id="@+id/shopProductReviews5"
+                android:layout_width="@dimen/rating_star_size"
+                android:layout_height="@dimen/rating_star_size"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/product_card_ic_rating_active" />
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            android:textColor="@color/Unify_N300"
+            app:typographyType="small"
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/shopProductReviews"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/shopProductReviews"
+            app:layout_constraintTop_toTopOf="@+id/shopProductReviews"
+            tools:text="(30)" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

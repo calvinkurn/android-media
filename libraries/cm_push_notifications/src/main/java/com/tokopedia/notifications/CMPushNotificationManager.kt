@@ -215,7 +215,7 @@ class CMPushNotificationManager : CoroutineScope {
                 val bundle = convertMapToBundle(data)
 
                 if (confirmationValue.equals(SOURCE_VALUE) && isInAppEnable) {
-                    CMInAppManager.getInstance().handlePushPayload(remoteMessage)
+                    CMInAppManager.getInstance().handleCMInAppPushPayload(remoteMessage)
                 } else if (isPushEnable) {
                     validateAndRenderNotification(bundle)
                 } else if (!(confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(FCM_EXTRA_CONFIRMATION_VALUE))){

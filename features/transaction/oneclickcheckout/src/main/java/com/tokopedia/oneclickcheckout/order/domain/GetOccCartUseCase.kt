@@ -276,8 +276,14 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           state_detail
           status
           tokonow {
+            is_modified
             shop_id
             warehouse_id
+            warehouses {
+              warehouse_id
+              service_type
+            }
+            service_type
           }
         }
         payment {

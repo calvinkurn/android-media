@@ -1,7 +1,5 @@
 package com.tokopedia.home_account.stub.di.topads
 
-import com.tokopedia.home_account.di.HomeAccountUserContext
-import com.tokopedia.home_account.di.HomeAccountUserScope
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
@@ -11,8 +9,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.di.HomeAccountUserContext
+import com.tokopedia.home_account.di.HomeAccountUserScope
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -79,6 +80,9 @@ class FakeHomeAccountTopAdsModules(val context: Context) {
     fun provideHomeAccountAnalytics(userSession: UserSessionInterface): HomeAccountAnalytics {
         return HomeAccountAnalytics(userSession)
     }
+
+    @Provides
+    fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
 
     @Provides
     fun provideMenuGenerator(@HomeAccountUserContext context: Context): StaticMenuGenerator {

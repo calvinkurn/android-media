@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardListBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -18,37 +19,44 @@ class ListProductItemViewHolder(
         @JvmField
         val LAYOUT = R.layout.search_result_product_card_list
     }
+
     private var binding: SearchResultProductCardListBinding? by viewBinding()
 
-    override fun bind(productItemData: ProductItemDataView?) {
-        val binding = binding ?: return
-        if (productItemData == null) return
+    override val productCardView: IProductCardView?
+        get() = binding?.productCardView
 
-        with(binding.productCardView) {
-            setProductModel(productItemData.toProductCardModel(productItemData.imageUrl, true))
-
-            setThreeDotsOnClickListener {
-                productListener.onThreeDotsClick(productItemData, adapterPosition)
-            }
-
-            setOnLongClickListener {
-                productListener.onThreeDotsClick(productItemData, adapterPosition)
-                true
-            }
-
-            setOnClickListener {
-                productListener.onItemClicked(productItemData, adapterPosition)
-            }
-
-            setImageProductViewHintListener(productItemData, createImageProductViewHintListener(productItemData))
-        }
+    init {
+        initVideoHelper()
     }
 
-    override fun bind(productItemData: ProductItemDataView?, payloads: MutableList<Any>) {
-        payloads.getOrNull(0) ?: return
+    override fun bind(productItemData: ProductItemDataView?) {
+        if (productItemData == null) return
 
-        binding?.productCardView?.setThreeDotsOnClickListener {
+        val productCardView = binding?.productCardView ?: return
+        val productCardModel =
+            productItemData.toProductCardModel(productItemData.imageUrl, true)
+        this.productCardModel = productCardModel
+
+        registerLifecycleObserver(productCardModel)
+
+        productCardView.setProductModel(productCardModel)
+
+        productCardView.setThreeDotsOnClickListener {
             productListener.onThreeDotsClick(productItemData, adapterPosition)
         }
+
+        productCardView.setOnLongClickListener {
+            productListener.onThreeDotsClick(productItemData, adapterPosition)
+            true
+        }
+
+        productCardView.setOnClickListener {
+            productListener.onItemClicked(productItemData, adapterPosition)
+        }
+
+        productCardView.setImageProductViewHintListener(
+            productItemData,
+            createImageProductViewHintListener(productItemData)
+        )
     }
 }

@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherViewHolder
+import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 
@@ -12,14 +12,14 @@ import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
  * Created by jegul on 03/03/20
  */
 class MerchantVoucherAdapterDelegate(
-        listener: MerchantVoucherViewHolder.Listener
-) : TypedAdapterDelegate<MerchantVoucherUiModel, PlayVoucherUiModel, MerchantVoucherViewHolder>(R.layout.item_play_merchant_voucher), MerchantVoucherViewHolder.Listener by listener {
+        listener: MerchantVoucherNewViewHolder.Listener
+) : TypedAdapterDelegate<MerchantVoucherUiModel, PlayVoucherUiModel, MerchantVoucherNewViewHolder>(R.layout.item_shop_coupon), MerchantVoucherNewViewHolder.Listener by listener {
 
-    override fun onBindViewHolder(item: MerchantVoucherUiModel, holder: MerchantVoucherViewHolder) {
+    override fun onBindViewHolder(item: MerchantVoucherUiModel, holder: MerchantVoucherNewViewHolder) {
         holder.bind(item)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): MerchantVoucherViewHolder {
-        return MerchantVoucherViewHolder(basicView, this)
+    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): MerchantVoucherNewViewHolder {
+        return MerchantVoucherNewViewHolder(basicView, this)
     }
 }

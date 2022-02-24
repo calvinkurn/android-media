@@ -28,12 +28,14 @@
         app:typographyWeight="reguler"
         tools:text="3 Produk" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/imageChevronRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintBottom_toBottomOf="@id/textProductCount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/labelProduct"
-        tools:src="@drawable/ic_seller_menu_chevron_right" />
+        app:icon_name="CHEVRON_RIGHT"
+        app:icon_color_light_enable="@color/Unify_N400" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

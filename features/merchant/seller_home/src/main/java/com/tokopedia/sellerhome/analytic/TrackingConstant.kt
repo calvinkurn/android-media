@@ -19,9 +19,11 @@ object TrackingConstant {
 
     //event
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
+    const val VIEW_PG_IRIS = "viewPGIris"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val OPEN_SCREEN = "openScreen"
     const val CLICK_HOMEPAGE = "clickHomepage"
+    const val CLICK_PG = "clickPG"
 
     //category
     const val HOME = "home"
@@ -77,6 +79,9 @@ object TrackingConstant {
     const val CLICK_WIDGET_MILESTONE_SHARE = "click widget milestone - share"
     const val IMPRESSION_TICKER = "impression ticker"
     const val CLICK_TICKER_HYPERLINK = "click ticker - hyperlink"
+    const val IMPRESSION_WIDGET_CALENDAR = "impression widget calendar"
+    const val CLICK_WIDGET_CALENDAR_EVENT = "click widget calendar - event"
+    const val CLICK_WIDGET_CALENDAR_SELECT_DATE_RANGE = "click widget calendar - select date range"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
@@ -87,7 +92,9 @@ object TrackingConstant {
     const val SCREEN_NAME_SELLER_HOME = "Seller Home"
     const val ADS_PROMOTION = "/adspromotion"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
+    const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val PHYSICAL_GOODS = "physical goods"
+    const val PHYSICAL_GOODS_CAPITALIZED = "Physical Goods"
     const val NONE = "none"
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
@@ -99,6 +106,7 @@ object TrackingConstant {
     const val LOCKED = "locked"
     const val EMPTY_STRING = ""
     const val TOTAL_FINISHED_MISSION = "%d out of %d missions finished"
+    const val PG = "Physical Goods"
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"

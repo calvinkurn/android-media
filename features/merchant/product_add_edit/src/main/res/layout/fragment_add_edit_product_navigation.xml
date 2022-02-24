@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_indicator_main"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:text="@string/product_add_edit_preview"
+        android:textColor="@color/Unify_N700"
+        android:gravity="center_vertical"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_indicator_detail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:text="@string/label_add_product_detail"
+        android:textColor="@color/Unify_N700"
+        android:gravity="center_vertical"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_indicator_description"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:text="@string/label_add_product_description"
+        android:textColor="@color/Unify_N700"
+        android:gravity="center_vertical"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_indicator_shipment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:text="@string/label_add_product_shipment"
+        android:textColor="@color/Unify_N700"
+        android:gravity="center_vertical"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</LinearLayout>

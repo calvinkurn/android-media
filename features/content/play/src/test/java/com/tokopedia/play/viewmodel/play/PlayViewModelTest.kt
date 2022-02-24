@@ -1,8 +1,8 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.TrackProductTagBroadcasterUseCase
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.model.PlaySocketResponseBuilder
@@ -12,6 +12,7 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
@@ -72,7 +73,12 @@ class PlayViewModelTest {
     fun `given channel data is set, when retrieved, it should return same data`() {
         val channelData = channelDataModelBuilder.buildChannelData()
 
-        givenPlayViewModelRobot {
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
+
+        givenPlayViewModelRobot(
+            repo = repo
+        ) {
             createPage(channelData)
         } thenVerify {
             viewModel.latestCompleteChannelData.isEqualTo(channelData)
@@ -82,7 +88,7 @@ class PlayViewModelTest {
     @Test
     fun `when get new product, track product should be called`() {
         val trackProductUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true)
-        val mockSocket: PlayChannelWebSocket = mockk(relaxed = true)
+        val mockSocket: PlayWebSocket = mockk(relaxed = true)
         val socketFlow = MutableStateFlow<WebSocketAction?>(null)
 
         var isCalled = false
@@ -90,16 +96,18 @@ class PlayViewModelTest {
         val channelData = channelDataModelBuilder.buildChannelData()
 
         every { mockSocket.listenAsFlow() } returns socketFlow.filterNotNull()
-        coEvery { trackProductUseCase.executeOnBackground() } answers {
+
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
+        coEvery { repo.trackProducts(any(), any()) } answers {
             isCalled = true
-            true
         }
 
         givenPlayViewModelRobot(
-                trackProductTagBroadcasterUseCase = trackProductUseCase,
-                playChannelWebSocket = mockSocket,
-                dispatchers = testDispatcher,
-                playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+            repo = repo,
+            playChannelWebSocket = mockSocket,
+            dispatchers = testDispatcher,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
             createPage(channelData)
             focusPage(channelData)

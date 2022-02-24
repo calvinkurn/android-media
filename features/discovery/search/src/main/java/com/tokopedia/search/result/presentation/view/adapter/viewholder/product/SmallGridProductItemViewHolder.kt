@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardSmallGridBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -21,38 +22,41 @@ class SmallGridProductItemViewHolder(
 
     private var binding: SearchResultProductCardSmallGridBinding? by viewBinding()
 
+    override val productCardView: IProductCardView?
+        get() = binding?.productCardView
+
+    init {
+        initVideoHelper()
+    }
+
     override fun bind(productItemData: ProductItemDataView?) {
         if (productItemData == null) return
 
-        binding?.productCardView?.let {
-            it.setProductModel(productItemData.toProductCardModel(productItemData.imageUrl300, false))
+        val productCardView = binding?.productCardView ?: return
+        val productCardModel =
+            productItemData.toProductCardModel(productItemData.imageUrl300, false)
+        this.productCardModel = productCardModel
 
-            it.setThreeDotsOnClickListener {
-                productListener.onThreeDotsClick(productItemData, adapterPosition)
-            }
+        registerLifecycleObserver(productCardModel)
 
-            it.setOnLongClickListener {
-                productListener.onThreeDotsClick(productItemData, adapterPosition)
-                true
-            }
+        productCardView.setProductModel(productCardModel)
 
-            it.setOnClickListener {
-                productListener.onItemClicked(productItemData, adapterPosition)
-            }
-
-            it.setImageProductViewHintListener(productItemData, createImageProductViewHintListener(productItemData))
-        }
-    }
-
-    override fun bind(productItemData: ProductItemDataView?, payloads: MutableList<Any>) {
-        payloads.getOrNull(0) ?: return
-
-        binding?.productCardView?.setThreeDotsOnClickListener {
+        productCardView.setThreeDotsOnClickListener {
             productListener.onThreeDotsClick(productItemData, adapterPosition)
         }
-    }
 
-    override fun onViewRecycled() {
-        binding?.productCardView?.recycle()
+        productCardView.setOnLongClickListener {
+            productListener.onThreeDotsClick(productItemData, adapterPosition)
+            true
+        }
+
+        productCardView.setOnClickListener {
+            productListener.onItemClicked(productItemData, adapterPosition)
+        }
+
+        productCardView.setImageProductViewHintListener(
+            productItemData,
+            createImageProductViewHintListener(productItemData)
+        )
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.helper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import timber.log.Timber
 
 fun String.toMapParam(): Map<String, String> {
     if (this.isEmpty()) return mapOf()
@@ -39,6 +40,8 @@ val nonFilterParameterKeyList = setOf(
     SearchApiConst.UNIQUE_ID,
     SearchApiConst.START,
     SearchApiConst.USER_ID,
+    SearchApiConst.TYPO,
+    SearchApiConst.PAGE,
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
@@ -66,10 +69,21 @@ private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (In
             continue
         }
 
-        count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
+        count(getOptionCount(entry))
     }
 
     return this
+}
+
+private fun getOptionCount(mapEntry: Map.Entry<String, Any>): Int {
+    return try {
+        val optionValue = mapEntry.value.toString()
+        val optionList = optionValue.split(OptionHelper.OPTION_SEPARATOR)
+        optionList.size
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        0
+    }
 }
 
 private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {

@@ -9,7 +9,8 @@ import com.tokopedia.linter.detectors.ResourcePackageDetector
 import com.tokopedia.linter.detectors.UnsupportedColorDetector
 import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.DeprecatedResourceDetector
-import com.tokopedia.linter.detectors.ResponseFieldAnnotationDetector
+import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
+import com.tokopedia.linter.detectors.AndroidExportedDetector
 import com.tokopedia.linter.detectors.UnifyBackgroundDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
@@ -36,7 +37,10 @@ class IssueRegistry : IssueRegistry() {
                 ResourcePackageDetector.JAVA_ISSUE,
                 DimenResourceValueDetector.ISSUE,
                 DeprecatedResourceDetector.ISSUE,
-                ResponseFieldAnnotationDetector.ISSUE,
+                SerializedNameAnnotationDetector.RESPONSE_ISSUE,
+                SerializedNameAnnotationDetector.ENTITY_ISSUE,
+                SerializedNameAnnotationDetector.PARAM_ISSUE,
+                AndroidExportedDetector.ISSUE,
                 UnifyBackgroundDetector.ISSUE,
                 DeprecatedMethodDetector.ISSUE,
                 HANSEL_REQUIRED

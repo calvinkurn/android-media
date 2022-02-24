@@ -64,6 +64,12 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check shop score detail appLink with sellerapp scheme then should return DF_SHOP_SCORE in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-score-detail"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SHOP_SCORE)
+    }
+
+    @Test
     fun `check shop score detail internal appLink then should return DF_SHOP_SCORE in sellerapp`() {
         val appLink = "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/shop-score-detail"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SHOP_SCORE)
@@ -107,7 +113,7 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check seller search appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://seller-search"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-search"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 

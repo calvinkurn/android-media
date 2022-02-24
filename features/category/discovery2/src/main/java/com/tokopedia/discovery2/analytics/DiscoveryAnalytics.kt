@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -10,6 +11,7 @@ import com.tokopedia.discovery2.data.Level
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.quest_widget.tracker.Tracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
@@ -192,19 +194,20 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
         val list = ArrayList<Map<String, Any>>()
+        val creativeName = componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING
         list.add(mapOf(
                 KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
-                KEY_CREATIVE to " - $isAutoPlay",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
+                KEY_CREATIVE to " - $creativeName - $isAutoPlay",
                 KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, "${
-            componentsItem.name
-                    ?: EMPTY_STRING
-        } - ${componentsItem.creativeName ?: EMPTY_STRING} - $destinationURL")
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER,
+            "${componentsItem.name ?: EMPTY_STRING} - $creativeName - $destinationURL"
+        )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
@@ -216,10 +219,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     override fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {
+        val creativeName = componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING
         val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY, eventAction = CLICK_OTHER_CONTENT, "${
             componentsItem.name
                     ?: EMPTY_STRING
-        } - ${componentsItem.creativeName ?: EMPTY_STRING} - ${widgetPosition + 1}")
+        } - $creativeName - ${widgetPosition + 1}")
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
@@ -259,10 +263,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {
         val list = ArrayList<Map<String, Any>>()
+        val creativeName = componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING
         list.add(mapOf(
                 KEY_ID to componentsItem.id,
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
-                KEY_CREATIVE to EMPTY_STRING,
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
+                KEY_CREATIVE to creativeName,
                 KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -271,7 +276,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, "${
             componentsItem.name
                     ?: EMPTY_STRING
-        } - ${componentsItem.creativeName ?: EMPTY_STRING} - $destinationURL")
+        } - $creativeName - $destinationURL")
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
@@ -286,8 +291,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to componentsItem.id,
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
-                KEY_CREATIVE to EMPTY_STRING,
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
+                KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING),
                 KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -308,10 +313,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
         val list = ArrayList<Map<String, Any>>()
+        val creativeName = componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING
         list.add(mapOf(
                 KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
-                KEY_CREATIVE to " - $isAutoPlay",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
+                KEY_CREATIVE to " - $creativeName - $isAutoPlay",
                 KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -575,7 +581,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         componentsItems.data?.get(0)?.let {
             val productTypeName = getProductName(it.typeProductCard)
             productCardImpressionLabel = "$login - $productTypeName"
-            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_ID] = it.productId.toString()
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -701,7 +707,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItems.data?.get(0)?.let {
                 val productTypeName = getProductName(it.typeProductCard)
                 productCardImpressionLabel = "$login - $productTypeName"
-                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
                 listMap[KEY_NAME] = it.name.toString()
                 listMap[KEY_ID] = it.productId.toString()
                 listMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -1036,7 +1042,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID,
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName",
                 KEY_CREATIVE to (banner.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to bannerPosition + 1,
                 KEY_PROMO_ID to (banner.trackingFields?.promoId ?: EMPTY_STRING),
@@ -1613,7 +1619,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     private fun trackEventImpressionCalendar(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1635,7 +1641,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickCalendarWidget(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1657,7 +1663,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickCalendarCTA(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1674,5 +1680,58 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_TYPE] = pageType
         map[USER_ID] = userID
         getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    override fun clickQuestLihatButton(source: Int) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = CLICK_LIHAT_SEMUA
+        map[Tracker.Constants.EVENT_LABEL] = DISCO_SLUG
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewQuestWidget(source: Int, id: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_VIEW
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = VIEW_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$id"
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickQuestCard(source: Int, id: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = CLICK_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$id"
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun slideQuestCard(source: Int, direction: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = SLIDE_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$direction"
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+
     }
 }

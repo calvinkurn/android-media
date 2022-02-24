@@ -1,17 +1,16 @@
 package com.tokopedia.sellerapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
-import android.webkit.URLUtil;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.work.Configuration;
+
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 
@@ -19,15 +18,13 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
@@ -35,12 +32,13 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -53,26 +51,24 @@ import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.utils.permission.SlicePermission;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
-import timber.log.Timber;
-
-import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication {
+public class SellerMainApplication extends SellerRouterApplication implements Configuration.Provider{
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
@@ -95,6 +91,7 @@ public class SellerMainApplication extends SellerRouterApplication {
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp_ramadhan;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
@@ -106,7 +103,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         initFileDirConfig();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
-        generateSellerAppNetworkKeys();
         initRemoteConfig();
         initCacheManager();
 
@@ -128,7 +124,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         TokoPatch.init(this);
-        initSlicePermission();
 
         Loader.init(this);
     }
@@ -228,7 +223,6 @@ public class SellerMainApplication extends SellerRouterApplication {
             @NotNull
             @Override
             public String getEmbraceConfig() {
-                //no op because embrace for now not yet implemented in sellerapp
                 return "";
             }
         });
@@ -302,11 +296,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         }
     }
 
-    private void generateSellerAppNetworkKeys() {
-        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
-        AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
     public int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
         try {
@@ -325,16 +314,16 @@ public class SellerMainApplication extends SellerRouterApplication {
         Log.d("Init %s", tag);
     }
 
-    private void initSlicePermission() {
-        if (getSliceRemoteConfig()) {
-            SlicePermission slicePermission = new SlicePermission();
-            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
-        }
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "init");
+            map.put("error", Log.getStackTraceString(throwable));
+            ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
+            throw new RuntimeException("WorkManager failed to initialize", throwable);
+        }).build();
     }
-
-    private Boolean getSliceRemoteConfig() {
-        return remoteConfig != null
-                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
-    }
-
 }

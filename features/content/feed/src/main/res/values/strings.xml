@@ -133,5 +133,6 @@ dari Feed.</string>
     <!--Floating Action Button-->
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
+    <string name="feed_detail_page_header">Semua Barang Terbaru</string>
 
 </resources>

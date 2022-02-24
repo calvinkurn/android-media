@@ -1,21 +1,23 @@
 package com.tokopedia.product.addedit.common.util
 
+import android.R
+import android.content.res.ColorStateList
 import android.graphics.drawable.ScaleDrawable
 import android.text.*
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -23,6 +25,8 @@ import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
+private const val DIALOG_MAX_WIDTH = 900
+private const val DIALOG_MARGIN_TOP = 8
 private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
 
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
@@ -131,6 +135,8 @@ fun TextFieldUnify2?.setText(text: String) = this?.editText?.setText(text)
 
 fun TextFieldUnify2?.getText(): String = this?.editText?.text.toString()
 
+fun TextFieldUnify2?.getTrimmedText(): String = this?.editText?.text.toString().trim().replace("\\s+".toRegex(), " ")
+
 // set text listener only has a focus
 fun TextFieldUnify2?.afterTextChanged(listener: (String) -> Unit) {
     this?.editText?.let { editText ->
@@ -154,6 +160,56 @@ fun TextFieldUnify2?.updateText(text: String) {
         if (focused) {
             requestFocus()
         }
+    }
+}
+
+fun Typography.activateHighlight(isActive: Boolean = true) {
+    val myColorStateList = ColorStateList(
+        arrayOf(
+            intArrayOf(R.attr.state_enabled),
+            intArrayOf(-R.attr.state_enabled)
+        ), intArrayOf(
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        )
+    )
+    val backgroundColor = if (isActive) {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+    } else {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    }
+    if (isActive) {
+        setTextColor(myColorStateList)
+    } else {
+        setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    }
+    setBackgroundColor(backgroundColor)
+}
+
+fun DialogUnify.setDefaultMaxWidth(adjustButtonOrientation: Boolean = true) {
+    dialogMaxWidth = DIALOG_MAX_WIDTH
+
+    val isTablet = DeviceScreenInfo.isTablet(context)
+    if (adjustButtonOrientation && isTablet) {
+        setDialogOrientationToVertical()
+    }
+}
+
+fun DialogUnify.setDialogOrientationToVertical() {
+    val paramSecondary = (dialogSecondaryLongCTA.layoutParams as LinearLayout.LayoutParams).apply {
+        setMargins(Int.ZERO, DIALOG_MARGIN_TOP, Int.ZERO, Int.ZERO)
+    }
+
+    dialogSecondaryCTA.gone()
+    dialogSecondaryLongCTA.show()
+    dialogSecondaryLongCTA.layoutParams = paramSecondary
+    dialogCTAContainer.orientation = LinearLayout.VERTICAL
+    dialogCTAContainer.requestLayout()
+
+    dialogSecondaryLongCTA.post {
+        dialogPrimaryCTA.layoutParams = paramSecondary
+        dialogPrimaryCTA.layoutParams.width = dialogSecondaryLongCTA.measuredWidth
+        dialogPrimaryCTA.requestLayout()
     }
 }
 

@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -25,13 +27,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
+import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.viewholders.*
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -48,6 +50,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
  * Created by yfsx on 2/9/21.
  */
+@CassavaTest
 class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
     var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
@@ -63,6 +66,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
+    private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
+
     @Before
     fun resetAll() {
         disableCoachMark(context)
@@ -72,6 +77,12 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
                 null
             )
         )
+        val recyclerView: RecyclerView =
+                activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
+                recyclerView = recyclerView
+        )
+        IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
     @After
@@ -79,6 +90,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         visibilityIdlingResource?.let {
             IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
         }
+        IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
     @Test
@@ -168,6 +180,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedBanner() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -198,6 +211,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedProductLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             login()
@@ -258,24 +272,44 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testReminderWidget(){
+    fun testReminderWidgetRecharge(){
         HomeDCCassavaTest {
             initTest()
-            doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
-                //click salam widget
-                clickOnReminderWidget(viewHolder, i, homeRecycleView)
+            doActivityTestByModelClass(
+                dataModelClass = ReminderWidgetModel::class,
+                predicate = { it?.source == ReminderEnum.RECHARGE }
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
                 //click digital widget
-                clickOnReminderWidget(viewHolder, i, homeRecycleView)
+                clickOnReminderWidget(viewHolder, i, homeRecyclerView)
             }
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE)
+        }
+    }
+
+    @Test
+    fun testReminderWidgetSalam(){
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(
+                dataModelClass = ReminderWidgetModel::class,
+                predicate = { it?.source == ReminderEnum.SALAM }
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                //click salam widget
+                clickOnReminderWidget(viewHolder, i, homeRecyclerView)
+            }
+        } validateAnalytics {
+            addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM)
         }
     }
 
     @Test
     fun testRecommendationFeedProductNonLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -329,6 +363,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testBannerComponentWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBannerCarouselWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL)
+        }
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()
@@ -344,12 +391,16 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
-    private fun <T: Any> doActivityTestByModelClass(delayBeforeRender: Long = 2000L, dataModelClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+    private fun <T: Any> doActivityTestByModelClass(
+        delayBeforeRender: Long = 2000L,
+        dataModelClass : KClass<T>,
+        predicate: (T?) -> Boolean = {true},
+        isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
 
         val visitableList = homeRecycleAdapter?.currentList?: listOf()
-        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName }
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName && predicate.invoke(it as? T) }
         val targetModelIndex = visitableList.indexOf(targetModel)
 
         targetModelIndex.let { targetModelIndex->

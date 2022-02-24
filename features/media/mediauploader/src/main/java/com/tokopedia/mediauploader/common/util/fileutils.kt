@@ -1,22 +1,41 @@
 package com.tokopedia.mediauploader.common.util
 
 import android.graphics.BitmapFactory
+import android.text.TextUtils
+import android.webkit.MimeTypeMap
 import java.io.File
+import java.net.URLConnection
 
 fun Int.mbToBytes(): Int {
     return this * 1024 * 1024
 }
 
 fun String.fileExtension(): String {
-    val lastIndexOf = this.lastIndexOf(".")
-    return if (lastIndexOf == -1) "" else this.substring(lastIndexOf)
+    val extension = MimeTypeMap.getFileExtensionFromUrl(this)
+    if (!TextUtils.isEmpty(extension)) {
+        return extension
+    }
+    return if (this.contains(".")) {
+        this.substring(this.lastIndexOf(".") + 1, this.length)
+    } else {
+        ""
+    }
 }
 
-fun File.isImage(): Boolean {
-    val imageExtension = ".jpg,.jpeg,.png,.webp"
-    return imageExtension
-        .split(",")
-        .contains(name.fileExtension())
+fun isVideoFormat(path: String): Boolean {
+    val extension = path.fileExtension()
+    val prefix = "video"
+
+    val mimeType =
+        if (TextUtils.isEmpty(extension)) {
+            URLConnection.guessContentTypeFromName(path)
+        } else {
+            MimeTypeMap
+                .getSingleton()
+                .getMimeTypeFromExtension(extension)
+        }
+
+    return mimeType != null && mimeType.startsWith(prefix)
 }
 
 fun File.isMaxFileSize(maxFileSize: Int): Boolean {

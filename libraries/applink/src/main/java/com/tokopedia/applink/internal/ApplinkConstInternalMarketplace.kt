@@ -63,7 +63,9 @@ object ApplinkConstInternalMarketplace {
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
     // StockReminderActivity
-    const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
+    const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
+
+    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{stock}/"
 
     // SetCashbackActivity
     const val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
