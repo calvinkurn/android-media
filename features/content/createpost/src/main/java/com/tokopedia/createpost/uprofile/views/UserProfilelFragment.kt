@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +29,7 @@ import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -338,11 +341,21 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 activity?.onBackPressed()
             }
 
-            addRightIcon(R.drawable.ic_arrow_down).setOnClickListener {
+            val imgShare = addRightIcon(R.drawable.iconunify_share_mobile) as ImageView
+            imgShare.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.black),
+                android.graphics.PorterDuff.Mode.MULTIPLY
+            )
+            imgShare.setOnClickListener {
                 Toast.makeText(this.context, "arrow down ", Toast.LENGTH_SHORT).show()
             }
 
-            addRightIcon(R.drawable.ic_af_check_gray).setOnClickListener {
+            val imgMenu = addRightIcon(R.drawable.iconunify_menu_hamburger)
+            imgMenu.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.black),
+                android.graphics.PorterDuff.Mode.MULTIPLY
+            )
+            imgMenu.setOnClickListener {
                 Toast.makeText(this.context, "arrow grey ", Toast.LENGTH_SHORT).show()
             }
         }
