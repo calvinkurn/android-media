@@ -41,8 +41,8 @@
 
     <string name="subscription_more_info_bottomsheet_title">Langganan itu apa, sih?</string>
     <string-array name="subscription_more_info_bottomsheet_description">
-        <item>Dengan fitur Langganan, tagihan akan otomatis dibayar sesuai jadwal yang kamu tentukan.\n</item>
-        <item>Jika kamu melakukan transaksi manual untuk produk yang bisa dibayarkan berkali-kali (cth: Pulsa dan BPJS), Langganan kamu akan terus berjalan.\n</item>
+        <item>Dengan fitur Langganan, tagihan akan otomatis dibayar sesuai jadwal yang kamu tentukan.\n\n</item>
+        <item>Jika kamu melakukan transaksi manual untuk produk yang bisa dibayarkan berkali-kali (cth: Pulsa dan BPJS), Langganan kamu akan terus berjalan.\n\n</item>
         <item>Kamu bisa atur jadwal Langganan, periode Langganan, dan metode pembayaran kapan pun di halaman Langganan.</item>
     </string-array>
 </resources>
