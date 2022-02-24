@@ -100,15 +100,16 @@ class DrawerSelectionAdapter(
     fun removeData(media: MediaUiModel, isPublishedOnListener: Boolean = false) {
         val index = medias.getIndexOf(media)
 
-        if (isPublishedOnListener) {
-            listener?.onDataSetChanged(
-                DrawerActionType.Remove(medias, media, null)
-            )
-        }
-
         if (index != -1) {
             listRect.remove(index)
             this.medias.removeAt(index)
+
+            if (isPublishedOnListener) {
+                listener?.onDataSetChanged(
+                    DrawerActionType.Remove(medias, media, null)
+                )
+            }
+
             notifyItemRemoved(index)
         }
     }

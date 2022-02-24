@@ -250,8 +250,14 @@ open class PickerActivity : BaseActivity()
 
     private fun navigateByPageType() {
         when (PickerUiConfig.paramPage) {
-            PickerPageType.CAMERA -> onCameraTabSelected()
-            PickerPageType.GALLERY -> onGalleryTabSelected()
+            PickerPageType.CAMERA -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+                navigator?.start(PickerFragmentType.CAMERA)
+            }
+            PickerPageType.GALLERY -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+                navigator?.start(PickerFragmentType.GALLERY)
+            }
             else -> {
                 // show camera as initial page
                 navigator?.start(PickerFragmentType.CAMERA)

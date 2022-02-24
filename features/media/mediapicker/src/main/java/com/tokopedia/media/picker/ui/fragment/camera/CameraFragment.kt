@@ -250,6 +250,7 @@ open class CameraFragment : BaseDaggerFragment()
                 }
             ) {
                 // update the thumbnail
+                // TODO bug, still shown the preview even the data is empty
                 if (medias.isNotEmpty()) {
                     val lastMedia = medias.last()
                     controller.setThumbnailPreview(lastMedia)
