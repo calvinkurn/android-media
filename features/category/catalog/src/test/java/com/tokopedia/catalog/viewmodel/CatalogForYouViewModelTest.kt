@@ -77,8 +77,8 @@ class CatalogForYouViewModelTest {
         data.catalogComparisonList?.catalogComparisonList = null
         val result = Success(data)
        runBlocking {
-            coEvery { viewModel.catalogComparisonProductUseCase.getCatalogComparisonProducts(any(),any(), any(),any(),any(), any()) } returns result
-            viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
+           coEvery { viewModel.catalogComparisonProductUseCase.getCatalogComparisonProducts(any(),any(), any(),any(),any(), any()) } returns result
+           viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
            assertEquals(viewModel.getHasMoreItems().value , false)
         }
     }
@@ -95,7 +95,18 @@ class CatalogForYouViewModelTest {
             assertEquals(viewModel.getShimmerData().value?.size, 1)
             assertEquals(viewModel.masterDataList.size, 1)
             assertEquals(viewModel.isLoading,false)
+            assertEquals(viewModel.lastScrollIndex , 0)
             assertEquals(viewModel.page,2)
+        }
+    }
+
+    @Test
+    fun `Get Catalog Comparison Response Fail`() {
+        val result  = Fail(Throwable("No Data"))
+        runBlocking {
+            coEvery { viewModel.catalogComparisonProductUseCase.getCatalogComparisonProducts(any(),any(), any(),any(),any(), any()) } returns result
+            viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
+            assertEquals(viewModel.getHasMoreItems().value , false)
         }
     }
 
