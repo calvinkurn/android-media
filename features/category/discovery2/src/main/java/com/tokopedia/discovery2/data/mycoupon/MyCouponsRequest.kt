@@ -4,37 +4,37 @@ import com.google.gson.annotations.SerializedName
 
 data class MyCouponsRequest(
         @SerializedName("categoryID")
-        var categoryID: Int? = null,
+        var categoryID: Int,
 
         @SerializedName("page")
-        var page: Int? = null,
+        var page: Int,
 
         @SerializedName("limit")
-        var limit: Int? = null,
+        var limit: Int,
 
         @SerializedName("serviceID")
-        var serviceID: String = "",
+        var serviceID: String,
 
         @SerializedName("categoryIDCoupon")
-        var categoryIDCoupon: Int? = null,
+        var categoryIDCoupon: Int,
 
         @SerializedName("includeExtraInfo")
-        var includeExtraInfo: Int? = null,
+        var includeExtraInfo: Int,
 
         @SerializedName("apiVersion")
-        var apiVersion: String? = "",
+        var apiVersion: String = "",
 
         @SerializedName("source")
-        var source: String? = "",
+        var source: String = "",
 
         @SerializedName("catalogSlugs")
-        var catalogSlugs: List<String?>? = null,
+        var catalogSlugs: List<String?>,
 
         @SerializedName("clientID")
-        var clientID: String? = "",
+        var clientID: String = "",
 
         @SerializedName("isGetPromoInfo")
-        var isGetPromoInfo: Boolean? = null
+        var isGetPromoInfo: Boolean
 
 
 )

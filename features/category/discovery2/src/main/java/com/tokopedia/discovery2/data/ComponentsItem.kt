@@ -99,7 +99,7 @@ data class ComponentsItem(
         var userAddressData: LocalCacheModel? = null,
         var nextPageKey:String? = "",
         var horizontalProductFailState: Boolean = false,
-        var myCouponList: TokopointsCouponListStack? = null) {
+        var myCouponList: List<MyCoupon>? = null) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

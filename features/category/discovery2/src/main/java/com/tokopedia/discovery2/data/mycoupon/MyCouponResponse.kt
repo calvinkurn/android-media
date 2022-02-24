@@ -9,7 +9,7 @@ data class MyCouponResponse(
 
 data class TokopointsCouponListStack(
         @SerializedName("coupons")
-        var coupons: List<MyCoupon?>? = null,
+        var coupons: List<MyCoupon>? = null,
         @SerializedName("tokopointsPaging")
         val tokopointsPaging: TokopointsPaging? = null,
         @SerializedName("redeemMessage")
