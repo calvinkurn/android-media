@@ -153,7 +153,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addRewardIntroObserver()
     }
 
-    private fun setLayoutParams(cardheight: Int) {
+    private fun setLayoutParams(cardheight: Int , heightBackground:Float) {
         val imgEggView = view?.findViewById<AppCompatImageView>(R.id.img_egg)
         val imgBgHeader = view?.findViewById<ImageView>(R.id.img_bg_header)
         val statusBarHeight = getStatusBarHeight(activity)
@@ -164,7 +164,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         imageEggLp?.topMargin = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
         imgEggView?.layoutParams = imageEggLp
         val imageBigLp = imgBgHeader?.layoutParams as? RelativeLayout.LayoutParams
-        imageBigLp?.height = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
+        imageBigLp?.height = (statusBarHeight + heightBackground + cardheight).toInt()
         imgBgHeader?.layoutParams = imageBigLp
     }
 
@@ -735,8 +735,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 })
     }
 
-    override fun setCardLayoutHeight(height: Int) {
-        setLayoutParams(height)
+    override fun setCardLayoutHeight(height: Int , heightBackground: Float) {
+        setLayoutParams(height , heightBackground)
     }
 
     override fun deleteQuestWidget() {

@@ -56,6 +56,10 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
+import android.widget.RelativeLayout
+
+
+
 
 class TopSectionVH(
     itemView: View,
@@ -93,6 +97,9 @@ class TopSectionVH(
     private var digitContainer: LinearLayout? = null
     private var popupNotification: PopupNotification? = null
     private var topSectionData : TopSectionResponse? =null
+    private var textTransaksi : Typography? = null
+    private var textLagi : Typography? = null
+    private var containerProgressBar : FrameLayout ? = null
     private var isNextTier = false
 
     fun bind(model: TopSectionResponse) {
@@ -119,6 +126,9 @@ class TopSectionVH(
         digitContainer = itemView.findViewById(R.id.digitContainer)
         currentTier = itemView.findViewById(R.id.text_current_tier)
         arrowIcon = itemView.findViewById(R.id.ic_arrow_icon)
+        textTransaksi = itemView.findViewById(R.id.text_transaksi_desc)
+        textLagi = itemView.findViewById(R.id.text_transaksi_lagi)
+        containerProgressBar = itemView.findViewById(R.id.container_progressbar)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -139,28 +149,40 @@ class TopSectionVH(
 
     private fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
         cardTierInfo.doOnLayout {
-            cardRuntimeHeightListener.setCardLayoutHeight(it.height)
+            if (data?.progressInfoList.isNullOrEmpty()) {
+                cardRuntimeHeightListener.setCardLayoutHeight(
+                    it.height,
+                    itemView.context.resources.getDimension(R.dimen.tp_home_top_bg_height_noprogressbar)
+                )
+            } else {
+                cardRuntimeHeightListener.setCardLayoutHeight(
+                    it.height,
+                    itemView.context.resources.getDimension(R.dimen.tp_home_top_bg_height)
+                )
+            }
         }
         arrowIcon?.setOnClickListener {
             gotoMembershipPage()
         }
         mTextMembershipLabel?.text = data?.introductionText
-        currentTier?.text = data?.progressInfoList?.getOrNull(1)?.nextTierName?:""
+        if (data?.progressInfoList?.isNotEmpty() == true) {
+            currentTier?.text = data.progressInfoList.getOrNull(1)?.nextTierName ?: ""
+            val diffAmount = data.progressInfoList.getOrNull(1)?.differenceAmountStr ?: ""
+            tierIconProgress?.loadImage(data.progressInfoList[1].nextTierIconImageURL ?: "")
 
-        val diffAmount = data?.progressInfoList?.getOrNull(1)?.differenceAmountStr?:""
-
-        tierIconProgress?.loadImage(data?.progressInfoList?.get(1)?.nextTierIconImageURL ?: "")
-
-        if (digitContainer?.childCount == 0) {
-            if (isContainsRp(diffAmount)) {
-                addRPToTransaction()
-                setDigitContainerView(diffAmount.removePrefix("Rp").toCharArray())
-            } else {
-                setDigitContainerView(diffAmount.toCharArray())
-                addXToTransaction()
+            if (digitContainer?.childCount == 0) {
+                if (isContainsRp(diffAmount)) {
+                    addRPToTransaction()
+                    setDigitContainerView(diffAmount.removePrefix("Rp").toCharArray())
+                } else {
+                    setDigitContainerView(diffAmount.toCharArray())
+                    addXToTransaction()
+                }
             }
+            progressBarAnimation(data.progressInfoList ?: listOf())
+        } else {
+            hideTierComponents()
         }
-        progressBarAnimation(data?.progressInfoList?: listOf())
 
         data?.targetV2?.let {
             if (!it.textColor.isNullOrEmpty()) {
@@ -564,6 +586,20 @@ class TopSectionVH(
             }
         }
 
+    private fun hideTierComponents() {
+        textTransaksi?.hide()
+        textLagi?.hide()
+        digitContainer?.hide()
+        currentTier?.hide()
+        containerProgressBar?.hide()
+ /*       val params = RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        params.addRule(RelativeLayout.BELOW, mImgEgg?.id?:0)
+        cardTierInfo.layoutParams = params*/
+    }
+
     private fun gotoMembershipPage(){
         RouteManager.route(
             itemView.context,
@@ -579,7 +615,7 @@ class TopSectionVH(
     }
 
     interface CardRuntimeHeightListener {
-        fun setCardLayoutHeight(height: Int)
+        fun setCardLayoutHeight(height: Int , heightBackground: Float)
     }
 
     interface RefreshOnTierUpgrade {

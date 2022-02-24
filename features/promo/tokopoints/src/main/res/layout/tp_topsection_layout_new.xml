@@ -54,97 +54,99 @@
         android:layout_alignEnd="@id/text_membership_value"
         app:srcCompat="@drawable/ic_right_arrow_white" />
 
-   <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_transaksi_desc"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/containerProgressComponent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_egg"
-        android:layout_alignStart="@id/img_egg"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:maxLines="1"
-       android:layout_marginEnd="@dimen/unify_space_2"
-        android:textColor="@color/Unify_N0"
-        app:typographyType="body_3"
-       android:text="@string/tp_transaksi" />
+        android:layout_alignStart="@id/img_egg">
 
-    <LinearLayout
-        android:id="@+id/digitContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/text_transaksi_desc"
-        android:layout_alignTop="@id/text_transaksi_desc"
-        android:layout_toEndOf="@id/text_transaksi_desc"
-        android:orientation="horizontal">
-    </LinearLayout>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_transaksi_lagi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/img_egg"
-        android:layout_toEndOf="@id/digitContainer"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:maxLines="1"
-        android:layout_marginStart="@dimen/unify_space_2"
-        android:textColor="@color/Unify_N0"
-        app:typographyType="body_3"
-        android:text="@string/tp_lagi" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_current_tier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/img_egg"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_N0"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Gold" />
-
-    <FrameLayout
-        android:id="@+id/container_progressbar"
-        android:layout_width="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:layout_below="@id/digitContainer"
-        android:layout_alignStart="@id/text_transaksi_desc"
-        android:layout_alignEnd="@id/text_current_tier"
-        android:layout_height="wrap_content">
-
-        <com.tokopedia.unifycomponents.ProgressBarUnify
-            android:id="@+id/progressbar_membership"
-            android:layout_width="match_parent"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_transaksi_desc"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_2"
+            android:maxLines="1"
+            android:text="@string/tp_transaksi"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="body_3" />
+
+        <LinearLayout
+            android:id="@+id/digitContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/text_transaksi_desc"
+            android:layout_alignBottom="@id/text_transaksi_desc"
+            android:layout_toEndOf="@id/text_transaksi_desc"
+            android:orientation="horizontal"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_transaksi_lagi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_2"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_toEndOf="@id/digitContainer"
+            android:maxLines="1"
+            android:text="@string/tp_lagi"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_current_tier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Gold" />
+
+        <FrameLayout
+            android:id="@+id/container_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/digitContainer"
+            android:layout_alignStart="@id/text_transaksi_desc"
+            android:layout_alignEnd="@id/text_current_tier"
             android:clipChildren="false"
-            android:layout_gravity="center"
-            android:layout_marginTop="-6dp"
-            app:unify_progress_bar_color_type="color_green"
-            app:unify_progress_bar_from_color="@color/green_50"
-            app:unify_progress_bar_height="10" />
+            android:clipToPadding="false">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/tier_icon_progressbar"
-            android:layout_gravity="center|end"
-            android:layout_width="@dimen/tp_dp_20"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="-2dp"
-            android:elevation="@dimen/unify_space_2"
-            android:layout_height="@dimen/tp_dp_20" />
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/progressbar_membership"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="-6dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:unify_progress_bar_color_type="color_green"
+                app:unify_progress_bar_from_color="@color/green_50"
+                app:unify_progress_bar_height="10" />
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/tier_icon_progressbar"
+                android:layout_width="@dimen/tp_dp_20"
+                android:layout_height="@dimen/tp_dp_20"
+                android:layout_gravity="center|end"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="-2dp"
+                android:elevation="@dimen/unify_space_2" />
 
-    </FrameLayout>
+        </FrameLayout>
+    </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_target"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/tp_dp_18"
-        android:layout_below="@id/container_progressbar"
+        android:layout_below="@id/containerProgressComponent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="@dimen/tp_margin_medium">
 
@@ -153,8 +155,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginLeft="12dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="@dimen/unify_space_12"
             android:layout_marginBottom="12dp"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/Unify_Y200"
