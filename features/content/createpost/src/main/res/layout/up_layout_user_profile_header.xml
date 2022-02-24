@@ -18,12 +18,13 @@
         app:elevation="@dimen/unify_space_4"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false"
-        app:unify_header_transparent_mode="false"
-        app:unify_header_title="" />
+        app:unify_header_title=""
+        app:unify_header_transparent_mode="false" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="@color/Unify_Background"
         android:measureAllChildren="false"
         android:paddingStart="@dimen/unify_space_16"
@@ -32,16 +33,16 @@
 
         <View
             android:id="@+id/view_profile_outer_ring"
-            android:layout_width="@dimen/unify_space_64"
-            android:layout_height="@dimen/unify_space_64"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
             android:background="@drawable/up_live_ring_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_profile_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="@dimen/dp_64"
             android:layout_margin="@dimen/cp_dp_6"
             android:src="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/view_profile_outer_ring"
@@ -56,15 +57,15 @@
             android:id="@+id/text_live"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
-            android:background="@color/colorRed"
-            android:paddingStart="@dimen/dp_2"
-            android:paddingLeft="@dimen/dp_2"
-            android:paddingEnd="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_2"
-            android:text="live"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/bg_up_live"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_4"
+            android:text="LIVE"
             android:textColor="@color/white"
-            android:textSize="8sp"
+            android:textSize="9sp"
             app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
             app:layout_constraintLeft_toLeftOf="@+id/view_profile_outer_ring"
             app:layout_constraintRight_toRightOf="@+id/view_profile_outer_ring"
@@ -77,7 +78,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="999"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintBottom_toTopOf="@+id/text_content_label"
             app:layout_constraintEnd_toStartOf="@+id/text_follower_count"
@@ -86,28 +86,28 @@
             app:layout_constraintTop_toTopOf="@+id/view_profile_outer_ring"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="999" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_follower_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="999"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toStartOf="@+id/text_following_count"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toEndOf="@+id/text_content_count"
             app:layout_constraintTop_toTopOf="@+id/text_content_count"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="999" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_following_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="999"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread"
@@ -115,14 +115,15 @@
             app:layout_constraintStart_toEndOf="@+id/text_follower_count"
             app:layout_constraintTop_toTopOf="@+id/text_content_count"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="999" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_content_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="post"
+            android:text="Postingan"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="@+id/view_profile_outer_ring"
             app:layout_constraintEnd_toEndOf="@+id/text_content_count"
@@ -137,7 +138,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="follower"
+            android:text="Follower"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@+id/text_following_label"
             app:layout_constraintHorizontal_chainStyle="spread"
@@ -151,7 +152,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="following"
+            android:text="Following"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_follower_label"
@@ -164,19 +165,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_16"
-            android:text="Shruti Agrawal"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_profile_outer_ring"
             app:typographyType="heading_3"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="John Doe" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/cp_dp_2"
-            android:text="shruti.agrawal"
+            android:text="john.doe"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_display_name"
@@ -184,11 +185,17 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_bio"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/cp_dp_2"
-            android:text="hiiii\nhelood shshhdsd\ajhshajhs\n aklsdhakshdakjbskjh"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:maxLines="3"
+            android:text="hiiii\nhelood hhuhhhuuhhuhuhuhuhuhuhuhuhuhuhuhhuhuhhuhuuhuhuhuhuhuhuhuhuhuuhuuhhuhuhuuhuuhuuhuhuuhuhuhuuhuhuhuhuhuuhuuhuhuhshshhdsd\ajhshajhs\n aklsdhakshdakjbskjh"
             android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_user_name"
             app:typographyType="body_2" />

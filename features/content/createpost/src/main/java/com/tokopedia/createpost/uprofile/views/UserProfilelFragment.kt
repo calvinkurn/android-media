@@ -259,8 +259,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
 
-        textBio?.text = data.profileHeader.profile.biography
-        textUserName?.text = data.profileHeader.profile.username
+//        textBio?.text = data.profileHeader.profile.biography
+        textUserName?.text = "@" + data.profileHeader.profile.username
         textDisplayName?.text = data.profileHeader.profile.name
         textContentCount?.text = data.profileHeader.stats.totalPostFmt
         textFollowerCount?.text = data.profileHeader.stats.totalFollowerFmt
@@ -390,9 +390,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     )
                 })
             }
-            -
+
             R.id.text_see_more -> {
-                Toast.makeText(context, "See All", Toast.LENGTH_SHORT).show()
+                val textSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
+                textSeeAll?.maxLines = 100
+                textSeeAll?.hide()
             }
         }
     }
