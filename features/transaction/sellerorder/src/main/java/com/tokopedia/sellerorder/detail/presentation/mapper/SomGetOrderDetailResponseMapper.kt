@@ -80,14 +80,15 @@ object SomGetOrderDetailResponseMapper {
                     product = product,
                     addOnSummary = product.addOnSummary?.let { addOnSummary ->
                         AddOnSummaryUiModel(
-                            addons = addOnSummary.addons.map { AddOnUiModel(addOn = it) },
+                            addons = addOnSummary.addons.map {
+                                AddOnUiModel(addOn = it, providedByBranchShop = false)
+                            },
                             total = addOnSummary.total,
                             totalPrice = addOnSummary.totalPrice,
                             totalPriceStr = addOnSummary.totalPriceStr,
                             totalQuantity = addOnSummary.totalQuantity,
                             iconUrl = addOnIcon,
-                            label = addOnLabel,
-                            providedByBranchShop = false
+                            label = addOnLabel
                         )
                     }
                 )
@@ -102,14 +103,15 @@ object SomGetOrderDetailResponseMapper {
             add(
                 NonProductBundleUiModel(
                     addOnSummary = AddOnSummaryUiModel(
-                        addons = addOnSummary.addons.map { AddOnUiModel(addOn = it) },
+                        addons = addOnSummary.addons.map {
+                            AddOnUiModel(addOn = it, providedByBranchShop = true)
+                        },
                         total = addOnSummary.total,
                         totalPrice = addOnSummary.totalPrice,
                         totalPriceStr = addOnSummary.totalPriceStr,
                         totalQuantity = addOnSummary.totalQuantity,
                         iconUrl = addOnInfo.iconUrl,
-                        label = addOnInfo.label,
-                        providedByBranchShop = true
+                        label = addOnInfo.label
                     )
                 )
             )

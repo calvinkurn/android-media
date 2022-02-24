@@ -6,7 +6,8 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.AddOnAdapte
 
 data class AddOnUiModel(
     val addOn: AddOnSummary.Addon,
-    var descriptionExpanded: Boolean = false
+    var descriptionExpanded: Boolean = false,
+    val providedByBranchShop: Boolean
 ) : Visitable<AddOnAdapterFactory> {
     override fun type(typeFactory: AddOnAdapterFactory): Int {
         return typeFactory.type(this)

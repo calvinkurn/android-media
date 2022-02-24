@@ -9,13 +9,13 @@
         android:id="@+id/icAddOn"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        app:icon_name="ADD_ON"
         app:layout_constraintBottom_toBottomOf="@id/tvAddOnLabel"
         app:layout_constraintEnd_toStartOf="@id/tvAddOnLabel"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvAddOnLabel"
-        app:icon_name="ADD_ON"/>
+        app:layout_constraintTop_toTopOf="@id/tvAddOnLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddOnLabel"
@@ -31,15 +31,6 @@
         app:typographyWeight="bold"
         tools:text="@string/som_detail_add_on_sample_label" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelAddOn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:labelTitle="Produk di bawah ini disediakan pihak Tokopedia"
-        app:labelType="general_light_grey"
-        app:layout_constraintTop_toBottomOf="@id/tvAddOnLabel" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAddOn"
         android:layout_width="match_parent"
@@ -48,7 +39,7 @@
         android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelAddOn"
+        app:layout_constraintTop_toBottomOf="@id/tvAddOnLabel"
         tools:itemCount="5"
         tools:listitem="@layout/item_add_on" />
 

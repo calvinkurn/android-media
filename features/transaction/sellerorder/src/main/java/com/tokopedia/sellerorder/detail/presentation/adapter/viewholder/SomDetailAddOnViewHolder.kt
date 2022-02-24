@@ -56,7 +56,7 @@ class SomDetailAddOnViewHolder(
             setupAddOnImage(addOnUiModel.addOn.imageUrl)
             setupAddOnName(addOnUiModel.addOn.type, addOnUiModel.addOn.name)
             setupAddOnPrice(addOnUiModel.addOn.quantity, addOnUiModel.addOn.priceStr)
-            setupAddOnDescriptions(addOnUiModel.addOn.metadata, addOnUiModel.descriptionExpanded)
+            setupAddOnDescriptions(addOnUiModel.addOn.metadata, addOnUiModel.descriptionExpanded, addOnUiModel.providedByBranchShop)
         }
     }
 
@@ -76,13 +76,14 @@ class SomDetailAddOnViewHolder(
 
     private fun ItemAddOnBinding.setupAddOnDescriptions(
         metadata: AddOnSummary.Addon.Metadata?,
-        descriptionExpanded: Boolean
+        descriptionExpanded: Boolean,
+        providedByBranchShop: Boolean
     ) {
         layoutAddOnDescription.run {
             if (metadata?.addOnNote == null || metadata.addOnNote.isEmpty()) {
                 gone()
             } else {
-                setIsCopyable(copyable = true)
+                setIsCopyable(copyable = !providedByBranchShop)
                 setReceiverName(metadata.addOnNote.to)
                 setSenderName(metadata.addOnNote.from)
                 setDescription(metadata.addOnNote.notes.stripLastDot(), descriptionExpanded)
