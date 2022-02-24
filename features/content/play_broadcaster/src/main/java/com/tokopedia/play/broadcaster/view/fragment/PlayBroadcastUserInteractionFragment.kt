@@ -762,9 +762,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
-        productTagView.setProducts(state
-            .filterNot { it.campaignStatus == CampaignStatus.Ready || it.campaignStatus == CampaignStatus.ReadyLocked }
-            .flatMap { it.products }
+        productTagView.setProducts(
+            state.filterNot { it.campaignStatus.isUpcoming() }
+                .flatMap { it.products }
         )
     }
 
