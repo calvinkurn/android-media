@@ -6,6 +6,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.net.Uri;
+import android.os.Build;
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -16,6 +19,8 @@ import androidx.work.Configuration;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.logger.ServerLogger;
@@ -25,6 +30,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.screenshot_observer.Screenshot;
+import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
@@ -39,6 +48,8 @@ import io.embrace.android.embracesdk.Embrace;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication
         implements Configuration.Provider {
+
+    private static final String SUFFIX_ALPHA = "-alpha";
 
     @Override
     public void initConfigValues() {
@@ -94,6 +105,8 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         Embrace.getInstance().start(this);
         super.onCreate();
         setupAppScreenMode();
+        setupAlphaObserver();
+
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
@@ -142,6 +155,28 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;
         }
         AppCompatDelegate.setDefaultNightMode(screenMode);
+    }
+
+    private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("EXTRA_URI_IMAGE", uri);
+        intent.putExtra("EXTRA_IS_CLASS_NAME", className);
+        intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
+        getApplicationContext().startActivity(intent);
+    }
+
+    private void setupAlphaObserver() {
+        String versionName = BuildConfig.VERSION_NAME;
+        if (versionName.endsWith(SUFFIX_ALPHA) && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
+            registerActivityLifecycleCallbacks(new AlphaObserver());
+            registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+                @Override
+                public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                    openFeedbackForm(uri, className, isFromScreenshot);
+                }
+            }));
+        }
     }
 
     @Nullable

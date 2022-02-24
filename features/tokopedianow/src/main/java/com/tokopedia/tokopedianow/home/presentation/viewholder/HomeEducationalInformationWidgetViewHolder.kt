@@ -96,6 +96,7 @@ class HomeEducationalInformationWidgetViewHolder(
             sivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
             sivChevronDown.setOnClickListener {
                 showBottomSheet()
+                listener?.onEducationInformationDropDownClicked()
             }
         }
     }
@@ -109,5 +110,6 @@ class HomeEducationalInformationWidgetViewHolder(
         fun isEducationInformationLottieStopped(): Boolean
         fun onEducationInformationLottieClicked()
         fun onEducationInformationWidgetImpressed()
+        fun onEducationInformationDropDownClicked()
     }
 }

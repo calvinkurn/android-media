@@ -6,12 +6,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_URL
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_URL
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestTitleWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestTitleViewHolder(
@@ -56,6 +62,10 @@ class HomeQuestTitleViewHolder(
             iuGift.setImage(newIconId = IconUnify.GIFT)
             iuGift.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White), BlendModeCompat.SRC_ATOP)
             tpCounter.text = String.format("${element.currentQuestFinished}/${element.totalQuestTarget}")
+            root.setOnClickListener {
+                listener?.onClickQuestWidgetTitle()
+                goToQuestDetailWebView()
+            }
         }
     }
 
@@ -70,5 +80,13 @@ class HomeQuestTitleViewHolder(
                 }
             }
         }
+    }
+    private fun goToQuestDetailWebView() {
+        val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            QUEST_DETAIL_STAGING_URL
+        } else {
+            QUEST_DETAIL_PRODUCTION_URL
+        }
+        RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 }

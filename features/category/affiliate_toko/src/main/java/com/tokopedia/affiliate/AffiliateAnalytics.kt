@@ -99,7 +99,7 @@ object AffiliateAnalytics {
         bundle.putString(EventKeys.KEY_USER_ID,userId)
         bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
 
-        getTracker().sendEnhanceEcommerceEvent(EventKeys.KEY_EVENT,bundle)
+        getTracker().sendEnhanceEcommerceEvent(event,bundle)
     }
 
     interface EventKeys {
