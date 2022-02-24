@@ -62,13 +62,13 @@ object ProductDetailServerLogger {
         logBreadCrumb(PDP_SUCCESS_GET_P2_STATE, jsonObject)
     }
 
-    fun logBreadCrumbTopAdsIsAds(isSuccess: Boolean,
-                                 errorMessage: String?,
-                                 errorCode: String,
-                                 isTopAds: Boolean) {
+    fun logBreadCrumbTopAdsIsAds(isSuccess: Boolean = false,
+                                 errorMessage: String? = "",
+                                 errorCode: String = "",
+                                 isTopAds: Boolean = false) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
-            put(ERROR_MESSAGE_KEY, errorMessage ?: "")
+            put(ERROR_MESSAGE_KEY, errorMessage)
             put(ERROR_CODE_KEY, errorCode)
             put(IS_TOPADS_KEY, isTopAds)
         }
