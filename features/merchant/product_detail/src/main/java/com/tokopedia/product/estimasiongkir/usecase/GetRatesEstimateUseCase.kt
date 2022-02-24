@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW_15
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationScope
@@ -32,7 +33,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
         private const val PARAM_BO_META_DATA = "bo_metadata"
         private const val PARAM_PO_TIME = "po_time"
         private const val PARAM_SHOP_TIER = "shop_tier"
-        private const val FIELD_BO_METADATA = "{\"bo_metadata\":{\"bo_type\":3,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"}]}}\""
+        private const val FIELD_BO_METADATA = "{\"bo_metadata\":{\"bo_type\":${'$'}boType,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"}]}}\""
 
         fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String,
                          shopId: String, isFulfillment: Boolean, destination: String, freeShippingFlag: Int,
@@ -47,7 +48,14 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 PARAM_PO_TIME to poTime,
                 PARAM_FREE_SHIPPING to freeShippingFlag,
                 PARAM_SHOP_TIER to shopTier,
-                PARAM_BO_META_DATA to if (freeShippingFlag == BO_TOKONOW) FIELD_BO_METADATA else "")
+                PARAM_BO_META_DATA to buildBoMetaData(freeShippingFlag)
+        )
+
+        private fun buildBoMetaData(freeShippingFlag: Int): String {
+            return if (freeShippingFlag == BO_TOKONOW || freeShippingFlag == BO_TOKONOW_15)
+                FIELD_BO_METADATA.replace("${'$'}boType", freeShippingFlag.toString())
+            else ""
+        }
 
         val QUERY = """
             query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int, ${'$'}po_time: Int, ${'$'}shop_tier: Int, ${'$'}bo_metadata:String) {

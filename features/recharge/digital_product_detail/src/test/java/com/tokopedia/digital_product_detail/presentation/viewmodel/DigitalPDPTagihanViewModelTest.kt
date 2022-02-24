@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -117,6 +116,15 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     @Test
     fun `when getting tagihanProduct should run and give fail result`() {
         onGetTagihanProduct_thenReturn(NullPointerException())
+
+        viewModel.getTagihanProduct(MENU_ID, TagihanDataFactory.VALID_CLIENT_NUMBER, "")
+        verifyGetTagihanProductRepoGetCalled()
+        verifyGetTagihanProductFail()
+    }
+
+    @Test
+    fun `when getting null tagihanProduct should not emit anything`() {
+        onGetTagihanProduct_thenReturn(null)
 
         viewModel.getTagihanProduct(MENU_ID, TagihanDataFactory.VALID_CLIENT_NUMBER, "")
         verifyGetTagihanProductRepoGetCalled()
@@ -292,8 +300,8 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `when updateCategoryCheckoutPassData called should update digitalCheckoutPassData`() {
         verifyCheckoutPassDataCategoryIdEmpty()
 
-        viewModel.updateCategoryCheckoutPassData(PulsaDataFactory.CATEGORY_ID)
-        verifyCheckoutPassDataCategoryIdUpdated(PulsaDataFactory.CATEGORY_ID)
+        viewModel.updateCategoryCheckoutPassData(TagihanDataFactory.CATEGORY_ID)
+        verifyCheckoutPassDataCategoryIdUpdated(TagihanDataFactory.CATEGORY_ID)
     }
 
     @Test
