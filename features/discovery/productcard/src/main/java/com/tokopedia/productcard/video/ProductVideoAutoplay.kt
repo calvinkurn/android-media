@@ -30,6 +30,16 @@ class ProductVideoAutoplay(
     private var videoPlayerIterator: Iterator<ProductVideoPlayer>? = null
     private var isPaused = false
 
+    private var firstVisibleItemIndex: Int = -1
+    private var lastVisibleItemIndex: Int = -1
+
+    private val hasVisibleViewHolders: Boolean
+        get() {
+            return isAdapterNotEmpty
+                    && firstVisibleItemIndex != -1
+                    && lastVisibleItemIndex != -1
+        }
+
     private val isAutoplayProductVideoEnabled: Boolean by lazy {
         remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MPC_VIDEO_AUTOPLAY, true)
     }
@@ -37,6 +47,13 @@ class ProductVideoAutoplay(
     private var recyclerView: RecyclerView? = null
     private val layoutManager: RecyclerView.LayoutManager?
         get() = recyclerView?.layoutManager
+
+    private val adapterItemCount: Int
+        get() = recyclerView?.adapter?.itemCount ?: 0
+    private val isAdapterEmpty: Boolean
+        get() = adapterItemCount <= 0
+    private val isAdapterNotEmpty: Boolean
+        get() = !isAdapterEmpty
 
     private lateinit var masterJob: Job
 
@@ -96,25 +113,13 @@ class ProductVideoAutoplay(
     }
 
     private fun filterVisibleProductVideoPlayer(): List<ProductVideoPlayer> {
-        val itemCount = recyclerView?.adapter?.itemCount ?: return emptyList()
-        val firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
-        val lastVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
-        if (itemCount > 0
-            && firstVisibleItemIndex != -1
-            && lastVisibleItemIndex != -1
-        ) {
-            return getVisibleViewHolderList(
-                firstVisibleItemIndex,
-                lastVisibleItemIndex
-            )
-        }
-        return emptyList()
+        if(isAdapterEmpty) return emptyList()
+        firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
+        lastVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
+        return if (hasVisibleViewHolders) getVisibleViewHolderList() else emptyList()
     }
 
-    private fun getVisibleViewHolderList(
-        firstVisibleItemIndex: Int,
-        lastVisibleItemIndex: Int,
-    ): List<ProductVideoPlayer> {
+    private fun getVisibleViewHolderList(): List<ProductVideoPlayer> {
         val visibleVideoPlayerProviders = mutableListOf<ProductVideoPlayerProvider>()
         for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
             val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: continue
@@ -123,9 +128,7 @@ class ProductVideoAutoplay(
             }
         }
         return visibleVideoPlayerProviders
-            .mapNotNull {
-                it.productVideoPlayer
-            }
+            .mapNotNull { it.productVideoPlayer }
             .filter { it.hasProductVideo }
     }
 
