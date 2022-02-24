@@ -34,6 +34,9 @@ data class Properties(
         @SerializedName("type")
         val type: String? = null,
 
+        @SerializedName("comp_type")
+        val compType: String? = null,
+
         @SerializedName("limit_number")
         val limitNumber: String = "20",
 
