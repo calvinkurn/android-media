@@ -429,6 +429,12 @@ object HomeLayoutMapper {
         }
     }
 
+    inline fun<reified T: Visitable<*>> List<HomeLayoutItemUiModel>.getItem(itemClass: Class<T>): T? {
+        return mapNotNull { it.layout }.find {
+            it.javaClass == itemClass
+        } as? T
+    }
+
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
