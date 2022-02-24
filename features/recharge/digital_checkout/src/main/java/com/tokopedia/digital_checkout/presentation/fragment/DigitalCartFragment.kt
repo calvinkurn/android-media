@@ -751,7 +751,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
             descriptionArray.forEachIndexed { index, text ->
                 val simpleWidget = DigitalCheckoutSimpleWidget(it)
-                simpleWidget.setContent("${index + 1}.", text.trim())
+                simpleWidget.setContent("${index + 1}.", text)
 
                 linearLayout.addView(simpleWidget)
             }
