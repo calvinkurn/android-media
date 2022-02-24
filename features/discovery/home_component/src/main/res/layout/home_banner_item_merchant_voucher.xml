@@ -11,6 +11,7 @@
         android:layout_width="256dp"
         android:layout_height="@dimen/home_merchant_background_voucher_height"
         android:layout_marginHorizontal="2dp"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,15 +21,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/content_desc_merchant_background"
+            android:scaleY="1.016"
+            android:scaleX="1.04"
             android:scaleType="fitXY"
-            android:scaleX="1.05"
-            android:scaleY="1.12"
-            android:translationY="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:srcCompat="@drawable/bg_merchant_voucher" />
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -64,9 +64,9 @@
             tools:text="Shop Name" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintEnd_toEndOf="parent"

@@ -209,10 +209,6 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
-        private const val KEY_CREATIVE_NAME = "creative_name"
-        private const val KEY_CREATIVE_SLOT = "creative_slot"
-        private const val KEY_ITEM_ID = "item_id"
-        private const val KEY_ITEM_NAME = "item_name"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
