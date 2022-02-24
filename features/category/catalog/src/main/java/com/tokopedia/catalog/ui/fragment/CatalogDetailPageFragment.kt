@@ -33,8 +33,10 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.raw.ComparisionModel
 import com.tokopedia.catalog.model.raw.VideoComponentData
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
@@ -42,7 +44,7 @@ import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
-import com.tokopedia.catalog.ui.bottomsheet.CatalogAllReviewBottomSheet
+import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
@@ -94,7 +96,12 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogId: String = ""
     private var catalogUrl: String = ""
     private var catalogName : String = ""
+    private var catalogBrand : String = ""
+    private var catalogDepartmentId : String = ""
     private var catalogImages  =  arrayListOf<CatalogImage>()
+    private var comparisonCatalogId: String = ""
+    private var recommendedCatalogId: String = ""
+
 
     private var navToolbar: NavToolbar? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -148,7 +155,7 @@ class CatalogDetailPageFragment : Fragment(),
             userSession = UserSession(observer)
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,comparisonCatalogId,userSession.userId,CatalogConstant.DEVICE)
             showShimmer()
         }
 
@@ -215,11 +222,19 @@ class CatalogDetailPageFragment : Fragment(),
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater.updateModel(component)
+                        if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
+                            recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
+                        }
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
                     catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
+                    catalogBrand = catalogUiUpdater.productInfoMap?.productBrand ?: ""
+                    catalogDepartmentId = catalogUiUpdater.productInfoMap?.departmentId ?: ""
+                    if(comparisonCatalogId.isNotBlank()){
+                        recommendedCatalogId = catalogUiUpdater.productInfoMap?.comparisonInfoCatalogId ?: ""
+                    }
                     updateUi()
                     setCatalogUrlForTracking()
                 }
@@ -257,7 +272,7 @@ class CatalogDetailPageFragment : Fragment(),
             shimmerLayout?.show()
             bottom_sheet_fragment_container.show()
             global_error.hide()
-            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,comparisonCatalogId,userSession.userId,CatalogConstant.DEVICE)
         }
     }
 
@@ -519,15 +534,34 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    override fun comparisionCatalogClicked(comparisionCatalogId: String) {
+    override fun comparisonCatalogClicked(comparisonCatalogId: String) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                    "origin: $catalogName - $catalogId - destination: $comparisionCatalogId",userSession.userId,catalogId)
-            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
+                    "origin: $catalogName - $catalogId - destination: $comparisonCatalogId",userSession.userId,catalogId)
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisonCatalogId}")
         }
+    }
+
+    override fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
+            "catalog page: $catalogId | catalog comparison: ${comparisonCatalog?.id ?: ""}",userSession.userId,catalogId)
+
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+            catalogBrand, catalogDepartmentId, recommendedCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
+        catalogComparisonBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun changeComparison(comparedCatalogId: String) {
+        comparisonCatalogId = comparedCatalogId
+        recommendedCatalogId = comparedCatalogId
+        catalogDetailPageViewModel.getProductCatalog(catalogId,comparedCatalogId,userSession.userId,CatalogConstant.DEVICE)
     }
 
     override fun readMoreReviewsClicked(catalogId: String) {
@@ -536,7 +570,9 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_ON_LIHAT_SEMUA_REVIEW,
             "$catalogName - $catalogId",userSession.userId,catalogId)
-        val catalogAllReviewBottomSheet = CatalogAllReviewBottomSheet.newInstance(catalogName,catalogId,this)
+        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+            "","","",
+            CatalogComponentBottomSheet.ORIGIN_ALL_REVIEWS,this)
         catalogAllReviewBottomSheet.show(childFragmentManager, "")
     }
 
@@ -584,14 +620,15 @@ class CatalogDetailPageFragment : Fragment(),
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    override val childsFragmentManager: FragmentManager?
-        get() = childFragmentManager
+    override fun getChildsFragmentManager(): FragmentManager? {
+        return childFragmentManager
+    }
 
-
-    override val windowHeight: Int
-        get() = if (activity != null) {
+    override fun getWindowHeight(): Int {
+        return if (activity != null) {
             catalog_layout.height
         } else {
             0
         }
+    }
 }

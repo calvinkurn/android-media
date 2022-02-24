@@ -16,6 +16,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
@@ -375,6 +376,8 @@ class ShipmentMapper @Inject constructor() {
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
+            shopTickerTitle = shop.shopTickerTitle
+            shopTicker = shop.shopTicker
         }
     }
 
@@ -444,8 +447,13 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
-            shopId = groupAddress.userAddress.tokoNow.shopId
-            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = groupAddress.userAddress.tokoNow.isModified,
+                shopId = groupAddress.userAddress.tokoNow.shopId,
+                warehouseId = groupAddress.userAddress.tokoNow.warehouseId,
+                warehouses = groupAddress.userAddress.tokoNow.warehouses,
+                serviceType = groupAddress.userAddress.tokoNow.serviceType
+            )
         }
     }
 
@@ -775,8 +783,13 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
-            shopId = defaultAddress.tokoNow.shopId
-            warehouseId = defaultAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = defaultAddress.tokoNow.isModified,
+                shopId = defaultAddress.tokoNow.shopId,
+                warehouseId = defaultAddress.tokoNow.warehouseId,
+                warehouses = defaultAddress.tokoNow.warehouses,
+                serviceType = defaultAddress.tokoNow.serviceType
+            )
         }
     }
 

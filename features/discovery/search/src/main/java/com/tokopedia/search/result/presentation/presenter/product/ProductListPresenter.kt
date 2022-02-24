@@ -778,14 +778,12 @@ class ProductListPresenter @Inject constructor(
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
-        if (productDataView.productList.isEmpty()) {
+        if (productDataView.productList.isEmpty())
             getViewToHandleEmptyProductList(searchProductModel.searchProduct, productDataView)
-        } else {
+        else
             getViewToShowProductList(searchParameter, searchProductModel, productDataView)
-            processDefaultQuickFilter(searchProductModel)
-            initFilterController(searchProductModel)
-            processQuickFilter(searchProductModel.quickFilterModel)
-        }
+
+        processFilters(searchProductModel)
 
         view.updateScrollListener()
 
@@ -808,8 +806,6 @@ class ProductListPresenter @Inject constructor(
             searchProduct: SearchProductModel.SearchProduct,
             productDataView: ProductDataView,
     ) {
-        view.hideQuickFilterShimmering()
-
         if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
@@ -956,13 +952,13 @@ class ProductListPresenter @Inject constructor(
                     && isLocalSearch()
 
     private fun getViewToShowRecommendationItem() {
-        view.addLoading()
-
         if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation()
-        else getGlobalSearchRecommendation()
+        else if (!view.isAnyFilterActive) getGlobalSearchRecommendation()
     }
 
     private fun getLocalSearchRecommendation() {
+        view.addLoading()
+
         getLocalSearchRecommendationUseCase.get().execute(
                 createLocalSearchRequestParams(),
                 createLocalSearchRecommendationSubscriber()
@@ -1022,6 +1018,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getGlobalSearchRecommendation() {
+        view.addLoading()
+
         recommendationUseCase.execute(
                 recommendationUseCase.getRecomParams(
                         pageNumber = 1,
@@ -1588,6 +1586,19 @@ class ProductListPresenter @Inject constructor(
         return !isCPMOrProductItem
     }
 
+    private fun processFilters(searchProductModel: SearchProductModel) {
+        view.hideQuickFilterShimmering()
+
+        val hasProducts = searchProductModel.searchProduct.data.productList.isNotEmpty()
+        val willProcessFilter = hasProducts || view.isAnyFilterActive
+
+        if (!willProcessFilter) return
+
+        processDefaultQuickFilter(searchProductModel)
+        initFilterController(searchProductModel)
+        processQuickFilter(searchProductModel.quickFilterModel)
+    }
+
     private fun processDefaultQuickFilter(searchProductModel: SearchProductModel) {
         val quickFilter = searchProductModel.quickFilterModel
 
@@ -1600,7 +1611,8 @@ class ProductListPresenter @Inject constructor(
         if (dynamicFilterModel != null) return
 
         val quickFilterList = searchProductModel.quickFilterModel.filter
-        val inspirationWidgetFilterList = searchProductModel.searchInspirationWidget.asFilterList()
+        val inspirationWidgetFilterList =
+            searchProductModel.searchInspirationWidget.asFilterList()
         val filterList = quickFilterList + inspirationWidgetFilterList
 
         view.initFilterController(filterList)
@@ -1616,16 +1628,14 @@ class ProductListPresenter @Inject constructor(
             sortFilterItems.addAll(convertToSortFilterItem(filter, options))
         }
 
-        if (sortFilterItems.isNotEmpty()) {
-            view.hideQuickFilterShimmering()
+        if (sortFilterItems.isNotEmpty())
             view.setQuickFilter(sortFilterItems)
-        }
     }
 
     private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
-            options.map { option ->
-                createSortFilterItem(filter, option)
-            }
+        options.map { option ->
+            createSortFilterItem(filter, option)
+        }
 
     private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
         val item = SortFilterItem(filter.title) {

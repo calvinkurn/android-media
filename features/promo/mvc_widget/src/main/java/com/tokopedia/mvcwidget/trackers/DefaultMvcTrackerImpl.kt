@@ -6,7 +6,13 @@ import com.tokopedia.mvcwidget.FollowWidgetType
 open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     //1 Pdp
     //16 Shop
-    override fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean) {
+    override fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean,
+        productId: String
+    ) {
         val map = mutableMapOf<String, Any>()
         when (source) {
             MvcSource.PDP -> {
@@ -19,6 +25,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
                 }
 
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$shopId"
+                map[Tracker.Event.CLICK_MVC_PRODUCT_ID] = "Product ID: $productId"
 
             }
             MvcSource.SHOP -> {

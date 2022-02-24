@@ -256,6 +256,7 @@ class ProductViewModelMapper {
         productItem.pageTitle = pageTitle
         productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
+        productItem.customVideoURL = productModel.customVideoURL
         return productItem
     }
 
