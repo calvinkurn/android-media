@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.listener
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -12,6 +13,7 @@ import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
@@ -60,13 +62,17 @@ interface ChatbotContract {
         fun uploadUsingSecureUpload(data: Intent)
 
         fun uploadUsingOldMechanism(data: Intent)
+
+        fun sendInvoiceForArticle()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
 
-        fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String)
+        fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String, isArticleEntry: Boolean, usedBy: String)
 
         fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String)
+
+        fun sendQuickReplyInvoice(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String, event:String, usedBy:String)
 
         fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String)
                 : AttachInvoiceSentUiModel
@@ -138,5 +144,8 @@ interface ChatbotContract {
             context: Context?
         )
 
+        fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
+
+        fun getValuesForArticleEntry(uri: Uri): Map<String, String>
     }
 }

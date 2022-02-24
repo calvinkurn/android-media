@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.home.domain.usecase
 
 import android.text.TextUtils
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData

@@ -16,7 +16,7 @@
     <string name="imagepicker_insta_utlam">Unable to load any media</string>
     <string name="imagepicker_insta_smwr">Something went wrong</string>
     <string name="imagepicker_insta_samf">Select any media first</string>
-    <string name="imagepicker_max_limit_reached">Oops, maksimal upload %d media, Hapus salah satu media jika ingin menggantinya.</string>
+    <string name="imagepicker_max_limit_reached">Oops, maksimal upload %d media. Hapus salah satu media jika ingin menggantinya.</string>
     <string name="imagepicker_max_vid_dur">Video harus berdurasi maksimum %d detik.</string>
     <string name="imagepicker_smw_in_crop">Something went wrong in cropping.</string>
     <string name="imagepicker_smw_in_tak_pho">Something went wrong in taking photos.</string>

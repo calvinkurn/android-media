@@ -24,10 +24,14 @@ object ShopPageTrackingConstant {
     const val ADD_TO_CART = "addToCart"
     const val CLICK_MEMBERSHIP_EVENT = "click tokomember"
     const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
+    const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+    const val CLICK_DIGITAL = "clickDigital"
+    const val CLICK_PG = "clickPG"
 
     //category
     const val SHOP_PAGE_SELLER = "shop page - seller"
     const val SHOP_PAGE_BUYER = "shop page - buyer"
+    const val SHOP_PAGE_DONATION_BY_SELLER = "shop page - donation by seller"
     const val SHOP_PAGE = "shop page"
     const val TOP_NAV = "top nav - %s"
     const val CATEGORY_TOP_NAV = "top nav"
@@ -134,6 +138,12 @@ object ShopPageTrackingConstant {
     const val ACTION_SHOP_DECOR_IMPRESSION = "shop decor impression"
     const val ACTION_SHOP_DECOR_CLICK = "click shop decor"
     const val ACTION_HOME_TAB_IMPRESSION = "home tab impression"
+    const val IMPRESSION_DONATION_BY_SELLER = "impression donation by seller"
+    const val CLICK_DONATION_BY_SELLER = "click donation by seller"
+    const val CLICK_BACK_BUTTON = "click back button"
+    const val MULTIPLE_BUNDLE_WIDGET = "multiple bundling widget"
+    const val SINGLE_BUNDLE_WIDGET = "single bundling widget"
+    const val BUNDLE_ADD_TO_CART = "add to cart"
 
     //label
     const val CLICK_SHARE = "click share"
@@ -301,6 +311,8 @@ object ShopPageTrackingConstant {
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
     const val DIMENSION_83 = "dimension83"
+    const val DIMENSION_117 = "dimension117"
+    const val DIMENSION_118 = "dimension118"
     const val DIMENSION_61 = "dimension61"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
