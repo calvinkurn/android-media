@@ -9,6 +9,7 @@ import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.raw.CatalogSearchProductResponse
 import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.model.raw.SearchFilterResponse
+import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
@@ -83,11 +84,15 @@ class CatalogProductListingViewModelTest {
         val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
         val productListResponse = ProductListResponse(data.searchProduct)
         viewModel.catalogUrl = CatalogTestUtils.CATALOG_URL
+        viewModel.catalogId = CatalogTestUtils.CATALOG_ID
+        viewModel.catalogName = "Apple Iphone 12"
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
             (secondArg() as Subscriber<ProductListResponse>).onCompleted()
         }
         viewModel.catalogUrl
+        viewModel.catalogName
+        assert(viewModel.catalogId.isNotEmpty())
         viewModel.fetchProductListing(RequestParams())
 
         if(viewModel.mProductList.value is Success && (viewModel.mProductList.value as Success<List<CatalogProductItem>>).data.isEmpty()) {
@@ -103,21 +108,25 @@ class CatalogProductListingViewModelTest {
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onError(Throwable("No Data"))
         }
+        viewModel.categoryId = CatalogTestUtils.CATALOG_ID
+        viewModel.brand = "Apple"
         viewModel.fetchProductListing(RequestParams())
         if(viewModel.mProductList.value is Fail) { assert(true) }else { assert(false) }
+        assert(viewModel.brand.isNotBlank())
+        assert(viewModel.categoryId.isNotBlank())
     }
 
     @Test
     fun `Get Catalog Product Quick Filter Response Success`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_quick_filter_response.json"),SearchFilterResponse().javaClass)
         val data = mockGqlResponse.getData(SearchFilterResponse::class.java) as SearchFilterResponse
-
+        viewModel.comparisonCardIsAdded = true
         every { quickFilterUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<DynamicFilterModel>).onNext(data.dynamicAttribute)
             (secondArg() as Subscriber<DynamicFilterModel>).onCompleted()
         }
+        assert(viewModel.comparisonCardIsAdded)
         viewModel.fetchQuickFilters(RequestParams())
-
         if(viewModel.mQuickFilterModel.value is Success) {
             assert(true)
         }else {
