@@ -146,8 +146,8 @@ class DigitalRecommendationEvents {
 
 class DigitalRecommendationActions {
     companion object {
-        const val IMPRESSION = "impression on widget recommendation"
-        const val CLICK = "click on widget recommendation"
+        const val IMPRESSION = "impression on widget recommendation dgu"
+        const val CLICK = "click on widget recommendation dgu"
     }
 }
 
