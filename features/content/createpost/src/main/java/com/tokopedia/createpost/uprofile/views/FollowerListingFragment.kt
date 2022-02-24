@@ -42,7 +42,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     lateinit var viewModelFactory: ViewModelFactory
 
     val userSessionInterface: UserSession by lazy {
-         UserSession(context)
+        UserSession(context)
     }
 
     private val mPresenter: FollowerFollowingViewModel by lazy {
@@ -53,8 +53,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     private val mAdapter: ProfileFollowersAdapter by lazy {
         ProfileFollowersAdapter(
             mPresenter,
-            this,
-            userSessionInterface.userId
+            this
         )
     }
 
@@ -74,11 +73,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
-        //initListener()
-        //mPresenter.getUserDetails(userSessionInterface.userId)
         initMainUi()
-        mPresenter.getFollowers(userSessionInterface.userId, "", 1)
-        mPresenter.getFollowings(userSessionInterface.userId, "", 1)
     }
 
     private fun initObserver() {
@@ -89,20 +84,12 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading()
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME) )
     }
 
     private fun initListener() {
 //        view?.findViewById<Group>(R.id.gr_following)?.setOnClickListener(this)
 //        view?.findViewById<Group>(R.id.gr_follower)?.setOnClickListener(this)
-    }
-
-    private fun initUserPost() {
-//        val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
-//        postRv?.layoutManager = GridLayoutManager(activity, 2)
-//        postRv?.adapter = mAdapter
-//        mAdapter.resetAdapter()
-//        mAdapter.startDataLoading()
     }
 
     private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(this, Observer {
@@ -121,14 +108,6 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
             }
         }
     })
-
-    private fun setMainUi(data: ProfileHeaderBase) {
-
-    }
-
-    private fun showLoader() {
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()

@@ -42,8 +42,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     private val mAdapter: ProfileFollowingAdapter by lazy {
         ProfileFollowingAdapter(
             mPresenter,
-            this,
-            userSessionInterface.userId
+            this
         )
     }
 
@@ -67,8 +66,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
         initMainUi()
-        mPresenter.getFollowers(userSessionInterface.userId, "", 1)
-        mPresenter.getFollowings(userSessionInterface.userId, "", 1)
     }
 
     private fun initObserver() {
@@ -79,7 +76,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading()
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
     }
 
     private fun initListener() {
@@ -95,22 +92,23 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 //        mAdapter.startDataLoading()
     }
 
-    private fun addListObserver() = mPresenter.profileFollowingsListLiveData.observe(this, Observer {
-        it?.let {
-            when (it) {
-                is Loading -> {
-                    mAdapter.resetAdapter()
-                    mAdapter.notifyDataSetChanged()
-                }
-                is Success -> {
-                    mAdapter.onSuccess(it.data)
-                }
-                is ErrorMessage -> {
-                    mAdapter.onError()
+    private fun addListObserver() =
+        mPresenter.profileFollowingsListLiveData.observe(this, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+                        mAdapter.resetAdapter()
+                        mAdapter.notifyDataSetChanged()
+                    }
+                    is Success -> {
+                        mAdapter.onSuccess(it.data)
+                    }
+                    is ErrorMessage -> {
+                        mAdapter.onError()
+                    }
                 }
             }
-        }
-    })
+        })
 
     private fun setMainUi(data: ProfileHeaderBase) {
 

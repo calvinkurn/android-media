@@ -137,14 +137,18 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
         // LoginFragment is the name of Fragment and the Login
         // is a title of tab
-        adapter?.addFragment(
-            FollowerListingFragment(),
-            arguments?.getString(EXTRA_TOTAL_FOLLOWERS, "Followers") + " " + "Followers"
-        )
-        adapter?.addFragment(
-            FollowingListingFragment(),
-            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, "Followings") + " " + "Following"
-        )
+        arguments?.let { FollowerListingFragment.newInstance(it) }?.let {
+            adapter?.addFragment(
+                it,
+                arguments?.getString(EXTRA_TOTAL_FOLLOWERS, "Followers") + " " + "Followers"
+            )
+        }
+        arguments?.let { FollowingListingFragment.newInstance(it) }?.let {
+            adapter?.addFragment(
+                it,
+                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, "Followings") + " " + "Following"
+            )
+        }
 
         // setting adapter to view pager.
         viewPager.adapter = adapter

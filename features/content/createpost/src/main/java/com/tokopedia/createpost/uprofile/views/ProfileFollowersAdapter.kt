@@ -22,8 +22,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 open class ProfileFollowersAdapter(
     val viewModel: FollowerFollowingViewModel,
-    val callback: AdapterCallback,
-    private val userId: String
+    val callback: AdapterCallback
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -54,13 +53,13 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        viewModel.getFollowers(userId, cursor, 10)
+        args[0]?.let { viewModel.getFollowers(it, cursor, 10) }
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
         loadCompleted(data.profileFollowers.profileFollower, data)
-        isLastPage = data.profileFollowers.newCursor.isEmpty();
         cursor = data.profileFollowers.newCursor
+        isLastPage = data.profileFollowers.newCursor.isEmpty();
     }
 
     fun onError() {
