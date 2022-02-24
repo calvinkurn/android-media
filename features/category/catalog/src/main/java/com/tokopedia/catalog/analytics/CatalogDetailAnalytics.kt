@@ -194,6 +194,8 @@ object CatalogDetailAnalytics {
             const val KEY_ITEM_ID = "item_id"
             const val KEY_ITEM_NAME = "item_name"
 
+            const val EVENT_SELECT_CONTENT = "select_content"
+
         }
     }
 
@@ -242,6 +244,7 @@ object CatalogDetailAnalytics {
             const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
 
             const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
+            const val CLICK_KATALOG_PILIHAN_UNTUKMU = "click katalog pilihan untukmu"
         }
     }
 

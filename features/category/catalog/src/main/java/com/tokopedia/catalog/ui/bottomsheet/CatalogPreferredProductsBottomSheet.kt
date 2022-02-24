@@ -47,7 +47,7 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
         }
         if(savedInstanceState == null)
             childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                CatalogDetailProductListingFragment.newInstance(catalogId,
+                CatalogDetailProductListingFragment.newInstance(catalogId,catalogName,
                     catalogUrl,categoryId, catalogBrand)).commit()
 
     }

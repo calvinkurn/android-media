@@ -139,8 +139,8 @@ class CatalogForYouContainerViewHolder(private val view : View,
         }
     }
 
-    override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
-        catalogProductCardListener?.onCatalogForYouClick(catalogComparison)
+    override fun onCatalogForYouClick(adapterPosition : Int, catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
+        catalogProductCardListener?.onCatalogForYouClick(adapterPosition, catalogComparison)
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {

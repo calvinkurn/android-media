@@ -13,9 +13,10 @@ class CatalogPagerAdapter(private val catalogProductsContainerDataModel: Catalog
 
     override fun getItem(position: Int): Fragment {
         return CatalogDetailProductListingFragment.newInstance(catalogProductsContainerDataModel.catalogId,
+            catalogProductsContainerDataModel.catalogName,
             catalogProductsContainerDataModel.catalogUrl,
-        catalogProductsContainerDataModel.categoryId,
-        catalogProductsContainerDataModel.catalogBrand)
+            catalogProductsContainerDataModel.categoryId,
+            catalogProductsContainerDataModel.catalogBrand)
     }
 
     override fun getCount(): Int {

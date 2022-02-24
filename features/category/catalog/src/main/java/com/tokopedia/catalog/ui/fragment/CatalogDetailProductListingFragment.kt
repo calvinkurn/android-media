@@ -85,6 +85,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private lateinit var catalogComponent: CatalogComponent
 
     private var catalogId: String = ""
+    private var catalogName: String = ""
     private var catalogUrl: String = ""
     private var departmentId: String = ""
     private var categoryId : String = ""
@@ -102,6 +103,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
+        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
         private const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
         private const val ARG_EXTRA_CATALOG_BRAND = "ARG_EXTRA_CATALOG_BRAND"
 
@@ -112,10 +114,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         const val MORE_CATALOG_WIDGET_INDEX = 3
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
             bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
             bundle.putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
             bundle.putString(ARG_EXTRA_CATALOG_BRAND, catalogBrand)
@@ -136,6 +139,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         arguments?.let {
             if (it.containsKey(ARG_EXTRA_CATALOG_ID)) {
                 catalogId = it.getString(ARG_EXTRA_CATALOG_ID, "")
+                catalogName = it.getString(ARG_EXTRA_CATALOG_NAME, "")
                 catalogUrl = it.getString(ARG_EXTRA_CATALOG_URL, "")
                 categoryId = it.getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
                 brand = it.getString(ARG_EXTRA_CATALOG_BRAND, "")
@@ -166,6 +170,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun saveArgumentsToViewModel(){
         viewModel.catalogUrl = catalogUrl
         viewModel.catalogId = catalogId
+        viewModel.catalogName = catalogName
         viewModel.categoryId = categoryId
         viewModel.brand = brand
     }
@@ -444,11 +449,17 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     }
 
-    override fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
+    override fun onCatalogForYouClick(adapterPosition: Int, catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
+        CatalogDetailAnalytics.sendPromotionEvent(CatalogDetailAnalytics.EventKeys.EVENT_SELECT_CONTENT,
+            CatalogDetailAnalytics.ActionKeys.CLICK_KATALOG_PILIHAN_UNTUKMU,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            "current catalog-id: $catalogId - click catalog-id: ${catalogComparison.id}",
+            catalogId,
+            catalogName,
+            adapterPosition,
+            userSession.userId)
         context?.let { context ->
-            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
-            // TODO CHANGE
-        //RouteManager.route(context,catalogComparison.appLink)
+            RouteManager.route(context,catalogComparison.appLink)
         }
     }
 

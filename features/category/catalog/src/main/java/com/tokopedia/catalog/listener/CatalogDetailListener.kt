@@ -56,7 +56,7 @@ interface CatalogDetailListener {
     fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
                              isFromBottomSheet : Boolean = true){}
 
-    fun onCatalogForYouClick(catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
+    fun onCatalogForYouClick(adapterPosition : Int , catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 
     fun getChildsFragmentManager() : FragmentManager? {
         return null

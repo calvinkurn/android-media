@@ -2,14 +2,12 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
@@ -18,7 +16,6 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,9 +26,7 @@ import javax.inject.Inject
 class CatalogDetailProductListingViewModel
 @Inject constructor(private val quickFilterUseCase: CatalogQuickFilterUseCase,
                     private val dynamicFilterUseCase: CatalogDynamicFilterUseCase,
-                    private val getProductListUseCase: CatalogGetProductListUseCase,
-                    private val catalogComparisonProductUseCase: CatalogComparisonProductUseCase
-                    ) : ViewModel() {
+                    private val getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val mProductList = MutableLiveData<Result<List<CatalogProductItem>>>()
     val mProductCount = MutableLiveData<String>()

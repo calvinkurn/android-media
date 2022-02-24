@@ -44,7 +44,6 @@ class CatalogProductListingViewModelTest {
     private var quickFilterUseCase = mockk<CatalogQuickFilterUseCase>(relaxed = true)
     private var dynamicFilterUseCase = mockk<CatalogDynamicFilterUseCase>(relaxed = true)
     private var getProductListUseCase = mockk<CatalogGetProductListUseCase>(relaxed = true)
-    private var catalogComparisonProductUseCase = mockk<CatalogComparisonProductUseCase>(relaxed = true)
 
     private lateinit var viewModel : CatalogDetailProductListingViewModel
     private var productListObserver = mockk<Observer<Result<List<CatalogProductItem>>>>(relaxed = true)
@@ -53,7 +52,7 @@ class CatalogProductListingViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = CatalogDetailProductListingViewModel(quickFilterUseCase,dynamicFilterUseCase,getProductListUseCase,catalogComparisonProductUseCase)
+        viewModel = CatalogDetailProductListingViewModel(quickFilterUseCase,dynamicFilterUseCase,getProductListUseCase)
         viewModel.mProductList.observeForever(productListObserver)
         viewModel.mQuickFilterModel.observeForever(quickFilterObserver)
         viewModel.mDynamicFilterModel.observeForever(dynamicFilterObserver)
