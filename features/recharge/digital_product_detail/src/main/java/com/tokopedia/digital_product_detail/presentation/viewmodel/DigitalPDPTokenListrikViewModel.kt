@@ -39,9 +39,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var loadingJob: Job? = null
-    private var catalogProductJob: Job? = null
-
+    var validatorJob: Job? = null
+    var catalogProductJob: Job? = null
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
@@ -80,8 +79,11 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
@@ -90,9 +92,11 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeCatalogInput(menuId: Int, operator: String, clientNumber: String){
-        catalogProductJob?.cancel()
+    fun setRechargeCatalogInputMultiTabLoading(){
         _observableDenomData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         catalogProductJob = viewModelScope.launch {
             launchCatchError(block = {
                 delay(DELAY_MULTI_TAB)
@@ -105,8 +109,11 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>) {
+    fun setFavoriteNumberLoading(){
         _favoriteNumberData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getFavoriteNumber(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
@@ -116,8 +123,11 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getOperatorSelectGroup(menuId: Int) {
+    fun setOperatorSelectGroupLoading(){
         _catalogSelectGroup.value = RechargeNetworkResult.Loading
+    }
+
+    fun getOperatorSelectGroup(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
             val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
@@ -135,11 +145,19 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelValidatorJob() {
+        validatorJob?.cancel()
+    }
+
+
+    fun setAddToCartLoading() {
+        _addToCartResult.value = RechargeNetworkResult.Loading
+    }
+
     fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
                   digitalSubscriptionParams: DigitalSubscriptionParams,
                   userId: String
     ){
-        _addToCartResult.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
@@ -183,9 +201,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String) {
-        loadingJob?.cancel()
-        loadingJob = viewModelScope.launch {
-            launchCatchError(dispatchers.main, block = {
+        validatorJob = viewModelScope.launch {
                 var errorMessage = ""
                 for (validation in validators) {
                     val phoneIsValid = Pattern.compile(validation.rule)
@@ -197,11 +213,6 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
                 isEligibleToBuy = errorMessage.isEmpty()
                 delay(VALIDATOR_DELAY_TIME)
                 _clientNumberValidatorMsg.value = errorMessage
-            }) {
-                if (it !is CancellationException) {
-
-                }
-            }
         }
     }
 
