@@ -35,7 +35,7 @@ data class Section (
 
 ){
     data class Background(
-        @SerializedName("gradients")
+        @SerializedName("gradient")
         val gradientList: List<String> = emptyList(),
 
         @SerializedName("imageUrl")
