@@ -104,7 +104,8 @@ object ChannelMapper {
                         it.benefit.type,
                         it.benefit.value
                     ),
-                    textColor = it.textColor
+                    textColor = it.textColor,
+                    param = it.param
                 )
             }
         )

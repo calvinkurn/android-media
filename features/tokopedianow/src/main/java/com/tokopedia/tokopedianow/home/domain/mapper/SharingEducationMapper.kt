@@ -8,11 +8,13 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducation
 object SharingEducationMapper {
     fun mapSharingEducationUiModel(
         response: HomeLayoutResponse,
-        state: HomeLayoutItemState
+        state: HomeLayoutItemState,
+        serviceType: String
     ): HomeLayoutItemUiModel {
         val layout = HomeSharingEducationWidgetUiModel(
             id = response.id,
-            state = state
+            state = state,
+            serviceType = serviceType,
         )
         return HomeLayoutItemUiModel(layout, state)
     }

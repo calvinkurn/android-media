@@ -197,6 +197,9 @@ object CatalogDetailAnalytics {
             const val CLICK_IMAGE_ON_LIST_REVIEW = "click image on list review"
             const val CLICK_IMAGE_ON_REVIEW = "click image on review"
             const val CLICK_CLOSE_ON_IMAGE_REVIEW = "click close on image review"
+            const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
+            const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
+            const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
         }
     }
 
