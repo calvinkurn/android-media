@@ -48,7 +48,7 @@ class SummaryInformationBottomSheet() : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(
             DividerItemDecoration(context, DividerItemDecoration.VERTICAL)

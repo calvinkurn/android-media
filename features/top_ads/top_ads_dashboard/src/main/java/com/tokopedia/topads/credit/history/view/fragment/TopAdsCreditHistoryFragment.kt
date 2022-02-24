@@ -77,13 +77,15 @@ class TopAdsCreditHistoryFragment :
 
     private fun initialDateSetup() {
         datePickerIndex = arguments?.getInt(PARAM_DATE_PICKER_INDEX) ?: DATE_PICKER_DEFAULT_INDEX
-        val dateList = Utils.getPeriodRangeList(requireContext())
-        if (datePickerIndex < dateList.size) {
-            startDate = Date(dateList[datePickerIndex].startDate)
-            endDate = Date(dateList[datePickerIndex].endDate)
+        context?.let {
+            val dateList = Utils.getPeriodRangeList(it)
+            if (datePickerIndex < dateList.size) {
+                startDate = Date(dateList[datePickerIndex].startDate)
+                endDate = Date(dateList[datePickerIndex].endDate)
+            }
+            setDateRangeText(datePickerIndex)
+            loadData(CONST_0)
         }
-        setDateRangeText(datePickerIndex)
-        loadData(CONST_0)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

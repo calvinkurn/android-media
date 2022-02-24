@@ -191,7 +191,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
             }
         })
         rvTab.adapter = topAdsTabAdapter
-        val smoothScroller = object : LinearSmoothScroller(requireActivity()) {
+        val smoothScroller = object : LinearSmoothScroller(activity!!) {
             override fun getHorizontalSnapPreference(): Int {
                 return SNAP_TO_START
             }

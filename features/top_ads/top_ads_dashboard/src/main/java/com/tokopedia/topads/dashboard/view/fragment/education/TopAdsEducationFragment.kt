@@ -38,14 +38,14 @@ class TopAdsEducationFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         initListeners()
     }
 
     private fun initListeners() {
         adapter.itemClick = {
-            (requireActivity() as? TopAdsEducationActivity)?.addFragment(
+            (activity as? TopAdsEducationActivity)?.addFragment(
                 ListArticleTopAdsEducationFragment.createInstance(it)
             )
         }

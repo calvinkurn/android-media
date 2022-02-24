@@ -52,22 +52,21 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
 
     }
 
-    private fun initClicks() {
-        adapter.itemClick = { requireContext().openWebView(it) }
+    private fun initClicks() = context?.run {
+        adapter.itemClick = { openWebView(it) }
 
-        btnReadMore.setOnClickListener { requireContext().openWebView(READ_MORE_URL) }
+        btnReadMore.setOnClickListener { openWebView(READ_MORE_URL) }
     }
 
     private fun initView(data: ListArticle.ListArticleItem) {
         if (data.description.isNullOrEmpty()) txtDescription.hide()
         else txtDescription.text = data.description
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
         adapter.addItems(data.articles)
     }
-
 
     override fun getScreenName(): String {
         return javaClass.name
