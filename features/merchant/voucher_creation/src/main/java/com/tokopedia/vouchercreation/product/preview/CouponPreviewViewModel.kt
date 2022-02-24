@@ -241,15 +241,6 @@ class CouponPreviewViewModel @Inject constructor(
         return couponProductData.toList()
     }
 
-    fun mapCouponProductDataToSelectedProducts(couponProductData: List<CouponProduct>): List<ProductUiModel> {
-        return couponProductData.map { couponProduct ->
-            ProductUiModel(
-                    id = couponProduct.id,
-                    imageUrl = couponProduct.imageUrl,
-                    sold = couponProduct.soldCount
-            )
-        }
-    }
 
     fun mapSelectedProductIdsToProductUiModels(selectedProductIds: List<ProductId>): List<ProductUiModel> {
         return selectedProductIds.map { productId ->
