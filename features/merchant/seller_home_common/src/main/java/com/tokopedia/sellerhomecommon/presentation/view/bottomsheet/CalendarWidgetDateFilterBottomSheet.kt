@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetSelectDateRangeBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.DateFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by @ilhamsuaib on 09/02/22.
@@ -32,11 +29,7 @@ class CalendarWidgetDateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelect
         const val TAG = "DateFilterBottomSheet"
         private const val KEY_DATE_FILTERS = "date_filter_items"
 
-        fun newInstance(
-            context: Context
-        ): CalendarWidgetDateFilterBottomSheet {
-            val dateFilters = DateFilterUtil.FilterList
-                .getCalendarPickerFilterList(context)
+        fun newInstance(dateFilters: List<DateFilterItem>): CalendarWidgetDateFilterBottomSheet {
             return CalendarWidgetDateFilterBottomSheet().apply {
                 clearContentPadding = true
                 arguments = Bundle().apply {
@@ -46,10 +39,9 @@ class CalendarWidgetDateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelect
         }
     }
 
-    private var fm by autoClearedNullable<FragmentManager>()
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
     private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(this, fm ?: return@lazy null)
+        DateFilterAdapter(this, childFragmentManager)
     }
     private val items: List<DateFilterItem> by lazy {
         arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
@@ -94,8 +86,8 @@ class CalendarWidgetDateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelect
 
     override fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String) {
         if (isActivityResumed()) {
-            fm?.let {
-                bottomSheet.show(it, tag)
+            if (!childFragmentManager.isStateSaved) {
+                bottomSheet.show(childFragmentManager, tag)
             }
         }
     }
@@ -108,19 +100,14 @@ class CalendarWidgetDateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelect
         view?.visible()
     }
 
-    fun setFragmentManager(fm: FragmentManager): CalendarWidgetDateFilterBottomSheet {
-        this.fm = fm
-        return this
-    }
-
     fun setOnApplyChanges(callback: (DateFilterItem) -> Unit): CalendarWidgetDateFilterBottomSheet {
         this.applyChangesCallback = callback
         return this
     }
 
-    fun show() {
-        fm?.let {
-            show(it, TAG)
+    fun show(fm: FragmentManager) {
+        if (!fm.isStateSaved) {
+            show(fm, TAG)
         }
     }
 

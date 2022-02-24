@@ -29,7 +29,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
@@ -477,11 +476,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel> {
         widgets.forEach { it.isLoaded = true }
         val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>().map {
-            CalendarFilterDataKeyUiModel(
-                dataKey = it.dataKey,
-                startDate = it.filter.startDate,
-                endDate = it.filter.endDate
-            )
+            it.filter
         }
         val params = GetCalendarDataUseCase.createParams(dataKeys)
         getCalendarDataUseCase.get().params = params

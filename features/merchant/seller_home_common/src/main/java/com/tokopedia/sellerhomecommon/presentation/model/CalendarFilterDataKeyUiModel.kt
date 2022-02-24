@@ -6,6 +6,20 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 data class CalendarFilterDataKeyUiModel(
     val dataKey: String = "",
-    val startDate: String = "",
-    val endDate: String = ""
-)
+    val perWeek: DateRange = DateRange(),
+    val perMonth: DateRange = DateRange(),
+    val filterType: Int = DateFilterItem.TYPE_PER_MONTH
+) {
+    data class DateRange(
+        val startDate: String = "",
+        val endDate: String = ""
+    )
+
+    fun getDateRange(): DateRange {
+        return if (filterType == DateFilterItem.TYPE_PER_MONTH) {
+            perMonth
+        } else {
+            perWeek
+        }
+    }
+}

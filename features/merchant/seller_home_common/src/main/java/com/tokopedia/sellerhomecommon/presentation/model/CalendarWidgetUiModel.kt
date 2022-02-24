@@ -1,9 +1,11 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by @ilhamsuaib on 07/02/22.
@@ -28,11 +30,20 @@ data class CalendarWidgetUiModel(
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
-    var filter: CalendarFilterDataKeyUiModel = getCalendarFilter(dataKey)
+    var filter: CalendarFilterDataKeyUiModel = getDefaultCalendarFilter(dataKey)
 ) : BaseWidgetUiModel<CalendarDataUiModel> {
 
     companion object {
-        fun getCalendarFilter(dataKey: String): CalendarFilterDataKeyUiModel {
+        private fun getDefaultCalendarFilter(dataKey: String): CalendarFilterDataKeyUiModel {
+            return CalendarFilterDataKeyUiModel(
+                dataKey = dataKey,
+                perWeek = getPerWeekDefaultDateRange(),
+                perMonth = getPerMonthDefaultDateRange(),
+                filterType = DateFilterItem.TYPE_PER_MONTH
+            )
+        }
+
+        private fun getPerMonthDefaultDateRange(): CalendarFilterDataKeyUiModel.DateRange {
             val currentDate = Date()
             val firstDayMonthCal = Calendar.getInstance().apply {
                 time = currentDate
@@ -42,14 +53,39 @@ data class CalendarWidgetUiModel(
                 time = currentDate
                 set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
             }
-            return CalendarFilterDataKeyUiModel(
-                dataKey = dataKey,
+            return CalendarFilterDataKeyUiModel.DateRange(
                 startDate = DateTimeUtil.format(
                     firstDayMonthCal.timeInMillis,
                     DateTimeUtil.FORMAT_DD_MM_YYYY
                 ),
                 endDate = DateTimeUtil.format(
                     lastDayMonthCal.timeInMillis,
+                    DateTimeUtil.FORMAT_DD_MM_YYYY
+                )
+            )
+        }
+
+        private fun getPerWeekDefaultDateRange(): CalendarFilterDataKeyUiModel.DateRange {
+            val sixDaysMillis = TimeUnit.DAYS.toMillis(ShcConst.INT_6.toLong())
+            val calendar: Calendar = Calendar.getInstance().apply {
+                firstDayOfWeek = Calendar.MONDAY
+                set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+                set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
+                set(Calendar.MINUTE, ShcConst.INT_0)
+                set(Calendar.SECOND, ShcConst.INT_0)
+                set(Calendar.MILLISECOND, ShcConst.INT_0)
+            }
+
+            val firstDateOfWeek = calendar.time
+            val lastDateOfWeek = Date(calendar.timeInMillis.plus(sixDaysMillis))
+
+            return CalendarFilterDataKeyUiModel.DateRange(
+                startDate = DateTimeUtil.format(
+                    firstDateOfWeek.time,
+                    DateTimeUtil.FORMAT_DD_MM_YYYY
+                ),
+                endDate = DateTimeUtil.format(
+                    lastDateOfWeek.time,
                     DateTimeUtil.FORMAT_DD_MM_YYYY
                 )
             )

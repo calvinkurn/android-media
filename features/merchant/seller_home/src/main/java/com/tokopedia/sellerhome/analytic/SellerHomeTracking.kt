@@ -933,7 +933,8 @@ object SellerHomeTracking {
     fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
         val isEmpty = element.data?.eventGroups.isNullOrEmpty()
         val emptyNotEmpty = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
-        val dateRage = "${element.filter.startDate} - ${element.filter.endDate}"
+        val dateRage =
+            "${element.filter.getDateRange().startDate} - ${element.filter.getDateRange().endDate}"
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
             category = arrayOf(

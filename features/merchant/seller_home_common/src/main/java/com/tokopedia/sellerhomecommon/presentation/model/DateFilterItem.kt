@@ -44,7 +44,8 @@ sealed class DateFilterItem(
                 val startDateMillis = startDate?.time ?: return ""
                 val dateStr = DateTimeUtil.format(startDateMillis, DateTimeUtil.FORMAT_DD_MMM)
                 val hourStr = DateTimeUtil.format(
-                    System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(ShcConst.INT_1.toLong())),
+                    System.currentTimeMillis()
+                        .minus(TimeUnit.HOURS.toMillis(ShcConst.INT_1.toLong())),
                     DateTimeUtil.FORMAT_HOUR_24
                 )
                 return context.getString(R.string.shc_today_fmt, dateStr, hourStr)

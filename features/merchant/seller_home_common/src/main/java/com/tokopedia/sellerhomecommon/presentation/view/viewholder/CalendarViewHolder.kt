@@ -194,7 +194,7 @@ class CalendarViewHolder(
 
     private fun scrollToClosestEvent(element: CalendarWidgetUiModel) {
         val filterEndDateMillis = DateTimeUtil.getTimeInMillis(
-            element.filter.endDate, DateTimeUtil.FORMAT_DD_MM_YYYY
+            element.filter.getDateRange().endDate, DateTimeUtil.FORMAT_DD_MM_YYYY
         )
         val todayInMillis = Date().time
         val canAutoScroll = todayInMillis < filterEndDateMillis
@@ -233,10 +233,14 @@ class CalendarViewHolder(
     private fun getDateFilterRangeFmt(element: CalendarWidgetUiModel): String {
         val filter = element.filter
         val startDateFmt = DateTimeUtil.format(
-            filter.startDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD_MMM
+            filter.getDateRange().startDate,
+            DateTimeUtil.FORMAT_DD_MM_YYYY,
+            DateTimeUtil.FORMAT_DD_MMM
         )
         val endDateFmt = DateTimeUtil.format(
-            filter.endDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD_MMM
+            filter.getDateRange().endDate,
+            DateTimeUtil.FORMAT_DD_MM_YYYY,
+            DateTimeUtil.FORMAT_DD_MMM
         )
         return itemView.context.getString(
             R.string.shc_calendar_date_range, startDateFmt, endDateFmt

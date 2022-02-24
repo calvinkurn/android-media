@@ -94,26 +94,31 @@ object DateFilterUtil {
 
     object FilterList {
 
-        fun getCalendarPickerFilterList(context: Context): List<DateFilterItem> {
-            val nextNDaysCount = ShcConst.INT_120
-            val filterPerMonth = getFilterPerMonth(context, nextNDaysCount).apply {
-                isSelected = true
-            }
-            return listOf(
-                getDateFilterPerWeek(context, nextNDaysCount),
-                filterPerMonth,
+        fun getCalendarPickerFilterList(
+            context: Context,
+            perWeek: Date,
+            perMonth: Date,
+            filterType: Int
+        ): List<DateFilterItem> {
+            val filters = listOf(
+                getDateFilterPerWeek(context, perWeek),
+                getFilterPerMonth(context, perMonth),
                 DateFilterItem.ApplyButton
             )
+            filters.forEach {
+                it.isSelected = it.type == filterType
+            }
+            return filters
         }
 
         private fun getDateFilterPerWeek(
             context: Context,
-            maxDaysCount: Int
+            selectedDate: Date
         ): DateFilterItem.Pick {
             val sixDaysMillis = TimeUnit.DAYS.toMillis(ShcConst.INT_6.toLong())
 
             val maxDateCal = Calendar.getInstance().apply {
-                time = Date(DateTimeUtil.getNNextDaysTimestamp(maxDaysCount.toLong()))
+                time = Date(DateTimeUtil.getNNextDaysTimestamp(ShcConst.INT_120.toLong()))
                 firstDayOfWeek = Calendar.MONDAY
                 set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
                 set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
@@ -133,6 +138,7 @@ object DateFilterUtil {
             }
 
             val calendar: Calendar = Calendar.getInstance().apply {
+                time = selectedDate
                 firstDayOfWeek = Calendar.MONDAY
                 set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
                 set(Calendar.HOUR_OF_DAY, ShcConst.INT_0)
@@ -158,11 +164,10 @@ object DateFilterUtil {
 
         private fun getFilterPerMonth(
             context: Context,
-            maxDaysCount: Int
+            defaultDate: Date
         ): DateFilterItem.MonthPickerItem {
             val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(ShcConst.INT_30.toLong()))
-            val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(maxDaysCount.toLong()))
-            val defaultDate = Date()
+            val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(ShcConst.INT_120.toLong()))
             val (startDate, endDate) = getStartAndEndDateInAMonth(defaultDate)
             return DateFilterItem.MonthPickerItem(
                 label = context.getString(R.string.shc_per_month),

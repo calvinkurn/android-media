@@ -71,6 +71,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -102,6 +103,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -189,7 +191,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private var dateFilterBottomSheet: CalendarWidgetDateFilterBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
@@ -280,11 +281,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.onDestroy()
         pmShopScoreInterruptHelper.destroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        dateFilterBottomSheet = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -682,12 +678,37 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
-        context?.let {
-            if (dateFilterBottomSheet == null) {
-                dateFilterBottomSheet = CalendarWidgetDateFilterBottomSheet.newInstance(it)
-            }
-            showCalendarDateFilter(element)
+        if (!isAdded) {
+            return
         }
+
+        val perWeekSelectedDate = Date(
+            DateTimeUtil.getTimeInMillis(
+                element.filter.perWeek.startDate,
+                DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+        )
+        val perMontSelectedDate = Date(
+            DateTimeUtil.getTimeInMillis(
+                element.filter.perWeek.startDate,
+                DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+        )
+
+        val prevSelectedFilterType = element.filter.filterType
+        val dateFilters = DateFilterUtil.FilterList
+            .getCalendarPickerFilterList(
+                requireContext(),
+                perWeekSelectedDate,
+                perMontSelectedDate,
+                prevSelectedFilterType
+            )
+
+        CalendarWidgetDateFilterBottomSheet.newInstance(dateFilters)
+            .setOnApplyChanges { dateFilter ->
+                applyCalendarFilter(element, dateFilter)
+            }
+            .show(childFragmentManager)
     }
 
     override fun reloadCalendarWidget(element: CalendarWidgetUiModel) {
@@ -736,41 +757,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }, NOTIFICATION_BADGE_DELAY)
     }
 
-    private fun showCalendarDateFilter(element: CalendarWidgetUiModel) {
-        if (!isAdded && childFragmentManager.isStateSaved) {
-            return
-        }
-
-        dateFilterBottomSheet?.run {
-            setFragmentManager(this@SellerHomeFragment.childFragmentManager)
-            setOnApplyChanges {
-                SellerHomeTracking.sendCalendarFilterClickEvent(element, it)
-                this@SellerHomeFragment.applyCalendarFilter(element, it)
-            }
-            show()
-        }
-    }
-
     private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
+        SellerHomeTracking.sendCalendarFilterClickEvent(element, dateFilter)
         val calendarWidgets = mutableListOf<BaseWidgetUiModel<*>>()
         val widgets = adapter.data.map {
             if (it.dataKey == element.dataKey && it is CalendarWidgetUiModel) {
                 val startDate = dateFilter.startDate
                 val endData = dateFilter.endDate
                 if (startDate != null && endData != null) {
-                    val calendarWidget = it.apply {
+                    val calendarWidget = it.apply calendarWidget@{
                         data = null
-                        filter = CalendarFilterDataKeyUiModel(
-                            dataKey = dataKey,
-                            startDate = DateTimeUtil.format(
-                                startDate.time,
-                                DateTimeUtil.FORMAT_DD_MM_YYYY
-                            ),
-                            endDate = DateTimeUtil.format(
-                                endData.time,
-                                DateTimeUtil.FORMAT_DD_MM_YYYY
-                            )
-                        )
+                        filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
                     }.copyWidget()
                     calendarWidgets.add(calendarWidget)
                     return@map calendarWidget
@@ -786,6 +783,42 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         notifyWidgetWithSdkChecking {
             updateWidgets(widgets)
+        }
+    }
+
+    private fun getAppliedDateFilter(
+        filter: CalendarFilterDataKeyUiModel,
+        startDate: Date,
+        endData: Date,
+        filterType: Int
+    ): CalendarFilterDataKeyUiModel {
+        val startDateStr = DateTimeUtil.format(
+            startDate.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        val endDateStr = DateTimeUtil.format(
+            endData.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        return when (filterType) {
+            DateFilterItem.TYPE_PER_MONTH -> {
+                filter.copy(
+                    perMonth = CalendarFilterDataKeyUiModel.DateRange(
+                        startDate = startDateStr,
+                        endDate = endDateStr
+                    ),
+                    filterType = filterType
+                )
+            }
+            else -> {
+                filter.copy(
+                    perWeek = CalendarFilterDataKeyUiModel.DateRange(
+                        startDate = startDateStr,
+                        endDate = endDateStr
+                    ),
+                    filterType = filterType
+                )
+            }
         }
     }
 
