@@ -73,7 +73,7 @@ sealed class ProductSectionUiModel {
         }
 
         data class BackgroundUiModel(
-            val gradients: List<String>,
+            val gradients: List<String>?,
             val imageUrl: String
         )
 

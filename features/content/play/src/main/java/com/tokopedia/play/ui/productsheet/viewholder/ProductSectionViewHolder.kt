@@ -116,7 +116,7 @@ class ProductSectionViewHolder(
     }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
-        if (background.gradients.isNotEmpty()) {
+        if (background.gradients?.isNotEmpty() == true) {
             try {
                 val bgArray = IntArray(background.gradients.size)
                 background.gradients.forEachIndexed { index, s ->
