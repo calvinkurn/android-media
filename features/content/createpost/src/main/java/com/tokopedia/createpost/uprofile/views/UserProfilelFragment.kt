@@ -392,9 +392,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
 
             R.id.text_see_more -> {
-                val textSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
-                textSeeAll?.maxLines = 100
-                textSeeAll?.hide()
+                val textBio = view?.findViewById<TextView>(R.id.text_bio)
+                val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
+                textBio?.maxLines = 10
+                btnSeeAll?.hide()
             }
         }
     }
