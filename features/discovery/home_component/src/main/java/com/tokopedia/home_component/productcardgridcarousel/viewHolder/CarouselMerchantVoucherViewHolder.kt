@@ -57,7 +57,7 @@ class CarouselMerchantVoucherViewHolder (
 //        binding?.imageBackground?.setBackground(ShapeDrawable(s))
 //        binding?.imageBackgroundVoucher?.setImageResource(R.drawable.bg_merchant_voucher)
 
-        binding?.imageBackgroundVoucher?.loadImageNoRounded("https://i.ibb.co/dGkxv3d/bg-subract-3.png", com.tokopedia.home_component.R.drawable.placeholder_grey)
+        binding?.imageBackgroundVoucher?.loadImageNoRounded("https://i.postimg.cc/0QsNd0kN/Light-mode.png", com.tokopedia.home_component.R.drawable.placeholder_grey)
         if (itemView.context.isDarkMode()) {
             binding?.imageBackgroundVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
