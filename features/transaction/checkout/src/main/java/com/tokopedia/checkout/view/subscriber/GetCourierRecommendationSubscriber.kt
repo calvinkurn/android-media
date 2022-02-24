@@ -96,6 +96,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
     private fun generateCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, shippingRecommendationData: ShippingRecommendationData): CourierItemData {
         val courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+        // todo might need to set isapplied true to same object in list logistic promo
         shippingRecommendationData.logisticPromo?.let {
             val disableMsg = it.disableText
             courierItemData.logPromoMsg = disableMsg
@@ -104,6 +105,8 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
             // Auto apply Promo Stacking Logistic
             if (((it.shipperId == shipperId && it.shipperProductId == spId) || shipmentCartItemModel.isAutoCourierSelection)
                     && it.promoCode.isNotEmpty() && !it.disabled) {
+                val listLogisticPromo = shippingRecommendationData.listLogisticPromo
+                shippingRecommendationData.listLogisticPromo = listLogisticPromo.map { promo -> promo.copy(isApplied = promo.promoCode == it.promoCode) }
                 courierItemData.logPromoCode = it.promoCode
                 courierItemData.discountedRate = it.discountedRate
                 courierItemData.shippingRate = it.shippingRate
