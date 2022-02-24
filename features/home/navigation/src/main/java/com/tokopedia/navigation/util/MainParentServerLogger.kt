@@ -6,9 +6,10 @@ import java.lang.Exception
 
 class MainParentServerLogger {
     companion object {
-        private const val MP_EMBRACE_BREADCRUMB_FORMAT = "%s, %s"
+        private const val MP_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
         private const val MP_CURRENT_VISIBLE_FRAGMENT = "CurrentVisibleFragment"
         private const val MP_PAGE = "MainParent"
+        private const val MP_EMBRACE_VISIBLE_FRAGMENT_FORMAT = "currentFragment: %s"
 
         fun sendEmbraceBreadCrumb(
             currentSelectedTabName: String
@@ -24,6 +25,10 @@ class MainParentServerLogger {
                     String.format(
                         MP_EMBRACE_BREADCRUMB_FORMAT,
                         MP_PAGE,
+                        String.format(
+                            MP_EMBRACE_VISIBLE_FRAGMENT_FORMAT,
+                            currentSelectedTabName
+                        ),
                         embraceJsonData
                     )
                 )

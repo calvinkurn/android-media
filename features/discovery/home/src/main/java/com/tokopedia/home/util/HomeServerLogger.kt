@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
 import okhttp3.internal.http2.ConnectionShutdownException
 import org.apache.commons.lang3.exception.ExceptionUtils
@@ -19,7 +20,7 @@ object HomeServerLogger {
 
     private const val HOME_STATUS_ERROR_TAG = "HOME_STATUS"
     private const val HOME_EMBRACE_KEY = "Home"
-    private const val HOME_EMBRACE_BREADCRUMB_FORMAT = "%s, %s"
+    private const val HOME_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
     private const val HOME_EMBRACE_KEY_FRAGMENT = "HomeFragment"
     private const val HOME_EMBRACE_KEY_IS_LOGIN = "IsLogin"
     private const val HOME_EMBRACE_KEY_IS_CACHE = "IsCache"
@@ -31,6 +32,7 @@ object HomeServerLogger {
 
     private const val HOME_EMBRACE_TRUE = "true"
     private const val HOME_EMBRACE_FALSE = "false"
+    private const val HOME_EMBRACE_VISIBLE_FRAGMENT_FORMAT = "currentFragment: %s"
 
     const val TYPE_CANCELLED_INIT_FLOW = "revamp_cancelled_init_flow"
     const val TYPE_REVAMP_ERROR_INIT_FLOW = "revamp_error_init_flow"
@@ -134,11 +136,17 @@ object HomeServerLogger {
     ) {
         try {
             val embraceJsonData = JSONObject()
+            var currentVisibleFragment = ""
+
             fragment?.let {
                 if (it.isVisible) {
                     embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_VISIBLE)
                 } else {
                     embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_NOT_VISIBLE)
+                }
+
+                (it.activity as? MainParentStateListener)?.let { it ->
+                    currentVisibleFragment = it.currentVisibleFragment()
                 }
             }
 
@@ -170,6 +178,7 @@ object HomeServerLogger {
                 String.format(
                     HOME_EMBRACE_BREADCRUMB_FORMAT,
                     HOME_EMBRACE_KEY,
+                    String.format(HOME_EMBRACE_VISIBLE_FRAGMENT_FORMAT, currentVisibleFragment),
                     embraceJsonData
                 )
             )

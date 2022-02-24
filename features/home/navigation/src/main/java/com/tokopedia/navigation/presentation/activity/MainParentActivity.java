@@ -237,6 +237,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private boolean isOsExperiment;
 
+    private String embracePageName = "";
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1321,16 +1323,21 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.currentSelectedFragmentPosition = position;
         String pageName = "";
-        if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
+        String pageTitle = "";
+        if (menu.size() > index) {
+            pageTitle = menu.get(index).getTitle();
+        }
+
+        if (pageTitle.equals(getResources().getString(R.string.home))) {
             pageName = "/";
-        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
+        } else if (pageTitle.equals(getResources().getString(R.string.official))) {
             pageName = PAGE_OS_HOMEPAGE;
-        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+        } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
             globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
             pageName = PAGE_FEED;
-        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
+        } else if (pageTitle.equals(getResources().getString(R.string.uoh))) {
             pageName = PAGE_DAFTAR_TRANSAKSI;
-        } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
+        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
             pageName = PAGE_WISHLIST;
         }
 
@@ -1371,7 +1378,8 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(pageName);
+        this.embracePageName = pageTitle;
+        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         return true;
     }
 
@@ -1384,6 +1392,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean isOsExperiment() {
         return isOsExperiment;
+    }
+
+    @Override
+    public String currentVisibleFragment() {
+        return embracePageName;
     }
 
     public void populateBottomNavigationView() {
