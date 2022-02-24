@@ -66,7 +66,8 @@ class TokenListrikDataFactory {
             categoryId = CATEGORY_ID,
             clientNumber = VALID_CLIENT_NUMBER,
             operatorId = OPERATOR_ID,
-            productId = PRODUCT_ID
+            productId = PRODUCT_ID,
+            appUrl = RECOM_APP_URL
         )
     }
 
@@ -144,6 +145,7 @@ class TokenListrikDataFactory {
         const val UTM_CAMPAIGN = "1"
         const val IS_NOT_SPECIAL_PRODUCT = false
         const val IDEM_POTENCY_KEY = ""
+        const val RECOM_APP_URL = "tokopedia.com/test"
     }
 
 }

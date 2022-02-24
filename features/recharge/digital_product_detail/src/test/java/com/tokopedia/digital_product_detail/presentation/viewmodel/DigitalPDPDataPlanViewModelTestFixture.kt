@@ -324,6 +324,11 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
     }
 
+    protected fun verifyRecomCheckoutUrlUpdated(expectedResult: String) {
+        val actualResult = viewModel.recomCheckoutUrl
+        Assert.assertEquals(expectedResult, actualResult)
+    }
+
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
         Assert.assertEquals(expected.clientNumber, actual.clientNumber)
         Assert.assertEquals(expected.categoryId, actual.categoryId)
