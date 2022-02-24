@@ -51,6 +51,7 @@ import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
@@ -74,8 +75,8 @@ import com.tokopedia.play_common.R as commonR
  * Created by mzennis on 25/05/20.
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val analytic: PlayBroadcastAnalytic
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val analytic: PlayBroadcastAnalytic
 ): PlayBaseBroadcastFragment(), FragmentWithDetachableView {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -186,7 +187,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -222,7 +226,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Revamp this")
-                        return parentViewModel.productSectionList
+                        return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
+                        else emptyList()
                     }
                 })
             }

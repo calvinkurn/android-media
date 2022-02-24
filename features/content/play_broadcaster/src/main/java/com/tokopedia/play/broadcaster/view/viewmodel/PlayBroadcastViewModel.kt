@@ -58,6 +58,9 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -67,7 +70,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-internal class PlayBroadcastViewModel @Inject constructor(
+class PlayBroadcastViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val livePusherMediator: PusherMediator,
     private val mDataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
@@ -84,6 +88,11 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): PlayBroadcastViewModel
+    }
 
     val isFirstStreaming: Boolean
         get() = sharedPref.isFirstStreaming()
@@ -286,6 +295,16 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val gson by lazy { Gson() }
 
     init {
+        val savedTitle = handle.get<String>(KEY_TITLE)
+        if (savedTitle != null) getCurrentSetupDataStore().setTitle(savedTitle)
+
+        viewModelScope.launch(dispatcher.computation) {
+            getCurrentSetupDataStore().getObservableTitle().collectLatest {
+                if (it is PlayTitleUiModel.HasTitle) handle[KEY_TITLE] = it.title
+                else handle.remove(KEY_TITLE)
+            }
+        }
+
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
         livePusherMediator.addListener(liveChannelStateListener)
@@ -929,6 +948,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     fun getShopName(): String = userSession.shopName
 
     companion object {
+
+        private const val KEY_TITLE = "title"
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
