@@ -135,7 +135,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     fun loadMoreAllBrands(brandFirstLetter: String) {
-        val requestSize = geRequestSize(totalBrandSize, currentOffset)
+        val requestSize = getRequestSize(totalBrandSize, currentOffset)
         _remindingRequestSize.value = Pair(requestSize, brandFirstLetter)
     }
 
@@ -158,7 +158,7 @@ class BrandlistPageViewModel @Inject constructor(
         }
     }
 
-    private fun geRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
+    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
         if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
         val remainingBrands = totalBrandSize - renderedBrands
         return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {

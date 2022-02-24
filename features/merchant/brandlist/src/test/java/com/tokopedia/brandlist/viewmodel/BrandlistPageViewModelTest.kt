@@ -120,7 +120,12 @@ class BrandlistPageViewModelTest {
         val mockedCategory = Category()
         val brandFirstLetter = "b"
 
-        viewModel.loadMoreAllBrands(mockedCategory, brandFirstLetter)
+        viewModel.loadMoreAllBrands(brandFirstLetter)
+
+        if (viewModel.remindingRequestSize.value?.first?: 0 > 0)
+        {
+            viewModel.loadMoreAllBrandsReminding(viewModel.remindingRequestSize.value?.first?: 0, category = mockedCategory, brandFirstLetter)
+        }
         coVerify { getBrandListAllBrandUseCase.executeOnBackground() }
         Assert.assertTrue(viewModel.getAllBrandResult.value is Success)
     }
