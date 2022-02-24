@@ -1,16 +1,15 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
-import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -26,7 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-abstract class DigitalPDPDataPlanViewModelTestFixture {
+abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -34,15 +33,15 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     @get:Rule
     val testCoroutineRule = CoroutineTestRule()
 
-    protected lateinit var viewModel: DigitalPDPDataPlanViewModel
+    protected lateinit var viewModel: DigitalPDPTokenListrikViewModel
 
     @RelaxedMockK
-    lateinit var repo: DigitalPDPTelcoRepository
+    lateinit var repo: DigitalPDPTokenListrikRepository
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = DigitalPDPDataPlanViewModel(repo, testCoroutineRule.dispatchers)
+        viewModel = DigitalPDPTokenListrikViewModel(repo, testCoroutineRule.dispatchers)
     }
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {
@@ -69,33 +68,15 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         } throws error
     }
 
-    protected fun onGetPrefixOperator_thenReturn(response: TelcoCatalogPrefixSelect) {
+    protected fun onGetCatalogInputMultitab_thenReturn(response: DenomWidgetModel) {
         coEvery {
-            repo.getOperatorList(any())
-        } returns response
-    }
-
-    protected fun onGetPrefixOperator_thenReturn(error: Throwable) {
-        coEvery {
-            repo.getOperatorList(any())
-        } throws error
-    }
-
-    protected fun onGetCatalogInputMultitab_thenReturn(response: InputMultiTabDenomModel) {
-        coEvery {
-            repo.getProductInputMultiTabDenomFull(any(), any(), any(), any())
-        } returns response
-    }
-
-    protected fun onGetCatalogInputMultitabisFiltered_thenReturn(response: InputMultiTabDenomModel) {
-        coEvery {
-            repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any())
+            repo.getProductTokenListrikDenomGrid(any(), any(), any())
         } returns response
     }
 
     protected fun onGetCatalogInputMultitab_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.getProductInputMultiTabDenomFull(any(), any(), any(), any())
+            repo.getProductTokenListrikDenomGrid(any(), any(), any())
         } throws errorThrowable
     }
 
@@ -111,8 +92,28 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetSelectedFullProduct_thenReturn(result: SelectedProduct) {
-        viewModel.selectedFullProduct = result
+    protected fun onGetOperatorSelectGroup_thenReturn(response: DigitalCatalogOperatorSelectGroup) {
+        coEvery {
+            repo.getOperatorSelectGroup(any())
+        } returns response
+    }
+
+    protected fun onGetOperatorSelectGroup_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getOperatorSelectGroup(any())
+        } throws error
+    }
+
+    protected fun onGetSelectedGridProduct_thenReturn(result: SelectedProduct) {
+        viewModel.selectedGridProduct = result
+    }
+
+    protected fun verifyGetProductInputMultiTabRepoGetCalled() {
+        coVerify { repo.getProductTokenListrikDenomGrid(any(), any(), any()) }
+    }
+
+    protected fun verifyGetProductInputMultiTabRepoWasNotCalled() {
+        coVerify { repo.getProductTokenListrikDenomGrid(any(), any(), any()) wasNot Called }
     }
 
     protected fun verifyGetMenuDetailRepoGetCalled() {
@@ -123,24 +124,12 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         coVerify { repo.getFavoriteNumber(any()) }
     }
 
-    protected fun verifyGetOperatorListRepoGetCalled() {
-        coVerify { repo.getOperatorList(any()) }
-    }
-
-    protected fun verifyGetProductInputMultiTabRepoGetCalled() {
-        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any()) }
-    }
-
-    protected fun verifyGetProductInputMultiTabRepoWasNotCalled() {
-        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any()) wasNot Called }
-    }
-
-    protected fun verifyGetProductInputMultiTabRepoIsRefreshedGetCalled() {
-        coVerify { repo.getProductInputMultiTabDenomFull(any(), any(), any(), any(), any()) }
-    }
-
     protected fun verifyAddToCartRepoGetCalled() {
         coVerify { repo.addToCart(any(), any(), any(), any()) }
+    }
+
+    protected fun verifyGetOperatorSelectGroupRepoGetCalled() {
+        coVerify { repo.getOperatorSelectGroup(any()) }
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){
@@ -155,80 +144,6 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyGetFavoriteNumberFail() {
         val actualResponse = viewModel.favoriteNumberData.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
-    protected fun verifyPrefixOperatorLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.catalogPrefixSelect.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetPrefixOperatorSuccess(expectedResponse: TelcoCatalogPrefixSelect) {
-        val actualResponse = viewModel.catalogPrefixSelect.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
-    }
-
-    protected fun verifyGetCatalogInputMultitabSuccess(expectedResponse: InputMultiTabDenomModel) {
-        val actualResponse = viewModel.observableDenomMCCMData.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
-    }
-
-    protected fun verifyGetFilterTagComponentSuccess(expectedResponse: List<TelcoFilterTagComponent>) {
-        val actualResponse = viewModel.filterData
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetFilterParam(expectedResponse: ArrayList<HashMap<String, Any>>){
-        val actualResponse = viewModel.filterDataParams
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-    protected fun verifyGetFilterParamEmpty(expectedResponse: ArrayList<HashMap<String, Any>>){
-        val actualResponse = viewModel.filterDataParams
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetFilterTagComponentEmpty() {
-        val actualResponse = viewModel.filterData
-        Assert.assertEquals(emptyList<TelcoFilterTagComponent>(), actualResponse)
-    }
-
-    protected fun verifyGetCatalogInputMultitabLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.observableDenomMCCMData.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetCatalogInputMultitabError(expectedResponse: Throwable) {
-        val actualResponse = viewModel.observableDenomMCCMData.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Fail).error)
-    }
-
-    protected fun verifyGetCatalogInputMultitabErrorCancellation() {
-        val actualResponse = viewModel.observableDenomMCCMData.value
-        Assert.assertNull(actualResponse)
-    }
-
-    protected fun verifyAddToCartSuccess(expectedResponse: String) {
-        val actualResponse = viewModel.addToCartResult.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
-    }
-
-    protected fun verifyAddToCartError(expectedResponse: Throwable) {
-        val actualResponse = viewModel.addToCartResult.value
-        Assert.assertEquals(expectedResponse.message, (actualResponse as RechargeNetworkResult.Fail).error.message)
-    }
-
-    protected fun verifyAddToCartErrorExceptions(expectedResponse: Throwable) {
-        val actualResponse = viewModel.addToCartResult.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Fail).error)
-    }
-
-    protected fun verifyAddToCartErrorLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.addToCartResult.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetPrefixOperatorFail() {
-        val actualResponse = viewModel.catalogPrefixSelect.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
@@ -262,34 +177,101 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(actualCategoryId == EMPTY || actualCategoryId == null)
     }
 
-    protected fun verifyValidateClientNumberTrue() {
-        Assert.assertTrue(viewModel.isEligibleToBuy)
-        Assert.assertEquals(viewModel.clientNumberValidatorMsg.value,
-            EMPTY
-        )
+    protected fun verifyGetCatalogInputMultitabSuccess(expectedResponse: DenomWidgetModel) {
+        val actualResponse = viewModel.observableDenomData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyValidateClientNumberFalse() {
-        Assert.assertFalse(viewModel.isEligibleToBuy)
-        Assert.assertNotEquals(viewModel.clientNumberValidatorMsg.value,
-            EMPTY
-        )
+    protected fun verifyGetCatalogInputMultitabLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.observableDenomData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifySelectedFullProductNonEmpty() {
-        Assert.assertEquals(viewModel.selectedFullProduct.position,
+    protected fun verifyGetCatalogInputMultitabError(expectedResponse: Throwable) {
+        val actualResponse = viewModel.observableDenomData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Fail).error)
+    }
+
+    protected fun verifyGetCatalogInputMultitabErrorCancellation() {
+        val actualResponse = viewModel.observableDenomData.value
+        Assert.assertNull(actualResponse)
+    }
+
+    protected fun verifyCatalogProductJobIsCancelled() {
+        Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
+    }
+
+    protected fun verifyAddToCartSuccess(expectedResponse: String) {
+        val actualResponse = viewModel.addToCartResult.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyAddToCartError(expectedResponse: Throwable) {
+        val actualResponse = viewModel.addToCartResult.value
+        Assert.assertEquals(expectedResponse.message, (actualResponse as RechargeNetworkResult.Fail).error.message)
+    }
+
+    protected fun verifyAddToCartErrorExceptions(expectedResponse: Throwable) {
+        val actualResponse = viewModel.addToCartResult.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Fail).error)
+    }
+
+    protected fun verifyAddToCartErrorLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.addToCartResult.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifySelectedGridProductNonEmpty() {
+        Assert.assertEquals(viewModel.selectedGridProduct.position,
             POSITION_0
         )
     }
 
-    protected fun verifySelectedFullProductEmpty() {
-        Assert.assertEquals(viewModel.selectedFullProduct.position,
+    protected fun verifySelectedGridProductEmpty() {
+        Assert.assertEquals(viewModel.selectedGridProduct.position,
             POSITION_DEFAULT
         )
     }
 
     protected fun verifyGetSelectedPositionNull(pos: Int?) {
         Assert.assertEquals(pos, null)
+    }
+
+    protected fun verifyCatalogProductJobIsNull() {
+        Assert.assertNull(viewModel.catalogProductJob)
+    }
+
+    protected fun verifyGetOperatorSelectGroupLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.catalogSelectGroup.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetOperatorSelectGroupSuccess(expectedResponse: DigitalCatalogOperatorSelectGroup) {
+        val actualResponse = viewModel.catalogSelectGroup.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetOperatorSelectGroupFail() {
+        val actualResponse = viewModel.catalogSelectGroup.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyValidateClientNumberTrue() {
+        Assert.assertTrue(viewModel.isEligibleToBuy)
+        Assert.assertEquals(viewModel.clientNumberValidatorMsg.value, EMPTY)
+    }
+
+    protected fun verifyValidateClientNumberFalse() {
+        Assert.assertFalse(viewModel.isEligibleToBuy)
+        Assert.assertNotEquals(viewModel.clientNumberValidatorMsg.value, EMPTY)
+    }
+
+    protected fun verifyValidatorJobIsNull() {
+        Assert.assertNull(viewModel.validatorJob)
+    }
+
+    protected fun verifyValidatorJobIsCancelled() {
+        Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
     }
 
     protected fun verifyIsAutoSelectedProductTrue(isAutoSelect: Boolean) {
@@ -300,28 +282,12 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertFalse(isAutoSelect)
     }
 
-    protected fun verifyCatalogProductJobIsNull() {
-        Assert.assertNull(viewModel.catalogProductJob)
-    }
-
-    protected fun verifyCatalogProductJobIsNotNull() {
-        Assert.assertNotNull(viewModel.catalogProductJob)
-    }
-
-    protected fun verifyCatalogProductJobIsCancelled() {
-        Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
-    }
-
-    protected fun verifyValidatorJobIsNull() {
-        Assert.assertNull(viewModel.validatorJob)
-    }
-
     protected fun verifyValidatorJobIsNotNull() {
         Assert.assertNotNull(viewModel.validatorJob)
     }
 
-    protected fun verifyValidatorJobIsCancelled() {
-        Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
+    protected fun verifyCatalogProductJobIsNotNull() {
+        Assert.assertNotNull(viewModel.catalogProductJob)
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
@@ -332,10 +298,6 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertEquals(expected.isPromo, actual.isPromo)
         Assert.assertEquals(expected.isSpecialProduct, actual.isSpecialProduct)
         Assert.assertEquals(expected.idemPotencyKey, actual.idemPotencyKey)
-    }
-
-    protected fun TestCoroutineScope.skipPrefixOperatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_PREFIX_TIME)
     }
 
     protected fun TestCoroutineScope.skipValidatorDelay() {

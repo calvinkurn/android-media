@@ -350,11 +350,14 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 },
                 sortFilterListener = object : ClientNumberSortFilterListener {
                     override fun getSelectedChipOperator(operator: CatalogOperator) {
-                        viewModel.operatorData = operator
-                        viewModel.getTagihanProduct(menuId,
-                            binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
-                            getString(R.string.selection_null_product_error)
-                        )
+                        viewModel.run {
+                            operatorData = operator
+                            setTagihanProductLoading()
+                            getTagihanProduct(menuId,
+                                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
+                                getString(R.string.selection_null_product_error)
+                            )
+                        }
                     }
                 }
             )
@@ -382,10 +385,13 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun onSuccessGetOperatorSelectGroup(operatorGroup: DigitalCatalogOperatorSelectGroup) {
-        viewModel.getTagihanProduct(menuId,
-            binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
-            getString(R.string.selection_null_product_error)
-        )
+        viewModel.run {
+            setTagihanProductLoading()
+            getTagihanProduct(menuId,
+                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
+                getString(R.string.selection_null_product_error)
+            )
+        }
         renderProduct()
         renderChipsAndTitle(operatorGroup)
     }
@@ -480,11 +486,17 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun getOperatorSelectGroup() {
-        viewModel.getOperatorSelectGroup(menuId)
+        viewModel.run {
+            setOperatorSelectGroupLoading()
+            getOperatorSelectGroup(menuId)
+        }
     }
 
     private fun getFavoriteNumber() {
-        viewModel.getFavoriteNumber(listOf(categoryId))
+        viewModel.run {
+            setFavoriteNumberLoading()
+            getFavoriteNumber(listOf(categoryId))
+        }
     }
 
     private fun initEmptyState() {
@@ -549,7 +561,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             if (rechargePdpTagihanListrikClientNumberWidget.getInputNumber().length >= DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX_LISTRIK) {
 
                 /* validate client number */
-                viewModel.validateClientNumber(rechargePdpTagihanListrikClientNumberWidget.getInputNumber())
+                viewModel.run {
+                    cancelValidatorJob()
+                    validateClientNumber(rechargePdpTagihanListrikClientNumberWidget.getInputNumber())
+                }
+
                 hitTrackingForInputNumber(
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     viewModel.operatorData.attributes.name
@@ -679,14 +695,20 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun getCatalogMenuDetail() {
-        viewModel.getMenuDetail(menuId)
+        viewModel.run {
+            setMenuDetailLoading()
+            getMenuDetail(menuId)
+        }
     }
 
     private fun addToCart(){
-        viewModel.addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId
-        )
+        viewModel.run {
+            setAddToCartLoading()
+            addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams(),
+                userSession.userId
+            )
+        }
     }
 
     private fun navigateToLoginPage() {
@@ -752,7 +774,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 navigateToLoginPage()
             }
         } else {
-            viewModel.validateClientNumber(binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "", true)
+            viewModel.run {
+                cancelValidatorJob()
+                validateClientNumber(binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "", true)
+            }
         }
     }
 

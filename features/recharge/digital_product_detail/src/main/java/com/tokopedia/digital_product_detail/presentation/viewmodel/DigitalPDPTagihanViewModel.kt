@@ -15,6 +15,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -34,7 +35,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var loadingJob: Job? = null
+    var validatorJob: Job? = null
 
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
@@ -78,8 +79,11 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<String>>
         get() = _addToCartResult
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
@@ -88,8 +92,11 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>) {
+    fun setFavoriteNumberLoading() {
         _favoriteNumberData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getFavoriteNumber(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
@@ -100,8 +107,11 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun getOperatorSelectGroup(menuId: Int) {
+    fun setOperatorSelectGroupLoading() {
         _catalogSelectGroup.value = RechargeNetworkResult.Loading
+    }
+
+    fun getOperatorSelectGroup(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
             val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
@@ -115,8 +125,11 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun getTagihanProduct(menuID: Int, clientNumber: String, nullErrorMessage: String) {
+    fun setTagihanProductLoading() {
         _tagihanProduct.value = RechargeNetworkResult.Loading
+    }
+
+    fun getTagihanProduct(menuID: Int, clientNumber: String, nullErrorMessage: String) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getProductTagihanListrik(menuID, operatorData.id, clientNumber)
             if (data == null) {
@@ -129,8 +142,11 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
-    fun inquiry(productId: String, clientNumber: String, inputData: Map<String, String>) {
+    fun setInquiryLoading() {
         _inquiry.value = RechargeNetworkResult.Loading
+    }
+
+    fun inquiry(productId: String, clientNumber: String, inputData: Map<String, String>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             var data: TopupBillsEnquiryData
             do {
@@ -147,26 +163,27 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String, isShowToaster: Boolean = false) {
-        loadingJob?.cancel()
-        loadingJob = viewModelScope.launch {
-            launchCatchError(dispatchers.main, block = {
-                var errorMessage = ""
-                for (validation in validators) {
-                    val phoneIsValid = Pattern.compile(validation.rule)
-                        .matcher(clientNumber).matches()
-                    if (!phoneIsValid) {
-                        errorMessage = validation.message
-                    }
-                }
-                isEligibleToBuy = errorMessage.isEmpty()
-                delay(VALIDATOR_DELAY_TIME)
-                _clientNumberValidatorMsg.value = Pair(errorMessage, isShowToaster)
-            }) {
-                if (it !is CancellationException) {
-
+        validatorJob = viewModelScope.launch {
+            var errorMessage = ""
+            for (validation in validators) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumber).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
                 }
             }
+            isEligibleToBuy = errorMessage.isEmpty()
+            delay(VALIDATOR_DELAY_TIME)
+            _clientNumberValidatorMsg.value = Pair(errorMessage, isShowToaster)
         }
+    }
+
+    fun cancelValidatorJob() {
+        validatorJob?.cancel()
+    }
+
+    fun setAddToCartLoading() {
+        _addToCartResult.postValue(RechargeNetworkResult.Loading)
     }
 
     fun addToCart(
@@ -174,7 +191,6 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         digitalSubscriptionParams: DigitalSubscriptionParams,
         userId: String
     ) {
-        _addToCartResult.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
@@ -214,8 +230,6 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     }
 
     companion object {
-        const val DELAY_TIME = 200L
-        const val VALIDATOR_DELAY_TIME = 3000L
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
         const val MS_TO_S_DURATION = 1000

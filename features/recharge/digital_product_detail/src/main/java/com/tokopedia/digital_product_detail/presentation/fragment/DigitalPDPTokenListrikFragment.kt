@@ -336,15 +336,25 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun getCatalogMenuDetail() {
-        viewModel.getMenuDetail(menuId)
+        viewModel.run {
+            setMenuDetailLoading()
+            getMenuDetail(menuId)
+        }
     }
 
     private fun getOperatorSelectGroup() {
-        viewModel.getOperatorSelectGroup(menuId)
+        viewModel.run {
+            setOperatorSelectGroupLoading()
+            getOperatorSelectGroup(menuId)
+        }
     }
 
     private fun getFavoriteNumber() {
-        viewModel.getFavoriteNumber(listOf(categoryId))
+        viewModel.run {
+            setFavoriteNumberLoading()
+            getFavoriteNumber(listOf(categoryId))
+        }
+
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
@@ -493,13 +503,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             if (rechargePdpTokenListrikClientNumberWidget.getInputNumber().length >= DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX_LISTRIK) {
 
                 /* validate client number */
-                viewModel.validateClientNumber(rechargePdpTokenListrikClientNumberWidget.getInputNumber())
+                viewModel.run {
+                    cancelValidatorJob()
+                    validateClientNumber(rechargePdpTokenListrikClientNumberWidget.getInputNumber())
+                }
                 hitTrackingForInputNumber(
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     viewModel.operatorData.attributes.name
                 )
 
-                getCatalogProductInput(operatorId)
+                getCatalogInputMultiTab(operatorId)
                 hideEmptyState()
 
                 if (!viewModel.isEligibleToBuy) onHideBuyWidget()
@@ -552,9 +565,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun getCatalogProductInput(selectedOperatorKey: String) {
-        viewModel.getRechargeCatalogInput(menuId, selectedOperatorKey,
-            binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
+    private fun getCatalogInputMultiTab(selectedOperatorKey: String) {
+        viewModel.run {
+            cancelCatalogProductJob()
+            setRechargeCatalogInputMultiTabLoading()
+            getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey,
+                binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
+        }
     }
 
     private fun showEmptyState() {
@@ -585,9 +602,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun addToCart(){
-        viewModel.addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId)
+        viewModel.run {
+            setAddToCartLoading()
+            addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams(),
+                userSession.userId)
+        }
     }
 
     private fun addToCartFromUrl() {

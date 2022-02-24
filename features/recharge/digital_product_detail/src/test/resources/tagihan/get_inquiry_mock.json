@@ -1,0 +1,44 @@
+{
+  "status": "OK",
+  "rechargeInquiry": {
+    "status": "DONE",
+    "retrySec": null,
+    "attributes": {
+      "UserID": "17211378",
+      "ProductID": "291",
+      "ClientNumber": "102111101111",
+      "Title": "Detail Pembayaran",
+      "Price": "Rp2.510",
+      "PricePlain": 2510,
+      "mainInfo": [
+        {
+          "label": "ID Pelanggan",
+          "value": "102111101111"
+        },
+        {
+          "label": "Nama",
+          "value": "Tokope*** Use* Defau**"
+        },
+        {
+          "label": "Total Bayar",
+          "value": "Rp2.510"
+        }
+      ],
+      "additionalInfo": [
+        {
+          "title": "Detail Tagihan",
+          "detail": [
+            {
+              "label": "Admin Bank",
+              "value": "Rp2.500"
+            },
+            {
+              "label": "Total Lembar Tagihan",
+              "value": "0 Bulan"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
