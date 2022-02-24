@@ -39,14 +39,13 @@
     <string name="pdp_shipping_error_to_home">Ke Home</string>
 
     <string name="pdp_usp_static_title">Keuntungan Dilayani Tokopedia"</string>
-    <string name="pdp_usp_static_header">Dengan Dilayani Tokopedia, kamu mendapatkan keuntungan berikut:</string>
-    <string name="pdp_usp_static_1_1">Lebih Nyaman.</string>
-    <string name="pdp_usp_static_1_2">Barang diproses dan dikemas oleh Dilayani Tokopedia</string>
-    <string name="pdp_usp_static_2_1">Lebih Cepat.</string>
-    <string name="pdp_usp_static_2_2">Barang tiba 1–2 hari</string>
-    <string name="pdp_usp_static_3_1">Lebih Hemat.</string>
-    <string name="pdp_usp_static_3_2">Dapatkan Bebas Ongkir Rp0</string>
-    <string name="pdp_usp_static_3_3">batas</string>
+    <string name="pdp_usp_static_header">Dengan berbelanja produk bertanda Dilayani Tokopedia:</string>
+    <string name="pdp_usp_static_1_1">Lebih Nyaman</string>
+    <string name="pdp_usp_static_1_2">Dengan Dilayani Tokopedia, barang kamu diproses dan dikemas sesuai standar Tokopedia.</string>
+    <string name="pdp_usp_static_2_1">Lebih Cepat</string>
+    <string name="pdp_usp_static_2_2">Pilih pengiriman sesuai kebutuhanmu. Barang pasti tiba dalam 4 jam atau dalam 1–2 hari!</string>
+    <string name="pdp_usp_static_3_1">Lebih Hemat</string>
+    <string name="pdp_usp_static_3_2">Gunakan Bebas Ongkir untuk nikmati ongkir Rp0.</string>
 
     <string name="template_cashback">Cashback %1$s%%</string>
 

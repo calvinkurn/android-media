@@ -76,7 +76,11 @@ data class P2RatesEstimateData(
 
         @SerializedName("chipsLabel")
         @Expose
-        val chipsLabel: List<String> = emptyList()
+        val chipsLabel: List<String> = emptyList(),
+
+        @SerializedName("hasUsedBenefit")
+        @Expose
+        val hasUsedBenefit: Boolean = false
 )
 
 data class P2RatesError(

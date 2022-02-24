@@ -128,7 +128,7 @@ class ShipmentViewHolder(
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
         val freeOngkirImageUrl = element.freeOngkirUrl
-        pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
+        pdpShipmentIcon.showIfWithBlock(!rates.hasUsedBenefit && freeOngkirImageUrl.isNotEmpty()) {
             setImageUrl(freeOngkirImageUrl)
         }
         if (element.isFullfillment) {
