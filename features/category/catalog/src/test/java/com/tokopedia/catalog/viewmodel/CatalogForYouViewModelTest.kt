@@ -90,6 +90,8 @@ class CatalogForYouViewModelTest {
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
             assertEquals(viewModel.getShimmerData().value?.size, 1)
             assertEquals(viewModel.masterDataList.size, 1)
+            assertEquals(viewModel.isLoading,false)
+            assertEquals(viewModel.page,2)
         }
     }
 
