@@ -356,7 +356,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpTokenListrikClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun onFailedRecommendation(){

@@ -110,6 +110,7 @@ object CommonTopupBillsGqlQuery {
             }
             user_perso {
                 prefill
+                client_name
                 user_type
                 loyalty_status
             }

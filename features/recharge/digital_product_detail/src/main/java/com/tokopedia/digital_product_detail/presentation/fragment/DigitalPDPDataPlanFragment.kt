@@ -603,7 +603,10 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPaketDataClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
