@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -254,10 +253,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
 
-                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
-                    this.selectedProductCount = selectedProducts.size
-
-                    refreshProductsSection(selectedProducts.size)
+                    this.selectedProductCount = result.data.coupon.productIds.size
+                    refreshProductsSection(result.data.coupon.productIds.size)
 
                     binding.tpgMaxProduct.text = String.format(
                         getString(R.string.placeholder_max_product),
@@ -399,10 +396,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
         this.couponSettings = couponSettings
-    }
-
-    fun setCouponProductsData(couponProducts: List<CouponProduct>) {
-        this.couponProducts = couponProducts.toMutableList()
     }
 
     fun setCouponInformationData(couponInformation: CouponInformation) {

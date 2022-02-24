@@ -8,13 +8,16 @@ import kotlinx.android.parcel.Parcelize
 
 data class CouponDetailResponse(
         @SerializedName("merchantPromotionGetMVDataByID")
+        @Expose
         val result: CouponDetailResult = CouponDetailResult()
 )
 
 data class CouponDetailResult(
         @SerializedName("header")
+        @Expose
         val header: Header = Header(),
         @SerializedName("data")
+        @Expose
         val voucher: Voucher = Voucher()
 )
 
@@ -105,6 +108,9 @@ data class Voucher(
         @Expose
         @SerializedName("product_ids")
         val productIds: List<ProductId> = emptyList(),
+        @Expose
+        @SerializedName("galadriel_voucher_id")
+        val galadrielVoucherId: Long = 0,
 )
 
 @Parcelize

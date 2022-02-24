@@ -1877,6 +1877,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         stickyLoginView?.loadContent()
+        loadEggData(isPageRefresh)
     }
 
     override fun onChooseAddressUpdated() {
