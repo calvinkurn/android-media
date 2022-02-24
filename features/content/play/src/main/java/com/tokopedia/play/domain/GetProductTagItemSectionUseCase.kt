@@ -43,7 +43,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                   start_time: startTime
                   end_time: endTime
                   server_time: serverTime
-                  sourceID
+                  source_id: sourceID
                   products{
                     id: ID
                     name: Name

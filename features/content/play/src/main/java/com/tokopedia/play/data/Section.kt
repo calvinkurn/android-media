@@ -30,7 +30,7 @@ data class Section (
     @SerializedName("countdown")
     val countdown: Countdown = Countdown(),
 
-    @SerializedName("sourceID")
+    @SerializedName("source_id")
     val id: String = "",
 
 ){
