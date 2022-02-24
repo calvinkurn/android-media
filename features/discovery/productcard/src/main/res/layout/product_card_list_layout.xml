@@ -20,7 +20,7 @@
         android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
-        <View
+        <android.widget.Space
             android:id="@+id/mediaAnchorProduct"
             android:layout_width="@dimen/product_card_list_image_size"
             android:layout_height="@dimen/product_card_list_image_size"
