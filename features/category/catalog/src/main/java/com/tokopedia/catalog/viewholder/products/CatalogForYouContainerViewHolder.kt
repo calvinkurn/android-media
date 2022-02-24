@@ -3,23 +3,28 @@ package com.tokopedia.catalog.viewholder.products
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
+import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
+import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.catalog.viewmodel.CatalogForYouViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import javax.inject.Inject
 
 class CatalogForYouContainerViewHolder(private val view : View,
                                        private val lifecycleOwner : FragmentActivity,
@@ -28,6 +33,10 @@ class CatalogForYouContainerViewHolder(private val view : View,
                                        private val brand : String = "",
                                        private val catalogProductCardListener: CatalogProductCardListener?
 ): AbstractViewHolder<CatalogForYouContainerDataModel>(view) , CatalogDetailListener{
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
 
     private val myLayoutManger = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
@@ -52,11 +61,20 @@ class CatalogForYouContainerViewHolder(private val view : View,
     }
 
     override fun bind(element: CatalogForYouContainerDataModel) {
-        catalogForYouViewModel = ViewModelProviders.of(lifecycleOwner).get(CatalogForYouViewModel::class.java)
+        injectViewModel()
         setUpRecyclerView(itemView)
         setObservers()
         if(!initialApiCall())
             makeApiCall(catalogForYouViewModel?.page ?: firstPage)
+    }
+
+    private fun injectViewModel(){
+        val component = DaggerCatalogComponent.builder()
+            .baseAppComponent((lifecycleOwner.applicationContext as BaseMainApplication)
+                .baseAppComponent).build()
+        component.inject(this)
+        val viewModelProvider = ViewModelProvider(lifecycleOwner, viewModelFactory)
+        catalogForYouViewModel = viewModelProvider.get(CatalogForYouViewModel::class.java)
     }
 
     private fun initialApiCall() : Boolean {

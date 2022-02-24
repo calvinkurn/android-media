@@ -13,8 +13,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
-class CatalogForYouViewModel : BaseViewModel() {
+class CatalogForYouViewModel @Inject constructor(
+        private val catalogComparisonProductUseCase: CatalogComparisonProductUseCase
+    ) : BaseViewModel() {
 
     private var shimmerData = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
     private var dataList = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
@@ -25,8 +28,6 @@ class CatalogForYouViewModel : BaseViewModel() {
     var page = 1
     var lastScrollIndex = 0
     var isLoading = false
-
-    var catalogComparisonProductUseCase =  CatalogComparisonProductUseCase(CatalogComparisonProductRepository())
 
     fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : Int, name : String) {
