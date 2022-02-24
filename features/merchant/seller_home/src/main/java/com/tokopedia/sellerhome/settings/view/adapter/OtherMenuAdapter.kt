@@ -17,6 +17,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import java.util.*
 
 class OtherMenuAdapter(
@@ -36,7 +37,8 @@ class OtherMenuAdapter(
         StatisticMenuItemUiModel(
             title = context?.getString(R.string.setting_menu_statistic).orEmpty(),
             clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-            iconUnify = IconUnify.GRAPH
+            iconUnify = IconUnify.GRAPH,
+            tag = getStatisticNewTag()
         ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
@@ -131,6 +133,16 @@ class OtherMenuAdapter(
             listener.goToSettings()
         }
     )
+
+    private fun getStatisticNewTag(): String {
+        val expiredDateMillis = ShcConst.TRAFFIC_INSIGHT_TAG_EXPIRED
+        val todayMillis = Date().time
+        return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
+        }
+    }
 
     private fun getSettingsTag(): String {
         val expiredDateMillis = FEEDBACK_EXPIRED_DATE

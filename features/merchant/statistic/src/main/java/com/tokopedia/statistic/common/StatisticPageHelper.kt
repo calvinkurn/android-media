@@ -3,6 +3,7 @@ package com.tokopedia.statistic.common
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
@@ -26,8 +27,6 @@ class StatisticPageHelper @Inject constructor(
 ) {
 
     companion object {
-        private const val TRAFFIC_TAG_REMOVE_AFTER = 1649606400000
-
         fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
             val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
             val isOfficialStore = userSession.isShopOfficialStore
@@ -436,6 +435,6 @@ class StatisticPageHelper @Inject constructor(
     private fun getTrafficShowTagStatus(): Boolean {
         //the new tag won't be shown after 30 days (11 Apr 2022), start from release date
         val now = Date().time
-        return now <= TRAFFIC_TAG_REMOVE_AFTER
+        return now <= ShcConst.TRAFFIC_INSIGHT_TAG_EXPIRED
     }
 }
