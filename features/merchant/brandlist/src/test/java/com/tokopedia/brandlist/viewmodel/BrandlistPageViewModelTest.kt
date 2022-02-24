@@ -133,15 +133,17 @@ class BrandlistPageViewModelTest {
 
     @Test
     fun `given zero request size when load more brand reminding then get brand all brand will not success`() {
-        runBlockingTest {
-            val brandFirstLetter = "b"
-            val mockedCategory = Category()
-            val mockedZeroRequestSize = 0
+        val brandFirstLetter = "b"
+        val mockedCategory = Category()
+        val mockedZeroRequestSize = 0
 
-            viewModel.loadMoreAllBrands(brandFirstLetter)
-            viewModel.loadMoreAllBrandsReminding(mockedZeroRequestSize, category = mockedCategory, brandFirstLetter)
-            Assert.assertTrue(viewModel.getAllBrandResult.value !is Success)
-        }
+        viewModel.loadMoreAllBrands(brandFirstLetter)
+        viewModel.loadMoreAllBrandsReminding(
+            mockedZeroRequestSize,
+            category = mockedCategory,
+            brandFirstLetter
+        )
+        Assert.assertTrue(viewModel.getAllBrandResult.value !is Success)
     }
 
     @Test
