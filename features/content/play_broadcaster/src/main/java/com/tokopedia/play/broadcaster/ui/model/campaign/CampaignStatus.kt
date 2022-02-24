@@ -21,5 +21,5 @@ enum class CampaignStatus(val id: Int) {
         }
     }
 
-    fun isUpcoming() = (id == Ready.id || id == ReadyLocked.id)
+    fun isUpcoming() = (this == Ready || this == ReadyLocked)
 }
