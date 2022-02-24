@@ -13,7 +13,6 @@ import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
@@ -120,7 +119,7 @@ object PayloadConverter {
         model.tribeKey = data.tribeKey
         model.type = data.type
 
-        setNotificationSound(model, data.notificationSound)
+        setNotificationSound(model, data)
 
         model.title = data.title
         model.detailMessage = data.detailMessage
@@ -259,28 +258,15 @@ object PayloadConverter {
 
     private fun setNotificationSound(model: BaseNotificationModel,
                                      extras: Bundle) {
-        model.soundFileName = ""
-        model.channelName = ""
-
-        val soundStr = extras.getString(NOTIFICATION_CHANNEL_SOUND)
-        try {
-            val notificationSound =  Gson().fromJson(soundStr, NotificationSound::class.java)
-            notificationSound?.let {
-                model.channelName = notificationSound.channelName ?: ""
-                model.soundFileName = notificationSound.channelSound ?: ""
-            }
-        }catch (ignore : Throwable){ }
+        model.soundFileName = extras.getString(NOTIFICATION_SOUND, "")
+        model.channelName = extras.getString(NOTIFICATION_CHANNEL, "")
     }
 
 
     private fun setNotificationSound(model: BaseNotificationModel,
-                                     notificationSound: NotificationSound?){
-        model.soundFileName = ""
-        model.channelName = ""
-        notificationSound?.let {
-            model.channelName = notificationSound.channelName ?: ""
-            model.soundFileName = notificationSound.channelSound ?: ""
-        }
+                                     data: AmplificationBaseNotificationModel) {
+        model.soundFileName = data.notificationSound ?: ""
+        model.channelName = data.notificationChannel ?: ""
     }
 
     private fun getMedia(extras: Bundle): Media? {
