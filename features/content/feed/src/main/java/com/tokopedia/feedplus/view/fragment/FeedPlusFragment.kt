@@ -1742,8 +1742,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShareClick(
-        positionInFeed: Int, id: Int, title: String,
-        description: String, url: String,
+        positionInFeed: Int,
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
         imageUrl: String,
         typeASGC: Boolean,
         type: String,
@@ -2293,7 +2296,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         shopId: String,
         isTopads:Boolean = false,
-        shopName: String,
         mediaType: String
     ) {
         feedAnalytics.eventonShareProductClicked(
@@ -2309,8 +2311,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
-            //set product name
-            String.format(getString(R.string.feed_share_pdp), shopName.toLowerCase().replace("_",""),title.toLowerCase().replace(" ","-"))
+            url
         } else{
             shareBottomSheetProduct = false
             url
@@ -2327,6 +2328,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             if (isTopads) {
                 linkerBuilder.setOgImageUrl(imageUrl)
+                linkerBuilder.setDesktopUrl(url)
             }
             shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
@@ -2370,7 +2372,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.isFollowed,
                 item.shopId,
                 item.isTopads,
-                item.shopName,
                 item.mediaType
             )
         }

@@ -117,6 +117,7 @@ object TopadsFeedXMapper {
                 id = id,
                 type = "image",
                 appLink = applinks,
+                webLink = uri,
                 mediaUrl = image.m_url,
                 tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.44f,mediaIndex = index)),
                 isImageImpressedFirst = true,
@@ -126,8 +127,7 @@ object TopadsFeedXMapper {
                 discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 isCashback = isProductCashback,
                 variant = variant,
-                cashBackFmt = cashback,
-                webLink = redirectWeblinkShop
+                cashBackFmt = cashback
             )
         }
     }
@@ -160,7 +160,7 @@ object TopadsFeedXMapper {
                 isDiscount = isDiscount,
                 coverURL = imageProduct.imageUrl,
                 id = id,
-                webLink = applinks,
+                webLink = uri,
                 authorName = authorName,
                 isTopads = true,
                 adClickUrl = imageProduct.imageClickUrl,
