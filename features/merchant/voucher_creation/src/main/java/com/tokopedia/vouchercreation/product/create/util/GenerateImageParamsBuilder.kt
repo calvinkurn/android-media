@@ -4,7 +4,6 @@ import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import javax.inject.Inject
 
 class GenerateImageParamsBuilder @Inject constructor() {

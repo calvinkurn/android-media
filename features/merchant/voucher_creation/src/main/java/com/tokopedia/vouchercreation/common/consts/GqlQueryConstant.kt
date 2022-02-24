@@ -54,6 +54,7 @@ object GqlQueryConstant {
                       package_name
                       is_subsidy
                       tnc
+                      galadriel_voucher_id
                       product_ids {
                          parent_product_id
                          child_product_id

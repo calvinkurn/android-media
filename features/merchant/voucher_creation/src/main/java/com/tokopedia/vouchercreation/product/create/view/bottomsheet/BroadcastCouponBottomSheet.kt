@@ -123,6 +123,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         setupView()
         observeBroadcastMetaDataResult()
         observeGenerateImage()
+        observeCouponDetail()
         viewModel.getBroadcastMetaData()
     }
 
@@ -139,7 +140,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
                 ShareComponentConstant.ENTRY_POINT_COUPON_CREATION_SUCCESS,
                 couponId.toString()
             )
-            viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
+            viewModel.getCouponDetail(couponId)
         }
         handleShareToSocialMediaCardVisibility()
     }
@@ -169,6 +170,20 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         })
     }
 
+    private fun observeCouponDetail() {
+        viewModel.couponDetail.observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Success -> {
+                    viewModel.setGaladrielVoucherId(result.data.galadrielVoucherId)
+                    viewModel.generateImage(viewModel.getCoupon() ?: return@observe)
+                }
+                is Fail -> {
+                    showError(result.throwable)
+                }
+            }
+
+        })
+    }
 
     private fun observeGenerateImage() {
         viewModel.couponImageWithShop.observe(viewLifecycleOwner, { result ->
@@ -230,7 +245,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
             coupon.id,
             onShareOptionsClicked = { shareModel ->
                 sharingComponentTracker.sendSelectShareChannelClickEvent(shareModel.channel.orEmpty(), coupon.id.toString())
-                handleShareOptionSelection(coupon.id, shareModel, title, description, shop.shopDomain)
+                handleShareOptionSelection(viewModel.getGaladrieldVoucherId(), shareModel, title, description, shop.shopDomain)
             }, onCloseOptionClicked = {
                 sharingComponentTracker.sendShareBottomSheetDismissClickEvent(coupon.id.toString())
             }
@@ -277,7 +292,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleShareOptionSelection(
-        couponId: Long,
+        galadrielVoucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -299,7 +314,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         }
 
         val linkerShareData = linkerDataGenerator.generate(
-            couponId,
+            galadrielVoucherId,
             userSession.shopId,
             shopDomain,
             shareModel,

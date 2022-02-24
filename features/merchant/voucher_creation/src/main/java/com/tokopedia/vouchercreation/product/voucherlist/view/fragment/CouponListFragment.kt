@@ -831,7 +831,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             coupon.id.toLong(),
             onShareOptionsClicked = { shareModel ->
                 sharingComponentTracker.sendSelectShareChannelClickEvent(shareModel.channel.orEmpty(), coupon.id.toString())
-                handleShareOptionSelection(coupon.id.toLong(), shareModel, title, description, shop.shopDomain)
+                handleShareOptionSelection(coupon.galadrielVoucherId, shareModel, title, description, shop.shopDomain)
             }, onCloseOptionClicked = {
                 sharingComponentTracker.sendShareBottomSheetDismissClickEvent(coupon.id.toString())
             }
@@ -874,7 +874,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun handleShareOptionSelection(
-        couponId: Long,
+        galadrielVoucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -898,7 +898,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
         val outgoingDescription = getString(R.string.share_component_outgoing_text_description)
         val linkerShareData = linkerDataGenerator.generate(
-            couponId,
+            galadrielVoucherId,
             userSession.shopId,
             shopDomain,
             shareModel,
