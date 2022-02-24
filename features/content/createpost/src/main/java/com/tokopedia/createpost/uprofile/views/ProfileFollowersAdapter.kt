@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.model.ProfileFollowerListBase
@@ -53,7 +54,7 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        viewModel.getFollowers(userId,cursor,10)
+        viewModel.getFollowers(userId, cursor, 10)
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
@@ -72,11 +73,10 @@ open class ProfileFollowersAdapter(
         holder.textName.text = item.profile.name
         holder.textUsername.text = item.profile.username
 
-        if (holder.itemView != null) {
-            holder.btnAction.setOnClickListener { v ->
-//                viewModel.setNewProductValue(item)
-            }
+        holder.itemView.setOnClickListener { v ->
+            RouteManager.route(itemContext, item.profile.sharelink.applink)
         }
+
     }
 
 
