@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_Background"
     android:paddingStart="@dimen/unify_space_16"
     android:paddingEnd="@dimen/unify_space_16">
 
@@ -80,8 +79,7 @@
             app:icon_name="INFORMATION"
             app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
             app:layout_constraintStart_toEndOf="@id/tv_dijemput_kurir"
-            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_change_on_demand"
@@ -93,8 +91,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_on_demand"
@@ -105,7 +102,6 @@
             tools:listitem="@layout/item_add_edit_shipment" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_custom_conventional"
@@ -133,9 +129,7 @@
             app:icon_name="INFORMATION"
             app:layout_constraintBottom_toBottomOf="@id/tv_agen"
             app:layout_constraintStart_toEndOf="@id/tv_agen"
-            app:layout_constraintTop_toTopOf="@id/tv_agen"
-            tools:ignore="ContentDescription" />
-
+            app:layout_constraintTop_toTopOf="@id/tv_agen" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_change_conventional"
@@ -147,8 +141,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/tv_agen"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_agen"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/tv_agen" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_conventional"
@@ -159,6 +152,5 @@
             tools:listitem="@layout/item_add_edit_shipment" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
