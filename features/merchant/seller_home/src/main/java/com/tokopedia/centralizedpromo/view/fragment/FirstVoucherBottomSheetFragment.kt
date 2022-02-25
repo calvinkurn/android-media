@@ -49,13 +49,8 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     private val impressHolder: ImpressHolder = ImpressHolder()
     private var binding by autoClearedNullable<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
 
-    private val voucherType by lazy {
-        arguments?.getString(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
-    }
-
-    private val productId by lazy {
-        arguments?.getString(SellerHomeApplinkConst.PRODUCT_ID)
-    }
+    private var voucherType = ""
+    private var productId: String? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -73,6 +68,7 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
+        initValues()
     }
 
     override fun onCreateView(
@@ -110,6 +106,11 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun initValues() {
+        voucherType = arguments?.getString(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+        productId = arguments?.getString(SellerHomeApplinkConst.PRODUCT_ID)
     }
 
     private fun initView() {
