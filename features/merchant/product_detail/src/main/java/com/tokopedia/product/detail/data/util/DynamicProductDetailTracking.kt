@@ -13,6 +13,8 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.re.RestrictionAction
+import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -1168,6 +1170,51 @@ object DynamicProductDetailTracking {
                 putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId)
                 putString(ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId)
 
+            }
+
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK, itemBundle)
+        }
+
+        fun onRestrictionGamificationClicked(productInfo: DynamicProductInfoP1?,
+                                             reData: RestrictionData, userId: String) {
+            val productId = productInfo?.basic?.productID
+            val shopId = productInfo?.basic?.shopID ?: ""
+            val shopType = productInfo?.shopTypeString ?: ""
+            val re = reData.action.firstOrNull() ?: RestrictionAction()
+            val eventLabel = "button:${re.buttonText}"
+            val layout = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+
+            val itemBundle = Bundle().apply {
+                putString(ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Tracking.SELECT_CONTENT)
+                putString(ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.ACTION_CLICK_RESTRICTION_COMPONENT)
+                putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                putString(ProductTrackingConstant.Tracking.KEY_LABEL, eventLabel)
+                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
+                putString(ProductTrackingConstant.Tracking.KEY_COMPONENT, "")
+                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                putString(ProductTrackingConstant.Tracking.KEY_LAYOUT, layout)
+
+                //promotion
+                val bundlePromotion = Bundle().apply {
+                    putString(ProductTrackingConstant.Tracking.CREATIVE, re.description)
+                    putString(ProductTrackingConstant.Tracking.ID, re.attributeName)
+                    putString(ProductTrackingConstant.Tracking.NAME, re.title)
+                    putInt(ProductTrackingConstant.Tracking.POSITION, 1)
+                }
+                val list = mutableListOf<Bundle>()
+                list.add(bundlePromotion)
+                val bundlePromotions = Bundle().apply {
+                    putParcelableArrayList(ProductTrackingConstant.Tracking.KEY_PROMOTIONS, list as ArrayList<Bundle>)
+                }
+                //promoClick
+                val bundlePromoClick = Bundle().apply {
+                    putBundle(ProductTrackingConstant.Tracking.PROMO_CLICK, bundlePromotions)
+                }
+                putBundle(ProductTrackingConstant.Tracking.KEY_ECOMMERCE, bundlePromoClick)
+                putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId)
+                putString(ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId)
+                putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID, shopId)
+                putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_TYPE, shopType)
             }
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK, itemBundle)
