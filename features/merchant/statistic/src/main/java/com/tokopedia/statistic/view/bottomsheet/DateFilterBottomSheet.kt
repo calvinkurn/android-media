@@ -16,13 +16,13 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.adapter.DateFilterAdapter
+import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.databinding.BottomsheetStcSelectDateRangeBinding
-import com.tokopedia.statistic.view.adapter.DateFilterAdapter
-import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
-import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.view.model
 
 import android.os.Parcelable
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import kotlinx.parcelize.Parcelize
 
 /**

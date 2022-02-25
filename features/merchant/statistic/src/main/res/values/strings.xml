@@ -2,32 +2,19 @@
 <resources>
     <string name="app_name">Statistic</string>
     <string name="stc_statistic">Statistik</string>
-    <string name="stc_shop_statistic">Statistik Toko</string>
     <string name="stc_select_date">Pilih Tanggal</string>
-    <string name="stc_select_date_">Pilih tanggal</string>
     <string name="stc_other_menu">Menu Lainnya</string>
     <string name="stc_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="stc_reload">Muat ulang</string>
     <string name="stc_change_date_range">Ubah Rentang Waktu</string>
     <string name="stc_last_n_days">%1$d hari terakhir</string>
     <string name="stc_last_n_days_cc">%1$d Hari Terakhir</string>
-    <string name="stc_start_from">Mulai dari</string>
-    <string name="stc_date">Tanggal</string>
-    <string name="stc_until">Sampai dengan</string>
-    <string name="stc_show">Tampilkan</string>
-    <string name="stc_custom">Custom (%1$s)</string>
     <string name="stc_today_real_time">Hari ini (real time)</string>
     <string name="stc_per_day">Per Hari</string>
     <string name="stc_per_week">Per Minggu</string>
     <string name="stc_per_month">Per Bulan</string>
     <string name="stc_you_havent_access_this_page">Kamu tidak memiliki akses ke halaman Wawasan Toko. Akses hanya bisa diberikan oleh pemilik toko.</string>
-    <string name="stc_month">Bulan</string>
     <string name="stc_today_fmt">Hari Ini (%1$s 00:00 - %2$s)</string>
-    <string name="stc_last_7_days_fmt">7 Hari Terakhir (%1$s)</string>
-    <string name="stc_last_30_days_fmt">30 Hari Terakhir (%1$s)</string>
-    <string name="stc_per_day_fmt">Per Hari (%1$s)</string>
-    <string name="stc_per_week_fmt">Per Minggu (%1$s)</string>
-    <string name="stc_per_month_fmt">Per Bulan (%1$s)</string>
     <string name="stc_shop">Toko</string>
     <string name="stc_product">Produk</string>
     <string name="stc_buyer">Pembeli</string>
@@ -44,7 +31,6 @@
     <string name="stc_operational_coachmark_desc">Cek dan lihat perkembangan performa operasional tokomu di sini, ya.</string>
     <string name="stc_upgrade_to_pm">Fitur ini hanya untuk Power Merchant, Power Merchant PRO, dan Official Store. <font color="#03AC0E">Upgrade Toko</font></string>
     <string name="stc_custom_lbl">Custom</string>
-    <string name="stc_select_same_month_only_info">Hanya bisa memilih tanggal di bulan yang sama.</string>
     <string name="stc_exclusive_identifier_title">Dapatkan fitur eksklusif ini dengan upgrade keanggotaan tokomu!</string>
     <string name="stc_product_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>per hari, per minggu, per bulan, 30 hari terakhir,</b> atau <b>atur sendiri.<b>]]></string>
     <string name="stc_shop_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari terakhir, 30 hari terakhir, per hari, per minggu, per bulan,</b> atau <b>atur sendiri.<b>]]></string>
