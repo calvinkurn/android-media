@@ -2,6 +2,8 @@ package com.tokopedia.vouchercreation.product.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -214,9 +216,34 @@ class CouponPreviewViewModel @Inject constructor(
     }
 
     fun mapSelectedProductsToCouponProductData(selectedProducts: List<ProductUiModel>): List<CouponProduct> {
-        return selectedProducts.map { CouponProduct(it.id, it.imageUrl, it.sold) }
-    }
+        val couponProductData = mutableListOf<CouponProduct>()
+        selectedProducts.forEach { selectedProduct ->
+            val isParentProductSelected = selectedProduct.isSelected
 
+            if (isParentProductSelected) {
+                val variants = selectedProduct.variants
+                if (variants.isNotEmpty()) {
+                    variants.forEach { variant ->
+                        val isVariantSelected = variant.isSelected
+                        if (isVariantSelected) {
+                            couponProductData.add(CouponProduct(
+                                id = variant.variantId,
+                                imageUrl = selectedProduct.imageUrl,
+                                soldCount = selectedProduct.sold
+                            ))
+                        }
+                    }
+                } else {
+                    couponProductData.add(CouponProduct(
+                        id = selectedProduct.id,
+                        imageUrl = selectedProduct.imageUrl,
+                        soldCount = selectedProduct.sold
+                    ))
+                }
+            }
+        }
+        return couponProductData.toList()
+    }
 
     fun mapSelectedProductIdsToProductUiModels(selectedProductIds: List<ProductId>): List<ProductUiModel> {
         return selectedProductIds.map { productId ->
