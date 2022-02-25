@@ -50,6 +50,7 @@ class AddProductViewModel @Inject constructor(
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
+    private var boundLocationId: Int? = null // bound location id - products
     private var warehouseLocationId: Int? = null // selected warehouse id
     private var sellerWarehouseId: Int? = null // seller location id
     private var showCaseSelections = listOf<ShowCaseSelection>()
@@ -59,6 +60,7 @@ class AddProductViewModel @Inject constructor(
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
     var isFiltering = false
+    var isSelectionChanged = false
 
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
@@ -279,7 +281,7 @@ class AddProductViewModel @Inject constructor(
         return productUiModels
     }
 
-    fun setSetSelectedProducts(productList: List<ProductUiModel>) {
+    fun setSelectedProducts(productList: List<ProductUiModel>) {
         this.selectedProductListLiveData.value = productList
     }
 
@@ -298,6 +300,14 @@ class AddProductViewModel @Inject constructor(
 
     fun setWarehouseLocationId(warehouseLocation: Int?) {
         this.warehouseLocationId = warehouseLocation
+    }
+
+    fun setBoundLocationId(boundLocationId: Int?) {
+        this.boundLocationId = boundLocationId
+    }
+
+    fun getBoundLocationId(): Int? {
+        return boundLocationId
     }
 
     fun getWarehouseLocationId(): Int? {
@@ -425,5 +435,9 @@ class AddProductViewModel @Inject constructor(
         return productList.filter { productUiModel ->
             productUiModel.id !in selectedProductIds
         }
+    }
+
+    fun isSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
+        return origin != warehouseSelection
     }
 }
