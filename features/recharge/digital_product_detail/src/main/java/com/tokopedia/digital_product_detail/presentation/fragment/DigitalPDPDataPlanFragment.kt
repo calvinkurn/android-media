@@ -846,8 +846,8 @@ class DigitalPDPDataPlanFragment :
                 it,
                 clientNumber,
                 dgCategoryIds,
+                arrayListOf(),
                 categoryName,
-                viewModel.operatorData,
                 isSwitchChecked,
                 loyaltyStatus
             )
@@ -962,7 +962,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean) {
+    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()

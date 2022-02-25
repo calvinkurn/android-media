@@ -2,6 +2,8 @@ package com.tokopedia.digital_product_detail.presentation.data
 
 import com.google.gson.Gson
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -76,11 +78,54 @@ class TagihanDataFactory {
             categoryId = CATEGORY_ID
             clientNumber = VALID_CLIENT_NUMBER
             isPromo = IS_NOT_PROMO
-            operatorId = OPERATOR_ID
+            operatorId = OPERATOR_ID_TAGLIS
             productId = PRODUCT_ID
             utmCampaign = UTM_CAMPAIGN
             idemPotencyKey = IDEM_POTENCY_KEY
         }
+    }
+
+    fun getOperatorList(): List<CatalogOperator> {
+        return listOf(
+            getOperatorDataTaglis(),
+            getOperatorDataNonTaglis()
+        )
+    }
+
+    fun getOperatorDataTaglis(): CatalogOperator {
+        return CatalogOperator(
+            id = OPERATOR_ID_TAGLIS,
+            attributes = CatalogOperatorAttributes(
+                name = OPERATOR_NAME_TAGLIS,
+                image = "",
+                imageUrl = "",
+                description = ""
+            )
+        )
+    }
+
+    fun getOperatorDataNonTaglis(): CatalogOperator {
+        return CatalogOperator(
+            id = OPERATOR_ID_NON_TAGLIS,
+            attributes = CatalogOperatorAttributes(
+                name = OPERATOR_NAME_NON_TAGLIS,
+                image = "",
+                imageUrl = "",
+                description = ""
+            )
+        )
+    }
+
+    fun getOperatorDataInvalid(): CatalogOperator {
+        return CatalogOperator(
+            id = OPERATOR_ID_INVALID,
+            attributes = CatalogOperatorAttributes(
+                name = "",
+                image = "",
+                imageUrl = "",
+                description = ""
+            )
+        )
     }
 
 
@@ -96,7 +141,11 @@ class TagihanDataFactory {
 
         const val CATEGORY_ID = "3"
         const val PRODUCT_ID = "291"
-        const val OPERATOR_ID = "18"
+        const val OPERATOR_ID_TAGLIS = "18"
+        const val OPERATOR_ID_NON_TAGLIS = "2315"
+        const val OPERATOR_ID_INVALID = "-1"
+        const val OPERATOR_NAME_TAGLIS = "Tagihan Listrik"
+        const val OPERATOR_NAME_NON_TAGLIS = "PLN Non-Taglis"
         const val IS_NOT_PROMO = "0"
         const val UTM_CAMPAIGN = "3"
         const val VALID_CLIENT_NUMBER = "111122223333"

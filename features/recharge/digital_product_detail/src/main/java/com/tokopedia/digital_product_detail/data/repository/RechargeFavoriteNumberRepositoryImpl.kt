@@ -13,11 +13,12 @@ class RechargeFavoriteNumberRepositoryImpl @Inject constructor(
 ): RechargeFavoriteNumberRepository {
 
     override suspend fun getFavoriteNumber(
-        categoryIds: List<Int>
+        categoryIds: List<Int>,
+        operatorIds: List<Int>
     ): TopupBillsPersoFavNumberData = withContext(dispatchers.io) {
 
         return@withContext getRechargeFavoriteNumberUseCase.apply {
-            setRequestParams(categoryIds)
+            setRequestParams(categoryIds, operatorIds)
         }.executeOnBackground()
     }
 }

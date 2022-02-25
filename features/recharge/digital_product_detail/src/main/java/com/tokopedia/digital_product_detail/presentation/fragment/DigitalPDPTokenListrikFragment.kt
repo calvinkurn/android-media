@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -68,7 +67,6 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -723,7 +721,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                         }
                     }
 
-                    override fun onClickFilterChip(isLabeled: Boolean) {
+                    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
                             onHideBuyWidget()
@@ -752,8 +750,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                             )
                             val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(categoryId.toString())
+                            val dgOperatorIds: ArrayList<String> = ArrayList(viewModel.operatorList.map { it.id })
                             navigateToContact(
-                                clientNumber, dgCategoryIds,
+                                clientNumber, dgCategoryIds, dgOperatorIds,
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId)
                             )
                         }
@@ -766,11 +765,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun navigateToContact(
         clientNumber: String,
         dgCategoryIds: ArrayList<String>,
+        dgOperatorIds: ArrayList<String>,
         categoryName: String
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, loyaltyStatus
+                it, clientNumber, dgCategoryIds, dgOperatorIds, categoryName, loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
