@@ -16,7 +16,7 @@ class DateUtils {
             AffiliateBottomDatePicker.TODAY -> {
                 return try {
                     calendar.add(Calendar.HOUR,-TWO)
-                    val date = SimpleDateFormat(pattern, Locale.ENGLISH).format(calendar.time)
+                    val date = SimpleDateFormat(PATTERN, Locale.ENGLISH).format(calendar.time)
                     val time = SimpleDateFormat(HOUR_PATTERN, Locale.ENGLISH).format(calendar.time)
                     "$date - ${context?.getString(R.string.terkhir_text)} $time"
                 } catch (e: Exception){
@@ -27,7 +27,7 @@ class DateUtils {
             AffiliateBottomDatePicker.YESTERDAY -> {
                 return try{
                     calendar.add(Calendar.HOUR,-THIRTY_THREE)
-                    val dateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+                    val dateFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     dateFormat.timeZone = timeZone
                     dateFormat.format(calendar.time)
                 } catch (e: Exception){
@@ -37,11 +37,11 @@ class DateUtils {
             AffiliateBottomDatePicker.SEVEN_DAYS -> {
                 return try {
                     calendar.add(Calendar.HOUR,-THIRTY_THREE)
-                    val lastDayFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+                    val lastDayFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     lastDayFormat.timeZone = timeZone
                     val lastDay = lastDayFormat.format(calendar.time)
                     calendar.add(Calendar.DATE,-SIX)
-                    val finalDayFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+                    val finalDayFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     finalDayFormat.timeZone = timeZone
                     val finalDay = finalDayFormat.format(calendar.time)
                     "$finalDay - $lastDay"
@@ -53,11 +53,11 @@ class DateUtils {
             AffiliateBottomDatePicker.THIRTY_DAYS -> {
                 return try {
                     calendar.add(Calendar.HOUR,-THIRTY_THREE)
-                    val lastDayFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+                    val lastDayFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     lastDayFormat.timeZone = timeZone
                     val lastDay = lastDayFormat.format(calendar.time)
                     calendar.add(Calendar.DATE,-TWENTY_NINE)
-                    val finalDayFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+                    val finalDayFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     finalDayFormat.timeZone = timeZone
                     val finalDay = finalDayFormat.format(calendar.time)
                     return "$finalDay - $lastDay"
