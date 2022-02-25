@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply from: "../../../compile-unit-test.gradle"
-apply from: "../../../compile-instrument-test.gradle"
 
 android{
     defaultConfig {
@@ -103,13 +101,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
-    testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.platformEngine
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -123,9 +115,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    testImplementation rootProject.ext.testDependencies.espressoIntents
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     androidTestImplementation rootProject.ext.testDependencies.retrofitMock
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
