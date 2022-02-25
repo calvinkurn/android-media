@@ -2,12 +2,12 @@ package com.tokopedia.home.util
 
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
-import io.embrace.android.embracesdk.Embrace
 import okhttp3.internal.http2.ConnectionShutdownException
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.json.JSONObject
@@ -142,13 +142,13 @@ object HomeServerLogger {
                 }
             }
 
-        isLoggedIn?.let {
-            if (isLoggedIn) {
-                embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_TRUE)
-            } else {
-                embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_FALSE)
+            isLoggedIn?.let {
+                if (isLoggedIn) {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_TRUE)
+                } else {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_FALSE)
+                }
             }
-        }
 
             isCache?.let {
                 if (isCache) {
@@ -158,13 +158,13 @@ object HomeServerLogger {
                 }
             }
 
-        visitableListCount?.let {
-            embraceJsonData.put(HOME_EMBRACE_VISITABLE_LIST_COUNT, it)
-        }
+            visitableListCount?.let {
+                embraceJsonData.put(HOME_EMBRACE_VISITABLE_LIST_COUNT, it)
+            }
 
-        scrollPosition?.let {
-            embraceJsonData.put(HOME_EMBRACE_SCROLL_POSITION, it)
-        }
+            scrollPosition?.let {
+                embraceJsonData.put(HOME_EMBRACE_SCROLL_POSITION, it)
+            }
 
             EmbraceMonitoring.logBreadcrumb(
                 String.format(
