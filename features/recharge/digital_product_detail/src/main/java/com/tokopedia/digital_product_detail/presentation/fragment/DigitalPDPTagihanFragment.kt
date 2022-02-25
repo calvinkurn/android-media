@@ -552,7 +552,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
     }
 
-    // improve no need to use param
     private fun renderOperatorChipsAndTitle(catalogOperators: DigitalCatalogOperatorSelectGroup){
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             val operators = catalogOperators.response.operatorGroups?.firstOrNull()?.operators

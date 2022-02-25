@@ -2,10 +2,6 @@ package com.tokopedia.common.topupbills.favorite.domain.usecase
 
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.data.requests.FavoriteNumberParam
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberTrackingData
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoTrackingData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
