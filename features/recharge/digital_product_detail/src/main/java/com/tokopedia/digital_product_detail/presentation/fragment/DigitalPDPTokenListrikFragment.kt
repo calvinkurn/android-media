@@ -37,6 +37,8 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.RESULT_CODE_QR_SCAN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
@@ -608,9 +610,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun navigateToLoginPage() {
+    private fun addToCartFromUrl() {
+        context?.let { RouteManager.route(it, viewModel.recomCheckoutUrl) }
+    }
+
+    private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+        startActivityForResult(intent, requestCode)
     }
 
     private fun handleCallbackSavedNumber(
@@ -868,16 +874,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             recommendation,
             position
         )
-
-        viewModel.updateCheckoutPassData(
-            recommendation,
-            userSession.userId.generateRechargeCheckoutToken()
-        )
-
+        viewModel.recomCheckoutUrl = recommendation.appUrl
         if (userSession.isLoggedIn) {
-            addToCart()
+            addToCartFromUrl()
         } else {
-            navigateToLoginPage()
+            navigateToLoginPage(REQUEST_CODE_LOGIN_ALT)
         }
     }
 
@@ -945,9 +946,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     handleCallbackAnySavedNumberCancel()
                 }
                 getFavoriteNumber()
-            } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
+            } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
-            } else if (requestCode == DigitalPDPConstant.RESULT_CODE_QR_SCAN) {
+            } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
+                addToCartFromUrl()
+            } else if (requestCode == RESULT_CODE_QR_SCAN) {
                 if (data != null){
                     val scanResult = data.getStringExtra(EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
