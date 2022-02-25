@@ -192,6 +192,7 @@ class MultiLineGraphViewHolder(
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
         binding.shcMlgSuccessState.visible()
+        emptyStateBinding.multiLineEmptyState.gone()
         getWidgetComponents().forEach {
             it.gone()
         }
