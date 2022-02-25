@@ -19,7 +19,7 @@ object HomeServerLogger {
 
     private const val HOME_STATUS_ERROR_TAG = "HOME_STATUS"
     private const val HOME_EMBRACE_KEY = "Home"
-    private const val HOME_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
+    private const val HOME_EMBRACE_BREADCRUMB_FORMAT = "%s, %s"
     private const val HOME_EMBRACE_KEY_FRAGMENT = "HomeFragment"
     private const val HOME_EMBRACE_KEY_IS_LOGIN = "IsLogin"
     private const val HOME_EMBRACE_KEY_IS_CACHE = "IsCache"
@@ -132,14 +132,15 @@ object HomeServerLogger {
         visitableListCount: Int? = null,
         scrollPosition: Int? = null
     ) {
-        val embraceJsonData = JSONObject()
-        fragment?.let {
-            if (it.isVisible) {
-                embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_VISIBLE)
-            } else {
-                embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_NOT_VISIBLE)
+        try {
+            val embraceJsonData = JSONObject()
+            fragment?.let {
+                if (it.isVisible) {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_VISIBLE)
+                } else {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_NOT_VISIBLE)
+                }
             }
-        }
 
         isLoggedIn?.let {
             if (isLoggedIn) {
@@ -149,13 +150,13 @@ object HomeServerLogger {
             }
         }
 
-        isCache?.let {
-            if (isCache) {
-                embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
-            } else {
-                embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+            isCache?.let {
+                if (isCache) {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+                } else {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+                }
             }
-        }
 
         visitableListCount?.let {
             embraceJsonData.put(HOME_EMBRACE_VISITABLE_LIST_COUNT, it)
@@ -165,13 +166,16 @@ object HomeServerLogger {
             embraceJsonData.put(HOME_EMBRACE_SCROLL_POSITION, it)
         }
 
-        Embrace.getInstance().logBreadcrumb(
-            String.format(
-                HOME_EMBRACE_BREADCRUMB_FORMAT,
-                HOME_EMBRACE_KEY,
-                embraceJsonData
+            EmbraceMonitoring.logBreadcrumb(
+                String.format(
+                    HOME_EMBRACE_BREADCRUMB_FORMAT,
+                    HOME_EMBRACE_KEY,
+                    embraceJsonData
+                )
             )
-        )
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun isExceptionExcluded(throwable: Throwable): Boolean {
