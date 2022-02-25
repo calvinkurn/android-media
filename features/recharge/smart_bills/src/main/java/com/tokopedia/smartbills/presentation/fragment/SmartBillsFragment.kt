@@ -35,9 +35,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.*
@@ -210,7 +208,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         smart_bills_checkout_view.setVisibilityLayout(false)
                         adapter.renderEmptyState()
                     }
-                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
+                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0, listBills)
                 }
                 is Fail -> {
                     var throwable = it.throwable
@@ -236,7 +234,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                     } else { // Else, show error message in affected items
-                        smartBillsAnalytics.clickPayFailed(listBills.size, adapter.checkedDataList.size)
+                        smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size, adapter.checkedDataList.size)
 
                         checkout_loading_view.hide()
                         view?.let { v ->
@@ -261,7 +259,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 }
                 is Fail -> {
-                    smartBillsAnalytics.clickPayFailed(listBills.size, adapter.checkedDataList.size)
+                    smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size, adapter.checkedDataList.size)
 
                     checkout_loading_view.hide()
                     var throwable = it.throwable
@@ -543,10 +541,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
             // Do not trigger event if bill is auto-ticked
-            if (!autoTick) smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
+            if (!autoTick) smartBillsAnalytics.clickTickBill(item, listBills.indexOf(item))
             totalPrice += item.amount.toInt()
         } else {
-            smartBillsAnalytics.clickUntickBill(item)
+            smartBillsAnalytics.clickUntickBill(item, listBills.indexOf(item))
             totalPrice -= item.amount.toInt()
         }
         updateCheckoutView()
@@ -578,7 +576,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
-        if (triggerTracking) smartBillsAnalytics.clickAllBills(value)
+        if (triggerTracking) smartBillsAnalytics.clickAllBills(value, listBills)
         adapter.toggleAllItems(value, listBills)
 
         totalPrice = if (value) maximumPrice else 0
@@ -634,7 +632,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet) {
-        smartBillsAnalytics.clickBillDetail(bill)
+        smartBillsAnalytics.clickBillDetail(bill, listBills.indexOf(bill))
 
         fragmentManager?.run {
             bottomSheet.setTitle(getString(R.string.smart_bills_item_detail_bottomsheet_title))
