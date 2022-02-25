@@ -14,18 +14,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
-import com.tokopedia.shop_widget.common.util.DateHelper
 import com.tokopedia.shop_widget.common.util.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 
 class DynamicHeaderCustomView: FrameLayout {
 
     companion object {
-        private const val Hour24 = 24
         private const val INVALID_TIMER_COUNTER = 0
     }
 
@@ -54,7 +53,7 @@ class DynamicHeaderCustomView: FrameLayout {
     private fun handleHeaderComponent(model: DynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
-        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate, model.timerCounter)
+        handleSubtitle(model.subTitle, model.statusCampaign, model.timerCounter)
         handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
     }
 
@@ -76,10 +75,10 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String, timerCounter: String) {
+    private fun handleSubtitle(subtitle: String, statusCampaign: String, timerCounter: String) {
         if (subtitle.isNotBlank() && timerCounter.toLongOrZero() > INVALID_TIMER_COUNTER) {
             tpSubtitle?.text = subtitle
-            handleCountDownTimer(statusCampaign, endDate)
+            handleCountDownTimer(statusCampaign, timerCounter)
         } else {
             tusCountDown?.gone()
             tpSubtitle?.gone()
@@ -103,51 +102,42 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleCountDownTimer(statusCampaign: String, endDate: String) {
+    private fun handleCountDownTimer(statusCampaign: String, timerCounter: String) {
         try {
-            tusCountDown?.isShowClockIcon = false
-            checkStatusCampaign( statusCampaign, endDate)
-            tusCountDown?.onFinish = {
-                listener?.onTimerFinish()
+            tusCountDown?.apply {
+                isShowClockIcon = false
+                timerFormat = TimerUnifySingle.FORMAT_AUTO
+                onFinish = {
+                    listener?.onTimerFinish()
+                }
             }
+            checkStatusCampaign( statusCampaign, timerCounter)
         } catch (e: Throwable) {
             tusCountDown?.gone()
             tpSubtitle?.gone()
         }
     }
 
-    private fun checkStatusCampaign(statusCampaign: String, endDate: String) {
+    private fun checkStatusCampaign(statusCampaign: String, timerCounter: String) {
         when {
-            isStatusCampaignOngoing(statusCampaign) -> checkStatusCampaignOngoing(endDate)
-            else -> checkStatusCampaignFinished()
+            isStatusCampaignOngoing(statusCampaign) -> setStatusCampaignOngoing(timerCounter)
+            else -> setStatusCampaignFinished()
         }
     }
 
-    private fun checkStatusCampaignFinished() {
+    private fun setStatusCampaignFinished() {
         tusCountDown?.gone()
         tpSubtitle?.gone()
     }
 
-    private fun checkStatusCampaignOngoing(endDate: String) {
+    private fun setStatusCampaignOngoing(timerCounter: String) {
         val calendar = Calendar.getInstance()
-        val endDateMillis = DateHelper.getDateFromString(endDate).time
-        val currentMillis = System.currentTimeMillis()
-        val isMoreOrEqualThan1Day = getDateHours(endDateMillis - currentMillis) >= Hour24
-        if (isMoreOrEqualThan1Day) {
-            tusCountDown?.timerFormat = TimerUnifySingle.FORMAT_DAY
-        } else {
-            tusCountDown?.timerFormat = TimerUnifySingle.VARIANT_ALTERNATE
-        }
-        calendar.time = Date(endDateMillis)
+        calendar.time = Date(TimeUnit.SECONDS.toMillis(timerCounter.toLongOrZero()))
         tusCountDown?.targetDate = calendar
     }
 
     private fun isStatusCampaignOngoing(statusCampaign: String): Boolean {
         return statusCampaign.equals(StatusCampaign.ONGOING.statusCampaign, true)
-    }
-
-    private fun getDateHours(millis: Long): Long {
-        return TimeUnit.HOURS.convert(millis, TimeUnit.MILLISECONDS)
     }
 
     interface HeaderCustomViewListener {

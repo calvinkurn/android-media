@@ -563,7 +563,6 @@ object ShopPageHomeMapper {
                 subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
                 ctaText = widgetResponse.header.ctaText,
                 ctaTextLink = widgetResponse.header.ctaLink,
-                endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
                 statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
                 timerCounter = widgetResponse.data.firstOrNull()?.timeCounter.orEmpty()
             ),

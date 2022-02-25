@@ -5,7 +5,6 @@ data class DynamicHeaderUiModel(
     val subTitle: String = "",
     val ctaText: String = "",
     val ctaTextLink: String = "",
-    val endDate: String = "",
     val statusCampaign: String = "",
     val timerCounter: String = ""
 )
