@@ -131,7 +131,7 @@ dependencies {
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
-    implementation projectOrAar(rootProject.ext.features.developerOptions)
+//    implementation projectOrAar(rootProject.ext.features.developerOptions)
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
