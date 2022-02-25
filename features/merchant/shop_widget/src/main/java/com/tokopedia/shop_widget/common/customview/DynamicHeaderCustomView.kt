@@ -132,7 +132,7 @@ class DynamicHeaderCustomView: FrameLayout {
 
     private fun setStatusCampaignOngoing(timerCounter: String) {
         val calendar = Calendar.getInstance()
-        calendar.time = Date(TimeUnit.SECONDS.toMillis(timerCounter.toLongOrZero()))
+        calendar.time = Date(TimeUnit.SECONDS.toMillis(timerCounter.toLongOrZero()) + System.currentTimeMillis())
         tusCountDown?.targetDate = calendar
     }
 
