@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
@@ -57,6 +58,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on January 24, 2022
  */
 class PlayBroadcastPreparationFragment @Inject constructor(
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
@@ -89,7 +91,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
         scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
 
@@ -148,7 +153,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Use uiState directly when uiState already return StateFlow")
-                        return parentViewModel.productSectionList
+                        return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
+                        else emptyList()
                     }
                 })
             }

@@ -15,7 +15,7 @@ open class BaseProductSetupBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val parentFragment = requireParentFragment() as ProductSetupFragment
-        viewModel = ViewModelProvider(parentFragment, parentFragment.getViewModelFactory())
+        viewModel = ViewModelProvider(parentFragment, parentFragment.getProductSetupViewModelFactory())
             .get(PlayBroProductSetupViewModel::class.java)
         super.onCreate(savedInstanceState)
     }

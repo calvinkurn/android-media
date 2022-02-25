@@ -45,17 +45,14 @@ class PlaySetupSaveProductViewModelTest {
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
 
         robot.use {
-            runBlockingTest {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
-            }
-
             val (state, event) = robot.recordStateAsListAndEvent {
-                robot.submitAction(ProductSetupAction.SaveProducts)
+                submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                submitAction(ProductSetupAction.SaveProducts)
             }
 
-            state[1].saveState.isLoading.assertEqualTo(true)
-            state[2].selectedProductSectionList.assertEqualTo(mockProductTagSectionList)
-            state[3].saveState.isLoading.assertEqualTo(false)
+            state[2].saveState.isLoading.assertEqualTo(true)
+            state[3].selectedProductSectionList.assertEqualTo(mockProductTagSectionList)
+            state.last().saveState.isLoading.assertEqualTo(false)
             event.last().assertEqualTo(PlayBroProductChooserEvent.SaveProductSuccess)
         }
     }
