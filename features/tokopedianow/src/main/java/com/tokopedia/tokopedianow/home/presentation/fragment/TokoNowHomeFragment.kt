@@ -1118,7 +1118,6 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         showHeaderBackground()
         stickyLoginLoadContent()
-        getProductAddToCartQuantity()
         showSwitcherCoachMark()
         stopRenderPerformanceMonitoring()
     }
