@@ -1754,6 +1754,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     onSuccessAtc(it.data)
                     ProductDetailServerLogger.logBreadCrumbAtc(
                             isSuccess = true,
+                            errorMessage = it.data.getAtcErrorMessage() ?: "",
                             atcType = buttonActionType
                     )
                 }
