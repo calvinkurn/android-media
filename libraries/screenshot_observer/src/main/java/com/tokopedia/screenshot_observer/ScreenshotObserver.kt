@@ -1,6 +1,5 @@
 package com.tokopedia.screenshot_observer
 
-import android.content.ContentResolver
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
@@ -8,7 +7,6 @@ import android.provider.MediaStore
 
 class ScreenshotObserver(
     handler: Handler?,
-    private val mContentResolver: ContentResolver,
     listener: Listener
 ) : ContentObserver(handler) {
 

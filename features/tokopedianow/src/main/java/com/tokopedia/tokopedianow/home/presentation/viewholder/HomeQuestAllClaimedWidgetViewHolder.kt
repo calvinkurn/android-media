@@ -61,6 +61,7 @@ class HomeQuestAllClaimedWidgetViewHolder(
             tpTitle.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_quest_widget_all_claimed_title))
             tpDesc.text = getString(R.string.tokopedianow_quest_widget_all_claimed_desc)
             tpDesc.setOnClickListener {
+                listener?.onClickCheckReward()
                 RouteManager.route(itemView.context, APPLINK_COUPON)
             }
         }
