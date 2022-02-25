@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.favorite.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -74,6 +75,11 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             dgOperatorIds,
             loyaltyStatus
         )
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, null)
+        super.onBackPressed()
     }
 
     companion object {

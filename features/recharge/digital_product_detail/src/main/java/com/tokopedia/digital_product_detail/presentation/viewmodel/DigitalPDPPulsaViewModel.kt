@@ -42,6 +42,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
+    var recomCheckoutUrl = ""
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)

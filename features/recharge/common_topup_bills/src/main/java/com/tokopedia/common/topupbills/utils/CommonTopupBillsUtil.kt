@@ -29,11 +29,7 @@ class CommonTopupBillsUtil {
                 if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
                     return phoneNumber
                 }
-                var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
-                if (!phoneNumberWithPrefix.startsWith("0")) {
-                    phoneNumberWithPrefix = "0$phoneNumber"
-                }
-                return phoneNumberWithPrefix
+                return validatePrefixClientNumber(phoneNumber)
             }
             return ""
         }

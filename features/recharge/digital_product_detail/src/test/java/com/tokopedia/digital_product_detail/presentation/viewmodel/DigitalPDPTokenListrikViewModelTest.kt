@@ -429,6 +429,14 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         verifyCatalogProductJobIsNotNull()
     }
 
+    @Test
+    fun `when calling implicit setRecomCheckoutUrl should update its value`() {
+        val expectedResult = dataFactory.getRecomCardWidgetModelData()
+
+        viewModel.recomCheckoutUrl = expectedResult.appUrl
+        verifyRecomCheckoutUrlUpdated(expectedResult.appUrl)
+    }
+
     companion object {
         const val MENU_ID = 291
     }

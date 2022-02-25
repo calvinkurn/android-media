@@ -95,6 +95,7 @@ object DigitalCheckoutMapper {
                     1 else attributesDigital.isCouponActive = 0
                 attributesDigital.voucherAutoCode = attributes.voucher
                 attributesDigital.adminFee = attributes.adminFee
+                attributesDigital.isAdminFeeIncluded = attributes.isAdminFeeIncluded
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
                 if (userInputPrice.maxPayment != 0.0 && userInputPrice.minPayment != 0.0) {

@@ -45,6 +45,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -351,7 +352,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun onFailedRecommendation(){
@@ -905,9 +909,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun navigateToLoginPage() {
+    private fun addToCartFromUrl() {
+        context?.let { RouteManager.route(it, viewModel.recomCheckoutUrl) }
+    }
+
+    private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        startActivityForResult(intent, requestCode)
     }
 
     /**
@@ -1017,16 +1025,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             recommendation,
             position
         )
-
-        viewModel.updateCheckoutPassData(
-            recommendation,
-            userSession.userId.generateRechargeCheckoutToken()
-        )
-
+        viewModel.recomCheckoutUrl = recommendation.appUrl
         if (userSession.isLoggedIn) {
-            addToCart()
+            addToCartFromUrl()
         } else {
-            navigateToLoginPage()
+            navigateToLoginPage(REQUEST_CODE_LOGIN_ALT)
         }
     }
 
@@ -1093,8 +1096,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     handleCallbackAnySavedNumberCancel()
                 }
                 getFavoriteNumber()
-            } else if( requestCode == REQUEST_CODE_LOGIN ) {
+            } else if (requestCode == REQUEST_CODE_LOGIN ) {
                 addToCart()
+            } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
+                addToCartFromUrl()
             }
         }
     }

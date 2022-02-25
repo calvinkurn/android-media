@@ -46,6 +46,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     var selectedGridProduct = SelectedProduct()
     var operatorList: List<CatalogOperator> = listOf()
     var operatorData: CatalogOperator = CatalogOperator()
+    var recomCheckoutUrl = ""
+
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
         .instantCheckout(CHECKOUT_NO_PROMO)
