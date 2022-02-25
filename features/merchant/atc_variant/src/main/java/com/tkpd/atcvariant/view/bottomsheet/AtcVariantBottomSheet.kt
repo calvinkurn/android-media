@@ -921,6 +921,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     RouteManager.route(context, it)
                 }
             }
+        } else if (reData.restrictionGamificationType()) {
+            reData.action.firstOrNull()?.buttonLink?.let {
+                RouteManager.route(context, it)
+            }
         }
     }
 

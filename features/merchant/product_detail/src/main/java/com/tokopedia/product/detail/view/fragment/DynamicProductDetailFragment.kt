@@ -2173,6 +2173,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }
             reData.restrictionGamificationType() -> {
+                DynamicProductDetailTracking.Click.onRestrictionGamificationClicked(
+                        viewModel.getDynamicProductInfoP1,
+                        reData,
+                        viewModel.userId
+                )
                 reData.action.firstOrNull()?.buttonLink?.let {
                     goToApplink(it)
                 }
