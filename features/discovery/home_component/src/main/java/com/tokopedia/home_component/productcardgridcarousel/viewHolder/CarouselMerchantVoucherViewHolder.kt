@@ -15,6 +15,7 @@ import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpress
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
+import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.resources.isDarkMode
@@ -30,6 +31,8 @@ class CarouselMerchantVoucherViewHolder (
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
     companion object{
         val LAYOUT = R.layout.home_banner_item_merchant_voucher
+        private const val BACKGROUND_MVC_WHITE = "https://images.tokopedia.net/img/android/home/mvc_light_mode.png"
+        private const val BACKGROUND_MVC_DARK = "https://images.tokopedia.net/img/android/home/mvc_dark_mode.png"
     }
 
     override fun bind(element: CarouselMerchantVoucherDataModel) {
@@ -38,29 +41,17 @@ class CarouselMerchantVoucherViewHolder (
     }
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
-//        val source: Drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_merchant_voucher)!!
-//        val colors = intArrayOf(
-//                        Color.GRAY, Color.TRANSPARENT
-//                )
-//        val shadow: Drawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
-//        val s: Shape = DrawableShadow(itemView.context, source, source, shadow, 10f)
-//        binding?.imageBackgroundVoucher?.background = ShapeDrawable(s)
-////        binding?.imageBackgroundVoucher?.setImageResource(R.drawable.bg_merchant_voucher)
-
-//        val source: Drawable = itemView.resources.getDrawable(R.drawable.bg_merchant_voucher)
-//        val mask: Drawable = itemView.resources.getDrawable(R.drawable.bg_merchant_voucher)
-//        val colors = intArrayOf(
-//            Color.GRAY, Color.TRANSPARENT
-//        )
-//        val shadow: Drawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
-//        val s: Shape = DrawableShadow(itemView.context, source, mask, shadow, 8f)
-//        binding?.imageBackground?.setBackground(ShapeDrawable(s))
-//        binding?.imageBackgroundVoucher?.setImageResource(R.drawable.bg_merchant_voucher)
-
-        binding?.imageBackgroundVoucher?.loadImageNoRounded("https://i.postimg.cc/0QsNd0kN/Light-mode.png", com.tokopedia.home_component.R.drawable.placeholder_grey)
         if (itemView.context.isDarkMode()) {
-            binding?.imageBackgroundVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
-            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
+            binding?.imageBackgroundVoucher?.loadImageNoRounded(
+                BACKGROUND_MVC_DARK,
+                com.tokopedia.home_component.R.drawable.placeholder_grey
+            )
+        }
+        else {
+            binding?.imageBackgroundVoucher?.loadImageNoRounded(
+                BACKGROUND_MVC_WHITE,
+                com.tokopedia.home_component.R.drawable.placeholder_grey
+            )
         }
         binding?.shopName?.text = element.shopName
         binding?.titleBenefit?.text = element.benefit
