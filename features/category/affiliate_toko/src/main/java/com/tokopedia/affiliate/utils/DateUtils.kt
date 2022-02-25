@@ -20,6 +20,7 @@ class DateUtils {
                     val time = SimpleDateFormat(HOUR_PATTERN, Locale.ENGLISH).format(calendar.time)
                     "$date - ${context?.getString(R.string.terkhir_text)} $time"
                 } catch (e: Exception){
+                    e.printStackTrace()
                     ""
                 }
 
@@ -31,6 +32,7 @@ class DateUtils {
                     dateFormat.timeZone = timeZone
                     dateFormat.format(calendar.time)
                 } catch (e: Exception){
+                    e.printStackTrace()
                     ""
                 }
             }
@@ -46,6 +48,7 @@ class DateUtils {
                     val finalDay = finalDayFormat.format(calendar.time)
                     "$finalDay - $lastDay"
                 } catch (e: Exception){
+                    e.printStackTrace()
                     ""
                 }
 
@@ -62,6 +65,7 @@ class DateUtils {
                     val finalDay = finalDayFormat.format(calendar.time)
                     return "$finalDay - $lastDay"
                 } catch (e: Exception){
+                    e.printStackTrace()
                     ""
                 }
 
