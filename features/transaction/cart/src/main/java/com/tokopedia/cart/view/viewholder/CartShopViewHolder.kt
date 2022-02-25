@@ -392,7 +392,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             binding.giftingWidgetLayout.descGifting.text = cartShopHolderData.addOnText
             ImageHandler.loadImageWithoutPlaceholder(binding.giftingWidgetLayout.ivAddonLeft, cartShopHolderData.addOnImgUrl)
             binding.giftingWidgetLayout.root.setOnClickListener {
-                actionListener.onClickAddOnCart(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
+                actionListener.onClickAddOnCart(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "", cartShopHolderData.addOnId)
             }
             actionListener.addOnImpression(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
         } else {

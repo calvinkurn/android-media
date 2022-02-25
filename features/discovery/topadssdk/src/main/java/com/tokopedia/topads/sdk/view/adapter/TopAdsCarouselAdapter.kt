@@ -15,6 +15,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsCarouselListener
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 
+private const val PRODUCT_INDEX_ZERO = 0
+private const val PRODUCT_INDEX_ONE = 1
+
 class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselListener) : RecyclerView.Adapter<TopAdsCarouselAdapter.TopAdsCarouselViewHolder>() {
 
     private val topAdsCarouselItemList = arrayListOf<TopAdsCarouselItem>()
@@ -50,7 +53,23 @@ class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselLi
                 }
             }
 
-            topAdsCarouselRoot.setOnClickListener { topAdsCarouselListener.onItemClicked(topAdsCarouselItem.position) }
+            topAdsCarouselRoot.setOnClickListener {
+                topAdsCarouselListener.onItemClicked(
+                    topAdsCarouselItem.position
+                )
+            }
+            imageFirst.setOnClickListener {
+                topAdsCarouselListener.onProductItemClicked(
+                    PRODUCT_INDEX_ZERO,
+                    topAdsCarouselItem.position
+                )
+            }
+            imageSecond.setOnClickListener {
+                topAdsCarouselListener.onProductItemClicked(
+                    PRODUCT_INDEX_ONE,
+                    topAdsCarouselItem.position
+                )
+            }
 
         }
 

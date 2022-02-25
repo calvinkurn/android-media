@@ -6,5 +6,7 @@ data class GiftingAddOn(
         @SerializedName("ticker_text")
         val tickerText: String = "",
         @SerializedName("icon_url")
-        val iconUrl: String = ""
+        val iconUrl: String = "",
+        @SerializedName("add_on_ids")
+        val addOnIds: List<String> = emptyList()
 )

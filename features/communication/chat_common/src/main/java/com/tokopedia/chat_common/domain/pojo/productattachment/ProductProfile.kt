@@ -49,7 +49,7 @@ class ProductProfile {
     val playStoreData: PlayStoreData = PlayStoreData()
     @SerializedName("remaining_stock")
     @Expose
-    var remainingStock: Int = 1
+    var remainingStock: Int = 0
     @SerializedName("status")
     @Expose
     var status: Int = 1

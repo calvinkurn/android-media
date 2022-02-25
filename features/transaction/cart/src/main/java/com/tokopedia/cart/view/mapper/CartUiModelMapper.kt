@@ -132,6 +132,9 @@ object CartUiModelMapper {
                 shopTypeInfo = availableGroup.shop.shopTypeInfo
                 addOnText = availableGroup.giftingAddOn.tickerText
                 addOnImgUrl = availableGroup.giftingAddOn.iconUrl
+                if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
+                    addOnId = availableGroup.giftingAddOn.addOnIds.get(0)
+                }
             }
             cartShopHolderDataList.add(shopUiModel)
         }

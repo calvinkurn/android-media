@@ -87,6 +87,7 @@ object ProductDetailConstant {
     const val MVC = "mvc"
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
     const val CATEGORY_CAROUSEL = "category_carousel"
+    const val HAMPERS_INFO = "palugada_hampers"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"

@@ -57,4 +57,8 @@
     <string name="pdp_usp_tokomart_static_text_4" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now?utm_campaign=Help-13808288-a-2981-100921&utm_source=salinlink&utm_medium=share">Pelajari</a></font>]]></string>
     <string name="pdp_usp_tokomart_static_text_5"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
 
+
+    <string name="pdp_hampers_coachmark_title">Kirim hadiah ke orang spesial!</string>
+    <string name="pdp_hampers_coachmark_desc">Biar makin berkesan, tambahkan kemasan atau kartu ucapan ke produk ini. </string>
+
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpinnerView">
+        <attr name="spinner_placeholder_text" format="string" />
+    </declare-styleable>
+    <declare-styleable name="DiscountPriceView">
+        <attr name="discountprice_price" format="string" />
+        <attr name="discountprice_discount_amount" format="string" />
+        <attr name="discountprice_slashprice" format="string" />
+    </declare-styleable>
+    <declare-styleable name="ErrorLabelView">
+        <attr name="errorlabel_text" format="string" />
+    </declare-styleable>
+    <declare-styleable name="NumberView">
+        <attr name="numberview_text" format="string" />
+    </declare-styleable>
+    <declare-styleable name="SpannableTypography">
+        <attr name="spannable_text" format="string" />
+        <attr name="spannable_drawable" format="reference" />
+        <attr name="spannable_drawable_position" format="integer" />
+        <attr name="spannable_use_small_text" format="boolean" />
+    </declare-styleable>
+</resources>
