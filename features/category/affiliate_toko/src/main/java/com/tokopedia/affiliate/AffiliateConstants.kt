@@ -75,3 +75,13 @@ const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"
 const val TIME_ZONE = "Asia/Jakarta"
 
 const val pattern = "dd MMM yyyy"
+
+const val HOUR_PATTERN = "HH:00"
+
+const val TWO = 2
+
+const val THIRTY_THREE = 33
+
+const val SIX = 6
+
+const val TWENTY_NINE = 29

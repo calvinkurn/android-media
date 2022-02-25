@@ -46,6 +46,10 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         const val IDENTIFIER_HOME = "home_fragment"
         const val IDENTIFIER_WITHDRAWAL = "income_fragment"
         const val IDENTIFIER = "indentifier"
+        const val ZERO = "0"
+        const val ONE = "1"
+        const val SEVEN = "7"
+        const val THIRTY = "30"
         fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL): AffiliateBottomDatePicker {
             return AffiliateBottomDatePicker().apply {
                 arguments = Bundle().apply {
@@ -115,10 +119,10 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
     private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
     private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0",DateUtils().getMessage(TODAY,context),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1",DateUtils().getMessage(YESTERDAY,context),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7",DateUtils().getMessage(SEVEN_DAYS,context),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30",DateUtils().getMessage(THIRTY_DAYS,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,ZERO,DateUtils().getMessage(TODAY,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,ONE,DateUtils().getMessage(YESTERDAY,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,SEVEN,DateUtils().getMessage(SEVEN_DAYS,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,THIRTY,DateUtils().getMessage(THIRTY_DAYS,context),identifier == IDENTIFIER_HOME)))
     }
 
     override fun onDateRangeClicked(position: Int) {
