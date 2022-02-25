@@ -17,9 +17,9 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
-import com.tokopedia.analytics.mapper.model.EmbraceGTMBreadcrumConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -1186,11 +1186,11 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void trackEmbraceBreadcrumb(Bundle bundle) {
         String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
-        EmbraceGTMBreadcrumConfig config =
-                new Gson().fromJson(logEmbraceConfigString, EmbraceGTMBreadcrumConfig.class);
+        EmbraceConfig config =
+                new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
         if (bundle.containsKey(KEY_CATEGORY)) {
             String eventCategoryValue = bundle.getString(KEY_CATEGORY);
-            if (config.getAllowed_category().contains(eventCategoryValue)) {
+            if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
                 EmbraceMonitoring.INSTANCE.logBreadcrumb(
                         String.format(
                                 EMBRACE_BREADCRUMB_FORMAT,
