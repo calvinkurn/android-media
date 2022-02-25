@@ -33,7 +33,7 @@ object RecomServerLogger {
 
     fun logServer(tag: String, reason: String = "", productId: String = "-1", queryParam: String = "-1") {
         ServerLogger.log(
-            Priority.P1,
+            Priority.P2,
             TOPADS_RECOM_PAGE,
             mapOf(
                 "action" to tag,

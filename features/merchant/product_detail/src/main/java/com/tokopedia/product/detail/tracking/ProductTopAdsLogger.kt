@@ -12,7 +12,7 @@ object ProductTopAdsLogger {
     const val TOPADS_PDP_IS_NOT_ADS = "topads_pdp_is_not_ads"
     fun logServer(tag: String, reason: String = "", productId: String = "-1", queryParam: String = "-1") {
         ServerLogger.log(
-            Priority.P1,
+            Priority.P2,
             TOPADS_PDP,
             mapOf(
                 "action" to tag,
