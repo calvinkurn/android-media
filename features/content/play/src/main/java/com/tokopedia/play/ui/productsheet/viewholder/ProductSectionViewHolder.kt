@@ -47,11 +47,6 @@ class ProductSectionViewHolder(
         resetBackground()
     }
 
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        resetBackground()
-    }
-
     private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
         itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
@@ -118,12 +113,18 @@ class ProductSectionViewHolder(
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
             try {
-                val bgArray = IntArray(background.gradients.size)
-                background.gradients.forEachIndexed { index, s ->
-                    bgArray[index] = android.graphics.Color.parseColor(s)
+                if(background.gradients.size > 1) {
+                    val bgArray = IntArray(background.gradients.size)
+                    background.gradients.forEachIndexed { index, s ->
+                        bgArray[index] = android.graphics.Color.parseColor(s)
+                    }
+                    val gradient =
+                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
+                    itemView.background = gradient
+                }else{
+                    val color = android.graphics.Color.parseColor(background.gradients.firstOrNull() ?: "")
+                    itemView.setBackgroundColor(color)
                 }
-                val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
-                itemView.background = gradient
             } catch (e: Exception) { }
         } else {
             ivBg.loadImage(background.imageUrl)
