@@ -154,7 +154,7 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun goToKycLiveness() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION, projectId.toString())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_KTP_PATH, stepperModel?.ktpFile)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)

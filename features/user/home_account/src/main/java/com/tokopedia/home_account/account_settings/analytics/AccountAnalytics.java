@@ -104,7 +104,7 @@ public class AccountAnalytics {
         ));
     }
 
-    public void eventClickKycSetting() {
+    public void eventClickKycSetting(String projectId) {
 
         Analytics analytics = TrackApp.getInstance().getGTM();
 
@@ -112,7 +112,7 @@ public class AccountAnalytics {
                 AccountConstants.Analytics.CLICK_ACCOUNT,
                 String.format("%s %s", ACCOUNT, SETTING),
                 AccountConstants.Analytics.CLICK_KYC_SETTING,
-                ""
+                "click - " + projectId + " - ckyc"
         ));
     }
 

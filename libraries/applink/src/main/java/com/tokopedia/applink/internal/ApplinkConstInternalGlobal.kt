@@ -113,7 +113,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/name-shop-creation
     const val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
 
-    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
+    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
 
     const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 

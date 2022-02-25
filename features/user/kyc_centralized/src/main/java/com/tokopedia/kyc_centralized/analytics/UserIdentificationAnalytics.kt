@@ -2,6 +2,8 @@ package com.tokopedia.kyc_centralized.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user_identification_common.KYCConstant.Companion.CO_BRAND_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.Companion.HOME_CREDIT_PROJECT_ID
 
 /**
  * @author by alvinatin on 26/11/18.
@@ -67,7 +69,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne
+                "${Label.labelOne} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -88,14 +90,14 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     fun eventClickOnNextOnBoarding() {
         if (projectID == 4) {
             sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING, "")
-        } else {
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    Event.CLICK_ACCOUNT,
-                    Category.KYC_ONBOARDING_PAGE,
-                    Action.CLICK_ON_MULAI_ONBOARDING,
-                    ""
-            ))
         }
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_MULAI_ONBOARDING,
+                "click - $projectID - ${getKycType(projectID.toString())}"
+        ))
     }
 
     fun eventViewPendingPage() {
@@ -112,7 +114,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelTwo
+                "${Label.labelTwo} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -121,7 +123,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_MENGERTI_PENDING_PAGE,
-                ""
+                "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -148,7 +150,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelThree
+                "${Label.labelThree} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -157,7 +159,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
-                ""
+                "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -166,7 +168,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_KEMBALI_BLACKLIST_PAGE,
-                ""
+                "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -175,7 +177,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelFour
+                "${Label.labelFour} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -213,6 +215,14 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Action,
                 label
         ))
+    }
+
+    private fun getKycType(projectID: String): String {
+        return if (projectID == HOME_CREDIT_PROJECT_ID || projectID == CO_BRAND_PROJECT_ID) {
+            "ala carte"
+        } else {
+            "ckyc"
+        }
     }
 
     companion object {

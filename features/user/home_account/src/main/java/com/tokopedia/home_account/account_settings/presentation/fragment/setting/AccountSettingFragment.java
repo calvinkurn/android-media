@@ -286,7 +286,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void onKycMenuClicked() {
-        accountAnalytics.eventClickKycSetting();
+        accountAnalytics.eventClickKycSetting(PROJECT_ID.toString());
         goToKyc();
     }
 
