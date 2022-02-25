@@ -1206,11 +1206,8 @@ object DynamicProductDetailTracking {
                 val bundlePromotions = Bundle().apply {
                     putParcelableArrayList(ProductTrackingConstant.Tracking.KEY_PROMOTIONS, list as ArrayList<Bundle>)
                 }
-                //promoClick
-                val bundlePromoClick = Bundle().apply {
-                    putBundle(ProductTrackingConstant.Tracking.PROMO_CLICK, bundlePromotions)
-                }
-                putBundle(ProductTrackingConstant.Tracking.KEY_ECOMMERCE, bundlePromoClick)
+
+                putBundle(ProductTrackingConstant.Tracking.KEY_ECOMMERCE, bundlePromotions)
                 putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId)
                 putString(ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId)
                 putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID, shopId)
