@@ -3,6 +3,7 @@ package com.tokopedia.createpost.uprofile.domains
 import com.tokopedia.createpost.uprofile.model.FeedXProfileHeader
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.model.ProfileIsFollowing
+import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -10,15 +11,15 @@ import javax.inject.Inject
 
 class ProfileTheyFollowedUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun profileTheyFollowed(profileIds: MutableList<String>) : ProfileIsFollowing {
+    suspend fun profileIsFollowing(profileIds: MutableList<String>) : UserProfileIsFollow {
             val request = GraphqlRequest(getQuery(),
-                ProfileIsFollowing::class.java,
+                UserProfileIsFollow::class.java,
                 getRequestParams(profileIds))
 
         useCase.clearRequest()
             useCase.addRequest(request)
             val response = useCase.executeOnBackground()
-            return response.getData(ProfileIsFollowing::class.java)
+            return response.getData(UserProfileIsFollow::class.java)
     }
 
     private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {

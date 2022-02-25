@@ -57,6 +57,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var isFollowed: Boolean = false
     var displayName: String = ""
     var userName: String = ""
+    var profileUserId: String = ""
     var profileImage: String = ""
     var totalFollowings: String = ""
     var totalFollowers: String = ""
@@ -149,6 +150,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     }
                     is Success -> {
                         setMainUi(it.data)
+                        mPresenter.getFollowingStatus(mutableListOf(profileUserId))
                     }
                 }
             }

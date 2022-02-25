@@ -19,7 +19,8 @@ class UserProfileViewModel @Inject constructor(
     private val userDetailsUseCase: UserDetailsUseCase,
     private var playVodUseCase: PlayPostContentUseCase,
     private val useCaseDoFollow: ProfileFollowUseCase,
-    private val useCaseDoUnFollow: ProfileUnfollowedUseCase
+    private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
+    private val profileIsFollowing: ProfileTheyFollowedUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
     public val userDetailsLiveData = MutableLiveData<Resources<ProfileHeaderBase>>()
@@ -38,6 +39,7 @@ class UserProfileViewModel @Inject constructor(
         }) {
         }
     }
+
 
     public fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
         launchCatchError(block = {
@@ -65,6 +67,16 @@ class UserProfileViewModel @Inject constructor(
             val data = useCaseDoUnFollow.doUnfollow(unFollowingUserIdEnc)
             if (data != null) {
                 profileDoUnFollowLiveData.value = Success(data)
+            } else throw NullPointerException("data is null")
+        }) {
+        }
+    }
+
+    fun getFollowingStatus(profileIds: MutableList<String>) {
+        launchCatchError(block = {
+            val data = profileIsFollowing.profileIsFollowing(profileIds)
+            if (data != null) {
+                profileTheyFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
         }) {
         }
