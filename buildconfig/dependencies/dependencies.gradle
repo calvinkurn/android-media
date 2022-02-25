@@ -62,7 +62,7 @@ ext {
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '1.0.2'
     playServiceFirebaseFirestore = '17.1.2'
-    playServiceAds = '17.0.0'
+    playServiceAds = '17.1.0'
     playServiceTagManager = '17.0.0'
     playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '18.0.0'
