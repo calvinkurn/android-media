@@ -890,18 +890,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
-                        fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition()?:-1
-                        HomeServerLogger.sendEmbraceBreadCrumb(
-                            fragment = this@HomeRevampFragment,
-                            isLoggedIn = userSession.isLoggedIn,
-                            isCache = fragmentCurrentCacheState,
-                            visitableListCount = fragmentCurrentVisitableCount,
-                            scrollPosition = fragmentCurrentScrollPosition
-                        )
-                    }
+                    trackEmbraceBreadcrumbPosition()
                 }
             })
+        }
+    }
+
+    private fun trackEmbraceBreadcrumbPosition() {
+        if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
+            fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition() ?: -1
+            HomeServerLogger.sendEmbraceBreadCrumb(
+                fragment = this@HomeRevampFragment,
+                isLoggedIn = userSession.isLoggedIn,
+                isCache = fragmentCurrentCacheState,
+                visitableListCount = fragmentCurrentVisitableCount,
+                scrollPosition = fragmentCurrentScrollPosition
+            )
         }
     }
 
