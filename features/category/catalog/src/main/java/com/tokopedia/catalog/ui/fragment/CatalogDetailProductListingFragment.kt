@@ -460,9 +460,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             adapterPosition,
             userSession.userId)
         context?.let { context ->
-            if(!catalogComparison.appLink.isNullOrBlank()){
-                RouteManager.route(context,catalogComparison.appLink)
-            }
+//            if(!catalogComparison.appLink.isNullOrBlank()){
+//                RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
+//            }
+            // TODO add appLink in GQL
+            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
         }
     }
 
