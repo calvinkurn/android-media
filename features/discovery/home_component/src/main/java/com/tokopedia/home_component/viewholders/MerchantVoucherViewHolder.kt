@@ -10,13 +10,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMerchantVoucherBinding
-import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
-import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.decoration.MerchantVoucherDecoration
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
@@ -132,16 +130,13 @@ class MerchantVoucherViewHolder(
 
     private fun valuateRecyclerViewDecoration() {
         if (binding?.recycleList?.itemDecorationCount == 0) binding?.recycleList?.addItemDecoration(
-            SimpleHorizontalLinearLayoutDecoration()
+            MerchantVoucherDecoration()
         )
         binding?.recycleList?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        /**
-         * Attach startSnapHelper to recyclerView
-         */
         startSnapHelper.attachToRecyclerView(binding?.recycleList)
     }
 
@@ -162,10 +157,7 @@ class MerchantVoucherViewHolder(
                     merchantVoucherComponentListener.getUserId()
                 )
             }
-
-            override fun onChannelExpired(channelModel: ChannelModel) {
-
-            }
+            override fun onChannelExpired(channelModel: ChannelModel) {}
         })
     }
 
@@ -191,7 +183,6 @@ class MerchantVoucherViewHolder(
         channelGrid: ChannelGrid,
         position: Int
     ) {
-
     }
 
     override fun onProductCardClicked(
@@ -200,7 +191,6 @@ class MerchantVoucherViewHolder(
         position: Int,
         applink: String
     ) {
-
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -211,9 +201,7 @@ class MerchantVoucherViewHolder(
         )
     }
 
-    override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-
-    }
+    override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {}
 
     private val masterJob = SupervisorJob()
 
