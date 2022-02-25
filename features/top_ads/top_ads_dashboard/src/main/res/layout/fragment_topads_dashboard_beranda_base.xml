@@ -14,7 +14,7 @@
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/unify_space_0"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
@@ -22,7 +22,7 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/unify_space_0"
             android:fillViewport="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
