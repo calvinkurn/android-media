@@ -79,7 +79,7 @@ abstract class BaseNotification internal constructor(
 
     /*
     *
-    * 1. In this function we are updating channel if Notification UI update required (setting silent Channel)
+    * 1. This function is used to set silent notification properties
     * 2. Setting sound for PreOreo
     * 3. Setting PreOreo Notification Priority
     * 4. Setting Badge Icon and Notification count for OS above Marshmallow
@@ -111,7 +111,6 @@ abstract class BaseNotification internal constructor(
     /**
      * 1. Setting Large icon to default Notification style
      * 2. Setting Small icon to notification
-     *
      * */
     private fun setNotificationIcon(builder: NotificationCompat.Builder) {
         if (baseNotificationModel.icon!!.isEmpty()) {
