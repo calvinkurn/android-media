@@ -352,7 +352,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun onFailedRecommendation(){

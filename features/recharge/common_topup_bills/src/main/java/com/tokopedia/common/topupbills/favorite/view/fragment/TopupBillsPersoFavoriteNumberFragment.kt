@@ -33,6 +33,7 @@ import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNu
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberMenuBottomSheet.PersoFavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberModifyBottomSheet.PersoFavoriteNumberModifyListener
+import com.tokopedia.common.topupbills.favorite.view.listener.FavoriteNumberDeletionListener
 import com.tokopedia.common.topupbills.favorite.view.listener.PersoFavoriteNumberNotFoundStateListener
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberEmptyDataView
@@ -374,11 +375,6 @@ class TopupBillsPersoFavoriteNumberFragment :
             ) { undoDelete(deletedFavoriteNumber) }.show()
         }
         getPersoFavoriteNumber()
-
-        val operatorName = getOperatorNameById(deletedFavoriteNumber.operatorID)
-        commonTopupBillsAnalytics.eventImpressionFavoriteNumberSuccessDeleteToaster(
-            currentCategoryName, operatorName, userSession.userId
-        )
     }
 
     private fun onFailedDeleteClientName() {
@@ -400,8 +396,7 @@ class TopupBillsPersoFavoriteNumberFragment :
                 totalTransaction = favoriteDetail.totalTransaction,
                 label = favoriteDetail.label,
                 isDelete = shouldDelete,
-                FavoriteNumberActionType.UNDO_DELETE
-
+                actionType = FavoriteNumberActionType.UNDO_DELETE
             )
         }
     }
@@ -531,9 +526,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
 
         val shouldShowDelete = clientNumbers.size > MIN_TOTAL_FAV_NUMBER
@@ -545,9 +539,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
 
         val shouldDelete = false
@@ -560,17 +553,16 @@ class TopupBillsPersoFavoriteNumberFragment :
             totalTransaction = DEFAULT_TOTAL_TRANSACTION,
             label = newName,
             isDelete = shouldDelete,
-            FavoriteNumberActionType.UPDATE
+            actionType = FavoriteNumberActionType.UPDATE
         )
     }
 
     override fun onChangeNameMenuClicked(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventImpressionEditBottomSheet(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
         commonTopupBillsAnalytics.eventClickMenuFavoriteNumberModify(
-            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
 
         val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
@@ -578,9 +570,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onDeleteContactClicked(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickMenuFavoriteNumberDelete(
-            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
         showDeleteConfirmationDialog(favNumberItem)
     }
@@ -621,16 +612,14 @@ class TopupBillsPersoFavoriteNumberFragment :
             }
         }
 
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberDeletePopUp(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberConfirmDelete(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
 
         val shouldDelete = true
@@ -642,12 +631,22 @@ class TopupBillsPersoFavoriteNumberFragment :
             totalTransaction = DEFAULT_TOTAL_TRANSACTION,
             label = favNumberItem.getClientName(),
             isDelete = shouldDelete,
-            FavoriteNumberActionType.DELETE
-        ) {
-            commonTopupBillsAnalytics.eventImpressionFavoriteNumberFailedDeleteToaster(
-                currentCategoryName, operatorName, userSession.userId
-            )
-        }
+            actionType = FavoriteNumberActionType.DELETE,
+            operatorName = favNumberItem.operatorName,
+            object: FavoriteNumberDeletionListener {
+                override fun onSuccessDelete(operatorName: String) {
+                    commonTopupBillsAnalytics.eventImpressionFavoriteNumberSuccessDeleteToaster(
+                        currentCategoryName, operatorName, userSession.userId
+                    )
+                }
+
+                override fun onFailedDelete() {
+                    commonTopupBillsAnalytics.eventImpressionFavoriteNumberFailedDeleteToaster(
+                        currentCategoryName, favNumberItem.operatorName, userSession.userId
+                    )
+                }
+            }
+        )
     }
 
     override fun onContinueClicked() {
@@ -658,9 +657,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onCloseClick(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickMenuCancelFavoriteNumberModify(
-            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
     }
 
@@ -705,10 +703,6 @@ class TopupBillsPersoFavoriteNumberFragment :
         }
 
         this.operatorList = operatorList
-    }
-
-    private fun getOperatorNameById(operatorId: Int): String {
-        return operatorList[operatorId.toString()]?.name ?: ""
     }
 
     companion object {
