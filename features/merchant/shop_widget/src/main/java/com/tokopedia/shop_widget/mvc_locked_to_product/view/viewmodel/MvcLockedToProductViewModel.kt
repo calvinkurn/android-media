@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.usecase.MvcLockedToProductUseCase
@@ -28,9 +29,9 @@ class MvcLockedToProductViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    val hasNextPageLiveData: LiveData<Boolean>
-        get() = _hasNextPageLiveData
-    private val _hasNextPageLiveData = MutableLiveData<Boolean>()
+    val nextPageLiveData: LiveData<Int>
+        get() = _nextPageLiveData
+    private val _nextPageLiveData = MutableLiveData<Int>()
 
     val mvcLockToProductLiveData: LiveData<Result<MvcLockedToProductLayoutUiModel>>
         get() = _mvcLockToProductLiveData
@@ -50,7 +51,7 @@ class MvcLockedToProductViewModel @Inject constructor(
                 mvcLockedToProductRequestUiModel.selectedSortData
             )
             _mvcLockToProductLiveData.postValue(Success(uiModel))
-            _hasNextPageLiveData.postValue(checkHasNextPage(response.shopPageMVCProductLock.nextPage))
+            _nextPageLiveData.postValue(response.shopPageMVCProductLock.nextPage)
         }) {
             _mvcLockToProductLiveData.postValue(Fail(it))
         }
@@ -63,7 +64,7 @@ class MvcLockedToProductViewModel @Inject constructor(
                 response.shopPageMVCProductLock.productList
             )
             _productListData.postValue(Success(uiModel))
-            _hasNextPageLiveData.postValue(checkHasNextPage(response.shopPageMVCProductLock.nextPage))
+            _nextPageLiveData.postValue(response.shopPageMVCProductLock.nextPage)
         }) {
             _productListData.postValue(Fail(it))
         }
@@ -92,7 +93,4 @@ class MvcLockedToProductViewModel @Inject constructor(
         return mvcLockedToProductUseCase.executeOnBackground()
     }
 
-    private fun checkHasNextPage(nextPage: Int): Boolean {
-        return nextPage.isMoreThanZero()
-    }
 }

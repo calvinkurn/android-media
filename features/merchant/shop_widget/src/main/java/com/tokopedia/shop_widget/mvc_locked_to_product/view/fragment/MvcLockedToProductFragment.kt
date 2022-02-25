@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -96,6 +97,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private val staggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
+    private var nextPage: Int = 0
 
     private fun getIntentData() {
         activity?.intent?.data?.let {
@@ -169,9 +171,14 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun observeHasNextPageLiveData() {
-        viewModel?.hasNextPageLiveData?.observe(viewLifecycleOwner, {
-            updateEndlessScrollListener(it)
+        viewModel?.nextPageLiveData?.observe(viewLifecycleOwner, {
+            nextPage = it
+            updateEndlessScrollListener(isHasNextPage(nextPage))
         })
+    }
+
+    private fun isHasNextPage(page: Int): Boolean {
+        return page.isMoreThanZero()
     }
 
     private fun observeProductListLiveData() {
@@ -250,6 +257,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+
+            override fun loadMoreNextPage() {
+                val totalItemCount = layoutManager.itemCount
+                loading = true
+                onLoadMore(nextPage, totalItemCount)
+            }
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 getNextProductListData(page)
