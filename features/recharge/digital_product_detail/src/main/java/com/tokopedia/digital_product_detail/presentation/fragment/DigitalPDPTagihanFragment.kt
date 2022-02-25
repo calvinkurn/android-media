@@ -465,19 +465,27 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 "Proses verifikasi transaksi membutuhkan <b>maksimal 2x24 jam</b> hari kerja",
                 "Harap cek <b>limit kWh</b> anda sebelum membeli token listrik ya"
             )
+            val title = getString(R.string.bottom_sheet_more_info)
             it.rechargePdpTickerWidgetProductDesc.apply {
                 setText(dummyInfo)
                 setLinks(clickableInfo, View.OnClickListener {
-                    showMoreInfoBottomSheet(dummyListInfo)
+                    showMoreInfoBottomSheet(dummyListInfo, title)
                 })
             }
 
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>){
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String){
+        digitalPDPTelcoAnalytics.impressionGreenBox(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            viewModel.operatorData.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            title
+        )
         fragmentManager?.let {
-            MoreInfoPDPBottomsheet(listInfo).show(it, "")
+            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
         }
     }
 

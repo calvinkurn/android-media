@@ -460,6 +460,21 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    fun impressionGreenBox(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        title: String
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, "impression '$title'",
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     /** Common Tracking extension function*/
 
     fun Bundle.viewItemList(userId: String): Bundle {
