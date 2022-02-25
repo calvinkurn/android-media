@@ -269,4 +269,6 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET = "$INTERNAL_MARKETPLACE/shop/widget/operational-hour/{shop_id}/"
 
+    const val SHOP_MVC_LOCKED_TO_PRODUCT = "$INTERNAL_MARKETPLACE/shop/widget/voucher/shop_id/{shop_id}/{voucher_id}/"
+
 }

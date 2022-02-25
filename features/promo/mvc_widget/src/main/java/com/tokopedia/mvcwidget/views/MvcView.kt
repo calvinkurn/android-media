@@ -72,9 +72,9 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 startActivityForResultFunction?.invoke()
             } else {
                 if (context is AppCompatActivity) {
-                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source, productId = this.productId, hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
                 } else {
-                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC))
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source, productId = this.productId, hashCode = mvcActivityCallbacks.hashCodeForMVC))
                 }
             }
 

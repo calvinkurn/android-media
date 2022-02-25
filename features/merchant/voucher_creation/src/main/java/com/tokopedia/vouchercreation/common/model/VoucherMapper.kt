@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.common.model
 
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -18,6 +18,7 @@ class VoucherMapper @Inject constructor() {
                     typeFormatted = it.voucherTypeFormatted,
                     image = it.voucherImage,
                     imageSquare = it.imageSquare,
+                    imagePortrait = it.imagePortrait,
                     status = it.voucherStatus,
                     discountTypeFormatted = it.discountTypeFormatted,
                     discountAmt = it.discountAmt,
@@ -49,6 +50,7 @@ class VoucherMapper @Inject constructor() {
                     typeFormatted = it.voucherTypeFormatted,
                     image = it.voucherImage,
                     imageSquare = it.imageSquare,
+                    imagePortrait = it.imagePortrait,
                     status = it.voucherStatus,
                     discountTypeFormatted = it.discountTypeFormatted,
                     discountAmt = it.discountAmt,
