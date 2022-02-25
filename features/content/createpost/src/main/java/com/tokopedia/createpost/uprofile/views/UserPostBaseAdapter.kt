@@ -53,7 +53,16 @@ open class UserPostBaseAdapter(
 
     override fun loadData(currentPageIndex: Int, vararg args: String?) {
         super.loadData(currentPageIndex, *args)
-        args[0]?.let { viewModel.getUPlayVideos(VAL_FEEDS_PROFILE, cursor, VAL_SOURCE_BUYER, it) }
+        if (args.isNotEmpty()){
+            args[0]?.let {
+                viewModel.getUPlayVideos(
+                    VAL_FEEDS_PROFILE,
+                    cursor,
+                    VAL_SOURCE_BUYER,
+                    it
+                )
+            }
+        }
     }
 
     fun onSuccess(data: UserPostModel) {

@@ -14,12 +14,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.uprofile.*
+import com.tokopedia.createpost.uprofile.ErrorMessage
+import com.tokopedia.createpost.uprofile.Loading
+import com.tokopedia.createpost.uprofile.Success
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.Profile
@@ -43,8 +47,8 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.up_layout_user_profile_header.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
@@ -64,6 +68,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var userSession: UserSessionInterface? = null
     var btnAction: UnifyButton? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var recyclerviewPost : RecyclerView ? = null
+    private var headerProfile : HeaderUnify ? = null
+    private var appBarLayout : AppBarLayout? = null
+    private var userId = ""
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -124,10 +132,19 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun initUserPost(userId: String) {
-        val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
-        postRv?.layoutManager = GridLayoutManager(activity, 2)
-        postRv?.addItemDecoration(PostItemDecoration(convertDpToPixel(8F, requireContext())))
-        postRv?.adapter = mAdapter
+        recyclerviewPost = view?.findViewById(R.id.recycler_view)
+        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
+        if (recyclerviewPost?.itemDecorationCount == 0) {
+            recyclerviewPost?.addItemDecoration(
+                PostItemDecoration(
+                    convertDpToPixel(
+                        8F,
+                        requireContext()
+                    )
+                )
+            )
+        }
+        recyclerviewPost?.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.startDataLoading(userId)
     }
@@ -274,7 +291,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
-        initUserPost(data.profileHeader.profile.userID)
+        userId = data.profileHeader.profile.userID
+        initUserPost(userId)
 
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
         val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
@@ -283,6 +301,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
+        appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
 //        textBio?.text = data.profileHeader.profile.biography
         textUserName?.text = "@" + data.profileHeader.profile.username
@@ -309,6 +328,16 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 )
             }
         }
+
+        appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) >   convertDpToPixel(OFFSET_USERINFO,requireContext())) {
+                headerProfile?.title = data.profileHeader.profile.name
+                headerProfile?.subtitle = data.profileHeader.profile.username
+            } else {
+                headerProfile?.title = ""
+                headerProfile?.subtitle = ""
+            }
+        })
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
@@ -369,8 +398,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
 
     private fun setHeader() {
-        val header = view?.findViewById<HeaderUnify>(R.id.header_profile)
-        header?.apply {
+        headerProfile = view?.findViewById<HeaderUnify>(R.id.header_profile)
+        headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
@@ -488,6 +517,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onError(pageNumber: Int) {
         // TODO("Not yet implemented")
     }
+
+    /**
+     * OFFSET_USERINFO = 64dp(Profile) + 10dp(PaddingTop) + 16dp (margin top username) + 2dp (margin top userid) +
+     *  24dp(user name line height) + 20dp(userid line height)
+     */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -622,6 +656,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
         const val EXTRA_USER_NAME = "user_name"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
+        const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN = 1
 
         fun newInstance(extras: Bundle): Fragment {
