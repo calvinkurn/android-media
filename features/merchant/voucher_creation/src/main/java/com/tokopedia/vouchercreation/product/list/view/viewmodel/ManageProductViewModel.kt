@@ -150,7 +150,7 @@ class ManageProductViewModel @Inject constructor(
             VariantUiModel(
                     isViewing = isViewing,
                     isEditing = isEditing,
-                    variantId = data.productId.toString(),
+                    variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
