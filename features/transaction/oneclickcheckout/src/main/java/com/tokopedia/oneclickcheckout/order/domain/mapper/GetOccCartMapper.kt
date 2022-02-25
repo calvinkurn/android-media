@@ -38,7 +38,6 @@ class GetOccCartMapper @Inject constructor() {
                 prompt = mapPrompt(data.prompt),
                 errorCode = data.errorCode,
                 popUpMessage = data.popUpMessage,
-                maxQty = data.maxQty,
                 totalProductPrice = data.totalProductPrice,
                 profileCode = data.paymentAdditionalData.profileCode)
     }

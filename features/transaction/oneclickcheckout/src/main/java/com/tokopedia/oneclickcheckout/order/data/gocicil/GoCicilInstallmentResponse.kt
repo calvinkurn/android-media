@@ -24,8 +24,6 @@ class GoCicilInstallmentOption(
         val installmentTerm: Int = 0,
         @SerializedName("option_id")
         val optionId: String = "",
-        @SerializedName("installment_period")
-        val installmentPeriod: String = "",
         @SerializedName("first_installment_time")
         val firstInstallmentTime: String = "",
         @SerializedName("est_installment_end")

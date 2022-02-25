@@ -164,7 +164,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
                 }
-                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(message = payment.walletData.goCicilData.errorMessageTopLimit)) to orderTotal.copy(orderCost = orderCost,
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
             if (payment.isOvo && subtotal > payment.walletAmount) {
@@ -178,7 +178,16 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital, isOvo = true)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
-            if (payment.walletData.enableWalletAmountValidation && subtotal > payment.walletAmount) {
+            if (payment.walletData.isGoCicil && payment.walletAmount < orderCost.totalPriceWithoutPaymentFees) {
+                var buttonType = OccButtonType.CHOOSE_PAYMENT
+                if (payment.specificGatewayCampaignOnlyType > 0) {
+                    currentState = disableButtonState(currentState)
+                    buttonType = OccButtonType.PAY
+                }
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(message = payment.walletData.goCicilData.errorMessageTopLimit)) to orderTotal.copy(orderCost = orderCost,
+                        buttonType = buttonType, buttonState = currentState)
+            }
+            if (!payment.walletData.isGoCicil && payment.walletData.enableWalletAmountValidation && subtotal > payment.walletAmount) {
                 if (payment.specificGatewayCampaignOnlyType > 0) {
                     return@withContext payment.copy(isCalculationError = true, walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, message = payment.walletData.topUp.errorMessage, buttonTitle = payment.walletData.topUp.buttonTitle,
                             type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = payment.walletData.callbackUrl, isHideDigital = isHideDigitalInt)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = disableButtonState(currentState))

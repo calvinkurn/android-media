@@ -36,8 +36,6 @@ class GetOccCartData(
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse(),
-        @SerializedName("max_quantity")
-        val maxQty: String = "",
         @SerializedName("total_product_price")
         val totalProductPrice: String = ""
 )

@@ -4,9 +4,9 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
@@ -850,7 +850,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
         val payment = orderPayment.value
-        if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
+        if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
+                && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
+                && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
             val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart)
             if (result != null) {
                 chooseInstallment(result.first, result.second, !result.third)

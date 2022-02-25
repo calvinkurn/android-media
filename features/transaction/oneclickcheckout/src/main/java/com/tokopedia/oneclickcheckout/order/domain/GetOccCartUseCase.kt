@@ -67,7 +67,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
       kero_token
       kero_unix_time
       kero_discom_token
-      error_ticker
       tickers {
         id
         message

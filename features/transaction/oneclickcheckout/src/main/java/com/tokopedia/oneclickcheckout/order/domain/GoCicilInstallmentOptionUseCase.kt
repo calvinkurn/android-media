@@ -51,11 +51,9 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
                         installment_options {
                             installment_term
                             option_id
-                            installment_period
                             first_installment_time
                             est_installment_end
                             first_due_message
-                            principal_amount
                             interest_amount
                             fee_amount
                             total_amount
