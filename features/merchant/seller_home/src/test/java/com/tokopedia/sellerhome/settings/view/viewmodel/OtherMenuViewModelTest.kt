@@ -220,6 +220,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 ShopOperationalData(
                     isShopOpen = true,
                     isShopClosed = false,
+                    isWeeklyOperationalClosed = true,
+                    isShopActive = true,
                     timeDescriptionRes = R.string.shop_operational_hour_24_hour,
                     timeDescription = "",
                     shopSettingAccess = true
@@ -432,6 +434,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             val uiModel = ShopOperationalData(
                 isShopOpen = true,
                 isShopClosed = false,
+                isWeeklyOperationalClosed = true,
+                isShopActive = true,
                 timeDescriptionRes = R.string.shop_operational_hour_24_hour,
                 timeDescription = "",
                 shopSettingAccess = true
