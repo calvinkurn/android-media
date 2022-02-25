@@ -36,7 +36,7 @@ data class GatewaySection(
 data class Cta(
 
     @SerializedName("name") val name: String?,
-    @SerializedName("android_url") val android_url: String?,
+    @SerializedName("android_url") var android_url: String? = "",
     @SerializedName("cta_type") val cta_type: Int?,
     @SerializedName("button_color") val button_color: String?,
     @SerializedName("bottom_sheet") val bottomSheet: BottomSheetDetail?
@@ -95,6 +95,7 @@ data class GatewayModel(
 
     @SerializedName("id") val gateway_id: String?,
     @SerializedName("name") val name: String?,
+    @SerializedName("gateway_code") val gatewayCode:String?,
     @SerializedName("img_light_url") val img_light_url: String?,
     @SerializedName("img_dark_url") val img_dark_url: String?,
     @SerializedName("how_to_use") val how_toUse: HowToUse?

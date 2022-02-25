@@ -14,6 +14,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
@@ -58,6 +59,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
                 productId = it.getString(PARAM_PRODUCT_ID) ?: ""
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
                 bundle.putString(PARAM_PRODUCT_ID, productId)
+                bundle.putString(PARAM_PRODUCT_URL,it.getString(PARAM_PRODUCT_TENURE))
             }
             PdpSimulationFragment.newInstance(bundle)
         }
