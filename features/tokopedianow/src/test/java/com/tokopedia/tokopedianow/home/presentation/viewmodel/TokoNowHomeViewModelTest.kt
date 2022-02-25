@@ -624,6 +624,66 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when getHomeLayout should add all dynamic channel to home layout list`() {
+        val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+
+        val recommendationItems = emptyList<RecommendationItem>()
+        val recommendationWidget = RecommendationWidget(
+            title = "Product Recommendation",
+            recommendationItemList = recommendationItems
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = createDynamicChannelLayoutList(),
+            localCacheModel = localCacheModel
+        )
+
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
+        viewModel.getLayoutComponentData(warehouseId = "1")
+
+        val data = HomeLayoutListUiModel(
+            items = listOf(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createDynamicLegoBannerDataModel(
+                    id = "34923",
+                    groupId = "",
+                    headerName = "Lego Banner",
+                    layout = "lego_3_image"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "11111",
+                    groupId = "",
+                    headerName = "Lego 6",
+                    layout = "6_image"
+                ),
+                createSliderBannerDataModel(
+                    "2222",
+                    "",
+                    "Banner Tokonow"
+                ),
+                HomeProductRecomUiModel(
+                    id = "2322",
+                    recomWidget = recommendationWidget
+                ),
+                createMixLeftDataModel(
+                    id = "2122",
+                    groupId = "",
+                    headerName = "Mix Left Carousel",
+                    layout = "left_carousel"
+                )
+            ),
+            state = TokoNowLayoutState.UPDATE
+        )
+        val expectedResult = Success(data)
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
     fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
         val index = 1
 
