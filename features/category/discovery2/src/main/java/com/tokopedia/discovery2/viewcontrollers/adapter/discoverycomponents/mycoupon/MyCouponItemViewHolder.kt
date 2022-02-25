@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -36,7 +35,7 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             myCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, {
-                setupImage(myCouponItemViewModel.getCouponItem(),it)
+                setupImage(myCouponItemViewModel.getCouponItem())
             })
         }
     }
@@ -48,10 +47,10 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
         }
     }
 
-    private fun setupImage(couponItem: MyCoupon?, componentItem: ComponentsItem){
+    private fun setupImage(couponItem: MyCoupon?){
         try {
             val layoutParams: ViewGroup.LayoutParams = myCouponImage.layoutParams
-            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
+            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
                     / DEFAULT_DESIGN).toInt()
                 val aspectRatio = 2 / 1
                 layoutParams.height = (layoutParams.width / aspectRatio)

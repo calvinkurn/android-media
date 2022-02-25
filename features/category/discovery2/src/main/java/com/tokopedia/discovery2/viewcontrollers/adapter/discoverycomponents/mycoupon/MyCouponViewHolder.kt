@@ -17,7 +17,7 @@ class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private val myCouponRecyclerView: RecyclerView = itemView.findViewById(R.id.my_coupon_rv)
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-    private val myCouponItemDecorator = BannerCarouselItemDecorator()
+    private val myCouponItemDecorator = MyCouponItemDecorator()
 
     private lateinit var myCouponViewModel: MyCouponViewModel
 

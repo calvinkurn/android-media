@@ -19,10 +19,10 @@ class MyCouponItemViewModel(val application: Application, val components: Compon
     fun getComponentData(): LiveData<ComponentsItem> = componentData
 
     fun setClick(context: Context) {
-        navigate(context, getCouponAppLink() ?: "")
+        navigate(context, getCouponAppLink())
     }
 
-    fun getCouponAppLink(): String {
+    private fun getCouponAppLink(): String {
         val appLink = components.myCouponList?.firstOrNull()?.redirectAppLink
         if (appLink.isNullOrEmpty()) return ""
 
