@@ -82,8 +82,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rel_info"
         android:visibility="gone"
+        android:id="@+id/rel_info"
         android:padding="@dimen/mvc_dp_10"
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/mvc_dp_17"
@@ -108,13 +108,16 @@
             android:textColor="@color/Unify_GN500"
             app:typographyType="body_3" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:tint="@color/Unify_GN500"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_done_green_24dp"/>
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
+            app:icon_enable_state="true"
+            app:icon_name="CHECK_BIG" />
+
     </RelativeLayout>
 
     <View

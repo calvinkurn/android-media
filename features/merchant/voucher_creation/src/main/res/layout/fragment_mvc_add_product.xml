@@ -50,7 +50,7 @@
         android:layout_marginTop="@dimen/mvc_dimen_14dp"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
-        app:descriptionText="todo"
+        app:descriptionText="@string/mvc_product_seller_location_warning_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sf_product_list"

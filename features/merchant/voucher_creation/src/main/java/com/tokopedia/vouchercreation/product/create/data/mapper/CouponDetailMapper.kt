@@ -9,9 +9,11 @@ class CouponDetailMapper @Inject constructor() {
     fun map(voucher: Voucher): CouponUiModel {
         val products = mutableListOf<Long>()
 
-        voucher.productIds.forEach {
-            it.childProductId.forEach { productId ->
-                products.add(productId)
+        voucher.productIds.forEach { parentProduct ->
+            products.add(parentProduct.parentProductId)
+
+            parentProduct.childProductId.forEach { variantProductId ->
+                products.add(variantProductId)
             }
         }
 

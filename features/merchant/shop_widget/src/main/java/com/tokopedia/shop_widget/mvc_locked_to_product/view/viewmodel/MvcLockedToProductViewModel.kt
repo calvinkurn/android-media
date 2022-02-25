@@ -12,6 +12,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -41,9 +42,9 @@ class MvcLockedToProductViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    val hasNextPageLiveData: LiveData<Boolean>
-        get() = _hasNextPageLiveData
-    private val _hasNextPageLiveData = MutableLiveData<Boolean>()
+    val nextPageLiveData: LiveData<Int>
+        get() = _nextPageLiveData
+    private val _nextPageLiveData = MutableLiveData<Int>()
 
     val mvcLockToProductLiveData: LiveData<Result<MvcLockedToProductLayoutUiModel>>
         get() = _mvcLockToProductLiveData
@@ -81,7 +82,7 @@ class MvcLockedToProductViewModel @Inject constructor(
                 mvcLockedToProductRequestUiModel.selectedSortData
             )
             _mvcLockToProductLiveData.postValue(Success(uiModel))
-            _hasNextPageLiveData.postValue(checkHasNextPage(response.shopPageMVCProductLock.nextPage))
+            _nextPageLiveData.postValue(response.shopPageMVCProductLock.nextPage)
         }) {
             _mvcLockToProductLiveData.postValue(Fail(it))
         }
@@ -94,7 +95,7 @@ class MvcLockedToProductViewModel @Inject constructor(
                 response.shopPageMVCProductLock.productList
             )
             _productListData.postValue(Success(uiModel))
-            _hasNextPageLiveData.postValue(checkHasNextPage(response.shopPageMVCProductLock.nextPage))
+            _nextPageLiveData.postValue(response.shopPageMVCProductLock.nextPage)
         }) {
             _productListData.postValue(Fail(it))
         }
@@ -121,10 +122,6 @@ class MvcLockedToProductViewModel @Inject constructor(
             )
         )
         return mvcLockedToProductUseCase.executeOnBackground()
-    }
-
-    private fun checkHasNextPage(nextPage: Int): Boolean {
-        return nextPage.isMoreThanZero()
     }
 
     fun setMiniCartData(miniCart: MiniCartSimplifiedData) {

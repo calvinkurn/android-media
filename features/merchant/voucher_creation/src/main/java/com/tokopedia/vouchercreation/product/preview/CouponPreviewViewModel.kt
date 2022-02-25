@@ -57,6 +57,8 @@ class CouponPreviewViewModel @Inject constructor(
     val couponCreationEligibility: LiveData<Result<Int>>
         get() = _couponCreationEligibility
 
+    var selectedWarehouseId:String = ""
+
     fun validateCoupon(
         pageMode : CouponPreviewFragment.Mode,
         couponSettings: CouponSettings?,
@@ -241,15 +243,6 @@ class CouponPreviewViewModel @Inject constructor(
         return couponProductData.toList()
     }
 
-    fun mapCouponProductDataToSelectedProducts(couponProductData: List<CouponProduct>): List<ProductUiModel> {
-        return couponProductData.map { couponProduct ->
-            ProductUiModel(
-                    id = couponProduct.id,
-                    imageUrl = couponProduct.imageUrl,
-                    sold = couponProduct.soldCount
-            )
-        }
-    }
 
     fun mapSelectedProductIdsToProductUiModels(selectedProductIds: List<ProductId>): List<ProductUiModel> {
         return selectedProductIds.map { productId ->

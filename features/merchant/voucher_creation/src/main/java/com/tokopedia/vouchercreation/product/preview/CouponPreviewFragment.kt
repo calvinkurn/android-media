@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -245,6 +244,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     this.selectedProductIds = result.data.coupon.productIds.toMutableList()
                     this.maxAllowedProduct = result.data.maxProduct
 
+                    viewModel.selectedWarehouseId = result.data.selectedWarehouseId
+
                     adjustCouponDefaultCouponStartEndDate(
                         pageMode,
                         couponInformation ?: return@observe
@@ -252,10 +253,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
 
-                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.coupon.products)
-                    this.selectedProductCount = selectedProducts.size
-
-                    refreshProductsSection(selectedProducts.size)
+                    this.selectedProductCount = result.data.coupon.productIds.size
+                    refreshProductsSection(result.data.coupon.productIds.size)
 
                     binding.tpgMaxProduct.text = String.format(
                         getString(R.string.placeholder_max_product),
@@ -399,10 +398,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         this.couponSettings = couponSettings
     }
 
-    fun setCouponProductsData(couponProducts: List<CouponProduct>) {
-        this.couponProducts = couponProducts.toMutableList()
-    }
-
     fun setCouponInformationData(couponInformation: CouponInformation) {
         this.couponInformation = couponInformation
     }
@@ -423,11 +418,16 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         refreshCouponDetail()
     }
 
+    fun setSelectedWarehouseId(selectedWarehouseId: String) {
+        viewModel.selectedWarehouseId = selectedWarehouseId
+    }
+
     fun getCouponInformationData() = this.couponInformation
     fun getCouponSettingsData() = this.couponSettings
     fun getMaxAllowedProduct() = this.maxAllowedProduct
     fun getSelectedProducts() = this.selectedProducts
     fun getSelectedProductIds() = this.selectedProductIds
+    fun getSelectedWarehouseId() = viewModel.selectedWarehouseId
 
     fun getSelectedProducts(selectedProductIds: List<ProductId>): List<ProductUiModel> {
         return viewModel.mapSelectedProductIdsToProductUiModels(selectedProductIds)

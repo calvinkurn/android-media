@@ -18,7 +18,6 @@ import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -67,9 +66,6 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
-
-    @RelaxedMockK
-    lateinit var abTestPlatform: AbTestPlatform
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -122,7 +118,6 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase,
             remoteConfig,
             sharedPref,
-            abTestPlatform,
             coroutineTestRule.dispatchers
         )
     }
@@ -416,11 +411,8 @@ class CentralizedPromoViewModelTest {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns true
         coEvery {
-            abTestPlatform.getString(
-                "MVProductEntryPoint",
-                ""
-            )
-        } returns "MVProductEntryPoint"
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -455,11 +447,8 @@ class CentralizedPromoViewModelTest {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
         coEvery {
-            abTestPlatform.getString(
-                "MVProductEntryPoint",
-                ""
-            )
-        } returns "MVProductEntryPoint"
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -494,11 +483,8 @@ class CentralizedPromoViewModelTest {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
         coEvery {
-            abTestPlatform.getString(
-                "MVProductEntryPoint",
-                ""
-            )
-        } returns ""
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns false
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -532,10 +518,7 @@ class CentralizedPromoViewModelTest {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
         coEvery {
-            abTestPlatform.getString(
-                "MVProductEntryPoint",
-                ""
-            )
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
         } throws MessageErrorException()
 
         // When

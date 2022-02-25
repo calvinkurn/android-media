@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -16,7 +17,8 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -27,9 +29,6 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         private val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
 
         private const val EXTRA_FEATURE_ACCESS = "extra_feature_access"
-
-        private const val MVC_PRODUCT_ROLLENCE_KEY = "MVProductEntryPoint"
-        private const val MVC_PRODUCT_VARIANT_ON = "MVProductEntryPoint"
 
         fun createInstance(access: ProductManageAccess): ProductManageBottomSheet {
             return ProductManageBottomSheet().apply {
@@ -215,10 +214,9 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
     private fun getIsProductCouponEnabled(): Boolean {
         return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                MVC_PRODUCT_ROLLENCE_KEY,
-                ""
-            ) == MVC_PRODUCT_VARIANT_ON
+            context?.let {
+                FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+            }.orFalse()
         } catch (ex: Exception) {
             false
         }

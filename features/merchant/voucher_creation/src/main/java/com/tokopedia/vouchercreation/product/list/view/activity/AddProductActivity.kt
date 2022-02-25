@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity.Companion.BUNDLE_KEY_COUPON_SETTINGS
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity.Companion.BUNDLE_KEY_SELECTED_WAREHOUSE_ID
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
 
 class AddProductActivity : BaseSimpleActivity() {
@@ -20,6 +21,7 @@ class AddProductActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         return AddProductFragment.createInstance(
                 // TODO : do something about default value
+                selectedWarehouseId = intent.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID),
                 maxProductLimit = intent.getIntExtra(BUNDLE_KEY_MAX_PRODUCT_LIMIT, 0),
                 couponSettings = intent.getParcelableExtra(BUNDLE_KEY_COUPON_SETTINGS),
                 selectedProducts = intent.getParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS) ?: ArrayList()

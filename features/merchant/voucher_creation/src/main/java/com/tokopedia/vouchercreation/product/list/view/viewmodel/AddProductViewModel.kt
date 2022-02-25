@@ -31,6 +31,7 @@ class AddProductViewModel @Inject constructor(
 
     companion object {
         private const val FIRST_PAGE = 1
+        private const val PAGE_SIZE = 10
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
@@ -49,14 +50,15 @@ class AddProductViewModel @Inject constructor(
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
-    private var warehouseLocationId: Int? = null
-    private var sellerWarehouseId: Int? = null
+    private var warehouseLocationId: Int? = null // selected warehouse id
+    private var sellerWarehouseId: Int? = null // seller location id
     private var showCaseSelections = listOf<ShowCaseSelection>()
     private var categorySelections = listOf<CategorySelection>()
     private var selectedSort: GoodsSortInput? = null
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
+    var isFiltering = false
 
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
@@ -85,6 +87,7 @@ class AddProductViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 val params = GetProductListUseCase.createRequestParams(
                         page = page,
+                        pageSize = PAGE_SIZE,
                         keyword = keyword,
                         shopId = shopId,
                         warehouseId = warehouseLocationId.toString(),
@@ -183,13 +186,19 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>): List<WarehouseLocationSelection> {
+    fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
+                                         selectedWarehouseId: Int?): List<WarehouseLocationSelection> {
+
         return warehouses.map { warehouse ->
+            var isSelected = warehouse.warehouseType == SELLER_WAREHOUSE_TYPE
+            selectedWarehouseId?.run {
+                isSelected = warehouse.warehouseId == this
+            }
             WarehouseLocationSelection(
                     warehouseId = warehouse.warehouseId,
                     warehouseType = warehouse.warehouseType,
                     warehouseName = warehouse.warehouseName,
-                    isSelected = warehouse.warehouseType == SELLER_WAREHOUSE_TYPE
+                    isSelected = isSelected
             )
         }
     }
@@ -257,6 +266,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    // dont confuse this with selected warehouse id
     fun setSellerWarehouseId(warehouseId: Int) {
         this.sellerWarehouseId = warehouseId
     }
@@ -319,8 +329,11 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun setSelectedSort(sortSelections: List<SortSelection>) {
-        sortSelections.firstOrNull()?.let {
-            this.selectedSort = GoodsSortInput(it.id, it.value)
+        if (sortSelections.isNullOrEmpty()) this.selectedSort = null
+        else {
+            sortSelections.firstOrNull()?.let {
+                this.selectedSort = GoodsSortInput(it.id, it.value)
+            }
         }
     }
 
