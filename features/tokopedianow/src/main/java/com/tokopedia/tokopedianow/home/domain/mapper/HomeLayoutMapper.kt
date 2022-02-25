@@ -465,7 +465,7 @@ object HomeLayoutMapper {
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state, serviceType)
             MAIN_QUEST -> mapQuestUiModel(response, state)
-            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, state)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState)
             else -> null
         }
     }
