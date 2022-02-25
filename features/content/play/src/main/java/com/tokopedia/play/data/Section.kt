@@ -12,13 +12,13 @@ data class Section (
     @SerializedName("title")
     val sectionTitle: String = "",
 
-    @SerializedName("startTime")
+    @SerializedName("start_time")
     val timerStartTime: String = "",
 
-    @SerializedName("endTime")
+    @SerializedName("end_time")
     val timerEndTime: String = "",
 
-    @SerializedName("serverTime")
+    @SerializedName("server_time")
     val serverTime: String = "",
 
     @SerializedName("products")
@@ -30,15 +30,15 @@ data class Section (
     @SerializedName("countdown")
     val countdown: Countdown = Countdown(),
 
-    @SerializedName("sourceID")
+    @SerializedName("source_id")
     val id: String = "",
 
 ){
     data class Background(
         @SerializedName("gradient")
-        val gradientList: List<String> = emptyList(),
+        val gradientList: List<String>? = null,
 
-        @SerializedName("imageUrl")
+        @SerializedName("image_url")
         val imageUrl: String = ""
     )
 

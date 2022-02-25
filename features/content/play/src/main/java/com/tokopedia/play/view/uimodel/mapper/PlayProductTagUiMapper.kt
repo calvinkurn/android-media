@@ -30,7 +30,7 @@ class PlayProductTagUiMapper @Inject constructor() {
         endTime = input.timerEndTime,
         timerInfo = input.countdown.countdownInfo,
         background = ProductSectionUiModel.Section.BackgroundUiModel(
-            gradients = input.background.gradientList,
+            gradients = input.background.gradientList ?: emptyList(),
             imageUrl = input.background.imageUrl
         ),
     )
