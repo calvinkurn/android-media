@@ -686,11 +686,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
     override fun viewAnchorTabs(componentsItems: ComponentsItem) {
-        if (!componentsItems.data.isNullOrEmpty()) {
-            if (componentsItems.id.isNotEmpty()) {
-                if (viewedAnchorTabsSet.add(componentsItems.id)) {
-                    trackAnchorTabImpression(componentsItems)
-                }
+        if (!componentsItems.data.isNullOrEmpty() && componentsItems.id.isNotEmpty()) {
+//                send analytics if not already sent
+            if (viewedAnchorTabsSet.add(componentsItems.id)) {
+                trackAnchorTabImpression(componentsItems)
             }
         }
     }

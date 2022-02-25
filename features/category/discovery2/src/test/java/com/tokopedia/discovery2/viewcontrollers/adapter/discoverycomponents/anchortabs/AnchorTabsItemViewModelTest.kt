@@ -51,91 +51,142 @@ class AnchorTabsItemViewModelTest {
 
     @Test
     fun `test for Image Url`() {
+        var viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         every { componentsItem.data } returns null
         assert(viewModel.getImageUrl().isEmpty())
 
         val list = arrayListOf<DataItem>()
         every { componentsItem.data } returns list
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getImageUrl().isEmpty())
 
         list.add(dataItem)
         every { dataItem.imageUrlMobile } returns null
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getImageUrl().isEmpty())
 
         every { dataItem.imageUrlMobile } returns ""
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getImageUrl().isEmpty())
 
         every { dataItem.imageUrlMobile } returns "url"
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getImageUrl().isNotEmpty())
         assert(viewModel.getImageUrl() == "url")
     }
 
     @Test
     fun `test for title`() {
+        var viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         every { componentsItem.data } returns null
         assert(viewModel.getTitle().isEmpty())
 
         val list = arrayListOf<DataItem>()
         every { componentsItem.data } returns list
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getTitle().isEmpty())
 
         list.add(dataItem)
         every { dataItem.name } returns null
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getTitle().isEmpty())
 
         every { dataItem.name } returns ""
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getTitle().isEmpty())
 
         every { dataItem.name } returns "title"
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getTitle().isNotEmpty())
         assert(viewModel.getTitle() == "title")
     }
 
     @Test
     fun `test for sectionId`() {
+        var viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         every { componentsItem.data } returns null
         assert(viewModel.getSectionID().isEmpty())
 
         val list = arrayListOf<DataItem>()
         every { componentsItem.data } returns list
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getSectionID().isEmpty())
 
         list.add(dataItem)
         every { dataItem.targetSectionID } returns null
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getSectionID().isEmpty())
 
         every { dataItem.targetSectionID } returns ""
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getSectionID().isEmpty())
 
         every { dataItem.targetSectionID } returns "9"
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         assert(viewModel.getSectionID().isNotEmpty())
         assert(viewModel.getSectionID() == "9")
     }
 
     @Test
     fun `test for checking if this tab is the selected tab`() {
+        var viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
         viewModel.anchorTabsUseCase = useCase
         every { useCase.selectedId } returns "10"
 
         every { componentsItem.data } returns null
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+        viewModel.anchorTabsUseCase = useCase
         assert(!viewModel.isSelected())
 
         val list = arrayListOf<DataItem>()
         every { componentsItem.data } returns list
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+        viewModel.anchorTabsUseCase = useCase
         assert(!viewModel.isSelected())
 
         list.add(dataItem)
         every { dataItem.targetSectionID } returns null
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+        viewModel.anchorTabsUseCase = useCase
         assert(!viewModel.isSelected())
 
         every { dataItem.targetSectionID } returns ""
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+        viewModel.anchorTabsUseCase = useCase
         assert(!viewModel.isSelected())
 
         every { dataItem.targetSectionID } returns "9"
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+        viewModel.anchorTabsUseCase = useCase
         assert(!viewModel.isSelected())
 
         every { dataItem.targetSectionID } returns "10"
+        viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+        viewModel.anchorTabsUseCase = useCase
         assert(viewModel.isSelected())
+    }
+
+    @Test
+    fun `test for check if we shouldShowImageUrl`(){
+
+        val list = arrayListOf<DataItem>()
+        every { componentsItem.data } returns list
+        list.add(dataItem)
+        every { dataItem.imageUrlMobile } returns "url"
+        var viewModel = spyk(AnchorTabsItemViewModel(application, componentsItem, 99))
+
+        assert(viewModel.getImageURLForView(isHorizontalTab = false,shouldShowIcon = false).isEmpty())
+        assert(viewModel.getImageURLForView(isHorizontalTab = true,shouldShowIcon = false) == "url")
+        assert(viewModel.getImageURLForView(isHorizontalTab = false,shouldShowIcon = true) == "url")
+        assert(viewModel.getImageURLForView(isHorizontalTab = true,shouldShowIcon = true) == "url")
+
+        every { dataItem.imageUrlMobile } returns ""
+
+        assert(viewModel.getImageURLForView(isHorizontalTab = false,shouldShowIcon = false).isEmpty())
+        assert(viewModel.getImageURLForView(isHorizontalTab = true,shouldShowIcon = false).isEmpty())
+        assert(viewModel.getImageURLForView(isHorizontalTab = false,shouldShowIcon = true).isEmpty())
+        assert(viewModel.getImageURLForView(isHorizontalTab = true,shouldShowIcon = true).isEmpty())
+
     }
 
     @Test

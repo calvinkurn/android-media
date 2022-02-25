@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anc
 
 import android.app.Application
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.AnchorTabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -15,6 +16,11 @@ class AnchorTabsItemViewModel(
 
     @Inject
     lateinit var anchorTabsUseCase: AnchorTabsUseCase
+    private var dataItem: DataItem? = null
+
+    init {
+        dataItem = components.data?.firstOrNull()
+    }
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -22,19 +28,25 @@ class AnchorTabsItemViewModel(
     }
 
     fun getTitle(): String {
-        return components.data?.firstOrNull()?.name ?: ""
+        return dataItem?.name ?: ""
     }
 
     fun getImageUrl(): String {
-        return components.data?.firstOrNull()?.imageUrlMobile ?: ""
+        return dataItem?.imageUrlMobile ?: ""
     }
 
     fun isSelected(): Boolean {
-        return (components.data?.firstOrNull()?.targetSectionID == anchorTabsUseCase.selectedId)
+        return (dataItem?.targetSectionID == anchorTabsUseCase.selectedId)
     }
 
     fun getSectionID(): String {
-        return components.data?.firstOrNull()?.targetSectionID ?: ""
+        return dataItem?.targetSectionID ?: ""
+    }
+
+    fun getImageURLForView(isHorizontalTab: Boolean, shouldShowIcon: Boolean):String {
+        return if(isHorizontalTab || shouldShowIcon)
+            getImageUrl()
+        else ""
     }
 
     fun parentPosition(): Int {

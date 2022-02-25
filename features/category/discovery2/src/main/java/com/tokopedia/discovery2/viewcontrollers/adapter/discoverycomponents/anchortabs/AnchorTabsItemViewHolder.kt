@@ -176,16 +176,12 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    private fun setupImage(){
-        if(horizontalTab || shouldShowIcons) {
-            val imageUrl = viewModel.getImageUrl()
-            if (imageUrl.isNotEmpty()) {
-                anchorImage.show()
-                anchorImage.loadImage(imageUrl)
-            } else {
-                anchorImage.hide()
-            }
-        }else{
+    private fun setupImage() {
+        val imageUrl = viewModel.getImageURLForView(horizontalTab, shouldShowIcons)
+        if (imageUrl.isNotEmpty()) {
+            anchorImage.show()
+            anchorImage.loadImage(imageUrl)
+        } else {
             anchorImage.hide()
         }
     }

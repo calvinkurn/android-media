@@ -29,11 +29,14 @@ class HeaderItemDecoration(
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
 
-//        val topChild = parent.getChildAt(0) ?: return
-//Todo:: could add fallback mechanism as TopChild.
-        var topChildPosition = (parent.layoutManager as? StaggeredGridLayoutManager)?.findFirstVisibleItemPositions(null)?.get(0)  ?: return
-//        var topChildPosition = parent.getChildAdapterPosition(topChild)
-//        topChildPosition -= 1
+        val firstItem =
+            (parent.layoutManager as? StaggeredGridLayoutManager)?.findFirstVisibleItemPositions(
+                null
+            )?.first()
+        val topChildPosition = if (firstItem != null) firstItem else {
+            val topChild = parent.getChildAt(0) ?: return
+            parent.getChildAdapterPosition(topChild)
+        }
 
         if (topChildPosition <= RecyclerView.NO_POSITION) {
             return

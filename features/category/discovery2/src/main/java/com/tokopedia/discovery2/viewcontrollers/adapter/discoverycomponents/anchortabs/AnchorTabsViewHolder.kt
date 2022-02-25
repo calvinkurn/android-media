@@ -19,6 +19,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.Toaster
 
+const val MILLI_SECONDS_PER_INCH = 100f
+const val DELAY_FOR_DEBOUNCE = 200L
 
 class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -46,8 +48,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
             return if (displayMetrics != null) {
-//                Todo:: convert to constant
-                return 100f/displayMetrics.densityDpi
+                return MILLI_SECONDS_PER_INCH/displayMetrics.densityDpi
             } else
                 super.calculateSpeedPerPixel(displayMetrics)
 
@@ -121,7 +122,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
                 smoothScroller.targetPosition = viewModel.selectedSectionPos
                 linearLayoutManager.startSmoothScroll(smoothScroller)
             }
-        },200)
+        }, DELAY_FOR_DEBOUNCE)
     }
 
 }
