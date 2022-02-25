@@ -56,5 +56,4 @@ class ShopSetOperationalHoursViewModel @Inject constructor(
             _setShopOperationalHoursData.postValue(Fail(it))
         }
     }
-
 }
