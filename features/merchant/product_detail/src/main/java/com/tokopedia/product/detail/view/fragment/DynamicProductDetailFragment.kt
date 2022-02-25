@@ -1859,7 +1859,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             onSuccessGetDataP2(it, boeData, ratesData)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
-                    isSuccess = it.shopInfo.shopCore.shopID.isEmpty()
+                    isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
             stickyLoginView?.loadContent()
         }
