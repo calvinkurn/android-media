@@ -998,7 +998,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shipping = orderSummaryPageViewModel.orderShipment.value
         val promoSelectedAfterApplied = promoSelected.copy(isApplied = true)
 
-        assertEquals(promoSelectedAfterApplied, shipping.logisticPromoViewModel)
+        assertEquals(promoSelected, shipping.logisticPromoViewModel)
         assertEquals(promoSelectedAfterApplied, shipping.shippingRecommendationData?.listLogisticPromo?.find { it.isApplied })
         assertEquals(null, shipping.logisticPromoTickerMessage)
 
