@@ -50,7 +50,6 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
 
             // get shop info
             val getShopInfo = asyncCatchError(dispatchers.io, block = { executeGetShopCloseInfo(shopId) }) {
-                _shopSettingsOperationalHoursListUiModel.postValue(Fail(it))
                 null
             }
 
@@ -86,14 +85,16 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
                     closeNote = closeNote
             )
             val updateScheduleResponse: String = updateShopScheduleUseCase.getData(requestParams)
-            when (action) {
-                ShopScheduleActionDef.CLOSED -> _shopInfoCloseSchedule.postValue(Success(updateScheduleResponse))
-                ShopScheduleActionDef.ABORT -> _shopInfoAbortSchedule.postValue(Success(updateScheduleResponse))
+            if (action == ShopScheduleActionDef.CLOSED) {
+                _shopInfoCloseSchedule.postValue(Success(updateScheduleResponse))
+            } else {
+                _shopInfoAbortSchedule.postValue(Success(updateScheduleResponse))
             }
         }) {
-            when (action) {
-                ShopScheduleActionDef.CLOSED -> _shopInfoCloseSchedule.postValue(Fail(it))
-                ShopScheduleActionDef.ABORT -> _shopInfoAbortSchedule.postValue(Fail(it))
+            if (action == ShopScheduleActionDef.CLOSED) {
+                _shopInfoCloseSchedule.postValue(Fail(it))
+            } else {
+                _shopInfoAbortSchedule.postValue(Fail(it))
             }
         }
     }
