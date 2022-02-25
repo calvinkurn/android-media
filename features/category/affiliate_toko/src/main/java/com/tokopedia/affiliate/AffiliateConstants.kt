@@ -58,12 +58,30 @@ val APP_LINK_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkC
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
-const val AFFILIATE_INSTAGRAM_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-]+"
+const val AFFILIATE_INSTAGRAM_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-_@.]+"
 
-const val AFFILIATE_YT_REGEX = "((?:http|https):\\/\\/)?(www\\.)?youtube\\.com\\/(channel|user)\\/[\\w-]+"
+const val AFFILIATE_YT_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(youtube\\.com)\\/((user|channel|c|id)\\/)?[\\w-_@.]+"
 
-const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?(vt\\.tiktok\\.com)\\/[\\w-]+"
+const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?((www|vt).)?(tiktok\\.com)\\/[\\w-_@.]+"
 
-const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-]+"
+const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-_@.]+"
 
 const val COACHMARK_TAG = "affiliate_coachmark_onboarding"
+
+const val TRANSACTION_TYPE_DEPOSIT = "TRANSACTION_TYPE_DEPOSIT"
+
+const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"
+
+const val TIME_ZONE = "Asia/Jakarta"
+
+const val PATTERN = "dd MMM yyyy"
+
+const val HOUR_PATTERN = "HH:00"
+
+const val TWO = 2
+
+const val THIRTY_THREE = 33
+
+const val SIX = 6
+
+const val TWENTY_NINE = 29

@@ -195,7 +195,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         }
 
         (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("Lainnya",null,"others", 0,sheetType,
-                "Contoh: yourwebiste.com",false, isChecked = false,isLinkGenerationEnabled))
+                "Contoh: yourwebsite.com",false, isChecked = false,isLinkGenerationEnabled))
         setSelectedCheckBox()
     }
 

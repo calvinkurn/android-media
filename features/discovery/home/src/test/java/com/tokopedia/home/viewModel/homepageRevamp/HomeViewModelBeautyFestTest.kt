@@ -48,9 +48,9 @@ class HomeViewModelBeautyFestTest {
             getHomeUseCase = getHomeUseCase,
             homeBeautyFestUseCase = homeBeautyFestUseCase
         )
-        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(homeViewModel.homeDataModel.list)
+        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(homeViewModel.homeDataModel)
 
-        homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
+        homeViewModel.getBeautyFest(homeViewModel.homeDataModel)
 
         val beautyFestEvent = homeViewModel.beautyFestLiveData.value
         Assert.assertEquals(beautyFestEvent, HomeRevampFragment.BEAUTY_FEST_TRUE)
@@ -80,9 +80,9 @@ class HomeViewModelBeautyFestTest {
             getHomeUseCase = getHomeUseCase,
             homeBeautyFestUseCase = homeBeautyFestUseCase
         )
-        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(homeViewModel.homeDataModel.list)
+        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(homeViewModel.homeDataModel)
 
-        homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
+        homeViewModel.getBeautyFest(homeViewModel.homeDataModel)
 
         val beautyFestEvent = homeViewModel.beautyFestLiveData.value
         Assert.assertEquals(beautyFestEvent, HomeRevampFragment.BEAUTY_FEST_FALSE)
@@ -112,9 +112,9 @@ class HomeViewModelBeautyFestTest {
             getHomeUseCase = getHomeUseCase,
             homeBeautyFestUseCase = homeBeautyFestUseCase
         )
-        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(homeViewModel.homeDataModel.list)
+        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(homeViewModel.homeDataModel)
 
-        homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
+        homeViewModel.getBeautyFest(homeViewModel.homeDataModel)
 
         val beautyFestEvent = homeViewModel.beautyFestLiveData.value
         Assert.assertEquals(beautyFestEvent, HomeRevampFragment.BEAUTY_FEST_NOT_SET)

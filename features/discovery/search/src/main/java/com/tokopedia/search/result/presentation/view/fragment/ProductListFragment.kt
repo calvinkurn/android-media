@@ -30,7 +30,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -55,8 +54,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.generateOptionFromUniqueId
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
@@ -68,6 +65,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
+import com.tokopedia.productcard.video.ProductVideoAutoplay
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -86,16 +84,12 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter.OnItemChangeView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
@@ -103,8 +97,6 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -116,22 +108,22 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
-import com.tokopedia.topads.sdk.base.Config
-import com.tokopedia.topads.sdk.base.Endpoint
-import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
@@ -144,7 +136,6 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -154,11 +145,9 @@ class ProductListFragment: BaseDaggerFragment(),
     TickerListener,
     SuggestionListener,
     BannerAdsListener,
-    EmptyStateListener,
     RecommendationListener,
     InspirationCarouselListener,
     BroadMatchListener,
-    InspirationCardListener,
     QuickFilterElevation,
     SortFilterBottomSheet.Callback,
     SearchNavigationClickListener,
@@ -166,7 +155,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    InspirationSizeOptionListener {
+    ProductListParameterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -214,7 +203,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private var productListAdapter: ProductListAdapter? = null
     private var trackingQueue: TrackingQueue? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private var topAdsConfig: Config? = null
     private var searchParameter: SearchParameter? = null
     private val filterController = FilterController()
     private var irisSession: IrisSession? = null
@@ -233,6 +221,10 @@ class ProductListFragment: BaseDaggerFragment(),
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
+
+    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
+        ProductVideoAutoplay(remoteConfig)
+    }
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -303,6 +295,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
+        initProductVideoAutoplayLifecycleObserver()
 
         presenter?.onViewCreated()
     }
@@ -318,6 +311,10 @@ class ProductListFragment: BaseDaggerFragment(),
         if (searchParameter.get(SearchApiConst.OB).isEmpty())
             searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
     }
+
+    private fun initProductVideoAutoplayLifecycleObserver() {
+        productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
+    }
     //endregion
 
     //region View Related stuff (recycler view, layout managers, load more, shimmering, etc
@@ -325,8 +322,6 @@ class ProductListFragment: BaseDaggerFragment(),
         initRecyclerView(view)
         initLayoutManager()
         initSwipeToRefresh(view)
-        initTopAdsConfig()
-        initTopAdsParams()
         initAdapter()
         initLoadMoreListener()
         initSearchQuickSortFilter(view)
@@ -361,30 +356,12 @@ class ProductListFragment: BaseDaggerFragment(),
         reloadData()
     }
 
-    private fun initTopAdsConfig() {
-        topAdsConfig = Config.Builder()
-                .setSessionId(getRegistrationId())
-                .setUserId(getUserId())
-                .setEndpoint(Endpoint.PRODUCT)
-                .build()
-    }
-
-    private fun initTopAdsParams() {
-        val adsParams = TopAdsParams()
-        adsParams.param[TopAdsParams.KEY_SRC] = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
-        adsParams.param[TopAdsParams.KEY_QUERY] = queryKey
-        adsParams.param[TopAdsParams.KEY_USER_ID] = getUserId()
-
-        getSearchParameter()?.let {
-            it.cleanUpNullValuesInMap()
-            adsParams.param.putAll(it.getSearchParameterHashMap())
-        }
-
-        topAdsConfig?.topAdsParams = adsParams
-    }
-
     private fun initAdapter() {
-        val topAdsConfig = topAdsConfig ?: return
+        val inspirationWidgetListenerDelegate = InspirationWidgetListenerDelegate(
+            activity,
+            filterController,
+            this,
+        )
 
         val productListTypeFactory = ProductListTypeFactoryImpl(
             productListener = this,
@@ -392,19 +369,24 @@ class ProductListFragment: BaseDaggerFragment(),
             suggestionListener = this,
             globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity),
             bannerAdsListener = this,
-            emptyStateListener = this,
+            emptyStateListener = EmptyStateListenerDelegate(
+                activity,
+                filterController,
+                redirectionListener,
+                this,
+            ),
             recommendationListener = this,
             inspirationCarouselListener = this,
             broadMatchListener = this,
-            inspirationCardListener = this,
+            inspirationCardListener = inspirationWidgetListenerDelegate,
             searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
             searchNavigationListener = this,
             topAdsImageViewListener = this,
             chooseAddressListener = this,
             bannerListener = this,
             lastFilterListener = this,
-            topAdsConfig = topAdsConfig,
-            inspirationSizeOptionListener = this,
+            inspirationSizeListener = inspirationWidgetListenerDelegate,
+            violationListener = ViolationListenerDelegate(activity)
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -452,6 +434,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
+            productVideoAutoplay.setUp(this)
         }
     }
 
@@ -613,10 +596,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun addRecommendationList(list: List<Visitable<*>>) {
         productListAdapter?.appendItems(list)
-    }
-
-    override fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView) {
-        productListAdapter?.showEmptyState(globalNavDataView, emptySearchProductDataView)
     }
 
     override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
@@ -1019,14 +998,14 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     //region Quick Filter
-    override fun isQuickFilterSelected(option: Option?): Boolean {
+    override fun isFilterSelected(option: Option?): Boolean {
         option ?: return false
 
         return filterController.getFilterViewState(option.uniqueId)
     }
 
     override fun onQuickFilterSelected(filter: Filter, option: Option) {
-        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        val isQuickFilterSelectedReversed = !isFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
         val queryParams = filterController.getParameter().addFilterOrigin()
@@ -1050,7 +1029,7 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId())
     }
 
-    override fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
+    override fun initFilterController(quickFilterList: List<Filter>) {
         filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), quickFilterList)
     }
 
@@ -1104,69 +1083,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     //endregion
 
-    //region Empty state related (also has remove filter functionality)
-    override fun onSelectedFilterRemoved(uniqueId: String?) {
-        removeSelectedFilter(uniqueId ?: "")
-    }
-
-    private fun removeSelectedFilter(uniqueId: String) {
-        val option = generateOptionFromUniqueId(uniqueId)
-
-        removeFilterFromFilterController(option)
-        refreshSearchParameter(filterController.getParameter().addFilterOrigin())
-
-        reloadData()
-    }
-
-    private fun removeFilterFromFilterController(option: Option) {
-        val optionKey = option.key
-
-        if (Option.KEY_CATEGORY == optionKey) {
-            filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = true)
-        } else if (Option.KEY_PRICE_MIN == optionKey || Option.KEY_PRICE_MAX == optionKey) {
-            filterController.setFilter(
-                    generatePriceOption(Option.KEY_PRICE_MIN),
-                    isFilterApplied = false,
-                    isCleanUpExistingFilterWithSameKey = true
-            )
-            filterController.setFilter(
-                    generatePriceOption(Option.KEY_PRICE_MAX),
-                    isFilterApplied = false,
-                    isCleanUpExistingFilterWithSameKey = true
-            )
-        } else {
-            filterController.setFilter(option, false)
-        }
-    }
-
-    private fun generatePriceOption(priceOptionKey: String) =
-            Option().apply { key = priceOptionKey }
-
-    override fun onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearchProduct(queryKey)
-        showSearchInputView()
-    }
-
-    private fun showSearchInputView() {
-        redirectionListener?.showSearchInputView()
-    }
-
-    override fun getSelectedFilterAsOptionList(): List<Option> {
-        return getOptionListFromFilterController()
-    }
-
-    private fun getOptionListFromFilterController(): List<Option> {
-        return combinePriceFilterIfExists(
-                filterController.getActiveFilterOptionList(),
-                resources.getString(R.string.empty_state_selected_filter_price_name)
-        )
-    }
-
-    override fun onEmptySearchToGlobalSearchClicked(applink: String?) {
-        redirectionListener?.startActivityWithApplink(applink)
-    }
-    //endregion
-
     //region banned products
     override fun trackEventImpressionBannedProducts(isEmptySearch: Boolean) {
         if (isEmptySearch)
@@ -1183,9 +1099,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.clearData()
         productListAdapter?.clearData()
+        productVideoAutoplay.stopVideoAutoplay()
 
         hideSearchSortFilter()
-        initTopAdsParams()
 
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE)
         presenter?.loadData(searchParameter.getSearchParameterMap())
@@ -1303,9 +1219,7 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
-    override fun getUserId() = presenter?.userId ?: "0"
-
-    override fun getRegistrationId() = presenter?.deviceId ?: ""
+    private fun getUserId() = presenter?.userId ?: "0"
 
     override val abTestRemoteConfig: RemoteConfig?
         get() = RemoteConfigInstance.getInstance().abTestPlatform
@@ -1371,12 +1285,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
         } ?: ""
 
-    private fun Map<String, String>.addFilterOrigin(): Map<String, String> =
-        toMutableMap().also {
-            it[SearchApiConst.ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-        }
-
-    private fun refreshSearchParameter(queryParams: Map<String, String>) {
+    override fun refreshSearchParameter(queryParams: Map<String, String>) {
         searchParameter?.resetParams(queryParams)
         searchNavigationListener?.updateSearchParameter(searchParameter)
         filterController.refreshMapParameter(queryParams)
@@ -1890,68 +1799,6 @@ class ProductListFragment: BaseDaggerFragment(),
             broadMatchDataView.keyword,
             broadMatchDataView.dimension90,
         )
-    }
-    //endregion
-
-    //region Inspiration Cards / Inspiration Widget
-    override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {
-        trackEventClickInspirationCardOption(optionData)
-
-        redirectionStartActivity(optionData.applink, optionData.url)
-    }
-
-    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option) {
-        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
-        filterController.setFilter(option, isQuickFilterSelectedReversed)
-
-        refreshSearchParameter(filterController.getParameter())
-
-        reloadData()
-
-        if (isQuickFilterSelectedReversed) {
-            sizeOptionDataView.click(TrackApp.getInstance().gtm)
-        }
-    }
-
-    override fun initSizeOptionFilter(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
-        if (inspirationSizeDataViewList.isEmpty()) return
-
-        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
-
-        filterController.appendFilterList(
-            searchParameterMap,
-            inspirationSizeDataViewList.map { dataView ->
-                Filter(
-                    options = dataView.data.optionSizeData.map { optionSize ->
-                        Option(
-                            key = optionSize.filters.key,
-                            value = optionSize.filters.value,
-                            name = optionSize.filters.name
-                        )
-                    }
-                )
-            }
-        )
-    }
-
-    override fun setSelectedSizeOption(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
-        inspirationSizeDataViewList.forEach { element ->
-            element.data.optionSizeData.forEach {
-                val option = Option(
-                    key = it.filters.key,
-                    value = it.filters.value,
-                    name = it.filters.name,
-                    inputState = true.toString(),
-                )
-
-                it.isSelected = isQuickFilterSelected(option)
-            }
-        }
-    }
-
-    private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {
-        val label = option.inspirationCardType + " - " + queryKey + " - " + option.text
-        SearchTracking.trackEventClickInspirationCardOption(label)
     }
     //endregion
 

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;

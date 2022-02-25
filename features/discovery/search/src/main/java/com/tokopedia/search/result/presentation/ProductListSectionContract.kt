@@ -15,14 +15,12 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -32,7 +30,6 @@ interface ProductListSectionContract {
         fun showNetworkError(startRow: Int, throwable: Throwable?)
         val filterParamString: String
         val queryKey: String
-        fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
@@ -81,11 +78,11 @@ interface ProductListSectionContract {
         fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
         fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
-        fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
+        fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
-        fun isQuickFilterSelected(option: Option?): Boolean
+        fun isFilterSelected(option: Option?): Boolean
         fun setProductCount(productCountText: String?)
         val className: String
         fun sendTrackingOpenFilterPage()
@@ -122,8 +119,6 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
-        fun initSizeOptionFilter(dataView: List<InspirationSizeDataView>)
-        fun setSelectedSizeOption(dataView: List<InspirationSizeDataView>)
     }
 
     interface Presenter : CustomerPresenter<View> {

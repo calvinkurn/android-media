@@ -62,12 +62,26 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         initObserver()
         remoteConfig = FirebaseRemoteConfigImpl(applicationContext)
 
-        intent?.extras?.let {
-            inactivePhoneUserDataModel = InactivePhoneUserDataModel(
-                oldPhoneNumber = it.getString(ApplinkConstInternalGlobal.PARAM_PHONE)?.reformatPhoneNumber().orEmpty(),
-                email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
-            )
+        intent?.let {
+            when {
+                it.data != null -> {
+                    inactivePhoneUserDataModel = InactivePhoneUserDataModel(
+                            oldPhoneNumber = it.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PHONE)?.reformatPhoneNumber().orEmpty(),
+                            email = it.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
+                    )
+                }
+                it.extras != null -> {
+                    inactivePhoneUserDataModel = InactivePhoneUserDataModel(
+                            oldPhoneNumber = it.extras?.getString(ApplinkConstInternalGlobal.PARAM_PHONE)?.reformatPhoneNumber().orEmpty(),
+                            email = it.extras?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
+                    )
+                }
+                else -> {
+                    onError(MessageErrorException(INVALID_PARAM))
+                }
+            }
         }
+
 
         if (isVersionValid()) {
             inactivePhoneUserDataModel?.let {
@@ -237,6 +251,8 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
     companion object {
         private const val REQUEST_CODE_CHOOSE_ACCOUNT = 100
+
+        private const val INVALID_PARAM = "Invalid parameters"
 
         private const val APPLINK_PLAY_STORE = "market://details?id="
         private const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id="

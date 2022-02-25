@@ -15,6 +15,8 @@ import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
+import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -47,6 +49,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
+    private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val walletPref: WalletPref,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -93,6 +96,10 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _safeModeStatus = MutableLiveData<Boolean>()
     val safeModeStatus: LiveData<Boolean> get() = _safeModeStatus
 
+    private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintResult>>()
+    val checkFingerprintStatus: LiveData<Result<CheckFingerprintResult>>
+        get() = mutableCheckFingerprintStatus
+
     var internalBuyerData: UserAccountDataModel? = null
 
     fun refreshPhoneNo() {
@@ -105,6 +112,19 @@ class HomeAccountUserViewModel @Inject constructor(
             }
         }, onError = {
             _phoneNo.value = ""
+        })
+    }
+
+    fun getFingerprintStatus() {
+        launchCatchError(block = {
+            val result = checkFingerprintToggleStatusUseCase(userSession.userId).data
+            if(result.isSuccess && result.errorMessage.isEmpty()) {
+                mutableCheckFingerprintStatus.postValue(Success(result))
+            } else {
+                mutableCheckFingerprintStatus.value = Fail(Throwable("Gagal"))
+            }
+        }, onError = {
+            mutableCheckFingerprintStatus.value = Fail(it)
         })
     }
 
@@ -216,23 +236,23 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getBalanceAndPoint(walletId: String) {
+    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean) {
         launchCatchError(block = {
             when (walletId) {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     val result = getTokopointsBalanceAndPointUseCase(Unit)
-                    setBalanceAndPointValue(result.data, walletId)
+                    setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 AccountConstants.WALLET.SALDO -> {
                     val result = getSaldoBalanceUseCase(Unit)
-                    setBalanceAndPointValue(result.data, walletId)
+                    setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                    setBalanceAndPointValue(result.data, walletId)
+                    setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 else -> {
-                    getOtherBalanceAndPoint(walletId)
+                    getOtherBalanceAndPoint(walletId, hideTitle)
                 }
             }
         }, onError = {
@@ -240,7 +260,10 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getOtherBalanceAndPoint(walletId: String) {
+    /**
+     * same API
+     */
+    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitle: Boolean) {
         val result = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
@@ -255,11 +278,12 @@ class HomeAccountUserViewModel @Inject constructor(
                 BalanceAndPointDataModel()
             }
         }
-        setBalanceAndPointValue(result.data, walletId)
+        setBalanceAndPointValue(result.data, walletId, hideTitle)
     }
 
-    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String, hideTitle: Boolean) {
         if (data.id.isNotEmpty()) {
+            data.hideTitle = hideTitle
             _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)

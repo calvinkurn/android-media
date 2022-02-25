@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.repurchase.presentation.uimodel
 
-import TokoNowDateFilterBottomSheet.Companion.ALL_DATE_TRANSACTION_POSITION
 import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.ALL_DATE_TRANSACTION_POSITION
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseTypeFactory
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify

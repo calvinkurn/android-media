@@ -32,7 +32,10 @@ import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.NAME_EDIT
 import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_CREATE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
+import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION_BID_SETTINGS
 import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
 import com.tokopedia.topads.common.data.model.KeywordsItem
@@ -455,8 +458,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
         } else {
-            bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
-            bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, stepperModel?.finalBidPerClick?.toFloat()))
             dataMap[BID_TYPE] =  bidTypeData
         }
 
@@ -465,8 +468,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     }
 
-    private fun getKeywordData() : HashMap<String, Any?> {
-
+    private fun getKeywordData(): HashMap<String, Any?> {
         val dataKeyword = HashMap<String, Any?>()
         keywordsList.clear()
 
@@ -476,6 +478,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
         }
         dataKeyword[POSITIVE_CREATE] = keywordsList
+        stepperModel?.suggestedBidPerClick?.toFloat()?.let {
+            if (it > 0.0f) {
+                val suggestionBidSettings = listOf(
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, it),
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, it)
+                )
+                dataKeyword[SUGGESTION_BID_SETTINGS] = suggestionBidSettings
+            }
+        }
         return dataKeyword
     }
 
@@ -492,7 +503,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun addProducts(index: Int) {
-        var id = stepperModel?.selectedProductIds?.get(index).toString()
+        val id = stepperModel?.selectedProductIds?.get(index).toString()
         adsItemsList.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(id))
     }
 

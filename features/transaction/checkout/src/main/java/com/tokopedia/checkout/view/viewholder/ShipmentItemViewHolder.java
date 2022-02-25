@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,6 +61,7 @@ import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
@@ -109,6 +111,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout layoutWarning;
     private Typography tvShopName;
     private LinearLayout layoutWarningAndError;
+    private Ticker tickerWarningCloseable;
 
     // Custom Error Ticker
     private CardUnify customTickerError;
@@ -248,6 +251,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_error);
         tickerError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.ticker_error);
         layoutWarning = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_warning);
+        tickerWarningCloseable = itemView.findViewById(R.id.ticker_warning_closable);
         layoutWarning.setVisibility(View.GONE);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
@@ -472,6 +476,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
+        renderWarningCloseable(shipmentCartItemModel);
     }
 
     private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
@@ -1779,6 +1784,28 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             textInputLayoutShipperPhone.getTextFieldInput().setClickable(true);
             textInputLayoutShipperPhone.getTextFieldInput().setFocusable(true);
             textInputLayoutShipperPhone.getTextFieldInput().setFocusableInTouchMode(true);
+        }
+    }
+
+    private void renderWarningCloseable(ShipmentCartItemModel shipmentCartItemModel) {
+        if (!shipmentCartItemModel.isError() && !TextUtils.isEmpty(shipmentCartItemModel.getShopTicker())) {
+            tickerWarningCloseable.setTickerTitle(shipmentCartItemModel.getShopTickerTitle());
+            tickerWarningCloseable.setHtmlDescription(shipmentCartItemModel.getShopTicker());
+            tickerWarningCloseable.setVisibility(View.VISIBLE);
+            tickerWarningCloseable.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NonNull CharSequence charSequence) {
+                    // no op //
+                }
+
+                @Override
+                public void onDismiss() {
+                    shipmentCartItemModel.setShopTicker("");
+                    tickerWarningCloseable.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            tickerWarningCloseable.setVisibility(View.GONE);
         }
     }
 

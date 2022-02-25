@@ -6,6 +6,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.*
@@ -135,7 +136,12 @@ open class ShopScoreMapper @Inject constructor(
         } else {
             shopInfoPeriodUiModel.shopAge
         } ?: 0
-        val isNewSeller = shopInfoPeriodUiModel.isNewSeller
+
+        val isNewSeller = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
+            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isNewSeller.orFalse()
+        } else {
+            shopInfoPeriodUiModel.isNewSeller
+        }
 
         val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
 

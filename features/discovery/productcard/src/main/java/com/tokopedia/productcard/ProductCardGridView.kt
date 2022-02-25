@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -18,6 +19,8 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -27,6 +30,9 @@ import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
+    private val video: ProductCardVideo by lazy{
+        ProductCardVideo(this)
+    }
 
     constructor(context: Context): super(context) {
         init()
@@ -82,24 +88,27 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
+
         renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+        imageThreeDots?.shouldShowWithAction(productCardModel.hasThreeDots) {
+            constraintLayoutProductCard?.post {
+                imageThreeDots?.expandTouchArea(
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                )
+            }
+        }
 
         cartExtension.setProductModel(productCardModel)
-
-        constraintLayoutProductCard?.post {
-            imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            )
-        }
+        video.setProductModel(productCardModel)
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -162,6 +171,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
         cartExtension.clear()
+        video.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
@@ -170,4 +180,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getShopBadgeView(): View? = imageShopBadge
 
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getProductCardVideo(): ProductCardVideo {
+        return video
+    }
 }
