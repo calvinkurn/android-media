@@ -65,7 +65,8 @@ class ManageProductActivity : BaseSimpleActivity() {
         if(resultCode == Activity.RESULT_OK) {
             if (requestCode == CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
-                fragment?.addProducts(selectedProducts)
+                val normalizedProductUiModel = fragment?.resetProductUiModelState(selectedProducts)?: listOf()
+                fragment?.addProducts(normalizedProductUiModel)
             }
         }
     }

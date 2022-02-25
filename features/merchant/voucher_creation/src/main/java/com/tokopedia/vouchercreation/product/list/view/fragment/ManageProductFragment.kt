@@ -123,24 +123,25 @@ class ManageProductFragment : BaseDaggerFragment(),
         observeLiveData()
 
         val shopId = userSession.shopId
+
         val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
         viewModel.setCouponSettings(couponSettings)
+
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
         val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
 
-        // always render ui model rather than product ids
-        if (!selectedProducts.isNullOrEmpty()) {
-            viewModel.setSetSelectedProducts(selectedProducts.toList())
-            val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
-            adapter?.setProductList(updatedProductList)
+        if (!selectedProductIds.isNullOrEmpty()) {
+            viewModel.setSelectedProductIds(selectedProductIds)
+            val selectedParentProductIds = viewModel.getSelectedParentProductIds()
+            viewModel.getProductList(
+                    shopId = shopId,
+                    selectedProductIds = selectedParentProductIds
+            )
         } else {
-            if (!selectedProductIds.isNullOrEmpty()) {
-                viewModel.setSelectedProductIds(selectedProductIds)
-                val selectedParentProductIds = viewModel.getSelectedParentProductIds()
-                viewModel.getProductList(
-                        shopId = shopId,
-                        selectedProductIds = selectedParentProductIds
-                )
+            if (!selectedProducts.isNullOrEmpty()) {
+                viewModel.setSetSelectedProducts(selectedProducts.toList())
+                val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
+                adapter?.setProductList(resetProductUiModelState(updatedProductList))
             }
         }
     }
@@ -268,6 +269,9 @@ class ManageProductFragment : BaseDaggerFragment(),
                     // set product variant selection
                     val selectedProductIds = viewModel.getSelectedProductIds()
                     val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds)
+
+                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
+                    finalProductList.addAll(newAddedProducts?: listOf())
                     adapter?.setProductList(finalProductList)
                 }
                 is Fail -> {
@@ -312,6 +316,10 @@ class ManageProductFragment : BaseDaggerFragment(),
         }
         this.activity?.setResult(Activity.RESULT_OK, resultIntent)
         this.activity?.finish()
+    }
+
+    fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
+        return viewModel.resetProductUiModelState(selectedProducts)
     }
 
     fun addProducts(selectedProducts: List<ProductUiModel>) {

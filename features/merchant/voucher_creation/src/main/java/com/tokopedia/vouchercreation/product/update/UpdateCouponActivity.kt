@@ -160,6 +160,7 @@ class UpdateCouponActivity : AppCompatActivity() {
             } else if (requestCode == CreateCouponProductActivity.REQUEST_CODE_MANAGE_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.setProducts(selectedProducts)
+                couponPreviewFragment.setSelectedProductIds(mutableListOf())
             }
         }
     }

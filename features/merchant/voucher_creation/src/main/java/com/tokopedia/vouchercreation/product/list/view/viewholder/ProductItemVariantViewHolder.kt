@@ -38,9 +38,13 @@ class ProductItemVariantViewHolder(
         binding.tpgProductPrice.text = productVariant.priceTxt
         binding.tpgSoldAndStock.text = productVariant.soldNStock
         if (productVariant.isError) {
-            binding.tpgVariantError.text = productVariant.errorMessage
+            binding.cbuVariantItem.isClickable = false
+            if (productVariant.errorMessage.isNotBlank()) binding.tpgVariantError.text = productVariant.errorMessage
             binding.tpgVariantError.show()
-        } else binding.tpgVariantError.hide()
+        } else {
+            binding.cbuVariantItem.isClickable = true
+            binding.tpgVariantError.hide()
+        }
         // view mode
         val isViewing = productVariant.isViewing
         if (isViewing) {
