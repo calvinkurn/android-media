@@ -243,7 +243,7 @@ class AddProductViewModel @Inject constructor(
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
             val productUiModel = mutableProductList.first {
-                it.id == validationResult.parentProductId.toString()
+                it.id == validationResult.parentProductId
             }
             productUiModel.isError = !validationResult.isEligible
             productUiModel.errorMessage = validationResult.reason
@@ -256,7 +256,7 @@ class AddProductViewModel @Inject constructor(
     private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
         return variantValidationData.map { data ->
             VariantUiModel(
-                    variantId = data.productId.toString(),
+                    variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),

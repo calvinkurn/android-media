@@ -47,7 +47,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
@@ -1709,7 +1713,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
             is CreateProductCoupon -> {
                 goToCreateProductCoupon(product)
-                // TODO: Add tracker
+                ProductManageTracking.eventClickCreateProductCoupon(userSession.shopId)
             }
         }
         productManageBottomSheet?.dismiss(childFragmentManager)
