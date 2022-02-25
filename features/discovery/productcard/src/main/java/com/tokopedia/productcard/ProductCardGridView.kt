@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
@@ -19,6 +19,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -82,6 +83,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
+
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
         renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
@@ -171,4 +174,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getShopBadgeView(): View? = imageShopBadge
 
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getProductVideoView(): ProductCardVideoView? {
+        return videoProduct
+    }
 }

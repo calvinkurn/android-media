@@ -347,6 +347,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                                 it.shopInfo.activeProduct.toLongOrZero(),
                                 it.shopInfo.createdInfo.shopCreated,
                                 it.shopRating)
+                    tickerDataResponse = it.shopInfo.tickerData
                 }
             }
 
@@ -391,6 +392,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     animatedInfos = it.merchantVoucherSummary.animatedInfos
                     isShown = it.merchantVoucherSummary.isShown
                     shopId = it.shopInfo.shopCore.shopID
+                    productIdMVC = productId
                 }
             }
 

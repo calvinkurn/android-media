@@ -46,4 +46,5 @@ data class ChannelGrid(
         val categoryPersona: String = "",
         val brandId: String = "",
         val categoryId: String = "",
-        ): ImpressHolder()
+        val param: String = ""
+): ImpressHolder()

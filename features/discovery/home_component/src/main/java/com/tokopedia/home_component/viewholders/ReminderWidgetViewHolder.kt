@@ -12,7 +12,6 @@ import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.model.ReminderState
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import io.embrace.android.embracesdk.Embrace
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -41,7 +40,6 @@ class ReminderWidgetViewHolder(
     override fun bind(element: ReminderWidgetModel) {
         if (!disableNetwork) {
             performanceMonitoring?.startTrace(performanceTraceName)
-            Embrace.getInstance().startEvent(performanceTraceName, null, false)
         }
         initView(element, itemView)
     }
@@ -57,7 +55,6 @@ class ReminderWidgetViewHolder(
                 if (!disableNetwork){
                     reminderWidgetListener?.getReminderWidgetData(element)
                     performanceMonitoring?.stopTrace()
-                    Embrace.getInstance().endEvent(performanceTraceName)
                 }
                 performanceMonitoring = null
             } else {
@@ -103,7 +100,6 @@ class ReminderWidgetViewHolder(
                 }
                 if (!disableNetwork) {
                     performanceMonitoring?.stopTrace()
-                    Embrace.getInstance().endEvent(performanceTraceName)
                 }
                 performanceMonitoring = null
             }

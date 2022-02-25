@@ -57,6 +57,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         _observableLiveSummary.value = NetworkResult.Loading
         scope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
+                delay(LIVE_STATISTICS_DELAY)
                 getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
@@ -110,5 +111,9 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         scope.cancel()
+    }
+
+    companion object {
+        private const val LIVE_STATISTICS_DELAY = 300L
     }
 }
