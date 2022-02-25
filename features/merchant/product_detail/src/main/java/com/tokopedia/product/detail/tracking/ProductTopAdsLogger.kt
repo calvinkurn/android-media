@@ -10,6 +10,8 @@ object ProductTopAdsLogger {
     const val TOPADS_PDP_HIT_DYNAMIC_SLOTTING = "topads_pdp_hit_dynamic_slotting"
     const val TOPADS_PDP_HIT_ADS_TRACKER = "topads_pdp_hit_ads_tracker"
     const val TOPADS_PDP_IS_NOT_ADS = "topads_pdp_is_not_ads"
+    const val TOPADS_PDP_BE_ERROR = "topads_recom_page_be_error"
+
     fun logServer(tag: String, reason: String = "", productId: String = "-1", queryParam: String = "-1") {
         ServerLogger.log(
             Priority.P2,

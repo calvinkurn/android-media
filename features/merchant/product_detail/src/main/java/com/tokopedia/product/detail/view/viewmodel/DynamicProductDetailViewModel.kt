@@ -66,8 +66,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
-import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
@@ -893,7 +893,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
                     } else {
                         ProductTopAdsLogger.logServer(
-                            tag = TOPADS_PDP_IS_NOT_ADS,
+                            tag = TOPADS_PDP_BE_ERROR,
                             reason = "Error code $errorCode",
                             productId = productId,
                             queryParam = queryParams

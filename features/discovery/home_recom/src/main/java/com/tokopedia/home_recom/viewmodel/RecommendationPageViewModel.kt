@@ -15,8 +15,8 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationCPMDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.util.RecomServerLogger
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_BE_ERROR
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING
-import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_IS_NOT_ADS
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED
 import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Response
@@ -215,7 +215,7 @@ open class RecommendationPageViewModel @Inject constructor(
                     }
                 } else {
                     RecomServerLogger.logServer(
-                        tag = TOPADS_RECOM_PAGE_IS_NOT_ADS,
+                        tag = TOPADS_RECOM_PAGE_BE_ERROR,
                         reason = "Error code $errorCode",
                         productId = productId,
                         queryParam = queryParam

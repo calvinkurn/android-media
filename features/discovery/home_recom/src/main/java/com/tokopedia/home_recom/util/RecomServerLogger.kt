@@ -19,6 +19,7 @@ object RecomServerLogger {
     const val TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING = "topads_recom_page_hit_dynamic_slotting"
     const val TOPADS_RECOM_PAGE_HIT_ADS_TRACKER = "topads_recom_page_hit_ads_tracker"
     const val TOPADS_RECOM_PAGE_IS_NOT_ADS = "topads_recom_page_is_not_ads"
+    const val TOPADS_RECOM_PAGE_BE_ERROR = "topads_recom_page_be_error"
 
     fun logWarning(
             type: String?,

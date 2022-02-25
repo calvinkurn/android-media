@@ -646,6 +646,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         RouteManager.route(this.context, seeMoreAppLink)
     }
 
+    override fun getProductQueryParam(): String {
+        return queryParam
+    }
+
     /**
      * Void [loadData]
      * It handling trigger load primaryProduct and recommendationList from viewModel
