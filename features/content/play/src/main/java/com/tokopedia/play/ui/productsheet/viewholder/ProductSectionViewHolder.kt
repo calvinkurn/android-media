@@ -1,6 +1,5 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
@@ -19,12 +18,13 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.Date
 import java.util.Calendar
+import java.util.Date
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -109,19 +109,7 @@ class ProductSectionViewHolder(
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
-            try {
-                    val bgArray = IntArray(background.gradients.size)
-                    background.gradients.forEachIndexed { index, s ->
-                        bgArray[index] = android.graphics.Color.parseColor(s)
-                    }
-                    if(bgArray.size > 1) {
-                        val gradient =
-                            GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
-                        itemView.background = gradient
-                    }else {
-                        itemView.setBackgroundColor(bgArray.firstOrNull() ?: 0)
-                    }
-            } catch (e: Exception) { }
+            itemView.setGradientBackground(background.gradients)
         } else {
             ivBg.loadImage(background.imageUrl)
         }
