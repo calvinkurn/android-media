@@ -449,7 +449,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.isFiltering = true
         loadInitialData()
         viewModel.setSelectedProducts(listOf())
-        val origin = viewModel.getBoundLocationId()?: viewModel.getWarehouseLocationId()
+        val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
         viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, selectedWarehouseLocation.warehouseId)
     }
 

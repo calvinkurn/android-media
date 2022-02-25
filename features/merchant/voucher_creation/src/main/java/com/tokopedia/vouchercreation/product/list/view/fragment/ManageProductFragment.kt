@@ -47,6 +47,7 @@ class ManageProductFragment : BaseDaggerFragment(),
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
         const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
+        const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selectedWarehouseId"
 
         @JvmStatic
         fun createInstance(
@@ -56,6 +57,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 couponSettings: CouponSettings?,
                 selectedProducts: ArrayList<ProductUiModel>?,
                 selectedProductIds: ArrayList<ProductId>?,
+                selectedWarehouseId: String?,
         ) = ManageProductFragment().apply {
             this.arguments = Bundle().apply {
                 putBoolean(BUNDLE_KEY_IS_VIEWING, isViewing)
@@ -64,6 +66,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID,selectedWarehouseId)
             }
         }
     }
@@ -286,6 +289,8 @@ class ManageProductFragment : BaseDaggerFragment(),
         val maxProductLimit = viewModel.getMaxProductLimit()
         val addProductIntent = Intent(requireContext(), AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                val selectedWarehouseId = arguments?.getString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
                 putInt(UpdateCouponActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(UpdateCouponActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProducts = arrayListOf<ProductUiModel>()
