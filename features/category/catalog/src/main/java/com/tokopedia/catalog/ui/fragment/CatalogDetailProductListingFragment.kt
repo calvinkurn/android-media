@@ -458,7 +458,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             catalogId,
             catalogName,
             adapterPosition,
-            userSession.userId)
+            userSession.userId,
+            "${catalogComparison.id}")
         context?.let { context ->
 //            if(!catalogComparison.appLink.isNullOrBlank()){
 //                RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
@@ -476,7 +477,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             catalogId,
             catalogName,
             adapterPosition,
-            userSession.userId)
+            userSession.userId,
+            "${model.item.id}")
     }
 
     /*********************************   WishList  ******************************/
