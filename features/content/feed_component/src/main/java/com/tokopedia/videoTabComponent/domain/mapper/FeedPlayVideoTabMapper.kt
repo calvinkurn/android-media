@@ -152,7 +152,7 @@ object FeedPlayVideoTabMapper {
                     title = item.title,
                     appLink = item.appLink,
                     startTime = PlayFeedDateTimeFormatter.formatDate(item.start_time),
-                    totalView = PlayWidgetTotalView(item.stats.view.formatted, (item.stats.view.value).toIntOrZero() > 0),
+                    totalView = PlayWidgetTotalView(item.stats.view.formatted, channelType != PlayWidgetChannelType.Upcoming),
                     promoType = PlayWidgetPromoType.getByType(
                         item.configurations.promoLabels.firstOrNull()?.type ?: "",
                         item.configurations.promoLabels.firstOrNull()?.text ?: ""

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -20,7 +19,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
-import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.*
@@ -48,7 +46,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener {
 
     private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_widget_sample_feed) }
-    private val swipeToRefresh by lazy { view?.findViewById<SwipeToRefresh>(R.id.video_tab_swipe_refresh_layout) }
+    private val swipeToRefresh by lazy { rvWidget?.findViewById<SwipeToRefresh>(R.id.video_tab_swipe_refresh_layout) }
 
     private lateinit var adapter: VideoTabAdapter
     private val playFeedVideoTabViewModel: PlayFeedVideoTabViewModel by lazy {
@@ -256,25 +254,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         reminderType: PlayWidgetReminderType,
         position: Int
     ) {
-        Toast.makeText(
-            context,
-            "onToggleReminderClicked PlayWidgetJumboView $channelId",
-            Toast.LENGTH_SHORT
-        ).show()
+        playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
+
     }
 
-    override fun onToggleReminderClicked(
-        view: PlayWidgetLargeView,
-        channelId: String,
-        reminderType: PlayWidgetReminderType,
-        position: Int
-    ) {
-        Toast.makeText(
-            context,
-            "onToggleReminderClicked PlayWidgetLargeView $channelId",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+
 
     override fun onToggleReminderClicked(
         view: PlayWidgetMediumView,
@@ -282,11 +266,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         reminderType: PlayWidgetReminderType,
         position: Int
     ) {
-        Toast.makeText(
-            context,
-            "onToggleReminderClicked PlayWidgetMediumView $channelId",
-            Toast.LENGTH_SHORT
-        ).show()
         playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
     }
 

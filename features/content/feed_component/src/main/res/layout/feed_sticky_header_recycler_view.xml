@@ -4,12 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/video_tab_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="video_tab_swipe_refresh_layout">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
     <FrameLayout
         android:id="@+id/header_recycler_view"
         android:layout_width="match_parent"

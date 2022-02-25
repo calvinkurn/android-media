@@ -15,6 +15,7 @@ import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDele
 import com.tokopedia.videoTabComponent.domain.mapper.WIDGET_UPCOMING
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 
@@ -100,7 +101,13 @@ class VideoTabAdapter(
                         return index
                 }
             }
-
+            if (playFeedUiModel is PlayWidgetJumboUiModel) {
+                val item = playFeedUiModel.model.items[positionOfItem]
+                if (item is PlayWidgetChannelUiModel) {
+                    if (channelId == item.channelId)
+                        return index
+                }
+            }
 
         }
         return -1
@@ -114,7 +121,12 @@ class VideoTabAdapter(
                 val model = (itemList[position] as PlayWidgetMediumUiModel)
                 val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
                 list.add(updatedItem)
-            } else {
+            } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
+                val model = (itemList[position] as PlayWidgetJumboUiModel)
+                val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
+                list.add(updatedItem)
+            }
+            else {
                 list.add(playFeedUiModel)
             }
         }

@@ -20,7 +20,11 @@ import com.tokopedia.feedplus.view.activity.PlayVideoLiveListActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.playseemore.PlaySeeMoreAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -114,6 +118,14 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                     }
                 }
             })
+            reminderObservable.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is Success -> onSuccessReminderSet(it.data)
+                    else -> {
+                        showToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), Toaster.TYPE_ERROR)
+                    }
+                }
+            })
 
 
         }
@@ -158,7 +170,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                 when (widgetType) {
                     WIDGET_UPCOMING -> getString(R.string.feed_play_header_upcoming_text)
                     else ->  getString(R.string.feed_play_header_text)
-
             }
 
             product_detail_back_icon?.setOnClickListener { activity?.finish() }
@@ -214,4 +225,27 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     }
 
 
+    override fun onToggleReminderClicked(view: PlayWidgetLargeView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        super.onToggleReminderClicked(view, channelId, reminderType, position)
+        playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
+
+    }
+
+    private fun showToast(message: String, type: Int, actionText: String? = null) {
+        if (actionText?.isEmpty() == false)
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
+        else {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
+
+        }
+    }
+    private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
+        showToast(
+                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), Toaster.TYPE_NORMAL)
+
+        val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
+        adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
+
+    }
 }
