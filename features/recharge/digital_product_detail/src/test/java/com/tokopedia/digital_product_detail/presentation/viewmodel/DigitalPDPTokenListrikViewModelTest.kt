@@ -269,6 +269,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         viewModel.getOperatorSelectGroup(MENU_ID)
         verifyGetOperatorSelectGroupRepoGetCalled()
         verifyGetOperatorSelectGroupSuccess(response)
+        verifySetOperatorListSuccess(response.response.operatorGroups?.firstOrNull()?.operators ?: listOf())
     }
 
     @Test

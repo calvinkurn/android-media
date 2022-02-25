@@ -197,6 +197,11 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
+    protected fun verifySetOperatorListSuccess(expectedResult: List<CatalogOperator>) {
+        val actualResult = viewModel.operatorList
+        Assert.assertEquals(expectedResult, actualResult)
+    }
+
     protected fun verifyGetTagihanProductSuccess(expectedResponse: RechargeProduct) {
         val actualResponse = viewModel.tagihanProduct.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
