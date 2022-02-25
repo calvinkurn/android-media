@@ -316,14 +316,14 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
             val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.SHOW
+                    state = TokoNowLayoutState.UPDATE
             )
             _homeLayoutList.postValue(Success(data))
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, null)
             val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.SHOW
+                    state = TokoNowLayoutState.UPDATE
             )
             _homeLayoutList.postValue(Success(data))
         }
