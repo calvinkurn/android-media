@@ -61,14 +61,7 @@ class CatalogDetailProductListingViewModel
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
-                    (productResponse.searchProduct)?.let { searchProduct ->
-                        searchProduct.data.catalogProductItemList.let { productList ->
-                            mProductList.value = Success((productList) as List<CatalogProductItem>)
-                            list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
-                            pageCount++
-                        }
-                        mProductCount.value = searchProduct.data.totalData.toString()
-                    }
+                    processProductListResponse(productResponse)
                 }
                 addCatalogForYouCard()
             }
@@ -82,6 +75,17 @@ class CatalogDetailProductListingViewModel
                 mProductList.value = Fail(e)
             }
         })
+    }
+
+    private fun processProductListResponse(productResponse : ProductListResponse){
+        (productResponse.searchProduct)?.let { searchProduct ->
+            searchProduct.data.catalogProductItemList.let { productList ->
+                mProductList.value = Success((productList) as List<CatalogProductItem>)
+                list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
+                pageCount++
+            }
+            mProductCount.value = searchProduct.data.totalData.toString()
+        }
     }
 
     fun fetchQuickFilters(params: RequestParams) {
