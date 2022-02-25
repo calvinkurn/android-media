@@ -377,7 +377,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
                 totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(OrderPaymentErrorData(errorAboveMaximum), orderSummaryPageViewModel.orderPayment.value.errorData)
+        assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel.orderPayment.value.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
     @Test
@@ -397,7 +397,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
                 totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(OrderPaymentErrorData(errorAboveMaximum), orderSummaryPageViewModel.orderPayment.value.errorData)
+        assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel.orderPayment.value.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
     @Test
@@ -663,6 +663,26 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     }
 
     @Test
+    fun `Calculate Total Revamp GoCicil Above Wallet Balance`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val errorAboveLimit = "errorAboveLimit"
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 10, walletData = OrderPaymentWalletAdditionalData(walletType = 4, goCicilData = OrderPaymentGoCicilData(errorMessageTopLimit = errorAboveLimit)))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData(errorAboveLimit), orderSummaryPageViewModel.orderPayment.value.errorData)
+    }
+
+    @Test
     fun `Calculate Total Revamp Above OVO Balance In OVO Only Campaign`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -719,6 +739,26 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     }
 
     @Test
+    fun `Calculate Total Revamp GoCicil Above Wallet Balance In Specific Gateway Campaign`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val errorAboveLimit = "errorAboveLimit"
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 10, specificGatewayCampaignOnlyType = 4, walletData = OrderPaymentWalletAdditionalData(walletType = 4, goCicilData = OrderPaymentGoCicilData(errorMessageTopLimit = errorAboveLimit)))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData(errorAboveLimit), orderSummaryPageViewModel.orderPayment.value.errorData)
+    }
+
+    @Test
     fun `Calculate Total Within OVO Balance`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -752,6 +792,27 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
                 totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Revamp GoCicil Within Wallet Balance And Valid Term`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true)), selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true))))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0,
+                installmentData = OrderCostInstallmentData(installmentTerm = 2)),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(null, orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
     @Test
@@ -828,7 +889,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorUnavailableTenures = "errorUnavailableTenures"
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = false)), errorMessageUnavailableTenures = errorUnavailableTenures)))
 
         // When
@@ -1116,7 +1177,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = false), OrderPaymentGoCicilTerms(isActive = true)), selectedTerm = OrderPaymentGoCicilTerms(isActive = false))))
 
         // When
@@ -1135,7 +1196,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = false), OrderPaymentGoCicilTerms(isActive = true)), selectedTerm = null)))
 
         // When
@@ -1154,7 +1215,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(availableTerms = emptyList(), selectedTerm = OrderPaymentGoCicilTerms(isActive = false))))
 
         // When

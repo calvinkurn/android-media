@@ -1147,7 +1147,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2)))
 
         val option1 = GoCicilInstallmentOption(
@@ -1184,7 +1184,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))))
 
         val option1 = GoCicilInstallmentOption(
@@ -1221,7 +1221,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
 
         val option1 = GoCicilInstallmentOption(
@@ -1261,7 +1261,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
 
         val option1 = GoCicilInstallmentOption(
@@ -1301,7 +1301,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
 
         val option1 = GoCicilInstallmentOption(
@@ -1342,7 +1342,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
 
         coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } throws IOException()
@@ -1387,7 +1387,26 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Above Wallet Amount`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
 
         // When
@@ -1428,7 +1447,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
 
         // When
