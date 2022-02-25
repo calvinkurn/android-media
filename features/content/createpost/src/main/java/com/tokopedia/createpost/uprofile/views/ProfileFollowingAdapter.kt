@@ -39,7 +39,7 @@ open class ProfileFollowingAdapter(
         var isVisited = false
 
         override fun bindView(item: ProfileFollowerV2, position: Int) {
-            setData(this, item)
+            setData(this, item, position)
         }
     }
 
@@ -69,7 +69,7 @@ open class ProfileFollowingAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: ProfileFollowerV2) {
+    private fun setData(holder: ViewHolder, item: ProfileFollowerV2, position: Int) {
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
         holder.textName.text = item.profile.name
@@ -81,18 +81,22 @@ open class ProfileFollowingAdapter(
             holder.btnAction.show()
 
             if (item.isFollow) {
-                holder.btnAction.text = "Following"
-                holder.btnAction.buttonVariant = UnifyButton.Variant.GHOST
-                holder.btnAction.buttonType = UnifyButton.Type.ALTERNATE
-            } else {
-                holder.btnAction.text = "Follow"
-                holder.btnAction.buttonVariant = UnifyButton.Variant.FILLED
-                holder.btnAction.buttonType = UnifyButton.Type.MAIN
-            }
-        }
+                updateToFollowUi(holder.btnAction)
 
-        holder.btnAction.setOnClickListener { v ->
-            viewModel.doFollow(item.profile.userID, !item.isFollow)
+                holder.btnAction.setOnClickListener { v ->
+                    viewModel.doUnFollow(item.profile.encryptedUserID)
+                    item.isFollow = false
+                    notifyItemChanged(position)
+                }
+            } else {
+                updateToUnFollowUi(holder.btnAction)
+
+                holder.btnAction.setOnClickListener { v ->
+                    viewModel.doFollow(item.profile.encryptedUserID)
+                    item.isFollow = true
+                    notifyItemChanged(position)
+                }
+            }
         }
 
         holder.itemView.setOnClickListener { v ->
@@ -100,6 +104,17 @@ open class ProfileFollowingAdapter(
         }
     }
 
+    private fun updateToFollowUi(btnAction: UnifyButton) {
+        btnAction?.text = "Following"
+        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun updateToUnFollowUi(btnAction: UnifyButton) {
+        btnAction?.text = "Follow"
+        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction?.buttonType = UnifyButton.Type.MAIN
+    }
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(vh)

@@ -1,13 +1,14 @@
 package com.tokopedia.createpost.uprofile.views
 
 import PostItemDecoration
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,6 +18,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.ErrorMessage
@@ -36,24 +38,36 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.math.abs
 
 
-class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
+    ShareBottomsheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     var landedUserName: String? = null
-    var idFollowed: Boolean = false
+    var isFollowed: Boolean = false
     var displayName: String = ""
     var userName: String = ""
+    var profileUserId: String = ""
+    var profileImage: String = ""
     var totalFollowings: String = ""
     var totalFollowers: String = ""
     var userSession: UserSessionInterface? = null
+    var btnAction: UnifyButton? = null
+    var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var recyclerviewPost : RecyclerView ? = null
     private var headerProfile : HeaderUnify ? = null
     private var appBarLayout : AppBarLayout? = null
@@ -94,11 +108,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             activity?.finish()
         }
 
-        landedUserName = requireArguments().getString(EXTRA_USERNAME)
+        initLandingPageData()
+        userSession = UserSession(context)
+    }
 
+    private fun initLandingPageData() {
+        landedUserName = requireArguments().getString(EXTRA_USERNAME)
         landedUserName?.let {
             mPresenter.getUserDetails(it)
-            userSession = UserSession(context)
         }
     }
 
@@ -136,6 +153,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addUserProfileObserver()
         addListObserver()
         addDoFollowedObserver()
+        addDoUnFollowedObserver()
         addTheyFollowedObserver()
     }
 
@@ -149,6 +167,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     }
                     is Success -> {
                         setMainUi(it.data)
+                        mPresenter.getFollowingStatus(mutableListOf(profileUserId))
                     }
                 }
             }
@@ -180,17 +199,33 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                     }
                     is Success -> {
-                        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
-
-                        idFollowed = it.data.profileFollowers.status
-                        if (idFollowed) {
-                            btnAction?.text = "Following"
-                            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-                            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+                        if (it.data.profileFollowers.errorCode.isBlank()) {
+                            updateToFollowUi()
+                            isFollowed = !isFollowed
                         } else {
-                            btnAction?.text = "Follow"
-                            btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-                            btnAction?.buttonType = UnifyButton.Type.MAIN
+                            updateToUnFollowUi()
+                        }
+                    }
+                    is ErrorMessage -> {
+
+                    }
+                }
+            }
+        })
+
+    private fun addDoUnFollowedObserver() =
+        mPresenter.profileDoUnFollowLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+
+                    }
+                    is Success -> {
+                        if (it.data.profileFollowers.errorCode.isBlank()) {
+                            updateToUnFollowUi()
+                            isFollowed = !isFollowed
+                        } else {
+                            updateToFollowUi()
                         }
                     }
                     is ErrorMessage -> {
@@ -225,8 +260,34 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         //TODO navigate to edit profile page
     }
 
-    private fun addDoFollowClickListener(userId: String) = View.OnClickListener {
-        mPresenter.doFollow(userId, !idFollowed)
+    private fun addDoFollowClickListener(userIdEnc: String) = View.OnClickListener {
+        if (userSession?.isLoggedIn == false) {
+            startActivityForResult(
+                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+            return@OnClickListener
+        }
+
+        if (isFollowed) {
+            mPresenter.doUnFollow(userIdEnc)
+            updateToUnFollowUi()
+        } else {
+            mPresenter.doFollow(userIdEnc)
+            updateToFollowUi()
+        }
+    }
+
+    private fun updateToFollowUi() {
+        btnAction?.text = "Following"
+        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun updateToUnFollowUi() {
+        btnAction?.text = "Follow"
+        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction?.buttonType = UnifyButton.Type.MAIN
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
@@ -239,10 +300,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
+        btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
-        textBio?.text = data.profileHeader.profile.biography
-        textUserName?.text = data.profileHeader.profile.username
+//        textBio?.text = data.profileHeader.profile.biography
+        textUserName?.text = "@" + data.profileHeader.profile.username
         textDisplayName?.text = data.profileHeader.profile.name
         textContentCount?.text = data.profileHeader.stats.totalPostFmt
         textFollowerCount?.text = data.profileHeader.stats.totalFollowerFmt
@@ -254,6 +316,17 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         userName = data.profileHeader.profile.username
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
+        profileImage = data.profileHeader.profile.imageCover
+
+        if (userSession?.isLoggedIn == false) {
+            updateToUnFollowUi()
+            btnAction?.setOnClickListener {
+                startActivityForResult(
+                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
+                )
+            }
+        }
 
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) >   convertDpToPixel(OFFSET_USERINFO,requireContext())) {
@@ -267,9 +340,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
-        val btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
 
-        if (followProfile.profileHeader.items[0].userID == userSession?.userId) {
+        if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
             btnAction?.text = "Ubah Profil"
             btnAction?.buttonVariant = UnifyButton.Variant.GHOST
             btnAction?.buttonType = UnifyButton.Type.ALTERNATE
@@ -281,18 +353,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 )
             )
         } else {
-            idFollowed = followProfile.profileHeader.items[0].status
-            if (idFollowed) {
-                btnAction?.text = "Following"
-                btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-                btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+            isFollowed = followProfile.profileHeader.items[0].status
+            if (isFollowed) {
+                updateToFollowUi()
             } else {
-                btnAction?.text = "Follow"
-                btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-                btnAction?.buttonType = UnifyButton.Type.MAIN
+                updateToUnFollowUi()
             }
 
-            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].userID))
+            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].encryptedUserID))
         }
     }
 
@@ -335,12 +403,26 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 activity?.onBackPressed()
             }
 
-            addRightIcon(R.drawable.ic_arrow_down).setOnClickListener {
-                Toast.makeText(this.context, "arrow down ", Toast.LENGTH_SHORT).show()
+            val imgShare = addRightIcon(R.drawable.iconunify_share_mobile)
+
+            imgShare.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.black),
+                android.graphics.PorterDuff.Mode.MULTIPLY
+            )
+
+            imgShare.setOnClickListener {
+                showUniversalShareBottomSheet()
             }
 
-            addRightIcon(R.drawable.ic_af_check_gray).setOnClickListener {
-                Toast.makeText(this.context, "arrow grey ", Toast.LENGTH_SHORT).show()
+            val imgMenu = addRightIcon(R.drawable.iconunify_menu_hamburger)
+
+            imgMenu.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.black),
+                android.graphics.PorterDuff.Mode.MULTIPLY
+            )
+
+            imgMenu.setOnClickListener {
+                RouteManager.route(activity, "tokopedia://navigation/main")
             }
         }
     }
@@ -387,14 +469,17 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     )
                 })
             }
--
+
             R.id.text_see_more -> {
-                Toast.makeText(context, "See All", Toast.LENGTH_SHORT).show()
+                val textBio = view?.findViewById<TextView>(R.id.text_bio)
+                val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
+                textBio?.maxLines = 10
+                btnSeeAll?.hide()
             }
         }
     }
 
-    private fun getFollowersBundle(isFollowers: Boolean) : Bundle {
+    private fun getFollowersBundle(isFollowers: Boolean): Bundle {
         val bundle = Bundle()
         bundle.putString(EXTRA_DISPLAY_NAME, displayName)
         bundle.putString(EXTRA_USER_NAME, userName)
@@ -402,12 +487,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         bundle.putString(EXTRA_TOTAL_FOLLOWERS, totalFollowers)
         bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
         return bundle
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-
-        }
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
@@ -443,6 +522,131 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
      *  24dp(user name line height) + 20dp(userid line height)
      */
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            initLandingPageData()
+        }
+    }
+
+    private fun showUniversalShareBottomSheet() {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@UserProfileFragment)
+            userSession?.userId?.ifEmpty { "0" }?.let {
+                setUtmCampaignData(
+                    "Profile",
+                    it,
+                    userName,
+                    "share"
+                )
+            }
+            setMetaData(
+                tnTitle = displayName,
+                tnImage = profileImage)
+            setOgImageUrl(profileImage ?: "")
+            imageSaved(profileImage)
+        }
+        universalShareBottomSheet?.show(fragmentManager, this)
+    }
+
+    /*override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            type = LinkerData.SHOP_TYPE
+            uri = shopPageHeaderDataModel?.shopCoreUrl
+            id = shopPageHeaderDataModel?.shopId
+            //set and share in the Linker Data
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            ogTitle = getShareBottomSheetOgTitle()
+            ogDescription = getShareBottomSheetOgDescription()
+            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                            androidx.lifecycle.R.string.shop_page_share_text_with_link,
+                            shopPageHeaderDataModel?.shopName,
+                            linkerShareData?.shareContents
+                        )
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                shopId,
+                                channel = when (shareModel) {
+                                    is ShareModel.CopyLink -> {
+                                        ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                    }
+                                    is ShareModel.Others -> {
+                                        ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                    }
+                                    else -> name
+                                }
+                            )
+                        }
+
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                shareModel.channel.orEmpty(),
+                                customDimensionShopPage,
+                                userId
+                            )
+                            if(!isMyShop) {
+                                shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                                )
+                            }
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                shareModel.channel.orEmpty(),
+                                customDimensionShopPage,
+                                userId
+                            )
+                        }
+
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+    }
+
+    private fun getShareBottomSheetOgTitle(): String {
+        return shopPageHeaderDataModel?.let{
+            "${joinStringWithDelimiter(it.shopName, it.location, delimiter = " - ")} | Tokopedia"
+        } ?: ""
+    }
+
+    private fun getShareBottomSheetOgDescription(): String {
+        return shopPageHeaderDataModel?.let{
+            joinStringWithDelimiter(it.description, it.tagline, delimiter = " - ")
+        } ?: ""
+    }
+
+    override fun onCloseOptionClicked() {
+        if (isUsingNewShareBottomSheet(requireContext())) {
+            if(isGeneralShareBottomSheet)
+                shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
+            else
+                shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId)
+        } else {
+            shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
+        }
+    } */
+
     companion object {
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
@@ -452,12 +656,21 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_USER_NAME = "user_name"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val OFFSET_USERINFO = 136F
+        const val REQUEST_CODE_LOGIN = 1
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCloseOptionClicked() {
+        TODO("Not yet implemented")
     }
 }
 

@@ -5,10 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.uprofile.ErrorMessage
+import com.tokopedia.createpost.uprofile.Loading
+import com.tokopedia.createpost.uprofile.Success
 import com.tokopedia.createpost.uprofile.model.ProfileFollowerListBase
 import com.tokopedia.createpost.uprofile.model.ProfileFollowerV2
 import com.tokopedia.createpost.uprofile.model.UserPostModel
@@ -39,7 +43,7 @@ open class ProfileFollowersAdapter(
         var isVisited = false
 
         override fun bindView(item: ProfileFollowerV2, position: Int) {
-            setData(this, item)
+            setData(this, item, position)
         }
     }
 
@@ -69,11 +73,15 @@ open class ProfileFollowersAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: ProfileFollowerV2) {
+    private fun setData(holder: ViewHolder, item: ProfileFollowerV2, position: Int) {
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
         holder.textName.text = item.profile.name
         holder.textUsername.text = item.profile.username
+
+        holder.itemView.setOnClickListener { v ->
+            RouteManager.route(itemContext, item.profile.sharelink.applink)
+        }
 
         if (item.profile.userID == UserSession(itemContext).userId) {
             holder.btnAction.hide()
@@ -81,25 +89,36 @@ open class ProfileFollowersAdapter(
             holder.btnAction.show()
 
             if (item.isFollow) {
-                holder.btnAction.text = "Following"
-                holder.btnAction.buttonVariant = UnifyButton.Variant.GHOST
-                holder.btnAction.buttonType = UnifyButton.Type.ALTERNATE
+                updateToFollowUi(holder.btnAction)
+
+                holder.btnAction.setOnClickListener { v ->
+                    viewModel.doUnFollow(item.profile.encryptedUserID)
+                    item.isFollow = false
+                    notifyItemChanged(position)
+                }
             } else {
-                holder.btnAction.text = "Follow"
-                holder.btnAction.buttonVariant = UnifyButton.Variant.FILLED
-                holder.btnAction.buttonType = UnifyButton.Type.MAIN
+                updateToUnFollowUi(holder.btnAction)
+
+                holder.btnAction.setOnClickListener { v ->
+                    viewModel.doFollow(item.profile.encryptedUserID)
+                    item.isFollow = true
+                    notifyItemChanged(position)
+                }
             }
-        }
-
-        holder.btnAction.setOnClickListener { v ->
-            viewModel.doFollow(item.profile.userID, !item.isFollow)
-        }
-
-        holder.itemView.setOnClickListener { v ->
-            RouteManager.route(itemContext, item.profile.sharelink.applink)
         }
     }
 
+    private fun updateToFollowUi(btnAction: UnifyButton) {
+        btnAction?.text = "Following"
+        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun updateToUnFollowUi(btnAction: UnifyButton) {
+        btnAction?.text = "Follow"
+        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction?.buttonType = UnifyButton.Type.MAIN
+    }
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(vh)
