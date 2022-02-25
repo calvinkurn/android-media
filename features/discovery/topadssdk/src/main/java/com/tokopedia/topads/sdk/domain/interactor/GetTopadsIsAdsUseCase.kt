@@ -44,7 +44,7 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         const val DEFAULT_PAGE_NAME_FACEBOOK = "im_facebook"
         const val DEFAULT_PAGE_NAME_TIKTOK = "im_tiktok"
         const val DEFAULT_Q = "recom"
-        const val TIMEOUT_REMOTE_CONFIG_KEY = "top_ads_is_ads_time_out"
+        const val TIMEOUT_REMOTE_CONFIG_KEY = "android_top_ads_is_ads_time_out"
     }
 
     private var params: RequestParams = RequestParams.create()
