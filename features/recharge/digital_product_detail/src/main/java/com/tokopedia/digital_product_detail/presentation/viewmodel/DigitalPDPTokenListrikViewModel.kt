@@ -236,4 +236,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     fun onResetSelectedProduct(){
         selectedGridProduct = SelectedProduct()
     }
+
+    fun getListInfo(): List<String> {
+        return if (!operatorData.id.isNullOrEmpty()){
+            (catalogSelectGroup.value as RechargeNetworkResult.Success).data.response.
+            operatorGroups?.firstOrNull()?.operators?.filter {
+                it.id == operatorData.id
+            }?.single()?.attributes?.productDescriptions ?: listOf()
+        } else listOf()
+    }
 }

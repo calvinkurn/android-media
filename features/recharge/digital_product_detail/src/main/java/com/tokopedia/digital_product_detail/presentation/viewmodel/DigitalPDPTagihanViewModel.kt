@@ -230,6 +230,15 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         }
     }
 
+    fun getListInfo(): List<String> {
+        return if (!operatorData.id.isNullOrEmpty()){
+            (catalogSelectGroup.value as RechargeNetworkResult.Success).data.response.
+            operatorGroups?.firstOrNull()?.operators?.filter {
+                it.id == operatorData.id
+            }?.single()?.attributes?.productDescriptions ?: listOf()
+        } else listOf()
+    }
+
     companion object {
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
