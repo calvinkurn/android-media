@@ -74,7 +74,7 @@ class MvcLockedToProductViewModelTest {
             mvcLockedToProductUseCase.executeOnBackground()
         } returns mockResponse
         viewModel.getMvcLockedToProductData(mockRequestUiModel)
-        assert(viewModel.hasNextPageLiveData.value == true)
+        assert(viewModel.nextPageLiveData.value == mockResponse.shopPageMVCProductLock.nextPage)
         val mvcLockToProductValue = viewModel.mvcLockToProductLiveData.value
         assert(mvcLockToProductValue is Success)
         val voucherUiModelTitle = (mvcLockToProductValue as Success).data
@@ -91,7 +91,7 @@ class MvcLockedToProductViewModelTest {
             mvcLockedToProductUseCase.executeOnBackground()
         } throws Throwable()
         viewModel.getMvcLockedToProductData(mockRequestUiModel)
-        assert(viewModel.hasNextPageLiveData.value == null)
+        assert(viewModel.nextPageLiveData.value == null)
         val mvcLockToProductValue = viewModel.mvcLockToProductLiveData.value
         assert(mvcLockToProductValue is Fail)
     }
@@ -104,7 +104,7 @@ class MvcLockedToProductViewModelTest {
             mvcLockedToProductUseCase.executeOnBackground()
         } returns mockResponse
         viewModel.getProductListData(mockRequestUiModel)
-        assert(viewModel.hasNextPageLiveData.value == true)
+        assert(viewModel.nextPageLiveData.value == mockResponse.shopPageMVCProductLock.nextPage)
         val productListData = viewModel.productListDataProduct.value
         assert(productListData is Success)
         val totalProduct = (productListData as Success).data.size
@@ -119,7 +119,7 @@ class MvcLockedToProductViewModelTest {
             mvcLockedToProductUseCase.executeOnBackground()
         } throws Throwable()
         viewModel.getProductListData(mockRequestUiModel)
-        assert(viewModel.hasNextPageLiveData.value == null)
+        assert(viewModel.nextPageLiveData.value == null)
         val mvcLockToProductValue = viewModel.productListDataProduct.value
         assert(mvcLockToProductValue is Fail)
     }
