@@ -1,14 +1,13 @@
 package com.tokopedia.createpost.uprofile.views
 
 import PostItemDecoration
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.*
@@ -29,19 +29,26 @@ import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.up_layout_user_profile_header.*
 import javax.inject.Inject
 
 
-class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
+    ShareBottomsheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -50,10 +57,12 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var isFollowed: Boolean = false
     var displayName: String = ""
     var userName: String = ""
+    var profileImage: String = ""
     var totalFollowings: String = ""
     var totalFollowers: String = ""
     var userSession: UserSessionInterface? = null
     var btnAction: UnifyButton? = null
+    var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -90,11 +99,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             activity?.finish()
         }
 
-        landedUserName = requireArguments().getString(EXTRA_USERNAME)
+        initLandingPageData()
+        userSession = UserSession(context)
+    }
 
+    private fun initLandingPageData() {
+        landedUserName = requireArguments().getString(EXTRA_USERNAME)
         landedUserName?.let {
             mPresenter.getUserDetails(it)
-            userSession = UserSession(context)
         }
     }
 
@@ -230,6 +242,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun addDoFollowClickListener(userIdEnc: String) = View.OnClickListener {
+        if (userSession?.isLoggedIn == false) {
+            startActivityForResult(
+                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+            return@OnClickListener
+        }
+
         if (isFollowed) {
             mPresenter.doUnFollow(userIdEnc)
             updateToUnFollowUi()
@@ -275,11 +295,22 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         userName = data.profileHeader.profile.username
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
+        profileImage = data.profileHeader.profile.imageCover
+
+        if (userSession?.isLoggedIn == false) {
+            updateToUnFollowUi()
+            btnAction?.setOnClickListener {
+                startActivityForResult(
+                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
+                )
+            }
+        }
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
 
-        if (followProfile.profileHeader.items[0].userID == userSession?.userId) {
+        if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
             btnAction?.text = "Ubah Profil"
             btnAction?.buttonVariant = UnifyButton.Variant.GHOST
             btnAction?.buttonType = UnifyButton.Type.ALTERNATE
@@ -341,22 +372,26 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 activity?.onBackPressed()
             }
 
-            val imgShare = addRightIcon(R.drawable.iconunify_share_mobile) as ImageView
+            val imgShare = addRightIcon(R.drawable.iconunify_share_mobile)
+
             imgShare.setColorFilter(
                 ContextCompat.getColor(requireContext(), R.color.black),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
+
             imgShare.setOnClickListener {
-                Toast.makeText(this.context, "arrow down ", Toast.LENGTH_SHORT).show()
+                showUniversalShareBottomSheet()
             }
 
             val imgMenu = addRightIcon(R.drawable.iconunify_menu_hamburger)
+
             imgMenu.setColorFilter(
                 ContextCompat.getColor(requireContext(), R.color.black),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
+
             imgMenu.setOnClickListener {
-                Toast.makeText(this.context, "arrow grey ", Toast.LENGTH_SHORT).show()
+                RouteManager.route(activity, "tokopedia://navigation/main")
             }
         }
     }
@@ -423,12 +458,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         return bundle
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-
-        }
-    }
-
     override fun onRetryPageLoad(pageNumber: Int) {
         TODO("Not yet implemented")
     }
@@ -457,6 +486,131 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         // TODO("Not yet implemented")
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            initLandingPageData()
+        }
+    }
+
+    private fun showUniversalShareBottomSheet() {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@UserProfileFragment)
+            userSession?.userId?.ifEmpty { "0" }?.let {
+                setUtmCampaignData(
+                    "Profile",
+                    it,
+                    userName,
+                    "share"
+                )
+            }
+            setMetaData(
+                tnTitle = displayName,
+                tnImage = profileImage)
+            setOgImageUrl(profileImage ?: "")
+            imageSaved(profileImage)
+        }
+        universalShareBottomSheet?.show(fragmentManager, this)
+    }
+
+    /*override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            type = LinkerData.SHOP_TYPE
+            uri = shopPageHeaderDataModel?.shopCoreUrl
+            id = shopPageHeaderDataModel?.shopId
+            //set and share in the Linker Data
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            ogTitle = getShareBottomSheetOgTitle()
+            ogDescription = getShareBottomSheetOgDescription()
+            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                            androidx.lifecycle.R.string.shop_page_share_text_with_link,
+                            shopPageHeaderDataModel?.shopName,
+                            linkerShareData?.shareContents
+                        )
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                shopId,
+                                channel = when (shareModel) {
+                                    is ShareModel.CopyLink -> {
+                                        ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                    }
+                                    is ShareModel.Others -> {
+                                        ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                    }
+                                    else -> name
+                                }
+                            )
+                        }
+
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                shareModel.channel.orEmpty(),
+                                customDimensionShopPage,
+                                userId
+                            )
+                            if(!isMyShop) {
+                                shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                                )
+                            }
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                shareModel.channel.orEmpty(),
+                                customDimensionShopPage,
+                                userId
+                            )
+                        }
+
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+    }
+
+    private fun getShareBottomSheetOgTitle(): String {
+        return shopPageHeaderDataModel?.let{
+            "${joinStringWithDelimiter(it.shopName, it.location, delimiter = " - ")} | Tokopedia"
+        } ?: ""
+    }
+
+    private fun getShareBottomSheetOgDescription(): String {
+        return shopPageHeaderDataModel?.let{
+            joinStringWithDelimiter(it.description, it.tagline, delimiter = " - ")
+        } ?: ""
+    }
+
+    override fun onCloseOptionClicked() {
+        if (isUsingNewShareBottomSheet(requireContext())) {
+            if(isGeneralShareBottomSheet)
+                shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
+            else
+                shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId)
+        } else {
+            shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
+        }
+    } */
+
     companion object {
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
@@ -465,12 +619,21 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
         const val EXTRA_USER_NAME = "user_name"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
+        const val REQUEST_CODE_LOGIN = 1
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCloseOptionClicked() {
+        TODO("Not yet implemented")
     }
 }
 

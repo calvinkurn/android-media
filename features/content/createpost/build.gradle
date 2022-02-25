@@ -87,6 +87,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation 'androidx.fragment:fragment-ktx:1.2.0'
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 }
 
 project.ext {

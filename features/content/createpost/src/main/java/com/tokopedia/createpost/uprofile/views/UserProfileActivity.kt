@@ -18,7 +18,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class UserProfileActivity : BaseSimpleActivity() {
 
     private var bundle: Bundle? = null
-    private val REQUEST_CODE_LOGIN = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
@@ -46,6 +45,10 @@ class UserProfileActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {
