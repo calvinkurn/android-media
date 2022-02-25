@@ -192,11 +192,16 @@ class OfficialHomeFragment :
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
                 OSFeaturedShopDCCallback(this),
-                recyclerView?.recycledViewPool)
+                recyclerView?.recycledViewPool,
+                onTopAdsHeadlineClicked)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
         officialHomeMapper.resetState(adapter)
         return view
+    }
+
+    private val onTopAdsHeadlineClicked: (applink: String) -> Unit = {
+        RouteManager.route(context, it)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -710,6 +715,8 @@ class OfficialHomeFragment :
                         userId = userSession.userId
                 ) as HashMap<String, Any>
         )
+
+        viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
     }
 
     override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
@@ -831,11 +838,13 @@ class OfficialHomeFragment :
     }
 
     private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingBenefit(it.data, adapter)
+                    if(!isEligibleForDisableMappingBenefit()) {
+                        officialHomeMapper.mappingBenefit(it.data, adapter)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -843,15 +852,17 @@ class OfficialHomeFragment :
                 }
 
             }
-        })
+        }
     }
 
     private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                    if(!isEligibleForDisableMappingOfficialFeaturedShop()) {
+                        officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -860,7 +871,7 @@ class OfficialHomeFragment :
 
             }
             shopPerformanceMonitoring.stopTrace()
-        })
+        }
     }
 
     private fun observeDynamicChannel() {
@@ -887,11 +898,11 @@ class OfficialHomeFragment :
         viewModel.productRecommendation.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
+                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.recommendationWidget.title
                     endlessScrollListener.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
                     if (counterTitleShouldBeRendered == 1) {
-                        officialHomeMapper.mappingProductRecommendationTitle(it.data.title, adapter)
+                        officialHomeMapper.mappingProductRecommendationTitle(it.data.recommendationWidget.title, adapter)
                     }
                     officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
@@ -954,7 +965,11 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
             removeRecomWidget()
+            officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
             loadData(true)
+            viewModel.resetShopWidgetImpressionCount()
+            viewModel.resetIsFeatureShopAllowed()
+            resetData()
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -1148,6 +1163,24 @@ class OfficialHomeFragment :
     private fun isEligibleForDisableRemoveShopWidget(): Boolean {
         return try {
             return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingBenefit(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingOfficialFeaturedShop(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP)
                 ?: false
         } catch (e: Exception) {
             false
