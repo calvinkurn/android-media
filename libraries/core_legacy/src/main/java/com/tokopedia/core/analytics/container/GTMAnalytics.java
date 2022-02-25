@@ -1189,20 +1189,22 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void trackEmbraceBreadcrumb(String eventName, Bundle bundle) {
         String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
-        EmbraceConfig config =
-                new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
-        if (bundle.containsKey(KEY_CATEGORY)) {
-            String eventCategoryValue = bundle.getString(KEY_CATEGORY);
-            if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
-                EmbraceMonitoring.INSTANCE.logBreadcrumb(
-                        String.format(
-                                EMBRACE_BREADCRUMB_FORMAT,
-                                EMBRACE_KEY,
-                                createJsonFromBundle(eventName, bundle)
-                        )
-                );
+        try {
+            EmbraceConfig config =
+                    new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+            if (bundle.containsKey(KEY_CATEGORY)) {
+                String eventCategoryValue = bundle.getString(KEY_CATEGORY);
+                if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
+                    EmbraceMonitoring.INSTANCE.logBreadcrumb(
+                            String.format(
+                                    EMBRACE_BREADCRUMB_FORMAT,
+                                    EMBRACE_KEY,
+                                    createJsonFromBundle(eventName, bundle)
+                            )
+                    );
+                }
             }
-        }
+        } catch (Exception e) { }
     }
 
     private JSONObject createJsonFromBundle(String eventName, Bundle bundle) {

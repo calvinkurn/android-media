@@ -534,21 +534,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
-        homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
-                    fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition()?:-1
-                    HomeServerLogger.sendEmbraceBreadCrumb(
-                        fragment = this@HomeRevampFragment,
-                        isLoggedIn = userSession.isLoggedIn,
-                        isCache = fragmentCurrentCacheState,
-                        visitableListCount = fragmentCurrentVisitableCount,
-                        scrollPosition = fragmentCurrentScrollPosition
-                    )
-                }
-            }
-        })
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
@@ -897,6 +882,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
+        setupEmbraceBreadcrumbListener()
+    }
+
+    private fun setupEmbraceBreadcrumbListener() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB)) {
+            homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
+                        fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition()?:-1
+                        HomeServerLogger.sendEmbraceBreadCrumb(
+                            fragment = this@HomeRevampFragment,
+                            isLoggedIn = userSession.isLoggedIn,
+                            isCache = fragmentCurrentCacheState,
+                            visitableListCount = fragmentCurrentVisitableCount,
+                            scrollPosition = fragmentCurrentScrollPosition
+                        )
+                    }
+                }
+            })
+        }
     }
 
     private fun setupStatusBar() {
