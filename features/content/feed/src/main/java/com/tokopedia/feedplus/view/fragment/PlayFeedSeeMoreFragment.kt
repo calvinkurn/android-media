@@ -122,7 +122,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                 when (it) {
                     is Success -> onSuccessReminderSet(it.data)
                     else -> {
-                        showToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), Toaster.TYPE_ERROR)
+                        showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
                     }
                 }
             })
@@ -168,8 +168,8 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         (activity as PlayVideoLiveListActivity).getShopInfoLayout()?.run {
             shopHeader.text =
                 when (widgetType) {
-                    WIDGET_UPCOMING -> getString(R.string.feed_play_header_upcoming_text)
-                    else ->  getString(R.string.feed_play_header_text)
+                    WIDGET_UPCOMING -> getString(com.tokopedia.feedplus.R.string.feed_play_header_upcoming_text)
+                    else ->  getString(com.tokopedia.feedplus.R.string.feed_play_header_text)
             }
 
             product_detail_back_icon?.setOnClickListener { activity?.finish() }
@@ -241,8 +241,8 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     }
     private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
         showToast(
-                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), Toaster.TYPE_NORMAL)
+                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_add_reminder)
+                else getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder), Toaster.TYPE_NORMAL)
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
         adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)

@@ -126,7 +126,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 when (it) {
                     is Success -> onSuccessReminderSet(it.data)
                     else -> {
-                        showToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), Toaster.TYPE_ERROR)
+                        showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
                     }
                 }
             })
@@ -385,8 +385,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
     private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
         showToast(
-                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), Toaster.TYPE_NORMAL)
+                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_add_reminder)
+                else getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder), Toaster.TYPE_NORMAL)
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
         adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)

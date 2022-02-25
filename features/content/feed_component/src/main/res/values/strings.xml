@@ -194,5 +194,11 @@
     <string name="feeds_asgc_new_product_text">Produk Terbaru</string>
     <string name="feeds_asgc_restock_text">Restock</string>
 
+    //video Tab in feed
+    <string name="feed_video_tab_success_add_reminder">Pengingat berhasil terpasang!</string>
+    <string name="feed_video_tab_success_remove_reminder">Pengingat berhasil terhapus!</string>
+    <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+
+
 
 </resources>
