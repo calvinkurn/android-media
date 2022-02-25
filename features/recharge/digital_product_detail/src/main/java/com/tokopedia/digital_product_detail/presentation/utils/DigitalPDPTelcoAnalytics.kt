@@ -3,6 +3,7 @@ package com.tokopedia.digital_product_detail.presentation.utils
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_CHEVRON
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_LANJUT_BAYAR
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_LOGIN_WIDGET
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_PRODUCT_CLUSTER
@@ -11,8 +12,10 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_PDP_BANNER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_PRODUCT_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.VIEW_PROMO_CARD
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.CATEGORY_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.CREATIVE_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.CREATIVE_SLOT
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.DIMENSION45
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.EMPTY_DISCOUNT_PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.FLASH_SALE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.INDEX
@@ -26,6 +29,11 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.MCCM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.PROMOTIONS
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.QUANTITY
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.SHOP_ID
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.SHOP_NAME
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.SHOP_TYPE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.ADD_TO_CART
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.CLICK_DIGITAL
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.SELECT_CONTENT
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_DIGITAL_IRIS
@@ -475,6 +483,31 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    fun addToCart(
+        categoryId: String,
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        cartId: String,
+        productId: String,
+        productName: String,
+        price: String
+    ){
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_LANJUT_BAYAR)
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
+            putParcelableArrayList(ITEMS, mapperAtcToItemList(
+                categoryId, categoryName, cartId, operatorName, productId, productName, price
+            ))
+        }
+
+        eventDataLayer.addGeneralATCTracker(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, eventDataLayer)
+    }
+
+
     /** Common Tracking extension function*/
 
     fun Bundle.viewItemList(userId: String): Bundle {
@@ -501,9 +534,32 @@ class DigitalPDPTelcoAnalytics {
         return this
     }
 
+    fun Bundle.clickATCGeneralTracker(userId: String): Bundle {
+        addGeneralATCTracker(userId)
+        this.putString(TrackAppUtils.EVENT, ADD_TO_CART)
+        return this
+    }
+
     fun MutableMap<String, Any>.clickDigitalItemList(userId: String): MutableMap<String, Any> {
         addGeneralTracker(userId)
         this[TrackAppUtils.EVENT] = CLICK_DIGITAL
+        return this
+    }
+
+    fun Bundle.addGeneralATCTracker(userId: String): Bundle {
+        this.putString(
+            TrackAppUtils.EVENT_CATEGORY,
+            DigitalPDPEventTracking.Category.DIGITAL_NATIVE
+        )
+        this.putString(
+            DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+            DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+        )
+        this.putString(
+            DigitalPDPEventTracking.Additional.CURRENT_SITE,
+            DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
+        )
+        this.putString(DigitalPDPEventTracking.Additional.USER_ID, userId)
         return this
     }
 
@@ -602,6 +658,35 @@ class DigitalPDPTelcoAnalytics {
                     putString(ITEM_NAME, categoryName)
                 }
             )
+        return listItems
+    }
+
+    fun mapperAtcToItemList(
+        categoryId: String,
+        categoryName: String,
+        cartId: String,
+        operatorName: String,
+        productId: String,
+        productName: String,
+        price: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+            Bundle().apply {
+                putString(CATEGORY_ID, categoryId)
+                putString(DIMENSION45, cartId)
+                putString(ITEM_BRAND, operatorName)
+                putString(ITEM_CATEGORY, "level1_${categoryName}")
+                putString(ITEM_ID, productId)
+                putString(ITEM_NAME, productName)
+                putString(ITEM_VARIANT, "")
+                putString(PRICE, price)
+                putString(QUANTITY, "1")
+                putString(SHOP_ID, null)
+                putString(SHOP_NAME, null)
+                putString(SHOP_TYPE, null)
+            }
+        )
         return listItems
     }
 }

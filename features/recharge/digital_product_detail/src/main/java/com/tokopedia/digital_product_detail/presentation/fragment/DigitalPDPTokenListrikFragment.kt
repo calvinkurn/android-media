@@ -246,7 +246,18 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             when(atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(atcData.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        viewModel.operatorData.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        atcData.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        viewModel.operatorData.attributes.name,
+                        atcData.data.priceProduct
+                    )
+                    navigateToCart(atcData.data.categoryId)
                 }
 
                 is RechargeNetworkResult.Fail -> {

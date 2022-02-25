@@ -286,7 +286,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when(atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(atcData.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        atcData.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        operator.attributes.name,
+                        atcData.data.priceProduct
+                    )
+                    navigateToCart(atcData.data.categoryId)
                 }
 
                 is RechargeNetworkResult.Fail -> {

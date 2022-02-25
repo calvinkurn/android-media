@@ -195,7 +195,18 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(it.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        viewModel.operatorData.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        it.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        viewModel.operatorData.attributes.name,
+                        it.data.priceProduct
+                    )
+                    navigateToCart(it.data.categoryId)
                 }
                 is RechargeNetworkResult.Fail -> {
                     onLoadingBuyWidget(false)
