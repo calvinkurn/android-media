@@ -62,7 +62,7 @@ object Const {
         const val PRODUCT_GIVE_SUGGESTIONS =
             "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
         const val TRAFFIC_GIVE_SUGGESTIONS =
-            "https://docs.google.com/forms/d/1i-bm4ceByIVkYegd52WiSTKWkJ0VQsv4dHWYWMhWH4I"
+            "https://docs.google.com/forms/d/e/1FAIpQLSdyi6znMrSa0dVYgqItjDFEKElenap0bTnzBzySOG0EUdvsIw/viewform"
         const val TRAFFIC_LEARN_MORE =
             "https://www.tokopedia.com/help/article/apa-itu-wawasan-kunjungan"
         const val OPERATIONAL_GIVE_SUGGESTIONS =
