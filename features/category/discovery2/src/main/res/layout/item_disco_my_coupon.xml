@@ -8,7 +8,6 @@
     android:layout_height="80dp"
     android:contentDescription="@string/content_desc_appCompatImageViewDouble"
     android:scaleType="fitXY"
-    app:layout_constraintDimensionRatio="H,2:1"
     app:unify_image_corner_radius="8"
     tools:background="@color/Unify_N100"
     tools:visibility="visible" />

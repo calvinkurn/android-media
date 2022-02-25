@@ -1,6 +1,6 @@
 query Discovery_myCoupons($categoryID: Int, $page: Int, $limit: Int, $serviceID: String, $categoryIDCoupon: Int, $includeExtraInfo: Int, $apiVersion : String, $source : String, $catalogSlugs : [String!],$clientID : String,$isGetPromoInfo: Boolean) {
   tokopointsCouponListStack(input: {serviceID: $serviceID, categoryID: $categoryID, categoryIDCoupon: $categoryIDCoupon, page: $page, limit: $limit, includeExtraInfo: $includeExtraInfo , apiVersion: $apiVersion, source : $source, catalogSlugs : $catalogSlugs,clientID : $clientID, isGetPromoInfo: $isGetPromoInfo}) {
-    coupons: tokopointsCouponDataStack {
+    tokopointsCouponDataStack {
          catalogID: id
          title
          code

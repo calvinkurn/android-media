@@ -8,7 +8,7 @@ data class MyCouponResponse(
 )
 
 data class TokopointsCouponListStack(
-        @SerializedName("coupons")
+        @SerializedName("tokopointsCouponDataStack")
         var coupons: List<MyCoupon>? = null,
         @SerializedName("tokopointsPaging")
         val tokopointsPaging: TokopointsPaging? = null,
@@ -23,10 +23,16 @@ data class MyCoupon(
         val title: String? = "",
         @SerializedName("code")
         val code: String? = "",
+        @SerializedName("promoID")
+        val promoID: String? = "",
         @SerializedName("imageURL")
         val imageURL: String? = "",
         @SerializedName("imageURLMobile")
         val imageURLMobile: String? = "",
+        @SerializedName("redirectURL")
+        val redirectURL: String? = "",
+        @SerializedName("redirectAppLink")
+        val redirectAppLink: String? = "",
         @SerializedName("minimumUsage")
         val minimumUsage: String? = "",
         @SerializedName("minimumUsageLabel")
@@ -54,7 +60,7 @@ data class PromoInfo(
 
 data class UpperLeftSection(
         @SerializedName("textAttributes")
-        val textAttributes: List<String?>? = null,
+        val textAttributes: List<TextAttr>? = null,
         @SerializedName("backgroundColor")
         val backgroundColor: String? = ""
 )
@@ -62,4 +68,13 @@ data class UpperLeftSection(
 data class TokopointsPaging(
         @SerializedName("hasNext")
         val hasNext: Boolean? = null
+)
+
+data class TextAttr(
+        @SerializedName("text")
+        val text: String? = "",
+        @SerializedName("color")
+        val color: String? = "",
+        @SerializedName("isBold")
+        val isBold: Boolean? = null
 )
