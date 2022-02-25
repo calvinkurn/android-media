@@ -298,6 +298,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
         profileImage = data.profileHeader.profile.imageCover
+        profileUserId = data.profileHeader.profile.userID
 
         if (userSession?.isLoggedIn == false) {
             updateToUnFollowUi()

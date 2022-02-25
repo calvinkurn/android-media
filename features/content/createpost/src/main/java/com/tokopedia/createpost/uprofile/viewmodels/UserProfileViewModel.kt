@@ -34,7 +34,7 @@ class UserProfileViewModel @Inject constructor(
             val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
             if (data != null) {
                 userDetailsLiveData.value = Success(data.getData(ProfileHeaderBase::class.java))
-                profileTheyFollowLiveData.value = Success(data.getData(UserProfileIsFollow::class.java))
+                //profileTheyFollowLiveData.value = Success(data.getData(UserProfileIsFollow::class.java))
             } else throw NullPointerException("data is null")
         }) {
         }
