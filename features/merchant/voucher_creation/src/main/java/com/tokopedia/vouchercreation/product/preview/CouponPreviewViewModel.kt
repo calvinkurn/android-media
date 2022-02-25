@@ -214,33 +214,7 @@ class CouponPreviewViewModel @Inject constructor(
     }
 
     fun mapSelectedProductsToCouponProductData(selectedProducts: List<ProductUiModel>): List<CouponProduct> {
-        val couponProductData = mutableListOf<CouponProduct>()
-        selectedProducts.forEach { selectedProduct ->
-            val isParentProductSelected = selectedProduct.isSelected
-
-            if (isParentProductSelected) {
-                val variants = selectedProduct.variants
-                if (variants.isNotEmpty()) {
-                    variants.forEach { variant ->
-                        val isVariantSelected = variant.isSelected
-                        if (isVariantSelected) {
-                            couponProductData.add(CouponProduct(
-                                    id = variant.variantId,
-                                    imageUrl = selectedProduct.imageUrl,
-                                    soldCount = selectedProduct.sold
-                            ))
-                        }
-                    }
-                } else {
-                    couponProductData.add(CouponProduct(
-                            id = selectedProduct.id,
-                            imageUrl = selectedProduct.imageUrl,
-                            soldCount = selectedProduct.sold
-                    ))
-                }
-            }
-        }
-        return couponProductData.toList()
+        return selectedProducts.map { CouponProduct(it.id, it.imageUrl, it.sold) }
     }
 
 
