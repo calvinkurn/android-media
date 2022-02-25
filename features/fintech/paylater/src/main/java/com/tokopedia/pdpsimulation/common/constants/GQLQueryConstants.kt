@@ -14,6 +14,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
             gateway_detail {
               id
               name
+              code
               img_light_url
               img_dark_url
               how_to_use {

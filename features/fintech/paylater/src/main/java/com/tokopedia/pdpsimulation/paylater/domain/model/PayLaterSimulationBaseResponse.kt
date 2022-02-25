@@ -95,7 +95,7 @@ data class GatewayModel(
 
     @SerializedName("id") val gateway_id: String?,
     @SerializedName("name") val name: String?,
-    @SerializedName("gateway_code") val gatewayCode:String?,
+    @SerializedName("code") val gatewayCode:String?,
     @SerializedName("img_light_url") val img_light_url: String?,
     @SerializedName("img_dark_url") val img_dark_url: String?,
     @SerializedName("how_to_use") val how_toUse: HowToUse?
