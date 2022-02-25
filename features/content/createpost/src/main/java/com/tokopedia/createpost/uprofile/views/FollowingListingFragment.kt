@@ -93,7 +93,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     }
 
     private fun addListObserver() =
-        mPresenter.profileFollowingsListLiveData.observe(this, Observer {
+        mPresenter.profileFollowingsListLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {

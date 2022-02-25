@@ -92,7 +92,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 //        view?.findViewById<Group>(R.id.gr_follower)?.setOnClickListener(this)
     }
 
-    private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(this, Observer {
+    private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {

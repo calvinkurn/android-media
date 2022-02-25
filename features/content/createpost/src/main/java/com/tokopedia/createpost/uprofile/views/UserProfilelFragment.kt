@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -14,11 +13,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.uprofile.*
+import com.tokopedia.createpost.uprofile.ErrorMessage
+import com.tokopedia.createpost.uprofile.Loading
+import com.tokopedia.createpost.uprofile.Success
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.Profile
@@ -26,7 +29,6 @@ import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,8 +38,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.up_layout_user_profile_header.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
@@ -52,6 +54,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var totalFollowings: String = ""
     var totalFollowers: String = ""
     var userSession: UserSessionInterface? = null
+    private var recyclerviewPost : RecyclerView ? = null
+    private var headerProfile : HeaderUnify ? = null
+    private var appBarLayout : AppBarLayout? = null
+    private var userId = ""
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -109,10 +115,19 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun initUserPost(userId: String) {
-        val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
-        postRv?.layoutManager = GridLayoutManager(activity, 2)
-        postRv?.addItemDecoration(PostItemDecoration(convertDpToPixel(8F, requireContext())))
-        postRv?.adapter = mAdapter
+        recyclerviewPost = view?.findViewById(R.id.recycler_view)
+        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
+        if (recyclerviewPost?.itemDecorationCount == 0) {
+            recyclerviewPost?.addItemDecoration(
+                PostItemDecoration(
+                    convertDpToPixel(
+                        8F,
+                        requireContext()
+                    )
+                )
+            )
+        }
+        recyclerviewPost?.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.startDataLoading(userId)
     }
@@ -215,7 +230,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
-        initUserPost(data.profileHeader.profile.userID)
+        userId = data.profileHeader.profile.userID
+        initUserPost(userId)
 
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
         val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
@@ -223,6 +239,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
+        appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
         textBio?.text = data.profileHeader.profile.biography
         textUserName?.text = data.profileHeader.profile.username
@@ -237,6 +254,16 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         userName = data.profileHeader.profile.username
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
+
+        appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) >   convertDpToPixel(OFFSET_USERINFO,requireContext())) {
+                headerProfile?.title = data.profileHeader.profile.name
+                headerProfile?.subtitle = data.profileHeader.profile.username
+            } else {
+                headerProfile?.title = ""
+                headerProfile?.subtitle = ""
+            }
+        })
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
@@ -302,8 +329,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
 
     private fun setHeader() {
-        val header = view?.findViewById<HeaderUnify>(R.id.header_profile)
-        header?.apply {
+        headerProfile = view?.findViewById<HeaderUnify>(R.id.header_profile)
+        headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
@@ -411,6 +438,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         // TODO("Not yet implemented")
     }
 
+    /**
+     * OFFSET_USERINFO = 64dp(Profile) + 10dp(PaddingTop) + 16dp (margin top username) + 2dp (margin top userid) +
+     *  24dp(user name line height) + 20dp(userid line height)
+     */
+
     companion object {
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
@@ -419,6 +451,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
         const val EXTRA_USER_NAME = "user_name"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
+        const val OFFSET_USERINFO = 136F
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
