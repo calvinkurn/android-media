@@ -112,7 +112,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
         private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
-        const val MORE_CATALOG_WIDGET_INDEX = 7
+        const val MORE_CATALOG_WIDGET_INDEX = 3
 
         @JvmStatic
         fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
