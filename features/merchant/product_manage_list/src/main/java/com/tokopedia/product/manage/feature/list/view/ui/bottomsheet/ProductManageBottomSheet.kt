@@ -46,8 +46,14 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
     private var product: ProductUiModel? = null
     private var isPowerMerchantOrOfficialStore: Boolean = false
+    private var isProductCouponEnabled: Boolean = true
     
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initRemoteConfigValue()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupChildView(inflater, container)
@@ -59,6 +65,17 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         savedInstanceState?.run {
             parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@ProductManageBottomSheet)?.commit()
         }
+    }
+
+    private fun initRemoteConfigValue() {
+        isProductCouponEnabled =
+            try {
+                context?.let {
+                    FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+                }.orFalse()
+            } catch (ex: Exception) {
+                false
+            }
     }
 
     private fun setupView(binding: BottomSheetProductManageBinding) {
@@ -81,7 +98,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
             val menu = createProductManageMenu(
                 product,
                 isPowerMerchantOrOfficialStore,
-                getIsProductCouponEnabled()
+                isProductCouponEnabled
             )
             
             if (!GlobalConfig.isSellerApp()) {
@@ -210,16 +227,6 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
         return featureList
-    }
-
-    private fun getIsProductCouponEnabled(): Boolean {
-        return try {
-            context?.let {
-                FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
-            }.orFalse()
-        } catch (ex: Exception) {
-            false
-        }
     }
 
     fun init(
