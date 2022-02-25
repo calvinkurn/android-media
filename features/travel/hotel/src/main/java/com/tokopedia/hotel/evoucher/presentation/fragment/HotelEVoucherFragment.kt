@@ -35,6 +35,8 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -373,6 +375,19 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         if (data.hotelTransportDetails.cancellation.cancellationPolicies.isNotEmpty()) {
             renderCancellationPolicies(data.hotelTransportDetails.cancellation.cancellationPolicies)
+        }
+
+        if (data.agent.logo.isNotEmpty()){
+            binding?.ivDynamicLogo?.loadImage(data.agent.logo){
+                listener(
+                    onSuccess = { _, _ ->
+                        binding?.ivDynamicLogo?.show()
+                    },
+                    onError = {
+                        binding?.ivDynamicLogo?.hide()
+                    }
+                )
+            }
         }
     }
 
