@@ -94,6 +94,22 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given homeLayoutList null when getLayoutComponentData should update live data FAIL`() {
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
+        onGetCategoryList_thenReturn(createCategoryList(emptyList()))
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.getLayoutComponentData(warehouseId = "1")
+
+        viewModel.homeLayoutList
+            .verifyErrorEquals(Fail(NullPointerException()))
+    }
+
+    @Test
     fun `when getHomeLayout two times should call use case twice`() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
