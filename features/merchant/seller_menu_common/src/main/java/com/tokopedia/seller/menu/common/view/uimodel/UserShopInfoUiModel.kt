@@ -28,7 +28,7 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
         }
 
         fun getPowerMerchantProEligibleIcon(): Int? {
-            return if (isEligiblePm) {
+            return if (isEligiblePmPro) {
                 IconUnify.BADGE_PMPRO_FILLED
             } else {
                 null
