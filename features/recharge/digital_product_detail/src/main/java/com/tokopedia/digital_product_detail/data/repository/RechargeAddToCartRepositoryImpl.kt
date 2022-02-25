@@ -8,6 +8,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
 import com.tokopedia.network.data.model.response.DataResponse
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class RechargeAddToCartRepositoryImpl @Inject constructor(
     private val getDigitalAddToCartUseCase: DigitalAddToCartUseCase,
+    private val mapAtcToResult: DigitalAtcMapper,
     private val dispatchers: CoroutineDispatchers
 ) : RechargeAddToCartRepository {
 
@@ -40,17 +42,7 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
         val restResponse = addToCart[token]?.getData<DataResponse<*>>()?.data as ResponseCartData
 
         if (restResponse.id != null) {
-            val categoryId = restResponse.relationships?.category?.data?.id
-                ?: ""
-            val price = restResponse.attributes?.price
-                ?: ""
-            val atcResult = DigitalAtcResult(
-                restResponse.id ?: "",
-                categoryId,
-                price
-            )
-
-            return@withContext atcResult
+            return@withContext mapAtcToResult.mapAtcToResult(restResponse)
         } else throw DigitalAddToCartViewModel.DigitalFailGetCartId()
     }
 }

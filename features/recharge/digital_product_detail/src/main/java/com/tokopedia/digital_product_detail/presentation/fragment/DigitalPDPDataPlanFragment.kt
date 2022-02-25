@@ -891,7 +891,6 @@ class DigitalPDPDataPlanFragment :
         viewModel.run {
             setAddToCartLoading()
             addToCart(
-                viewModel.digitalCheckoutPassData,
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams(),
                 userSession.userId

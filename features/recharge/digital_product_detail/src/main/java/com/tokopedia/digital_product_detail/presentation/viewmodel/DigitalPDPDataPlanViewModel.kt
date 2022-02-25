@@ -164,7 +164,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     }
 
     fun addToCart(
-        digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
         userId: String

@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -14,6 +15,7 @@ import org.junit.Test
 class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     private val dataFactory = TagihanDataFactory()
+    private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -133,7 +135,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `when getting addToCart should run and return success`() {
-        val response = dataFactory.getAddToCartData().relationships?.category?.data?.id ?: ""
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
