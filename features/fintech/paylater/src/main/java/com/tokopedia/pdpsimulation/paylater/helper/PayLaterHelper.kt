@@ -21,15 +21,16 @@ object PayLaterHelper {
     fun handleClickNavigation(
         context: Context?,
         detail: Detail,
+        customUrl:String,
         openHowToUse: (Bundle) -> Unit,
         openGoPay: (Bundle) -> Unit
     ) {
         when (detail.cta.cta_type) {
-            TYPE_APP_LINK -> routeToAppLink(context, detail.cta.android_url)
+            TYPE_APP_LINK -> routeToAppLink(context, customUrl)
             TYPE_WEB_VIEW -> {
                 if (shouldShowGoPayBottomSheet(detail))
                     openGoPay(PayLaterBundleGenerator.getGoPayBundle(detail.cta))
-                else routeToWebView(context, detail.cta.android_url)
+                else routeToWebView(context, customUrl)
             }
             TYPE_HOW_TO_USE, TYPE_HOW_TO_USE_II -> {
                 if (detail.gatewayDetail?.how_toUse != null) {

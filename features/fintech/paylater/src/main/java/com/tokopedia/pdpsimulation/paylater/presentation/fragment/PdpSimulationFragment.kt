@@ -84,14 +84,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun handleAction(detail: Detail) {
 
-        detail.cta.android_url = detail.cta.android_url+
+        val customUrl = detail.cta.android_url+
                  "?productID=${payLaterArgsDescriptor.productId}" +
                  "&tenure=${detail.tenure}" +
                  "&productURL=${payLaterArgsDescriptor.productUrl}" +
                  "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
                  "&gatewayID=${detail.gatewayDetail?.gateway_id}"
 
-        PayLaterHelper.handleClickNavigation(context, detail,
+        PayLaterHelper.handleClickNavigation(context, detail,customUrl,
             openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
             openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
         )
