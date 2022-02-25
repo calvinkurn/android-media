@@ -43,10 +43,6 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    init {
-        resetBackground()
-    }
-
     private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
         itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
@@ -81,6 +77,7 @@ class ProductSectionViewHolder(
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
+        resetBackground()
         setupOnScrollListener(sectionInfo = item)
         adapter = ProductLineAdapter(setupListener(item))
         rvProducts.layoutManager = layoutManagerProductList(item)
@@ -113,18 +110,17 @@ class ProductSectionViewHolder(
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
             try {
-                if(background.gradients.size > 1) {
                     val bgArray = IntArray(background.gradients.size)
                     background.gradients.forEachIndexed { index, s ->
                         bgArray[index] = android.graphics.Color.parseColor(s)
                     }
-                    val gradient =
-                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
-                    itemView.background = gradient
-                }else{
-                    val color = android.graphics.Color.parseColor(background.gradients.firstOrNull() ?: "")
-                    itemView.setBackgroundColor(color)
-                }
+                    if(bgArray.size > 1) {
+                        val gradient =
+                            GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
+                        itemView.background = gradient
+                    }else {
+                        itemView.setBackgroundColor(bgArray.firstOrNull() ?: 0)
+                    }
             } catch (e: Exception) { }
         } else {
             ivBg.loadImage(background.imageUrl)
@@ -174,8 +170,8 @@ class ProductSectionViewHolder(
     }
 
     private fun resetBackground(){
-        ivBg.setImageResource(0)
-        itemView.setBackgroundResource(0)
+        ivBg.setImageDrawable(null)
+        itemView.background = null
     }
 
     companion object {
