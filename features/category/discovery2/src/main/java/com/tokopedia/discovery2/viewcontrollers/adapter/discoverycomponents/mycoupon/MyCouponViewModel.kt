@@ -75,6 +75,7 @@ class MyCouponViewModel(val application: Application, val components: Components
             val componentsItem = ComponentsItem()
             componentsItem.position = index
             componentsItem.name = subComponentName
+            componentsItem.parentComponentName = components.name
             componentsItem.parentComponentId = compId
             val dataItem = mutableListOf<MyCoupon>()
             dataItem.add(it)

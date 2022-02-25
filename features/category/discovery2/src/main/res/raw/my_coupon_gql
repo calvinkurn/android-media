@@ -8,6 +8,8 @@ query Discovery_myCoupons($categoryID: Int, $page: Int, $limit: Int, $serviceID:
          imageURLMobile
          minimumUsage
          minimumUsageLabel
+         redirectURL
+         redirectAppLink
          isNewCoupon
          isStacked
          stackID
