@@ -437,7 +437,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun isSelectionChanged(origin: Int?, warehouseSelection: Int): Boolean {
+    fun isSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
         return origin != warehouseSelection
     }
 }

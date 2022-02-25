@@ -364,6 +364,27 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     )
                     renderList(updatedProductList, true)
                     setupSelectionBar(binding)
+
+
+                    val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
+                    viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
+                    val addedProducts = viewModel.getSelectedProductIds()
+                    if (addedProducts.isNotEmpty() && viewModel.isSelectionChanged) {
+                        binding?.tickerSellerLocationChange?.show()
+                        adapter?.disableAllProductSelections()
+                        binding?.cbuSelectAllProduct?.isClickable = false
+                        binding?.buttonAddProduct?.isEnabled = false
+                    } else if (viewModel.getSelectedProducts().isNotEmpty() && viewModel.isSelectionChanged) {
+                        binding?.tickerSellerLocationChange?.show()
+                        adapter?.disableAllProductSelections()
+                        binding?.cbuSelectAllProduct?.isClickable = false
+                        binding?.buttonAddProduct?.isEnabled = false
+                    } else {
+                        binding?.tickerSellerLocationChange?.hide()
+                        binding?.cbuSelectAllProduct?.isClickable = true
+                        binding?.buttonAddProduct?.isEnabled = true
+                    }
+
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -426,31 +447,24 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean) {
+        if (viewModel.isFiltering) return
         viewModel.isSelectAllMode = false
         if (isSelected) {
-
             // implement selection bar ux
             val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
-
-            if (viewModel.isSelectionChanged) {
-                binding?.tickerSellerLocationChange?.show()
-                binding?.buttonAddProduct?.isEnabled = false
-            }
         }
         viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
+        adapter?.enableAllProductSelections()
         viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
-        val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
-        viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, selectedWarehouseLocation.warehouseId)
     }
 
     override fun onApplyShowCaseFilter(selectedShowCases: List<ShowCaseSelection>) {
