@@ -4,6 +4,7 @@ import PostItemDecoration
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -296,6 +297,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         initUserPost(userId)
 
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
+        val textSeeMore = view?.findViewById<TextView>(R.id.text_see_more)
         val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
         val textDisplayName = view?.findViewById<TextView>(R.id.text_display_name)
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
@@ -304,7 +306,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
-//        textBio?.text = data.profileHeader.profile.biography
+        textBio?.text = data.profileHeader.profile.biography
         textUserName?.text = "@" + data.profileHeader.profile.username
         textDisplayName?.text = data.profileHeader.profile.name
         textContentCount?.text = data.profileHeader.stats.totalPostFmt
@@ -320,6 +322,16 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
         profileImage = data.profileHeader.profile.imageCover
         profileUserId = data.profileHeader.profile.userID
+
+        textBio?.post {
+            if (textBio?.lineCount > 3) {
+                textBio.maxLines = 3
+                textSeeMore?.show()
+            } else {
+                textSeeMore?.hide()
+            }
+
+        }
 
         if (userSession?.isLoggedIn == false) {
             updateToUnFollowUi()
