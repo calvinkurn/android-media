@@ -94,7 +94,13 @@ class FlightSearchData(
         val routes: List<FlightSearchRoute> = arrayListOf(),
         @SerializedName("fare")
         @Expose
-        val fare: FlightSearchFare = FlightSearchFare()
+        val fare: FlightSearchFare = FlightSearchFare(),
+        @SerializedName("label1")
+        @Expose
+        val label1: String = "", //hasFreeRapidTest label
+        @SerializedName("label2")
+        @Expose
+        val label2: String = "" //isSeatDistancing label
 )
 
 class FlightSearchRoute(
