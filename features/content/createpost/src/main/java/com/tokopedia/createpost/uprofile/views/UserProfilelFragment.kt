@@ -207,6 +207,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         } else {
                             updateToUnFollowUi()
                         }
+
+                        initLandingPageData()
                     }
                     is ErrorMessage -> {
 
@@ -229,7 +231,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         } else {
                             updateToFollowUi()
                         }
+
+                        initLandingPageData()
                     }
+
                     is ErrorMessage -> {
 
                     }
