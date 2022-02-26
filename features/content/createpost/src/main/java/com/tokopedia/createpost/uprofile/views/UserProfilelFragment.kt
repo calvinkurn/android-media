@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -165,7 +166,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addDoFollowedObserver()
         addDoUnFollowedObserver()
         addTheyFollowedObserver()
-        addErrorObserver()
+        addProfileHeaderErrorObserver()
+        addSocialFollowErrorObserver()
+        addSocialUnFollowErrorObserver()
     }
 
     private fun addUserProfileObserver() =
@@ -269,8 +272,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
         })
 
-    private fun addErrorObserver() =
-        mPresenter.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
+    private fun addProfileHeaderErrorObserver() =
+        mPresenter.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -311,6 +314,34 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         }
                     }
                 }
+            }
+        })
+
+    private fun addSocialFollowErrorObserver() =
+        mPresenter.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                val snackBar = Toaster.build(
+                    btnAction as View,
+                    "Gagal follow. Coba lagi ya.",
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                )
+
+                snackBar.show()
+            }
+        })
+
+    private fun addSocialUnFollowErrorObserver() =
+        mPresenter.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                val snackBar = Toaster.build(
+                    btnAction as View,
+                    "Gagal unfollow. Coba lagi ya.",
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                )
+
+                snackBar.show()
             }
         })
 

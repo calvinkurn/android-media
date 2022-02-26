@@ -1,6 +1,5 @@
 package com.tokopedia.createpost.uprofile.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.createpost.uprofile.Resources
@@ -28,7 +27,9 @@ class UserProfileViewModel @Inject constructor(
     public val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
     public val profileDoUnFollowLiveData = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
     public val profileTheyFollowLiveData = MutableLiveData<Resources<UserProfileIsFollow>>()
-    public var errorMessageLiveData = MutableLiveData<Throwable>()
+    public var profileHeaderErrorMessageLiveData = MutableLiveData<Throwable>()
+    public var followErrorMessageLiveData = MutableLiveData<Throwable>()
+    public var followUnErrorMessageLiveData = MutableLiveData<Throwable>()
 
     public fun getUserDetails(userName: String) {
         launchCatchError(block = {
@@ -38,7 +39,7 @@ class UserProfileViewModel @Inject constructor(
                 //profileTheyFollowLiveData.value = Success(data.getData(UserProfileIsFollow::class.java))
             } else throw NullPointerException("data is null")
         }, onError = {
-            errorMessageLiveData.value = it
+            profileHeaderErrorMessageLiveData.value = it
         })
     }
 
@@ -70,8 +71,9 @@ class UserProfileViewModel @Inject constructor(
             if (data != null) {
                 profileDoUnFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            followUnErrorMessageLiveData.value = it
+        })
     }
 
     fun getFollowingStatus(profileIds: MutableList<String>) {
@@ -80,7 +82,8 @@ class UserProfileViewModel @Inject constructor(
             if (data != null) {
                 profileTheyFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            followErrorMessageLiveData.value = it
+        })
     }
 }
