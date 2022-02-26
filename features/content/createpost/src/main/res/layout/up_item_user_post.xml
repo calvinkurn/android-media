@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/cp_dp_284"
@@ -12,6 +13,8 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,22 +40,30 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
-        android:text="Selenkapnya"
-        app:typographyType="heading_5"
+        tools:text="some title willhere"
+        app:typographyType="body_2"
         android:textColor="@color/Unify_N0"
+        app:layout_constraintEnd_toEndOf="@+id/text_user_name"
+        app:layout_constraintRight_toRightOf="@+id/text_user_name"
+        app:layout_constraintLeft_toLeftOf="@+id/text_user_name"
         app:layout_constraintBottom_toTopOf="@+id/text_user_name"
         app:layout_constraintStart_toStartOf="@+id/text_user_name" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_user_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_default="spread"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_8"
-        android:text="Selenkapnya"
-        app:typographyType="heading_5"
-        android:textColor="@color/Unify_N0"
+        tools:text="john.doe"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/dp_2"
+        android:textColor="@color/Unify_N0_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

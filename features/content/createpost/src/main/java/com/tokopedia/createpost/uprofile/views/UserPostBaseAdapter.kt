@@ -15,14 +15,18 @@ import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.unifycomponents.ImageUnify
+import java.lang.Exception
 
 open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
-    val callback: AdapterCallback
+    val callback: AdapterCallback,
+    private var userName: String = ""
 ) : BaseAdapter<PlayPostContentItem>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -40,6 +44,10 @@ open class UserPostBaseAdapter(
         }
     }
 
+    public fun setUserName(userName: String) {
+        this.userName = userName
+    }
+
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
@@ -53,7 +61,7 @@ open class UserPostBaseAdapter(
 
     override fun loadData(currentPageIndex: Int, vararg args: String?) {
         super.loadData(currentPageIndex, *args)
-        if (args.isNotEmpty()){
+        if (args.isNotEmpty()) {
             args[0]?.let {
                 viewModel.getUPlayVideos(
                     VAL_FEEDS_PROFILE,
@@ -79,8 +87,18 @@ open class UserPostBaseAdapter(
         val itemContext = holder.itemView.context
         holder.imgCover.setImageUrl(item.coverUrl)
         holder.textName.text = item.title
-        holder.textUsername.text = item.description
-        holder.textLiveCount.text = item.stats.view.formatted
+        holder.textUsername.text = userName
+
+        try {
+            if (item.stats.view.formatted.toInt() == 0) {
+                holder.textLiveCount.hide()
+            } else {
+                holder.textLiveCount.show()
+                holder.textLiveCount.text = item.stats.view.formatted
+            }
+        } catch (e: Exception) {
+
+        }
 
         holder.itemView.setOnClickListener { v ->
             RouteManager.route(itemContext, item.appLink)

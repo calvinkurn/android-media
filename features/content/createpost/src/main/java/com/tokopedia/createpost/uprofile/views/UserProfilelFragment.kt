@@ -68,9 +68,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var userSession: UserSessionInterface? = null
     var btnAction: UnifyButton? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var recyclerviewPost : RecyclerView ? = null
-    private var headerProfile : HeaderUnify ? = null
-    private var appBarLayout : AppBarLayout? = null
+    private var recyclerviewPost: RecyclerView? = null
+    private var headerProfile: HeaderUnify? = null
+    private var appBarLayout: AppBarLayout? = null
     private var userId = ""
 
     private val mPresenter: UserProfileViewModel by lazy {
@@ -80,7 +80,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private val mAdapter: UserPostBaseAdapter by lazy {
         UserPostBaseAdapter(
             mPresenter,
-            this
+            this,
+            userName
         )
     }
 
@@ -314,6 +315,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
         displayName = data.profileHeader.profile.name
         userName = data.profileHeader.profile.username
+        mAdapter.setUserName(data.profileHeader.profile.username)
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
         profileImage = data.profileHeader.profile.imageCover
@@ -330,7 +332,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) >   convertDpToPixel(OFFSET_USERINFO,requireContext())) {
+            if (abs(verticalOffset) > convertDpToPixel(OFFSET_USERINFO, requireContext())) {
                 headerProfile?.title = data.profileHeader.profile.name
                 headerProfile?.subtitle = data.profileHeader.profile.username
             } else {
@@ -543,7 +545,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
             setMetaData(
                 tnTitle = displayName,
-                tnImage = profileImage)
+                tnImage = profileImage
+            )
             setOgImageUrl(profileImage ?: "")
             imageSaved(profileImage)
         }
