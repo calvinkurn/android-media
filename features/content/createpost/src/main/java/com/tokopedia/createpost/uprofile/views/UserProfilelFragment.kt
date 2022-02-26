@@ -64,7 +64,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     lateinit var viewModelFactory: ViewModelFactory
 
     var landedUserName: String? = null
-    var isFollowed: Boolean = false
     var displayName: String = ""
     var userName: String = ""
     var profileUserId: String = ""
@@ -216,12 +215,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     is Success -> {
                         if (it.data.profileFollowers.errorCode.isBlank()) {
                             updateToFollowUi()
-                            isFollowed = !isFollowed
-                        } else {
-                            updateToUnFollowUi()
+                            initLandingPageData()
                         }
-
-                        initLandingPageData()
                     }
                     is ErrorMessage -> {
 
@@ -240,12 +235,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     is Success -> {
                         if (it.data.profileFollowers.errorCode.isBlank()) {
                             updateToUnFollowUi()
-                            isFollowed = !isFollowed
-                        } else {
-                            updateToFollowUi()
+                            initLandingPageData()
                         }
-
-                        initLandingPageData()
                     }
 
                     is ErrorMessage -> {
@@ -318,7 +309,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         })
 
     private fun addSocialFollowErrorObserver() =
-        mPresenter.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        mPresenter.followErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val snackBar = Toaster.build(
                     btnAction as View,
@@ -328,11 +319,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 )
 
                 snackBar.show()
+
+                updateToUnFollowUi()
             }
         })
 
     private fun addSocialUnFollowErrorObserver() =
-        mPresenter.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        mPresenter.unFollowErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val snackBar = Toaster.build(
                     btnAction as View,
@@ -342,6 +335,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 )
 
                 snackBar.show()
+
+                updateToFollowUi()
             }
         })
 
@@ -353,23 +348,24 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         //TODO navigate to edit profile page
     }
 
-    private fun addDoFollowClickListener(userIdEnc: String) = View.OnClickListener {
-        if (userSession?.isLoggedIn == false) {
-            startActivityForResult(
-                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN
-            )
-            return@OnClickListener
-        }
+    private fun addDoFollowClickListener(userIdEnc: String, isFollowed: Boolean) =
+        View.OnClickListener {
+            if (userSession?.isLoggedIn == false) {
+                startActivityForResult(
+                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
+                )
+                return@OnClickListener
+            }
 
-        if (isFollowed) {
-            mPresenter.doUnFollow(userIdEnc)
-            updateToUnFollowUi()
-        } else {
-            mPresenter.doFollow(userIdEnc)
-            updateToFollowUi()
+            if (isFollowed) {
+                mPresenter.doUnFollow(userIdEnc)
+                updateToUnFollowUi()
+            } else {
+                mPresenter.doFollow(userIdEnc)
+                updateToFollowUi()
+            }
         }
-    }
 
     private fun updateToFollowUi() {
         btnAction?.text = "Following"
@@ -463,14 +459,19 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 )
             )
         } else {
-            isFollowed = followProfile.profileHeader.items[0].status
+            val isFollowed = followProfile.profileHeader.items[0].status
             if (isFollowed) {
                 updateToFollowUi()
             } else {
                 updateToUnFollowUi()
             }
 
-            btnAction?.setOnClickListener(addDoFollowClickListener(followProfile.profileHeader.items[0].encryptedUserID))
+            btnAction?.setOnClickListener(
+                addDoFollowClickListener(
+                    followProfile.profileHeader.items[0].encryptedUserID,
+                    isFollowed
+                )
+            )
         }
     }
 

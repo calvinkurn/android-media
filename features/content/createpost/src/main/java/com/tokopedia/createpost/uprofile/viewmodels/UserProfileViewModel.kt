@@ -29,7 +29,7 @@ class UserProfileViewModel @Inject constructor(
     public val profileTheyFollowLiveData = MutableLiveData<Resources<UserProfileIsFollow>>()
     public var profileHeaderErrorMessageLiveData = MutableLiveData<Throwable>()
     public var followErrorMessageLiveData = MutableLiveData<Throwable>()
-    public var followUnErrorMessageLiveData = MutableLiveData<Throwable>()
+    public var unFollowErrorMessageLiveData = MutableLiveData<Throwable>()
 
     public fun getUserDetails(userName: String) {
         launchCatchError(block = {
@@ -61,8 +61,9 @@ class UserProfileViewModel @Inject constructor(
             if (data != null) {
                 profileDoFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            followErrorMessageLiveData.value = it
+        })
     }
 
     fun doUnFollow(unFollowingUserIdEnc: String) {
@@ -72,7 +73,7 @@ class UserProfileViewModel @Inject constructor(
                 profileDoUnFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
-            followUnErrorMessageLiveData.value = it
+            unFollowErrorMessageLiveData.value = it
         })
     }
 
@@ -83,7 +84,6 @@ class UserProfileViewModel @Inject constructor(
                 profileTheyFollowLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
-            followErrorMessageLiveData.value = it
         })
     }
 }
