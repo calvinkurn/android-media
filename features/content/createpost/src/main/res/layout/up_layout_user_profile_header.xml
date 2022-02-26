@@ -194,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cp_dp_2"
-                    android:text="john.doe"
+                    tools:text="john.doe"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_display_name"

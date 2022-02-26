@@ -312,7 +312,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
         textBio?.text = data.profileHeader.profile.biography
-        textUserName?.text = "@" + data.profileHeader.profile.username
+
+        if(data.profileHeader.profile.username.isNotBlank()){
+            textUserName?.text = "@" + data.profileHeader.profile.username
+        }
+
         textDisplayName?.text = data.profileHeader.profile.name
         textContentCount?.text = data.profileHeader.stats.totalPostFmt
         textFollowerCount?.text = data.profileHeader.stats.totalFollowerFmt
