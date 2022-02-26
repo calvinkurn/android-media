@@ -4,11 +4,11 @@ import PostItemDecoration
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -33,21 +33,25 @@ import com.tokopedia.createpost.uprofile.model.UserProfileIsFollow
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.feedcomponent.util.util.convertDpToPixel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
+import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
+import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -73,6 +77,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var headerProfile: HeaderUnify? = null
     private var appBarLayout: AppBarLayout? = null
     private var userId = ""
+    private var container: ViewFlipper? = null
+    private var globalError: GlobalError? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -101,6 +107,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        container = view.findViewById(R.id.container)
+        globalError = view.findViewById(R.id.global_error)
         initObserver()
         initListener()
         setHeader()
@@ -157,6 +165,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addDoFollowedObserver()
         addDoUnFollowedObserver()
         addTheyFollowedObserver()
+        addErrorObserver()
     }
 
     private fun addUserProfileObserver() =
@@ -165,9 +174,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 when (it) {
                     is Loading -> showLoader()
                     is ErrorMessage -> {
-                        //TODO show error page
+
                     }
                     is Success -> {
+                        container?.displayedChild = 0
                         setMainUi(it.data)
                         mPresenter.getFollowingStatus(mutableListOf(profileUserId))
                     }
@@ -259,6 +269,51 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
         })
 
+    private fun addErrorObserver() =
+        mPresenter.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        container?.displayedChild = 1
+                        globalError?.setType(NO_CONNECTION)
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            initLandingPageData()
+                        }
+                    }
+                    is IllegalStateException -> {
+                        container?.displayedChild = 1
+                        globalError?.setType(PAGE_FULL)
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            initLandingPageData()
+                        }
+                    }
+                    is RuntimeException -> {
+                        when (it.localizedMessage?.toIntOrNull()) {
+                            ReponseStatus.NOT_FOUND -> {
+                                container?.displayedChild = 1
+                                globalError?.setType(PAGE_NOT_FOUND)
+                                globalError?.show()
+                            }
+                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                container?.displayedChild = 1
+                                globalError?.setType(SERVER_ERROR)
+                                globalError?.show()
+                            }
+                            else -> {
+                                container?.displayedChild = 1
+                                globalError?.setType(SERVER_ERROR)
+                                globalError?.show()
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
     private fun addLiveClickListener(appLink: String) = View.OnClickListener {
         RouteManager.route(context, appLink)
     }
@@ -313,7 +368,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
         textBio?.text = data.profileHeader.profile.biography
 
-        if(data.profileHeader.profile.username.isNotBlank()){
+        if (data.profileHeader.profile.username.isNotBlank()) {
             textUserName?.text = "@" + data.profileHeader.profile.username
         }
 

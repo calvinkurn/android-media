@@ -7,4 +7,12 @@
     android:measureAllChildren="false">
 
     <include layout="@layout/up_layout_user_profile_header" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_marginTop="@dimen/dp_85"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </ViewFlipper>

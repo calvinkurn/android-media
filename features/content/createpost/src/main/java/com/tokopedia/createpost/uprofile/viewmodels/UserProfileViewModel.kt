@@ -28,6 +28,7 @@ class UserProfileViewModel @Inject constructor(
     public val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
     public val profileDoUnFollowLiveData = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
     public val profileTheyFollowLiveData = MutableLiveData<Resources<UserProfileIsFollow>>()
+    public var errorMessageLiveData = MutableLiveData<Throwable>()
 
     public fun getUserDetails(userName: String) {
         launchCatchError(block = {
@@ -36,8 +37,9 @@ class UserProfileViewModel @Inject constructor(
                 userDetailsLiveData.value = Success(data.getData(ProfileHeaderBase::class.java))
                 //profileTheyFollowLiveData.value = Success(data.getData(UserProfileIsFollow::class.java))
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            errorMessageLiveData.value = it
+        })
     }
 
 
