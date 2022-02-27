@@ -20,6 +20,7 @@ import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
+import com.tokopedia.catalog.model.util.OrientationAwareRecyclerView
 import com.tokopedia.catalog.viewmodel.CatalogForYouViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -51,7 +52,7 @@ class CatalogForYouContainerViewHolder(private val view : View,
 
     private var catalogForYouViewModel : CatalogForYouViewModel? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-    private var recyclerView : RecyclerView? = null
+    private var recyclerView : OrientationAwareRecyclerView? = null
     private val firstPage = 1
     private val rowLimit = 10
 
@@ -81,7 +82,7 @@ class CatalogForYouContainerViewHolder(private val view : View,
     }
 
     private fun setUpRecyclerView(view : View) {
-        view.findViewById<RecyclerView>(R.id.catalog_for_you_rv)?.let { rV ->
+        view.findViewById<OrientationAwareRecyclerView>(R.id.catalog_for_you_rv)?.let { rV ->
             recyclerView = rV
             recyclerView?.apply {
                 layoutManager = myLayoutManger
