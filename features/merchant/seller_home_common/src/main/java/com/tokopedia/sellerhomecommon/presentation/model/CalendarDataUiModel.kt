@@ -9,8 +9,9 @@ data class CalendarDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val eventGroups: List<CalendarEventGroupUiModel> = emptyList()
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return eventGroups.isEmpty()

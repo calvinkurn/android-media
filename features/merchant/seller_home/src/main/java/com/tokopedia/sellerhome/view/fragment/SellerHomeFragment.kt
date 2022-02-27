@@ -729,22 +729,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             .show(childFragmentManager)
     }
 
-    override fun reloadCalendarWidget(element: CalendarWidgetUiModel) {
-        val widgets = adapter.data.map {
-            return@map if (it.dataKey == element.dataKey) {
-                it.copyWidget().apply {
-                    data = null
-                }
-            } else {
-                it
-            }
-        }
-        notifyWidgetWithSdkChecking {
-            updateWidgets(widgets)
-        }
-        getWidgetsData(widgets)
-    }
-
     override fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
         SellerHomeTracking.sendCalendarImpressionEvent(element)
     }
@@ -2136,7 +2120,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             val tempWidget = if (isTheSameWidget && isCacheData) {
                 similarWidget.add(it)
                 it.copyWidget().apply {
-                    //set data to null to show loading state
                     showLoadingState = true
                 }
             } else {
@@ -2146,15 +2129,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
-    }
-
-    private fun launchOnViewLifecycleScope(
-        context: CoroutineContext = Dispatchers.Default,
-        action: suspend () -> Unit
-    ) {
-        viewLifecycleOwner.lifecycleScope.launch(context) {
-            action()
-        }
     }
 
     private fun setupRamadhanBackgroundGradient() {
