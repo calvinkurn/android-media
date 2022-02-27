@@ -167,7 +167,7 @@ class RecommendationViewHolder(
                 val marginTop = root.context.resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
                 )
-                slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
+                slvShcShopLevel.setMargin(marginLeft, marginTop, Int.ZERO, Int.ZERO)
                 return
             }
 
@@ -196,7 +196,7 @@ class RecommendationViewHolder(
                 val marginTop = root.context.resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
                 )
-                slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
+                slvShcShopLevel.setMargin(marginLeft, marginTop, Int.ZERO, Int.ZERO)
             }
         }
     }
@@ -284,7 +284,7 @@ class RecommendationViewHolder(
 
                         val margin = root.context.dpToPx(DIMEN_16_DP).toInt()
                         val marginTopLastUpdated = root.context.dpToPx(DIMEN_20_DP).toInt()
-                        tvShcRecommendationCta.setMargin(0, margin, margin8dp, margin)
+                        tvShcRecommendationCta.setMargin(Int.ZERO, margin, margin8dp, margin)
                         luvShcRecommendation.setMargin(
                             luvShcRecommendation.left,
                             marginTopLastUpdated,
@@ -302,7 +302,7 @@ class RecommendationViewHolder(
 
                         val marginTopLastUpdated = root.context.dpToPx(DIMEN_12_DP).toInt()
                         val marginBottom = root.context.dpToPx(DIMEN_16_DP).toInt()
-                        tvShcRecommendationCta.setMargin(0, margin8dp, margin8dp, marginBottom)
+                        tvShcRecommendationCta.setMargin(Int.ZERO, margin8dp, margin8dp, marginBottom)
                         luvShcRecommendation.setMargin(
                             luvShcRecommendation.left,
                             marginTopLastUpdated,
