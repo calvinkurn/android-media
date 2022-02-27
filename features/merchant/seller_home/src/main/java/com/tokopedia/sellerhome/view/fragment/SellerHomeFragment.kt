@@ -13,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -31,7 +30,6 @@ import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -104,7 +102,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -2110,14 +2107,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
         val similarWidget = mutableListOf<BaseWidgetUiModel<*>>()
         val widgets = adapter.data.map {
             val isTheSameWidget = it.widgetType == widget.widgetType
-            val isCacheData = (it.data as? LastUpdatedDataInterface)
-                ?.lastUpdated?.needToUpdated.orFalse()
-            val tempWidget = if (isTheSameWidget && isCacheData) {
+            val tempWidget = if (isTheSameWidget) {
                 similarWidget.add(it)
                 it.copyWidget().apply {
                     showLoadingState = true
@@ -2125,7 +2119,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 it
             }
-            return@map tempWidget as BaseWidgetUiModel<BaseDataUiModel>
+            return@map tempWidget
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
