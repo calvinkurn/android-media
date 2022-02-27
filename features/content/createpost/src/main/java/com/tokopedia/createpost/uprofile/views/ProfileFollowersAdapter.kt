@@ -77,7 +77,13 @@ open class ProfileFollowersAdapter(
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
         holder.textName.text = item.profile.name
-        holder.textUsername.text = item.profile.username
+
+        if (item.profile.username.isNotBlank()) {
+            holder.textUsername.show()
+            holder.textUsername.text = "@" + item.profile.username
+        } else {
+            holder.textUsername.hide()
+        }
 
         holder.itemView.setOnClickListener { v ->
             RouteManager.route(itemContext, item.profile.sharelink.applink)

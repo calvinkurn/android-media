@@ -183,7 +183,11 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         header?.apply {
 
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
-            subtitle = arguments?.getString(EXTRA_USER_NAME).toString()
+            val subTitle = arguments?.getString(EXTRA_USER_NAME).toString()
+
+            if (subTitle.isNotBlank()) {
+                subtitle = "@$subTitle"
+            }
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()
