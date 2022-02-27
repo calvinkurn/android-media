@@ -36,6 +36,12 @@ class RecommendationViewHolder(
         private const val DIMEN_12_DP = 12
         private const val DIMEN_16_DP = 16
         private const val DIMEN_20_DP = 20
+        private const val INT_60 = 60
+        private const val INT_69 = 69
+        private const val INT_70 = 70
+        private const val INT_79 = 79
+        private const val INT_80 = 80
+        private const val INT_100 = 100
     }
 
     private val binding by lazy { ShcRecommendationWidgetBinding.bind(itemView) }
@@ -302,11 +308,16 @@ class RecommendationViewHolder(
 
                         val marginTopLastUpdated = root.context.dpToPx(DIMEN_12_DP).toInt()
                         val marginBottom = root.context.dpToPx(DIMEN_16_DP).toInt()
-                        tvShcRecommendationCta.setMargin(Int.ZERO, margin8dp, margin8dp, marginBottom)
+                        tvShcRecommendationCta.setMargin(
+                            Int.ZERO,
+                            margin8dp,
+                            margin8dp,
+                            marginBottom
+                        )
                         luvShcRecommendation.setMargin(
                             luvShcRecommendation.left,
                             marginTopLastUpdated,
-                            0,
+                            Int.ZERO,
                             marginBottom
                         )
                     }
@@ -324,10 +335,10 @@ class RecommendationViewHolder(
 
     private fun getProgressState(value: Int, max: Int): ShopScorePMWidget.State {
         val textColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-        val barColor = when (value * max / 100) {
-            in 80..100 -> com.tokopedia.unifyprinciples.R.color.Unify_G400
-            in 70..79 -> com.tokopedia.unifyprinciples.R.color.Unify_G300
-            in 60..69 -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
+        val barColor = when (value * max / INT_100) {
+            in INT_80..INT_100 -> com.tokopedia.unifyprinciples.R.color.Unify_G400
+            in INT_70..INT_79 -> com.tokopedia.unifyprinciples.R.color.Unify_G300
+            in INT_60..INT_69 -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
             else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
         }
         return ShopScorePMWidget.State.Custom(textColor, barColor, barColor)
