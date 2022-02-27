@@ -66,20 +66,7 @@ class LastUpdatedView : LinearLayout {
     }
 
     private fun showLastUpdatedInfo() {
-        binding?.viewShcLastUpdatedContainer?.run {
-            visible()
-            /*scaleX = 0f
-            scaleY = 0f*/
-        }
-        /*Handler(Looper.getMainLooper()).postDelayed({
-            binding?.viewShcLastUpdatedContainer?.run {
-                animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(100)
-                    .start()
-            }
-        }, INITIAL_SHOW_DELAY)*/
+        binding?.viewShcLastUpdatedContainer?.visible()
     }
 
     private fun getLastUpdatedInfo(context: Context, timeInMillis: Long): String {
