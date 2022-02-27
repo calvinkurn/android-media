@@ -45,6 +45,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     QuickCoupon(R.layout.quick_coupon_layout, ComponentNames.QuickCoupon.componentName),
     BannerCarousel(R.layout.horizontal_recycler_view_lihat, ComponentNames.BannerCarousel.componentName),
     BannerCarouselItemView(R.layout.banner_carousel_item_layout, ComponentNames.BannerCarouselItemView.componentName),
+    BannerCarouselShimmer(R.layout.disco_shimmer_carousel_banner_layout, ComponentNames.BannerCarouselShimmer.componentName),
 
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp

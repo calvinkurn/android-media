@@ -20,15 +20,18 @@ import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module (includes = [RecommendationModule::class, AffiliateCommonModule::class, PlayWidgetModule::class])
+@Module(includes = [RecommendationModule::class, AffiliateCommonModule::class, PlayWidgetModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope
@@ -41,7 +44,8 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideDiscussionMostHelpfulUseCase(rawQueries: Map<String, String>, graphqlRepository: GraphqlRepository): DiscussionMostHelpfulUseCase =
-            DiscussionMostHelpfulUseCase(rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]?:"", graphqlRepository)
+            DiscussionMostHelpfulUseCase(rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]
+                    ?: "", graphqlRepository)
 
     @ProductDetailScope
     @Provides
@@ -62,25 +66,31 @@ class ProductDetailModule {
 
     @ProductDetailScope
     @Provides
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface, topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
+    }
+
+    @ProductDetailScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @ProductDetailScope
     @Provides
     fun providePlayWidget(
-        playWidgetUseCase: PlayWidgetUseCase,
-        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-        mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
-        connectionUtil: PlayWidgetConnectionUtil
+            playWidgetUseCase: PlayWidgetUseCase,
+            playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+            playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+            mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+            connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(
-            playWidgetUseCase,
-            playWidgetReminderUseCase,
-            playWidgetUpdateChannelUseCase,
-            mapperProviders,
-            connectionUtil
+                playWidgetUseCase,
+                playWidgetReminderUseCase,
+                playWidgetUpdateChannelUseCase,
+                mapperProviders,
+                connectionUtil
         )
     }
 

@@ -17,10 +17,10 @@ import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 /**
  * Created by Yehezkiel on 05/01/21
@@ -29,6 +29,9 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     var productAdapter: ProductDetailAdapter? = null
     var productDaggerComponent: ProductDetailComponent? = null
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var rvPdp: RecyclerView? = null
     private var swipeToRefresh: SwipeRefreshLayout? = null
@@ -70,8 +73,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         super.onActivityCreated(savedInstanceState)
         observeData()
     }
-
-    fun remoteConfig(): RemoteConfig? = (activity as? ProductDetailActivity)?.remoteConfig
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()

@@ -52,6 +52,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
+    private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
@@ -96,6 +97,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _recommendationWidgetData =
         MutableLiveData<Result<List<RecommendationDataUiModel>>>()
     private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
+    private val _calendarWidgetData = MutableLiveData<Result<List<CalendarDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
 
@@ -133,6 +135,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _recommendationWidgetData
     val milestoneWidgetData: LiveData<Result<List<MilestoneDataUiModel>>>
         get() = _milestoneWidgetData
+    val calendarWidgetData: LiveData<Result<List<CalendarDataUiModel>>>
+        get() = _calendarWidgetData
     val shopShareData: LiveData<Result<ShopShareDataUiModel>>
         get() = _shopShareData
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
@@ -435,6 +439,28 @@ class SellerHomeViewModel @Inject constructor(
             }
         }, onError = {
             _milestoneWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getCalendarWidgetData(dataKeys: List<CalendarFilterDataKeyUiModel>) {
+        launchCatchError(block = {
+            val params = GetCalendarDataUseCase.createParams(dataKeys)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getCalendarDataUseCase.get().run {
+                    startCollectingResult(_calendarWidgetData)
+                    val includeCache = isFirstLoad
+                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
+                    executeOnBackground(params, includeCache)
+                }
+            } else {
+                val result = Success(withContext(dispatcher.io) {
+                    getCalendarDataUseCase.get().params = params
+                    return@withContext getCalendarDataUseCase.get().executeOnBackground()
+                })
+                _calendarWidgetData.value = result
+            }
+        }, onError = {
+            _calendarWidgetData.value = Fail(it)
         })
     }
 

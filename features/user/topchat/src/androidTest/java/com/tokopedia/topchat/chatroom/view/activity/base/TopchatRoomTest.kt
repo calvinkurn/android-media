@@ -177,6 +177,9 @@ abstract class TopchatRoomTest {
     protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
 
     @Inject
+    protected lateinit var getChatPreAttachPayloadUseCase: GetChatPreAttachPayloadUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject
@@ -211,6 +214,7 @@ abstract class TopchatRoomTest {
 
     companion object {
         const val MSG_ID = "66961"
+        const val EX_PRODUCT_ID = "1111"
         var chatComponentStub: ChatComponentStub? = null
         var keyboardStateIdling: CountingIdlingResource? = null
     }
@@ -376,6 +380,15 @@ abstract class TopchatRoomTest {
         val viewAction = RecyclerViewActions
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
                 2, click()
+            )
+        onView(withId(R.id.rv_topchat_attachment_menu))
+            .perform(viewAction)
+    }
+
+    protected fun clickAttachVoucherMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                3, click()
             )
         onView(withId(R.id.rv_topchat_attachment_menu))
             .perform(viewAction)
@@ -855,7 +868,7 @@ abstract class TopchatRoomTest {
             )
     }
 
-    protected fun getAttachProductData(totalProduct: Int): Intent {
+    protected open fun getAttachProductData(totalProduct: Int): Intent {
         val products = ArrayList<ResultProduct>(totalProduct)
         for (i in 0 until totalProduct) {
             products.add(

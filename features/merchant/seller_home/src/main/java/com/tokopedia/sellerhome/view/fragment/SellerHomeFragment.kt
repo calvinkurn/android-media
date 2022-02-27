@@ -31,6 +31,8 @@ import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -72,6 +74,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -79,8 +82,10 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -102,6 +107,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -130,6 +136,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
+
+        private const val GRADIENT_LEFT_URL =
+            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_left.png"
+        private const val GRADIENT_RIGHT_URL =
+            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_right.png"
     }
 
     @Inject
@@ -257,6 +268,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
+        observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
@@ -508,12 +520,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
             element.tableFilters
         ) {
+            SellerHomeTracking.sendTableFilterClickEvent(element)
             recyclerView?.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getTableData(listOf(element))
             }
-            SellerHomeTracking.sendTableFilterClickEvent(element)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
 
@@ -683,6 +695,67 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         refreshSimilarWidgets(widget)
     }
 
+    override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
+        if (!isAdded) {
+            return
+        }
+
+        val perWeekSelectedDate = Date(
+            DateTimeUtil.getTimeInMillis(
+                element.filter.perWeek.startDate,
+                DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+        )
+        val perMontSelectedDate = Date(
+            DateTimeUtil.getTimeInMillis(
+                element.filter.perWeek.startDate,
+                DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+        )
+
+        val prevSelectedFilterType = element.filter.filterType
+        val dateFilters = DateFilterUtil.FilterList
+            .getCalendarPickerFilterList(
+                requireContext(),
+                perWeekSelectedDate,
+                perMontSelectedDate,
+                prevSelectedFilterType
+            )
+
+        CalendarWidgetDateFilterBottomSheet.newInstance(dateFilters)
+            .setOnApplyChanges { dateFilter ->
+                applyCalendarFilter(element, dateFilter)
+            }
+            .show(childFragmentManager)
+    }
+
+    override fun reloadCalendarWidget(element: CalendarWidgetUiModel) {
+        val widgets = adapter.data.map {
+            return@map if (it.dataKey == element.dataKey) {
+                it.copyWidget().apply {
+                    data = null
+                }
+            } else {
+                it
+            }
+        }
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
+        getWidgetsData(widgets)
+    }
+
+    override fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
+        SellerHomeTracking.sendCalendarImpressionEvent(element)
+    }
+
+    override fun sendCalendarItemClickEvent(
+        element: CalendarWidgetUiModel,
+        event: CalendarEventUiModel
+    ) {
+        SellerHomeTracking.sendCalendarItemClickEvent(element, event)
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view
@@ -700,6 +773,71 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
+        SellerHomeTracking.sendCalendarFilterClickEvent(element, dateFilter)
+        val calendarWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgets = adapter.data.map {
+            if (it.dataKey == element.dataKey && it is CalendarWidgetUiModel) {
+                val startDate = dateFilter.startDate
+                val endData = dateFilter.endDate
+                if (startDate != null && endData != null) {
+                    val calendarWidget = it.apply calendarWidget@{
+                        data = null
+                        filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
+                    }.copyWidget()
+                    calendarWidgets.add(calendarWidget)
+                    return@map calendarWidget
+                } else {
+                    return@map it
+                }
+            } else {
+                return@map it
+            }
+        }
+
+        getWidgetsData(calendarWidgets)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
+    }
+
+    private fun getAppliedDateFilter(
+        filter: CalendarFilterDataKeyUiModel,
+        startDate: Date,
+        endData: Date,
+        filterType: Int
+    ): CalendarFilterDataKeyUiModel {
+        val startDateStr = DateTimeUtil.format(
+            startDate.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        val endDateStr = DateTimeUtil.format(
+            endData.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        return when (filterType) {
+            DateFilterItem.TYPE_PER_MONTH -> {
+                filter.copy(
+                    perMonth = CalendarFilterDataKeyUiModel.DateRange(
+                        startDate = startDateStr,
+                        endDate = endDateStr
+                    ),
+                    filterType = filterType
+                )
+            }
+            else -> {
+                filter.copy(
+                    perWeek = CalendarFilterDataKeyUiModel.DateRange(
+                        startDate = startDateStr,
+                        endDate = endDateStr
+                    ),
+                    filterType = filterType
+                )
+            }
+        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -764,8 +902,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setRecyclerViewLayoutAnimation()
-
-        setViewBackground()
+        setupRamadhanBackgroundGradient()
     }
 
     /**
@@ -909,6 +1046,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
         startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
         sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
+    }
+
+    private fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
+        widgets.setLoading()
+        val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>()
+            .map {
+                it.filter
+            }
+        sellerHomeViewModel.getCalendarWidgetData(dataKeys)
     }
 
     private fun setupShopSharing() {
@@ -1209,6 +1356,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.RECOMMENDATION]?.run { getRecommendationData(this) }
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
+        groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
@@ -1431,16 +1579,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     userSession.deviceId.orEmpty()
                 )
             }
-        }
-    }
-
-    private fun setViewBackground() = binding?.run {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        when {
-            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
         }
     }
 
@@ -1836,11 +1974,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @SuppressLint("NotifyDataSetChanged")
     @Suppress("UNCHECKED_CAST")
-    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
+    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<*>>) {
         try {
             val diffUtilCallback = SellerHomeDiffUtilCallback(
                 adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                newWidgets
+                newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>
             )
             val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
             adapter.data.clear()
@@ -2016,6 +2154,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     ) {
         viewLifecycleOwner.lifecycleScope.launch(context) {
             action()
+        }
+    }
+
+    private fun setupRamadhanBackgroundGradient() {
+        binding?.run {
+            ivSahRamadhanBgLeft.loadImageWithoutPlaceholder(GRADIENT_LEFT_URL)
+            ivSahRamadhanBgRight.loadImageWithoutPlaceholder(GRADIENT_RIGHT_URL)
         }
     }
 

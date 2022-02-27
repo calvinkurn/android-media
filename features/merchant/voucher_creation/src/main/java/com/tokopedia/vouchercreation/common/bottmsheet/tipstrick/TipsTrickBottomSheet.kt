@@ -25,7 +25,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrick
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
-import com.tokopedia.vouchercreation.create.view.enums.VoucherDisplay
+import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherDisplay
 import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.view.*
 import timber.log.Timber

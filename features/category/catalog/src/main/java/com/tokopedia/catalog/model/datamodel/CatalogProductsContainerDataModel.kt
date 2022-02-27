@@ -16,7 +16,7 @@ data class CatalogProductsContainerDataModel (val name : String = "", val type :
     }
 
     override fun equalsWith(newData: BaseCatalogDataModel): Boolean {
-        return false
+        return true
     }
 
     override fun getChangePayload(newData: BaseCatalogDataModel): Bundle? {
