@@ -543,17 +543,20 @@ class SellerHomeLayoutHelper @Inject constructor(
     }
 
     private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel> {
-        widgets.forEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>().map {
             it.filter
         }
         val params = GetCalendarDataUseCase.createParams(dataKeys)
-        getCalendarDataUseCase.get().params = params
+        val useCase = getCalendarDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
         }
-        return getCalendarDataUseCase.get().executeOnBackground()
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {

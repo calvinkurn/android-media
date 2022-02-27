@@ -445,19 +445,17 @@ class SellerHomeViewModel @Inject constructor(
     fun getCalendarWidgetData(dataKeys: List<CalendarFilterDataKeyUiModel>) {
         launchCatchError(block = {
             val params = GetCalendarDataUseCase.createParams(dataKeys)
+            val useCase = getCalendarDataUseCase.get()
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                getCalendarDataUseCase.get().run {
+                useCase.run {
                     startCollectingResult(_calendarWidgetData)
                     val includeCache = isFirstLoad
                             && remoteConfig.isSellerHomeDashboardCachingEnabled()
                     executeOnBackground(params, includeCache)
                 }
             } else {
-                val result = Success(withContext(dispatcher.io) {
-                    getCalendarDataUseCase.get().params = params
-                    return@withContext getCalendarDataUseCase.get().executeOnBackground()
-                })
-                _calendarWidgetData.value = result
+                useCase.params = params
+                getDataFromUseCase(useCase, _calendarWidgetData)
             }
         }, onError = {
             _calendarWidgetData.value = Fail(it)
