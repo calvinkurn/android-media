@@ -255,9 +255,9 @@
         android:id="@+id/vp_rv_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintTop_toBottomOf="@+id/btn_action_follow">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -274,6 +274,8 @@
             tools:listitem="@layout/up_item_user_post" />
 
         <include layout="@layout/up_shimmer_user_post" />
+
+        <include layout="@layout/up_layout_error_empty_user_post" />
 
     </ViewFlipper>
 

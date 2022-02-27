@@ -74,9 +74,18 @@ open class UserPostBaseAdapter(
     }
 
     fun onSuccess(data: UserPostModel) {
-        loadCompleted(data.playGetContentSlot.data[0].items, data)
-        isLastPage = data.playGetContentSlot.playGetContentSlot.nextCursor.isEmpty()
-        cursor = data.playGetContentSlot.playGetContentSlot.nextCursor;
+        if(data ==  null
+            || data.playGetContentSlot == null
+            || data.playGetContentSlot.data == null
+            || data.playGetContentSlot.data.size == 0){
+            loadCompleted(mutableListOf(), data)
+            isLastPage = true
+            cursor = ""
+        } else {
+            loadCompleted(data?.playGetContentSlot?.data[0]?.items, data)
+            isLastPage = data?.playGetContentSlot?.playGetContentSlot?.nextCursor?.isEmpty()
+            cursor = data?.playGetContentSlot?.playGetContentSlot?.nextCursor;
+        }
     }
 
     fun onError() {
