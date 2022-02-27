@@ -137,15 +137,15 @@ object CatalogDetailAnalytics {
         category: String,
         eventLabel: String,
         catalogId: String,
-        catalogName : String,
         position: Int,
         userId: String,
-        impressedCatalogId : String
+        impressedCatalogId : String,
+        impressedCatalogName : String
     ){
         val bundle = Bundle()
         val itemBundle = Bundle().apply {
             putString(EventKeys.KEY_ITEM_ID,impressedCatalogId)
-            putString(EventKeys.KEY_CREATIVE_NAME,catalogName)
+            putString(EventKeys.KEY_CREATIVE_NAME,impressedCatalogName)
             putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
             putString(EventKeys.KEY_ITEM_NAME,KATALOG_PiILIHAN_UNTUKMU)
         }

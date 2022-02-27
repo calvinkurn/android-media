@@ -456,10 +456,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             "current catalog-id: $catalogId - click catalog-id: ${catalogComparison.id}",
             catalogId,
-            catalogName,
             adapterPosition,
             userSession.userId,
-            "${catalogComparison.id}")
+            "${catalogComparison.id}",
+            catalogComparison.name ?: ""
+            )
         context?.let { context ->
 //            if(!catalogComparison.appLink.isNullOrBlank()){
 //                RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
@@ -475,10 +476,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             "current catalog-id: $catalogId - impress catalog-id: ${model.item.id}",
             catalogId,
-            catalogName,
             adapterPosition,
             userSession.userId,
-            "${model.item.id}")
+            "${model.item.id}",
+            model.item.name ?: ""
+        )
     }
 
     /*********************************   WishList  ******************************/
