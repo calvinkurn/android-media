@@ -12,7 +12,7 @@ data class CalendarDataUiModel(
     val eventGroups: List<CalendarEventGroupUiModel> = emptyList()
 ) : BaseDataUiModel {
 
-    override fun shouldRemove(): Boolean {
+    override fun isWidgetEmpty(): Boolean {
         return eventGroups.isEmpty()
     }
 }

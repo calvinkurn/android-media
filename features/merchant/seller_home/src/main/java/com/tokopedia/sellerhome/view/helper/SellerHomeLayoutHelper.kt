@@ -236,7 +236,8 @@ class SellerHomeLayoutHelper @Inject constructor(
             isFromCache
         )
         val calendarDataFlow = groupedWidgets.getWidgetDataByType<CalendarDataUiModel>(
-            WidgetType.CALENDAR
+            WidgetType.CALENDAR,
+            isFromCache
         )
 
         return combine(
