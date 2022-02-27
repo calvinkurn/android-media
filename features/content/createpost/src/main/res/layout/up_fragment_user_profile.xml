@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_Background"
-    android:measureAllChildren="false">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/up_layout_user_profile_header" />
+    <ViewFlipper
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
+        android:measureAllChildren="false">
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/global_error"
-        android:layout_marginTop="@dimen/dp_85"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <include layout="@layout/up_layout_user_profile_header" />
 
-</ViewFlipper>
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_85" />
+
+    </ViewFlipper>
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

@@ -19,6 +19,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
@@ -79,6 +80,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var userId = ""
     private var container: ViewFlipper? = null
     private var globalError: GlobalError? = null
+    private var isSwipeRefresh: Boolean? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -118,14 +120,21 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             activity?.finish()
         }
 
-        initLandingPageData()
         userSession = UserSession(context)
+
+        view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
+            isSwipeRefresh = true
+            refreshLandingPageData(true)
+        }
+
+        //Get landing page, profile header page
+        landedUserName = requireArguments().getString(EXTRA_USERNAME)
+        refreshLandingPageData(true)
     }
 
-    private fun initLandingPageData() {
-        landedUserName = requireArguments().getString(EXTRA_USERNAME)
+    private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
-            mPresenter.getUserDetails(it)
+            mPresenter.getUserDetails(it, isRefreshPost)
         }
     }
 
@@ -168,21 +177,43 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addProfileHeaderErrorObserver()
         addSocialFollowErrorObserver()
         addSocialUnFollowErrorObserver()
+        addUserPostObserver()
     }
 
     private fun addUserProfileObserver() =
         mPresenter.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
-                    is Loading -> showLoader()
+                    is Loading -> {
+                        if (isSwipeRefresh == true) {
+                            //TODO show shimmer
+                        }
+                    }
                     is ErrorMessage -> {
 
                     }
                     is Success -> {
+                        if (isSwipeRefresh == true) {
+                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                                false
+                            isSwipeRefresh = !isSwipeRefresh!!
+                        } else {
+                            //Hide shimmer
+                        }
+
                         container?.displayedChild = 0
                         setMainUi(it.data)
                         mPresenter.getFollowingStatus(mutableListOf(profileUserId))
                     }
+                }
+            }
+        })
+
+    private fun addUserPostObserver() =
+        mPresenter.userPostLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if (it) {
+                    initUserPost(userId)
                 }
             }
         })
@@ -215,7 +246,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     is Success -> {
                         if (it.data.profileFollowers.errorCode.isBlank()) {
                             updateToFollowUi()
-                            initLandingPageData()
+                            refreshLandingPageData()
                         }
                     }
                     is ErrorMessage -> {
@@ -235,7 +266,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     is Success -> {
                         if (it.data.profileFollowers.errorCode.isBlank()) {
                             updateToUnFollowUi()
-                            initLandingPageData()
+                            refreshLandingPageData()
                         }
                     }
 
@@ -273,7 +304,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         globalError?.show()
 
                         globalError?.setActionClickListener {
-                            initLandingPageData()
+                            refreshLandingPageData()
                         }
                     }
                     is IllegalStateException -> {
@@ -282,7 +313,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         globalError?.show()
 
                         globalError?.setActionClickListener {
-                            initLandingPageData()
+                            refreshLandingPageData()
                         }
                     }
                     is RuntimeException -> {
@@ -381,7 +412,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     private fun setMainUi(data: ProfileHeaderBase) {
         userId = data.profileHeader.profile.userID
-        initUserPost(userId)
 
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
         val textSeeMore = view?.findViewById<TextView>(R.id.text_see_more)
@@ -390,6 +420,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
         val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
+
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
@@ -552,6 +583,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     override fun onResume() {
         super.onResume()
+        refreshLandingPageData()
     }
 
     override fun initInjector() {
@@ -636,7 +668,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            initLandingPageData()
+            refreshLandingPageData()
         }
     }
 

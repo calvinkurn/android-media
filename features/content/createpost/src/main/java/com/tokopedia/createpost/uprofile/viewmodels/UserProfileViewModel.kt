@@ -23,6 +23,7 @@ class UserProfileViewModel @Inject constructor(
 ) : BaseViewModel(Dispatchers.Main) {
 
     public val userDetailsLiveData = MutableLiveData<Resources<ProfileHeaderBase>>()
+    public val userPostLiveData = MutableLiveData<Boolean>()
     public val playPostContentLiveData = MutableLiveData<Resources<UserPostModel>>()
     public val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
     public val profileDoUnFollowLiveData = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
@@ -31,18 +32,17 @@ class UserProfileViewModel @Inject constructor(
     public var followErrorMessageLiveData = MutableLiveData<Throwable>()
     public var unFollowErrorMessageLiveData = MutableLiveData<Throwable>()
 
-    public fun getUserDetails(userName: String) {
+    public fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
             val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
             if (data != null) {
                 userDetailsLiveData.value = Success(data.getData(ProfileHeaderBase::class.java))
-                //profileTheyFollowLiveData.value = Success(data.getData(UserProfileIsFollow::class.java))
+                userPostLiveData.value = isRefreshPost
             } else throw NullPointerException("data is null")
         }, onError = {
             profileHeaderErrorMessageLiveData.value = it
         })
     }
-
 
     public fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
         launchCatchError(block = {
