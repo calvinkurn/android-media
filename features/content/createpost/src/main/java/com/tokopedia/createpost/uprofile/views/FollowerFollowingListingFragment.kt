@@ -17,6 +17,7 @@ import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
+import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.EXTRA_USER_NAME
@@ -40,6 +41,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     var tabLayout: TabsUnify? = null
     var ffViewPager: ViewPager? = null
+    var isFollowersTab: Boolean = true
 
 //    private val mAdapter: UserPostBaseAdapter by lazy {
 //        UserPostBaseAdapter(
@@ -65,6 +67,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         super.onViewCreated(view, savedInstanceState)
         //initObserver()
         //initListener()
+        isFollowersTab = arguments?.getBoolean(EXTRA_IS_FOLLOWERS, true) == true
         setHeader()
         val userSessionInterface = UserSession(context)
         //mPresenter.getUserDetails(userSessionInterface.userId)
@@ -109,7 +112,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
         tabLayout = view?.findViewById(R.id.tp_follow)
 //        tabLayout?.addNewTab("Followers")
 //        tabLayout?.addNewTab("Followings")
-        tabLayout?.visibility = View.VISIBLE
         tabLayout?.apply {
             tabLayout.setTabTextColors(
                 MethodChecker.getColor(
@@ -128,7 +130,12 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 //        // tabs are not used or shown when activity opened
         tabLayout?.setupWithViewPager(ffViewPager!!)
         tabLayout?.getUnifyTabLayout()?.setupWithViewPager(ffViewPager!!)
-        tabLayout?.show()
+
+        if (isFollowersTab) {
+            tabLayout?.getUnifyTabLayout()?.getTabAt(0)?.select()
+        } else {
+            tabLayout?.getUnifyTabLayout()?.getTabAt(1)?.select()
+        }
     }
 
     var adapter: ProfileFollowUnfollowViewPagerAdapter? = null

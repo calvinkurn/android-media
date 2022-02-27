@@ -64,6 +64,15 @@ open class ProfileFollowersAdapter(
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
+        if (data == null
+            || data.profileFollowers == null
+            || data.profileFollowers.profileFollower == null
+        ) {
+            loadCompleted(mutableListOf(), data)
+            isLastPage = true
+            cursor = ""
+        }
+
         loadCompleted(data.profileFollowers.profileFollower, data)
         cursor = data.profileFollowers.newCursor
         isLastPage = data.profileFollowers.newCursor.isEmpty();

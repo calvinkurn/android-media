@@ -18,7 +18,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class FollowerFollowingListingActivity : BaseSimpleActivity() {
 
     private var bundle: Bundle? = null
-    private val REQUEST_CODE_LOGIN = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
