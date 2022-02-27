@@ -37,8 +37,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
                 android:layout_marginTop="@dimen/unify_space_48"
+                android:animateLayoutChanges="true"
                 android:background="@color/Unify_Background"
                 android:measureAllChildren="false"
                 android:paddingStart="@dimen/unify_space_16"
@@ -75,12 +75,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_64"
                     android:background="@color/up_live_bg"
+                    android:gravity="center"
                     android:paddingStart="@dimen/dp_4"
                     android:paddingLeft="@dimen/dp_2"
                     android:paddingEnd="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_2"
                     android:text="LIVE"
-                    android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="8sp"
                     app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
@@ -95,7 +95,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    tools:text="999"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintBottom_toTopOf="@+id/text_content_label"
                     app:layout_constraintEnd_toStartOf="@+id/text_follower_count"
@@ -104,28 +103,28 @@
                     app:layout_constraintTop_toTopOf="@+id/view_profile_outer_ring"
                     app:layout_constraintVertical_chainStyle="packed"
                     app:typographyType="heading_4"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="999" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_follower_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    tools:text="999"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintEnd_toStartOf="@+id/text_following_count"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toEndOf="@+id/text_content_count"
                     app:layout_constraintTop_toTopOf="@+id/text_content_count"
                     app:typographyType="heading_4"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="999" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_following_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    tools:text="999"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread"
@@ -133,7 +132,8 @@
                     app:layout_constraintStart_toEndOf="@+id/text_follower_count"
                     app:layout_constraintTop_toTopOf="@+id/text_content_count"
                     app:typographyType="heading_4"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="999" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_content_label"
@@ -182,23 +182,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    tools:text="John Doe"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view_profile_outer_ring"
                     app:typographyType="heading_3"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="John Doe" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cp_dp_2"
-                    tools:text="john.doe"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_display_name"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_2"
+                    tools:text="john.doe" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_bio"
@@ -207,14 +207,14 @@
                     android:layout_marginTop="4dp"
                     android:ellipsize="end"
                     android:gravity="left"
-                    tools:text="dummy text dummy text dummy text dummy text"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user_name"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_2"
+                    tools:text="dummy text dummy text dummy text dummy text" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_see_more"
@@ -222,12 +222,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Selenkapnya"
-                    android:visibility="gone"
-                    app:typographyWeight="bold"
                     android:textColor="@color/Unify_GN500"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_bio"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_action_follow"
@@ -251,19 +251,31 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <ViewFlipper
+        android:id="@+id/vp_rv_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_action_follow"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/up_item_user_post" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_action_follow">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:clipToPadding="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_action_follow"
+            tools:listitem="@layout/up_item_user_post" />
+
+        <include layout="@layout/up_shimmer_user_post" />
+
+    </ViewFlipper>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/gr_follower"

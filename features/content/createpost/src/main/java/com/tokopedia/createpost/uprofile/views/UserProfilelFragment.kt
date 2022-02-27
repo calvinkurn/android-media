@@ -79,6 +79,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var appBarLayout: AppBarLayout? = null
     private var userId = ""
     private var container: ViewFlipper? = null
+    private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
     private var isSwipeRefresh: Boolean? = null
 
@@ -110,6 +111,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         container = view.findViewById(R.id.container)
+        userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         initObserver()
         initListener()
@@ -660,10 +662,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     override fun onStartFirstPageLoad() {
         //  TODO("Not yet implemented")
+        userPostContainer?.displayedChild = 1
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
+        userPostContainer?.displayedChild = 0
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
