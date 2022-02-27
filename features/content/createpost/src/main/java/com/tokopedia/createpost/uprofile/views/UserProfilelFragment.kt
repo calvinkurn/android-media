@@ -130,6 +130,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         //Get landing page, profile header page
         landedUserName = requireArguments().getString(EXTRA_USERNAME)
         refreshLandingPageData(true)
+        container?.displayedChild = 2
     }
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
