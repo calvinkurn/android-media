@@ -305,6 +305,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         globalError?.show()
 
                         globalError?.setActionClickListener {
+                            container?.displayedChild = 2
                             refreshLandingPageData()
                         }
                     }
@@ -314,6 +315,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         globalError?.show()
 
                         globalError?.setActionClickListener {
+                            container?.displayedChild = 2
                             refreshLandingPageData()
                         }
                     }
@@ -323,16 +325,31 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                                 container?.displayedChild = 1
                                 globalError?.setType(PAGE_NOT_FOUND)
                                 globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    container?.displayedChild = 2
+                                    refreshLandingPageData()
+                                }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
                                 container?.displayedChild = 1
                                 globalError?.setType(SERVER_ERROR)
                                 globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    container?.displayedChild = 2
+                                    refreshLandingPageData()
+                                }
                             }
                             else -> {
                                 container?.displayedChild = 1
                                 globalError?.setType(SERVER_ERROR)
                                 globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    container?.displayedChild = 2
+                                    refreshLandingPageData()
+                                }
                             }
                         }
                     }
