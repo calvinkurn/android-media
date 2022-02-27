@@ -56,7 +56,7 @@ data class PlayPostContentItem(
     val description: String,
 
     @SerializedName("is_live")
-    val isLive: String,
+    val isLive: Boolean,
 
     @SerializedName("id")
     val id: String,

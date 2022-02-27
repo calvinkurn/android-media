@@ -653,7 +653,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onEmptyList(rawObject: Any?) {
@@ -670,15 +670,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
-        // TODO("Not yet implemented")
+
     }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        userPostContainer?.displayedChild = 2
     }
 
     override fun onError(pageNumber: Int) {
-        userPostContainer?.displayedChild = 2
     }
 
     /**

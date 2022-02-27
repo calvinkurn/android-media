@@ -37,6 +37,7 @@ open class UserPostBaseAdapter(
         internal var textLiveCount: TextView = view.findViewById(R.id.text_live_view_count)
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
+        internal var textLive: TextView = view.findViewById(R.id.text_live)
         var isVisited = false
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
@@ -74,10 +75,11 @@ open class UserPostBaseAdapter(
     }
 
     fun onSuccess(data: UserPostModel) {
-        if(data ==  null
+        if (data == null
             || data.playGetContentSlot == null
             || data.playGetContentSlot.data == null
-            || data.playGetContentSlot.data.size == 0){
+            || data.playGetContentSlot.data.size == 0
+        ) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
             cursor = ""
@@ -96,7 +98,6 @@ open class UserPostBaseAdapter(
         val itemContext = holder.itemView.context
         holder.imgCover.setImageUrl(item.coverUrl)
         holder.textName.text = item.title
-        holder.textUsername.text = userName
 
         try {
             if (item.stats.view.formatted.toInt() == 0) {
@@ -107,6 +108,19 @@ open class UserPostBaseAdapter(
             }
         } catch (e: Exception) {
 
+        }
+
+        if (item.isLive) {
+            holder.textLive.show()
+        } else {
+            holder.textLive.hide()
+        }
+
+        if (userName.isNotBlank()) {
+            holder.textUsername.show()
+            holder.textUsername.text = "@$userName"
+        } else {
+            holder.textUsername.hide()
         }
 
         holder.itemView.setOnClickListener { v ->

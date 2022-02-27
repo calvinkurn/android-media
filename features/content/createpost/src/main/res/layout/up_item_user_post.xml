@@ -19,21 +19,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_live"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/bg_up_live"
+        android:gravity="center"
+        android:paddingStart="@dimen/dp_6"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingEnd="@dimen/dp_6"
+        android:paddingRight="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="LIVE"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textAllCaps="true"
+        app:typographyType="body_3" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_live_view_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/cp_bg_totalview"
-        android:padding="@dimen/unify_space_4"
         android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/cp_dp_12"
-        app:typographyType="body_3"
-        android:textColor="@color/Unify_N0"
+        app:barrierAllowsGoneWidgets="true"
+        android:background="@drawable/cp_bg_totalview"
         android:drawableStart="@drawable/ic_play_eye_white"
-        android:text="500"
         android:drawablePadding="@dimen/unify_space_4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:padding="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_live"
+        app:typographyType="body_3"
+        tools:text="500" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -41,31 +64,31 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
-        tools:text="some title willhere"
-        app:typographyType="body_2"
         android:textColor="@color/Unify_N0"
-        app:layout_constraintEnd_toEndOf="@+id/text_user_name"
-        app:layout_constraintRight_toRightOf="@+id/text_user_name"
-        app:layout_constraintLeft_toLeftOf="@+id/text_user_name"
         app:layout_constraintBottom_toTopOf="@+id/text_user_name"
-        app:layout_constraintStart_toStartOf="@+id/text_user_name" />
+        app:layout_constraintEnd_toEndOf="@+id/text_user_name"
+        app:layout_constraintLeft_toLeftOf="@+id/text_user_name"
+        app:layout_constraintRight_toRightOf="@+id/text_user_name"
+        app:layout_constraintStart_toStartOf="@+id/text_user_name"
+        app:typographyType="body_2"
+        tools:text="some title willhere" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_user_name"
         android:layout_width="0dp"
-        app:layout_constraintWidth_default="spread"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/dp_2"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_8"
-        tools:text="john.doe"
-        app:typographyType="body_3"
-        android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/Unify_N0_68"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="spread"
+        app:typographyType="body_3"
+        tools:text="john.doe" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
