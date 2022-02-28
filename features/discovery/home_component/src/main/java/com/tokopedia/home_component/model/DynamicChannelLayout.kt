@@ -30,4 +30,5 @@ object DynamicChannelLayout {
     const val LAYOUT_FEATURED_BRAND = "featured_brand"
     const val LAYOUT_FEATURED_SHOP = "shop_widget"
     const val LAYOUT_BEST_SELLING = "best_selling"
+    const val LAYOUT_MERCHANT_VOUCHER = "merchant_voucher"
 }
