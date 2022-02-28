@@ -41,7 +41,7 @@ internal class EmptySearchProductTest {
     private var recyclerViewIdlingResource: IdlingResource? = null
     private val gtmLogDBSource = GtmLogDBSource(context)
 
-    private val emptyStateProductLayout = R.id.main_retry
+    private val emptyStateProductLayout = R.id.emptyStateKeywordLayout
 
     @Before
     fun setUp() {

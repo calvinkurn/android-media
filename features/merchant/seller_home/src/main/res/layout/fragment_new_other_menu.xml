@@ -22,13 +22,38 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layoutDescription="@xml/fragment_new_other_menu_content_scene">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_sah_new_other_curved_header"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_sah_new_other_curved_header"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/sah_new_other_header_background_height"
-                    android:scaleType="fitXY"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_sah_new_other_curved_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/sah_new_other_header_background_height"
+                        android:scaleType="fitXY"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_sah_new_other_ramadhan_pattern"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/ic_sah_ramadhan_pattern"
+                        app:layout_constraintTop_toTopOf="@id/iv_sah_new_other_curved_header"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_sah_new_other_ramadhan_ketupat"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/ic_sah_ketupat_ornament"
+                        app:layout_constraintTop_toTopOf="@id/iv_sah_new_other_curved_header"
+                        app:layout_constraintEnd_toEndOf="@id/iv_sah_new_other_curved_header"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/layout_sah_new_other_info"

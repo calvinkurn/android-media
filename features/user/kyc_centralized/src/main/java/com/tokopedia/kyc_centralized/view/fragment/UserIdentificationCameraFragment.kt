@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.size.Size
@@ -22,11 +23,15 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
+import timber.log.Timber
 import java.io.File
+import java.nio.file.Files
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -289,6 +294,11 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         if (cameraResultFile.exists()) {
             imagePreview?.loadImage(cameraResultFile.absolutePath)
             imagePath = cameraResultFile.absolutePath
+            Timber.d(
+                "$LIVENESS_TAG: Successfully took an image. path: %s, size: %s",
+                imagePath.substringAfterLast("/"),
+                FileUtil.getFileSizeInKb(cameraResultFile)
+            )
             showImagePreview()
         } else {
             Toast.makeText(context, getString(R.string.error_upload_image_kyc), Toast.LENGTH_LONG).show()

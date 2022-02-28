@@ -12,6 +12,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiMod
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
@@ -68,6 +69,7 @@ class LayoutMapper @Inject constructor(
                             WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
                             WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
+                            WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -416,6 +418,30 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
+
+    private fun mapToCalendarWidget(
+        widget: WidgetModel,
+        fromCache: Boolean
+    ): CalendarWidgetUiModel {
+        return CalendarWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = fromCache,
             emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }

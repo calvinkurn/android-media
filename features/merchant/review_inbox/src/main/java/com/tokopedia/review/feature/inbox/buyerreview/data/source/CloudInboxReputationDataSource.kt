@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.source
 
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.review.common.util.ReviewInboxUtil.convertMapObjectToString
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper

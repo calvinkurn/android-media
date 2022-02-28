@@ -15,9 +15,12 @@ import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.*
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -74,7 +77,6 @@ class AffiliateHomeViewModel @Inject constructor(
                 totalItemsCount.value = 0
                 performanceList =
                     affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
-                dataPlatformShimmerVisibility.value = false
             } else {
                 shimmerVisibility.value = true
             }
@@ -83,6 +85,7 @@ class AffiliateHomeViewModel @Inject constructor(
                 lastID
             ).getAffiliatePerformanceList?.data?.data.let {
                 lastID = it?.lastID ?: "0"
+                if(page == PAGE_ZERO) dataPlatformShimmerVisibility.value = false
                 convertDataToVisitables(it, performanceList, page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
@@ -118,7 +121,7 @@ class AffiliateHomeViewModel @Inject constructor(
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         if (page == PAGE_ZERO) {
-            tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
+            tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange,selectedDateMessage)))
             tempList.add(
                 AffiliateUserPerformanceModel(
                     AffiliateUserPerformaData(
@@ -160,6 +163,8 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
+    private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
+
     private var selectedDateValue = "30"
 
 
@@ -182,6 +187,7 @@ class AffiliateHomeViewModel @Inject constructor(
         if (selectedDateRange != range.text) {
             selectedDateRange = range.text
             selectedDateValue = range.value
+            selectedDateMessage = range.message
             rangeChanged.value = true
         }
     }
