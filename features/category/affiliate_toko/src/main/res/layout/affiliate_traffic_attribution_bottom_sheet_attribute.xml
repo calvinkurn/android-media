@@ -4,6 +4,7 @@
     android:id="@+id/affiliate_parent_linear"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl4"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -11,8 +12,7 @@
         android:text="Jumlah komisi yang kamu dapatkan dari tingkat pembelian produk dan kunjungan."
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        app:typographyType="body_1"
+        app:typographyType="body_2"
         />
 
     <androidx.recyclerview.widget.RecyclerView
