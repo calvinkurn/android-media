@@ -3,9 +3,6 @@ package com.tokopedia.notifications.common
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
@@ -14,15 +11,13 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.notifications.utils.CMDeviceConfig
 import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.net.MalformedURLException
 import java.net.URLDecoder
-import java.net.UnknownHostException
 import java.util.*
 import kotlin.ClassCastException
 import kotlin.coroutines.CoroutineContext
@@ -49,7 +44,6 @@ object CMNotificationUtils {
 
     val sdkVersion: Int
         get() = Build.VERSION.SDK_INT
-
 
     private fun tokenUpdateRequired(newToken: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldToken = cacheHandler.getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
@@ -94,7 +88,6 @@ object CMNotificationUtils {
         }
         return userIdInt
     }
-
 
     private fun mapTokenWithUserRequired(newUserId: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldUserID = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY)
@@ -180,32 +173,6 @@ object CMNotificationUtils {
         }
 
         return "NA"
-    }
-
-    fun loadBitmapFromUrl(imageUrl: String?): Bitmap? {
-        if (imageUrl == null || imageUrl.length == 0) {
-            return null
-        }
-        var bitmap: Bitmap? = null
-        try {
-            val inputStream = java.net.URL(imageUrl).openStream()
-            bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
-        } catch (e: OutOfMemoryError) {
-            Log.e(TAG, String.format("Out of Memory Error in image bitmap download for Url: %s.", imageUrl))
-            return null
-        } catch (e: UnknownHostException) {
-            Log.e(TAG, String.format("Unknown Host Exception in image bitmap download for Url: %s. Device " + "may be offline.", imageUrl))
-            return null
-        } catch (e: MalformedURLException) {
-            Log.e(TAG, String.format("Malformed URL Exception in image bitmap download for Url: %s. Image " + "Url may be corrupted.", imageUrl))
-            return null
-        } catch (e: Exception) {
-            Log.e(TAG, String.format("Exception in image bitmap download for Url: %s", imageUrl))
-            return null
-        }
-
-        return bitmap
     }
 
     fun hasActionButton(baseNotificationModel: BaseNotificationModel): Boolean {
@@ -301,23 +268,19 @@ object CMNotificationUtils {
     }
 
 
-    fun isDarkMode(context: Context): Boolean {
-        return try {
-            when (context.resources.configuration.uiMode and
-                    Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> true
-                Configuration.UI_MODE_NIGHT_NO -> false
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> false
-                else -> false
-            }
-        } catch (ignored: Exception) {
-            false
-        }
+    fun checkTokenValidity(token: String): Boolean {
+        return token.length <= 36
     }
 
 
-    fun checkTokenValidity(token: String): Boolean {
-        return token.length <= 36
+    fun getWifiMacAddress(context: Context): String {
+        val cacheHandler = CMNotificationCacheHandler(context)
+        var macAddress = cacheHandler.getStringValue(CMConstant.CMPrefKeys.KEY_WIFI_MAC_ADDRESS)
+        if(macAddress.isNullOrBlank() || macAddress == CMDeviceConfig.UNKNOWN){
+            macAddress = CMDeviceConfig.getCMDeviceConfig().getWifiMAC()
+            cacheHandler.saveStringValue(CMConstant.CMPrefKeys.KEY_WIFI_MAC_ADDRESS, macAddress)
+        }
+        return macAddress
     }
 }
 

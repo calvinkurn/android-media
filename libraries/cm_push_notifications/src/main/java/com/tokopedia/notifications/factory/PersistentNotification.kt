@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.PersistentButton
+import com.tokopedia.notifications.utils.CMDeviceConfig
 
 /**
  * @author lalit.singh
@@ -56,7 +56,7 @@ class PersistentNotification internal constructor(
         //if not Q and any mode - black
         remoteView.setImageViewResource(R.id.image_icon5,
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if (CMNotificationUtils.isDarkMode(context)) {
+                    if (CMDeviceConfig.getCMDeviceConfig().isDarkMode(context)) {
                         R.drawable.cm_ic_btn_close_white
                     } else {
                         R.drawable.cm_ic_btn_close_black
