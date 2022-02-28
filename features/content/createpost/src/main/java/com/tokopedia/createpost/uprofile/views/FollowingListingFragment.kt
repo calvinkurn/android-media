@@ -84,6 +84,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     private fun initObserver() {
         addListObserver()
+        addFollowersErrorObserver()
     }
 
     private fun initMainUi() {
