@@ -127,6 +127,10 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedBrandViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
     override fun type(bestSellerDataModel: BestSellerDataModel): Int {
         return BestSellerViewHolder.LAYOUT
     }
