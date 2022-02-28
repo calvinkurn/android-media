@@ -466,11 +466,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             catalogComparison.name ?: ""
             )
         context?.let { context ->
-//            if(!catalogComparison.appLink.isNullOrBlank()){
-//                RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
-//            }
-            // TODO add appLink in GQL
-            RouteManager.route(context,"${CatalogConstant.CATALOG_URL}${catalogComparison.id}")
+            if(!catalogComparison.appLink.isNullOrBlank()){
+                RouteManager.route(context,catalogComparison.appLink)
+            }
         }
     }
 
