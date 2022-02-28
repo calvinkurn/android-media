@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.user.session.UserSession
@@ -231,6 +233,11 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun onEmptyList(rawObject: Any?) {
         followersContainer?.displayedChild = 3 //emptypage
+        val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
+        val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
+
+        textTitle?.text = "No followings"
+        textDescription?.hide()
     }
 
     override fun onStartFirstPageLoad() {

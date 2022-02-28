@@ -22,4 +22,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_85" />
 
+    <include layout="@layout/up_layout_empty_follower" />
+
 </ViewFlipper>

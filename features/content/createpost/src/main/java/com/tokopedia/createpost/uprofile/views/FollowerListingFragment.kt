@@ -28,6 +28,7 @@ import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -232,6 +233,13 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     override fun onEmptyList(rawObject: Any?) {
         followersContainer?.displayedChild = 3 //emptypage
+
+        followersContainer?.displayedChild = 3 //emptypage
+        val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
+        val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
+
+        textTitle?.text = "No followers"
+        textDescription?.hide()
     }
 
     override fun onStartFirstPageLoad() {
