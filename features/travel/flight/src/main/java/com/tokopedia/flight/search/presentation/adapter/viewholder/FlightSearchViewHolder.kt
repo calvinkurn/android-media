@@ -1,11 +1,14 @@
 package com.tokopedia.flight.search.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.flight.R
 import com.tokopedia.flight.databinding.ItemFlightSearchNewBinding
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author by furqan on 13/04/2020
@@ -115,19 +118,24 @@ class FlightSearchViewHolder(val binding: ItemFlightSearchNewBinding,
 
     private fun setSeatDistanceAndRapidTest(element: FlightJourneyModel) {
         with(binding) {
-            if (element.isSeatDistancing) {
-                labelSeatDistancing.visibility = View.VISIBLE
-            } else {
-                labelSeatDistancing.visibility = View.GONE
+            val isFreeRapidTest = element.freeRapidTestLabel.isNotEmpty()
+            val isSeatDistancing = element.seatDistancingLabel.isNotEmpty()
+
+            if (isSeatDistancing){
+                labelSeatDistancing.text = element.seatDistancingLabel
+                labelSeatDistancing.show()
+            }else{
+                labelSeatDistancing.hide()
             }
 
-            if (element.hasFreeRapidTest) {
-                labelFreeRapidTest.visibility = View.VISIBLE
-            } else {
-                labelFreeRapidTest.visibility = View.GONE
+            if (isFreeRapidTest){
+                labelFreeRapidTest.text = element.freeRapidTestLabel
+                labelFreeRapidTest.show()
+            }else{
+                labelFreeRapidTest.hide()
             }
 
-            if (element.isSeatDistancing && element.hasFreeRapidTest) {
+            if (isSeatDistancing && isFreeRapidTest) {
                 labelSeatDistancingBackground.visibility = View.VISIBLE
             } else {
                 labelSeatDistancingBackground.visibility = View.GONE
@@ -136,6 +144,7 @@ class FlightSearchViewHolder(val binding: ItemFlightSearchNewBinding,
     }
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.item_flight_search_new
     }
 
