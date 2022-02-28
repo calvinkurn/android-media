@@ -15,3 +15,13 @@ const val GQL_QUERY_PAYLATER_WIDGET_DATA =
       }
     }
 }"""
+
+
+
+
+const val GQL_QUERY_PAYLATER_WIDGET_CLOSE =
+    """query  {
+  	paylater_closeHomeWidget() {
+     success
+    }
+}"""

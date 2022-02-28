@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
+import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
@@ -66,6 +67,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>,
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
+    private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -633,6 +635,14 @@ open class HomeRevampViewModel @Inject constructor(
     fun deletePayLaterWidgetLocally() {
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             deleteWidget(homePayLaterWidgetDataModel, index)
+            launchCatchError(coroutineContext, {
+                deletePayLaterWidgetUseCase.get().getPayLaterWidgeCloseData({
+                    deleteWidget(homePayLaterWidgetDataModel, index)
+                },{ deleteWidget(homePayLaterWidgetDataModel, index)})
+            }){
+                deleteWidget(homePayLaterWidgetDataModel, index)
+            }
+
         }
     }
 }
