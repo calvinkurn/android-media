@@ -49,9 +49,7 @@ class GyroEngineRequestUseCase @Inject constructor(
 
         // adding wallet balance parameters
         // else return unmodified jsonStr
-        return addWalletParameters(jsonStr, walletBalance)?.let { modifiedJsonStr ->
-            mapOf(PARAM_REQUEST to modifiedJsonStr)
-        } ?: kotlin.run { mapOf(PARAM_REQUEST to jsonStr) }
+        return mapOf(PARAM_REQUEST to addWalletParameters(jsonStr, walletBalance))
     }
 
     private fun computeJsonFromFeatureEngine(thanksPageData: ThanksPageData, mainGatewayCode: String) =
@@ -68,8 +66,8 @@ class GyroEngineRequestUseCase @Inject constructor(
             )
         )
 
-    private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String? {
-        walletBalance?.let {
+    private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String {
+        return walletBalance?.let {
             val jsonObj = JSONObject(jsonStr)
             try {
                 val parameterObj = (jsonObj[PARAM_WALLET_PARAMETERS] as JSONObject)
@@ -77,10 +75,9 @@ class GyroEngineRequestUseCase @Inject constructor(
                     if (item.whitelisted == true)
                         parameterObj.put(item.walletCode, item.isActive.toString())
                 }
-                return jsonObj.toString()
-            } catch (e: Exception) { return "" }
-        }
-        return null
+                jsonObj.toString()
+            } catch (e: Exception) { jsonStr }
+        } ?: run { jsonStr }
     }
 
     private fun isEGoldPurchased(thanksPageData: ThanksPageData): Boolean {
