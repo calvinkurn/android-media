@@ -55,7 +55,8 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         ProfileFollowersAdapter(
             mPresenter,
             this,
-            userSessionInterface
+            userSessionInterface,
+            this
         )
     }
 
@@ -89,7 +90,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
     }
 
-    private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(this, Observer {
+    private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -139,8 +140,13 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            //refreshLandingPageData()
+            refreshPage()
         }
+    }
+
+    fun refreshPage() {
+        mAdapter?.resetAdapter()
+        mAdapter?.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME, ""))
     }
 
     companion object {

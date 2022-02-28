@@ -28,7 +28,8 @@ import com.tokopedia.user.session.UserSession
 open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
     val callback: AdapterCallback,
-    val userSession: UserSession
+    val userSession: UserSession,
+    val fragment: FollowingListingFragment
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -104,8 +105,8 @@ open class ProfileFollowingAdapter(
 
                 holder.btnAction.setOnClickListener { v ->
                     if (userSession?.isLoggedIn == false) {
-                        (itemContext as Activity).startActivityForResult(
-                            RouteManager.getIntent(itemContext, ApplinkConst.LOGIN),
+                        fragment.startActivityForResult(
+                            RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
@@ -119,8 +120,8 @@ open class ProfileFollowingAdapter(
 
                 holder.btnAction.setOnClickListener { v ->
                     if (userSession?.isLoggedIn == false) {
-                        (itemContext as Activity).startActivityForResult(
-                            RouteManager.getIntent(itemContext, ApplinkConst.LOGIN),
+                        fragment.startActivityForResult(
+                            RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {

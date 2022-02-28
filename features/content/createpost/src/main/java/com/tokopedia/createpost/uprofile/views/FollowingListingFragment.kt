@@ -44,7 +44,8 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         ProfileFollowingAdapter(
             mPresenter,
             this,
-            userSessionInterface
+            userSessionInterface,
+            this
         )
     }
 
@@ -153,8 +154,13 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            //refreshLandingPageData()
+            refreshPage()
         }
+    }
+
+    fun refreshPage() {
+        mAdapter?.resetAdapter()
+        mAdapter?.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME, ""))
     }
 
     companion object {

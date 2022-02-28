@@ -236,9 +236,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            //refreshLandingPageData()
-        }
     }
 
     companion object {
