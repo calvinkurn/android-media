@@ -31,6 +31,7 @@ class UserProfileViewModel @Inject constructor(
     public var profileHeaderErrorMessageLiveData = MutableLiveData<Throwable>()
     public var followErrorMessageLiveData = MutableLiveData<Throwable>()
     public var unFollowErrorMessageLiveData = MutableLiveData<Throwable>()
+    public var userPostErrorLiveData = MutableLiveData<Throwable>()
 
     public fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
@@ -51,8 +52,9 @@ class UserProfileViewModel @Inject constructor(
                 playPostContentLiveData.value = Success(data)
 
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            userPostErrorLiveData.value = it
+        })
     }
 
     fun doFollow(followingUserIdEnc: String) {

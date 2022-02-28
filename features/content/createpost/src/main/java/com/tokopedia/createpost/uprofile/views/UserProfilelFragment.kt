@@ -90,6 +90,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var container: ViewFlipper? = null
     private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
+    private var globalErrorPost: GlobalError? = null
     private var isSwipeRefresh: Boolean? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
@@ -122,6 +123,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         container = view.findViewById(R.id.container)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
+        globalErrorPost = view.findViewById(R.id.global_error_post)
         initObserver()
         initListener()
         setHeader()
@@ -190,6 +192,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addSocialFollowErrorObserver()
         addSocialUnFollowErrorObserver()
         addUserPostObserver()
+        adduserPostErrorObserver()
     }
 
     private fun addUserProfileObserver() =
@@ -360,6 +363,68 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                                 globalError?.setActionClickListener {
                                     container?.displayedChild = 2
                                     refreshLandingPageData()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+    private fun adduserPostErrorObserver() =
+        mPresenter.userPostErrorLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        userPostContainer?.displayedChild = 3
+                        globalErrorPost?.setType(NO_CONNECTION)
+                        globalErrorPost?.show()
+
+                        globalErrorPost?.setActionClickListener {
+                            userPostContainer?.displayedChild = 1
+                            landedUserName?.let { it1 -> initUserPost(it1) }
+                        }
+                    }
+                    is IllegalStateException -> {
+                        userPostContainer?.displayedChild = 3
+                        globalErrorPost?.setType(PAGE_FULL)
+                        globalErrorPost?.show()
+
+                        globalErrorPost?.setActionClickListener {
+                            userPostContainer?.displayedChild = 1
+                            landedUserName?.let { it1 -> initUserPost(it1) }
+                        }
+                    }
+                    is RuntimeException -> {
+                        when (it.localizedMessage?.toIntOrNull()) {
+                            ReponseStatus.NOT_FOUND -> {
+                                userPostContainer?.displayedChild = 3
+                                globalErrorPost?.setType(PAGE_NOT_FOUND)
+                                globalErrorPost?.show()
+
+                                globalErrorPost?.setActionClickListener {
+                                    userPostContainer?.displayedChild = 1
+                                    landedUserName?.let { it1 -> initUserPost(it1) }
+                                }
+                            }
+                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                userPostContainer?.displayedChild = 3
+                                globalErrorPost?.setType(SERVER_ERROR)
+                                globalErrorPost?.show()
+
+                                globalErrorPost?.setActionClickListener {
+                                    userPostContainer?.displayedChild = 1
+                                    landedUserName?.let { it1 -> initUserPost(it1) }
+                                }
+                            }
+                            else -> {
+                                userPostContainer?.displayedChild = 3
+                                globalErrorPost?.setType(SERVER_ERROR)
+                                globalErrorPost?.show()
+
+                                globalErrorPost?.setActionClickListener {
+                                    userPostContainer?.displayedChild = 1
+                                    landedUserName?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                         }
@@ -671,7 +736,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onStartFirstPageLoad() {
-        //  TODO("Not yet implemented")
         userPostContainer?.displayedChild = 1
     }
 
@@ -720,104 +784,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
         universalShareBottomSheet?.show(fragmentManager, this)
     }
-
-    /*override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
-            type = LinkerData.SHOP_TYPE
-            uri = shopPageHeaderDataModel?.shopCoreUrl
-            id = shopPageHeaderDataModel?.shopId
-            //set and share in the Linker Data
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            ogTitle = getShareBottomSheetOgTitle()
-            ogDescription = getShareBottomSheetOgDescription()
-            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        })
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    context?.let{
-                        checkUsingCustomBranchLinkDomain(linkerShareData)
-                        var shareString = getString(
-                            androidx.lifecycle.R.string.shop_page_share_text_with_link,
-                            shopPageHeaderDataModel?.shopName,
-                            linkerShareData?.shareContents
-                        )
-                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                        // send gql tracker
-                        shareModel.socialMediaName?.let { name ->
-                            shopViewModel?.sendShopShareTracker(
-                                shopId,
-                                channel = when (shareModel) {
-                                    is ShareModel.CopyLink -> {
-                                        ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                    }
-                                    is ShareModel.Others -> {
-                                        ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                    }
-                                    else -> name
-                                }
-                            )
-                        }
-
-                        // send gtm tracker
-                        if(isGeneralShareBottomSheet) {
-                            shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                            )
-                            if(!isMyShop) {
-                                shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
-                                    shareModel.channel.orEmpty(),
-                                    customDimensionShopPage,
-                                    userId
-                                )
-                            }
-                        } else{
-                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                            )
-                        }
-
-                        //we have to check if we can move it inside the common function
-                        universalShareBottomSheet?.dismiss()
-                    }
-                }
-
-                override fun onError(linkerError: LinkerError?) {}
-            })
-        )
-    }
-
-    private fun getShareBottomSheetOgTitle(): String {
-        return shopPageHeaderDataModel?.let{
-            "${joinStringWithDelimiter(it.shopName, it.location, delimiter = " - ")} | Tokopedia"
-        } ?: ""
-    }
-
-    private fun getShareBottomSheetOgDescription(): String {
-        return shopPageHeaderDataModel?.let{
-            joinStringWithDelimiter(it.description, it.tagline, delimiter = " - ")
-        } ?: ""
-    }
-
-    override fun onCloseOptionClicked() {
-        if (isUsingNewShareBottomSheet(requireContext())) {
-            if(isGeneralShareBottomSheet)
-                shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
-            else
-                shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId)
-        } else {
-            shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
-        }
-    } */
 
     companion object {
         const val VAL_FEEDS_PROFILE = "feeds-profile"

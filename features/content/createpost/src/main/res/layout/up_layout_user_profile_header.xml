@@ -277,6 +277,13 @@
 
         <include layout="@layout/up_layout_error_empty_user_post" />
 
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_85" />
+
     </ViewFlipper>
 
     <androidx.constraintlayout.widget.Group
