@@ -236,7 +236,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        textTitle?.text = "No followings"
+        textTitle?.text = "No following"
         textDescription?.hide()
     }
 

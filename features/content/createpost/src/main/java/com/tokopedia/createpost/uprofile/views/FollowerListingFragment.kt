@@ -238,7 +238,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        textTitle?.text = "No followers"
+        textTitle?.text = "No follower"
         textDescription?.hide()
     }
 
