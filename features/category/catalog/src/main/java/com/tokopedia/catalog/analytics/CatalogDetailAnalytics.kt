@@ -2,12 +2,17 @@ package com.tokopedia.catalog.analytics
 
 import android.os.Bundle
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.ActionKeys.Companion.KATALOG_PiILIHAN_UNTUKMU
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.EVENT_PROMO_VIEW
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_ECOMMERCE
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.KEYS.Companion.CATALOG_URL_KEY
 import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 object CatalogDetailAnalytics {
@@ -162,6 +167,43 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(event,bundle)
     }
 
+    fun sendImpressionEventInQueue (
+        trackingQueue : TrackingQueue,
+        event: String,
+        action: String,
+        category: String,
+        eventLabel: String,
+        catalogId: String,
+        position: Int,
+        userId: String,
+        impressedCatalogId : String,
+        impressedCatalogName : String
+    ){
+
+        val list = ArrayList<Map<String, Any>>()
+        val promotionMap = HashMap<String, Any>()
+
+        promotionMap[EventKeys.KEY_ITEM_ID] = impressedCatalogId
+        promotionMap[EventKeys.KEY_CREATIVE_NAME] = impressedCatalogName
+        promotionMap[EventKeys.KEY_CREATIVE_SLOT] =  (position + 1).toString()
+        promotionMap[EventKeys.KEY_ITEM_NAME] = KATALOG_PiILIHAN_UNTUKMU
+        list.add(promotionMap)
+        val eventModel = EventModel(event,category,action,eventLabel)
+        eventModel.key = CatalogConstant.KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING
+        val customDimensionMap = HashMap<String, Any>()
+        customDimensionMap[EventKeys.KEY_CATALOG_ID] = catalogId
+        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE_CATALOG
+        customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
+        customDimensionMap[EventKeys.KEY_USER_ID] = userId
+
+        trackingQueue.putEETracking(eventModel, hashMapOf (
+            KEY_ECOMMERCE to hashMapOf(
+                EVENT_PROMO_VIEW to hashMapOf(
+                    KEY_PROMOTIONS to  list)
+            )
+        ), customDimensionMap)
+    }
+
     interface EventKeys {
         companion object {
             const val KEY_EVENT = "event"
@@ -190,6 +232,7 @@ object CatalogDetailAnalytics {
             const val EVENT_NAME_VIEW_CATALOG_IRIS = "viewCatalogIris"
             const val EVENT_NAME_PRODUCT_VIEW = "productView"
             const val EVENT_NAME_CLICK_PG = "clickPG"
+            const val EVENT_PROMO_VIEW = "promoView"
 
             const val KEY_CREATIVE_NAME = "creative_name"
             const val KEY_CREATIVE_SLOT = "creative_slot"
@@ -197,7 +240,7 @@ object CatalogDetailAnalytics {
             const val KEY_ITEM_NAME = "item_name"
 
             const val EVENT_SELECT_CONTENT = "select_content"
-            const val EVENT_VIEW_ITEM = "view_item"
+            const val EVENT_VIEW_ITEM = "promoView"
 
         }
     }

@@ -53,6 +53,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -82,6 +83,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private lateinit var catalogComponent: CatalogComponent
 
@@ -471,10 +475,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {
-        CatalogDetailAnalytics.sendPromotionEvent(CatalogDetailAnalytics.EventKeys.EVENT_VIEW_ITEM,
+        CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue, CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
             CatalogDetailAnalytics.ActionKeys.IMPRESSION_KATALOG_PILIHAN_UNTUKMU,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            "current catalog-id: $catalogId - impress catalog-id: ${model.item.id}",
+            "current catalog-id: $catalogId - impress catalog-id: ",
             catalogId,
             adapterPosition,
             userSession.userId,
@@ -586,6 +590,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onPause() {
         super.onPause()
+        trackingQueue.sendAll()
         productNavListAdapter?.onPause()
     }
 
