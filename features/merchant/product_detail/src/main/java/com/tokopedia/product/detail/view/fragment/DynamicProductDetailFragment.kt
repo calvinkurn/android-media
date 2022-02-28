@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -42,6 +43,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
@@ -67,7 +69,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -139,10 +140,9 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFI
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
-import com.tokopedia.product.detail.tracking.ContentWidgetTracker
-import com.tokopedia.product.detail.tracking.ContentWidgetTracking
-import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
-import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
+import com.tokopedia.product.detail.tracking.*
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -176,6 +176,7 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -318,9 +319,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId, playWidgetCoordinator = PlayWidgetCoordinator().apply {
-        setListener(this@DynamicProductDetailFragment)
-    }) }
+    private val adapterFactory by lazy {
+        DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId, playWidgetCoordinator = PlayWidgetCoordinator().apply {
+            setListener(this@DynamicProductDetailFragment)
+        })
+    }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtilCallback())
                 .build()
@@ -419,8 +422,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
-                        forceRefresh, layoutId, ChooseAddressUtils.getLocalizingAddressData(it)
-                            ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid = uuid, urlQuery = urlQuery, extParam = extParam)
+                        forceRefresh, layoutId, ChooseAddressUtils.getLocalizingAddressData(it), affiliateUniqueString = affiliateUniqueId, uuid = uuid, urlQuery = urlQuery, extParam = extParam)
             }
         }
     }
@@ -547,23 +549,23 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun activityResultAdultManager(requestCode: Int, resultCode: Int, data: Intent?) {
         activity?.let {
             AdultManager.handleActivityResult(it, requestCode, resultCode, data,
-                object : AdultManager.Callback {
-                    override fun onFail() {
-                        it.finish()
-                    }
-
-                    override fun onVerificationSuccess(message: String?) {
-                        message?.let {
-                            view?.showToasterSuccess(it, ctaText = getString(R.string.label_oke_pdp),ctaListener = {})
+                    object : AdultManager.Callback {
+                        override fun onFail() {
+                            it.finish()
                         }
-                    }
 
-                    override fun onLoginPreverified() {
-                        if (doActivityResult) {
-                            onSwipeRefresh()
+                        override fun onVerificationSuccess(message: String?) {
+                            message?.let {
+                                view?.showToasterSuccess(it, ctaText = getString(R.string.label_oke_pdp), ctaListener = {})
+                            }
                         }
-                    }
-                })
+
+                        override fun onLoginPreverified() {
+                            if (doActivityResult) {
+                                onSwipeRefresh()
+                            }
+                        }
+                    })
         }
     }
 
@@ -762,16 +764,32 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
         when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl(), viewModel.userId)
+                    .eventEcommerceDynamicComponent(
+                            trackingQueue = trackingQueue,
+                            componentTrackDataModel = componentTrackDataModel,
+                            productInfo = viewModel.getDynamicProductInfoP1,
+                            componentName = getPPTitleName(),
+                            purchaseProtectionUrl = getPurchaseProtectionUrl(),
+                            userId = viewModel.userId,
+                            lcaWarehouseId = getLcaWarehouseId())
             ProductDetailConstant.STOCK_ASSURANCE ->
                 DynamicProductDetailTracking.Impression.eventOneLinerImpression(
-                        trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1,
-                        viewModel.userId
+                        trackingQueue = trackingQueue,
+                        componentTrackDataModel = componentTrackDataModel,
+                        productInfo = viewModel.getDynamicProductInfoP1,
+                        userId = viewModel.userId,
+                        lcaWarehouseId = getLcaWarehouseId()
                 )
             else -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, "", "", viewModel.userId)
+                    .eventEcommerceDynamicComponent(
+                            trackingQueue = trackingQueue,
+                            componentTrackDataModel = componentTrackDataModel,
+                            productInfo = viewModel.getDynamicProductInfoP1,
+                            componentName = "",
+                            purchaseProtectionUrl = "",
+                            userId = viewModel.userId,
+                            lcaWarehouseId = getLcaWarehouseId()
+                    )
 
         }
     }
@@ -1059,7 +1077,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.loadRecommendation(pageName)
     }
 
-    override fun loadPlayWidget() { viewModel.getPlayWidgetData() }
+    override fun loadPlayWidget() {
+        viewModel.getPlayWidgetData()
+    }
 
     /**
      * PageErrorViewHolder
@@ -1451,11 +1471,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.playWidgetReminderSwitch.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> view?.showToasterSuccess(
-                    if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                    else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                 )
                 is Fail -> view?.showToasterError(
-                    getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder)
+                        getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder)
                 )
             }
         })
@@ -1505,7 +1525,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                                 topAdsData.data.product.name,
                                 topAdsData.data.product.image.m_ecs)
                         isTopadsDynamicsSlottingAlreadyCharged = true
+
+                        ProductTopAdsLogger.logServer(
+                            TOPADS_PDP_HIT_ADS_TRACKER,
+                            productId = topAdsData.data.product.id
+                        )
                     }
+                } else {
+                    ProductTopAdsLogger.logServer(
+                        TOPADS_PDP_IS_NOT_ADS,
+                        productId = topAdsData.data.product.id
+                    )
                 }
             },
                     {
@@ -1934,7 +1964,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 boType = boData.boType,
                 ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
                 buyerDistrictId = viewModel.getUserLocationCache().district_id,
-                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
+                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
+                lcaWarehouseId = getLcaWarehouseId()
         )
     }
 
@@ -2629,8 +2660,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 uuid = uuid,
                 ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
                 buyerDistrictId = viewModel.getUserLocationCache().district_id,
-                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
+                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
+                lcaWarehouseId = getLcaWarehouseId()
         )
+    }
+
+    private fun getLcaWarehouseId(): String {
+        return viewModel.getUserLocationCache().warehouse_id ?: ""
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
@@ -3061,6 +3097,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun hitAtc(actionButton: Int) {
+        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
+            EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
+        }
+
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id.toIntOrZero()
 
         viewModel.getDynamicProductInfoP1?.let { data ->
@@ -3622,86 +3662,86 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onToggleReminderClicked(
-        view: PlayWidgetMediumView,
-        channelId: String,
-        reminderType: PlayWidgetReminderType,
-        position: Int
+            view: PlayWidgetMediumView,
+            channelId: String,
+            reminderType: PlayWidgetReminderType,
+            position: Int
     ) {
         doActionOrLogin({
             val playWidgetUiModel =
-                pdpUiUpdater?.contentWidgetData?.playWidgetUiModel ?: return@doActionOrLogin
+                    pdpUiUpdater?.contentWidgetData?.playWidgetUiModel ?: return@doActionOrLogin
             viewModel.updatePlayWidgetToggleReminder(
-                playWidgetUiModel, channelId, reminderType
+                    playWidgetUiModel, channelId, reminderType
             )
         })
     }
 
     override fun onImpressChannelCard(
-        componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel
+            componentTrackDataModel: ComponentTrackDataModel,
+            item: PlayWidgetMediumChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.impressChannelCard(
-            trackingQueue,
-            ContentWidgetTracker(
-                viewModel.userId,
-                productInfo,
-                componentTrackDataModel,
-                item
-            )
+                trackingQueue,
+                ContentWidgetTracker(
+                        viewModel.userId,
+                        productInfo,
+                        componentTrackDataModel,
+                        item
+                )
         )
     }
 
     override fun onClickChannelCard(
-        componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel
+            componentTrackDataModel: ComponentTrackDataModel,
+            item: PlayWidgetMediumChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickChannelCard(
-            ContentWidgetTracker(
-                viewModel.userId,
-                productInfo,
-                componentTrackDataModel,
-                item
-            )
+                ContentWidgetTracker(
+                        viewModel.userId,
+                        productInfo,
+                        componentTrackDataModel,
+                        item
+                )
         )
     }
 
     override fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickBannerCard(
-            ContentWidgetTracker(
-                viewModel.userId,
-                productInfo,
-                componentTrackDataModel
-            )
+                ContentWidgetTracker(
+                        viewModel.userId,
+                        productInfo,
+                        componentTrackDataModel
+                )
         )
     }
 
     override fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickViewAll(
-            ContentWidgetTracker(
-                viewModel.userId,
-                productInfo,
-                componentTrackDataModel
-            )
+                ContentWidgetTracker(
+                        viewModel.userId,
+                        productInfo,
+                        componentTrackDataModel
+                )
         )
     }
 
     override fun onClickToggleReminderChannel(
-        componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel,
-        isRemindMe: Boolean
+            componentTrackDataModel: ComponentTrackDataModel,
+            item: PlayWidgetMediumChannelUiModel,
+            isRemindMe: Boolean
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickToggleReminderChannel(
-            ContentWidgetTracker(
-                viewModel.userId,
-                productInfo,
-                componentTrackDataModel,
-                isRemindMe = isRemindMe
-            )
+                ContentWidgetTracker(
+                        viewModel.userId,
+                        productInfo,
+                        componentTrackDataModel,
+                        isRemindMe = isRemindMe
+                )
         )
     }
 

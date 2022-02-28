@@ -33,5 +33,8 @@ data class ProductrevGetReviewDetailReview(
         val badRatingReasonFmt: String = "",
         @SerializedName("ratingDisclaimer")
         @Expose
-        val ratingDisclaimer: String = ""
+        val ratingDisclaimer: String = "",
+        @SerializedName("editDisclaimer")
+        @Expose
+        val editDisclaimer: String = ""
 )

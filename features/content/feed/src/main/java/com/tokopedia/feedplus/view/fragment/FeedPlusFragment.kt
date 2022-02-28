@@ -146,7 +146,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.net.ConnectException
@@ -356,7 +355,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
-        Embrace.getInstance().startEvent(FEED_TRACE, null, false)
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -1744,8 +1742,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShareClick(
-        positionInFeed: Int, id: Int, title: String,
-        description: String, url: String,
+        positionInFeed: Int,
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
         imageUrl: String,
         typeASGC: Boolean,
         type: String,
@@ -1781,6 +1782,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
+                    setDesktopUrl(url)
                     setUri(url)
                 }
             } else {
@@ -2309,7 +2311,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
-            String.format(getString(R.string.feed_share_pdp), id.toString())
+            url
         } else{
             shareBottomSheetProduct = false
             url
@@ -2326,6 +2328,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             if (isTopads) {
                 linkerBuilder.setOgImageUrl(imageUrl)
+                linkerBuilder.setDesktopUrl(url)
             }
             shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
@@ -2892,7 +2895,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun stopTracePerformanceMon() {
         performanceMonitoring.stopTrace()
-        Embrace.getInstance().endEvent(FEED_TRACE)
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {

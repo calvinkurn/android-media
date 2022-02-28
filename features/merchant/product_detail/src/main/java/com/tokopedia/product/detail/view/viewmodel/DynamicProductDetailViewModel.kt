@@ -7,6 +7,7 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -52,6 +53,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateTokoNowRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
@@ -63,6 +65,10 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -74,6 +80,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -564,6 +571,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
         }
 
+        EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -868,6 +876,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         if (queryParams.contains(PARAM_TXSC)) {
             launchCatchError(coroutineContext, block = {
                 var adsStatus = TopadsIsAdsQuery()
+                ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_HIT_DYNAMIC_SLOTTING,
+                    productId = productId,
+                    queryParam = queryParams
+                )
                 val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
                     getTopadsIsAdsUseCase.get().setParams(
                             productId = productId,
@@ -878,8 +891,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     val errorCode = adsStatus.data.status.error_code
                     if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
                         _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
+                    } else {
+                        ProductTopAdsLogger.logServer(
+                            tag = TOPADS_PDP_BE_ERROR,
+                            reason = "Error code $errorCode",
+                            productId = productId,
+                            queryParam = queryParams
+                        )
                     }
                 }
+                if (job == null) ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_TIMEOUT_EXCEEDED,
+                    productId = productId,
+                    queryParam = queryParams
+                )
             }) {
                 it.printStackTrace()
                 _topAdsRecomChargeData.postValue(it.asFail())
@@ -1127,7 +1152,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
                             generateUserLocationRequest(userLocationCache),
-                            getAffiliateUIID(affiliateUniqueString, uuid)),
+                            getAffiliateUIID(affiliateUniqueString, uuid),
+                            generateTokoNowRequest(userLocationCache)),
                     isTokoNow = isTokoNow,
                     shopId = shopId,
                     forceRefresh = forceRefresh,
@@ -1147,7 +1173,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, extParam: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache), extParam)
+        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache), extParam, generateTokoNowRequest(userLocationCache))
         return getPdpLayoutUseCase.get().executeOnBackground()
     }
 
