@@ -60,6 +60,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation projectOrAar(rootProject.ext.libraries.linker)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

@@ -44,9 +44,17 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -707,7 +715,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 tnImage = profileImage
             )
             setOgImageUrl(profileImage ?: "")
-            imageSaved(profileImage)
         }
         universalShareBottomSheet?.show(fragmentManager, this)
     }
@@ -829,11 +836,44 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        TODO("Not yet implemented")
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            type = LinkerData.USER_PROFILE_SOCIAL
+            uri = "{Substitute this value with the web URL equivalent of your page}"
+            id = "{Substitute this value with the unique page identifier that will be used in the deeplink}"
+            //set and share in the Linker Data
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            ogTitle = "{Substitute this value with the Title of the Share content provided by the Product Owner}"
+            ogDescription = "{Substitute this value with the Description of the Share content provided by the Product Owner}"
+            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    context?.let{
+                        var shareString = "{Substitute this with the formatted share content string " +
+                                "with the share content provided in the linkerShareData?.shareContents field. " +
+                                "Complete string will be provided by Product Owner}"
+                        shareModel.subjectName = "{Substitute this with the Sting that will be the value of the E-mail subject}"
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gtm trackers if you want to
+                        universalShareBottomSheet?.dismiss()
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    //Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                }
+            })
+        )
     }
 
     override fun onCloseOptionClicked() {
         TODO("Not yet implemented")
+        //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
     }
 }
 
