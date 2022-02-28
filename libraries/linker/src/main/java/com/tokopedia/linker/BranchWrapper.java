@@ -485,6 +485,8 @@ public class BranchWrapper implements WrapperInterface {
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
             }
             deeplinkPath = data.getDeepLink();
+        }else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
         }
 
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
