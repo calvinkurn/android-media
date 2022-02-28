@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.uprofile.views
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -53,7 +54,8 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     private val mAdapter: ProfileFollowersAdapter by lazy {
         ProfileFollowersAdapter(
             mPresenter,
-            this
+            this,
+            userSessionInterface
         )
     }
 
@@ -84,7 +86,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME) )
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
     }
 
     private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(this, Observer {
@@ -135,8 +137,9 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            //refreshLandingPageData()
         }
     }
 

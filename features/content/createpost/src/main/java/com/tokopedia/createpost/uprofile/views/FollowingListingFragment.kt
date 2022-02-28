@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.uprofile.views
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -42,7 +43,8 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     private val mAdapter: ProfileFollowingAdapter by lazy {
         ProfileFollowingAdapter(
             mPresenter,
-            this
+            this,
+            userSessionInterface
         )
     }
 
@@ -149,8 +151,9 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            //refreshLandingPageData()
         }
     }
 

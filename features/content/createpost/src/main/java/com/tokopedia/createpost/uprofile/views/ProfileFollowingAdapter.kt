@@ -1,11 +1,13 @@
 package com.tokopedia.createpost.uprofile.views
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.createpost.R
@@ -25,7 +27,8 @@ import com.tokopedia.user.session.UserSession
 
 open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
-    val callback: AdapterCallback
+    val callback: AdapterCallback,
+    val userSession: UserSession
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -91,7 +94,7 @@ open class ProfileFollowingAdapter(
         }
 
 
-        if (item.profile.userID == UserSession(itemContext).userId) {
+        if (item.profile.userID == userSession.userId) {
             holder.btnAction.hide()
         } else {
             holder.btnAction.show()
@@ -100,17 +103,31 @@ open class ProfileFollowingAdapter(
                 updateToFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    viewModel.doUnFollow(item.profile.encryptedUserID)
-                    item.isFollow = false
-                    notifyItemChanged(position)
+                    if (userSession?.isLoggedIn == false) {
+                        (itemContext as Activity).startActivityForResult(
+                            RouteManager.getIntent(itemContext, ApplinkConst.LOGIN),
+                            UserProfileFragment.REQUEST_CODE_LOGIN
+                        )
+                    } else {
+                        viewModel.doUnFollow(item.profile.encryptedUserID)
+                        item.isFollow = false
+                        notifyItemChanged(position)
+                    }
                 }
             } else {
                 updateToUnFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    viewModel.doFollow(item.profile.encryptedUserID)
-                    item.isFollow = true
-                    notifyItemChanged(position)
+                    if (userSession?.isLoggedIn == false) {
+                        (itemContext as Activity).startActivityForResult(
+                            RouteManager.getIntent(itemContext, ApplinkConst.LOGIN),
+                            UserProfileFragment.REQUEST_CODE_LOGIN
+                        )
+                    } else {
+                        viewModel.doFollow(item.profile.encryptedUserID)
+                        item.isFollow = true
+                        notifyItemChanged(position)
+                    }
                 }
             }
         }

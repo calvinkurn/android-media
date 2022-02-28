@@ -41,6 +41,10 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
         super.onBackPressed()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     companion object {
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {

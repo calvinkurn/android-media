@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.uprofile.views
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -234,8 +235,9 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            //refreshLandingPageData()
         }
     }
 
