@@ -40,13 +40,22 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData: ThanksPageData,
         walletBalance: WalletBalance?
     ): Map<String, Any> {
-        var mainGatewayCode = ""
-        thanksPageData.paymentDetails?.forEach {
-            if (it.gatewayName.equals(thanksPageData.gatewayName, true)) {
-                mainGatewayCode = it.gatewayCode
-            }
-        }
-        val jsonStr = Gson().toJson(
+
+        val mainGatewayCode = thanksPageData.paymentDetails?.find {
+            it.gatewayName.equals(thanksPageData.gatewayName, true)
+        }?.gatewayCode ?: ""
+
+        val jsonStr = computeJsonFromFeatureEngine(thanksPageData, mainGatewayCode)
+
+        // adding wallet balance parameters
+        // else return unmodified jsonStr
+        return addWalletParameters(jsonStr, walletBalance)?.let { modifiedJsonStr ->
+            mapOf(PARAM_REQUEST to modifiedJsonStr)
+        } ?: kotlin.run { mapOf(PARAM_REQUEST to jsonStr) }
+    }
+
+    private fun computeJsonFromFeatureEngine(thanksPageData: ThanksPageData, mainGatewayCode: String) =
+        Gson().toJson(
             FeatureEngineRequest(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
                 FeatureEngineRequestParameters(
@@ -59,20 +68,19 @@ class GyroEngineRequestUseCase @Inject constructor(
             )
         )
 
-        // adding wallet balance parameters
-        walletBalance?.let { balance ->
+    private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String? {
+        walletBalance?.let {
             val jsonObj = JSONObject(jsonStr)
             try {
-                val parameterObj = (jsonObj["parameters"] as JSONObject)
-                balance.balanceList.forEach { item ->
-                    if (item.whitelisted ==  true)
+                val parameterObj = (jsonObj[PARAM_WALLET_PARAMETERS] as JSONObject)
+                walletBalance.balanceList.forEach { item ->
+                    if (item.whitelisted == true)
                         parameterObj.put(item.walletCode, item.isActive.toString())
                 }
-                return mapOf(PARAM_REQUEST to jsonObj.toString())
-            } catch (e: Exception) { }
+                return jsonObj.toString()
+            } catch (e: Exception) { return "" }
         }
-
-        return mapOf(PARAM_REQUEST to jsonStr)
+        return null
     }
 
     private fun isEGoldPurchased(thanksPageData: ThanksPageData): Boolean {
@@ -95,5 +103,6 @@ class GyroEngineRequestUseCase @Inject constructor(
 
     companion object {
         const val PARAM_REQUEST = "request"
+        const val PARAM_WALLET_PARAMETERS = "parameters"
     }
 }

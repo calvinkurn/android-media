@@ -70,7 +70,8 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    private fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?) {
+    @VisibleForTesting
+    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?) {
         gyroEngineRequestUseCase.cancelJobs()
         gyroEngineRequestUseCase.getFeatureEngineData(
             thanksPageData,
