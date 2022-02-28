@@ -52,7 +52,7 @@ class MerchantVoucherViewHolder(
 
     private fun mappingView(channel: ChannelModel) {
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
-        binding?.recycleList?.setHasFixedSize(true)
+        binding?.rvBanner?.setHasFixedSize(true)
         valuateRecyclerViewDecoration()
         mappingItem(channel, visitables)
     }
@@ -80,10 +80,10 @@ class MerchantVoucherViewHolder(
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        startSnapHelper.attachToRecyclerView(binding?.recycleList)
+        startSnapHelper.attachToRecyclerView(binding?.rvBanner)
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
-        binding?.recycleList?.adapter = adapter
+        binding?.rvBanner?.adapter = adapter
     }
 
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
@@ -129,15 +129,15 @@ class MerchantVoucherViewHolder(
     }
 
     private fun valuateRecyclerViewDecoration() {
-        if (binding?.recycleList?.itemDecorationCount == 0) binding?.recycleList?.addItemDecoration(
+        if (binding?.rvBanner?.itemDecorationCount == 0) binding?.rvBanner?.addItemDecoration(
             MerchantVoucherDecoration()
         )
-        binding?.recycleList?.layoutManager = LinearLayoutManager(
+        binding?.rvBanner?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        startSnapHelper.attachToRecyclerView(binding?.recycleList)
+        startSnapHelper.attachToRecyclerView(binding?.rvBanner)
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
@@ -164,7 +164,7 @@ class MerchantVoucherViewHolder(
     private fun setRecyclerViewAndCardHeight() {
         launch {
             try {
-                binding?.recycleList?.setHeightBasedMerchantVoucherCardHeight()
+                binding?.rvBanner?.setHeightBasedMerchantVoucherCardHeight()
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
