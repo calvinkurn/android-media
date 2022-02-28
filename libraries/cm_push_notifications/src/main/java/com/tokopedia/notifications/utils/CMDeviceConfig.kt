@@ -2,7 +2,6 @@ package com.tokopedia.notifications.utils
 
 import android.content.Context
 import android.content.res.Configuration
-import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import java.net.NetworkInterface
 
 class CMDeviceConfig() {
@@ -26,7 +25,6 @@ class CMDeviceConfig() {
         }
         return UNKNOWN
     }
-
 
     fun isDarkMode(context: Context): Boolean {
         return try {
