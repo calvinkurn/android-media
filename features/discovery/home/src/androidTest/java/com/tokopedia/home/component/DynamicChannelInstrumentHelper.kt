@@ -229,12 +229,11 @@ fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder, itemPosit
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
     val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
-    var childItemCount = childRecyclerView.adapter?.itemCount?: 0
-    childItemCount--
+    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount?: 0) - 1
     if (fixedItemPositionLimit > 0) {
-        childItemCount = fixedItemPositionLimit
+        childItemCountExcludeViewAllCard = fixedItemPositionLimit
     }
-    for (i in 0 until childItemCount) {
+    for (i in 0 until childItemCountExcludeViewAllCard) {
         try {
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_shop))
