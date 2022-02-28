@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.ViewFlipper
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -21,8 +22,13 @@ import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.user.session.UserSession
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -34,6 +40,9 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     val userSessionInterface: UserSession by lazy {
         UserSession(context)
     }
+
+    private var followersContainer: ViewFlipper? = null
+    private var globalError: GlobalError? = null
 
     private val mPresenter: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
@@ -64,6 +73,8 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        followersContainer = view.findViewById(R.id.container)
+        globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
         //initListener()
         val userSessionInterface = UserSession(context)
@@ -82,19 +93,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
     }
 
-    private fun initListener() {
-//        view?.findViewById<Group>(R.id.gr_following)?.setOnClickListener(this)
-//        view?.findViewById<Group>(R.id.gr_follower)?.setOnClickListener(this)
-    }
-
-    private fun initUserPost() {
-//        val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
-//        postRv?.layoutManager = GridLayoutManager(activity, 2)
-//        postRv?.adapter = mAdapter
-//        mAdapter.resetAdapter()
-//        mAdapter.startDataLoading()
-    }
-
     private fun addListObserver() =
         mPresenter.profileFollowingsListLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -108,6 +106,68 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
                     }
                     is ErrorMessage -> {
                         mAdapter.onError()
+                    }
+                }
+            }
+        })
+
+    private fun addFollowersErrorObserver() =
+        mPresenter.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        followersContainer?.displayedChild = 2
+                        globalError?.setType(GlobalError.NO_CONNECTION)
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            followersContainer?.displayedChild = 1
+                            refreshMainUi()
+                        }
+                    }
+                    is IllegalStateException -> {
+                        followersContainer?.displayedChild = 2
+                        globalError?.setType(GlobalError.PAGE_FULL)
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            followersContainer?.displayedChild = 1
+                            refreshMainUi()
+                        }
+                    }
+                    is RuntimeException -> {
+                        when (it.localizedMessage?.toIntOrNull()) {
+                            ReponseStatus.NOT_FOUND -> {
+                                followersContainer?.displayedChild = 2
+                                globalError?.setType(GlobalError.PAGE_NOT_FOUND)
+                                globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    followersContainer?.displayedChild = 1
+                                    refreshMainUi()
+                                }
+                            }
+                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                followersContainer?.displayedChild = 2
+                                globalError?.setType(GlobalError.SERVER_ERROR)
+                                globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    followersContainer?.displayedChild = 1
+                                    refreshMainUi()
+                                }
+                            }
+                            else -> {
+                                followersContainer?.displayedChild = 2
+                                globalError?.setType(GlobalError.SERVER_ERROR)
+                                globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    followersContainer?.displayedChild = 1
+                                    refreshMainUi()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -142,27 +202,21 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun onClick(source: View) {
         when (source.id) {
-            R.id.gr_follower -> {
-                Toast.makeText(context, "Follower", Toast.LENGTH_SHORT).show()
-            }
-            R.id.gr_following -> {
-                Toast.makeText(context, "following", Toast.LENGTH_SHORT).show()
-            }
+
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            refreshPage()
+            refreshMainUi()
         }
     }
 
-    fun refreshPage() {
-        mAdapter?.resetAdapter()
-        mAdapter?.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME, ""))
+    private fun refreshMainUi() {
+        mAdapter.resetAdapter()
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
     }
-
     companion object {
         fun newInstance(extras: Bundle): Fragment {
             val fragment = FollowingListingFragment()
@@ -172,31 +226,28 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        // TODO("Not yet implemented")
+        followersContainer?.displayedChild = 3 //emptypage
     }
 
     override fun onStartFirstPageLoad() {
-        //  TODO("Not yet implemented")
+        followersContainer?.displayedChild = 1
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
+        followersContainer?.displayedChild = 0
+
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
-        // TODO("Not yet implemented")
     }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
     }
 
     override fun onError(pageNumber: Int) {
-        // TODO("Not yet implemented")
     }
 }
 

@@ -25,6 +25,7 @@ class FollowerFollowingViewModel @Inject constructor(
     val profileFollowingsListLiveData = MutableLiveData<Resources<ProfileFollowingListBase>>()
     val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
     val profileDoUnFollowLiveData = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
+    val followersErrorLiveData = MutableLiveData<Throwable>()
 
     fun getFollowers(
         userName: String,
@@ -36,8 +37,9 @@ class FollowerFollowingViewModel @Inject constructor(
             if (data != null) {
                 profileFollowersListLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            followersErrorLiveData.value = it
+        })
     }
 
     fun getFollowings(
@@ -50,8 +52,9 @@ class FollowerFollowingViewModel @Inject constructor(
             if (data != null) {
                 profileFollowingsListLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
-        }) {
-        }
+        }, onError = {
+            followersErrorLiveData.value = it
+        })
     }
 
     fun doFollow(followingUserIdEnc: String) {

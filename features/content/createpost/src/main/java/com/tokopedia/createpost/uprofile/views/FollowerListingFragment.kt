@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ViewFlipper
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,6 +26,8 @@ import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.ProfileHeaderBase
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -34,6 +37,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.up_layout_user_profile_header.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -41,6 +47,9 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var followersContainer: ViewFlipper? = null
+    private var globalError: GlobalError? = null
 
     val userSessionInterface: UserSession by lazy {
         UserSession(context)
@@ -75,12 +84,15 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        followersContainer = view.findViewById(R.id.container)
+        globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()
     }
 
     private fun initObserver() {
         addListObserver()
+        addFollowersErrorObserver()
     }
 
     private fun initMainUi() {
@@ -90,22 +102,90 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
     }
 
-    private fun addListObserver() = mPresenter.profileFollowersListLiveData.observe(viewLifecycleOwner, Observer {
-        it?.let {
-            when (it) {
-                is Loading -> {
-                    mAdapter.resetAdapter()
-                    mAdapter.notifyDataSetChanged()
-                }
-                is Success -> {
-                    mAdapter.onSuccess(it.data)
-                }
-                is ErrorMessage -> {
-                    mAdapter.onError()
+    private fun refreshMainUi() {
+        mAdapter.resetAdapter()
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
+    }
+
+    private fun addListObserver() =
+        mPresenter.profileFollowersListLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+                        mAdapter.resetAdapter()
+                        mAdapter.notifyDataSetChanged()
+                    }
+                    is Success -> {
+                        mAdapter.onSuccess(it.data)
+                    }
+                    is ErrorMessage -> {
+                        mAdapter.onError()
+                    }
                 }
             }
-        }
-    })
+        })
+
+    private fun addFollowersErrorObserver() =
+        mPresenter.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        followersContainer?.displayedChild = 2
+                        globalError?.setType(GlobalError.NO_CONNECTION)
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            followersContainer?.displayedChild = 1
+                           refreshMainUi()
+                        }
+                    }
+                    is IllegalStateException -> {
+                        followersContainer?.displayedChild = 2
+                        globalError?.setType(GlobalError.PAGE_FULL)
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            followersContainer?.displayedChild = 1
+                            refreshMainUi()
+                        }
+                    }
+                    is RuntimeException -> {
+                        when (it.localizedMessage?.toIntOrNull()) {
+                            ReponseStatus.NOT_FOUND -> {
+                                followersContainer?.displayedChild = 2
+                                globalError?.setType(GlobalError.PAGE_NOT_FOUND)
+                                globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    followersContainer?.displayedChild = 1
+                                    refreshMainUi()
+                                }
+                            }
+                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                followersContainer?.displayedChild = 2
+                                globalError?.setType(GlobalError.SERVER_ERROR)
+                                globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    followersContainer?.displayedChild = 1
+                                    refreshMainUi()
+                                }
+                            }
+                            else -> {
+                                followersContainer?.displayedChild = 2
+                                globalError?.setType(GlobalError.SERVER_ERROR)
+                                globalError?.show()
+
+                                globalError?.setActionClickListener {
+                                    followersContainer?.displayedChild = 1
+                                    refreshMainUi()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
 
     override fun onDestroy() {
         super.onDestroy()
@@ -128,25 +208,15 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     override fun onClick(source: View) {
         when (source.id) {
-            R.id.gr_follower -> {
-                Toast.makeText(context, "Follower", Toast.LENGTH_SHORT).show()
-            }
-            R.id.gr_following -> {
-                Toast.makeText(context, "following", Toast.LENGTH_SHORT).show()
-            }
+
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            refreshPage()
+            refreshMainUi()
         }
-    }
-
-    fun refreshPage() {
-        mAdapter?.resetAdapter()
-        mAdapter?.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME, ""))
     }
 
     companion object {
@@ -158,31 +228,28 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        // TODO("Not yet implemented")
+        followersContainer?.displayedChild = 3 //emptypage
     }
 
     override fun onStartFirstPageLoad() {
-        //  TODO("Not yet implemented")
+        followersContainer?.displayedChild = 1
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
+        followersContainer?.displayedChild = 0
+
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
-        // TODO("Not yet implemented")
     }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
     }
 
     override fun onError(pageNumber: Int) {
-        // TODO("Not yet implemented")
     }
 }
 

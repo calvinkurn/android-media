@@ -9,8 +9,17 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_followers"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <include layout="@layout/up_shimmer_followers_list" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/ge_followers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_85" />
 
 </ViewFlipper>
