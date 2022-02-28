@@ -54,7 +54,7 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
                         rootBlocked = rootDetected,
                         deviceInfo = Laku6TestDataModel.DeviceInfo(
                             brand = deviceAttribute.brand,
-                            modelDisplayName = deviceAttribute.model,
+                            modelDisplayName = "",
                             modelId = deviceAttribute.modelId.toString(),
                             modelName = deviceAttribute.model,
                             ram = deviceAttribute.ram,
