@@ -79,6 +79,28 @@ class CatalogProductListingViewModelTest {
     }
 
     @Test
+    fun `Get Catalog Product Response Success List More Than Limit`() {
+        val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_listing_response.json"),CatalogSearchProductResponse().javaClass)
+        val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
+        val productListResponse = ProductListResponse(data.searchProduct)
+        val listProducts = productListResponse.searchProduct?.data?.catalogProductItemList
+        for(i in 0 until 10 ){
+            productListResponse.searchProduct?.data?.catalogProductItemList?.addAll(listProducts!!)
+        }
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
+            (secondArg() as Subscriber<ProductListResponse>).onCompleted()
+        }
+        viewModel.fetchProductListing(RequestParams())
+        viewModel.isPagingAllowed = false
+        if(viewModel.mProductList.value is Success && viewModel.pageCount > 0 && !viewModel.isPagingAllowed) {
+            assert(true)
+        }else {
+            assert(false)
+        }
+    }
+
+    @Test
     fun `Get Catalog Product Response Empty`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_empty_dummy_response.json"),CatalogSearchProductResponse().javaClass)
         val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse

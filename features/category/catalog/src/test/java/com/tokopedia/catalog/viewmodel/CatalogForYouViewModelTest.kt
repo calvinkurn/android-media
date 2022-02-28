@@ -110,6 +110,9 @@ class CatalogForYouViewModelTest {
         runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } throws throwable
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
+            viewModel.page = 0
+            viewModel.lastScrollIndex = 0
+            viewModel.getLoadedItemsSize()
             assertEquals(viewModel.getError().value ,throwable)
         }
     }
