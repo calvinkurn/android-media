@@ -9,8 +9,6 @@ import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.raw.CatalogSearchProductResponse
 import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.model.raw.SearchFilterResponse
-import com.tokopedia.catalog.model.util.CatalogUtil
-import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
@@ -116,7 +114,8 @@ class CatalogProductListingViewModelTest {
         viewModel.catalogName
         assert(viewModel.catalogId.isNotEmpty())
         viewModel.fetchProductListing(RequestParams())
-
+        viewModel.filterController
+        viewModel.searchParameter
         if(viewModel.mProductList.value is Success && (viewModel.mProductList.value as Success<List<CatalogProductItem>>).data.isEmpty()) {
             assert(true)
         }else {

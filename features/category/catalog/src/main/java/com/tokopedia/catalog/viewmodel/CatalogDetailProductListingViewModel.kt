@@ -54,7 +54,6 @@ class CatalogDetailProductListingViewModel
     var comparisonCardIsAdded = false
 
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
-    var catalogComparisonProductsResponse : CatalogComparisonProductsResponse?  = null
 
     fun fetchProductListing(params: RequestParams) {
         if(pageCount == 0){ comparisonCardIsAdded = false }
