@@ -35,12 +35,6 @@ class FlightSearchData(
         @SerializedName("term")
         @Expose
         val term: String = "",
-        @SerializedName("hasFreeRapidTest")
-        @Expose
-        val hasFreeRapidTest: Boolean = false,
-        @SerializedName("isSeatDistancing")
-        @Expose
-        val isSeatDistancing: Boolean = false,
         @SerializedName("departureAirportID")
         @Expose
         val departureAirportId: String = "",
