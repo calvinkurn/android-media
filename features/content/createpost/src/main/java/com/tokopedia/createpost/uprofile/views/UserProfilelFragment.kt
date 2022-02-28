@@ -75,6 +75,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     var landedUserName: String? = null
     var displayName: String = ""
     var userName: String = ""
+    var userWebLink: String = ""
     var profileUserId: String = ""
     var profileImage: String = ""
     var totalFollowings: String = ""
@@ -472,6 +473,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
         profileImage = data.profileHeader.profile.imageCover
         profileUserId = data.profileHeader.profile.userID
+        userWebLink = data.profileHeader.profile.sharelink.weblink
 
         textBio?.post {
             if (textBio?.lineCount > 3) {
@@ -836,16 +838,24 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
+        var desc = userName
+
+        if(desc.isBlank()){
+            desc = "Lihat foto & video menarik dari Tokopedia Merchandise, yuk! \uD83D\uDE0D"
+        } else {
+            desc = "Lihat foto & video menarik dari Tokopedia $displayName ($userName), yuk! 😍"
+        }
+
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
             type = LinkerData.USER_PROFILE_SOCIAL
-            uri = "{Substitute this value with the web URL equivalent of your page}"
-            id = "{Substitute this value with the unique page identifier that will be used in the deeplink}"
+            uri = userWebLink
+            id = userId //todo lavekush
             //set and share in the Linker Data
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            ogTitle = "{Substitute this value with the Title of the Share content provided by the Product Owner}"
-            ogDescription = "{Substitute this value with the Description of the Share content provided by the Product Owner}"
+            ogTitle = displayName
+            ogDescription = desc
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
@@ -872,7 +882,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onCloseOptionClicked() {
-        TODO("Not yet implemented")
+//        TODO gtm tracking
         //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
     }
 }
