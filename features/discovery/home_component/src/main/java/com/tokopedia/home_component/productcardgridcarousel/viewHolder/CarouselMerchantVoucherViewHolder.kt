@@ -1,21 +1,13 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
-import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.Shape
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.DrawableShadow
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
-import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.resources.isDarkMode
