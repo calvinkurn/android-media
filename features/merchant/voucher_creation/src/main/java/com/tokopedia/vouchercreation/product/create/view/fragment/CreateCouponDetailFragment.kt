@@ -261,6 +261,7 @@ class CreateCouponDetailFragment(
             viewModel.validateCouponTarget(promoCode, couponName)
             viewModel.validateCouponPeriod()
             clearErrorMessage()
+            clickSaveInfo(userSession.shopId, viewModel.selectedCouponTargetValue.name)
         }
     }
 
