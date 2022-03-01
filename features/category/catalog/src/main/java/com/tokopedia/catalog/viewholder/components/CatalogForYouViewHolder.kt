@@ -27,12 +27,24 @@ class CatalogForYouViewHolder(itemView: View, private val catalogDetailListener:
     }
 
     override fun bind(model: CatalogForYouModel) {
+        bindName(model)
+        bindImage(model)
+        setClickListener(model)
+    }
+
+    private fun bindName(model: CatalogForYouModel) {
         itemView.findViewById<Typography>(R.id.catalog_for_you_name).displayTextOrHide(model.item.name ?: "")
+    }
+
+    private fun bindImage(model: CatalogForYouModel) {
         itemView.findViewById<ImageUnify>(R.id.catalog_for_you_image).apply {
             model.item.catalogImage?.firstOrNull()?.imageUrl?.let { imageUrl ->
                 loadImageWithoutPlaceholder(imageUrl)
             }
         }
+    }
+
+    private fun setClickListener(model: CatalogForYouModel) {
         itemView.setOnClickListener {
             catalogDetailListener?.onCatalogForYouClick(adapterPosition,model.item)
         }

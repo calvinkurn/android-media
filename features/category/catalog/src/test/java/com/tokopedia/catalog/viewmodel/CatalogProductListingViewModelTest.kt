@@ -92,14 +92,15 @@ class CatalogProductListingViewModelTest {
 
     @Test
     fun `Get Catalog Product Response Success List More Than Limit`() {
-        val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_listing_response.json"),CatalogSearchProductResponse().javaClass)
-        val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
-        val productListResponse = ProductListResponse(data.searchProduct)
-        viewModel.comparisonCardIsAdded = false
+        val productListResponse = ProductListResponse(CatalogSearchProductResponse.SearchProduct(
+            CatalogSearchProductResponse.SearchProductHeader()))
+        val productsList = arrayListOf<CatalogProductItem?>()
         for(i in 0 until 10 ){
-            val listProducts = productListResponse.searchProduct?.data?.catalogProductItemList?.clone()
-            productListResponse.searchProduct?.data?.catalogProductItemList?.addAll(listProducts!! as Collection<CatalogProductItem?>)
+            productsList.add(mockk(relaxed = true))
         }
+        productListResponse.searchProduct?.data = CatalogSearchProductResponse.SearchProductData(
+            0,true,"",productsList)
+        viewModel.comparisonCardIsAdded = false
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
             (secondArg() as Subscriber<ProductListResponse>).onCompleted()

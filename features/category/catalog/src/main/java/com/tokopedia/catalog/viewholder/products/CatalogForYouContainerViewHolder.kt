@@ -64,8 +64,9 @@ class CatalogForYouContainerViewHolder(private val view : View,
         injectViewModel()
         setUpRecyclerView(itemView)
         setObservers()
-        if(!initialApiCall())
+        if(!initialApiCall()) {
             makeApiCall(catalogForYouViewModel?.page ?: firstPage)
+        }
     }
 
     private fun injectViewModel(){
