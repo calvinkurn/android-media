@@ -14,6 +14,5 @@ data class PlayBroProductSummaryUiState(
 sealed class ProductTagSummaryUiModel {
     object Unknown: ProductTagSummaryUiModel()
     object Loading: ProductTagSummaryUiModel()
-    object LoadingWithPlaceholder: ProductTagSummaryUiModel()
     object Success: ProductTagSummaryUiModel()
 }

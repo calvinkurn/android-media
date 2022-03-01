@@ -52,7 +52,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
-    private val userSession: UserSessionInterface,
+    userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
@@ -77,7 +77,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         get() = configStore.getMaxProduct()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
-    private val _selectedProductSectionList = MutableStateFlow(savedStateHandle.getProductSections())
+    private val _selectedProductList = MutableStateFlow(
+        savedStateHandle.getProductSections().flatMap { it.products }
+    )
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
     private val _productTagSectionList = MutableStateFlow(savedStateHandle.getProductSections())
@@ -99,16 +101,16 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val uiState = combine(
         _campaignAndEtalase,
         _focusedProductList,
-        _selectedProductSectionList,
+        _selectedProductList,
         _loadParam,
         _saveState,
         _config,
-    ) { campaignAndEtalase, focusedProductList, selectedProductSectionList, loadParam, saveState,
+    ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam, saveState,
         config ->
         ProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
-            selectedProductSectionList = selectedProductSectionList,
+            selectedProductList = selectedProductList,
             loadParam = loadParam,
             saveState = saveState,
             config = config,
@@ -149,10 +151,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            _selectedProductSectionList.collectLatest { sections ->
+            _selectedProductList.collectLatest { products ->
                 _saveState.update {
                     it.copy(
-                        canSave = sections.any { section -> section.products.isNotEmpty() }
+                        canSave = products.isNotEmpty()
                     )
                 }
             }
@@ -239,31 +241,14 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private fun handleSelectProduct(product: ProductUiModel) = whenProductsNotSaving {
         if (product.stock <= 0) return@whenProductsNotSaving
 
-        _selectedProductSectionList.update { sections ->
-            var hasProduct = false
+        _selectedProductList.update { products ->
+            val hasProduct = products.any { it.id == product.id }
 
-            val newSections = sections.map { section ->
-                val newProducts = section.products.filter { it.id != product.id }
-                if (newProducts.size != section.products.size) hasProduct = true
-                section.copy(
-                    products = newProducts
-                )
+            if (!hasProduct && configStore.getMaxProduct() > products.size) {
+                products + product
+            } else {
+                products.filterNot { it.id == product.id }
             }
-
-            if (!hasProduct &&
-                configStore.getMaxProduct() > sections.sumOf { it.products.size }) {
-
-                val section = sections.lastOrNull() ?: ProductTagSectionUiModel(
-                    //when select product, we can just use default key
-                    name = "",
-                    campaignStatus = CampaignStatus.Unknown,
-                    products = emptyList(),
-                )
-                val tempSections = newSections.toMutableList()
-                tempSections.remove(section)
-                tempSections.add(section.copy(products = section.products + product))
-                tempSections
-            } else newSections
         }
     }
 
@@ -344,9 +329,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
                 channelId = configStore.getChannelId(),
-                productIds = _selectedProductSectionList.value.flatMap { section ->
-                    section.products.map { it.id }
-                },
+                productIds = _selectedProductList.value.map(ProductUiModel::id),
             )
 
             getProductTagSummary()
@@ -390,7 +373,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         val response = repo.getProductTagSummarySection(channelId)
 
         _productTagSectionList.value = response
-        _selectedProductSectionList.value = response
+        _selectedProductList.value = response.flatMap { it.products }
         _productTagSummary.value = ProductTagSummaryUiModel.Success
     }
 
