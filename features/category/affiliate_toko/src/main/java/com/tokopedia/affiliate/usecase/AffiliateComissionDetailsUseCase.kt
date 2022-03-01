@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.usecase
 import com.google.gson.Gson
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Commission
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
+import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
 
@@ -179,6 +180,91 @@ class AffiliateCommissionDetailsUseCase @Inject constructor(
                 "    }\n" +
                 "  }",AffiliateCommissionDetailsData::class.java)
 
+    }
+
+    fun affiliateTrafficCardDetails(transactionDate: String, lastItem: String?, type: String?): AffiliateTrafficCommissionCardDetails? {
+        return Gson().fromJson("{\n" +
+                "   \"getAffiliateTrafficCommissionDetailCards\":{\n" +
+                "      \"Data\":{\n" +
+                "         \"LastID\":\"129312\",\n" +
+                "         \"HasNext\":true,\n" +
+                "         \"Status\":1,\n" +
+                "         \"Error\":{\n" +
+                "            \"ErrorType\":0,\n" +
+                "            \"Message\":\"\",\n" +
+                "            \"CtaText\":\"\",\n" +
+                "            \"CtaLink\":{\n" +
+                "               \"DesktopURL\":\"\",\n" +
+                "               \"MobileURL\":\"\",\n" +
+                "               \"AndroidURL\":\"\",\n" +
+                "               \"IosURL\":\"\"\n" +
+                "            }\n" +
+                "         },\n" +
+                "         \"TrafficCommissionCardDetail\":[\n" +
+                "            {\n" +
+                "               \"CardTitle\":\"Things you dream at night\",\n" +
+                "               \"CardDescription\":\"500 Total Kunjungan\",\n" +
+                "               \"Image\":{\n" +
+                "                  \"DesktopURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"MobileURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"AndroidURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"IosURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
+                "               }\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"CardTitle\":\"Things you dream at night\",\n" +
+                "               \"CardDescription\":\"500 Total Kunjungan\",\n" +
+                "               \"Image\":{\n" +
+                "                  \"DesktopURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"MobileURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"AndroidURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"IosURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
+                "               }\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"CardTitle\":\"Things you dream at night\",\n" +
+                "               \"CardDescription\":\"500 Total Kunjungan\",\n" +
+                "               \"Image\":{\n" +
+                "                  \"DesktopURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"MobileURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"AndroidURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"IosURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
+                "               }\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"CardTitle\":\"Things you dream at night\",\n" +
+                "               \"CardDescription\":\"500 Total Kunjungan\",\n" +
+                "               \"Image\":{\n" +
+                "                  \"DesktopURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"MobileURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"AndroidURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"IosURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
+                "               }\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"CardTitle\":\"Things you dream at night\",\n" +
+                "               \"CardDescription\":\"500 Total Kunjungan\",\n" +
+                "               \"Image\":{\n" +
+                "                  \"DesktopURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"MobileURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"AndroidURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"IosURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
+                "               }\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"CardTitle\":\"Things you dream at night\",\n" +
+                "               \"CardDescription\":\"500 Total Kunjungan\",\n" +
+                "               \"Image\":{\n" +
+                "                  \"DesktopURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"MobileURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"AndroidURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
+                "                  \"IosURL\":\"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
+                "               }\n" +
+                "            }\n" +
+                "         ]\n" +
+                "      }\n" +
+                "   }\n" +
+                "}",AffiliateTrafficCommissionCardDetails::class.java)
     }
 
 

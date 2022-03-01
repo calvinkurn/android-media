@@ -37,7 +37,10 @@ data class AffiliateCommissionDetailsData(
             @SerializedName("UpdatedAtFormatted")
             var updatedAtFormatted: String?,
             @SerializedName("CommissionType")
-            var commisionType: String?
+            var commissionType: String?,
+            @SerializedName("PageType")
+            var pageType: String?
+
         ) {
 
 

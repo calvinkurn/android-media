@@ -3,12 +3,11 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDividerItemModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithdrawalTitleItemModel
+import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -23,12 +22,19 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private var errorMessage = MutableLiveData<Throwable>()
     private var progressBar = MutableLiveData<Boolean>()
     private val TYPE_DIVIDER = "divider"
+    private var lastItem :String?= "0"
     fun affiliateCommission(transactionID:String) {
         launchCatchError(block = {
             progressBar.value = true
-           affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let {
-               detailList.value = getDetailListOrganize(it?.data?.detail)
-               commssionData.value = it
+           affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let {affiliateCommissionDetail ->
+               if(affiliateCommissionDetail.data?.commissionType != TRAFFIC_TYPE) detailList.value = getDetailListOrganize(affiliateCommissionDetail?.data?.detail)
+               else {
+                   affiliateCommissionDetailUserCase.affiliateTrafficCardDetails("transactionDate",lastItem,affiliateCommissionDetail.data?.pageType)?.let {
+                       detailList.value = getDetailListOrganize(affiliateCommissionDetail?.data?.detail,it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail)
+                       lastItem = it?.getAffiliateTrafficCommissionDetailCards?.data?.lastID
+                   }
+               }
+               commssionData.value = affiliateCommissionDetail
            }
             progressBar.value = false
         }, onError = {
@@ -38,7 +44,10 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
         })
     }
 
-     fun getDetailListOrganize(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
+     fun getDetailListOrganize(
+         detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?,
+         trafficCommissionCardDetail: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
+     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
             var tempList = ArrayList<Visitable<AffiliateAdapterTypeFactory>>()
             detail?.forEach {
                 if(it?.detailType != TYPE_DIVIDER)
@@ -48,6 +57,9 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
             }
          tempList.add(AffiliateCommisionThickDividerItemModel())
          tempList.add(AffiliateWithdrawalTitleItemModel("10"))
+         trafficCommissionCardDetail?.forEach { cardDetail ->
+            tempList.add(AffiliateTrafficCardModel(cardDetail))
+         }
         return tempList
     }
 

@@ -119,7 +119,7 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     }
 
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
-        if(commissionData?.data?.commisionType != TRAFFIC_TYPE) {
+        if(commissionData?.data?.commissionType != TRAFFIC_TYPE) {
             showView()
             setProductTransactionData(commissionData)
         }

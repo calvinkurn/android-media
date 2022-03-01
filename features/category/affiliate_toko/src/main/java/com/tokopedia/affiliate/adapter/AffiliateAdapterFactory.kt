@@ -46,6 +46,7 @@ class AffiliateAdapterFactory(
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
             AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
             AffiliateWithdrawalTitleItemVH.LAYOUT -> AffiliateWithdrawalTitleItemVH(parent)
+            AffiliateTrafficProductItemVH.LAYOUT -> AffiliateTrafficProductItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -135,5 +136,9 @@ class AffiliateAdapterFactory(
     }
     override fun type(viewModel: AffiliateWithdrawalTitleItemModel): Int {
         return AffiliateWithdrawalTitleItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateTrafficCardModel): Int {
+       return AffiliateTrafficProductItemVH.LAYOUT
     }
 }
