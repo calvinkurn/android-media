@@ -7,7 +7,7 @@ import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.domain.model.CancelVoucherResponse
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
-import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetTokenUseCase
 import javax.inject.Inject
 
 class CancelVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository,

@@ -4,12 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.FollowWidget
+import com.tokopedia.mvcwidget.MvcCouponListItem
+import com.tokopedia.mvcwidget.MvcListItem
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.TickerText
+import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.views.viewholders.CouponListItemVH
 import com.tokopedia.mvcwidget.views.viewholders.FollowViewHolder
 import com.tokopedia.mvcwidget.views.viewholders.TickerViewHolder
 
 class MvcDetailAdapter(val data: ArrayList<MvcListItem>, val contract: MvcDetailViewContract) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var mvcTracker: MvcTracker? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -39,7 +46,7 @@ class MvcDetailAdapter(val data: ArrayList<MvcListItem>, val contract: MvcDetail
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is CouponListItemVH -> {
-                holder.setData(data[position] as MvcCouponListItem)
+                holder.setData(data[position] as MvcCouponListItem, contract)
                 holder.divider.visibility = if (position == data.size - 1) View.INVISIBLE else View.VISIBLE
             }
             is FollowViewHolder -> {
@@ -57,5 +64,9 @@ class MvcDetailAdapter(val data: ArrayList<MvcListItem>, val contract: MvcDetail
             data.addAll(newList)
             notifyDataSetChanged()
         }
+    }
+
+    fun setTracker(mvcTracker: MvcTracker?) {
+        this.mvcTracker = mvcTracker
     }
 }

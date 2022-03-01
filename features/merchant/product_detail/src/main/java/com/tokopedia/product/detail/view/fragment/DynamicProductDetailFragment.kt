@@ -43,7 +43,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
@@ -130,14 +129,23 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
-import com.tokopedia.product.detail.data.util.*
+import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
+import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
+import com.tokopedia.product.detail.data.util.DynamicProductDetailSwipeTrackingState
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyDiscussion
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
+import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
+import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
@@ -210,10 +218,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Separator Rule
@@ -1180,9 +1188,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         goToRecommendation()
     }
 
-    override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int) {
+    override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int, productId: String) {
         context?.let {
-            startActivityForResult(TransParentActivity.getIntent(it, shopId, source), MvcView.REQUEST_CODE)
+            startActivityForResult(TransParentActivity.getIntent(it, shopId, source, productId = productId), MvcView.REQUEST_CODE)
         }
     }
 
@@ -1611,7 +1619,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun enableVideo(): Boolean {
-        return remoteConfig()?.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
+        return remoteConfig.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
     }
 
     private fun updateVariantDataAndUi(variantProcessedData: List<VariantCategory>?,
@@ -1846,7 +1854,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 if (it.data.recommendationItemList.isNotEmpty()) {
-                    val enableComparisonWidget = remoteConfig()?.getBoolean(
+                    val enableComparisonWidget = remoteConfig.getBoolean(
                             RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
                     if (enableComparisonWidget) {
                         if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
@@ -2476,12 +2484,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData, affiliateData: AffiliatePDPInput) {
-        val fireBaseRemoteMsgGuest = remoteConfig()?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
+        val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
                 ?: ""
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
         if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
-            val fireBaseRemoteMsg = remoteConfig()?.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
+            val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
                     ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg, affiliateData)
@@ -2520,7 +2528,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun executeProductShare(productData: ProductData, affiliateData: AffiliatePDPInput) {
-        val enablePdpCustomSharing = remoteConfig()?.getBoolean(
+        val enablePdpCustomSharing = remoteConfig.getBoolean(
                 REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
                 REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         ) ?: REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING

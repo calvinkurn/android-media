@@ -277,4 +277,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_APLHA_OBSERVER = "android_enable_alpha_observer";
 
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
+
+    public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
 }

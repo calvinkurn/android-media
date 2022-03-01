@@ -17,6 +17,14 @@ class MvcTracker{
         trackerImpl.userClickEntryPoints(shopId,userId,source,isTokomember, productId)
     }
 
+    fun userClickEntryPointOnMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String){
+        trackerImpl.userClickEntryPointOnMVCLockToProduct(shopId,userId,source, productId)
+    }
+
+    fun viewMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String){
+        trackerImpl.viewMVCLockToProduct(shopId,userId,source, productId)
+    }
+
     //3, 18
     fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
         trackerImpl.clickFollowButton(widgetType,shopId,userId,source,buttonTitle)
