@@ -35,6 +35,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.*
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -105,7 +106,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         playFeedVideoTabViewModel.run {
             getLivePlayDataRsp.observe(lifecycleOwner, Observer {
-//                hideAdapterLoading()
                 when (it) {
                     is Success -> {
                         onSuccessPlayTabData(
@@ -113,8 +113,8 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                         )
                     }
                     is Fail -> {
-                        //TODO implement error case
-//                        fetchFirstPage()
+                        Timber.e(it.throwable)
+
                     }
                 }
             })

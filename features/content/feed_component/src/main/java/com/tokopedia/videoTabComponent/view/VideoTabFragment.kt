@@ -40,6 +40,7 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
 import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
+import timber.log.Timber
 import javax.inject.Inject
 
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
@@ -142,9 +143,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     }
                     is Fail -> {
                         hideLoading()
+                        Timber.e(it.throwable)
 
-                        //TODO implement error case
-//                        fetchFirstPage()
                     }
                 }
             })
@@ -157,7 +157,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                         )
                     }
                     is Fail -> {
-                        //TODO implement error case
+                        Timber.e(it.throwable)
 
                     }
                 }
@@ -171,7 +171,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                         )
                     }
                     is Fail -> {
-                        //TODO implement error case
+                        Timber.e(it.throwable)
 
                     }
                 }
