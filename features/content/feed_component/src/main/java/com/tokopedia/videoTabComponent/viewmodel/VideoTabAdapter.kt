@@ -13,10 +13,7 @@ import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.mapper.WIDGET_UPCOMING
-import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.*
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 
 /**
@@ -63,10 +60,8 @@ class VideoTabAdapter(
         val feedPlayLehatSemuaApplink = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID}=$sourceId&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE}=$sourceType&${ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY}=$filterCategory"
 
         val newList = mutableListOf<PlayFeedUiModel>()
-        var newListPosition = 0
         for (item in itemList) {
             newList.add(item)
-            newListPosition++
             if (item is PlaySlotTabMenuUiModel) break
         }
         if (slotPosition == null) slotPosition = newList.size - 1
@@ -84,7 +79,7 @@ class VideoTabAdapter(
 
         }
         setItems(newList)
-        notifyItemRangeChanged(newListPosition, newList.size)
+        notifyDataSetChanged()
 
     }
 
@@ -109,6 +104,13 @@ class VideoTabAdapter(
                         return index
                 }
             }
+            if (playFeedUiModel is PlayWidgetLargeUiModel) {
+                val item = playFeedUiModel.model.items[positionOfItem]
+                if (item is PlayWidgetChannelUiModel) {
+                    if (channelId == item.channelId)
+                        return index
+                }
+            }
 
         }
         return -1
@@ -126,8 +128,11 @@ class VideoTabAdapter(
                 val model = (itemList[position] as PlayWidgetJumboUiModel)
                 val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
                 list.add(updatedItem)
-            }
-            else {
+            } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
+                val model = (itemList[position] as PlayWidgetLargeUiModel)
+                val updatedItem = model.copy(model = updateWidgetActionReminder(model.model, channelId, reminderType))
+                list.add(updatedItem)
+            } else {
                 list.add(playFeedUiModel)
             }
         }

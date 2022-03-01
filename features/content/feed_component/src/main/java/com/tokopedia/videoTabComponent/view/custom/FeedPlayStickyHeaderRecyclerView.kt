@@ -50,14 +50,19 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
                 headerRecyclerView.addView(view)
             }
         } ?: headerRecyclerView.addView(view)
-        headerRecyclerView.gone()
+    }
 
-
+    fun setHeaderViewVisibility(shouldShow: Boolean){
+        if (shouldShow)
+            headerRecyclerView.visible()
+        else
+            headerRecyclerView.gone()
 
     }
+
     private fun getRunnableForHeaderVisibility() = Runnable {
             if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE)
-            headerRecyclerView.visible()
+                headerRecyclerView.visible()
     }
 
     fun scrollToPosition(position: Int) {
