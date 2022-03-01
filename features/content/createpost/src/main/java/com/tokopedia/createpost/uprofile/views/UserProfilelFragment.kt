@@ -64,6 +64,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.iconunify.IconUnify
+
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
     ShareBottomsheetListener {
@@ -639,10 +641,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 activity?.onBackPressed()
             }
 
-            val imgShare = addRightIcon(R.drawable.iconunify_share_mobile)
+            val imgShare = addRightIcon(IconUnify.SHARE)
 
             imgShare.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.black),
+                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
@@ -650,10 +652,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 showUniversalShareBottomSheet()
             }
 
-            val imgMenu = addRightIcon(R.drawable.iconunify_menu_hamburger)
+            val imgMenu = addRightIcon(IconUnify.MENU_HAMBURGER)
 
             imgMenu.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.black),
+                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
