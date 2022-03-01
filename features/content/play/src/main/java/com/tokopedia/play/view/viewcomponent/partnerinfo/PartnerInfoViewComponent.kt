@@ -52,12 +52,12 @@ class PartnerInfoViewComponent(
 
     private fun setupListener(applink: String){
         rootView.setOnClickListener {
-            listener.onPartnerNameClicked(this, applink)
+            listener.onPartnerInfoClicked(this, applink)
         }
     }
 
     interface Listener {
-        fun onPartnerNameClicked(view: PartnerInfoViewComponent, applink: String)
+        fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String)
         fun onFollowButtonClicked(view: PartnerInfoViewComponent)
     }
 

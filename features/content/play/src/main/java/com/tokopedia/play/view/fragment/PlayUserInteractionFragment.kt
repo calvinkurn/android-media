@@ -361,7 +361,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(CopyLinkAction)
     }
 
-    override fun onPartnerNameClicked(view: PartnerInfoViewComponent, applink: String) {
+    override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
         playViewModel.submitAction(ClickPartnerNameAction(applink))
     }
 
