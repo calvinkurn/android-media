@@ -26,6 +26,7 @@ class GetAddOnUseCase @Inject constructor(
                 }
                 StaticInfo {
                   InfoURL
+                  PromoText
                 }
                 AddOnByIDResponse{
                   Basic{
