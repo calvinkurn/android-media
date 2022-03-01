@@ -65,6 +65,8 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.clearImage
 
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
@@ -641,8 +643,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 activity?.onBackPressed()
             }
 
-            val imgShare = addRightIcon(IconUnify.SHARE)
+            val imgShare = addRightIcon(0)
 
+            imgShare.clearImage()
+            imgShare.setImageDrawable(getIconUnifyDrawable(context, IconUnify.SHARE_MOBILE))
             imgShare.setColorFilter(
                 ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
                 android.graphics.PorterDuff.Mode.MULTIPLY
@@ -652,7 +656,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 showUniversalShareBottomSheet()
             }
 
-            val imgMenu = addRightIcon(IconUnify.MENU_HAMBURGER)
+            val imgMenu = addRightIcon(0)
+
+            imgMenu.clearImage()
+            imgMenu.setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
 
             imgMenu.setColorFilter(
                 ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
