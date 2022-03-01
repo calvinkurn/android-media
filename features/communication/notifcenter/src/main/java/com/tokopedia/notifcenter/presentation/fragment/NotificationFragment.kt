@@ -63,16 +63,20 @@ import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationL
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
+import com.tokopedia.notifcenter.util.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
@@ -92,6 +96,12 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     @Inject
     lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
 
     var remoteConfig: RemoteConfig? = null
 
@@ -197,6 +207,16 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         setupLifecycleObserver()
     }
 
+    private fun loadShopAds(block: (CpmModel?) -> Unit) {
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(NotificationTopAdsHeadlineHelper.getParams(
+            userSession.userId
+        ), {
+            block(it)
+        }, {
+            block(null)
+        })
+    }
+
     private fun setupLifecycleObserver() {
         recommendationLifeCycleAware?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
@@ -283,8 +303,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             rvAdapter?.addTopAdsBanner(it)
         })
 
-        viewModel.recommendations.observe(viewLifecycleOwner, Observer {
-            renderRecomList(it)
+        viewModel.recommendations.observe(viewLifecycleOwner, Observer { recommendationData ->
+            loadShopAds { cpmModel ->
+                renderRecomList(recommendationData, cpmModel)
+            }
         })
 
         viewModel.filterList.observe(viewLifecycleOwner, Observer {
@@ -380,9 +402,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return data.hasNext && viewModel.hasFilter()
     }
 
-    private fun renderRecomList(recoms: RecommendationDataModel) {
+    private fun renderRecomList(recoms: RecommendationDataModel, cpmModel: CpmModel?) {
         hideLoading()
-        rvAdapter?.addRecomProducts(recoms.item)
+        rvAdapter?.addRecomProducts(recoms.item, cpmModel)
         updateScrollListenerState(recoms)
     }
 

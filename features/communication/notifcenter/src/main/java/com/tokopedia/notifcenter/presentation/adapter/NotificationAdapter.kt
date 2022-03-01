@@ -13,6 +13,7 @@ import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResp
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
+import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
 import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
@@ -21,6 +22,7 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadWishlistState
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory,
@@ -186,11 +188,20 @@ class NotificationAdapter constructor(
         }
     }
 
-    fun addRecomProducts(recommendations: List<Visitable<*>>) {
+    fun addRecomProducts(recommendations: List<Visitable<*>>, cpmModel: CpmModel?) {
+        val shopAdsPosition = cpmModel?.data?.get(0)?.cpm?.position
         val currentItemSize = visitables.size
-        if (visitables.addAll(recommendations)) {
-            notifyItemRangeInserted(currentItemSize, recommendations.size)
+        if (recommendations.isNotEmpty() && recommendations[0] is RecommendationTitleUiModel) {
+            recommendations.forEachIndexed { index, visitable ->
+                visitables.add(visitable)
+                if (shopAdsPosition != null && index == shopAdsPosition) {
+                    visitables.add(NotifTopAdsHeadline(cpmModel))
+                }
+            }
+        } else {
+            visitables.addAll(recommendations)
         }
+        notifyItemRangeInserted(currentItemSize, recommendations.size)
     }
 
     override fun showErrorNetwork() {
