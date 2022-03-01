@@ -54,4 +54,6 @@ interface AffiliateComponent {
 
     fun injectPromotionHistoryFragment(viewModel: AffiliatePromotionHistoryFragment)
 
+    fun injectWithdrawalInfoFragment(affiliateTransactionDetailFragment: AffiliateTransactionDetailFragment)
+
 }
