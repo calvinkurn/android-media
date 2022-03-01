@@ -96,7 +96,7 @@ object SpecialReleaseTracking : BaseTrackerConst() {
             name = channelModel.trackingAttributionModel.promoName,
             creative = String.format(
                 SPECIAL_RELEASE_PROMO_CREATIVE_NAME,
-                attribution,
+                channelModel.name,
                 when(channelModel.trackingAttributionModel.campaignType) {
                     CAMPAIGN_TYPE_SPECIAL_RELEASE -> SPECIAL_RELEASE
                     CAMPAIGN_TYPE_FLASH_SALE_TOKO -> FLASH_SALE
