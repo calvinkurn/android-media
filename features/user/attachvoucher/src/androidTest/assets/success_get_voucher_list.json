@@ -55,7 +55,8 @@
             "delete":"",
             "stop":"https://www.tokopedia.com/v2/vouchertoko/stop/7105379",
             "share":"https://www.tokopedia.com/br04dc4st-s4tu"
-          }
+          },
+          "is_lock_to_product" : 0
         },
         {
           "voucher_id":7103867,
@@ -96,12 +97,13 @@
             "delete":"",
             "stop":"https://www.tokopedia.com/v2/vouchertoko/stop/7103867",
             "share":"https://www.tokopedia.com/br04dc4st-s4tu"
-          }
+          },
+          "is_lock_to_product" : 0
         },
         {
           "voucher_id":7103599,
           "shop_id":10973651,
-          "voucher_name":"voucher private baru",
+          "voucher_name":"Voucher Product",
           "voucher_type":3,
           "voucher_type_formatted":"Cashback",
           "voucher_image":"https://ecs7.tokopedia.net/img/BTJGre/2022/1/13/c9e2a964-381e-4586-8abf-c9c2ec3b2e08.jpg",
@@ -137,7 +139,8 @@
             "delete":"",
             "stop":"https://www.tokopedia.com/v2/vouchertoko/stop/7103599",
             "share":"https://www.tokopedia.com/br04dc4st-s4tu"
-          }
+          },
+          "is_lock_to_product" : 1
         },
         {
           "voucher_id":7103596,
@@ -178,7 +181,8 @@
             "delete":"",
             "stop":"https://www.tokopedia.com/v2/vouchertoko/stop/7103596",
             "share":"https://www.tokopedia.com/br04dc4st-s4tu"
-          }
+          },
+          "is_lock_to_product" : 0
         },
         {
           "voucher_id":6895754,
@@ -219,7 +223,8 @@
             "delete":"",
             "stop":"https://www.tokopedia.com/v2/vouchertoko/stop/6895754",
             "share":"https://www.tokopedia.com/br04dc4st-s4tu"
-          }
+          },
+          "is_lock_to_product" : 0
         }
       ]
     }
