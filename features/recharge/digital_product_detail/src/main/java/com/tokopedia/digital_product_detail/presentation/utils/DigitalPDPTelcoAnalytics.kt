@@ -676,10 +676,10 @@ class DigitalPDPTelcoAnalytics {
                 putString(CATEGORY_ID, categoryId)
                 putString(DIMENSION45, cartId)
                 putString(ITEM_BRAND, operatorName)
-                putString(ITEM_CATEGORY, "level1_${categoryName}")
+                putString(ITEM_CATEGORY, categoryName)
                 putString(ITEM_ID, productId)
                 putString(ITEM_NAME, productName)
-                putString(ITEM_VARIANT, "")
+                putString(ITEM_VARIANT, "") //todo add new variant
                 putString(PRICE, price)
                 putString(QUANTITY, "1")
                 putString(SHOP_ID, null)
