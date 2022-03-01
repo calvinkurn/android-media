@@ -577,7 +577,15 @@ object ShopPageHomeMapper {
                      imageUrl = it.imageUrl,
                      imageUrl300 = "",
                      productUrl = it.urlApps,
-                     hideGimmick = it.hideGimmick
+                     hideGimmick = it.hideGimmick,
+                     labelGroupList = it.labelGroups.map { labelGroup ->
+                         com.tokopedia.shop_widget.thematicwidget.uimodel.LabelGroupUiModel(
+                             position = labelGroup.position,
+                             title = labelGroup.title,
+                             url = labelGroup.url,
+                             type = labelGroup.type
+                         )
+                     }
                  )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
