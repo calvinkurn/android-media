@@ -26,7 +26,7 @@
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,divider,details_rv"/>
+        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,divider"/>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/transaction_card"
         android:layout_width="match_parent"

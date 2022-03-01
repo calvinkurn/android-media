@@ -44,6 +44,7 @@ class AffiliateAdapterFactory(
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
+            AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -118,6 +119,10 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateCommisionDividerItemModel): Int {
         return AffiliateCommisionDivderItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommisionThickDividerItemModel): Int {
+        return AffiliateCommisionThickDivderItemVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {

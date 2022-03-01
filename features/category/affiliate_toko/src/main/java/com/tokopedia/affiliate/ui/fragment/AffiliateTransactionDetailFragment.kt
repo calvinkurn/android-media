@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -78,7 +79,6 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
                     hideView()
                 } else {
                     view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
-                    showView()
                 }
             }
         })
@@ -107,24 +107,44 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     private fun hideView() {
         view?.findViewById<Group>(R.id.details_view)?.hide()
+        view?.findViewById<RecyclerView>(R.id.details_rv)?.hide()
     }
 
     private fun showView(){
         view?.findViewById<Group>(R.id.details_view)?.show()
+        view?.findViewById<RecyclerView>(R.id.details_rv)?.show()
         view?.findViewById<GlobalError>(R.id.commision_global_error)?.hide()
     }
 
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
+        if(commissionData?.data?.commisionType != TRAFFIC_TYPE) {
+            showView()
+            setProductTransactionData(commissionData)
+        }
+        else{
+            setTrafficTransactionView()
+        }
+    }
+
+    private fun setTrafficTransactionView() {
+        view?.findViewById<RecyclerView>(R.id.details_rv)?.show()
+        view?.findViewById<Group>(R.id.details_view)?.hide()
+    }
+
+    private fun setProductTransactionData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
         commissionData?.data?.cardDetail?.image?.androidURL?.let { url ->
             view?.findViewById<ImageUnify>(R.id.product_image)?.setImageUrl(
                 url
             )
         }
-        view?.findViewById<Typography>(R.id.product_name)?.text = commissionData?.data?.cardDetail?.cardTitle
-        view?.findViewById<Typography>(R.id.product_status)?.text = commissionData?.data?.cardDetail?.cardPriceFormatted
-        view?.findViewById<Typography>(R.id.shop_name)?.text = commissionData?.data?.cardDetail?.shopName
-        view?.findViewById<Typography>(R.id.transaction_date)?.text = commissionData?.data?.createdAtFormatted
-
+        view?.findViewById<Typography>(R.id.product_name)?.text =
+            commissionData?.data?.cardDetail?.cardTitle
+        view?.findViewById<Typography>(R.id.product_status)?.text =
+            commissionData?.data?.cardDetail?.cardPriceFormatted
+        view?.findViewById<Typography>(R.id.shop_name)?.text =
+            commissionData?.data?.cardDetail?.shopName
+        view?.findViewById<Typography>(R.id.transaction_date)?.text =
+            commissionData?.data?.createdAtFormatted
     }
 
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(affiliateInfoClickInterfaces = this))

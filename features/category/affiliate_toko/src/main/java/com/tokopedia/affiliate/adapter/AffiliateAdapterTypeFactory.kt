@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.adapter
 
+
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
 interface AffiliateAdapterTypeFactory {
@@ -23,4 +25,5 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateTransactionHistoryItemModel): Int
     fun type(viewModel: AffiliateCommissionItemModel): Int
     fun type(viewModel: AffiliateCommisionDividerItemModel): Int
+    fun type(viewModel: AffiliateCommisionThickDividerItemModel): Int
 }

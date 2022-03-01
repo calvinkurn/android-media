@@ -33,9 +33,6 @@ class AffiliateCommissionDetailsItemVH(
         val header = itemView.findViewById<Typography>(R.id.transaction_komisi_header)
         val infoIcon = itemView.findViewById<IconUnify>(R.id.transaction_komisi_icon)
         val valueTv = itemView.findViewById<Typography>(R.id.transaction_komisi)
-
-
-
         element?.data?.textType?.let { type ->
             when (type) {
                 TYPE_BOLD -> {
@@ -83,12 +80,10 @@ class AffiliateCommissionDetailsItemVH(
                 valueTv.text = desc
             }
         }
-        element?.data?.detailTooltip?.let {
-            if (it.isEmpty())
-                infoIcon.hide()
-            else {
-                infoIcon.show()
-            }
+        if(element?.data?.detailTooltip?.isNotEmpty() == true || element?.data?.advanceTooltip?.isNotEmpty() == true){
+            infoIcon.show()
+        }else{
+            infoIcon.hide()
         }
         infoIcon.setOnClickListener {
             affiliateInfoClickInterfaces?.onInfoClick(element?.data?.detailTitle,element?.data?.detailTooltip)

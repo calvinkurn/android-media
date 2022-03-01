@@ -35,7 +35,9 @@ data class AffiliateCommissionDetailsData(
             @SerializedName("UpdatedAt")
             var updatedAt: String?,
             @SerializedName("UpdatedAtFormatted")
-            var updatedAtFormatted: String?
+            var updatedAtFormatted: String?,
+            @SerializedName("CommissionType")
+            var commisionType: String?
         ) {
 
 
@@ -84,10 +86,23 @@ data class AffiliateCommissionDetailsData(
                 @SerializedName("DetailTitle")
                 var detailTitle: String?,
                 @SerializedName("DetailTooltip")
-                var detailTooltip: String?
-            )
-
-
+                var detailTooltip: String?,
+                @SerializedName("AdvancedTooltip")
+                var advanceTooltip: List<Tooltip>
+            ){
+                data class Tooltip(
+                    @SerializedName("TooltipType")
+                    var tooltipType: String?,
+                    @SerializedName("TextType")
+                    var textType: String?,
+                    @SerializedName("TextStyle")
+                    var textStyle: String?,
+                    @SerializedName("TextSize")
+                    var textSize: String?,
+                    @SerializedName("TooltipText")
+                    var tooltipText: String?,
+                )
+            }
             data class Error(
                 @SerializedName("CtaLink")
                 var ctaLink: CtaLink?,

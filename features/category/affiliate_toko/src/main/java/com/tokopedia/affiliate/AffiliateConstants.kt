@@ -85,3 +85,5 @@ const val THIRTY_THREE = 33
 const val SIX = 6
 
 const val TWENTY_NINE = 29
+
+const val TRAFFIC_TYPE = "TRAFFIC"
