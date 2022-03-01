@@ -10,19 +10,12 @@ fun List<MediaUiModel>.containByName(media: MediaUiModel): Boolean {
     }
 }
 
-fun List<MediaUiModel>.getIndexOf(media: MediaUiModel): Int {
-    return this.indices
-        .firstOrNull {
-            this[it].name == media.name
-        }?: -1
-}
-
 fun List<MediaUiModel>?.hasVideoBy(count: Int): Boolean {
     return this?.filter { it.isVideo() }?.size?: 0 >= count
 }
 
 fun MutableList<MediaUiModel>.safeRemove(media: MediaUiModel): List<MediaUiModel> {
-    val index = getIndexOf(media)
+    val index = indexOf(media)
     if (index != -1) removeAt(index)
     return this
 }

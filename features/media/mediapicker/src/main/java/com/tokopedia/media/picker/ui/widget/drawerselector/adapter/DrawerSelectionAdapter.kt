@@ -12,7 +12,6 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.uimodel.containByName
-import com.tokopedia.media.picker.ui.uimodel.getIndexOf
 import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.PlaceholderViewHolder
@@ -98,7 +97,7 @@ class DrawerSelectionAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeData(media: MediaUiModel, isPublishedOnListener: Boolean = false) {
-        val index = medias.getIndexOf(media)
+        val index = medias.indexOf(media)
 
         if (index != -1) {
             listRect.remove(index)

@@ -209,6 +209,10 @@ class CameraControllerComponent(
             return
         }
 
+        if (isPhotoMode()) {
+            // TODO
+        }
+
         if (listener.hasReachedLimit()) {
             listener.onShowToastMediaLimit()
             return

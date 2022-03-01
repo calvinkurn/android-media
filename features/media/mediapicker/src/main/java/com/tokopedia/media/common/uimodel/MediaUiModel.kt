@@ -26,6 +26,25 @@ open class MediaUiModel(
         return extractDuration >= VIDEO_DURATION_MINIMUM
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is MediaUiModel &&
+                id == other.id &&
+                name == other.name &&
+                path == other.path &&
+                uri == other.uri &&
+                isFromPickerCamera == other.isFromPickerCamera
+    }
+
+    override fun hashCode(): Int {
+        var hashCode = id.hashCode()
+        hashCode = 5 * hashCode + name.hashCode()
+        hashCode = 5 * hashCode + path.hashCode()
+        hashCode = 5 * hashCode + uri.hashCode()
+        hashCode = 5 * hashCode + isFromPickerCamera.hashCode()
+        return hashCode
+    }
+
     companion object {
         const val VIDEO_DURATION_MINIMUM = 3000
 
