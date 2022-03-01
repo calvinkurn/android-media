@@ -205,6 +205,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        getRecommendations()
                         getCatalogProductInput(selectedOperator.key)
                     } else {
                         onHideBuyWidget()
@@ -255,6 +256,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             }
         })
 
+        viewModel.recommendationData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
+                is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
+            }
+        })
 
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
@@ -315,6 +323,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun getRecommendations() {
+        val clientNumbers = listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.setRecommendationLoading()
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+    }
+
     private fun getCatalogProductInput(selectedOperatorKey: String) {
         viewModel.setRechargeCatalogInputMultiTabLoading()
         viewModel.cancelCatalogProductJob()
@@ -347,7 +361,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         getFavoriteNumber()
 
         renderPrefill(data.userPerso)
-        renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
     }
 
@@ -411,6 +424,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
         showEmptyState()
         showErrorToaster(throwable)
+    }
+
+    private fun onSuccessGetRecommendations(recommendations: List<RecommendationCardWidgetModel>) {
+        renderRecommendation(recommendations)
+    }
+
+    private fun onFailedGetRecommendations() {
+        binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun initClientNumberWidget() {
@@ -759,7 +780,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpPulsaEmptyStateWidget.isVisible) {
                 rechargePdpPulsaEmptyStateWidget.hide()
-                rechargePdpPulsaRecommendationWidget.show()
             }
         }
     }

@@ -220,6 +220,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             }
         })
 
+        viewModel.recommendationData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
+                is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
+            }
+        })
 
         viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
@@ -281,7 +288,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         getFavoriteNumber()
 
         renderPrefill(data.userPerso)
-        renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
     }
 
@@ -333,6 +339,20 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             }
         }
         onFailedRecommendation()
+    }
+
+    private fun onSuccessGetRecommendations(recommendations: List<RecommendationCardWidgetModel>) {
+        renderRecommendation(recommendations)
+    }
+
+    private fun onFailedGetRecommendations() {
+        binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
+    }
+
+    private fun getRecommendations() {
+        val clientNumbers = listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.setRecommendationLoading()
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
     }
 
     private fun getCatalogMenuDetail() {
@@ -515,6 +535,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     viewModel.operatorData.attributes.name
                 )
 
+                getRecommendations()
                 getCatalogInputMultiTab(operatorId)
                 hideEmptyState()
 
@@ -562,7 +583,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
-                rechargePdpTokenListrikRecommendationWidget.show()
                 rechargePdpTickerWidgetProductDesc.show()
             }
         }

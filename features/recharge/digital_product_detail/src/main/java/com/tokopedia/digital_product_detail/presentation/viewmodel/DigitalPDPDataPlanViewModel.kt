@@ -84,13 +84,17 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
+    private val _recommendationData = MutableLiveData<RechargeNetworkResult<List<RecommendationCardWidgetModel>>>()
+    val recommendationData: LiveData<RechargeNetworkResult<List<RecommendationCardWidgetModel>>>
+        get() = _recommendationData
+
     fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud, true)
+            val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
         }) {
             _menuDetailData.value = RechargeNetworkResult.Fail(it)
@@ -182,6 +186,19 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
+        }
+    }
+
+    fun setRecommendationLoading() {
+        _recommendationData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds, true)
+            _recommendationData.value = RechargeNetworkResult.Success(recommendations)
+        }) {
+            _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
     }
 

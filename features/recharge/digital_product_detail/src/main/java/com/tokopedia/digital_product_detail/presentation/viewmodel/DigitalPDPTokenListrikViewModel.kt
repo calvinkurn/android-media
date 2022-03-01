@@ -81,6 +81,10 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
+    private val _recommendationData = MutableLiveData<RechargeNetworkResult<List<RecommendationCardWidgetModel>>>()
+    val recommendationData: LiveData<RechargeNetworkResult<List<RecommendationCardWidgetModel>>>
+        get() = _recommendationData
+
     fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
@@ -169,6 +173,19 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
+        }
+    }
+
+    fun setRecommendationLoading() {
+        _recommendationData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
+            _recommendationData.value = RechargeNetworkResult.Success(recommendations)
+        }) {
+            _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
     }
 

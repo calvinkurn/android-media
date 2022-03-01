@@ -233,6 +233,7 @@ class DigitalPDPDataPlanFragment :
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        getRecommendations()
                         getCatalogProductInputMultiTab(selectedOperator.key, isOperatorChanged,
                             selectedClientNumber)
                     } else {
@@ -282,6 +283,14 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
+        viewModel.recommendationData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
+                is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
             }
         })
 
@@ -364,6 +373,12 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun getRecommendations() {
+        val clientNumbers = listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.setRecommendationLoading()
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+    }
+
     private fun getCatalogMenuDetail() {
         viewModel.run {
             setMenuDetailLoading()
@@ -395,7 +410,6 @@ class DigitalPDPDataPlanFragment :
         getFavoriteNumber()
 
         renderPrefill(data.userPerso)
-        renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
     }
 
@@ -452,6 +466,14 @@ class DigitalPDPDataPlanFragment :
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
         showEmptyState()
         showErrorToaster(throwable)
+    }
+
+    private fun onSuccessGetRecommendations(recommendations: List<RecommendationCardWidgetModel>) {
+        renderRecommendation(recommendations)
+    }
+
+    private fun onFailedGetRecommendations() {
+        binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun onSuccessSortFilter(initialSelectedCounter: Int = 0){
@@ -704,7 +726,6 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
-                rechargePdpPaketDataRecommendationWidget.show()
             }
         }
     }
