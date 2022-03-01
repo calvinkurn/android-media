@@ -6,8 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -185,8 +183,6 @@ class ProductChooserIdGenerator {
     private val viewPrinter = ViewHierarchyPrinter(printConditions)
     private val fileWriter = FileWriter()
 
-    private val dateFormatter = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
-
     init {
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
@@ -210,7 +206,8 @@ class ProductChooserIdGenerator {
             val bottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
             fileWriter.write(
-                fileName = "product_chooser-${dateFormatter.format(Date())}.csv",
+                folderName = folderName,
+                fileName = "product_chooser.csv",
                 text = info
             )
         }
@@ -233,7 +230,8 @@ class ProductChooserIdGenerator {
             val sortBottomSheet = ProductSortBottomSheet.getFragment(chooserBottomSheet.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = sortBottomSheet.requireView())
             fileWriter.write(
-                fileName = "product_sort-${dateFormatter.format(Date())}.csv",
+                folderName = folderName,
+                fileName = "product_sort.csv",
                 text = info
             )
         }
@@ -255,7 +253,8 @@ class ProductChooserIdGenerator {
             val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
             fileWriter.write(
-                fileName = "etalase_list-${dateFormatter.format(Date())}.csv",
+                folderName = folderName,
+                fileName = "etalase_list.csv",
                 text = info
             )
         }
@@ -269,5 +268,11 @@ class ProductChooserIdGenerator {
                 uiController.loopMainThreadForAtLeast(delay)
             }
         }
+    }
+
+    companion object {
+
+        private val dateFormatter = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
+        private val folderName = dateFormatter.format(Date())
     }
 }

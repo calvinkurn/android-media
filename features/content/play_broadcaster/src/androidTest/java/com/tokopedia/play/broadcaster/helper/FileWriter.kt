@@ -1,10 +1,7 @@
 package com.tokopedia.play.broadcaster.helper
 
 import android.os.Environment
-import android.view.View
-import android.view.ViewGroup
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.play.broadcaster.test.BuildConfig
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -15,10 +12,14 @@ import java.io.FileOutputStream
 class FileWriter {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
-    private val documentsFolder = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+    private val documentsFolder = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!.path.toString()
 
-    fun write(fileName: String, text: String) {
-        val file = File(documentsFolder, fileName)
+    fun write(folderName: String = "", fileName: String, text: String) {
+        val folder = File(documentsFolder, folderName)
+        if (!folder.exists()) folder.mkdirs()
+
+        val file = File(folder, fileName)
+
         val outputStream = BufferedOutputStream(FileOutputStream(file))
         outputStream.use {
             it.write(text.toByteArray())
