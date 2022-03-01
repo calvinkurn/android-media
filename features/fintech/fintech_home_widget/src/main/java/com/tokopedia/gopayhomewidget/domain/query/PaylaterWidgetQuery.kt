@@ -7,6 +7,7 @@ const val GQL_QUERY_PAYLATER_WIDGET_DATA =
       image_dark
       image_light
       description
+      case_type
       button {
        button_name
        cta_type

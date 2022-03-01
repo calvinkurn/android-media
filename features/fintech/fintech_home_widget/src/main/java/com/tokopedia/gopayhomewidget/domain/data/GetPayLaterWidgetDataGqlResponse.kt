@@ -19,6 +19,11 @@ data class PayLaterWidgetData(
         @SerializedName("image_light")
         @Expose
         val imageLight: String?,
+
+        @SerializedName("case_type")
+        @Expose
+        val caseType: Int?,
+
         @SerializedName("description")
         @Expose
         val description: String?,

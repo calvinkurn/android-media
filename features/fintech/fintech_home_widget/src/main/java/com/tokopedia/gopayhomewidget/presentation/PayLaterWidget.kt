@@ -8,6 +8,7 @@ import androidx.annotation.AttrRes
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gopayhomewidget.analytics.AnalyticsEventGenerator
 import com.tokopedia.gopayhomewidget.analytics.AnalyticsUpload
 import com.tokopedia.gopayhomewidget.databinding.LayoutGopayHomeWidgetBinding
 import com.tokopedia.gopayhomewidget.di.component.DaggerPayLaterHomeWidgetComponent
@@ -56,7 +57,7 @@ class PayLaterWidget @JvmOverloads constructor(
     @SuppressLint("SetTextI18n")
     fun setData(payLaterWidgetData: PayLaterWidgetData) {
         if (payLaterWidgetData.isShow == true) {
-            //   analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetImpressionAnalytics(payLaterWidgetData.description))
+               analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetImpressionAnalytics(payLaterWidgetData.caseType.toString()))
             this.visibility = VISIBLE
             layoutGopayBinding.userName.text = "${userSession.get().name}!"
             layoutGopayBinding.gopayDetail.text = payLaterWidgetData.description
@@ -67,11 +68,11 @@ class PayLaterWidget @JvmOverloads constructor(
             layoutGopayBinding.proccedToGopay.setOnClickListener {
                 when (payLaterWidgetData.button?.ctaType) {
                     1 -> {
-                        //    analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetCtaClickedButton(payLaterWidgetData.description,payLaterWidgetData.button.appsUrl))
+                            analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetCtaClickedButton(payLaterWidgetData.caseType.toString(),payLaterWidgetData.button.appsUrl?:""))
                         RouteManager.route(context, payLaterWidgetData.button.appsUrl)
                     }
                     2 -> {
-                        //    analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetCtaClickedButton(payLaterWidgetData.description,payLaterWidgetData.button.weburl))
+                            analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetCtaClickedButton(payLaterWidgetData.caseType.toString(),payLaterWidgetData.button.webUrl?:""))
                         val webViewAppLink =
                                 ApplinkConst.WEBVIEW + "?url=" + payLaterWidgetData.button.webUrl
                         RouteManager.route(context, webViewAppLink)
