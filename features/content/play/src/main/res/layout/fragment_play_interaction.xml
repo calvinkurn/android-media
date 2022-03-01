@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_play_interaction"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    >
+    android:clipChildren="false">
 
     <View
         android:id="@+id/view_size"
@@ -17,8 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/view_gradient_background"
@@ -28,8 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/v_immersive_box"
@@ -39,8 +35,7 @@
         app:layout_constraintBottom_toTopOf="@id/view_interactive_winner_badge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
-        />
+        app:layout_constraintTop_toBottomOf="@id/view_stats_info" />
 
     <include
         android:id="@+id/view_send_chat"
@@ -53,8 +48,7 @@
         app:layout_constraintBottom_toBottomOf="@id/view_size"
         app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_product_featured"
@@ -66,16 +60,14 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        />
+        app:layout_constraintStart_toStartOf="@id/view_size" />
 
     <View
         android:id="@+id/view_topmost_like"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl8"
-        app:layout_constraintBottom_toBottomOf="@id/view_like"
-        />
+        app:layout_constraintBottom_toBottomOf="@id/view_like" />
 
     <include
         android:id="@+id/view_share_experience"
@@ -83,10 +75,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_goneMarginEnd="0dp"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        />
+        app:layout_goneMarginEnd="0dp" />
 
     <include
         android:id="@+id/view_kebab_menu"
@@ -94,10 +85,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/view_share_experience"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
-        />
+        app:layout_goneMarginEnd="@dimen/spacing_lvl4" />
 
     <include
         android:id="@+id/view_like"
@@ -106,23 +96,21 @@
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        tools:visibility="visible"
-        />
+        app:layout_constraintTop_toTopOf="@id/view_send_chat"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_like_count"
         layout="@layout/view_like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/view_like"
-        app:layout_constraintEnd_toEndOf="@id/view_like"
-        app:layout_constraintBottom_toTopOf="@id/view_like"
         android:visibility="gone"
-        tools:visibility="visible"
-        />
+        app:layout_constraintBottom_toTopOf="@id/view_like"
+        app:layout_constraintEnd_toEndOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/view_like"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_pinned_voucher"
@@ -131,9 +119,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@id/view_product_featured"
-        app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        />
+        app:layout_constraintStart_toStartOf="@id/view_size" />
 
     <include
         android:id="@+id/view_pinned"
@@ -150,8 +137,7 @@
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
         app:layout_goneMarginBottom="@dimen/play_offset_12"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <com.tokopedia.play.view.custom.PlayChatListView
         android:id="@+id/view_chat_list"
@@ -164,8 +150,7 @@
         app:layout_constraintBottom_toTopOf="@id/view_pinned"
         app:layout_constraintEnd_toStartOf="@id/view_like"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <FrameLayout
         android:id="@+id/view_interactive"
@@ -176,18 +161,16 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/v_winner_badge_bottom"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_anchor_size"
-        app:layout_constraintTop_toTopOf="@id/view_interactive"
         app:layout_constraintBottom_toBottomOf="@id/view_interactive"
         app:layout_constraintStart_toStartOf="@id/view_interactive"
-        app:layout_constraintVertical_bias="0.3"
-        />
+        app:layout_constraintTop_toTopOf="@id/view_interactive"
+        app:layout_constraintVertical_bias="0.3" />
 
     <include
         android:id="@+id/view_interactive_winner_badge"
@@ -199,8 +182,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_interactive"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <com.google.android.exoplayer2.ui.PlayerControlView
         android:id="@+id/pcv_video"
@@ -211,12 +193,11 @@
         android:visibility="gone"
         app:controller_layout_id="@layout/layout_play_player_control"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
-        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
+        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         app:show_timeout="-1"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_product_see_more"
@@ -225,8 +206,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        />
+        app:layout_constraintStart_toStartOf="@id/view_size" />
 
     <include
         android:id="@+id/view_video_settings"
@@ -238,8 +218,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_stats_info"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_pip_control"
@@ -250,8 +229,7 @@
         android:layout_marginEnd="@dimen/play_offset_12"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
-        />
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room" />
 
     <androidx.mediarouter.app.MediaRouteButton
         android:id="@+id/btn_play_cast"
@@ -260,8 +238,7 @@
         app:layout_constraintEnd_toStartOf="@id/view_pip_control"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
         app:layout_goneMarginEnd="@dimen/spacing_lvl2"
-        app:mediaRouteButtonTint="@color/Unify_Static_White"
-        />
+        app:mediaRouteButtonTint="@color/Unify_Static_White" />
 
     <include
         android:id="@+id/view_end_live_info"
@@ -272,8 +249,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/view_toolbar_room"
@@ -285,8 +261,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_size"
-        />
+        app:layout_constraintTop_toTopOf="@id/view_size" />
 
     <include
         android:id="@+id/view_partner_info"
@@ -298,8 +273,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
-        app:layout_constraintWidth_default="wrap"
-        />
+        app:layout_constraintWidth_default="wrap" />
 
     <include
         android:id="@+id/view_stats_info"
@@ -309,8 +283,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_partner_info"
-        />
+        app:layout_constraintTop_toBottomOf="@id/view_partner_info" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
@@ -323,8 +296,7 @@
         app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_real_time_notification"
@@ -335,11 +307,10 @@
         android:visibility="invisible"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="@id/view_chat_list"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintTop_toTopOf="@id/view_chat_list"
-        app:layout_constraintHorizontal_bias="0"
-        app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
-        />
+        app:rcl_cornerRadius="@dimen/play_real_time_notif_radius" />
 
     <include
         android:id="@+id/view_play_button"
@@ -351,26 +322,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_like_bubble_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85"
-        />
+        app:layout_constraintGuide_percent="0.85" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_like_bubble_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <include
         android:id="@+id/view_like_bubble"
         layout="@layout/view_like_bubble"
         android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl9"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/gl_like_bubble_start"
-        />
+        app:layout_constraintTop_toTopOf="@id/gl_like_bubble_height" />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
