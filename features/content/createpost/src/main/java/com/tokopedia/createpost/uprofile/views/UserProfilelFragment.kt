@@ -838,11 +838,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let{
-                        var shareString = "{Substitute this with the formatted share content string " +
-                                "with the share content provided in the linkerShareData?.shareContents field. " +
-                                "Complete string will be provided by Product Owner}"
-                        shareModel.subjectName = "{Substitute this with the Sting that will be the value of the E-mail subject}"
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        var shareString = desc + " " + linkerShareData?.shareUri
                         // send gtm trackers if you want to
                         universalShareBottomSheet?.dismiss()
                     }
