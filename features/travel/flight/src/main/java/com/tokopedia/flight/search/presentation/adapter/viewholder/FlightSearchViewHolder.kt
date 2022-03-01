@@ -7,8 +7,7 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.flight.R
 import com.tokopedia.flight.databinding.ItemFlightSearchNewBinding
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 
 /**
  * @author by furqan on 13/04/2020
@@ -121,24 +120,16 @@ class FlightSearchViewHolder(val binding: ItemFlightSearchNewBinding,
             val isFreeRapidTest = element.freeRapidTestLabel.isNotEmpty()
             val isSeatDistancing = element.seatDistancingLabel.isNotEmpty()
 
-            if (isSeatDistancing){
+            labelSeatDistancing.shouldShowWithAction(isSeatDistancing){
                 labelSeatDistancing.text = element.seatDistancingLabel
-                labelSeatDistancing.show()
-            }else{
-                labelSeatDistancing.hide()
             }
 
-            if (isFreeRapidTest){
+            labelFreeRapidTest.shouldShowWithAction(isFreeRapidTest){
                 labelFreeRapidTest.text = element.freeRapidTestLabel
-                labelFreeRapidTest.show()
-            }else{
-                labelFreeRapidTest.hide()
             }
 
-            if (isSeatDistancing && isFreeRapidTest) {
-                labelSeatDistancingBackground.visibility = View.VISIBLE
-            } else {
-                labelSeatDistancingBackground.visibility = View.GONE
+            labelSeatDistancingBackground.shouldShowWithAction(isSeatDistancing && isFreeRapidTest){
+                /* no op */
             }
         }
     }
