@@ -59,12 +59,11 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
     }
 
     private fun setRecyclerData(gatewayList: List<CheckoutData>, selectedGateWayId: String) {
-        for (i in gatewayList.indices) {
-            if (gatewayList[i].gateway_id.toString() == selectedGateWayId) {
-                gatewayList[i].selectedGateway = true
-                break
-            }
-        }
+        gatewayList.filter {
+            it.gateway_id.toString() == selectedGateWayId
+        }.map {
+            it.selectedGateway = true;
+        }.first()
         listOfGateway = gatewayList
         gatewayListAdapter =
                 context?.let { context ->
