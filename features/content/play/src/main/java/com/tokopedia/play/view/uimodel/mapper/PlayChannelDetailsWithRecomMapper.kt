@@ -79,12 +79,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         id = partnerResponse.id.toLongOrZero(),
         name = htmlTextTransformer.transform(partnerResponse.name),
         type = PartnerType.getTypeByValue(partnerResponse.type),
-        status = PlayPartnerFollowStatus.Unknown,
+        status = getFollowStatus(isFollowBtnShown),
         iconUrl = partnerResponse.thumbnailUrl,
         badgeUrl = partnerResponse.badgeUrl,
-        isFollowBtnShown = isFollowBtnShown,
         applink = partnerResponse.appLink
     )
+
+    private fun getFollowStatus(isFollowBtnShown: Boolean) = if (isFollowBtnShown) PlayPartnerFollowStatus.Followable(isFollowing = true) else PlayPartnerFollowStatus.NotFollowable
 
     private fun mapLikeInfo(
         feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam,
