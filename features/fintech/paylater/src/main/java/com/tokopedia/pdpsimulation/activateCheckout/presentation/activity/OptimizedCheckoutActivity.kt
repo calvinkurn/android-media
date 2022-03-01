@@ -30,7 +30,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
-    private lateinit var activationCheckoutFragment: ActivationCheckoutFragment
+    private  var activationCheckoutFragment: ActivationCheckoutFragment? = null
 
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
@@ -113,7 +113,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
     override fun getComponent() = pdpSimulationComponent
     override fun setGatewayValue(gatewaySelected: Int) {
-        activationCheckoutFragment.updateSelectedTenure(gatewaySelected)
+        activationCheckoutFragment?.updateSelectedTenure(gatewaySelected)
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
