@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
@@ -33,24 +34,32 @@ class CarouselMerchantVoucherViewHolder (
     }
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
+        val scaleX = 1.024f
+        val scaleY = 1.011f
         if (itemView.context.isDarkMode()) {
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
                 BACKGROUND_MVC_DARK,
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )
+//            binding?.imageBackgroundVoucher?.scaleX = scaleX
+//            binding?.imageBackgroundVoucher?.scaleY = scaleY
         }
         else {
+//            binding?.imageBackgroundVoucher?.scaleX = scaleX
+//            binding?.imageBackgroundVoucher?.scaleY = scaleY
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
                 BACKGROUND_MVC_WHITE,
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )
         }
-        binding?.shopName?.text = element.shopName
-        binding?.titleBenefit?.text = element.benefit
-        binding?.benefitPrice?.text = element.benefitPrice
-        binding?.totalOtherCoupon?.text = element.totalOtherCoupon
-        binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
-        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
+//        binding?.shopName?.text = element.shopName
+//        binding?.titleBenefit?.text = element.benefit
+//        binding?.benefitPrice?.text = element.benefitPrice
+//        binding?.totalOtherCoupon?.text = element.totalOtherCoupon
+//        binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
+//        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
             val horizontalPosition = "${adapterPosition + 1}"
             element.merchantVoucherComponentListener.onShopClicked(
