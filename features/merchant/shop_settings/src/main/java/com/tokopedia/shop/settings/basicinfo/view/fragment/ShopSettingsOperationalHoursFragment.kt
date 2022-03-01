@@ -487,11 +487,15 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
                 action = ShopScheduleActionDef.ABORT
         )
-        if (isShopOnScheduledHoliday) {
-            isNeedToShowOpenShopToaster = true
-        } else {
-            isNeedToShowToaster = true
-        }
+        isNeedToShowToaster = true
+    }
+
+    private fun openShopNow() {
+        // open shop immediately when seller is ongoing holiday period.
+        shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
+                action = ShopScheduleActionDef.OPEN
+        )
+        isNeedToShowOpenShopToaster = isShopOnScheduledHoliday
     }
 
     private fun setShopHolidaySchedule(startDate: Date, endDate: Date) {
@@ -785,7 +789,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     showLoader()
-                    deleteShopHolidaySchedule()
+                    openShopNow()
                 },
                 secondaryCTAListener = {}
         )?.apply { show() }
