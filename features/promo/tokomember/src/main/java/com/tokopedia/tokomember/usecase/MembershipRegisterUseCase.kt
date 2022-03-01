@@ -16,7 +16,7 @@ class MembershipRegisterUseCase @Inject constructor(private val tokomemberReposi
         onFail: (Throwable) -> Unit
     ) {
         if (cardId != null) {
-            this.cardId = "3610"
+            this.cardId = cardId
         }
         execute({
             success(it.data)

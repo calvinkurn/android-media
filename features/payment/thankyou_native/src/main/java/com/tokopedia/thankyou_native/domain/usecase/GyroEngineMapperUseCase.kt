@@ -73,13 +73,20 @@ class GyroEngineMapperUseCase @Inject constructor(
                     ) ?: GyroTokomemberItem()
                 )
             }
-            gyroRecommendationListItem?.gyroMembershipSuccessWidget =
-                tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)
-                    ?: GyroTokomemberItem()
+            when (tokomemberModel.listOfTokomemberItem.size) {
+                1 -> gyroRecommendationListItem?.gyroMembershipSuccessWidget =
+                        tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_WAITING_WIDGET)
+                            ?: GyroTokomemberItem()
+                else -> {
+                    gyroRecommendationListItem?.gyroMembershipSuccessWidget =
+                        tokomemberModel.listOfTokomemberItem.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)
+                            ?: GyroTokomemberItem()
+                }
+            }
         }
     }
 
-    suspend fun getTokomemberData() {
+    private suspend fun getTokomemberData() {
         queryParamTokomember?.let { tokomemberRequestParam->
             tokomemberUsecase.setGqlParams(tokomemberRequestParam.orderData)
             deferredTokomemberData = fetchTokomemberData()
