@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.*
@@ -266,6 +267,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         reminderType: PlayWidgetReminderType,
         position: Int
     ) {
+        playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
+    }
+
+    override fun onToggleReminderClicked(view: PlayWidgetLargeView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        super.onToggleReminderClicked(view, channelId, reminderType, position)
         playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
     }
 
