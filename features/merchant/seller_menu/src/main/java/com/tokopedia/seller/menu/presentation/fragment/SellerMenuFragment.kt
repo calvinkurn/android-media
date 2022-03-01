@@ -13,7 +13,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -67,9 +66,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     @Inject
     lateinit var adminPermissionMapper: AdminPermissionMapper
 
-    @Inject
-    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
-
     private var canShowErrorToaster = true
     private var isNewSeller = false
     private var shopAge = 0L
@@ -107,7 +103,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         setupSwipeRefresh()
         observeShopInfoPeriod()
         observeViewModel()
-        setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
         viewModel.getShopAccountInfo()
     }
@@ -124,7 +119,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onDestroy() {
         super.onDestroy()
-        pmShopScoreInterruptHelper.destroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -343,11 +337,4 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             }
         }
     }
-
-    private fun setupPMShopScoreInterrupt() {
-        activity?.let {
-            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
-        }
-    }
-
 }

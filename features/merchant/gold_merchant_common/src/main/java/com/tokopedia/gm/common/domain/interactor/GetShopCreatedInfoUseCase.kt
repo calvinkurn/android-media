@@ -1,6 +1,5 @@
 package com.tokopedia.gm.common.domain.interactor
 
-import com.tokopedia.gm.common.data.source.cloud.model.PMPeriodTypeResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ParamShopInfoByID
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
@@ -13,7 +12,7 @@ import com.tokopedia.usecase.RequestParams
 import java.io.IOException
 import javax.inject.Inject
 
-open class GetShopInfoPeriodUseCase @Inject constructor(
+open class GetShopCreatedInfoUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val shopScoreCommonMapper: ShopScoreCommonMapper
 ) : BaseGqlUseCase<ShopInfoPeriodUiModel>() {
@@ -21,7 +20,6 @@ open class GetShopInfoPeriodUseCase @Inject constructor(
     companion object {
         const val SHOP_ID = "shopIDs"
         const val SHOP_INFO_INPUT = "input"
-        const val SHOP_ID_PM = "shopID"
         const val SOURCE = "source"
         private const val SHOP_ID_DEFAULT = 0L
         val SHOP_INFO_ID_QUERY = """
@@ -39,17 +37,6 @@ open class GetShopInfoPeriodUseCase @Inject constructor(
             }
         """.trimIndent()
 
-        const val GOLD_MERCHANT_SOURCE = "goldmerchant"
-        val PM_SETTING_INFO_QUERY = """
-            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!){
-              goldGetPMSettingInfo(shopID: ${'$'}shopID, source: ${'$'}source) {
-                 period_type
-                 period_start_date_time
-                 period_end_date_time
-              }
-            }
-        """.trimIndent()
-
         @JvmStatic
         fun createParams(shopID: Long): RequestParams = RequestParams.create().apply {
             putLong(SHOP_ID, shopID)
@@ -63,14 +50,11 @@ open class GetShopInfoPeriodUseCase @Inject constructor(
         val shopId = requestParams.getLong(SHOP_ID, SHOP_ID_DEFAULT)
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
-        val periodTypeParam = mapOf(SHOP_ID_PM to shopId, SOURCE to GOLD_MERCHANT_SOURCE)
 
         val shopInfoRequest =
             GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
-        val periodTypeRequest =
-            GraphqlRequest(PM_SETTING_INFO_QUERY, PMPeriodTypeResponse::class.java, periodTypeParam)
 
-        val requests = mutableListOf(shopInfoRequest, periodTypeRequest)
+        val requests = mutableListOf(shopInfoRequest)
         try {
             val gqlResponse = graphqlRepository.response(requests, cacheStrategy)
             if (gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
@@ -78,15 +62,6 @@ open class GetShopInfoPeriodUseCase @Inject constructor(
                     gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
             } else {
                 val dataError = gqlResponse.getError(ShopInfoByIDResponse::class.java)
-                    .joinToString { it.message }
-                throw MessageErrorException(dataError)
-            }
-
-            if (gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty()) {
-                shopInfoPeriodWrapperResponse.goldGetPMSettingInfo =
-                    gqlResponse.getData<PMPeriodTypeResponse>(PMPeriodTypeResponse::class.java).goldGetPMSettingInfo
-            } else {
-                val dataError = gqlResponse.getError(PMPeriodTypeResponse::class.java)
                     .joinToString { it.message }
                 throw MessageErrorException(dataError)
             }

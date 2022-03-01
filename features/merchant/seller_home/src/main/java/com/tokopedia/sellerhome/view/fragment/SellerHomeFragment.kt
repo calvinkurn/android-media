@@ -30,7 +30,6 @@ import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -270,7 +269,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareTracker()
 
         context?.let { UpdateShopActiveService.startService(it) }
-        setupPMShopScoreInterrupt()
     }
 
     override fun onResume() {
@@ -286,7 +284,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onDestroy() {
         super.onDestroy()
-        pmShopScoreInterruptHelper.destroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
@@ -1919,12 +1916,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
                 this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
-    }
-
-    private fun setupPMShopScoreInterrupt() {
-        activity?.let {
-            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
-        }
     }
 
     private fun setRecommendationCoachMarkEligibility() {

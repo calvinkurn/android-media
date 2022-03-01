@@ -1,18 +1,3 @@
 <resources>
     <string name="app_name">GmCommon</string>
-    <string name="gmc_check_your_shop_performance">Cek Performa Tokomu</string>
-    <string name="gmc_shop_score_consent_approved_message">Kamu sudah membaca dan paham perubahan skema Perfoma Toko.</string>
-    <string name="gmc_oke">Oke</string>
-    <string name="gmc_pm_pro_interrupt_action_approved">Hore! Kamu bisa menikmati berbagai keuntungan Power Merchant PRO mulai 14 Juni 2021.</string>
-    <string name="gmc_pm_pro_interrupt_action_stay">Kamu tetap menjadi Power Merchant dengan skema keanggotaan baru berlaku 14 Juni 2021.</string>
-    <string name="gmc_pm_pro_interrupt_action_agreed"><![CDATA[Kamu menyetujui Syarat & Ketentuan skema keanggotaan baru yang berlaku mulai 14 Juni 2021.]]></string>
-
-    <string name="title_card_pm_end_game_bottom_sheet">Status Power Merchant kamu nonaktif</string>
-    <string name="title_card_pm_pro_end_game_bottom_sheet">Status Power Merchant PRO kamu nonaktif</string>
-
-    <string name="desc_card_pm_end_game_bottom_sheet">Tingkatkan Performa Tokomu untuk dapat keuntungan Power Merchant lagi, ya!</string>
-    <string name="desc_card_pm_pro_end_game_bottom_sheet">Tingkatkan Performa Tokomu untuk dapat keuntungan PM PRO lagi, ya!</string>
-
-    <string name="title_end_game_period_information_interrupt">Sejak %s masa transisi skema Performa Toko baru sudah berakhir</string>
-    <string name="status_end_game_period_information_interrupt">Status Power Merchant dengan skor <![CDATA[<b>di bawah 60</b>]]> akan otomatis dinonaktifkan</string>
 </resources>

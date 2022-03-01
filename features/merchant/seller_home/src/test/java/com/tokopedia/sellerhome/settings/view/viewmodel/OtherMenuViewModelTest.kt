@@ -1,8 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
-import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
@@ -394,16 +392,16 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `getShopPeriodType should success`() {
-        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = END_PERIOD)
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel()
 
         coEvery {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         } returns shopInfoPeriodUiModel
 
         mViewModel.getShopPeriodType()
 
         coVerify {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         }
 
         val actualResult = (mViewModel.shopPeriodType.observeAwaitValue() as Success).data
@@ -416,13 +414,13 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         val error = IllegalStateException()
 
         coEvery {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         } throws error
 
         mViewModel.getShopPeriodType()
 
         coVerify {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         }
 
         assert(mViewModel.shopPeriodType.observeAwaitValue() is Fail)
