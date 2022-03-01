@@ -135,6 +135,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
             userId: String,
             paymentId: String,
             paymentType: String,
+            tenureType: Int,
             ee: Map<String, Any>
     ) {
         val dataLayer = getGtmData(
@@ -499,6 +500,42 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_TOP_UP_GOPAY_BUTTON,
+                ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewPaymentMethod(paymentType: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PAYMENT_METHOD,
+                paymentType
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewTenureOption(tenureType: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PAYMENT_METHOD,
+                tenureType
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickTenureOptionsBottomSheet() {
+        val gtmData = getGtmData(
+                EventName.CLICK_PP,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TENURE_OPTIONS_BOTTOMSHEET,
                 ""
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM

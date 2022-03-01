@@ -65,6 +65,8 @@ object ConstantTransactionAnalytics {
         const val VIEW_ORDER_IRIS = "viewOrderIris"
         const val CLICK_ORDER = "clickOrder"
         const val VIEW_ITEM = "view_item"
+        const val VIEW_PP_IRIS = "viewPPIris"
+        const val CLICK_PP = "clickPP"
     }
 
     object EventCategory {
@@ -318,6 +320,9 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_TOASTER_MESSAGE = "view error toaster message"
         const val VIEW_TOP_UP_GOPAY_BUTTON = "view top up gopay button"
         const val CLICK_TOP_UP_GOPAY_BUTTON = "click top up gopay button"
+        const val VIEW_PAYMENT_METHOD = "view payment method"
+        const val VIEW_TENURE_OPTION = "view tenure option"
+        const val CLICK_TENURE_OPTIONS_BOTTOMSHEET = "click tenure options bottomsheet"
 
         // OCC PP
         const val PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression"

@@ -1373,6 +1373,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             }
                         }
                     })
+//                orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
             }
         }
 
