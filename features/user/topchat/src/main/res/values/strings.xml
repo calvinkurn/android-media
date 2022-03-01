@@ -40,8 +40,6 @@ yang ditemukan</string>
         Pesan</string>
     <string name="chat_yesterday_date">Kemarin</string>
     <string name="chat_today_date">Hari ini</string>
-    <string name="undersize_image">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
-    <string name="oversize_image">Ukuran gambar maksimal 15Mb</string>
 
     <!-- Chat Template -->
     <string name="add_template_chat_title">Tambah Template Pesan</string>
@@ -127,7 +125,6 @@ yang ditemukan</string>
     <string name="topchat_chat_delete_confirm">Hapus</string>
 
     <string name="chat_check_cart">Lihat</string>
-    <string name="error_compress_image">Gagal mengkompres gambar. Silahkan pilih gambar lain.</string>
     <string name="menu_delete_chat">Hapus percakapan</string>
     <string name="menu_mark_as_read">Tandai sudah dibaca</string>
     <string name="menu_mark_as_unread">Tandai belum dibaca</string>
@@ -236,4 +233,8 @@ yang ditemukan</string>
     <string name="topchat_title_delete_msg_bubble_confirmation">Mau hapus pesan ini?</string>
     <string name="topchat_action_delete_msg_bubble_confirmation">Ya, Hapus</string>
     <string name="topchat_desc_delete_msg_bubble_confirmation">Pesan yang dihapus tidak akan bisa dilihat lagi oleh kamu dan lawan bicaramu.</string>
+    <string name="desc_topchat_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
+
+    <string name="title_topchat_click_refresh">Klik ikon di samping untuk refresh.</string>
+    <string name="topchat_mvc_not_available">Pengaturan Kupon Produk hanya tersedia di desktop dan aplikasi Tokopedia Seller.</string>
 </resources>

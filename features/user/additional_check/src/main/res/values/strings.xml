@@ -13,4 +13,9 @@
     <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
     <string name="add_pin_success_button_title">Selesai</string>
 
+    <string name="link_account_reminder_bottom_sheet_title">Sambungin akun Tokopedia &amp; Gojek-mu, ada keuntungan ekstra!</string>
+    <string name="link_account_reminder_bottom_sheet_desc">\u2022 Bisa pakai GoPay &amp; GoPay Coins di Tokopedia.\n\u2022 Kesempatan nikmatin berbagai promo spesial\n\u0020\u0020di Tokopedia &amp; Gojek.</string>
+    <string name="link_account_reminder_bottom_sheet_btn_primary_title">Oke! Sambungin Akun</string>
+
+
 </resources>

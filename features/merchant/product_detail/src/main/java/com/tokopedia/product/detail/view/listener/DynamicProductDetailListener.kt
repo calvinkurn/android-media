@@ -18,8 +18,8 @@ import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
@@ -37,7 +37,7 @@ interface DynamicProductDetailListener {
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
-    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
+    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
 
     /**
      * ProductSnapshotViewHolder
@@ -92,6 +92,8 @@ interface DynamicProductDetailListener {
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
@@ -180,7 +182,6 @@ interface DynamicProductDetailListener {
      */
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun showCoachmark(view: Typography?, isBoeType: Boolean)
 
     /**
      * ProductCategoryCarouselViewHolder

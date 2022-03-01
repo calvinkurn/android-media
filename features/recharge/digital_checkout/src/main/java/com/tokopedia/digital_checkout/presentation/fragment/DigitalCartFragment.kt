@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +42,7 @@ import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
+import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
@@ -133,9 +135,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             viewModel.requestCheckoutParam =
                 savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER)
                     ?: DigitalCheckoutDataParameter()
-            viewModel.requestCheckoutParam.deviceId = cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
             cartPassData?.needGetCart = true
+        } else {
+            viewModel.requestCheckoutParam = DigitalCheckoutDataParameter()
         }
+
+        viewModel.requestCheckoutParam.deviceId =
+            cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
         initViews()
         loadData()
@@ -485,9 +491,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
         if (postPaidPopupAttribute.title.isNotEmpty() || postPaidPopupAttribute.content.isNotEmpty()) {
             val dialog =
-                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                DialogUnify(
+                    requireActivity(),
+                    DialogUnify.SINGLE_ACTION,
+                    DialogUnify.WITH_ILLUSTRATION
+                )
             dialog.setTitle(postPaidPopupAttribute.title)
             dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
+            dialog.setImageUrl(postPaidPopupAttribute.imageUrl)
             dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle)
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
@@ -526,6 +537,15 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             getCategoryName(),
             getOperatorName()
         )
+    }
+
+    override fun onSubscriptionMoreInfoClicked(fintechProduct: FintechProduct) {
+        digitalAnalytics.eventSubscriptionMoreInfoClicked(
+            userSession.userId,
+            getCategoryName(),
+            getOperatorName()
+        )
+        renderSubscriptionMoreInfoBottomSheet()
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
@@ -716,6 +736,48 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         checkoutBottomViewWidget.hide()
     }
 
+    private fun renderSubscriptionMoreInfoBottomSheet() {
+        context?.let {
+            val linearLayout = LinearLayout(it)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.setPadding(
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                0,
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
+            )
+
+            val descriptionArray =
+                resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
+            descriptionArray.forEachIndexed { index, text ->
+                val simpleWidget = DigitalCheckoutSimpleWidget(it)
+                simpleWidget.setContent("${index + 1}.", text)
+
+                linearLayout.addView(simpleWidget)
+            }
+
+
+            val bottomSheetUnify = BottomSheetUnify()
+            bottomSheetUnify.setTitle(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_title))
+            bottomSheetUnify.setChild(linearLayout)
+            bottomSheetUnify.setCloseClickListener {
+                digitalAnalytics.eventSubscriptionMoreInfoCloseClicked(
+                    userSession.userId,
+                    getCategoryName(),
+                    getOperatorName()
+                )
+                bottomSheetUnify.dismissAllowingStateLoss()
+            }
+            bottomSheetUnify.show(childFragmentManager, SUBSCRIPTION_BOTTOM_SHEET_TAG)
+
+            digitalAnalytics.eventSubscriptionViewMoreInfoBottomSheet(
+                userSession.userId,
+                getCategoryName(),
+                getOperatorName()
+            )
+        }
+    }
+
     private fun getPromoDigitalModel(): PromoDigitalModel =
         viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
 
@@ -742,6 +804,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
+
+        private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
+        private const val LEADING_MARGIN_SPAN = 16
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,

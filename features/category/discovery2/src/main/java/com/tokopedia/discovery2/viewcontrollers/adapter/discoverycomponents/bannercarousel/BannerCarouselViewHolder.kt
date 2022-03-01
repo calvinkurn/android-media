@@ -8,19 +8,25 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LocalLoad
 
 class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
     private var lihatSemuaTextView: TextView = itemView.findViewById(R.id.lihat_semua_tv)
     private var mBannerCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.list_rv)
+    private var carouselEmptyState: LocalLoad = itemView.findViewById(R.id.viewEmptyState)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mBannerCarouselComponentViewModel: BannerCarouselViewModel
@@ -35,6 +41,10 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mBannerCarouselComponentViewModel = discoveryBaseViewModel as BannerCarouselViewModel
+        getSubComponent().inject(mBannerCarouselComponentViewModel)
+        if (mBannerCarouselComponentViewModel.shouldShowShimmer()) {
+            addShimmer()
+        }
         addDefaultItemDecorator()
         lihatSemuaTextView.setOnClickListener {
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())
@@ -59,7 +69,33 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
                     }
                 }
             })
+            mBannerCarouselComponentViewModel.hideShimmer.observe(it, { shouldHideShimmer ->
+                if (shouldHideShimmer) {
+                    hideShimmer()
+                }
+            })
+
+            mBannerCarouselComponentViewModel.showErrorState.observe(it, { shouldShowError ->
+                if (shouldShowError) {
+                    handleError()
+                }
+            })
         }
+    }
+
+    private fun handleError() {
+        carouselEmptyState.apply {
+            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+            description?.text =
+                    context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+            refreshBtn?.setOnClickListener {
+                hide()
+                addShimmer()
+                mBannerCarouselComponentViewModel.reload()
+            }
+        }
+        carouselEmptyState.visible()
+        hideShimmer()
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
@@ -94,6 +130,18 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun sendBannerCarouselImpression(item: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerImpression(item)
+    }
+
+    private fun addShimmer() {
+        val list: ArrayList<ComponentsItem> = ArrayList()
+        for (i in 1..4) {
+            list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        }
+        mDiscoveryRecycleAdapter.setDataList(list)
+    }
+
+    private fun hideShimmer() {
+        mDiscoveryRecycleAdapter.setDataList(arrayListOf())
     }
 
 }

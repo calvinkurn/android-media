@@ -118,7 +118,6 @@ dependencies {
 
     //Payment
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
-    implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
@@ -159,4 +158,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
 }

@@ -321,7 +321,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onShopOperationalClicked() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
@@ -739,6 +739,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty()
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.OTHER_MENU,
+            throwable = throwable,
+            errorType = context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty(),
+            deviceId = userSession.deviceId.orEmpty()
         )
     }
 

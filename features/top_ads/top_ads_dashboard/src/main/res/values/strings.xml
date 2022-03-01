@@ -345,8 +345,8 @@
     <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
 
     <string name="error_bid_not_multiple_50">Harus kelipatan Rp50</string>
-    <string name="min_bid_error_new">Biaya min. Rp%d</string>
-    <string name="max_bid_error_new">Biaya maks. Rp%d</string>
+    <string name="min_bid_error_number">Biaya min. Rp%d</string>
+    <string name="max_bid_error_number">Biaya maks. Rp%d</string>
     <string name="new_keyword_subtitle2">Biaya kata kunci</string>
 
     <string name="title_current_cost">Biaya saat ini</string>
@@ -373,9 +373,9 @@
     <string name="topads_dash_grp_bs_item_desc">%d Produk • %d Kata Kunci</string>
     <string name="topads_dash_budget_recom_error">Biaya terbaik Rp%s</string>
     <string name="topads_dash_potential_click_text">Maks. +%s klik/hari</string>
-    <string name="topads_dash_total_search_pattern"><![CDATA["<font color='#fa31353b'><b> %s</b></font> ]]> .%s</string>
     <string name="topads_dash_product_recomm_min_budget_error">Oops, biaya terlalu rendah!</string>
     <string name="topads_dash_product_recomm_max_budget_error">Oops, biaya terlalu tinggi!</string>
+    <string name="topads_dash_max_times_month">%s kali/bulan</string>
 
     <string name="topads_dash_success_daily_budget_toast">Berhasil menerapkan anggaran baru untuk grup Kemeja Kerja!</string>
     <string name="topads_dash_success_product_toast">%d Produk berhasil diiklankan!</string>
@@ -391,7 +391,7 @@
 
     <!-- HEADLINE -->
     <string name="topads_dash_headline_title">Iklan Toko</string>
-    <string name="topads_dash_headline_empty_title">Oops, pencarianOkHttpmu dengan filter “%s” nggak ditemukan.Coba lagi ya.</string>
+    <string name="topads_dash_headline_empty_title">Oops, pencarianmu dengan filter “%s” nggak ditemukan. Coba lagi ya.</string>
     <string name="topads_dash_headline_delete_toast">Iklan Toko berhasil dihapus</string>
     <string name="topads_dash_headline_delete_toast_multiple">[%d] Iklan Toko berhasil dihapus</string>
     <string name="topads_dash_headline_bulk_delete_title">Yakin hapus [%d] Iklan Toko?</string>

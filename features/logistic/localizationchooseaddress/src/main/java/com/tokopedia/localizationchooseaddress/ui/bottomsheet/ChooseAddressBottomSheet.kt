@@ -31,6 +31,7 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -43,7 +44,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -299,7 +299,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             label = "${data.districtName}, ${data.cityName}",
                             postalCode = data.postalCode,
                             warehouseId = data.tokonowModel.warehouseId.toString(),
-                            shopId = data.tokonowModel.shopId.toString()
+                            shopId = data.tokonowModel.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            serviceType = data.tokonowModel.serviceType
                         )
                     } else {
                         localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -311,7 +313,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             label = "${data.addressName} ${data.receiverName}",
                             postalCode = data.postalCode,
                             warehouseId = data.tokonowModel.warehouseId.toString(),
-                            shopId = data.tokonowModel.shopId.toString()
+                            shopId = data.tokonowModel.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            serviceType = data.tokonowModel.serviceType
                         )
                     }
 
@@ -356,7 +360,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             )),
                             postalCode = data.postalCode,
                             warehouseId = it.data.tokonow.warehouseId.toString(),
-                            shopId = it.data.tokonow.warehouseId.toString()
+                            shopId = it.data.tokonow.warehouseId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(it.data.tokonow.warehouses),
+                            serviceType = it.data.tokonow.serviceType
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {
@@ -377,6 +383,30 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 is Fail -> {
                     listener?.onLocalizingAddressServerDown()
                     dismissBottomSheet()
+                }
+            }
+        })
+
+        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.eligible) {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                            putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                        }, REQUEST_CODE_ADD_ADDRESS)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                            putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                        }, REQUEST_CODE_ADD_ADDRESS)
+                    }
+                }
+
+                is Fail -> {
+                    showToaster(it.throwable.message ?: getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server), Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -444,19 +474,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
         buttonAddAddress?.setOnClickListener {
             ChooseAddressTracking.onClickButtonTambahAlamatBottomSheet(userSession.userId)
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            }
+            viewModel.checkUserEligibilityForAnaRevamp()
         }
 
         buttonSnippet?.setOnClickListener {
@@ -544,6 +562,20 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionCheckerHelper?.setListener(object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                //no op
+            }
+
+            override fun onPermissionGranted() {
+                ChooseAddressTracking.onClickAllowLocation(userSession.userId)
+                getLocation()
+            }
+        })
         permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 

@@ -89,8 +89,10 @@
     <string name="path_shop_penalty" translatable="false">/shop-penalty</string>
     <string name="path_shop_penalty_detail" translatable="false">/shop-penalty-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
+    <string name="path_shop_settings_operational_hours" translatable="false">/shop-settings-operational-hours</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
     <string name="path_shop_operational_hour_bottom_sheet" translatable="false">/shop/widget/operational-hour/.*\\/</string>
+    <string name="path_shop_mvc_choose_product" translatable="false">/shop/widget/voucher/shop_id/.*\\/.*\\/</string>
 
     <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
 
@@ -116,6 +118,6 @@
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
-    <string name="path_sellerapp_search" translatable="false">seller-search</string>
+    <string name="path_sellerapp_search" translatable="false">/seller-search</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 </resources>

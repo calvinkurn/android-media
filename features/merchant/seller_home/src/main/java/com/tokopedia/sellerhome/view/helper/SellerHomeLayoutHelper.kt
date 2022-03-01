@@ -11,6 +11,7 @@ import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
@@ -27,6 +28,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
@@ -75,6 +78,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
+    private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) {
 
@@ -158,7 +162,7 @@ class SellerHomeLayoutHelper @Inject constructor(
         val newWidgetList = loadedWidgetList.toMutableList()
         loadedWidgetList.filter { it.widgetType == WidgetType.SECTION }.forEach { section ->
             newWidgetList.indexOf(section).let { index ->
-                newWidgetList[index] = section.copy().apply { isLoaded = true }
+                newWidgetList[index] = section.copyWidget().apply { isLoaded = true }
             }
         }
         return getWidgetsData(newWidgetList)
@@ -203,11 +207,15 @@ class SellerHomeLayoutHelper @Inject constructor(
         val milestoneDataFlow = groupedWidgets.getWidgetDataByType<MilestoneDataUiModel>(
             WidgetType.MILESTONE
         )
+        val calendarDataFlow = groupedWidgets.getWidgetDataByType<CalendarDataUiModel>(
+            WidgetType.CALENDAR
+        )
 
         return combine(
             lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
             carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
-            barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow
+            barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow,
+            calendarDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
@@ -243,6 +251,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                             WidgetType.MULTI_LINE_GRAPH -> getMultiLineGraphData(it)
                             WidgetType.RECOMMENDATION -> getRecommendationData(it)
                             WidgetType.MILESTONE -> getMilestoneData(it)
+                            WidgetType.CALENDAR -> getCalendarData(it)
                             else -> null
                         }
                     }.orEmpty()
@@ -277,7 +286,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    val copiedWidget = widget.copy()
+                    val copiedWidget = widget.copyWidget()
                     copiedWidget.data = widgetData
                     if (shouldRemoveWidgetInitially(widget, widgetData)) {
                         copiedWidget.isNeedToBeRemoved = true
@@ -462,6 +471,20 @@ class SellerHomeLayoutHelper @Inject constructor(
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MILESTONE_TRACE
         }
         return getMilestoneDataUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel> {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>().map {
+            it.filter
+        }
+        val params = GetCalendarDataUseCase.createParams(dataKeys)
+        getCalendarDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            startWidgetCustomMetricTag.value =
+                SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
+        }
+        return getCalendarDataUseCase.get().executeOnBackground()
     }
 
     private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {

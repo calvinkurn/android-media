@@ -67,4 +67,5 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="nominal_tip_message">Rp1.000 - Rp.20.000</string>
     <string name="btn_driver_info_text">Mengerti</string>
     <string name="card_tipping_btn_default_text">Beri Tip</string>
+    <string name="last_driver_button">Hubungi</string>
 </resources>

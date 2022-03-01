@@ -74,6 +74,7 @@
     <string name="affiliate_add_social_media">Pilih sosial media </string>
     <string name="affiliate_pilih_minimal_1_sosial_media">Pilih minimal 1 sosial media.</string>
     <string name="affiliate_tambah_sosial_media">Tambah Sosial Media</string>
+    <string name="affiliate_selanjutnya">Selanjutnya</string>
     <string name="affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu">Daftar sekarang dengan akun Tokopedia kamu</string>
     <string name="affiliate_belum_punya_akun_tokopedia"><![CDATA[Belum punya akun Tokopedia?\u0020]]></string>
     <string name="affiliate_daftar">Daftar</string>
@@ -82,13 +83,12 @@
     <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera Perbaiki Akunmu]]></string>
     <string name="affiliate_login_ticker_text"><![CDATA[Akunmu sedang bermasalah. <a href="">Selengkapnya</a>]]></string>
     <string name="affiliate_simpan">Simpan</string>
-    <string name="affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate">Hai Ana, selamat bergabung di Tokopedia Affiliate!</string>
+    <string name="affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate">Hai {name}, selamat bergabung di Tokopedia Affiliate!</string>
     <string name="affiliate_ayo_bagi_inspirasi_raih_komisi"><![CDATA[Ayo bagi inspirasi & raih komisi!]]></string>
     <string name="affiliate_onboarding_terms_1">Akun Affiliate-mu harus terverifikasi untuk bisa tarik penghasilan</string>
     <string name="affiliate_onboarding_terms_2"><![CDATA[Tidak boleh mempromosikan produk terlarang yang tertera di S&K]]></string>
-    <string name="affiliate_onboarding_terms_3">Tidak boleh mempromosikan produk dari toko sendiri</string>
-    <string name="affiliate_onboarding_terms_4"><![CDATA[Akun sosial media & blog yang kamu daftarkan tidak boleh di-private]]></string>
-    <string name="affiliate_onboarding_terms_5">Tidak terlibat dalam aktivitas penipuan yang terkait dengan akun Tokopedia</string>
+    <string name="affiliate_onboarding_terms_3">Tidak terlibat dalam aktivitas penipuan yang terkait dengan akun Tokopedia</string>
+    <string name="affiliate_onboarding_terms_4">Tokopedia berhak untuk tidak memberikan, menarik saldo yang sudah ada, atau memberikan sanksi lain apabila Tokopedia mendeteksi adanya indikasi kecurangan dan/atau pelanggaran Syarat dan Ketentuan Tokopedia Affiliate serta Ketentuan Situs.</string>
     <string name="affiliate_yakin_ingin_keluar">Yakin ingin keluar?</string>
     <string name="affiliate_logout_description">Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar</string>
     <string name="affiliate_batal">Batal</string>
@@ -105,8 +105,8 @@
     <string name="affiliate_transaction_history">Riwayat Transaksi</string>
     <string name="affiliate_zero_amount">Rp 0</string>
     <string name="affiliate_komisi_produk">Komisi Produk Affiliate</string>
-    <string name="affiliate_empty_transaction">Tidak ada transaksi pada rentang waktu ini</string>
-    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya. Mungkin kamu akan menemukan transaksi.</string>
+    <string name="affiliate_empty_transaction">Yaah, belum ada transaksi pada rentang tanggal ini </string>
+    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya, ya. Mungkin kamu akan menemukan transaksi.</string>
     <string name="affiliate_choose_date">Pilih Tanggal</string>
     <string name="affiliate_transaksi_selesai">Transaksi selesai</string>
     <string name="affiliate_rincian_komisi">Rincian Komisi</string>
@@ -122,4 +122,13 @@
     <string name="affiliate_default_no_transaction">Kamu belum punya transaksi</string>
     <string name="affiliate_default_no_transaction_description">Yuk, promosikan produk affiliate di sosial media supaya kamu bisa mulai bertransaksi.</string>
     <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
+    <string name="affiliate_please_fill_one_social_media">Silakan isi minimal 1 media sosial.</string>
+    <string name="affiliate_retry_message">Silakan coba lagi nanti</string>
+    <string name="affiliate_coacher_title1">Bagi inspirasi, raih komisi 💰</string>
+    <string name="affiliate_coacher_title2">Temukan produk yang bisa dipromosikan</string>
+    <string name="affiliate_coacher_title3">Sudah punya link produknya? Tempel di sini</string>
+    <string name="affiliate_coacher_desc1">Promosikan link produk pilihanmu di sosmed. Jika ada yang beli, kamu bisa cek komisimu di sini!</string>
+    <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
+    <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
+    <string name="terkhir_text">update terakhir</string>
 </resources>

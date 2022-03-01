@@ -54,9 +54,12 @@ data class FeedXProduct(
 
         //TopadsHeadline
         var variant: Int = 1,
+        var isWishlisted :Boolean = false,
         var productName : String= "",
         val slashedPrice : String = "",
         val authorName : String = "",
+        var shopID : String = "",
         val isTopads: Boolean = false,
-        val adClickUrl: String = ""
+        val adClickUrl: String = "",
+        val shopName : String = ""
         ):Parcelable

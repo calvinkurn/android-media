@@ -23,13 +23,13 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -266,7 +266,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
-                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType)
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
@@ -294,7 +295,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         context ->
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
-                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType)
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
@@ -309,6 +311,40 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                 is Fail -> {
                     if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_NOT_SUCCESS)
+                    view?.let { view ->
+                        Toaster.build(view, it.throwable.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
+                }
+            }
+        })
+
+        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val token = viewModel.token
+                    val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
+                        SCREEN_NAME_CART_EXISTING_USER
+                    } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
+                        SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
+                    } else {
+                        SCREEN_NAME_USER_NEW
+                    }
+
+                    if (it.data.eligible) {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                        intent.putExtra(KERO_TOKEN, token)
+                        intent.putExtra(EXTRA_REF, screenName)
+                        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+                    } else {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                        intent.putExtra(KERO_TOKEN, token)
+                        intent.putExtra(EXTRA_REF, screenName)
+                        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+                    }
+                }
+
+                is Fail -> {
                     view?.let { view ->
                         Toaster.build(view, it.throwable.message
                                 ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
@@ -445,28 +481,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
-        val token = viewModel.token
         if (data == null) {
-            val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
-                SCREEN_NAME_CART_EXISTING_USER
-            } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
-                SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
-            } else {
-                SCREEN_NAME_USER_NEW
-            }
-
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-                intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, screenName)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, screenName)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-            }
+            viewModel.checkUserEligibilityForAnaRevamp()
         } else {
+            val token = viewModel.token
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
             val mapper = AddressModelMapper()
             intent.putExtra(EDIT_PARAM, mapper.transform(data))
@@ -628,7 +646,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
                     addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
                     addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
-                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString())
+                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
         }
 
         if (isLocalization == true) {

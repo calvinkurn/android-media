@@ -492,10 +492,15 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable,
-                        SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
 
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        it.throwable,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                    )
                     navigator?.run {
                         if (isHomePageSelected()) {
                             supportActionBar?.title = userSession.shopName
@@ -564,10 +569,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home,
-                R.raw.anim_bottom_nav_home_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_active,
-                R.drawable.ic_sah_bottom_nav_home_inactive,
+                R.raw.anim_bottom_nav_home_mosque,
+                R.raw.anim_bottom_nav_home_mosque_to_enabled,
+                R.drawable.ic_sah_bottom_nav_home_mosque_active,
+                R.drawable.ic_sah_bottom_nav_home_mosque_inactive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,

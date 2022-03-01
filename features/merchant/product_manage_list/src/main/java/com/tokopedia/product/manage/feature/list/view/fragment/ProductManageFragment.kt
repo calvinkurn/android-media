@@ -50,14 +50,17 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -642,6 +645,34 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 }
             }
         }
+    }
+
+    private fun goToCreateProductCoupon(product: ProductUiModel?) {
+        val firstTimeLink =
+            if (checkProductCouponFirstTime()) {
+                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)
+                    .buildUpon()
+                    .appendQueryParameter(
+                        SellerHomeApplinkConst.VOUCHER_TYPE,
+                        SellerHomeApplinkConst.TYPE_PRODUCT
+                    )
+                    .appendQueryParameter(
+                        SellerHomeApplinkConst.PRODUCT_ID,
+                        product?.id.orEmpty()
+                    )
+                    .build().toString()
+            } else {
+                "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/${product?.id.orEmpty()}"
+            }
+        context?.let {
+            RouteManager.route(it, firstTimeLink)
+        }
+    }
+
+    private fun checkProductCouponFirstTime(): Boolean {
+        return context?.getSharedPreferences(VOUCHER_CREATION_PREF, Context.MODE_PRIVATE)
+            ?.getBoolean(IS_PRODUCT_COUPON_FIRST_TIME, true)
+            .orTrue()
     }
 
     private fun goToCreateBroadcastFromSellerMigration(stock: Int, isActive: Boolean, isVariant: Boolean, productId: String) {
@@ -1567,9 +1598,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditVariantPriceButton(product: ProductUiModel) {
-        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id, product.isProductBundling) { result ->
-            viewModel.editVariantsPrice(result)
-        }
+        val editVariantBottomSheet =
+            QuickEditVariantPriceBottomSheet.createInstance(
+                product.id,
+                product.isProductBundling,
+                userSession.isMultiLocationShop) { result ->
+                viewModel.editVariantsPrice(result)
+            }
         editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
         ProductManageTracking.eventClickEditPriceVariant()
     }
@@ -1619,7 +1654,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditPriceButton(product: ProductUiModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(product, this) }
+        val editPriceBottomSheet = context?.let {
+            ProductManageQuickEditPriceFragment.createInstance(
+                it,
+                product,
+                userSession.isMultiLocationShop,
+                this)
+        }
         editPriceBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditPrice(product.id)
     }
@@ -1669,6 +1710,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             is CreateBroadcastChat -> {
                 goToCreateBroadCastChat(product)
                 ProductManageTracking.eventClickBroadcastChat(userId = userSession.userId, productId = productId, isCarousel = false)
+            }
+            is CreateProductCoupon -> {
+                goToCreateProductCoupon(product)
+                ProductManageTracking.eventClickCreateProductCoupon(userSession.shopId)
             }
         }
         productManageBottomSheet?.dismiss(childFragmentManager)
@@ -2130,6 +2175,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onFailedChangeFeaturedProduct(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.SET_FEATURED_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2142,6 +2194,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorGetPopUp()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.GET_POP_UP_INFO_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2154,6 +2213,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorEditPrice(it.throwable as EditPriceResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_PRICE_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2170,6 +2236,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_STOCK_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2182,6 +2255,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorToast()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.MULTI_EDIT_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2246,6 +2326,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showGetListError(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.PRODUCT_LIST_RESULT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
             hidePageLoading()
@@ -2343,6 +2430,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorDeleteProduct(it.throwable as DeleteProductResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.DELETE_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2432,6 +2526,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_VARIANT_PRICE_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2451,6 +2552,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_VARIANT_STOCK_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -2599,12 +2707,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun renderProductCount() {
-        val productCount = if (filterTab?.isFilterActive() == true) {
-            filterTab?.getProductCount()
-            filterTab?.getProductCount()
-        } else {
-            viewModel.getTotalProductCount()
-        }
+        val productCount = viewModel.getTotalProductCount()
         textProductCount?.text = getString(R.string.product_manage_count_format, productCount)
     }
 
@@ -2634,6 +2737,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     companion object {
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
+
+        private const val VOUCHER_CREATION_PREF = "voucher_creation"
+        private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5

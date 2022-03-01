@@ -65,12 +65,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHOOSE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.EDIT_BCA_ONE_KLICK_ENTRY_PATTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INSTANT_DEBIT_BCA_ENTRY_PATTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
@@ -129,6 +127,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOTEL_INTERNAL_O
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INSURANCE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
@@ -146,8 +145,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
@@ -367,7 +368,13 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
-            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_page))
+            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_widget))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanExternalAppLinkPattern = SHOP_MVC_LOCKED_TO_PRODUCT.replace(regexPatternToReplace,".*")
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherExternalAppLink.matches(it)
+            }, DF_BASE, R.string.title_shop_widget))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
@@ -429,7 +436,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalPayment.PMS_PAYMENT_LIST) }, DF_BASE, R.string.payment_title_payment_status))
             add(DFP({ it.startsWith(ApplinkConstInternalPayment.GOPAY_KYC) }, DF_BASE, R.string.title_gopay_kyc))
             add(DFP({ it.startsWith(ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY) }, DF_BASE, R.string.payment_title_activity_howtopay))
-            add(DFP({ it.startsWith(INSTANT_DEBIT_BCA_ENTRY_PATTERN) || it.startsWith(EDIT_BCA_ONE_KLICK_ENTRY_PATTERN) }, DF_BASE, R.string.payment_instant_debit_bca_title))
 
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE, R.string.payment_title_withdraw))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE, R.string.payment_title_auto_withdraw))
@@ -568,6 +574,9 @@ object DeeplinkDFMapper : CoroutineScope {
             // snapshot
             add(DFP({ it.startsWith(INTERNAL_ORDER_SNAPSHOT) }, DF_BASE, R.string.title_snapshot))
 
+            //buyercancelllationorder
+            add(DFP({ it.startsWith(INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE) }, DF_BASE, R.string.title_buyer_request_cancel))
+
             // Order History
             add(DFP({ it.startsWith(TRACK) }, DF_BASE, R.string.title_order_management_history))
 
@@ -616,6 +625,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
                     || it.startsWith(SHOP_SCORE_DETAIL)
+                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
                     || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
                     || it.startsWith(SHOP_PENALTY)
                     || it.startsWith(SHOP_PENALTY_DETAIL)
@@ -627,9 +637,13 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(VOUCHER_LIST) ||
                         it.startsWith(VOUCHER_DETAIL)
             }, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
+            add(DFP({
+                it.startsWith(CREATE_VOUCHER_PRODUCT) ||
+                        it.startsWith(VOUCHER_PRODUCT_DETAIL)
+            }, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
-            add(DFP({ it.startsWith(SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
+            add(DFP({ it.startsWith(SELLER_SEARCH) || it.startsWith(ApplinkConstInternalSellerapp.SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))
@@ -659,7 +673,13 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
-            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_page))
+            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanExternalAppLinkPattern = SHOP_MVC_LOCKED_TO_PRODUCT.replace(regexPatternToReplace,".*")
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherExternalAppLink.matches(it)
+            }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({

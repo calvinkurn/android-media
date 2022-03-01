@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -17,11 +17,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -32,7 +36,9 @@ import javax.inject.Inject
 /**
  * @author by alvinatin on 09/11/18.
  */
-class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(), UserIdentificationFormActivity.Listener {
+class UserIdentificationFormFaceFragment :
+    BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(),
+    UserIdentificationFormActivity.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,25 +52,40 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     private fun initObserver() {
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    button?.isEnabled = true
+        kycUploadViewModel.encryptImageLiveData.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    is Success -> {
+                        button?.isEnabled = true
+                    }
+                    is Fail -> {
+                        ErrorHandler.getErrorMessage(
+                            activity,
+                            it.throwable,
+                            ErrorHandler.Builder().apply {
+                                className = UserIdentificationFormFaceFragment::class.java.name
+                            }.build()
+                        )
+                        NetworkErrorHelper.showRedSnackbar(
+                            activity,
+                            resources.getString(R.string.error_text_image_fail_to_encrypt)
+                        )
+                    }
                 }
-                is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
-                }
-            }
-        })
+            })
     }
 
     override fun getScreenName(): String = ""
 
     override fun encryptImage() {
         context?.let {
-            if(ImageEncryptionUtil.isUsingEncrypt(it)) {
+            if (ImageEncryptionUtil.isUsingEncrypt(it)) {
                 button?.isEnabled = false
-                kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
+                kycUploadViewModel.encryptImage(
+                    stepperModel?.ktpFile.toEmptyStringIfNull(),
+                    KYC_IV_KTP_CACHE
+                )
             }
         }
     }
@@ -89,7 +110,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
         onboardingImage?.visibility = View.GONE
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_selfie))
+                .updateToolbarTitle(getString(R.string.title_kyc_form_selfie))
         }
     }
 
@@ -110,7 +131,8 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     private fun setLottieAnimation() {
-        val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(requireContext(), KycUrl.SCAN_FACE)
+        val lottieCompositionLottieTask =
+            LottieCompositionFactory.fromUrl(requireContext(), KycUrl.SCAN_FACE)
         lottieCompositionLottieTask.addListener { result: LottieComposition? ->
             result?.let { onboardingImage?.setComposition(it) }
             onboardingImage?.repeatCount = ValueAnimator.INFINITE
@@ -121,8 +143,8 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     private fun setExampleImages() {
         correctImage?.visibility = View.VISIBLE
         wrongImage?.visibility = View.VISIBLE
-        ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK)
-        ImageHandler.LoadImage(wrongImage, KycUrl.SELFIE_FAIL)
+        correctImage?.loadImage(KycUrl.SELFIE_OK)
+        wrongImage?.loadImage(KycUrl.SELFIE_FAIL)
     }
 
     private fun goToKycSelfie() {
@@ -153,11 +175,6 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     override fun initInjector() {
-        if (activity != null) {
-            val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
-            daggerUserIdentificationComponent.inject(this)
-        }
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
     }
 }

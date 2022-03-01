@@ -42,7 +42,8 @@ class PlayMoreActionBottomSheet : BottomSheetUnify() {
             type = PlayMoreActionType.WatchMode,
             iconRes = com.tokopedia.iconunify.R.drawable.iconunify_screen_full,
             subtitleRes = R.string.play_watch_mode,
-            onClick = { listener?.onWatchModeClicked(this@PlayMoreActionBottomSheet) }
+            isIconAvailable = true,
+            onClick = { listener?.onWatchModeClicked(this@PlayMoreActionBottomSheet)}
     )
 
     private var listener: Listener? = null

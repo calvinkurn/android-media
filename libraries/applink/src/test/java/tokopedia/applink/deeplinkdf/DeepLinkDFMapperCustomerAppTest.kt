@@ -553,6 +553,14 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check shop mvc locked to product shop id appLink then should return DF_BASE in customerapp`() {
+        val mockShopId = "12345"
+        val mockVoucherId = "6789"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
     fun `check shop settings external appLink then should return DF_MERCHANT_SELLER in customerapp`() {
         val externalAppLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop/12345/settings"
         assertEqualDeepLinkCustomerApp(externalAppLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
@@ -609,18 +617,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check payment setting appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalPayment.INTERNAL_PAYMENT}/setting"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check install debit bca entry pattern appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/instantdebitbca"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check edit bca one click entry pattern appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/editbcaoneklik"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
@@ -844,6 +840,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check order history appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://product-order-history"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_LOGIN)
+    }
+
+    @Test
+    fun `check buyer cancellation order appLink then should return DF_BASE in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer/cancellationrequest"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
     @Test
