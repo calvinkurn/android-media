@@ -67,7 +67,7 @@ class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : Bott
         adapter?.notifyDataSetChanged()
 
         viewBinding?.labelDescription?.text = MethodChecker.fromHtml(addOnProductData.unavailableBottomSheetData.description)
-        viewBinding?.tickerInformation?.setTextDescription(MethodChecker.fromHtml(addOnProductData.unavailableBottomSheetData.tickerMessage))
+        viewBinding?.tickerInformation?.setHtmlDescription(addOnProductData.unavailableBottomSheetData.tickerMessage)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
