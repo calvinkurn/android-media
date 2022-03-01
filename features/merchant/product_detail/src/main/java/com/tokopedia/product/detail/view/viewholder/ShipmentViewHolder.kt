@@ -128,9 +128,9 @@ class ShipmentViewHolder(
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
         val freeOngkirImageUrl = element.freeOngkirUrl
-        pdpShipmentIcon.showIfWithBlock(!rates.hasUsedBenefit && freeOngkirImageUrl.isNotEmpty()) {
-            setImageUrl(freeOngkirImageUrl)
-        }
+        pdpShipmentIcon.showIfWithBlock(
+            !rates.hasUsedBenefit && !element.isFullfillment && freeOngkirImageUrl.isNotEmpty()
+        ) { setImageUrl(freeOngkirImageUrl) }
         if (element.isFullfillment) {
             pdpShipmentGroupTc.show()
             pdpShipmentTcLabel.text = rates.fulfillmentData.prefix
