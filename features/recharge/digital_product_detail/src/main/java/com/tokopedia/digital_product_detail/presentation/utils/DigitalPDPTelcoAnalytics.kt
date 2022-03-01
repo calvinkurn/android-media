@@ -503,7 +503,7 @@ class DigitalPDPTelcoAnalytics {
             ))
         }
 
-        eventDataLayer.addGeneralATCTracker(userId)
+        eventDataLayer.clickATCGeneralTracker(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, eventDataLayer)
     }
 
