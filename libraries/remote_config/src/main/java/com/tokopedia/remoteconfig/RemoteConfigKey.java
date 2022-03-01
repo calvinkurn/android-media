@@ -275,4 +275,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
 
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
+
+    public static final String ENABLE_THEMATIC_WIDGET_SHOP = "enable_thematic_widget_shop";
 }

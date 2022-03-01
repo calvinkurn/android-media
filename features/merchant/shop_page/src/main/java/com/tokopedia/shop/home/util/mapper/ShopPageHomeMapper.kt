@@ -249,7 +249,8 @@ object ShopPageHomeMapper {
     private fun mapToWidgetUiModel(
             widgetResponse: ShopLayoutWidget.Widget,
             isMyOwnProduct: Boolean,
-            isLoggedIn: Boolean
+            isLoggedIn: Boolean,
+            isThematicWidgetShown: Boolean
     ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
             return mapToVoucherUiModel(widgetResponse)
@@ -262,15 +263,25 @@ object ShopPageHomeMapper {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
             CAMPAIGN.toLowerCase() -> {
-                when(widgetResponse.name) {
-                    ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
-                    BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
-                    FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
-                    NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
-                        widgetResponse,
-                        isLoggedIn
-                    )
-                    else -> null
+                if (isThematicWidgetShown) {
+                    when(widgetResponse.name) {
+                        ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
+                        BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                        NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
+                            widgetResponse,
+                            isLoggedIn
+                        )
+                        else -> null
+                    }
+                } else {
+                    when(widgetResponse.name) {
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                        NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
+                            widgetResponse, isLoggedIn
+                        )
+                        else -> null
+                    }
                 }
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
@@ -752,11 +763,12 @@ object ShopPageHomeMapper {
     fun mapToListShopHomeWidget(
             responseWidgetData: List<ShopLayoutWidget.Widget>,
             myShop: Boolean,
-            isLoggedIn: Boolean
+            isLoggedIn: Boolean,
+            isThematicWidgetShown: Boolean
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)}.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)) {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -792,7 +804,8 @@ object ShopPageHomeMapper {
     fun mapShopHomeWidgetLayoutToListShopHomeWidget(
             listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
             myShop: Boolean,
-            isLoggedIn: Boolean
+            isLoggedIn: Boolean,
+            isThematicWidgetShown: Boolean
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
@@ -800,8 +813,8 @@ object ShopPageHomeMapper {
                         ShopLayoutWidget.Widget(
                                 widgetID = it.widgetId,
                                 type = it.widgetType,
-                                name = it.widgetName
-                        ), myShop, isLoggedIn
+                                name = it.widgetName,
+                        ), myShop, isLoggedIn, isThematicWidgetShown
                 )?.let{ resModel ->
                     when (resModel) {
                         is BaseShopHomeWidgetUiModel -> {
