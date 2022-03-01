@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -44,4 +45,7 @@ class ProfileCompletionSettingModule(private val context: Context) {
 
     @Provides
     fun provideLoadingDialog(): LoadingDialog = LoadingDialog(context)
+
+    @Provides
+    fun provideProfileInfoTracker() = ProfileInfoTracker()
 }

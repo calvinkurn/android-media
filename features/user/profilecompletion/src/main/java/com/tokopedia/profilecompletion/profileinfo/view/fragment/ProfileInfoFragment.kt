@@ -32,6 +32,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoAdapter
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoListTypeFactory
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.DividerProfileUiModel
@@ -58,6 +59,9 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
