@@ -550,7 +550,10 @@ class DigitalPDPDataPlanFragment :
 
     private fun onShimmeringDenomFull() {
         binding?.let {
-            it.rechargePdpPaketDataDenomFullWidget.renderDenomFullShimmering()
+            it.rechargePdpPaketDataDenomFullWidget.run {
+                show()
+                renderDenomFullShimmering()
+            }
         }
     }
 
