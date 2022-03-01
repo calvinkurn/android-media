@@ -23,7 +23,7 @@ object AddOnUiModelMapper {
             mainProductQuantity = productData?.productQuantity ?: 0
             mainProductPrice = productData?.productPrice ?: 0
             otherProductCount = addOnProductData.availableBottomSheetData.products.size - 1
-            promoMessage = addOnByProduct?.couponText ?: ""
+            promoMessage = getAddOnByProductResponse.dataResponse.staticInfo.promoText
         }
     }
 
