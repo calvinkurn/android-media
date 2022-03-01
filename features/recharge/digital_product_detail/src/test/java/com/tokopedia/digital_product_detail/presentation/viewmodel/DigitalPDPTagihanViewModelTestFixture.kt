@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -114,6 +115,14 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         } throws errorThrowable
     }
 
+    protected fun onGetOperatorData_thenReturn(operatorData: CatalogOperator) {
+        viewModel.operatorData = operatorData
+    }
+
+    protected fun onGetOperatorList_thenReturn(operatorList: List<CatalogOperator>) {
+        viewModel.operatorList = operatorList
+    }
+
     protected fun verifyGetMenuDetailRepoGetCalled() {
         coVerify { repo.getMenuDetail(any(), any(), any()) }
     }
@@ -186,6 +195,11 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     protected fun verifyGetTagihanProductLoading(expectedResponse: RechargeNetworkResult.Loading){
         val actualResponse = viewModel.tagihanProduct.value
         Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifySetOperatorListSuccess(expectedResult: List<CatalogOperator>) {
+        val actualResult = viewModel.operatorList
+        Assert.assertEquals(expectedResult, actualResult)
     }
 
     protected fun verifyGetTagihanProductSuccess(expectedResponse: RechargeProduct) {
@@ -277,6 +291,11 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualCategoryId == EMPTY || actualCategoryId == null)
     }
 
+    protected fun verifyOperatorDataHasCorrectData(expectedResult: CatalogOperator) {
+        val actualResult = viewModel.operatorData
+        assertOperatorDataEqual(expectedResult, actualResult)
+    }
+
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
         Assert.assertEquals(expected.clientNumber, actual.clientNumber)
         Assert.assertEquals(expected.categoryId, actual.categoryId)
@@ -285,6 +304,14 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertEquals(expected.isPromo, actual.isPromo)
         Assert.assertEquals(expected.isSpecialProduct, actual.isSpecialProduct)
         Assert.assertEquals(expected.idemPotencyKey, actual.idemPotencyKey)
+    }
+
+    private fun assertOperatorDataEqual(expected: CatalogOperator, actual: CatalogOperator) {
+        Assert.assertEquals(expected.id, actual.id)
+        Assert.assertEquals(expected.attributes.name, actual.attributes.name)
+        Assert.assertEquals(expected.attributes.image, actual.attributes.image)
+        Assert.assertEquals(expected.attributes.imageUrl, actual.attributes.imageUrl)
+        Assert.assertEquals(expected.attributes.description, actual.attributes.description)
     }
 
     protected fun TestCoroutineScope.skipValidatorDelay() {

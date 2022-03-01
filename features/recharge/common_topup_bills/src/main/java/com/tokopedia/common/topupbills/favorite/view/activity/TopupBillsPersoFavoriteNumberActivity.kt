@@ -21,6 +21,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
     protected lateinit var dgCategoryIds: ArrayList<String>
+    protected lateinit var dgOperatorIds: ArrayList<String>
     protected var currentCategoryName = ""
     protected var loyaltyStatus: String = ""
 
@@ -52,6 +53,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             this.number = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.currentCategoryName = extras.getString(EXTRA_DG_CATEGORY_NAME, "")
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
+            this.dgOperatorIds = extras.getStringArrayList(EXTRA_DG_OPERATOR_IDS) ?: arrayListOf()
             this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
         }
         super.onCreate(savedInstanceState)
@@ -70,6 +72,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             number,
             currentCategoryName,
             dgCategoryIds,
+            dgOperatorIds,
             loyaltyStatus
         )
     }
@@ -84,6 +87,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             context: Context,
             clientNumber: String,
             dgCategoryIds: ArrayList<String>,
+            dgOperatorIds: ArrayList<String>,
             categoryName: String,
             loyaltyStatus: String
         ): Intent {
@@ -92,6 +96,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
+            extras.putStringArrayList(EXTRA_DG_OPERATOR_IDS, dgOperatorIds)
             extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             intent.putExtras(extras)
@@ -102,6 +107,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
+        const val EXTRA_DG_OPERATOR_IDS = "EXTRA_DG_OPERATOR_IDS"
         const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
     }
 

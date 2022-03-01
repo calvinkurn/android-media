@@ -44,6 +44,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
+    var operatorList: List<CatalogOperator> = listOf()
     var operatorData: CatalogOperator = CatalogOperator()
     var recomCheckoutUrl = ""
 
@@ -132,7 +133,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     fun getOperatorSelectGroup(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
-            val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
+            operatorList = data.response.operatorGroups?.firstOrNull()?.operators ?: listOf()
             if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()) {
                 operatorData = operatorList.get(0)
             }

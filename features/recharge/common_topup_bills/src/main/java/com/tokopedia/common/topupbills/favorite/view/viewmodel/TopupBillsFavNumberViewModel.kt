@@ -41,12 +41,13 @@ class TopupBillsFavNumberViewModel @Inject constructor(
 
     fun getPersoFavoriteNumbers(
         categoryIds: List<Int>,
+        operatorIds: List<Int>,
         shouldRefreshInputNumber: Boolean = true,
         prevActionType: FavoriteNumberActionType? = null
     ) {
         launchCatchError(block = {
             val favoriteNumber = getRechargeFavoriteNumberUseCase.apply {
-                setRequestParams(categoryIds)
+                setRequestParams(categoryIds, operatorIds)
             }.executeOnBackground()
             _persoFavNumberData.postValue(Success(favoriteNumber.persoFavoriteNumber to shouldRefreshInputNumber))
         }) {

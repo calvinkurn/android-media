@@ -12,6 +12,7 @@ class TopupBillsPersoSavedNumTabAdapter(
     private var clientNumberType: String,
     private var number: String,
     private var dgCategoryIds: ArrayList<String>,
+    private var dgOperatorIds: ArrayList<String>,
     private var currentCategoryName: String = "",
     private var loyaltyStatus: String = ""
 ): FragmentStateAdapter(fragment) {
@@ -32,6 +33,7 @@ class TopupBillsPersoSavedNumTabAdapter(
                         number,
                         currentCategoryName,
                         dgCategoryIds,
+                        dgOperatorIds,
                         loyaltyStatus
                     )
                 }
