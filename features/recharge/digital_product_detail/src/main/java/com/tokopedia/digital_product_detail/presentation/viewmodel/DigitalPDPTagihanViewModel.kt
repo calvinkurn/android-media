@@ -231,11 +231,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     }
 
     fun getListInfo(): List<String> {
-        return if (!operatorData.id.isNullOrEmpty()){
-            (catalogSelectGroup.value as RechargeNetworkResult.Success).data.response.
-            operatorGroups?.firstOrNull()?.operators?.filter {
-                it.id == operatorData.id
-            }?.single()?.attributes?.operatorDescriptions ?: listOf()
+        return if (operatorData.id.isNotEmpty()){
+            operatorData.attributes.operatorDescriptions
         } else listOf()
     }
 

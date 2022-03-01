@@ -59,8 +59,12 @@ class RechargeTickerWidget @JvmOverloads constructor(@NotNull context: Context, 
                 }
             }
             val startIndexOfLink = this.text.toString().indexOf(link.first)
-            spannableString.setSpan(clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (startIndexOfLink >= 0) {
+                spannableString.setSpan(
+                    clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
 
         }
         this.movementMethod = LinkMovementMethod.getInstance()

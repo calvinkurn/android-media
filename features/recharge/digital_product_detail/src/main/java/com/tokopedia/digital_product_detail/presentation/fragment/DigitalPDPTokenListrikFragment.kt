@@ -475,7 +475,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun onSuccessGetOperatorSelectGroup() {
         renderProduct()
-        renderGreenBox()
     }
 
     private fun renderGreenBox(){

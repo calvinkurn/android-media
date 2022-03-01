@@ -278,6 +278,14 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualCategoryId == EMPTY || actualCategoryId == null)
     }
 
+    protected fun verifyListInfoSuccess(expectedListInfo: List<String>, actualListInfo: List<String>){
+        Assert.assertEquals(expectedListInfo, actualListInfo)
+    }
+
+    protected fun verifyListInfoEmpty(actualListInfo: List<String>){
+        Assert.assertEquals(actualListInfo, listOf<String>())
+    }
+
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
         Assert.assertEquals(expected.clientNumber, actual.clientNumber)
         Assert.assertEquals(expected.categoryId, actual.categoryId)

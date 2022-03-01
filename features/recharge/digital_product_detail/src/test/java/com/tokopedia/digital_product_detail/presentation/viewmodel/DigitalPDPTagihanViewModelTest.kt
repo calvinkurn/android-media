@@ -344,6 +344,27 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         verifyCheckoutPassDataUpdated(expectedResult)
     }
 
+    @Test
+    fun `when getting listInfo should run and give success result`() {
+        val response = dataFactory.getOperatorSelectGroupData()
+        val expectedlistInfo = response.response.operatorGroups?.first()?.
+        operators?.first()?.attributes?.operatorDescriptions ?: listOf()
+        onGetOperatorSelectGroup_thenReturn(response)
+
+        viewModel.getOperatorSelectGroup(DigitalPDPTokenListrikViewModelTest.MENU_ID)
+        verifyGetOperatorSelectGroupRepoGetCalled()
+        verifyGetOperatorSelectGroupSuccess(response)
+
+        val actualListInfo = viewModel.getListInfo()
+        verifyListInfoSuccess(expectedlistInfo, actualListInfo)
+    }
+
+    @Test
+    fun `when getting listInfo should run and give empty result`() {
+        val actualListInfo = viewModel.getListInfo()
+        verifyListInfoEmpty(actualListInfo)
+    }
+
     companion object {
         const val MENU_ID = 305
     }

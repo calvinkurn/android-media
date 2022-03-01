@@ -404,7 +404,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
         renderProduct()
         renderChipsAndTitle(operatorGroup)
-        renderGreenBox()
     }
 
     private fun renderGreenBox(){
