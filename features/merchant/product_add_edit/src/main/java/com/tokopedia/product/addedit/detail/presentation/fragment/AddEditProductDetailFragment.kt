@@ -681,7 +681,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             submitButton?.isLoading = true
             validateInput()
             validateSpecificationList()
-               setupDefaultFieldMessage()
+        }
+
+        setupDefaultFieldMessage()
         setupSpecificationField()
         setupProductPriceRecommendationField()
         enableProductNameField()
