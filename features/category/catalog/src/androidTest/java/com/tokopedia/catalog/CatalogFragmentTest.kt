@@ -379,6 +379,7 @@ class CatalogFragmentTest
         val intent = Intent(context, CatalogDetailPageActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
+        Thread.sleep(5000)
     }
 
     private fun setupIdlingResource() {

@@ -118,7 +118,7 @@ class CatalogForYouContainerViewHolder(private val view : View,
             if (dataList.isNotEmpty()) {
                 onFetchData(dataList)
             }else {
-                handleError()
+                hideView()
             }
         })
     }
@@ -133,7 +133,9 @@ class CatalogForYouContainerViewHolder(private val view : View,
 
     private fun observeErrorMessage() {
         catalogForYouViewModel?.getError()?.observe(lifecycleOwner, { errorMessage ->
-            handleError()
+            if(catalogDetailAdapter.currentList.isNullOrEmpty()){
+                hideView()
+            }
         })
     }
 
@@ -144,7 +146,7 @@ class CatalogForYouContainerViewHolder(private val view : View,
         loadMoreTriggerListener?.updateStateAfterGetData()
     }
 
-    private fun handleError(){
+    private fun hideView(){
         itemView.findViewById<LinearLayout>(R.id.catalog_for_you_container_parent).hide()
     }
 

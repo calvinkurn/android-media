@@ -61,9 +61,14 @@ class CatalogForYouViewModel @Inject constructor(
             }
 
             is Fail -> {
-                hasMoreItems.value = false
+                handleFail(result.throwable)
             }
         }
+    }
+
+    private fun handleFail(th: Throwable) {
+        error.value = th
+        hasMoreItems.value = true
     }
 
     private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
@@ -96,6 +101,7 @@ class CatalogForYouViewModel @Inject constructor(
     private fun removeShimmer() {
         masterDataList.removeAll(shimmerList)
         shimmerList.clear()
+        shimmerData.value = masterDataList
     }
 
     fun getLoadedItemsSize() : Int{
