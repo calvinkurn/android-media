@@ -206,7 +206,7 @@ class TopSectionVH(
             mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
 
-        ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.progressInfoList?.get(0)?.iconImageURL)
+        ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.tier?.imageURL)
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
@@ -483,16 +483,13 @@ class TopSectionVH(
 
     private fun getProgress(progressInfoList: List<ProgressInfoList>) : Pair<Int?,Int?> {
 
-        val startPercentage =
-            ((progressInfoList[1].currentAmount)?.div(
-                (progressInfoList[1].nextAmount ?: 1)
-            ))?.times(
-                100
-            )
-        val endPercentage =
-            (progressInfoList[0].currentAmount?.div(progressInfoList[0].nextAmount ?: 1))?.times(
-                100
-            )
+        val currentAmountNext = progressInfoList[1].currentAmount?.toFloat()?:0F
+        val nextAmountNext = progressInfoList[1].nextAmount?.toFloat()?:1F
+        val endPercentage = (currentAmountNext/nextAmountNext *100).toInt()
+
+        val currentAmountLast = progressInfoList[0].currentAmount?.toFloat()?:0F
+        val nextAmountLast = progressInfoList[0].nextAmount?.toFloat()?:1F
+        val startPercentage = (currentAmountLast/nextAmountLast *100).toInt()
 
         return Pair(startPercentage,endPercentage)
 
@@ -522,7 +519,6 @@ class TopSectionVH(
             text="Rp"
             setWeight(Typography.BOLD)
             setType(Typography.BODY_3)
-            gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
         }
         digitContainer?.addView(rpView)
@@ -561,9 +557,9 @@ class TopSectionVH(
         if (container?.childCount?.minus(1) ?: 0 >= 0) {
                 val target = container?.getChildAt(container.childCount - 1)
                 val moveXX =
-                    ObjectAnimator.ofFloat(target, View.SCALE_X, 2f).setDuration(ANIMATION_DURATION)
+                    ObjectAnimator.ofFloat(target, View.SCALE_X, 1.5f).setDuration(ANIMATION_DURATION)
                 val animatorContainerX =
-                    ObjectAnimator.ofFloat(target, View.SCALE_Y, 2f).setDuration(ANIMATION_DURATION)
+                    ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.5f).setDuration(ANIMATION_DURATION)
                 val animSet = AnimatorSet()
 
                 animSet.addListener(object : Animator.AnimatorListener {
@@ -592,12 +588,6 @@ class TopSectionVH(
         digitContainer?.hide()
         currentTier?.hide()
         containerProgressBar?.hide()
- /*       val params = RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.addRule(RelativeLayout.BELOW, mImgEgg?.id?:0)
-        cardTierInfo.layoutParams = params*/
     }
 
     private fun gotoMembershipPage(){
@@ -605,7 +595,7 @@ class TopSectionVH(
             itemView.context,
             ApplinkConstInternalGlobal.WEBVIEW_TITLE,
             itemView.context.resources.getString(R.string.tp_label_membership),
-            CommonConstant.WebLink.MEMBERSHIP
+            "https://1031-staging-feature.tokopedia.com/rewards/membership"
         )
 
         AnalyticsTrackerUtil.sendEvent(itemView.context,

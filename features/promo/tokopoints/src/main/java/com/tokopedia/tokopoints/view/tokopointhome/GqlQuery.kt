@@ -178,6 +178,7 @@ query  tokopediaRewardTopSection(${'$'}apiVersion: String!) {
     tier {
       id
       nameDesc
+      eggImageHomepageURL
     }
     target {
       text

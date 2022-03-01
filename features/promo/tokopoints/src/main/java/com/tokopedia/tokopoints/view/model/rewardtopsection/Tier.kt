@@ -8,5 +8,8 @@ data class Tier(
 	var nameDesc: String? = null,
 
 	@SerializedName("id")
-	val id: Int? = null
+	val id: Int? = null,
+
+	@SerializedName("eggImageHomepageURL")
+	val imageURL: String? = null
 )
