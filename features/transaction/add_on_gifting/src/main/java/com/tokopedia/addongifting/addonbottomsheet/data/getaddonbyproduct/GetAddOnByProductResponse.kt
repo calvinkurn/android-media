@@ -10,6 +10,8 @@ data class GetAddOnByProductResponse(
 data class DataResponse(
         @SerializedName("error")
         val error: ErrorResponse = ErrorResponse(),
+        @SerializedName("StaticInfo")
+        val staticInfo: StaticInfo = StaticInfo(),
         @SerializedName("AddOnByProductResponse")
         val addOnByProducts: List<AddOnByProductResponse> = emptyList()
 )
@@ -32,8 +34,6 @@ data class AddOnByProductResponse(
         val addOnType: String = "",
         @SerializedName("HasAddOns")
         val hasAdOns: Boolean = false,
-        @SerializedName("CouponText")
-        val couponText: String = "",
         @SerializedName("Addons")
         val addOns: List<AddOnResponse> = emptyList()
 )
@@ -105,4 +105,9 @@ data class InventoryResponse(
         val stock: Int = 0,
         @SerializedName("UnlimitedStock")
         val isUnlimitedStock: Boolean = true
+)
+
+data class StaticInfo(
+        @SerializedName("PromoText")
+        val promoText: String = ""
 )

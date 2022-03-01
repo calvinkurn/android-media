@@ -87,6 +87,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
             }
             requestData = RequestData().apply {
                 inventory = true
+                staticInfo = true
             }
         }
     }

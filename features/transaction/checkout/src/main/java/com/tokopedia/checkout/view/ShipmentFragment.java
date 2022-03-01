@@ -3386,6 +3386,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             addOnProductData.setSource(AddOnProductData.SOURCE_NORMAL_CHECKOUT);
             addOnProductData.setAvailableBottomSheetData(availableBottomSheetData);
             addOnProductData.setUnavailableBottomSheetData(unavailableBottomSheetData);
+            addOnProductData.setBottomSheetType(addOnsDataModel.getAddOnsButtonModel().getAction());
 
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
@@ -3487,6 +3488,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             addOnProductData.setSource(AddOnProductData.SOURCE_NORMAL_CHECKOUT);
             addOnProductData.setAvailableBottomSheetData(availableBottomSheetData);
             addOnProductData.setUnavailableBottomSheetData(unavailableBottomSheetData);
+            addOnProductData.setBottomSheetType(addOnsDataModel.getAddOnsButtonModel().getAction());
 
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
