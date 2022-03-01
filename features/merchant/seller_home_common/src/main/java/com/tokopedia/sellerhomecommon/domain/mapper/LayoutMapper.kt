@@ -39,6 +39,7 @@ class LayoutMapper @Inject constructor(
     companion object {
         private const val EMPTY_WIDGET_MESSAGE =
             "Oops, kamu tidak punya izin untuk melihat kontent di halaman Home"
+        private const val DOUBLE_DOTS_CALENDAR_TITLE = ":"
     }
 
     override fun mapRemoteDataToUiData(
@@ -429,7 +430,7 @@ class LayoutMapper @Inject constructor(
         return CalendarWidgetUiModel(
             id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
-            title = widget.title.orEmpty(),
+            title = widget.title.orEmpty() + DOUBLE_DOTS_CALENDAR_TITLE,
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),
