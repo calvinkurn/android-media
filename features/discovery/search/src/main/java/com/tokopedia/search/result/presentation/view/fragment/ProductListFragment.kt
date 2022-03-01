@@ -70,7 +70,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -135,14 +134,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class ProductListFragment: BaseDaggerFragment(),
     OnItemChangeView,
@@ -161,8 +155,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener,
-    CoroutineScope {
+    ProductListParameterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -229,15 +222,13 @@ class ProductListFragment: BaseDaggerFragment(),
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
-    private lateinit var masterJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.Main
+    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
+        ProductVideoAutoplay(remoteConfig)
+    }
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        masterJob = Job()
 
         loadDataFromArguments()
         initTrackingQueue()
@@ -304,7 +295,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
-        viewLifecycleOwner.lifecycle.addObserver(productVideoAutoplay)
+        initProductVideoAutoplayLifecycleObserver()
 
         presenter?.onViewCreated()
     }
@@ -319,6 +310,10 @@ class ProductListFragment: BaseDaggerFragment(),
         val searchParameter = searchParameter ?: return
         if (searchParameter.get(SearchApiConst.OB).isEmpty())
             searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+    }
+
+    private fun initProductVideoAutoplayLifecycleObserver() {
+        productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
     }
     //endregion
 
@@ -439,7 +434,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
-            setUpProductVideoAutoplayListener(this)
+            productVideoAutoplay.setUp(this)
         }
     }
 
@@ -481,61 +476,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun getSearchParameterMap(): Map<String, Any> =
         searchParameter?.getSearchParameterMap() ?: mapOf()
-    //endregion
-
-    //region product video autoplay
-    private val productVideoAutoplay : ProductVideoAutoplay<Visitable<*>, ProductItemDataView> by lazy {
-        ProductVideoAutoplay(this)
-    }
-
-    private val isAutoplayProductVideoEnabled : Boolean by lazy {
-        remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MPC_VIDEO_AUTOPLAY, true)
-    }
-
-    private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                startVideoAutoplayWhenRecyclerViewIsIdle()
-            }
-        }
-    }
-
-    private val autoPlayAdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            if (positionStart == 0) {
-                recyclerView?.viewTreeObserver
-                    ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            startVideoAutoplayWhenRecyclerViewIsIdle()
-                            recyclerView?.viewTreeObserver
-                                ?.removeOnGlobalLayoutListener(this)
-                        }
-                    })
-            }
-        }
-    }
-
-    private fun setUpProductVideoAutoplayListener(recyclerView: RecyclerView) {
-        if(isAutoplayProductVideoEnabled) {
-            recyclerView.addOnScrollListener(autoPlayScrollListener)
-            recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
-        }
-    }
-
-    private fun startVideoAutoplayWhenRecyclerViewIsIdle() {
-        productVideoAutoplay.startVideoAutoplay(
-            recyclerView,
-            staggeredGridLayoutManager,
-            productListAdapter?.itemList
-        ) { visitableList ->
-            visitableList.filterIsInstance<ProductItemDataView>()
-                .filter {
-                    it.hasVideo
-                }
-        }
-    }
     //endregion
 
     //region onAttach
@@ -1235,20 +1175,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onDestroyView() {
-        unregisterVideoAutoplayAdapterObserver()
-        masterJob.cancelChildren()
         super.onDestroyView()
         presenter?.detachView()
-    }
-
-    private fun unregisterVideoAutoplayAdapterObserver() {
-        if (isAutoplayProductVideoEnabled) {
-            try {
-                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
     }
 
     override fun getScreenName(): String {

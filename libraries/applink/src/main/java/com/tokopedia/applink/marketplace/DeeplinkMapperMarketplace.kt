@@ -60,6 +60,10 @@ object DeeplinkMapperMarketplace {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
     }
 
+    fun getShopMvcLockedToProductShopIdInternalAppLink(shopId: String, voucherId: String):String {
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, shopId, voucherId)
+    }
+
     private fun isSpecialShop(shopId: String): Boolean {
         return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
     }

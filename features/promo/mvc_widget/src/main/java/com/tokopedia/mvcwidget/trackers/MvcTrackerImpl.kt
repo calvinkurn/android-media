@@ -13,6 +13,10 @@ interface MvcTrackerImpl {
         productId: String
     )
 
+    fun userClickEntryPointOnMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String)
+
+    fun viewMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String)
+
     //3, 18
     fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?)
 

@@ -47,6 +47,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     private var productId : String = ""
     private var currentName: String? = null
     private var currentServiceFormat = ""
+    private var commission = ""
     private var originScreen = ORIGIN_PROMOSIKAN
     private var url: String? = null
     private var identifier: String? = null
@@ -73,6 +74,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         private const val KEY_PRODUCT_NAME = "KEY_PRODUCT_NAME"
         private const val KEY_PRODUCT_IMAGE = "KEY_PRODUCT_IMAGE"
         private const val KEY_PRODUCT_URL = "KEY_PRODUCT_URL"
+        private const val KEY_COMMISON_PRICE = "KEY_COMMISION_PRICE"
         private const val KEY_PRODUCT_IDENTIFIER = "KEY_PRODUCT_IDENTIFIER"
         private const val KEY_ORIGIN = "KEY_ORIGIN"
         private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
@@ -84,12 +86,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         const val ORIGIN_PORTFOLIO = 3
         const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
         const val ORIGIN_TERAKHIR_DILIHAT = 5
+        const val ORIGIN_HOME_GENERATED = 6
 
         fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,
                         idArray : ArrayList<Int>?,
                         productId : String, productName: String, productImage: String,
                         productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
-                        isLinkGenerationEnabled :Boolean = true): AffiliatePromotionBottomSheet {
+                        isLinkGenerationEnabled :Boolean = true,commission: String = ""): AffiliatePromotionBottomSheet {
             return AffiliatePromotionBottomSheet().apply {
                 sheetType = bottomSheetType
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
@@ -102,6 +105,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                     putString(KEY_PRODUCT_IDENTIFIER, productIdentifier)
                     putInt(KEY_ORIGIN,origin)
                     putBoolean(KEY_LINK_GEN_ENABLED,isLinkGenerationEnabled)
+                    putString(KEY_COMMISON_PRICE,commission)
                 }
             }
         }
@@ -143,6 +147,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                 identifier = bundle.getString(KEY_PRODUCT_IDENTIFIER)
                 originScreen = bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
                 isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
+                commission = bundle.getString(KEY_COMMISON_PRICE,"")
             }
 
             if(sheetType == SheetType.ADD_SOCIAL){
@@ -219,55 +224,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
     private fun setObservers(contentView: View) {
         affiliatePromotionBSViewModel.generateLinkData().observe(this, {
-            var eventCategory = AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP_B_S
-            if(originScreen == ORIGIN_HOME){
-                eventCategory = AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S
-            }
-            else if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA || originScreen == ORIGIN_TERAKHIR_DILIHAT){
-                eventCategory = AffiliateAnalytics.CategoryKeys.PROMOSIKAN_BOTTOM_SHEET
-            }
             it?.let { data ->
-                if(originScreen == ORIGIN_HOME || originScreen == ORIGIN_PROMOSIKAN) {
-                    AffiliateAnalytics.sendEvent(
-                        AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK,
-                        eventCategory,
-                        "$productId-${data.linkID}-$currentServiceFormat",
-                        userSessionInterface.userId
-                    )
-                }
-                else if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA || originScreen == ORIGIN_TERAKHIR_DILIHAT){
-                   val eventAction = if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA){
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
-                   } else {
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
-                   }
-                   AffiliateAnalytics.sendEvent(
-                        AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                        eventAction,
-                        eventCategory,
-                        "$productId-${data.linkID}-$currentServiceFormat",
-                        userSessionInterface.userId
-                   )
-                }
+                sendClickPGevent(data.linkID,currentServiceFormat,AffiliateAnalytics.LabelKeys.SUCCESS)
                 val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, data.url?.shortURL))
                 Toaster.build(contentView.rootView, getString(R.string.affiliate_link_generated_succesfully, currentName),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             } ?: kotlin.run {
-                if(originScreen == ORIGIN_HOME){
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_LINK_GEN_ERROR,
-                            eventCategory,
-                            "$productId-$currentServiceFormat",userSessionInterface.userId)
-                }else if(originScreen == ORIGIN_PROMOSIKAN) {
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_LINK_GEN_ERROR,
-                            eventCategory,
-                            "$productId-$currentServiceFormat",userSessionInterface.userId)
-                }
+                sendClickPGevent("",currentServiceFormat,AffiliateAnalytics.LabelKeys.FAIL)
             }
         })
 
@@ -279,10 +243,39 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
         affiliatePromotionBSViewModel.getErrorMessage().observe(this, { error ->
             if (error != null) {
+                sendClickPGevent("",currentServiceFormat,AffiliateAnalytics.LabelKeys.FAIL)
                 Toaster.build(contentView.rootView, error,
                         Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         })
+    }
+
+    private fun sendClickPGevent(linkID: String?, currentServiceFormat: String, status: String) {
+        var eventAction = ""
+        var eventCategory = ""
+
+        var eventLabel = ""
+        if(status == AffiliateAnalytics.LabelKeys.SUCCESS ) eventLabel = "$productId - $linkID - $currentServiceFormat - $status" else "$productId - $currentServiceFormat - $status"
+        when(originScreen){
+            ORIGIN_HOME -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+            }
+            ORIGIN_HOME_GENERATED -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+            }
+            ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+
+            }
+            ORIGIN_TERAKHIR_DILIHAT -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+            }
+        }
+        AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.CLICK_PG,eventAction,eventCategory,eventLabel,userSessionInterface.userId)
     }
 
     private fun loading(stop: Boolean) {

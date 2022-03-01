@@ -14,7 +14,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.voucherlist.view.adapter.DownloadVoucherAdapter
+import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.DownloadVoucherAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
 
 /**

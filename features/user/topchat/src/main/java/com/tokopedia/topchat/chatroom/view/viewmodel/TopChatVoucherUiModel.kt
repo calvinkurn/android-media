@@ -12,20 +12,31 @@ class TopChatVoucherUiModel private constructor(
 
     private val voucherModel: MerchantVoucherModel = builder.voucherModel
     private val isPublic: Int = builder.isPublic
-    val voucher: MerchantVoucherViewModel = MerchantVoucherViewModel(voucherModel)
+    private val isLockToProduct: Int = builder.isLockToProduct
+    val applink: String = builder.applink
+    val voucher: MerchantVoucherViewModel = MerchantVoucherViewModel(voucherModel).apply {
+        this.isPublic = isPublic()
+        this.isLockToProduct = isLockToProduct()
+    }
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    fun hasCtaCopy(): Boolean {
-        return isPublic == 0
+    private fun isPublic(): Boolean {
+        return isPublic == 1
+    }
+
+    fun isLockToProduct(): Boolean {
+        return isLockToProduct == 1
     }
 
     class Builder : SendableUiModel.Builder<Builder, TopChatVoucherUiModel>() {
 
         internal lateinit var voucherModel: MerchantVoucherModel
         internal var isPublic: Int = 1
+        internal var isLockToProduct: Int = 0
+        internal var applink: String = ""
 
         fun withVoucherModel(voucherModel: MerchantVoucherModel): Builder {
             this.voucherModel = voucherModel
@@ -34,6 +45,16 @@ class TopChatVoucherUiModel private constructor(
 
         fun withIsPublic(isPublic: Int): Builder {
             this.isPublic = isPublic
+            return self()
+        }
+
+        fun withIsLockToProduct(isLockToProduct: Int): Builder {
+            this.isLockToProduct = isLockToProduct
+            return self()
+        }
+
+        fun withApplink(applink: String): Builder {
+            this.applink = applink
             return self()
         }
 
