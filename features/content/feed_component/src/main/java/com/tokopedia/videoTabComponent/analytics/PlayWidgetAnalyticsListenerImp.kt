@@ -58,12 +58,12 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isAutoPlay: Boolean
     ) {
         super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
-        if (item.channelType == PlayWidgetChannelType.Live) {
-            tracker.clickOnContentCardsInContentListPageForLagiLive(
-                item.channelId, shopId, listOf(item.video.coverUrl),
-                item.channelType.toString().lowercase(), filterCategory, channelPositionInList
-            )
-        }
+//        if (item.channelType == PlayWidgetChannelType.Live) {
+//            tracker.clickOnContentCardsInContentListPageForLagiLive(
+//                item.channelId, shopId, listOf(item.video.coverUrl),
+//                item.channelType.toString().lowercase(), filterCategory, channelPositionInList
+//            )
+//        }
         tracker.clickOnContentCardsInVideoTabBelowTheChips(
             item.channelId, shopId, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
@@ -77,12 +77,12 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isAutoPlay: Boolean
     ) {
         super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
-        if (item.channelType == PlayWidgetChannelType.Live) {
-            tracker.impressOnContentCardsInContentListPageForLagiLive(
-                item.channelId, shopId, listOf(item.video.coverUrl),
-                item.channelType.toString().lowercase(), filterCategory, channelPositionInList
-            )
-        }
+//        if (item.channelType == PlayWidgetChannelType.Live) {
+//            tracker.impressOnContentCardsInContentListPageForLagiLive(
+//                item.channelId, shopId, listOf(item.video.coverUrl),
+//                item.channelType.toString().lowercase(), filterCategory, channelPositionInList
+//            )
+//        }
         tracker.impressOnContentCardsInVideoTabBelowTheChips(
             item.channelId, shopId, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList

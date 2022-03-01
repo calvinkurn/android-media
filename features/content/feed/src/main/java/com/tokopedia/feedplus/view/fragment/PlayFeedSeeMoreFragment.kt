@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.PlayVideoLiveListActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.playseemore.PlaySeeMoreAdapter
+import com.tokopedia.feedplus.view.analytics.widget.FeedPlayVideoDetailPageAnalyticsListener
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -62,7 +63,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
-    lateinit var playWidgetAnalyticsListenerImp: PlayWidgetAnalyticsListenerImp
+    lateinit var playWidgetAnalyticsListenerImp: FeedPlayVideoDetailPageAnalyticsListener
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -153,6 +154,8 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
             rvWidgetSample?.addOnScrollListener(it)
             it.resetState()
         }
+        playWidgetAnalyticsListenerImp.filterCategory = filterCategory
+        playWidgetAnalyticsListenerImp.entryPoint = if (widgetType == WIDGET_LIVE) ENTRY_POINT_WIDGET_LIVE else ENTRY_POINT_WIDGET_UPCOMING
 
         rvWidgetSample?.adapter = adapter
     }
@@ -179,13 +182,18 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        analyticListener.clickOnSeeAllOnLagiLiveCarousel(widgetType, filterCategory)
+        if (widgetType == WIDGET_LIVE)
+        analyticListener.clickOnSeeAllOnLagiLiveCarousel()
+        else
+        analyticListener.clickOnSeeAllOnUpcomingCarousel(filterCategory)
 
     }
 
     companion object{
         const val WIDGET_LIVE ="live"
         const val WIDGET_UPCOMING ="upcoming"
+        const val ENTRY_POINT_WIDGET_LIVE = "lagi live"
+        const val ENTRY_POINT_WIDGET_UPCOMING = "upcoming"
 
 
         fun createInstance(bundle: Bundle) : Fragment {
