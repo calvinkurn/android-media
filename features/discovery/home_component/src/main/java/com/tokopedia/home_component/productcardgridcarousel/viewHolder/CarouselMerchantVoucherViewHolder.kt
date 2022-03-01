@@ -10,6 +10,7 @@ import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProduct
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
+import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -34,10 +35,6 @@ class CarouselMerchantVoucherViewHolder (
     }
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
-//        val scaleX = 1.024f
-//        val scaleY = 1.011f
-//        binding?.imageBackgroundVoucher?.scaleX = scaleX
-//        binding?.imageBackgroundVoucher?.scaleY = scaleY
         if (itemView.context.isDarkMode()) {
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
@@ -47,7 +44,7 @@ class CarouselMerchantVoucherViewHolder (
         }
         else {
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
-            binding?.imageBackgroundVoucher?.loadImageNoRounded(
+            binding?.imageBackgroundVoucher?.loadImageNormal(
                 BACKGROUND_MVC_WHITE,
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )

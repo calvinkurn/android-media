@@ -104,6 +104,12 @@ fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     }
 }
 
+fun ImageView.loadImageNormal(url: String, placeholder: Int = -1){
+    this.loadImage(url) {
+        setPlaceHolder(placeholder)
+    }
+}
+
 fun ImageView.loadGif(url: String){
     this.loadAsGif(url) {
         setRoundedRadius(10.toFloat())
