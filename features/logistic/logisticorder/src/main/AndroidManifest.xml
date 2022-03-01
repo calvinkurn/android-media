@@ -52,5 +52,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.logisticorder.view.reschedule_pickup.ReschedulePickupActivity"
+            android:exported="false"
+            android:label="@string/label_reschedule_pickup_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 </manifest>

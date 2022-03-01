@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    tools:context=".view.reschedule_pickup.ReschedulePickupFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layout_form_reschedule_pickup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_order_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/label_title_order_detail_reschedule_pick_up"
+                app:layout_constraintBottom_toTopOf="@id/card_order_detail"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifycomponents.CardUnify
+                android:id="@+id/card_order_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="16dp"
+                app:card_type="shadow"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/title_order_detail">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/icon_courier_order_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        app:icon_name="COURIER"
+                        app:layout_constraintBottom_toBottomOf="@id/courier_order_detail"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/title_courier_order_detail" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/title_courier_order_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_title_courier_reschedule_pick_up"
+                        app:layout_constraintStart_toEndOf="@id/icon_courier_order_detail"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/courier_order_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/icon_courier_order_detail"
+                        app:layout_constraintTop_toBottomOf="@id/title_courier_order_detail"
+                        app:typographyType="heading_6"
+                        tools:text="Instan - Gojek" />
+
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/icon_invoice_order_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        app:icon_name="BILL_ALL"
+                        app:layout_constraintBottom_toBottomOf="@id/invoice_order_detail"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/title_invoice_order_detail" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/title_invoice_order_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/label_title_invoice_reschedule_pick_up"
+                        app:layout_constraintStart_toEndOf="@id/icon_invoice_order_detail"
+                        app:layout_constraintTop_toBottomOf="@id/courier_order_detail"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/invoice_order_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/icon_invoice_order_detail"
+                        app:layout_constraintTop_toBottomOf="@id/title_invoice_order_detail"
+                        app:typographyType="heading_6"
+                        tools:text="INV/20211025/XVI/X/51234657" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.tokopedia.unifycomponents.CardUnify>
+
+            <View
+                android:id="@+id/divider_order_detail"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/Unify_N50"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/card_order_detail" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_reschedule_pickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/label_title_reschedule_pick_up"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/divider_order_detail"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/subtitle_reschedule_pickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/title_reschedule_pickup"
+                app:typographyType="body_3"
+                tools:text="Cek info detail pengaturan ulang jadwal pick-up di sini." />
+
+            <com.tokopedia.unifycomponents.TipsUnify
+                android:id="@+id/tips_reschedule_pickup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/subtitle_reschedule_pickup"
+                app:unify_tips_title="@string/title_tips_reschedule_pick_up" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/et_day"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                app:layout_constraintBottom_toTopOf="@id/et_time"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/tips_reschedule_pickup"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_label="@string/label_day_reschedule_pick_up"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_placeholder="@string/placeholder_day_reschedule_pick_up" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/et_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                app:layout_constraintBottom_toTopOf="@id/layout_reschedule_detail"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/et_day"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_label="@string/label_time_reschedule_pick_up"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_placeholder="@string/placeholder_time_reschedule_pick_up" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/et_reason"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/et_day"
+                tools:visibility="gone" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_reschedule_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/et_reason"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/et_time">
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icon_reschedule_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:icon_name="INFORMATION"
+                    app:layout_constraintBottom_toBottomOf="@id/reschedule_detail"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/title_reschedule_detail" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/title_reschedule_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintStart_toEndOf="@id/icon_reschedule_detail"
+                    app:layout_constraintTop_toBottomOf="@id/reschedule_detail"
+                    app:typographyType="body_3"
+                    tools:text="Estimasi pickup:" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/reschedule_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/icon_reschedule_detail"
+                    app:layout_constraintTop_toBottomOf="@id/title_reschedule_detail"
+                    app:typographyType="heading_6"
+                    tools:text="Instan maksimal Rabu, 23 Des 2021, 16:00 WIB" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/et_reason"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                app:layout_constraintBottom_toTopOf="@id/et_reason_detail"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/layout_reschedule_detail"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_label="@string/label_reason_reschedule_pickup"
+                app:unify_text_field_label_static="false" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/et_reason_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/right_padding"
+                app:layout_constraintStart_toStartOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/et_reason"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_label="@string/label_detail_reason_reschedule_pickup"
+                app:unify_text_field_label_static="false" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/left_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="16dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="16dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_btn_reschedule_pickup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_reschedule_pickup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/title_button_reschedule_pickup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:enabled="false"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
