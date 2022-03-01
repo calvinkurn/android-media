@@ -20,7 +20,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_85" />
 
-        <include layout="@layout/up_shimmer_profile_header" />
+        <include layout="@layout/up_shimmer_user_profile_header" />
 
     </ViewFlipper>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
