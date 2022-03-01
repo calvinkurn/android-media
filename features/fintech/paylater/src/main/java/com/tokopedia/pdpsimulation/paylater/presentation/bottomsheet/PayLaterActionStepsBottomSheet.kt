@@ -62,7 +62,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
                 titleText =
-                    "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+                        "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
             }
 
 
@@ -82,8 +82,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         val childView = LayoutInflater.from(context).inflate(
-            childLayoutRes,
-            null, false
+                childLayoutRes,
+                null, false
         )
         setChild(childView)
     }
@@ -109,7 +109,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         listOfSteps?.let {
             rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it)
             rvPayLaterRegisterSteps.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rvPayLaterRegisterSteps.setHasFixedSize(true)
         }
 
@@ -119,7 +119,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         if (isWebUrl) {
             if (urlString.isNotEmpty()) {
                 val webViewAppLink =
-                    ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
+                        ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
                 RouteManager.route(context, webViewAppLink)
             }
         } else {
@@ -134,8 +134,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         const val REDIRECT_TOKO_ENV = 1
 
         fun show(
-            bundle: Bundle,
-            childFragmentManager: FragmentManager
+                bundle: Bundle,
+                childFragmentManager: FragmentManager
         ) {
             val actionStepsBottomSheet = PayLaterActionStepsBottomSheet().apply {
                 arguments = bundle

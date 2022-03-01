@@ -9,16 +9,15 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.unifycomponents.CardUnify
-import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
 class TenureViewHolder(itemView: View, private val tenureSelectListener: ActivationListner) :
-    RecyclerView.ViewHolder(itemView) {
+        RecyclerView.ViewHolder(itemView) {
 
     fun bindData(
-        tenureDetail: TenureDetail,
-        tenureSelectedModel: TenureSelectedModel,
-        currentPosition: Int
+            tenureDetail: TenureDetail,
+            tenureSelectedModel: TenureSelectedModel,
+            currentPosition: Int
     ) {
 
         itemView.apply {
@@ -58,8 +57,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             if (!tenureDetail.lable.isNullOrBlank() && !tenureSelectListener.isDisable()) {
                 tenureRecommendation.visibility = View.VISIBLE
                 tenureRecommendation.text = tenureDetail.lable
-            }
-            else
+            } else
                 tenureRecommendation.visibility = View.GONE
         }
     }
@@ -99,12 +97,12 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         private val LAYOUT_ID = R.layout.paylater_activation_individual_tenure
 
         fun getViewHolder(
-            inflater: LayoutInflater,
-            parent: ViewGroup,
-            tenureSelectListener: ActivationListner
+                inflater: LayoutInflater,
+                parent: ViewGroup,
+                tenureSelectListener: ActivationListner
         ) =
-            TenureViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false), tenureSelectListener
-            )
+                TenureViewHolder(
+                        inflater.inflate(LAYOUT_ID, parent, false), tenureSelectListener
+                )
     }
 }

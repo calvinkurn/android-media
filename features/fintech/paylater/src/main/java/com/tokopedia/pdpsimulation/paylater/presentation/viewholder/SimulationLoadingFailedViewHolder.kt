@@ -9,7 +9,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteracti
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationErrorModel
 
 class SimulationLoadingFailedViewHolder(itemView: View, private val interaction: PayLaterOptionInteraction) :
-    AbstractViewHolder<SimulationErrorModel>(itemView) {
+        AbstractViewHolder<SimulationErrorModel>(itemView) {
 
     private val globalError: GlobalError = itemView.findViewById(R.id.globalErrorSimulation)
 

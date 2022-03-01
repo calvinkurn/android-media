@@ -20,7 +20,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
 
 class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLaterOptionInteraction) :
-    AbstractViewHolder<Detail>(itemView) {
+        AbstractViewHolder<Detail>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.paylater_partner_card_item
@@ -58,7 +58,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.payLaterActionCta.text = element.cta.name
         itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
         itemView.payLaterActionCta.setOnClickListener {
-            interaction.invokeAnalytics(getInstallmentInfoEvent(element, element.cta.android_url ?:""))
+            interaction.invokeAnalytics(getInstallmentInfoEvent(element, element.cta.android_url
+                    ?: ""))
             interaction.onCtaClicked(element)
         }
     }
@@ -95,15 +96,16 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         } else {
             element.gatewayDetail?.img_light_url
         }
-        if(!imageUrl.isNullOrEmpty())
+        if (!imageUrl.isNullOrEmpty())
             itemView.ivPaylaterPartner.setImageUrl(imageUrl)
     }
 
     private fun setPayLaterHeader(element: Detail) {
         itemView.apply {
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
-            tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(element.installment_per_month_ceil?: 0, false)
-            if(element.tenure != 1)
+            tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(element.installment_per_month_ceil
+                    ?: 0, false)
+            if (element.tenure != 1)
                 tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
             else {
                 tvTenureMultiplier.gone()

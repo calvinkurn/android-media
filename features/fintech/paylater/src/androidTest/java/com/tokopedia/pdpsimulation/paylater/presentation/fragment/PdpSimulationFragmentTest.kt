@@ -11,7 +11,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
-import com.tokopedia.pdpsimulation.analytics.actionTest
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.paylater.presentation.activity.PdpSimulationActivity
@@ -50,14 +49,14 @@ class PdpSimulationFragmentTest {
         setupIdlingResource()
         setupGraphqlMockResponse {
             addMockResponse(
-                PRODUCT_V3_KEY,
-                InstrumentationMockHelper.getRawString(context, R.raw.product_detail_response),
-                MockModelConfig.FIND_BY_CONTAINS
+                    PRODUCT_V3_KEY,
+                    InstrumentationMockHelper.getRawString(context, R.raw.product_detail_response),
+                    MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
-                SIMULATION_V3_KEY,
-                InstrumentationMockHelper.getRawString(context, R.raw.simulationv3response),
-                MockModelConfig.FIND_BY_CONTAINS
+                    SIMULATION_V3_KEY,
+                    InstrumentationMockHelper.getRawString(context, R.raw.simulationv3response),
+                    MockModelConfig.FIND_BY_CONTAINS
             )
         }
     }
@@ -105,7 +104,7 @@ class PdpSimulationFragmentTest {
         const val PRODUCT_V3_KEY = "GetProductV3"
 
         const val PAY_LATER_PARTNER_BUTTON_CLICK =
-            "tracker/fintech/pdpsimulation/partner_button_click.json"
+                "tracker/fintech/pdpsimulation/partner_button_click.json"
 
 
     }

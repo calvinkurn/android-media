@@ -11,12 +11,12 @@
         android:id="@+id/payLaterPartnerCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:card_type="border"
-        android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
         android:layout_marginStart="@dimen/pay_later_margin_dp_10"
+        android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
         android:layout_marginEnd="@dimen/pay_later_margin_dp_10"
-        app:layout_constraintStart_toStartOf="parent"
+        app:card_type="border"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,27 +28,27 @@
                 android:id="@+id/tvRecommendationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_paylater_recommendation"
+                android:gravity="center"
+                android:paddingStart="@dimen/pay_later_benefit_margin_dp_6"
+                android:paddingEnd="@dimen/pay_later_benefit_margin_dp_6"
+                android:textColor="@color/Unify_N0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:paddingEnd="@dimen/pay_later_benefit_margin_dp_6"
-                android:paddingStart="@dimen/pay_later_benefit_margin_dp_6"
                 app:typographyType="body_3"
-                android:gravity="center"
                 app:typographyWeight="bold"
-                android:textColor="@color/Unify_N0"
-                android:background="@drawable/bg_paylater_recommendation"
-                tools:text="Recommendation"/>
+                tools:text="Recommendation" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivPaylaterPartner"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="@dimen/unify_space_12"
-                app:layout_constraintDimensionRatio="H,1:1"
                 android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
+                app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
-                app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
                 tools:src="@tools:sample/avatars" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -56,11 +56,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_8"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/ivPaylaterPartner"
+                app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_6"
                 tools:text="Title" />
 
@@ -90,75 +90,74 @@
                 android:id="@+id/partnerTenureInfo"
                 android:layout_width="@dimen/unify_space_16"
                 android:layout_height="@dimen/unify_space_16"
-                app:icon_name="INFORMATION"
                 android:layout_marginStart="@dimen/unify_space_4"
+                app:icon_name="INFORMATION"
+                app:layout_constraintBottom_toBottomOf="@id/tvInstallmentAmount"
                 app:layout_constraintStart_toEndOf="@id/tvTenureMultiplier"
-                app:layout_constraintTop_toTopOf="@id/tvInstallmentAmount"
-                app:layout_constraintBottom_toBottomOf="@id/tvInstallmentAmount"/>
+                app:layout_constraintTop_toTopOf="@id/tvInstallmentAmount" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInstallmentDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_NN600"
                 android:layout_marginTop="@dimen/unify_space_2"
-                app:layout_constraintTop_toBottomOf="@+id/tvInstallmentAmount"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+                app:layout_constraintTop_toBottomOf="@+id/tvInstallmentAmount"
                 app:typographyType="small"
                 tools:text="Bayar pertama pada 24 Nov" />
-            
+
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/dividerBenefit"
                 android:layout_width="0dp"
-                android:layout_marginStart="@dimen/unify_space_12"
-                android:layout_marginEnd="@dimen/unify_space_12"
-                android:layout_marginTop="@dimen/unify_space_8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="@dimen/pay_later_divider_height_dp_1"
-                app:layout_constraintTop_toBottomOf="@+id/tvInstallmentDescription"/>
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvInstallmentDescription" />
 
             <LinearLayout
                 android:id="@+id/llBenefits"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="@dimen/unify_space_32"
-                app:layout_constraintStart_toStartOf="@id/dividerBenefit"
-                app:layout_constraintEnd_toStartOf="@+id/payLaterActionCta"
                 android:layout_marginTop="@dimen/unify_space_8"
-                app:layout_constraintTop_toBottomOf="@+id/dividerBenefit"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_32"
                 android:layout_marginBottom="@dimen/unify_space_12"
-                android:orientation="vertical" />
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/payLaterActionCta"
+                app:layout_constraintStart_toStartOf="@id/dividerBenefit"
+                app:layout_constraintTop_toBottomOf="@+id/dividerBenefit" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/payLaterStatusTicker"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/dividerBenefit"
-                app:layout_constraintEnd_toEndOf="@+id/dividerBenefit"
-                app:tickerType="information"
-                app:tickerShapeType="loose"
-                app:closeButtonVisibility="gone"
-                android:visibility="gone"
                 android:layout_marginTop="@dimen/unify_space_8"
-                android:elevation="@dimen/unify_space_2"
-                app:layout_constraintTop_toBottomOf="@+id/dividerBenefit"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="@dimen/unify_space_12"
-                />
+                android:elevation="@dimen/unify_space_2"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/dividerBenefit"
+                app:layout_constraintStart_toStartOf="@id/dividerBenefit"
+                app:layout_constraintTop_toBottomOf="@+id/dividerBenefit"
+                app:tickerShapeType="loose"
+                app:tickerType="information" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/payLaterActionCta"
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="wrap_content"
-                app:unifyButtonSize="small"
-                app:unifyButtonVariant="filled"
-                app:unifyButtonType="main"
-                tools:text="Aktifkan"
-                app:layout_constraintTop_toTopOf="@+id/llBenefits"
                 app:layout_constraintBottom_toBottomOf="@+id/llBenefits"
-                app:layout_constraintEnd_toEndOf="@id/dividerBenefit"/>
+                app:layout_constraintEnd_toEndOf="@id/dividerBenefit"
+                app:layout_constraintTop_toTopOf="@+id/llBenefits"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                tools:text="Aktifkan" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

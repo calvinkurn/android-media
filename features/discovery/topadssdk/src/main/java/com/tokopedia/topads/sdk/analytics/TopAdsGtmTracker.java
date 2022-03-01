@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.analytics;
 
+import static com.tokopedia.topads.sdk.analytics.TopAdsGtmTrackerConstant.BUSINESS_UNIT;
+import static com.tokopedia.topads.sdk.analytics.TopAdsGtmTrackerConstant.SEARCH_RESULT;
 
 import android.content.Context;
 import android.os.Bundle;

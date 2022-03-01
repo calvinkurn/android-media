@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/unify_space_12"
     android:weightSum="1">
@@ -12,19 +12,18 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
-        tools:text="Cicilan per Bulan* Cicilan per Bulan*"
+        android:layout_weight="0.3"
         android:paddingEnd="@dimen/unify_space_8"
-        android:layout_weight="0.3"/>
+        app:typographyType="body_2"
+        tools:text="Cicilan per Bulan* Cicilan per Bulan*" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
         android:layout_weight="0.7"
         android:gravity="end"
-        tools:text="+Rp2.750.000"
-        />
+        app:typographyType="body_2"
+        tools:text="+Rp2.750.000" />
 
 </LinearLayout>

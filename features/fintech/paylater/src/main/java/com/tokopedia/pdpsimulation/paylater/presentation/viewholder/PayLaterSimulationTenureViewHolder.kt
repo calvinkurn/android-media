@@ -11,7 +11,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.paylater_simulation_tenure_item.view.*
 
 class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (Int) -> Unit) :
-    RecyclerView.ViewHolder(view) {
+        RecyclerView.ViewHolder(view) {
 
     fun bindData(simulationUiModel: SimulationUiModel) {
         setCardType(simulationUiModel)
@@ -28,24 +28,24 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
 
     private fun setCardType(simulationUiModel: SimulationUiModel) {
         view.payLaterSimulationCard.changeTypeWithTransition(
-            if (simulationUiModel.isSelected) CardUnify.TYPE_BORDER_ACTIVE
-            else CardUnify.TYPE_BORDER
+                if (simulationUiModel.isSelected) CardUnify.TYPE_BORDER_ACTIVE
+                else CardUnify.TYPE_BORDER
         )
         // need custom selected color
-        if (simulationUiModel.isSelected) view.clSimulationCard.setBackgroundColor(ContextCompat.getColor(view.context,com.tokopedia.unifyprinciples.R.color.Unify_GN50))
-        else view.clSimulationCard.setBackgroundColor(ContextCompat.getColor(view.context,com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        if (simulationUiModel.isSelected) view.clSimulationCard.setBackgroundColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+        else view.clSimulationCard.setBackgroundColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
     }
 
     companion object {
         val LAYOUT_ID = R.layout.paylater_simulation_tenure_item
 
         fun getViewHolder(
-            inflater: LayoutInflater,
-            parent: ViewGroup,
-            onTenureSelected: (Int) -> Unit
+                inflater: LayoutInflater,
+                parent: ViewGroup,
+                onTenureSelected: (Int) -> Unit
         ) =
-            PayLaterSimulationTenureViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false), onTenureSelected
-            )
+                PayLaterSimulationTenureViewHolder(
+                        inflater.inflate(LAYOUT_ID, parent, false), onTenureSelected
+                )
     }
 }

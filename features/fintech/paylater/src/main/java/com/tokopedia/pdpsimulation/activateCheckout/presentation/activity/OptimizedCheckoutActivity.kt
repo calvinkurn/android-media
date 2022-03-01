@@ -26,11 +26,11 @@ import javax.inject.Inject
 
 
 class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
-    GatewaySelectActivityListner, PdpSimulationCallback {
+        GatewaySelectActivityListner, PdpSimulationCallback {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
-    private  var activationCheckoutFragment: ActivationCheckoutFragment? = null
+    private var activationCheckoutFragment: ActivationCheckoutFragment? = null
 
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
@@ -59,8 +59,8 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
         return if (!userSession.isLoggedIn) {
             startActivityForResult(
-                RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN
+                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
             )
             null
         } else {
@@ -69,7 +69,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
                 bundle.putString(PARAM_GATEWAY_ID, it.getString(PARAM_GATEWAY_ID))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
-                bundle.putString(PARAM_GATEWAY_CODE,it.getString(PARAM_GATEWAY_CODE))
+                bundle.putString(PARAM_GATEWAY_CODE, it.getString(PARAM_GATEWAY_CODE))
             }
 
             activationCheckoutFragment = ActivationCheckoutFragment.newInstance(bundle)
@@ -83,11 +83,11 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     private fun initInjector() =
-        DaggerPdpSimulationComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication)
-                    .baseAppComponent
-            ).build()
+            DaggerPdpSimulationComponent.builder()
+                    .baseAppComponent(
+                            (applicationContext as BaseMainApplication)
+                                    .baseAppComponent
+                    ).build()
 
 
     /**

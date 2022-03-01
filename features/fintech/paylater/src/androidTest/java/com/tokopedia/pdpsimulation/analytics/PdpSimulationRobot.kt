@@ -7,7 +7,6 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -18,7 +17,6 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.unifycomponents.TabsUnify
-import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 
@@ -26,30 +24,29 @@ class PdpSimulationRobot {
 
     fun clickPartnerButton() {
         onView(
-            CommonMatcher.firstView(AllOf.allOf(withId(R.id.payLaterActionCta), isDisplayed()))
+                CommonMatcher.firstView(AllOf.allOf(withId(R.id.payLaterActionCta), isDisplayed()))
         ).perform(ViewActions.click())
     }
 
     fun clickPartnerButtonBottomSheet() {
         onView(
-            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnRegister), isDisplayed()))
+                CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnRegister), isDisplayed()))
         ).perform(ViewActions.click())
     }
 
 
     fun closeBottomSheet() {
         onView(
-            CommonMatcher.firstView(
-                AllOf.allOf(
-                    withId(R.id.bottom_sheet_close),
-                    isDisplayed()
+                CommonMatcher.firstView(
+                        AllOf.allOf(
+                                withId(R.id.bottom_sheet_close),
+                                isDisplayed()
+                        )
                 )
-            )
         ).perform(
-            click()
+                click()
         )
     }
-
 
 
     infix fun assertTest(action: PdpSimulationRobot.() -> Unit) = PdpSimulationRobot().apply(action)
@@ -64,14 +61,14 @@ class PdpSimulationRobot {
             override fun getDescription() = "with tab at index $tabIndex"
 
             override fun getConstraints() =
-                AllOf.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TabsUnify::class.java))
+                    AllOf.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TabsUnify::class.java))
 
             override fun perform(uiController: UiController, view: View) {
                 val tabsUnify = view as TabsUnify
                 val tabAtIndex: TabLayout.Tab = tabsUnify.tabLayout.getTabAt(tabIndex)
-                    ?: throw PerformException.Builder()
-                        .withCause(Throwable("No tab at index $tabIndex"))
-                        .build()
+                        ?: throw PerformException.Builder()
+                                .withCause(Throwable("No tab at index $tabIndex"))
+                                .build()
 
                 tabAtIndex.select()
             }
@@ -83,7 +80,7 @@ class PdpSimulationRobot {
             override fun getDescription() = "with tab at index"
 
             override fun getConstraints() =
-                AllOf.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(ViewPager::class.java))
+                    AllOf.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(ViewPager::class.java))
 
             override fun perform(uiController: UiController, view: View) {
                 val pager = view as ViewPager

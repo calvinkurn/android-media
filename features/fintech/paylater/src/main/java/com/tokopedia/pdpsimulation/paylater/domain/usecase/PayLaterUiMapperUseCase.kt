@@ -4,22 +4,23 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<SimulationUiModel>>() {
+class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<SimulationUiModel>>() {
 
     private var payLaterGetSimulation: PayLaterGetSimulation? = null
     private var defaultTenure: Int = 0
 
     fun mapResponseToUi(
-        onSuccess: (ArrayList<SimulationUiModel>) -> Unit,
-        payLaterGetSimulation: PayLaterGetSimulation?,
-        defaultTenure: Int,
+            onSuccess: (ArrayList<SimulationUiModel>) -> Unit,
+            payLaterGetSimulation: PayLaterGetSimulation?,
+            defaultTenure: Int,
     ) {
         this.payLaterGetSimulation = payLaterGetSimulation
         this.defaultTenure = defaultTenure
         this.execute({
             onSuccess(it)
-        }, { onSuccess(arrayListOf())} )
+        }, { onSuccess(arrayListOf()) })
     }
+
     override suspend fun executeOnBackground(): ArrayList<SimulationUiModel> {
         return mapTenureToUi(payLaterGetSimulation)
     }
@@ -63,17 +64,17 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
                     isTenureFound = true
 
                 val simulationUiModel = SimulationUiModel(
-                    tenure = data.tenure,
-                    text = data.text,
-                    smallText = data.smallText,
-                    simulationList = getPayLaterList,
-                    isSelected = defaultTenure == data.tenure
+                        tenure = data.tenure,
+                        text = data.text,
+                        smallText = data.smallText,
+                        simulationList = getPayLaterList,
+                        isSelected = defaultTenure == data.tenure
                 )
                 uiList.add(simulationUiModel)
             }
             // if no matching tenure set last as selected
             if (uiList.isNotEmpty() && isTenureFound.not())
-                uiList[uiList.size-1].isSelected = true
+                uiList[uiList.size - 1].isSelected = true
         }
         return uiList
     }

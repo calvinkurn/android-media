@@ -13,28 +13,26 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 
 class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayCardClicked, val context: Context) :
-    RecyclerView.ViewHolder(itemView) {
+        RecyclerView.ViewHolder(itemView) {
 
 
-    fun bindData(checkoutData: CheckoutData,position: Int) {
+    fun bindData(checkoutData: CheckoutData, position: Int) {
         itemView.apply {
             changeColorToEnableDisable(checkoutData.disable)
             setIcon(checkoutData)
             inflateAllDetails(checkoutData)
 
-            if(!checkoutData.disable && checkoutData.selectedGateway)
-            {
+            if (!checkoutData.disable && checkoutData.selectedGateway) {
                 individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
                 individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 radioGatewaySelector.isChecked = true
-            }
-            else {
+            } else {
                 individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
                 individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioGatewaySelector.isChecked = false
             }
 
-            if(!checkoutData.disable && !checkoutData.selectedGateway) {
+            if (!checkoutData.disable && !checkoutData.selectedGateway) {
                 onClickLogic(checkoutData, position)
             }
         }
@@ -83,17 +81,14 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
 
 
     private fun changeColorToEnableDisable(disable: Boolean) {
-        itemView.apply{
-            if(disable)
-            {
+        itemView.apply {
+            if (disable) {
                 gatewayHeader.isEnabled = false
                 gatewaySubHeader.isEnabled = false
                 gatewaySubHeader2.isEnabled = false
                 radioGatewaySelector.isEnabled = false
                 gatewayImage.alpha = 0.4f
-            }
-            else
-            {
+            } else {
                 gatewayImage.alpha = 1.0f
                 gatewayHeader.isEnabled = true
                 gatewaySubHeader.isEnabled = true
@@ -109,14 +104,14 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
         private val LAYOUT_ID = R.layout.gateway_activation_individual_item
 
         fun getViewHolder(
-            inflater: LayoutInflater,
-            parent: ViewGroup,
-            gatewayCardClicked: GateWayCardClicked,
-            parentContext:Context
+                inflater: LayoutInflater,
+                parent: ViewGroup,
+                gatewayCardClicked: GateWayCardClicked,
+                parentContext: Context
 
         ) =
-            GatewayViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false),gatewayCardClicked,parentContext
-            )
+                GatewayViewHolder(
+                        inflater.inflate(LAYOUT_ID, parent, false), gatewayCardClicked, parentContext
+                )
     }
 }

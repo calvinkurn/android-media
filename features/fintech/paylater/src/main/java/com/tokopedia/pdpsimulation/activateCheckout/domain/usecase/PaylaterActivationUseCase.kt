@@ -11,25 +11,25 @@ import javax.inject.Inject
 @GqlQuery("PayLaterActivationDataQuery", GQL_PAYLATER_ACTIVATION)
 
 class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<BasePayLaterOptimizedModel>(graphqlRepository) {
+        GraphqlUseCase<BasePayLaterOptimizedModel>(graphqlRepository) {
 
     fun getPayLaterActivationDetail(
-        onSuccess: (PaylaterGetOptimizedModel) -> Unit,
-        onError: (Throwable) -> Unit,
-        amount: Double,
-        productId: String,
-        gatewayCode: String
+            onSuccess: (PaylaterGetOptimizedModel) -> Unit,
+            onError: (Throwable) -> Unit,
+            amount: Double,
+            productId: String,
+            gatewayCode: String
     ) {
         try {
             this.setTypeClass(BasePayLaterOptimizedModel::class.java)
             this.setRequestParams(getRequestParams(amount, productId, gatewayCode))
             this.setGraphqlQuery(PayLaterActivationDataQuery.GQL_QUERY)
             this.execute(
-                { result ->
-                    onSuccess(result.paylatergetOptimizedCheckout)
-                }, { error ->
-                    onError(error)
-                }
+                    { result ->
+                        onSuccess(result.paylatergetOptimizedCheckout)
+                    }, { error ->
+                onError(error)
+            }
             )
         } catch (throwable: Throwable) {
             onError(throwable)
@@ -37,19 +37,19 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
     }
 
     private fun getRequestParams(
-        amount: Double,
-        productId: String,
-        gatewayCode: String,
+            amount: Double,
+            productId: String,
+            gatewayCode: String,
     ): Map<String, Any?> {
         return mutableMapOf(
-            "request" to mutableMapOf(
-                PARAM_PRODUCT_PRICE to amount,
-                PARAM_PRODUCT_ID to productId,
-                PARAM_REQUEST_GATEWAY_ID to 0,
-                PARAM_PRODUCT_CODE to gatewayCode
+                "request" to mutableMapOf(
+                        PARAM_PRODUCT_PRICE to amount,
+                        PARAM_PRODUCT_ID to productId,
+                        PARAM_REQUEST_GATEWAY_ID to 0,
+                        PARAM_PRODUCT_CODE to gatewayCode
 
 
-            )
+                )
         )
     }
 

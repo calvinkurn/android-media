@@ -22,12 +22,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterActivationViewModel @Inject constructor(
-    private val paylaterActivationUseCase: PaylaterActivationUseCase,
-    private val productDetailUseCase: ProductDetailUseCase,
-    private val addToCartUseCase: AddToCartOccMultiUseCase,
-    @CoroutineBackgroundDispatcher val dispatcher: CoroutineDispatcher
+        private val paylaterActivationUseCase: PaylaterActivationUseCase,
+        private val productDetailUseCase: ProductDetailUseCase,
+        private val addToCartUseCase: AddToCartOccMultiUseCase,
+        @CoroutineBackgroundDispatcher val dispatcher: CoroutineDispatcher
 ) :
-    BaseViewModel(dispatcher) {
+        BaseViewModel(dispatcher) {
 
     var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
 
@@ -35,9 +35,9 @@ class PayLaterActivationViewModel @Inject constructor(
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
     private val _payLaterActivationDetailLiveData =
-        MutableLiveData<Result<PaylaterGetOptimizedModel>>()
+            MutableLiveData<Result<PaylaterGetOptimizedModel>>()
     val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
-        _payLaterActivationDetailLiveData
+            _payLaterActivationDetailLiveData
 
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartOccMultiDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartOccMultiDataModel>> = _addToCartLiveData
@@ -46,27 +46,37 @@ class PayLaterActivationViewModel @Inject constructor(
     var shopId: String? = null
 
     var selectedProductId = ""
-    var selectedGatewayId= "0"
+    var selectedGatewayId = "0"
     var selectedTenureSelected = "0"
     var selectedGatewayCode = ""
     var occRedirectionUrl = ""
 
-    fun setProductId(productId:String) { selectedProductId = productId }
-    fun setGatewayId(gatewayId:String) { selectedGatewayId = gatewayId }
-    fun setTenure(tenure:String) { selectedTenureSelected = tenure }
-    fun setGatewayCode(gatewayCode:String) { selectedGatewayCode = gatewayCode }
+    fun setProductId(productId: String) {
+        selectedProductId = productId
+    }
+
+    fun setGatewayId(gatewayId: String) {
+        selectedGatewayId = gatewayId
+    }
+
+    fun setTenure(tenure: String) {
+        selectedTenureSelected = tenure
+    }
+
+    fun setGatewayCode(gatewayCode: String) {
+        selectedGatewayCode = gatewayCode
+    }
 
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
 
         productDetailUseCase.getProductDetail(
-            ::onAvailableProductDetail,
-            ::onFailProductDetail,
-            productId
+                ::onAvailableProductDetail,
+                ::onFailProductDetail,
+                productId
         )
     }
-
 
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
@@ -91,57 +101,54 @@ class PayLaterActivationViewModel @Inject constructor(
     fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayCode: String) {
         paylaterActivationUseCase.cancelJobs()
         paylaterActivationUseCase.getPayLaterActivationDetail(
-            ::onSuccessActivationData,
-            ::onFailActivationData,
-            price,
-            productId,
-            gatewayCode
+                ::onSuccessActivationData,
+                ::onFailActivationData,
+                price,
+                productId,
+                gatewayCode
         )
     }
 
     private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
         paylaterGetOptimizedModel.let {
-            if(it.checkoutData.isNotEmpty())
-            {
-                it.checkoutData.map { checkoutData->
-                    gatewayToChipMap[checkoutData.gateway_id]= checkoutData
+            if (it.checkoutData.isNotEmpty()) {
+                it.checkoutData.map { checkoutData ->
+                    gatewayToChipMap[checkoutData.gateway_id] = checkoutData
                 }
-                _payLaterActivationDetailLiveData.postValue( Success(it))
+                _payLaterActivationDetailLiveData.postValue(Success(it))
 
-            }
-            else
+            } else
                 onFailActivationData(IllegalStateException("Empty State"))
         }
 
     }
 
     private fun onFailActivationData(throwable: Throwable) {
-        _payLaterActivationDetailLiveData.postValue(  Fail(throwable))
+        _payLaterActivationDetailLiveData.postValue(Fail(throwable))
     }
-
 
 
     fun addProductToCart(productId: String, productQuantity: Int) {
         shopId?.let {
 
             addToCartUseCase.setParams(
-                AddToCartOccMultiRequestParams(
-                    carts = arrayListOf(
-                        AddToCartOccMultiCartParam(
-                            productId = productId,
-                            shopId = it,
-                            quantity = productQuantity.toString()
-                        )
+                    AddToCartOccMultiRequestParams(
+                            carts = arrayListOf(
+                                    AddToCartOccMultiCartParam(
+                                            productId = productId,
+                                            shopId = it,
+                                            quantity = productQuantity.toString()
+                                    )
+                            )
                     )
-                )
             )
             addToCartUseCase.execute(
-                onSuccess = {
-                    onSuccessAddToCartForCheckout(it)
-                },
-                onError = {
-                    onErrorAddToCartForCheckout(it)
-                }
+                    onSuccess = {
+                        onSuccessAddToCartForCheckout(it)
+                    },
+                    onError = {
+                        onErrorAddToCartForCheckout(it)
+                    }
             )
         }
     }
@@ -151,10 +158,11 @@ class PayLaterActivationViewModel @Inject constructor(
     }
 
     private fun onSuccessAddToCartForCheckout(addToCartOcc: AddToCartOccMultiDataModel) {
-        if(addToCartOcc.isStatusError())
-            _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()?:""))
+        if (addToCartOcc.isStatusError())
+            _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()
+                    ?: ""))
         else {
-            occRedirectionUrl =   ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${selectedTenureSelected}" +
+            occRedirectionUrl = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${selectedTenureSelected}" +
                     "&gateway_code=${gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: ""}" +
                     "&fintech"
             _addToCartLiveData.value = Success(addToCartOcc)
@@ -164,4 +172,4 @@ class PayLaterActivationViewModel @Inject constructor(
 
 }
 
-class ShowToasterException(message:String): Exception(message)
+class ShowToasterException(message: String) : Exception(message)

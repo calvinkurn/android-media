@@ -13,11 +13,11 @@ object DataMapper {
         val priceText = tenureDetail.monthly_installment
         val tenure = tenureDetail.tenure.toString()
         val contentList: MutableList<Content> = ArrayList()
-         tenureDetail.installment_details.detailContent.map {
-            Content(it.title,it.value,it.type)
+        tenureDetail.installment_details.detailContent.map {
+            Content(it.title, it.value, it.type)
         }.toCollection(contentList)
         val installmentDetails =
-            InstallmentDetails(tenureDetail.installment_details.header, contentList)
+                InstallmentDetails(tenureDetail.installment_details.header, contentList)
         return TenureSelectedModel(priceText, tenure, installmentDetails)
     }
 }

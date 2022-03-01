@@ -28,6 +28,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     private val pdpSimulationComponent: PdpSimulationComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
     private val REQUEST_CODE_LOGIN = 123
+
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
 
@@ -49,8 +50,8 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
 
         return if (!userSession.isLoggedIn) {
             startActivityForResult(
-                RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN
+                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
             )
             null
         } else {
@@ -59,18 +60,18 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
                 productId = it.getString(PARAM_PRODUCT_ID) ?: ""
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
                 bundle.putString(PARAM_PRODUCT_ID, productId)
-                bundle.putString(PARAM_PRODUCT_URL,it.getString(PARAM_PRODUCT_TENURE))
+                bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_TENURE))
             }
             PdpSimulationFragment.newInstance(bundle)
         }
     }
 
     private fun initInjector() =
-        DaggerPdpSimulationComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication)
-                    .baseAppComponent
-            ).build()
+            DaggerPdpSimulationComponent.builder()
+                    .baseAppComponent(
+                            (applicationContext as BaseMainApplication)
+                                    .baseAppComponent
+                    ).build()
 
 
     /**

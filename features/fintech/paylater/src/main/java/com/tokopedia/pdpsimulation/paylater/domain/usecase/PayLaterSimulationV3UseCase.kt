@@ -10,24 +10,24 @@ import javax.inject.Inject
 
 @GqlQuery("PayLaterSimulationDataQuery", GQL_PAYLATER_SIMULATION_V3)
 class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<PayLaterSimulationData>(graphqlRepository) {
+        GraphqlUseCase<PayLaterSimulationData>(graphqlRepository) {
 
     fun getPayLaterSimulationDetails(
-        onSuccess: (PayLaterGetSimulation) -> Unit,
-        onError: (Throwable) -> Unit,
-        amount: Double,
-        productId: String
+            onSuccess: (PayLaterGetSimulation) -> Unit,
+            onError: (Throwable) -> Unit,
+            amount: Double,
+            productId: String
     ) {
         try {
             this.setTypeClass(PayLaterSimulationData::class.java)
             this.setRequestParams(getRequestParams(amount, productId))
             this.setGraphqlQuery(PayLaterSimulationDataQuery.GQL_QUERY)
             this.execute(
-                { result ->
-                    onSuccess(result.paylaterGetSimulation)
-                }, { error ->
-                    onError(error)
-                }
+                    { result ->
+                        onSuccess(result.paylaterGetSimulation)
+                    }, { error ->
+                onError(error)
+            }
             )
         } catch (throwable: Throwable) {
             onError(throwable)
@@ -36,10 +36,10 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
 
     private fun getRequestParams(amount: Double, productId: String): MutableMap<String, Any?> {
         return mutableMapOf(
-            "request" to mutableMapOf(
-                PARAM_PRODUCT_AMOUNT to amount,
-                PARAM_PRODUCT_ID to productId
-            )
+                "request" to mutableMapOf(
+                        PARAM_PRODUCT_AMOUNT to amount,
+                        PARAM_PRODUCT_ID to productId
+                )
         )
     }
 

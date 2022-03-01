@@ -12,8 +12,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="@id/tokoToGoPayHeader"
         app:layout_constraintRight_toRightOf="@id/tokoToGoPayHeader"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.tokopedia.unifyprinciples.Typography

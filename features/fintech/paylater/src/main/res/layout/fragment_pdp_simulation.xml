@@ -10,8 +10,8 @@
         layout="@layout/product_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/productInfoShimmer"
@@ -23,8 +23,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/payLaterBorder"
         android:layout_width="match_parent"
-        android:background="@color/Unify_NN200"
         android:layout_height="@dimen/pay_later_divider_height_dp_1"
+        android:background="@color/Unify_NN200"
         app:layout_constraintTop_toBottomOf="@id/productInfoShimmer" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -45,7 +45,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/unify_space_12"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf = "parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
         tools:itemCount="6"
         tools:listitem="@layout/paylater_partner_card_item" />

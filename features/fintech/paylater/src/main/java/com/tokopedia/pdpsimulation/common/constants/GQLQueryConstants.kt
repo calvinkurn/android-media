@@ -72,7 +72,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
 
 
 const val GQL_GET_PRODUCT_DETAIL =
-    """query GetProductV3(${'$'}productID: String!, ${'$'}options:OptionV3!){
+        """query GetProductV3(${'$'}productID: String!, ${'$'}options:OptionV3!){
   getProductV3(productID: ${'$'}productID, options: ${'$'}options) {
     productName
     url

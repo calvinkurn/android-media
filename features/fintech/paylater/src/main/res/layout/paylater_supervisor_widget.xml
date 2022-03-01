@@ -8,7 +8,7 @@
         android:id="@+id/superVisorSeparator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_8"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPartnerRegistration"
@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:paddingTop="@dimen/unify_space_4"
-        android:textColor="@color/Unify_NN600"
         android:text="@string/pay_later_simulation_supervised_text"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@+id/ivSupervisor"
         app:layout_constraintEnd_toStartOf="@+id/ivSupervisor"
         app:layout_constraintHorizontal_chainStyle="packed"

@@ -3,18 +3,18 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.BasePayLaterOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.invoke
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -41,16 +41,15 @@ class OccViewModelTest {
     @Before
     fun setUp() {
         viewModel = PayLaterActivationViewModel(
-            paylaterActivationUseCase,
-            productDetailUseCase,
-            addToCartUseCase,
-            dispatcher
+                paylaterActivationUseCase,
+                productDetailUseCase,
+                addToCartUseCase,
+                dispatcher
         )
     }
 
     @Test
-    fun productDetailSuccessTest()
-    {
+    fun productDetailSuccessTest() {
         val baseProductDetail = mockk<BaseProductDetailClass>(relaxed = true)
         coEvery {
             productDetailUseCase.getProductDetail(any(), any(), "")
@@ -59,15 +58,14 @@ class OccViewModelTest {
         }
         viewModel.getProductDetail("")
         Assert.assertEquals(
-            (viewModel.productDetailLiveData.value as Success).data,
-            baseProductDetail.getProductV3
+                (viewModel.productDetailLiveData.value as Success).data,
+                baseProductDetail.getProductV3
         )
 
     }
 
     @Test
-    fun productDetailFail()
-    {
+    fun productDetailFail() {
         coEvery {
             productDetailUseCase.getProductDetail(any(), any(), "")
         } coAnswers {
@@ -75,50 +73,46 @@ class OccViewModelTest {
         }
         viewModel.getProductDetail("")
         Assert.assertEquals(
-            (viewModel.productDetailLiveData.value as Fail).throwable,
-            mockThrowable
+                (viewModel.productDetailLiveData.value as Fail).throwable,
+                mockThrowable
         )
     }
 
 
     @Test
-    fun successPayLaterActivation()
-    {
-        val checkoutData =mockk< CheckoutData>(relaxed = true)
-        val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData),"")
+    fun successPayLaterActivation() {
+        val checkoutData = mockk<CheckoutData>(relaxed = true)
+        val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0,"","")
+            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
         }
-        viewModel.getOptimizedCheckoutDetail("",0.0,"")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
         Assert.assertEquals(
-            (viewModel.payLaterActivationDetailLiveData.value as Success).data,
-            basePayLaterOptimizedModel
+                (viewModel.payLaterActivationDetailLiveData.value as Success).data,
+                basePayLaterOptimizedModel
         )
     }
 
 
-
     @Test
-    fun failPayLaterActivation()
-    {
+    fun failPayLaterActivation() {
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0,"","")
+            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getOptimizedCheckoutDetail("",0.0,"")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
         Assert.assertEquals(
-            (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable,
-            mockThrowable
+                (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable,
+                mockThrowable
         )
     }
 
 
     @Test
-    fun successAddToCart()
-    {
+    fun successAddToCart() {
         val addToCartMultiDataModel = mockk<AddToCartOccMultiDataModel>(relaxed = true)
 
         coEvery {
@@ -128,29 +122,26 @@ class OccViewModelTest {
             onSuccess.invoke(addToCartMultiDataModel)
         }
         viewModel.shopId = ""
-        viewModel.addProductToCart("",0)
+        viewModel.addProductToCart("", 0)
         verify {
             addToCartUseCase.execute(any(), any())
         }
     }
 
     @Test
-    fun failAddToCart(){
+    fun failAddToCart() {
         coEvery {
-            addToCartUseCase.execute( any(),captureLambda())
+            addToCartUseCase.execute(any(), captureLambda())
         } coAnswers {
             val onError = lambda<(Throwable) -> Unit>()
             onError.invoke(mockThrowable)
         }
         viewModel.shopId = ""
-        viewModel.addProductToCart("",0)
+        viewModel.addProductToCart("", 0)
         verify {
             addToCartUseCase.execute(any(), any())
         }
     }
-
-
-
 
 
 }

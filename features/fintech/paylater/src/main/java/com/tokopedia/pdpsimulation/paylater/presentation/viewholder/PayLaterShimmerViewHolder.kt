@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.pdpsimulation.R
 
 class PayLaterShimmerViewHolder(itemView: View) :
-    AbstractViewHolder<LoadingModel>(itemView) {
+        AbstractViewHolder<LoadingModel>(itemView) {
 
 
     companion object {

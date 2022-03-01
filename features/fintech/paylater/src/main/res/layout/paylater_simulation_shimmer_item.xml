@@ -23,20 +23,20 @@
             android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:loader_type="rect"/>
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/tvMonthlyTenure"
             android:layout_width="0dp"
             android:layout_height="@dimen/unify_space_12"
-            android:layout_marginBottom="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
             android:paddingEnd="@dimen/credit_card_dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvInstallmentHeader"
             app:layout_constraintTop_toBottomOf="@id/tvInstallmentHeader"
-            app:loader_type="rect"/>
+            app:loader_type="rect" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

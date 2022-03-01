@@ -1,57 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tenureRecommendation"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/paylater_occ_lable_25dp"
-        app:typographyType="small"
-        android:gravity="center"
-        app:typographyWeight="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:textColor="@color/Unify_N0"
-        android:paddingBottom="@dimen/unify_space_8"
-        android:paddingTop="@dimen/unify_space_4"
-        android:elevation="@dimen/dp_1"
-        android:paddingRight="@dimen/unify_space_2"
-        android:paddingLeft="@dimen/unify_space_2"
         android:background="@drawable/bg_occ_tenure_recommended"
-        tools:text="sfgvdfgs dfvsdf sdfavsdv"
-        />
+        android:elevation="@dimen/dp_1"
+        android:gravity="center"
+        android:paddingLeft="@dimen/unify_space_2"
+        android:paddingTop="@dimen/unify_space_4"
+        android:paddingRight="@dimen/unify_space_2"
+        android:paddingBottom="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="sfgvdfgs dfvsdf sdfavsdv" />
 
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/individualTenureItemContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:card_type="border"
-        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_below="@id/tenureRecommendation"
+        android:layout_marginTop="@dimen/unify_space_4"
+        app:card_type="border"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
             android:id="@+id/containerInCard"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/paymentDetailHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/paylater_header_enable_disable"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
-                tools:text="Cicil 2x Rp6.480.000"
+                android:textColor="@color/paylater_header_enable_disable"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5" />
+                app:typographyType="heading_5"
+                tools:text="Cicil 2x Rp6.480.000" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/paymentDetailSubHeader"
@@ -59,12 +58,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginBottom="@dimen/unify_space_16"
-                tools:text="Biaya cicilan 0%"
                 android:textColor="@color/paylater_subheader_enable_disable"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/paymentDetailHeader"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:text="Biaya cicilan 0%" />
 
 
             <RadioButton

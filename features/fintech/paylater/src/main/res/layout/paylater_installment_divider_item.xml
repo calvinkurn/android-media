@@ -7,7 +7,6 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pay_later_divider_height_dp_1"
-        />
+        android:layout_height="@dimen/pay_later_divider_height_dp_1" />
 
 </LinearLayout>

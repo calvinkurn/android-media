@@ -11,7 +11,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.*
 
 class PayLaterAdapterFactoryImpl(
-    val interaction: PayLaterOptionInteraction,
+        val interaction: PayLaterOptionInteraction,
 ) : BaseAdapterTypeFactory(), PayLaterAdapterFactory {
 
     override fun type(detail: Detail) = PayLaterDetailViewHolder.LAYOUT
@@ -30,7 +30,7 @@ class PayLaterAdapterFactoryImpl(
 
     // These two layouts are only used in Installment BottomSheet
     override fun type(content: Content): Int {
-        return when(content.type) {
+        return when (content.type) {
             INSTALLMENT_TYPE_DIVIDER -> InstallmentDividerViewHolder.LAYOUT
             else -> PayLaterInstallmentInfoViewHolder.LAYOUT
         }
@@ -42,8 +42,8 @@ class PayLaterAdapterFactoryImpl(
             PayLaterSeeMoreViewHolder.LAYOUT -> PayLaterSeeMoreViewHolder(parent, interaction)
             PayLaterSectionHeaderViewHolder.LAYOUT -> PayLaterSectionHeaderViewHolder(parent)
             PayLaterSupervisorViewHolder.LAYOUT -> PayLaterSupervisorViewHolder(parent)
-            PayLaterInstallmentInfoViewHolder.LAYOUT  -> PayLaterInstallmentInfoViewHolder(parent)
-            InstallmentDividerViewHolder.LAYOUT  -> InstallmentDividerViewHolder(parent)
+            PayLaterInstallmentInfoViewHolder.LAYOUT -> PayLaterInstallmentInfoViewHolder(parent)
+            InstallmentDividerViewHolder.LAYOUT -> InstallmentDividerViewHolder(parent)
             PayLaterShimmerViewHolder.LAYOUT -> PayLaterShimmerViewHolder(parent)
             SimulationLoadingFailedViewHolder.LAYOUT -> SimulationLoadingFailedViewHolder(parent, interaction)
             SimulationEmptyViewHolder.LAYOUT -> SimulationEmptyViewHolder(parent, interaction)
@@ -51,7 +51,7 @@ class PayLaterAdapterFactoryImpl(
         }
     }
 
-    companion object{
+    companion object {
         private const val INSTALLMENT_TYPE_DIVIDER = 2
     }
 

@@ -12,15 +12,15 @@ import dagger.Component
 
 @PdpSimulationScope
 @Component(
-    modules =
-    [PdpSimulationModule::class,
-        ViewModelModule::class],
-    dependencies = [BaseAppComponent::class]
+        modules =
+        [PdpSimulationModule::class,
+            ViewModelModule::class],
+        dependencies = [BaseAppComponent::class]
 )
 interface PdpSimulationComponent {
 
     fun inject(pdpSimulationFragment: PdpSimulationFragment)
     fun inject(activationCheckoutFragment: ActivationCheckoutFragment)
     fun inject(pdpSimulationActivity: PdpSimulationActivity) {}
-    fun inject(optimizedCheckoutActivity: OptimizedCheckoutActivity){}
+    fun inject(optimizedCheckoutActivity: OptimizedCheckoutActivity) {}
 }

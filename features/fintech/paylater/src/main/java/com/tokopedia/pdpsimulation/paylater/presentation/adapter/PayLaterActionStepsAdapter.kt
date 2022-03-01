@@ -7,10 +7,10 @@ import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterActi
 
 
 class PayLaterActionStepsAdapter(private val partnerSteps: ArrayList<String>) :
-    RecyclerView.Adapter<PayLaterActionStepViewHolder>() {
+        RecyclerView.Adapter<PayLaterActionStepViewHolder>() {
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): PayLaterActionStepViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return PayLaterActionStepViewHolder.getViewHolder(inflater, parent)

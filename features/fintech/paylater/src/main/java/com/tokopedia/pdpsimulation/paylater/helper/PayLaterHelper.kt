@@ -19,11 +19,11 @@ object PayLaterHelper {
     private const val TYPE_HOW_TO_USE_II = 4
 
     fun handleClickNavigation(
-        context: Context?,
-        detail: Detail,
-        customUrl:String,
-        openHowToUse: (Bundle) -> Unit,
-        openGoPay: (Bundle) -> Unit
+            context: Context?,
+            detail: Detail,
+            customUrl: String,
+            openHowToUse: (Bundle) -> Unit,
+            openGoPay: (Bundle) -> Unit
     ) {
         when (detail.cta.cta_type) {
             TYPE_APP_LINK -> routeToAppLink(context, customUrl)

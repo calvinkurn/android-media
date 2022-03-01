@@ -10,7 +10,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationErrorModel
 
 class PayLaterSimulationAdapter(adapterFactory: PayLaterAdapterFactoryImpl) :
-    BaseListAdapter<BasePayLaterWidgetUiModel, PayLaterAdapterFactoryImpl>(adapterFactory) {
+        BaseListAdapter<BasePayLaterWidgetUiModel, PayLaterAdapterFactoryImpl>(adapterFactory) {
 
     private fun showEmptyState() {
         addElement(EmptyModel())
@@ -42,7 +42,7 @@ class PayLaterSimulationAdapter(adapterFactory: PayLaterAdapterFactoryImpl) :
     fun updateOptionList(adapterPosition: Int) {
         if (visitables[adapterPosition] is SeeMoreOptionsUiModel) {
             val moreOptionList =
-                (visitables[adapterPosition] as SeeMoreOptionsUiModel).remainingItems
+                    (visitables[adapterPosition] as SeeMoreOptionsUiModel).remainingItems
             // remove see more model
             visitables.removeAt(adapterPosition)
             // add remaining options
@@ -52,8 +52,8 @@ class PayLaterSimulationAdapter(adapterFactory: PayLaterAdapterFactoryImpl) :
     }
 
     class RatingDiffCallback(
-        private val oldList: List<Visitable<*>>,
-        private val newList: List<Visitable<*>>
+            private val oldList: List<Visitable<*>>,
+            private val newList: List<Visitable<*>>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldList.size

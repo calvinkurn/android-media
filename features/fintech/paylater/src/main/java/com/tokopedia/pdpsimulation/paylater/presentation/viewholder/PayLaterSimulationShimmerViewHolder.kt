@@ -14,7 +14,7 @@ class PayLaterSimulationShimmerViewHolder(val view: View) : RecyclerView.ViewHol
         val LAYOUT_ID = R.layout.paylater_simulation_shimmer_item
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) =
-            PayLaterSimulationShimmerViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false))
+                PayLaterSimulationShimmerViewHolder(
+                        inflater.inflate(LAYOUT_ID, parent, false))
     }
 }

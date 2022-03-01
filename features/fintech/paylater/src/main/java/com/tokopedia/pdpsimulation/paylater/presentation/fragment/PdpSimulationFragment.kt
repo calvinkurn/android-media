@@ -13,17 +13,19 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
-import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -56,9 +58,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private val payLaterArgsDescriptor: PayLaterArgsDescriptor by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterArgsDescriptor(
-            arguments?.getString(PARAM_PRODUCT_ID) ?: "",
-            (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
-            arguments?.getString(PARAM_PRODUCT_URL) ?: "",
+                arguments?.getString(PARAM_PRODUCT_ID) ?: "",
+                (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
+                arguments?.getString(PARAM_PRODUCT_URL) ?: "",
         )
     }
 
@@ -73,40 +75,40 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
-        interaction = PayLaterOptionInteraction(
-            onCtaClicked = { handleAction(it) },
-            installementDetails = { openInstallmentBottomSheet(it) },
-            seeMoreOptions = { simulationAdapter.updateOptionList(it) },
-            invokeAnalytics = { sendEvent(it) },
-            retryLoading = { retryLoading() }
-        )
+            interaction = PayLaterOptionInteraction(
+                    onCtaClicked = { handleAction(it) },
+                    installementDetails = { openInstallmentBottomSheet(it) },
+                    seeMoreOptions = { simulationAdapter.updateOptionList(it) },
+                    invokeAnalytics = { sendEvent(it) },
+                    retryLoading = { retryLoading() }
+            )
     )
 
     private fun handleAction(detail: Detail) {
 
-        val customUrl = detail.cta.android_url+
-                 "?productID=${payLaterArgsDescriptor.productId}" +
-                 "&tenure=${detail.tenure}" +
-                 "&productURL=${payLaterArgsDescriptor.productUrl}" +
-                 "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
-                 "&gatewayID=${detail.gatewayDetail?.gateway_id}"
+        val customUrl = detail.cta.android_url +
+                "?productID=${payLaterArgsDescriptor.productId}" +
+                "&tenure=${detail.tenure}" +
+                "&productURL=${payLaterArgsDescriptor.productUrl}" +
+                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
+                "&gatewayID=${detail.gatewayDetail?.gateway_id}"
 
-        PayLaterHelper.handleClickNavigation(context, detail,customUrl,
-            openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
-            openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
+        PayLaterHelper.handleClickNavigation(context, detail, customUrl,
+                openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
+                openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
         )
     }
 
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
-            PayLaterInstallmentFeeInfo::class.java,
-            PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
+                PayLaterInstallmentFeeInfo::class.java,
+                PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
         )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
     }
@@ -126,10 +128,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun initViews() {
         rvPayLaterSimulation.adapter = tenureAdapter
         rvPayLaterSimulation.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvPayLaterOption.adapter = simulationAdapter
         rvPayLaterOption.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvPayLaterOption.setHasFixedSize(true)
         rvPayLaterSimulation.setHasFixedSize(true)
         simulationAdapter.showLoadingInAdapter()
@@ -171,7 +173,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         if (defaultSelectedSimulation >= 0) {
             rvPayLaterSimulation.scrollToPosition(defaultSelectedSimulation)
             simulationAdapter.addAllElements(
-                data.getOrNull(defaultSelectedSimulation)?.simulationList ?: arrayListOf()
+                    data.getOrNull(defaultSelectedSimulation)?.simulationList ?: arrayListOf()
             )
         }
         if (data.isNotEmpty())
@@ -236,7 +238,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     // THis method called on product detail api success
     private fun productDetailSuccess(data: GetProductV3) {
-        payLaterViewModel.getPayLaterAvailableDetail(data.price ?: 0.0, payLaterArgsDescriptor.productId)
+        payLaterViewModel.getPayLaterAvailableDetail(data.price
+                ?: 0.0, payLaterArgsDescriptor.productId)
         setProductDetailView(data)
     }
 
@@ -245,13 +248,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
                 productDetail.productImage.setImageUrl(
-                    urlThumbnail
+                        urlThumbnail
                 )
             }
         }
         data.productName?.let { productDetail.productName.text = it }
         productDetail.productPrice.text =
-            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
+                PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
 
         showProductVariant(data)
     }
@@ -268,7 +271,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 }?.combination?.getOrNull(0) ?: -1
 
                 if (combinationIdx != -1)
-                    productDetail.productVariant.text = variant.selections[0].options[combinationIdx]?.value ?: ""
+                    productDetail.productVariant.text = variant.selections[0].options[combinationIdx]?.value
+                            ?: ""
             } else {
                 productDetail.productVariant.gone()
             }
@@ -277,7 +281,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendEvent(event: PayLaterAnalyticsBase) =
-        activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
+            activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
 
     override fun getScreenName() = "PayLater & Cicilan"
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)
