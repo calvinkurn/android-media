@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
-class SelectGateWayBottomSheet : BottomSheetUnify() {
+class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
     private val childLayoutRes = R.layout.activation_gateway_brand
     private var listOfGateway: List<CheckoutData> = ArrayList()
     private var gatewayListAdapter: GatewayListAdapter? = null
@@ -67,29 +67,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         listOfGateway = gatewayList
         gatewayListAdapter =
                 context?.let { context ->
-                    GatewayListAdapter(listOfGateway, object : GateWayCardClicked {
-                        override fun gatewayCardSelected(
-                                gatewayId: Int,
-                                newPosition: Int
-                        ) {
-                            activity?.let { fragmentActivity ->
-                                (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(
-                                        gatewayId
-                                )
-                            }
-                            for (i in listOfGateway.indices) {
-                                listOfGateway[i].selectedGateway = i == newPosition
-                            }
-                            if (listOfGateway.size > newPosition) {
-                                sendClickAnalytics(listOfGateway[newPosition])
-                            }
-                            gatewayListAdapter?.updateFullList(listOfGateway)
-
-                        }
-
-                    }, context)
+                    GatewayListAdapter(listOfGateway, this, context)
                 }
-
 
         gatewayListRecycler.layoutManager = LinearLayoutManager(context)
         gatewayListAdapter?.let {
@@ -157,6 +136,21 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
             actionStepsBottomSheet.show(childFragmentManager, TAG)
             return actionStepsBottomSheet
         }
+    }
+
+    override fun gatewayCardSelected(gatewayId: Int, newPosition: Int) {
+        activity?.let { fragmentActivity ->
+            (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(
+                    gatewayId
+            )
+        }
+        for (i in listOfGateway.indices) {
+            listOfGateway[i].selectedGateway = i == newPosition
+        }
+        if (listOfGateway.size > newPosition) {
+            sendClickAnalytics(listOfGateway[newPosition])
+        }
+        gatewayListAdapter?.updateFullList(listOfGateway)
     }
 }
 
