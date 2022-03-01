@@ -146,13 +146,8 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     }
 
     private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
-        if (shipmentCost.totalAddOnPrice > 0) {
-            mTvSummaryAddOnLabel.visibility = View.VISIBLE
-            mTvSummaryAddOnLabel.text = mTvDiscountLabel.context.getString(R.string.label_add_on_cost)
-            mTvSummaryAddOnPrice.text = getPriceFormat(mTvSummaryAddOnLabel, mTvSummaryAddOnPrice, shipmentCost.totalAddOnPrice.toDouble())
-        } else {
-            mTvSummaryAddOnLabel.visibility = View.GONE
-        }
+        mTvSummaryAddOnLabel.text = mTvDiscountLabel.context.getString(R.string.label_add_on_cost)
+        mTvSummaryAddOnPrice.text = getPriceFormat(mTvSummaryAddOnLabel, mTvSummaryAddOnPrice, shipmentCost.totalAddOnPrice)
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {
