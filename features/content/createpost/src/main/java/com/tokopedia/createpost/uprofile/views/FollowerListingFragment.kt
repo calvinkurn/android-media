@@ -51,6 +51,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
+    private var isLoggedIn: Boolean = false
 
     val userSessionInterface: UserSession by lazy {
         UserSession(context)
@@ -80,13 +81,14 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         savedInstanceState: Bundle?
     ): View? {
         initInjector()
+        isLoggedIn = userSessionInterface?.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         followersContainer = view.findViewById(R.id.container)
-        globalError = view?.findViewById(R.id.ge_followers)
+        globalError = view.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()
     }
@@ -198,6 +200,11 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     override fun onResume() {
         super.onResume()
+
+        if(isLoggedIn != userSessionInterface.isLoggedIn){
+            refreshMainUi()
+            isLoggedIn = userSessionInterface.isLoggedIn
+        }
     }
 
     override fun initInjector() {
@@ -216,6 +223,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            isLoggedIn = userSessionInterface.isLoggedIn
             refreshMainUi()
         }
     }

@@ -46,6 +46,8 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     private var followersContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
 
+    private var isLoggedIn: Boolean = false
+
     private val mPresenter: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
@@ -70,6 +72,8 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         savedInstanceState: Bundle?
     ): View? {
         initInjector()
+
+        isLoggedIn = userSessionInterface.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
@@ -194,6 +198,11 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun onResume() {
         super.onResume()
+
+        if(isLoggedIn != userSessionInterface.isLoggedIn){
+            refreshMainUi()
+            isLoggedIn = userSessionInterface.isLoggedIn
+        }
     }
 
     override fun initInjector() {
@@ -212,6 +221,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UserProfileFragment.REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            isLoggedIn = userSessionInterface.isLoggedIn
             refreshMainUi()
         }
     }

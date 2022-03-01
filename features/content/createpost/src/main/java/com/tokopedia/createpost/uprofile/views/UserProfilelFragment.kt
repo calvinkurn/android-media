@@ -65,7 +65,6 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
 
-
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
     ShareBottomsheetListener {
 
