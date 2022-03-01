@@ -15,6 +15,7 @@ import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFra
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_MAX_PRODUCT_LIMIT
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCTS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_WAREHOUSE_ID
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 
 class ManageProductActivity : BaseSimpleActivity() {
@@ -43,7 +44,8 @@ class ManageProductActivity : BaseSimpleActivity() {
                 maxProductLimit = intent.getIntExtra(BUNDLE_KEY_MAX_PRODUCT_LIMIT, MAX_PRODUCT_LIMIT_DEFAULT_VALUE),
                 couponSettings = intent.getParcelableExtra(BUNDLE_KEY_COUPON_SETTINGS),
                 selectedProducts = intent.getParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS),
-                selectedProductIds = intent.getParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
+                selectedProductIds = intent.getParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCT_IDS),
+                selectedWarehouseId = intent.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID),
         )
         return fragment
     }
@@ -65,7 +67,8 @@ class ManageProductActivity : BaseSimpleActivity() {
         if(resultCode == Activity.RESULT_OK) {
             if (requestCode == CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
-                fragment?.addProducts(selectedProducts)
+                val normalizedProductUiModel = fragment?.resetProductUiModelState(selectedProducts)?: listOf()
+                fragment?.addProducts(normalizedProductUiModel)
             }
         }
     }

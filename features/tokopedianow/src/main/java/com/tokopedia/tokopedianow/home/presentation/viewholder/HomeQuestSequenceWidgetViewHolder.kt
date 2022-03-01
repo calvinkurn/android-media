@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
@@ -63,6 +64,15 @@ class HomeQuestSequenceWidgetViewHolder(
 
     private fun setupUi(element: HomeQuestSequenceWidgetUiModel) {
         setAdapter()
+
+        when(element.state) {
+            HomeLayoutItemState.LOADED -> questLoaded(element)
+            HomeLayoutItemState.ERROR -> questError(element)
+            else -> { /* do nothing */ }
+        }
+    }
+
+    private fun showHeader(element: HomeQuestSequenceWidgetUiModel) {
         setTitle(getString(R.string.tokopedianow_quest_sequence_widget_title))
 
         if (isQuestFinished(element)) {
@@ -74,11 +84,6 @@ class HomeQuestSequenceWidgetViewHolder(
                 QUEST_DETAIL_PRODUCTION_URL
             }
             setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), url)
-        }
-
-        when(element.state) {
-            HomeLayoutItemState.LOADED -> questLoaded(element)
-            else -> questNotLoaded()
         }
     }
 
@@ -93,11 +98,13 @@ class HomeQuestSequenceWidgetViewHolder(
     }
 
     private fun questLoaded(element: HomeQuestSequenceWidgetUiModel) {
+        showHeader(element)
         addWidgets(element)
         setImpressionListener(element)
     }
 
-    private fun questNotLoaded() {
+    private fun questError(element: HomeQuestSequenceWidgetUiModel) {
+        showHeader(element)
         addErrorWidgets()
     }
 
@@ -164,7 +171,7 @@ class HomeQuestSequenceWidgetViewHolder(
                     RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, linkUrl)
                 }
             } else {
-                visibility = View.INVISIBLE
+                gone()
             }
         }
     }

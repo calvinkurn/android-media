@@ -84,8 +84,10 @@ import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTA
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -143,6 +145,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
                                                              private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              private val playWidgetTools: PlayWidgetTools,
+                                                             private val remoteConfig: RemoteConfig,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -155,7 +158,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
         private const val TIMEOUT_QUANTITY_FLOW = 500L
-        private const val PARAM_JOB_TIMEOUT = 1000L
+        private const val PARAM_JOB_TIMEOUT = 5000L
         private const val PARAM_TXSC = "txsc"
         private const val CODE_200 = 200
         private const val CODE_300 = 300
@@ -871,8 +874,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             queryParams: String = "") {
         if (queryParams.contains(PARAM_TXSC)) {
             launchCatchError(coroutineContext, block = {
+                val timeOut = remoteConfig.getLong(TIMEOUT_REMOTE_CONFIG_KEY, PARAM_JOB_TIMEOUT)
                 var adsStatus = TopadsIsAdsQuery()
-                val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+
+                val job = withTimeoutOrNull(timeOut) {
                     getTopadsIsAdsUseCase.get().setParams(
                             productId = productId,
                             urlParam = queryParams,

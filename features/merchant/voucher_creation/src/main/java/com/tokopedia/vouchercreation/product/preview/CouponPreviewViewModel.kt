@@ -2,6 +2,8 @@ package com.tokopedia.vouchercreation.product.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -225,24 +227,23 @@ class CouponPreviewViewModel @Inject constructor(
                         val isVariantSelected = variant.isSelected
                         if (isVariantSelected) {
                             couponProductData.add(CouponProduct(
-                                    id = variant.variantId,
-                                    imageUrl = selectedProduct.imageUrl,
-                                    soldCount = selectedProduct.sold
+                                id = variant.variantId,
+                                imageUrl = selectedProduct.imageUrl,
+                                soldCount = selectedProduct.sold
                             ))
                         }
                     }
                 } else {
                     couponProductData.add(CouponProduct(
-                            id = selectedProduct.id,
-                            imageUrl = selectedProduct.imageUrl,
-                            soldCount = selectedProduct.sold
+                        id = selectedProduct.id,
+                        imageUrl = selectedProduct.imageUrl,
+                        soldCount = selectedProduct.sold
                     ))
                 }
             }
         }
         return couponProductData.toList()
     }
-
 
     fun mapSelectedProductIdsToProductUiModels(selectedProductIds: List<ProductId>): List<ProductUiModel> {
         return selectedProductIds.map { productId ->

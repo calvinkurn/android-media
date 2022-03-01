@@ -80,4 +80,8 @@ class LocationBottomSheet : BottomSheetUnify() {
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
     }
+
+    fun setSelection(wareHouseId: Int?) {
+        listAdapter?.setSelectedWarehouseLocation(wareHouseId)
+    }
 }

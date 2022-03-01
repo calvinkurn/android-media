@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -124,7 +125,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         val selectedWarehouseId = arguments?.getString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
         selectedWarehouseId?.run {
             if (this.isNotBlank()) {
-                viewModel.setWarehouseLocationId(selectedWarehouseId.toIntOrNull())
+                viewModel.setBoundLocationId(selectedWarehouseId.toIntOrNull())
             }
         }
 
@@ -223,7 +224,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             viewModel.isFiltering = true
             // reset all search criteria
             viewModel.setSearchKeyword("")
-            viewModel.setWarehouseLocationId(viewModel.getSellerWarehouseId())
+            viewModel.setWarehouseLocationId(viewModel.getWarehouseLocationId())
             viewModel.setSelectedShowCases(listOf())
             viewModel.setSelectedSort(listOf())
             viewModel.setSelectedCategories(listOf())
@@ -255,13 +256,13 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 if (isIndeterminate && !viewModel.isSelectAllMode) return@setOnCheckedChangeListener
                 if (!viewModel.isFiltering) {
                     adapter?.updateAllProductSelections(isChecked)
-                    viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+                    viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
                 } else viewModel.isFiltering = false
             } else {
                 binding.cbuSelectAllProduct.setIndeterminate(false)
                 if (!viewModel.isFiltering) {
                     adapter?.updateAllProductSelections(isChecked)
-                    viewModel.setSetSelectedProducts(listOf())
+                    viewModel.setSelectedProducts(listOf())
                 } else viewModel.isFiltering = false
             }
         }
@@ -308,7 +309,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.tickerSellerLocationChange?.hide()
             } else {
                 val size = selectedProducts.size
-                binding?.buttonAddProduct?.isEnabled = true
+                if (binding?.tickerSellerLocationChange?.isVisible == false) {
+                    binding?.buttonAddProduct?.isEnabled = true
+                }
                 binding?.buttonAddProduct?.text = "Tambah $size Produk"
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
@@ -361,6 +364,27 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     )
                     renderList(updatedProductList, true)
                     setupSelectionBar(binding)
+
+
+                    val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
+                    viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
+                    val addedProducts = viewModel.getSelectedProductIds()
+                    if (addedProducts.isNotEmpty() && viewModel.isSelectionChanged) {
+                        binding?.tickerSellerLocationChange?.show()
+                        adapter?.disableAllProductSelections()
+                        binding?.cbuSelectAllProduct?.isClickable = false
+                        binding?.buttonAddProduct?.isEnabled = false
+                    } else if (viewModel.getSelectedProducts().isNotEmpty() && viewModel.isSelectionChanged) {
+                        binding?.tickerSellerLocationChange?.show()
+                        adapter?.disableAllProductSelections()
+                        binding?.cbuSelectAllProduct?.isClickable = false
+                        binding?.buttonAddProduct?.isEnabled = false
+                    } else {
+                        binding?.tickerSellerLocationChange?.hide()
+                        binding?.cbuSelectAllProduct?.isClickable = true
+                        binding?.buttonAddProduct?.isEnabled = true
+                    }
+
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -371,7 +395,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             when (result) {
                 is Success -> {
                     val warehouseLocations = result.data.ShopLocGetWarehouseByShopIDs.warehouses
-                    var selectedWarehouseId = viewModel.getWarehouseLocationId()
+                    var selectedWarehouseId = viewModel.getBoundLocationId()
                     val locationSelections = viewModel.mapWarehouseLocationToSelections(warehouseLocations, selectedWarehouseId)
                     setupWarehouseLocationBottomSheet(locationSelections)
                     val sellerWarehouseId = viewModel.getSellerWarehouseId(warehouseLocations)
@@ -379,6 +403,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     if (selectedWarehouseId == null) {
                         viewModel.setWarehouseLocationId(sellerWarehouseId)
                         selectedWarehouseId = sellerWarehouseId
+                    } else {
+                        viewModel.setWarehouseLocationId(selectedWarehouseId)
                     }
 
                     loadInitialData()
@@ -421,29 +447,24 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean) {
+        if (viewModel.isFiltering) return
         viewModel.isSelectAllMode = false
         if (isSelected) {
+            // implement selection bar ux
             val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
-        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
-        val isSelectionChanged = viewModel.getWarehouseLocationId() != selectedWarehouseLocation.warehouseId
-        if (viewModel.getSelectedProducts().isNotEmpty() || viewModel.getSelectedProductIds().isNotEmpty() && isSelectionChanged) {
-            binding?.tickerSellerLocationChange?.show()
-            binding?.buttonAddProduct?.isEnabled = false
-        } else {
-            binding?.tickerSellerLocationChange?.hide()
-            binding?.buttonAddProduct?.isEnabled = true
-            viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
-            resetSelectionBar(binding)
-            viewModel.isFiltering = true
-            loadInitialData()
-        }
+        adapter?.enableAllProductSelections()
+        viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
+        resetSelectionBar(binding)
+        viewModel.isFiltering = true
+        loadInitialData()
     }
 
     override fun onApplyShowCaseFilter(selectedShowCases: List<ShowCaseSelection>) {
@@ -453,6 +474,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
+        viewModel.setSelectedProducts(listOf())
     }
 
     override fun onApplyCategoryFilter(selectedCategories: List<CategorySelection>) {
@@ -462,6 +484,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
+        viewModel.setSelectedProducts(listOf())
     }
 
     override fun onApplySortFilter(selectedSort: List<SortSelection>) {
@@ -471,6 +494,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
+        viewModel.setSelectedProducts(listOf())
     }
 
     override fun createAdapter() = ProductListAdapter(this)
@@ -487,17 +511,15 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     override fun loadData(page: Int) {
         viewModel.setPagingIndex(page)
-        viewModel.getWarehouseLocationId()?.run {
-            viewModel.getProductList(
-                    page = page,
-                    keyword = viewModel.getSearchKeyWord(),
-                    shopId = userSession.shopId,
-                    warehouseLocationId = viewModel.getWarehouseLocationId(),
-                    shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                    categoryList = viewModel.getSelectedCategoryIds(),
-                    sort = viewModel.getSelectedSort()
-            )
-        }
+        viewModel.getProductList(
+                page = page,
+                keyword = viewModel.getSearchKeyWord(),
+                shopId = userSession.shopId,
+                warehouseLocationId = viewModel.getWarehouseLocationId(),
+                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                categoryList = viewModel.getSelectedCategoryIds(),
+                sort = viewModel.getSelectedSort()
+        )
     }
 
     override fun clearAdapterData() {

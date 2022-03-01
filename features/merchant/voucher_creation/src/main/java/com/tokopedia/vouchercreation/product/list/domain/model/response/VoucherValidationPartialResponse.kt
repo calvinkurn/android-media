@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.product.list.domain.model.response
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.network.data.model.response.Header
@@ -22,10 +21,9 @@ data class VoucherValidationData(
         @Expose val validationPartial: List<VoucherValidationPartialProduct> = listOf()
 )
 
-@SuppressLint("Invalid Data Type")
 data class VoucherValidationPartialProduct(
         @SerializedName("parent_product_id")
-        @Expose val parentProductId: Long = 0L,
+        @Expose val parentProductId: String = "",
         @SerializedName("is_variant")
         @Expose val isVariant: Boolean = false,
         @SerializedName("is_eligible")
@@ -36,10 +34,9 @@ data class VoucherValidationPartialProduct(
         @Expose val variants: List<VariantValidationData> = listOf()
 )
 
-@SuppressLint("Invalid Data Type")
 data class VariantValidationData(
         @SerializedName("product_id")
-        @Expose val productId: Long = 0L,
+        @Expose val productId: String = "",
         @SerializedName("product_name")
         @Expose val productName: String = "",
         @SerializedName("price")

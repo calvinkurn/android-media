@@ -99,6 +99,13 @@ class ManageProductViewModel @Inject constructor(
         mutableProductList.forEach { productUiModel ->
             productUiModel.isViewing = isViewing
             productUiModel.isEditing = isEditing
+            productUiModel.isVariantHeaderExpanded = false
+            productUiModel.isError = false
+            productUiModel.errorMessage = ""
+            productUiModel.variants.forEach { variantUiModel ->
+                variantUiModel.isError = false
+                variantUiModel.errorMessage = ""
+            }
         }
         return mutableProductList.toList()
     }
@@ -150,7 +157,7 @@ class ManageProductViewModel @Inject constructor(
             VariantUiModel(
                     isViewing = isViewing,
                     isEditing = isEditing,
-                    variantId = data.productId.toString(),
+                    variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
@@ -161,7 +168,7 @@ class ManageProductViewModel @Inject constructor(
     }
 
     fun setVariantSelection(productList: List<ProductUiModel>,
-                            selectedProductIds: List<ProductId>): List<ProductUiModel> {
+                            selectedProductIds: List<ProductId>): MutableList<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         selectedProductIds.forEach { productId ->
             val productUiModel = mutableProductList.firstOrNull() { productUiModel ->
@@ -177,7 +184,7 @@ class ManageProductViewModel @Inject constructor(
                 }
             }
         }
-        return mutableProductList.toList()
+        return mutableProductList
     }
 
     fun setProductUiModels(productUiModels: List<ProductUiModel>) {
@@ -277,5 +284,15 @@ class ManageProductViewModel @Inject constructor(
 
     fun isMaxProductLimitReached(selectedProductsSize: Int): Boolean {
         return selectedProductsSize > maxProductLimit
+    }
+
+    fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
+        val mutableSelectedProducts = selectedProducts.toMutableList()
+        mutableSelectedProducts.forEach {
+            it.isVariantHeaderExpanded = false
+            it.isEditing = true
+            it.isViewing = false
+        }
+        return mutableSelectedProducts.toList()
     }
 }

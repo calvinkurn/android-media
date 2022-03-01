@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -27,6 +28,11 @@ class PlayBroadcastSummaryViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
+
+    private val testDispatcher = rule.dispatchers
 
     private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
@@ -47,7 +53,7 @@ class PlayBroadcastSummaryViewModelTest {
 
         viewModel = PlayBroadcastSummaryViewModel(
                 channelConfigStore,
-                CoroutineTestDispatchersProvider,
+                testDispatcher,
                 liveStatisticsUseCase,
                 broadcastUpdateChannelUseCase,
                 userSession,
@@ -60,29 +66,35 @@ class PlayBroadcastSummaryViewModelTest {
     fun `when get traffic summary is success, then it should return success`() {
         coEvery { liveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
 
-        viewModel.fetchLiveTraffic()
+        rule.runBlockingTest {
+            viewModel.fetchLiveTraffic()
+            advanceUntilIdle()
 
-        val result = viewModel.observableLiveSummary.getOrAwaitValue()
+            val result = viewModel.observableLiveSummary.getOrAwaitValue()
 
-        Assertions
+            Assertions
                 .assertThat(result)
                 .isEqualTo(
-                        NetworkResult.Success(
-                                playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
-                        )
+                    NetworkResult.Success(
+                        playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
+                    )
                 )
+        }
     }
 
     @Test
     fun `when get traffic summary failed, then it should return failed`() {
         coEvery { liveStatisticsUseCase.executeOnBackground() } throws Throwable()
 
-        viewModel.fetchLiveTraffic()
+        rule.runBlockingTest {
+            viewModel.fetchLiveTraffic()
+            advanceUntilIdle()
 
-        val result = viewModel.observableLiveSummary.getOrAwaitValue()
+            val result = viewModel.observableLiveSummary.getOrAwaitValue()
 
-        Assertions
+            Assertions
                 .assertThat(result)
                 .isInstanceOf(NetworkResult.Fail::class.java)
+        }
     }
 }
