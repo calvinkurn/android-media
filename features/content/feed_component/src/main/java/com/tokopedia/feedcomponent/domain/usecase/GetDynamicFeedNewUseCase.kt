@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
+import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
 import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedNewMapper
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -407,7 +409,7 @@ val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
 @GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
-class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
+class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
     init {
@@ -429,11 +431,11 @@ class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRep
         setRequestParams(map)
     }
 
-    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = ""):
+    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "", shouldShowNewTopadsOnly:Boolean = false):
             DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId)
         val dynamicFeedResponse = executeOnBackground()
-        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor)
+        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
     }
 
 }

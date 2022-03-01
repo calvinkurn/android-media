@@ -138,7 +138,7 @@ fun FeatureBody.createFeedTestInstance() {
 
 fun GetDynamicFeedNewUseCase.getMockData(data: MutableList<Visitable<*>>, cursor: String = "") {
     coEvery {
-        execute(cursor)
+        execute(cursor, shouldShowNewTopadsOnly = true)
     } returns
             DynamicFeedDomainModel(postList = data)
 }

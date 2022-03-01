@@ -54,6 +54,7 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -208,6 +209,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
+    private var shouldShowNewTopads: Boolean = false
 
     private var isUserEventTrackerDoneOnResume = false
     private var isFeedPageShown = false
@@ -361,6 +363,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedViewModel = viewModelProvider.get(FeedViewModel::class.java)
         }
         initVar()
+        shouldShowNewTopads = TopadsRollenceUtil.shouldShowFeedNewDesignValue(requireContext())
         retainInstance = true
     }
 
@@ -717,7 +720,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val size = adapter.getlist().size
         val lastIndex = size - 1
         if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
-            feedViewModel.getFeedNextPage()
+            feedViewModel.getFeedNextPage(shouldShowNewTopads)
     }
 
     override fun onCreateView(
@@ -790,7 +793,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun onRefreshForNewPostUpdated() {
-        feedViewModel.getFeedFirstPage()
+        feedViewModel.getFeedFirstPage(shouldShowNewTopads)
         isRefreshForPostCOntentCreation = true
     }
 
@@ -816,7 +819,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         adapter.removeRetry()
         adapter.showLoading()
         adapter.setEndlessScrollListener()
-        feedViewModel.getFeedNextPage()
+        feedViewModel.getFeedNextPage(shouldShowNewTopads)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1967,7 +1970,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        if (adapter.getList()[positionInFeed] is DynamicPostViewModel) {
+        if (adapter.getlist().size > positionInFeed && adapter.getList()[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventImageImpressionPost(
                 FeedAnalyticTracker.Screen.FEED,
@@ -2519,7 +2522,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun fetchFirstPage() {
         showRefresh()
         adapter.showShimmer()
-        feedViewModel.getFeedFirstPage()
+        feedViewModel.getFeedFirstPage(shouldShowNewTopads)
         afterRefresh = false
     }
 
