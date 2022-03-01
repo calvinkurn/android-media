@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_NEW_USER_SPECIFICATION
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 
-class NewUserSpecificationBottomSheet: BottomSheetUnify() {
+class NewUserSpecificationBottomSheet: TabletAdaptiveBottomSheet() {
 
     companion object {
         const val TAG = "Tag New User Specification Bottom Sheet"
@@ -31,18 +31,12 @@ class NewUserSpecificationBottomSheet: BottomSheetUnify() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         setupImageView()
+        super.onActivityCreated(savedInstanceState)
     }
 
     private fun setupImageView() {
         ivNewUser?.loadImage(PHOTO_NEW_USER_SPECIFICATION)
-    }
-
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this , TAG)
-        }
     }
 
     private fun initChildLayout() {
@@ -51,5 +45,11 @@ class NewUserSpecificationBottomSheet: BottomSheetUnify() {
                 R.layout.add_edit_product_specification_new_user_bottom_sheet_content, null)
         ivNewUser = contentView?.findViewById(R.id.ivNewUser)
         setChild(contentView)
+    }
+
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this , TAG)
+        }
     }
 }

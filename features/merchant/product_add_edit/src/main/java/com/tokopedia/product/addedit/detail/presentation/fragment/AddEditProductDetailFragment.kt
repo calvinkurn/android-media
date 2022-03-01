@@ -46,6 +46,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
@@ -125,7 +126,7 @@ import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 @FlowPreview
-class AddEditProductDetailFragment : BaseDaggerFragment(),
+class AddEditProductDetailFragment : AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
         WholeSaleInputViewHolder.TextChangedListener,
@@ -292,6 +293,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set bg color programatically, to reduce overdraw
         setFragmentToUnifyBgColor()
 
+        // set navigation highlight
+        highlightNavigationButton(PageIndicator.INDICATOR_DETAIL_PAGE)
+
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
@@ -334,6 +338,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
+            categoryAlertDialog?.setDefaultMaxWidth()
             categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
             categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
             categoryAlertDialog?.setPrimaryCTAClickListener {
@@ -1480,7 +1485,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToInputStatus() {
-        viewModel.isInputValid.observe(viewLifecycleOwner, {
+        viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
             submitButton?.isEnabled = it
         })
     }

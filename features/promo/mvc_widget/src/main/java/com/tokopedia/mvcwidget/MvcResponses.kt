@@ -44,6 +44,14 @@ data class CatalogList(
         @SerializedName("quotaLeft") val quotaLeft: String?,
         @SerializedName("quotaLeftLabel") val quotaLeftLabel: String?,
         @SerializedName("tagImageURLs") val tagImageURLs: List<String?>?,
+        @SerializedName("cta") val ctaCatalog: CtaCatalog?,
+)
+
+data class CtaCatalog(
+        @SerializedName("text") val text: String? = "",
+        @SerializedName("url") val url: String? = "",
+        @SerializedName("appLink") val appLink: String? = "",
+        @SerializedName("type") val type: String? = "",
 )
 
 data class FollowWidget(

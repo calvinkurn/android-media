@@ -104,6 +104,7 @@ object ProductTrackingConstant {
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
         const val SELECT_CONTENT = "select_content"
         const val BUILDER_SHOP_ID = "shop_id:%s"
+        const val KEY_WAREHOUSE_ID = "warehouseId"
 
         //Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
