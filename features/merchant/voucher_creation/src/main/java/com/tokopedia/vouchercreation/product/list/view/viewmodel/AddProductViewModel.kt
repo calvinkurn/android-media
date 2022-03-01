@@ -328,6 +328,12 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedShopShowcaseNames(): List<String> {
+        return showCaseSelections.map { showCaseSelection ->
+            showCaseSelection.name
+        }
+    }
+
     fun setSelectedCategories(categorySelections: List<CategorySelection>) {
         this.categorySelections = categorySelections
     }
@@ -335,6 +341,12 @@ class AddProductViewModel @Inject constructor(
     fun getSelectedCategoryIds(): List<String> {
         return categorySelections.map { categorySelection ->
             categorySelection.id
+        }
+    }
+
+    fun getSelectedCategoryNames(): List<String> {
+        return categorySelections.map { categorySelection ->
+            categorySelection.name
         }
     }
 
