@@ -8,6 +8,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.databinding.ItemFlightSearchNewBinding
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
  * @author by furqan on 13/04/2020
@@ -128,9 +129,7 @@ class FlightSearchViewHolder(val binding: ItemFlightSearchNewBinding,
                 labelFreeRapidTest.text = element.freeRapidTestLabel
             }
 
-            labelSeatDistancingBackground.shouldShowWithAction(isSeatDistancing && isFreeRapidTest){
-                /* no op */
-            }
+            labelSeatDistancingBackground.showWithCondition(isSeatDistancing && isFreeRapidTest)
         }
     }
 
