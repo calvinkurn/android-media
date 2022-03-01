@@ -27,6 +27,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModel
@@ -206,6 +210,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
 
             initializeComponent(ComponentsList.Section,::SectionViewHolder,::SectionViewModel)
+//            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
+            initializeComponent(ComponentsList.AnchorTabsItem,::AnchorTabsItemViewHolder,::AnchorTabsItemViewModel)
             //Calendar View
             initializeComponent(ComponentsList.CalendarWidgetCarousel, ::CalendarWidgetCarouselViewHolder, ::CalendarWidgetCarouselViewModel)
             initializeComponent(ComponentsList.CalendarWidgetGrid, ::CalendarWidgetGridViewHolder, ::CalendarWidgetGridViewModel)
@@ -238,7 +244,7 @@ class DiscoveryHomeFactory {
         }
 
         fun isStickyHeader(viewType:Int):Boolean {
-            return viewType == ComponentsList.Tabs.ordinal
+            return viewType == ComponentsList.Tabs.ordinal || viewType == ComponentsList.AnchorTabs.ordinal
         }
     }
 }

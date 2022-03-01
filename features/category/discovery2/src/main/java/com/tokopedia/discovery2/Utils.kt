@@ -11,6 +11,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.RequiresApi
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -389,6 +391,14 @@ class Utils {
                 }
             }
             return parentComponentPosition
+        }
+
+        fun logException(t: Throwable) {
+            if (!BuildConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().recordException(Exception(t))
+            } else {
+                t.printStackTrace()
+            }
         }
     }
 }

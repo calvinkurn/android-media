@@ -97,6 +97,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
     Section(R.layout.disco_section_component, ComponentNames.Section.componentName),
+    AnchorTabs(R.layout.disco_anchor_tabs, ComponentNames.AnchorTabs.componentName),
+    AnchorTabsItem(R.layout.disco_anchor_tabs_item, ComponentNames.AnchorTabsItem.componentName),
     //Calendar Widget
     CalendarWidgetCarousel(R.layout.discovery_calendar_widget_carousel_layout, ComponentNames.CalendarWidgetCarousel.componentName),
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),
