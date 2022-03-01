@@ -64,16 +64,16 @@ class MerchantVoucherViewHolder(
         visitables.addAll(channelMerchantVoucherData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
-                visitables.add(
-                    CarouselViewAllCardDataModel(
-                        channel.channelHeader.applink,
-                        channel.channelViewAllCard,
-                        this,
-                        channel.channelBanner.imageUrl,
-                        channel.channelBanner.gradientColor,
-                        channel.layout
-                    )
-                )
+//                visitables.add(
+//                    CarouselViewAllCardDataModel(
+//                        channel.channelHeader.applink,
+//                        channel.channelViewAllCard,
+//                        this,
+//                        channel.channelBanner.imageUrl,
+//                        channel.channelBanner.gradientColor,
+//                        channel.layout
+//                    )
+//                )
             }
         }
         return visitables

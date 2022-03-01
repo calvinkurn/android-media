@@ -34,10 +34,10 @@ class CarouselMerchantVoucherViewHolder (
     }
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
-        val scaleX = 1.024f
-        val scaleY = 1.011f
-        binding?.imageBackgroundVoucher?.scaleX = scaleX
-        binding?.imageBackgroundVoucher?.scaleY = scaleY
+//        val scaleX = 1.024f
+//        val scaleY = 1.011f
+//        binding?.imageBackgroundVoucher?.scaleX = scaleX
+//        binding?.imageBackgroundVoucher?.scaleY = scaleY
         if (itemView.context.isDarkMode()) {
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
