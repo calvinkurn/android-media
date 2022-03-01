@@ -487,6 +487,12 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 show()
                 setText(mainInfo)
                 setLinks(clickableInfo, View.OnClickListener {
+                    digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        viewModel.operatorData.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                    )
                     showMoreInfoBottomSheet(listInfo, title)
                 })
             }
