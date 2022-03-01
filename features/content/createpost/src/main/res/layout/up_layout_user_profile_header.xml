@@ -51,6 +51,7 @@
                     android:id="@+id/view_profile_outer_ring"
                     android:layout_width="76dp"
                     android:layout_height="76dp"
+                    android:visibility="invisible"
                     android:background="@drawable/up_live_ring_bg"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -76,6 +77,7 @@
                     android:layout_marginTop="@dimen/unify_space_64"
                     android:background="@drawable/bg_up_live"
                     android:gravity="center"
+                    android:visibility="invisible"
                     android:paddingStart="@dimen/dp_4"
                     android:paddingLeft="@dimen/dp_2"
                     android:paddingEnd="@dimen/dp_4"
