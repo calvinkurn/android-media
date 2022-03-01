@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.play.broadcaster.helper.FileWriter
 import com.tokopedia.play.broadcaster.helper.PrintCondition
-import com.tokopedia.play.broadcaster.helper.ScreenshotTestRule
 import com.tokopedia.play.broadcaster.helper.ViewHierarchyPrinter
 import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
@@ -44,7 +43,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.Matcher
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.text.SimpleDateFormat
@@ -55,9 +53,6 @@ import java.util.*
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ProductChooserIdGenerator {
-
-    @get:Rule
-    val screenshotTestRule = ScreenshotTestRule()
 
     private val mockSelectedProducts = listOf(
         ProductUiModel(
