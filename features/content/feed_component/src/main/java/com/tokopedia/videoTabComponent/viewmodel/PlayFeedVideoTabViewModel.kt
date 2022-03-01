@@ -25,6 +25,7 @@ import com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCase
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -205,7 +206,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         try {
             return getPlayContentUseCase.execute(VideoPageParams(cursor = currentCursor, sourceId = currentSourceId, sourceType = currentSourceType, group = currentGroup))
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }
@@ -213,7 +214,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         try {
             return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = sourceId, sourceType = sourceType, group = currentGroupSeeMorePage))
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }

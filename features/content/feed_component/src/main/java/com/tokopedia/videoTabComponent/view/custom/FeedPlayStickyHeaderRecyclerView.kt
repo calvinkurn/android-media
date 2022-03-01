@@ -52,9 +52,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
         } ?: headerRecyclerView.addView(view)
         headerRecyclerView.gone()
 
-        handlerView?.postDelayed(
-            runnable,
-         3000)
+
 
     }
     private fun getRunnableForHeaderVisibility() = Runnable {

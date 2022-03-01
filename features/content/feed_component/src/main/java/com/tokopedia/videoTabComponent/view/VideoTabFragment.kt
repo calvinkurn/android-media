@@ -59,10 +59,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private var isScrollingUp = false
 
     companion object {
+        const val TIME_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW = 3000L
+        const val TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW = 0L
 
-        private const val OPEN_PLAY_CHANNEL = 1858
-        private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-        private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+
+
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): VideoTabFragment {
@@ -271,28 +272,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
+        startActivity(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (data == null) {
-            return
-        }
-
-        when (requestCode) {
-
-            OPEN_PLAY_CHANNEL -> {
-                val channelId = data.getStringExtra(EXTRA_PLAY_CHANNEL_ID)
-                val totalView = data.getStringExtra(EXTRA_PLAY_TOTAL_VIEW)
-//                updatePlayWidgetTotalView(channelId, totalView)
-            }
-
-            else -> {
-            }
-        }
-    }
 
     private fun playWidgetOnVisibilityChanged(
         isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(
@@ -316,15 +298,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         )
     }
 
-    override fun onPause() {
-//        playWidgetOnVisibilityChanged(isViewResumed = false)
-        super.onPause()
-    }
-
-    override fun onResume() {
-//        playWidgetOnVisibilityChanged(isViewResumed = true)
-        super.onResume()
-    }
 
     //click listener for tab menu slot
     override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
@@ -349,11 +322,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 if (dy > 0) {
                     // Scrolling up
                         isScrollingUp = true
-                    rvWidget?.setShouldShowStickyHeaderValue(false, 0L)
+                    rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
                 } else {
                     // Scrolling down
                         isScrollingUp = false
-                    rvWidget?.setShouldShowStickyHeaderValue(true, 0L)
+                    rvWidget?.setShouldShowStickyHeaderValue(true, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
                 }
 
             }
@@ -361,7 +334,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && isScrollingUp)
-                    rvWidget?.setShouldShowStickyHeaderValue(true, 3000)
+                    rvWidget?.setShouldShowStickyHeaderValue(true, TIME_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
             }
         }
     }

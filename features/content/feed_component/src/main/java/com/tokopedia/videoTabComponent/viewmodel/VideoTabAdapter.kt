@@ -63,8 +63,10 @@ class VideoTabAdapter(
         val feedPlayLehatSemuaApplink = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID}=$sourceId&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE}=$sourceType&${ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY}=$filterCategory"
 
         val newList = mutableListOf<PlayFeedUiModel>()
+        var newListPosition = 0
         for (item in itemList) {
             newList.add(item)
+            newListPosition++
             if (item is PlaySlotTabMenuUiModel) break
         }
         if (slotPosition == null) slotPosition = newList.size - 1
@@ -82,8 +84,7 @@ class VideoTabAdapter(
 
         }
         setItems(newList)
-        notifyDataSetChanged()
-
+        notifyItemRangeChanged(newListPosition, newList.size)
 
     }
 

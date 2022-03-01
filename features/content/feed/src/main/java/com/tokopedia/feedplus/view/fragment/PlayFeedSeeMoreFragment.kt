@@ -187,10 +187,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         const val WIDGET_LIVE ="live"
         const val WIDGET_UPCOMING ="upcoming"
 
-        private const val OPEN_PLAY_CHANNEL = 1858
-        private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-        private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-
 
         fun createInstance(bundle: Bundle) : Fragment {
             val fragment = PlayFeedSeeMoreFragment()
@@ -202,26 +198,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         super.onWidgetOpenAppLink(view, appLink)
         val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (data == null) {
-            return
-        }
-
-        when (requestCode) {
-
-            OPEN_PLAY_CHANNEL -> {
-                val channelId = data.getStringExtra(EXTRA_PLAY_CHANNEL_ID)
-                val totalView = data.getStringExtra(EXTRA_PLAY_TOTAL_VIEW)
-//                updatePlayWidgetTotalView(channelId, totalView)
-            }
-
-            else -> {
-            }
-        }
+        startActivity(intent)
     }
 
 
