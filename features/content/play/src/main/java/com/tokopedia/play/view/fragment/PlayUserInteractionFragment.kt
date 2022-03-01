@@ -123,7 +123,6 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
-        PinnedVoucherViewComponent.Listener,
         InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener,
         RealTimeNotificationViewComponent.Listener,
@@ -465,21 +464,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
         analytic.clickFeaturedProduct(product, position)
-    }
-
-    /**
-     * Pinned Voucher View Component Listener
-     */
-    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int) {
-        analytic.impressionHighlightedVoucher(voucher)
-    }
-
-    override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
-        if (voucher.code.isBlank() || voucher.code.isEmpty()) return
-
-        copyToClipboard(content = voucher.code)
-        doShowToaster(message = getString(R.string.play_voucher_code_copied), actionText = getString(R.string.play_action_ok))
-        analytic.clickHighlightedVoucher(voucher)
     }
 
     /**
