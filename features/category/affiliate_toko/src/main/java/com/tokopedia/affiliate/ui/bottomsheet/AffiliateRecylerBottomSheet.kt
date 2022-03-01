@@ -16,8 +16,11 @@ import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetA
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetDiffcallback
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateBottomDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficAttributionModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAttributionModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecyclerViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -29,7 +32,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     private var type: String =""
     private var titleSheet: String = ""
     private var subText: String = ""
-    private var metricsList :List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>? = null
+    private var listItem :Any? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,7 +43,12 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         private const val TYPE = "type"
         private const val TITLE = "title"
         private const val SUB_TEXT = "subText"
-        fun newInstance(type: String, title: String?, subText: String?, metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?
+        const val TYPE_WITHDRAWAL = "withdrawalType"
+        const val TYPE_HOME = "homeType"
+        fun newInstance(type: String,
+                        title: String?,
+                        subText: String?,
+                        list: Any?
         ): AffiliateRecylerBottomSheet {
             return AffiliateRecylerBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -48,7 +56,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
                     putString(TITLE,title)
                     putString(SUB_TEXT,subText)
                 }
-                metricsList = metrics
+                listItem = list
             }
         }
     }
@@ -65,15 +73,26 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
             text = subText
         }
         dataRv = contentView?.findViewById(R.id.traffic_rv)
-        initMetricData(metricsList)
+        initList(listItem)
         setData()
         setChild(contentView)
     }
 
-    private fun initMetricData(metricsList: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?) {
-        metricsList?.forEach {
-            viewModel?.itemList?.add(AffiliateTrafficAttributionModel(it))
+    private fun initList(listItem: Any?) {
+        if(type == TYPE_HOME){
+            (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)?.forEach {
+                viewModel?.itemList?.add(AffiliateTrafficAttributionModel(it))
+            }
         }
+        else if(type == TYPE_WITHDRAWAL){
+            (listItem as? List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?)?.forEach {
+                if(it.tooltipType == "divider")
+                    viewModel?.itemList?.add(AffiliateBottomDividerItemModel())
+                else
+                    viewModel?.itemList?.add(AffiliateWithrawalInfoAttributionModel(it))
+            }
+        }
+
     }
 
     private var viewModel:AffiliateRecyclerViewModel? = null

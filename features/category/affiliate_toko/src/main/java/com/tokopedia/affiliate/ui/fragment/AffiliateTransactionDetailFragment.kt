@@ -17,7 +17,8 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Companion.TYPE_WITHDRAWAL
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -41,8 +42,9 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     private lateinit var affiliateVM: AffiliateTransactionDetailViewModel
 
-    override fun onInfoClick(title: String?, desc: String?) {
-        AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PERFORMA_INFO,title,desc).show(childFragmentManager, "")
+    override fun onInfoClick(title: String?, desc: String?, advanceTooltip: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?
+    ) {
+        AffiliateRecylerBottomSheet.newInstance(TYPE_WITHDRAWAL,title,desc,advanceTooltip).show(childFragmentManager, "")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

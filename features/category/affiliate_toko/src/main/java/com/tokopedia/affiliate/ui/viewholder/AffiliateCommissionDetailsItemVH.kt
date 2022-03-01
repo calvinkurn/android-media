@@ -86,7 +86,7 @@ class AffiliateCommissionDetailsItemVH(
             infoIcon.hide()
         }
         infoIcon.setOnClickListener {
-            affiliateInfoClickInterfaces?.onInfoClick(element?.data?.detailTitle,element?.data?.detailTooltip)
+            affiliateInfoClickInterfaces?.onInfoClick(element?.data?.detailTitle,element?.data?.detailTooltip,element?.data?.advanceTooltip)
         }
     }
 

@@ -38,6 +38,7 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companio
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Companion.TYPE_HOME
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -505,6 +506,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     override fun onInfoClick(title: String?, desc: String?, metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?) {
-            AffiliateRecylerBottomSheet.newInstance("STATE_PERFORMA_INFO",title,desc,metrics).show(childFragmentManager, "")
+            AffiliateRecylerBottomSheet.newInstance(TYPE_HOME,title,desc,metrics).show(childFragmentManager, "")
     }
 }

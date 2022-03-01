@@ -98,7 +98,7 @@ data class AffiliateCommissionDetailsData(
                     @SerializedName("TextStyle")
                     var textStyle: String?,
                     @SerializedName("TextSize")
-                    var textSize: String?,
+                    var textSize: Int?,
                     @SerializedName("TooltipText")
                     var tooltipText: String?,
                 )
