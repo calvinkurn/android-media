@@ -49,18 +49,18 @@ sealed class ProductSectionUiModel {
         val productList: List<PlayProductUiModel.Product>,
         val config: ConfigUiModel,
         val id: String,
-    ): ProductSectionUiModel() {
+    ) : ProductSectionUiModel() {
 
-    data class ConfigUiModel(
-        val type: ProductSectionType,
-        val title: String,
-        val serverTime: String, // RFC3339
-        val startTime: String, // RFC3339
-        val endTime: String, // RFC3339
-        val timerInfo: String,
-        val background: BackgroundUiModel,
-        val reminder: ReminderUiModel
-    )
+        data class ConfigUiModel(
+            val type: ProductSectionType,
+            val title: String,
+            val serverTime: String, // RFC3339
+            val startTime: String, // RFC3339
+            val endTime: String, // RFC3339
+            val timerInfo: String,
+            val background: BackgroundUiModel,
+            val reminder: ReminderUiModel
+        )
 
         data class BackgroundUiModel(
             val gradients: List<String>,
@@ -72,7 +72,7 @@ sealed class ProductSectionUiModel {
             val reminderType: CampaignReminderType
         )
 
-    companion object{
+        companion object {
             val Empty: Section
                 get() = Section(
                     productList = emptyList(),
@@ -94,5 +94,5 @@ sealed class ProductSectionUiModel {
         }
     }
 
-    object Placeholder: ProductSectionUiModel()
+    object Placeholder : ProductSectionUiModel()
 }

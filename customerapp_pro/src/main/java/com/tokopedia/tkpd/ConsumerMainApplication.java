@@ -64,20 +64,14 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     @Override
-    public void registerActivityLifecycleCallbacks() {
-        super.registerActivityLifecycleCallbacks();
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
-            @Override
-            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
-                openFeedbackForm(uri, className, isFromScreenshot);
-            }
-        }));
+    public void onCreate() {
+        super.onCreate();
+        registerScreenshootObserver();
     }
 
     public void initConfigValues() {
         setVersionCode();
         setVersionName();
-
         GlobalConfig.APPLICATION_TYPE = 3;
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
         GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_customerapp_pro;
@@ -143,5 +137,14 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
             throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
+    }
+
+    private void registerScreenshootObserver() {
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+            @Override
+            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                openFeedbackForm(uri, className, isFromScreenshot);
+            }
+        }));
     }
 }

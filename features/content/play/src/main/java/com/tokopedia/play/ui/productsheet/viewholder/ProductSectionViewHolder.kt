@@ -1,7 +1,7 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
-import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -21,11 +22,13 @@ import com.tokopedia.play.view.type.CampaignReminderType
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -45,28 +48,46 @@ class ProductSectionViewHolder(
 
     private lateinit var adapter: ProductLineAdapter
 
-    init {
-        rvProducts.layoutManager = LinearLayoutManager(itemView.context)
+    private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
+        itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
+            override fun onScrollChanged() {
+                itemView.isVisibleOnTheScreen(onViewVisible = { listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
+                    onViewNotVisible = {
+                        itemView.viewTreeObserver.removeOnScrollChangedListener(this)
+                    })
+            }
+        })
     }
 
-    private fun setupListener(config: ProductSectionUiModel.Section.ConfigUiModel) = object : ProductLineViewHolder.Listener {
+    private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
+        }
+    }
+
+    private fun setupListener(sectionInfo: ProductSectionUiModel.Section) = object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
-            listener.onBuyProduct(product, config)
+            listener.onBuyProduct(product, sectionInfo)
         }
 
         override fun onAtcProduct(product: PlayProductUiModel.Product) {
-            listener.onATCProduct(product, config)
+            listener.onATCProduct(product, sectionInfo)
         }
 
         override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-            listener.onClickProductCard(product, config, position)
+            listener.onClickProductCard(product, sectionInfo, position)
         }
 
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
-        adapter = ProductLineAdapter(setupListener(item.config))
+        resetBackground()
+        setupOnScrollListener(sectionInfo = item)
+        adapter = ProductLineAdapter(setupListener(item))
+        rvProducts.layoutManager = layoutManagerProductList(item)
         rvProducts.adapter = adapter
+
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
             tvSectionTitle.text = item.config.title
         }
@@ -82,16 +103,10 @@ class ProductSectionViewHolder(
         tvTimerInfo.text = item.config.timerInfo
 
         when (item.config.type) {
-            ProductSectionType.Active -> {
+            ProductSectionType.Active, ProductSectionType.Upcoming -> {
                 tvTimerInfo.show()
                 timerSection.show()
-                timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
-                setupTimer(item)
-            }
-            ProductSectionType.Upcoming -> {
-                tvTimerInfo.show()
-                timerSection.show()
-                timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+                setupBackground(item.config.background)
                 setupTimer(item)
             }
             ProductSectionType.Other -> {
@@ -102,7 +117,6 @@ class ProductSectionViewHolder(
                 // todo: handle unknown section
             }
         }
-        setupBackground(item.config.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
         if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
 
@@ -113,14 +127,7 @@ class ProductSectionViewHolder(
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
-            try {
-                val bgArray = IntArray(background.gradients.size)
-                background.gradients.forEachIndexed { index, s ->
-                    bgArray[index] = android.graphics.Color.parseColor(s)
-                }
-                val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
-                itemView.background = gradient
-            } catch (e: Exception) { }
+            itemView.setGradientBackground(background.gradients)
         } else {
             ivBg.loadImage(background.imageUrl)
         }
@@ -129,16 +136,18 @@ class ProductSectionViewHolder(
     private fun setupTimer(item : ProductSectionUiModel.Section) {
         timerTime = if(item.config.type == ProductSectionType.Active) item.config.endTime else item.config.startTime
 
+        timerSection.timerVariant = if(item.config.type == ProductSectionType.Active) TimerUnifySingle.VARIANT_MAIN else TimerUnifySingle.VARIANT_INFORMATIVE
+
         val convertedServerTime = item.config.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val convertedTimerTime = timerTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
         val dt = DateUtil.getCurrentCalendar().apply {
                 val diff = convertedTimerTime.time - getTimeDiff(serverTime = convertedServerTime, currentTime = time).time
-                add(Calendar.MILLISECOND, diff.toInt())
+                add(Calendar.SECOND, ((diff / 1000) % 60).toInt())
+                add(Calendar.MINUTE, (((diff / 1000) / 60) % 60).toInt())
+                add(Calendar.HOUR, (((diff / 1000) / 60) / 60).toInt())
             }
-            timerSection.pause()
             timerSection.targetDate = dt
-            timerSection.resume()
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
@@ -147,13 +156,28 @@ class ProductSectionViewHolder(
                 adapter.itemCount != productSize
     }
 
-    /***
-     * If server time ahead of device time, return device time.
-     * If device time ahead of server time, add the diff to current time.
-     */
     private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
         val diff = serverTime.time - currentTime.time
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
+    }
+
+    private fun getVisibleProducts(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
+        val products = adapter.getItems()
+        if (products.isNotEmpty()) {
+            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
+            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
+                .filterIsInstance<PlayProductUiModel.Product>()
+                .mapIndexed { index, item ->
+                    Pair(item, startPosition + index)
+                }
+        }
+        return emptyList()
+    }
+
+    private fun resetBackground(){
+        ivBg.setImageDrawable(null)
+        itemView.background = null
     }
 
     companion object {
@@ -162,9 +186,10 @@ class ProductSectionViewHolder(
     }
 
     interface Listener {
-        fun onBuyProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
-        fun onATCProduct(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel)
-        fun onClickProductCard(product: PlayProductUiModel.Product, config: ProductSectionUiModel.Section.ConfigUiModel, position: Int)
+        fun onBuyProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onATCProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onClickProductCard(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
+        fun onProductImpressed(product: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onProductChanged()
         fun onReminderClicked(product: ProductSectionUiModel.Section)
     }

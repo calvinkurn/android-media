@@ -96,6 +96,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         ViewModelProvider(requireActivity()).get(AtcVariantSharedViewModel::class.java)
     }
 
+    private val localizationChooseAddressData by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
     private var loadingProgressDialog: ProgressDialog? = null
 
     private val compositeSubscription by lazy { CompositeSubscription() }
@@ -528,7 +534,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 isCod = variantAggregatorData?.isCod ?: false,
                 ratesEstimateData = ratesEstimateData,
                 buyerDistrictId = buyerDistrictId,
-                sellerDistrictId = sellerDistrictId
+                sellerDistrictId = sellerDistrictId,
+                lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
         )
     }
 

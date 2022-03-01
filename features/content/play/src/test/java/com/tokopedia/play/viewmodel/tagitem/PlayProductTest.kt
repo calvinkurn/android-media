@@ -90,7 +90,9 @@ class PlayProductTest {
         )
 
         robot.use {
-            val state = it.recordState {}
+            val state = it.recordState {
+                createPage(repo.getChannelData("1")!!)
+            }
             state.tagItems.product.productSectionList
                 .assertEqualTo(mockProductList)
         }
@@ -135,6 +137,7 @@ class PlayProductTest {
 
         robot.use {
             val state = it.recordState {
+                createPage(repo.getChannelData("1")!!)
                 focusPage(mockk(relaxed = true))
             }
             state.tagItems.product.productSectionList

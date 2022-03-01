@@ -13,9 +13,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/spacing_lvl2"
         app:typographyType="heading_4"
         android:translationZ="@dimen/dp_1"
+        android:layout_marginStart="@dimen/play_offset_18"
         tools:text="Aksesoris Sale" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -65,7 +65,9 @@
         android:id="@+id/rv_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/play_offset_14"
+        android:layout_marginEnd="@dimen/play_offset_14"
         android:translationZ="@dimen/dp_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

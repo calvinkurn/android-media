@@ -20,7 +20,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
         config = mapConfig(input),
-        id = input.sourceId,
+        id = input.id
     )
 
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
@@ -31,10 +31,10 @@ class PlayProductTagUiMapper @Inject constructor() {
         endTime = input.timerEndTime,
         timerInfo = input.countdown.countdownInfo,
         background = ProductSectionUiModel.Section.BackgroundUiModel(
-            gradients = input.background.gradientList,
+            gradients = input.background.gradientList ?: emptyList(),
             imageUrl = input.background.imageUrl
         ),
-        reminder = mapReminder(hasReminder = input.sourceId.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming))
+        reminder = mapReminder(hasReminder = input.id.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming))
     )
 
     private fun mapReminder(hasReminder: Boolean) = ProductSectionUiModel.Section.ReminderUiModel(
@@ -64,7 +64,7 @@ class PlayProductTagUiMapper @Inject constructor() {
                     if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
-                applink = input.appLink
+                applink = input.appLink,
         )
     }
 }

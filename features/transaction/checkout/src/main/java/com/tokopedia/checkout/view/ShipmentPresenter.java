@@ -536,6 +536,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         getShipmentAddressFormV3UseCase.execute(
                 cartShipmentAddressFormData -> {
                     if (getView() != null) {
+                        getView().stopEmbraceTrace();
                         if (isReloadData) {
                             getView().setHasRunningApiCall(false);
                             getView().resetPromoBenefit();
@@ -552,6 +553,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
+                        getView().stopEmbraceTrace();
                         if (isReloadData) {
                             getView().setHasRunningApiCall(false);
                             getView().hideLoading();

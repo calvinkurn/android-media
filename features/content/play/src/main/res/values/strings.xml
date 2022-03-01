@@ -45,7 +45,7 @@
     <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
 
     <string name="play_action_ok">Oke</string>
-    <string name="play_out_of_stock">Stok habis</string>
+    <string name="play_out_of_stock">Stok Habis</string>
 
     <!--Pinned Message-->
     <string name="play_pinned_msg_applink_text">Ayo Lihat</string>
@@ -89,7 +89,7 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
-    <string name="play_product_item_stock">Stok %1$s</string>
+    <string name="play_product_item_stock">Sisa %1$s</string>
 
     <!--Coupon Sheet-->
     <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>

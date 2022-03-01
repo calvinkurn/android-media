@@ -46,6 +46,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
@@ -148,22 +149,20 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
-    private val data = repo.getChannelData(channelId) ?: error("Channel data cannot be null")
-
     /**
      * Data State
      */
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
-    private val _partnerInfo = MutableStateFlow(data.partnerInfo)
+    private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
-    private val _status = MutableStateFlow(data.status)
+    private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
-    private val _tagItems = MutableStateFlow(data.tagItems)
-    private val _quickReply = MutableStateFlow(data.quickReplyInfo)
+    private val _tagItems = MutableStateFlow(TagItemUiModel.Empty)
+    private val _quickReply = MutableStateFlow(PlayQuickReplyInfoUiModel.Empty)
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -859,6 +858,11 @@ class PlayViewModel @AssistedInject constructor(
         handleLikeInfo(channelData.likeInfo)
         handlePinnedInfo(channelData.pinnedInfo)
         handleLeaderboardInfo(channelData.leaderboardInfo)
+
+        _partnerInfo.value = channelData.partnerInfo
+        _status.value = channelData.status
+        _tagItems.value = channelData.tagItems
+        _quickReply.value = channelData.quickReplyInfo
     }
 
     fun focusPage(channelData: PlayChannelData) {
@@ -1008,7 +1012,7 @@ class PlayViewModel @AssistedInject constructor(
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList
                     .filterIsInstance<ProductSectionUiModel.Section>()
-                    .flatMap { it.productList } // todo: retest
+                    .flatMap { it.productList }
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
