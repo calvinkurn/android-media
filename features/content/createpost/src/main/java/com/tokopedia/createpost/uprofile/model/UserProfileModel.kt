@@ -3,7 +3,7 @@ package com.tokopedia.createpost.uprofile.model
 import com.google.gson.annotations.SerializedName
 
 data class ProfileHeaderBase (
-    @SerializedName("profileHeader")
+    @SerializedName("feedXProfileHeader")
     val profileHeader: FeedXProfileHeader
 )
 
