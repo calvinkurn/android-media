@@ -235,7 +235,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
             (catalogSelectGroup.value as RechargeNetworkResult.Success).data.response.
             operatorGroups?.firstOrNull()?.operators?.filter {
                 it.id == operatorData.id
-            }?.single()?.attributes?.productDescriptions ?: listOf()
+            }?.single()?.attributes?.operatorDescriptions ?: listOf()
         } else listOf()
     }
 
