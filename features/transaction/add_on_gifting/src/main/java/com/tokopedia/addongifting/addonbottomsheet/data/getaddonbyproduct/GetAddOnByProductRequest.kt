@@ -39,5 +39,7 @@ data class SourceRequest(
 
 data class RequestData(
         @SerializedName("Inventory")
-        var inventory: Boolean = false
+        var inventory: Boolean = false,
+        @SerializedName("StaticInfo")
+        var staticInfo: Boolean = false
 )

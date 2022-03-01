@@ -47,11 +47,13 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
                   reason
                   errorCode
                 }
+                StaticInfo {
+                  PromoText
+                }
                 AddOnByProductResponse {
                   ProductID
                   WarehouseID
                   AddOnLevel
-                  CouponText
                   Addons {
                     Basic {
                       ID
