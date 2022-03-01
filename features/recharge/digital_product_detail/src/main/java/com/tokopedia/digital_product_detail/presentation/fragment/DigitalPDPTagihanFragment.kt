@@ -482,7 +482,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpTagihanListrikClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun getOperatorSelectGroup() {

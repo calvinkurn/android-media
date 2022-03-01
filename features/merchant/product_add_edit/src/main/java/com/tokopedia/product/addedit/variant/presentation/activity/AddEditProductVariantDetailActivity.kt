@@ -3,17 +3,16 @@ package com.tokopedia.product.addedit.variant.presentation.activity
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantModule
 import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.fragment.AddEditProductVariantDetailFragment
 
-class AddEditProductVariantDetailActivity: BaseSimpleActivity(), HasComponent<AddEditProductVariantComponent> {
+class AddEditProductVariantDetailActivity: TabletAdaptiveActivity(), HasComponent<AddEditProductVariantComponent> {
 
     companion object {
         fun createInstance(context: Context?, cacheManagerId: String?): Intent =

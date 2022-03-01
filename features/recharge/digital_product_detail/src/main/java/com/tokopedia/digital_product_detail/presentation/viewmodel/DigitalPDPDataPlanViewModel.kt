@@ -40,7 +40,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-
     val filterDataParams = ArrayList<HashMap<String, Any>>()
     var filterData = emptyList<TelcoFilterTagComponent>()
     var validatorJob: Job? = null
@@ -48,6 +47,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedFullProduct = SelectedProduct()
+    var recomCheckoutUrl = ""
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
