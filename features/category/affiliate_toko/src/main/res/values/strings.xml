@@ -131,4 +131,5 @@
     <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
     <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
     <string name="terkhir_text">update terakhir</string>
+    <string name="affiliate_withdrwal_title_terms">Produk yang Dikunjungi ({count})</string>
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithdrawalTitleItemModel
 import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -46,6 +47,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                     tempList.add(AffiliateCommisionDividerItemModel())
             }
          tempList.add(AffiliateCommisionThickDividerItemModel())
+         tempList.add(AffiliateWithdrawalTitleItemModel("10"))
         return tempList
     }
 

@@ -45,6 +45,7 @@ class AffiliateAdapterFactory(
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
             AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
+            AffiliateWithdrawalTitleItemVH.LAYOUT -> AffiliateWithdrawalTitleItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -131,5 +132,8 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateDataPlatformShimmerModel): Int {
         return AffiliateDataCardShimmerItemVH.LAYOUT
+    }
+    override fun type(viewModel: AffiliateWithdrawalTitleItemModel): Int {
+        return AffiliateWithdrawalTitleItemVH.LAYOUT
     }
 }

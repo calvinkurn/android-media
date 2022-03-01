@@ -26,4 +26,5 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateCommissionItemModel): Int
     fun type(viewModel: AffiliateCommisionDividerItemModel): Int
     fun type(viewModel: AffiliateCommisionThickDividerItemModel): Int
+    fun type(viewModel: AffiliateWithdrawalTitleItemModel): Int
 }
