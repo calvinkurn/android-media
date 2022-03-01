@@ -481,12 +481,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun onShowGreenBox(listInfo: List<String>){
         binding?.let {
             val mainInfo = listInfo.first()
-            val clickableInfo = getString(R.string.more_info_green_box)
             val title = getString(R.string.bottom_sheet_more_info)
             it.rechargePdpTickerWidgetProductDesc.apply {
                 show()
                 setText(mainInfo)
-                setLinks(clickableInfo, View.OnClickListener {
+                setOnClickListener {
                     digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
@@ -494,7 +493,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         userSession.userId,
                     )
                     showMoreInfoBottomSheet(listInfo, title)
-                })
+                }
             }
         }
     }
