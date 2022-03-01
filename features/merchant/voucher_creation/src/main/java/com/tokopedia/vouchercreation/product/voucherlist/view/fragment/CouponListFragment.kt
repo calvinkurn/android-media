@@ -544,7 +544,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             is BroadCastChat -> broadCastChat(coupon)
             is ShareCoupon -> shareCoupon(coupon)
             is EditPeriodCoupon -> editPeriodCoupon(coupon)
-            is DownloadCoupon -> downloadCoupon(coupon.image, coupon.imageSquare, coupon.imagePortrait)
+            is DownloadCoupon -> downloadCoupon(coupon)
             is CancelCoupon -> cancelCoupon(coupon)
             is StopCoupon -> stopCoupon(coupon)
             is DuplicateCoupon -> duplicateCoupon(coupon)
