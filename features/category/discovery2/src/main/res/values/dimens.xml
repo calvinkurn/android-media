@@ -23,6 +23,9 @@
     <dimen name="disco_youtube_view_padding">6dp</dimen>
     <dimen name="disco_youtube_horizontal_padding">16dp</dimen>
     <dimen name="brand_recom_carousel_gap">40dp</dimen>
+    <dimen name="anchor_tab_padding">12dp</dimen>
+    <dimen name="anchor_tab_size">72dp</dimen>
+    <dimen name="anchor_tab_card_padding">6dp</dimen>
     <dimen name="disco_product_card_width">165dp</dimen>
     <dimen name="dp_34">34dp</dimen>
     <dimen name="dp_19">19dp</dimen>

@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_CLOSE_INFO_QUERY_NAME
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_FAVORITE_QUERY_NAME
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO
@@ -89,6 +90,15 @@ class ShopCommonModule {
         return getShopInfoQuery(
                 GqlQueryConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING,
                 SHOP_INFO_FOR_SHOP_SETTINGS_INFO
+        )
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CLOSE_DETAIL)
+    fun provideGqlQueryShopCloseDetailInfo(@ApplicationContext context: Context?): String {
+        return getShopInfoQuery(
+                GqlQueryConstant.SHOP_CLOSE_DETAIL_INFO_QUERY_STRING,
+                SHOP_CLOSE_INFO_QUERY_NAME
         )
     }
 
@@ -192,6 +202,13 @@ class ShopCommonModule {
     @Provides
     fun provideGqlGetShopInfoShopSettingsInfo(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                                   @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
+        return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
+    }
+
+    @GqlGetShopCloseDetailInfoQualifier
+    @Provides
+    fun provideGqlGetShopCloseDetailInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
+                                                  @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CLOSE_DETAIL) gqlQuery: String?): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 }

@@ -5,12 +5,15 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.kyc_centralized.KycUrl
+import com.tokopedia.kyc_centralized.data.network.KycUploadApi
+import com.tokopedia.logger.ServerLogger
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -24,14 +27,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 @Module
-class KycUploadImageModule {
+open class KycUploadImageModule {
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     private val NET_READ_TIMEOUT = 300
     private val NET_WRITE_TIMEOUT = 300
     private val NET_CONNECT_TIMEOUT = 300
     private val NET_RETRY = 3
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @KycQualifier
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
@@ -44,32 +47,32 @@ class KycUploadImageModule {
         return logging
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(ImageUploaderResponseError::class.java)
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
-    fun provideWsV4RetrofitWithErrorHandler(okHttpClient: OkHttpClient,
-                                            retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(KycUrl.getKYCBaseUrl()).client(okHttpClient).build()
+    open fun provideApi(okHttpClient: OkHttpClient, retrofitBuilder: Retrofit.Builder): KycUploadApi {
+        val retrofit = retrofitBuilder.baseUrl(KycUrl.getKYCBaseUrl()).client(okHttpClient).build()
+        return retrofit.create(KycUploadApi::class.java)
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun okHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
                                    networkRouter: NetworkRouter,
@@ -77,13 +80,13 @@ class KycUploadImageModule {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun provideOkHttpClient(@ApplicationContext context: Context,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
@@ -107,7 +110,7 @@ class KycUploadImageModule {
         return builder.build()
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @KycQualifier
     @Provides
     fun provideRetrofitBuilder(gson: Gson): Retrofit.Builder {
@@ -116,7 +119,7 @@ class KycUploadImageModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
     }
 
-    @UserIdentificationCommonScope
+    @ActivityScope
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
@@ -124,6 +127,12 @@ class KycUploadImageModule {
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideServerLogger(): ServerLogger {
+        return ServerLogger
     }
 
 }

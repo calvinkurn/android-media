@@ -33,6 +33,7 @@ object PersistentEvent {
 
 object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
+    const val DEVICE_NOTIFICATION_OFF = "device_notification_off"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
     const val PUSH_CANCELLED = "pushCancelled"
