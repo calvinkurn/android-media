@@ -64,7 +64,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
         it?.catalogComparisonList?.let { items ->
             for (product in items){
                 product?.let {
-                    if(product.id == recommendedCatalogId){ product.isActive = false }
+                    product.isActive = (product.id != recommendedCatalogId)
                     masterDataList.add(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,
                         CatalogConstant.COMPARISON_PRODUCT,product))
                 }

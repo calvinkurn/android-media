@@ -22,7 +22,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
 
-    private val catalogForYouImpressionViewMap = HashMap<Int, Boolean>()
+    private val catalogForYouImpressionSet = HashSet<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
@@ -60,8 +60,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
         }
         if (holder is CatalogForYouViewHolder) {
             val position = holder.adapterPosition
-            if (!catalogForYouImpressionViewMap.containsKey(position)) {
-                catalogForYouImpressionViewMap[position] = true
+            if (!catalogForYouImpressionSet.add(position)) {
                 val item = currentList[position] as? CatalogForYouModel
                 item?.let { catalogForYouModel ->
                     catalogDetailListener.onCatalogForYouImpressed(catalogForYouModel,holder.adapterPosition)

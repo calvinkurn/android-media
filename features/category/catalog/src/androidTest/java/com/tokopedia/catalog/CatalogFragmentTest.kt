@@ -268,6 +268,7 @@ class CatalogFragmentTest
 
     @Test
     fun check_drag_product_listing_bottom_sheet() {
+        Thread.sleep(2000)
         actionTest {
             launchProductListingBottomSheet()
             closeProductListingBottomSheet()

@@ -70,7 +70,6 @@ class CatalogForYouViewModel @Inject constructor(
         it?.catalogComparisonList?.let { items ->
             for (product in items){
                 product?.let {
-                    if(product.id == recommendedCatalogId){ product.isActive = false }
                     masterDataList.add(CatalogForYouModel(CatalogConstant.COMPARISON_PRODUCT,
                         CatalogConstant.COMPARISON_PRODUCT,product))
                 }
