@@ -83,7 +83,7 @@
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan tanggal libur tokomu?</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus tanggal libur tokomu?</string>
     <string name="shop_operational_hour_abort_shop_holiday_dialog_title">Tokomu siap beroperasi lagi?</string>
-    <string name="shop_operational_hour_abort_shop_holiday_dialog_desc">Yuk, bersiap untuk terima pesanan pembeli.\nCek jam operasional tokomu hari ini, ya.</string>
+    <string name="shop_operational_hour_abort_shop_holiday_dialog_desc">Cek lagi pengaturan jam operasional toko.\nProduk kamu bisa dibeli di setiap hari ini, ya.</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_desc">Pembeli tidak bisa membeli produk selama\ntokomu libur. Jangan lupa proses pesanan\nyang masuk sebelumnya, ya.</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_desc">Tokomu akan kembali beroperasi dan dapat\nmenerima pesanan dari pembeli, ya.</string>
     <string name="shop_operational_hour_holiday_warning_dialog_title">Ingin libur tiap hari?</string>
