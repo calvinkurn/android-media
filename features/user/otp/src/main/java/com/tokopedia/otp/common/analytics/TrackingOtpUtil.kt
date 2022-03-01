@@ -655,6 +655,19 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         ))
     }
 
+    /* Auto Submit Silent Verif */
+    fun trackAutoSubmitSilentVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, correlationId: String, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_AUTO_SUBMIT_OTP,
+            if (isSuccess) { "success" } else { "fail - $message" }
+                    + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    + " - ${modeListData.modeText}"
+                    + " evURL - $correlationId"
+        ))
+    }
+
     fun trackCellularDialogButton(label: String) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
