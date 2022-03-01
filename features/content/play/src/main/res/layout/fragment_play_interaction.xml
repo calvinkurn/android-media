@@ -362,15 +362,23 @@
         app:layout_constraintGuide_percent="0.85"
         />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_like_bubble_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
     <include
         android:id="@+id/view_like_bubble"
         layout="@layout/view_like_bubble"
         android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl9"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/gl_like_bubble_start"
+        app:layout_constraintTop_toTopOf="@id/gl_like_bubble_height"
         />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
