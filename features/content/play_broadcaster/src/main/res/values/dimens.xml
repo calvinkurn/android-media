@@ -107,10 +107,14 @@
 
     <!--Etalase & Campaign-->
     <dimen name="play_bro_etalase_list_body_image_size">64dp</dimen>
+    <dimen name="play_bro_etalase_list_divider_height">1dp</dimen>
 
     <!--Product Chooser-->
     <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>
+
+    <!-- Product Summary -->
     <dimen name="play_bro_product_summary_btn_container_elevation">10dp</dimen>
+    <dimen name="play_bro_product_summary_toaster_container_elevation">12dp</dimen>
 
     <!--Live-->
     <dimen name="play_product_icon_dot_radius">4dp</dimen>

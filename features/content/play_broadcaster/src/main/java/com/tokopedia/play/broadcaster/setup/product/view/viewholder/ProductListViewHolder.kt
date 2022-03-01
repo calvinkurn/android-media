@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,11 @@ internal class ProductListViewHolder private constructor() {
         private val onSelected: (ProductUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.tvPriceBeforeDiscount.paintFlags =
+                binding.tvPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+
         fun bind(item: ProductListAdapter.Model.Product) {
             binding.imgProduct.loadImage(item.product.imageUrl)
             binding.tvName.text = item.product.name
@@ -40,12 +46,12 @@ internal class ProductListViewHolder private constructor() {
                     binding.llDiscount.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
-                    binding.tvPrice.text = item.product.price.originalPrice
+                    binding.tvPrice.text = item.product.price.discountedPrice
                     binding.labelDiscountPercentage.text = itemView.context.getString(
                         R.string.play_bro_product_discount_template,
                         item.product.price.discountPercent
                     )
-                    binding.tvDiscountPrice.text = item.product.price.discountedPrice
+                    binding.tvPriceBeforeDiscount.text = item.product.price.originalPrice
                     binding.llDiscount.visibility = View.VISIBLE
                 }
                 else -> {
@@ -55,10 +61,12 @@ internal class ProductListViewHolder private constructor() {
             }
 
             if (item.product.stock > 0) {
+                binding.tvStock.visibility = View.VISIBLE
                 binding.checkboxProduct.visibility = View.VISIBLE
                 binding.flEmptyForeground.visibility = View.GONE
                 binding.viewEmptyStock.root.visibility = View.GONE
             } else {
+                binding.tvStock.visibility = View.GONE
                 binding.checkboxProduct.visibility = View.GONE
                 binding.flEmptyForeground.visibility = View.VISIBLE
                 binding.viewEmptyStock.root.visibility = View.VISIBLE

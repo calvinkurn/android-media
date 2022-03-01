@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -42,9 +43,10 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 class PlayBroadcastSummaryFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val analytic: PlayBroadcastAnalytic,
-        private val userSession: UserSessionInterface
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val viewModelFactory: ViewModelFactory,
+    private val analytic: PlayBroadcastAnalytic,
+    private val userSession: UserSessionInterface
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
     companion object {
@@ -67,7 +69,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

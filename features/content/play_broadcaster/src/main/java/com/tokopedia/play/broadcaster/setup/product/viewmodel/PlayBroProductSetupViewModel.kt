@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
+    @Assisted private val savedStateHandle: SavedStateHandle,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
@@ -58,7 +60,14 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
+            savedStateHandle: SavedStateHandle,
         ): PlayBroProductSetupViewModel
+    }
+
+    init {
+        if (!savedStateHandle.hasProductSections()) {
+            savedStateHandle.setProductSections(productSectionList)
+        }
     }
 
     val channelId: String
@@ -68,11 +77,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         get() = configStore.getMaxProduct()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
-    private val _selectedProductSectionList = MutableStateFlow(productSectionList)
+    private val _selectedProductSectionList = MutableStateFlow(savedStateHandle.getProductSections())
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
-    private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
-    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
+    private val _productTagSectionList = MutableStateFlow(savedStateHandle.getProductSections())
+    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Success)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
     private val _config = MutableStateFlow(
         ProductSetupConfig(shopName = userSession.shopName, maxProduct = configStore.getMaxProduct())
@@ -148,6 +157,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 }
             }
         }
+
+        viewModelScope.launch {
+            _productTagSectionList.collectLatest { sections ->
+                savedStateHandle[KEY_PRODUCT_SECTIONS] = sections
+            }
+        }
     }
 
     fun submitAction(action: ProductSetupAction) {
@@ -162,7 +177,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
             ProductSetupAction.SaveProducts -> handleSaveProducts()
-            is ProductSetupAction.LoadProductSummary -> handleLoadProductSummary()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
     }
@@ -334,6 +348,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     section.products.map { it.id }
                 },
             )
+
+            getProductTagSummary()
+
             _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
         }) {
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
@@ -347,21 +364,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
-    private fun handleLoadProductSummary() {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
-
-            getProductTagSummary()
-        }) {
-            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
-            _uiEvent.emit(
-                PlayBroProductChooserEvent.GetDataError(it) {
-                    submitAction(ProductSetupAction.LoadProductSummary)
-                }
-            )
-        }
-    }
-
     private fun handleDeleteProduct(product: ProductUiModel) {
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
@@ -398,5 +400,23 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private fun <T: Any> whenProductsNotSaving(fn: () -> T) {
         if (_saveState.value.isLoading) return
         fn()
+    }
+
+    private fun SavedStateHandle.getProductSections(): List<ProductTagSectionUiModel> {
+        return savedStateHandle.get<List<ProductTagSectionUiModel>>(KEY_PRODUCT_SECTIONS).orEmpty()
+    }
+
+    private fun SavedStateHandle.setProductSections(
+        productSectionList: List<ProductTagSectionUiModel>
+    ) {
+        savedStateHandle[KEY_PRODUCT_SECTIONS] = productSectionList
+    }
+
+    private fun SavedStateHandle.hasProductSections(): Boolean {
+        return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
+    }
+
+    companion object {
+        private const val KEY_PRODUCT_SECTIONS = "product_sections"
     }
 }

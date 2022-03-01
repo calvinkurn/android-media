@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.net.Network
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -33,13 +35,17 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
 import java.util.*
@@ -52,6 +58,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on January 24, 2022
  */
 class PlayBroadcastPreparationFragment @Inject constructor(
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
@@ -76,11 +83,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
+
     /** Lifecycle */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
         scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
 
@@ -95,7 +109,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupInsets(view)
+        setupInsets()
         setupListener()
         setupObserver()
 
@@ -139,7 +153,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Use uiState directly when uiState already return StateFlow")
-                        return parentViewModel.productSectionList
+                        return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
+                        else emptyList()
                     }
                 })
             }
@@ -167,9 +182,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
     }
 
-    private fun setupInsets(view: View) {
-        view.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+    private fun setupInsets() {
+        binding.viewActionBar.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
+
+        binding.flBroStartLivestream.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
+
+        binding.viewPreparationMenu.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
         }
     }
 
@@ -194,7 +232,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 //                    }
 //                }
 
-                startCountDown()
+                if(viewModel.isCoverAvailable()) startCountDown()
+                else {
+                    val errorMessage = getString(R.string.play_bro_cover_empty_error)
+                    toaster.showError(
+                        err = MessageErrorException(errorMessage),
+                        customErrMessage = errorMessage,
+                    )
+                    showCoverForm(true)
+                }
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
@@ -223,7 +269,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
                     binding.formTitle.setLoading(false)
-                    showErrorToaster(content.error)
+                    toaster.showError(content.error)
                 }
                 is NetworkResult.Success -> {
                     if (!it.hasBeenHandled) {
@@ -258,7 +304,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
                 is NetworkResult.Fail -> {
                     showCountdown(false)
-                    showErrorToaster(it.error)
+                    toaster.showError(
+                        err = it.error,
+                        customErrMessage = it.error.message
+                    )
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
@@ -289,7 +338,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
     }
-
 
     private fun renderProductMenu(prevState: PlayBroadcastUiState?, state: PlayBroadcastUiState) {
         if (prevState?.selectedProduct != state.selectedProduct) {
@@ -391,50 +439,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return ErrorHandler.getErrorMessage(context, err)
     }
 
-    private fun showErrorToaster(
-        err: Throwable,
-        customErrMessage: String? = null,
-        actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {  }
-    ) {
-        val errMessage = if (customErrMessage == null) {
-            ErrorHandler.getErrorMessage(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-        } else {
-            val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-            getString(
-                com.tokopedia.play_common.R.string.play_custom_error_handler_msg,
-                customErrMessage,
-                errCode
-            )
-        }
-        showToaster(errMessage, Toaster.TYPE_ERROR, actionLabel, actionListener)
-    }
-
-    private fun showToaster(
-        message: String,
-        type: Int = Toaster.TYPE_NORMAL,
-        actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {  }
-    ) {
-        view?.showToaster(
-            message = message,
-            actionLabel = actionLabel,
-            type = type,
-            actionListener = actionListener
-        )
-    }
-
     private fun handleLivePushError(state: PlayLiveViewState.Error) {
         when(state.error.type) {
-            PlayLivePusherErrorType.ConnectFailed -> showErrorToaster(
+            PlayLivePusherErrorType.ConnectFailed -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
                 actionLabel = getString(R.string.play_broadcast_try_again),
@@ -443,19 +450,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     parentViewModel.reconnectLiveStream()
                 }
             )
-            PlayLivePusherErrorType.SystemError -> showErrorToaster(
+            PlayLivePusherErrorType.SystemError -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_dialog_unsupported_device_desc),
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
             PlayLivePusherErrorType.NetworkLoss,
-            PlayLivePusherErrorType.NetworkPoor -> showErrorToaster(
+            PlayLivePusherErrorType.NetworkPoor -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_bro_error_network_problem),
                 actionLabel = getString(R.string.play_ok)
             )
-            else -> showErrorToaster(
+            else -> toaster.showError(
                 err = state.error,
                 customErrMessage = getString(R.string.play_broadcaster_default_error),
                 actionLabel = getString(R.string.play_ok)

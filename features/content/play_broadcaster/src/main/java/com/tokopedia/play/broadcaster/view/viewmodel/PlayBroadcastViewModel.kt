@@ -58,6 +58,9 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -67,7 +70,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-internal class PlayBroadcastViewModel @Inject constructor(
+class PlayBroadcastViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val livePusherMediator: PusherMediator,
     private val mDataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
@@ -85,8 +89,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val logger: PlayLogger
 ) : ViewModel() {
 
-    val isFirstStreaming: Boolean
-        get() = sharedPref.isFirstStreaming()
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): PlayBroadcastViewModel
+    }
 
     val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -173,9 +179,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherStats = MutableLiveData<LivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveLogState>()
 
-    /** Preparation */
-    private val _titleForm = MutableStateFlow(PlayTitleFormUiModel())
-
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
@@ -196,15 +199,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
             editStatus = it.editStatus
-        )
-    }
-
-    val preparationUiState = combine(
-        _titleForm,
-        _isExiting
-    ) { titleForm, _ ->
-        PlayBroadcastPreparationUiState(
-            titleForm = titleForm
         )
     }
 
@@ -286,6 +280,16 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val gson by lazy { Gson() }
 
     init {
+        val savedTitle = handle.get<String>(KEY_TITLE)
+        if (savedTitle != null) getCurrentSetupDataStore().setTitle(savedTitle)
+
+        viewModelScope.launch(dispatcher.computation) {
+            getCurrentSetupDataStore().getObservableTitle().collectLatest {
+                if (it is PlayTitleUiModel.HasTitle) handle[KEY_TITLE] = it.title
+                else handle.remove(KEY_TITLE)
+            }
+        }
+
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
         livePusherMediator.addListener(liveChannelStateListener)
@@ -362,14 +366,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
-    }
-
-    fun getHydraSetupData(): SerializableHydraSetupData {
-        return mDataStore.getSerializableData()
-    }
-
-    fun setHydraSetupData(setupData: SerializableHydraSetupData) {
-        mDataStore.setSerializableData(setupData)
     }
 
     suspend fun getChannelDetail() = getChannelById(channelId)
@@ -771,7 +767,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
-//        getCurrentSetupDataStore().setSelectedProducts(products)
         _productSectionList.value = productSectionList
     }
 
@@ -929,6 +924,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     fun getShopName(): String = userSession.shopName
 
     companion object {
+
+        private const val KEY_TITLE = "title"
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L

@@ -1,17 +1,25 @@
 package com.tokopedia.play.broadcaster.robot
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.model.*
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -19,6 +27,7 @@ import java.io.Closeable
  */
 internal class PlayBroProductSetupViewModelRobot(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
+    handle: SavedStateHandle = SavedStateHandle(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -27,6 +36,7 @@ internal class PlayBroProductSetupViewModelRobot(
 
     private val viewModel = PlayBroProductSetupViewModel(
         productSectionList,
+        handle,
         channelRepo,
         hydraConfigStore,
         userSession,
@@ -167,7 +177,7 @@ internal class PlayBroProductSetupViewModelRobot(
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    suspend fun submitAction(action: ProductSetupAction) {
+    suspend fun submitAction(action: ProductSetupAction) = act {
         viewModel.submitAction(action)
     }
 

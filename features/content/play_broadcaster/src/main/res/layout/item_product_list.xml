@@ -92,6 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN950"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="Stok 10"
@@ -101,7 +102,6 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:maxLines="2"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
@@ -137,7 +137,7 @@
                     />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_discount_price"
+                    android:id="@+id/tv_price_before_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl2"

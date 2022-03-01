@@ -69,7 +69,7 @@ class PlayToaster(
             ).orEmpty()
         }
 
-        showInternal(
+        showToaster(
             errMessage,
             Toaster.TYPE_ERROR,
             duration,
@@ -79,7 +79,7 @@ class PlayToaster(
         )
     }
 
-    private fun showInternal(
+    fun showToaster(
         message: String,
         type: Int = Toaster.TYPE_NORMAL,
         duration: Int = Toaster.LENGTH_SHORT,

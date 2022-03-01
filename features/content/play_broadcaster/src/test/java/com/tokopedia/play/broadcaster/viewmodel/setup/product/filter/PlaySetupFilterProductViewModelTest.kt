@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.product.viewmodel.filter
+package com.tokopedia.play.broadcaster.viewmodel.setup.product.filter
 
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder

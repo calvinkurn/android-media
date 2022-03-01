@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
+import com.tokopedia.play.broadcaster.setup.product.view.itemdecoration.EtalaseListItemDecoration
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -32,6 +33,7 @@ internal class EtalaseListViewComponent(
     init {
         view.adapter = adapter
         view.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        view.addItemDecoration(EtalaseListItemDecoration(view.context))
     }
 
     @OptIn(ExperimentalStdlibApi::class)

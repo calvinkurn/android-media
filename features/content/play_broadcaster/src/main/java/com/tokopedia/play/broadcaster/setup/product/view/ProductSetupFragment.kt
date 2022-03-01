@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.setup.product.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -11,12 +13,14 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
 class ProductSetupFragment @Inject constructor(
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val viewModelFactory: ViewModelProvider.Factory,
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
 ) : Fragment() {
@@ -64,7 +68,12 @@ class ProductSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[PlayBroadcastViewModel::class.java]
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity())
+        )[PlayBroadcastViewModel::class.java]
+
+        if (savedInstanceState != null) return
 
         if (parentViewModel.productSectionList.isEmpty()) openProductChooser(ChooserSource.Preparation)
         else openProductSummary()
@@ -113,10 +122,18 @@ class ProductSetupFragment @Inject constructor(
 
     fun getProductSetupViewModelFactory(): ViewModelProvider.Factory {
         if (!::productSetupViewModelProviderFactory.isInitialized) {
-            productSetupViewModelProviderFactory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            productSetupViewModelProviderFactory = object : AbstractSavedStateViewModelFactory(
+                this,
+                arguments
+            ) {
+                override fun <T : ViewModel?> create(
+                    key: String,
+                    modelClass: Class<T>,
+                    handle: SavedStateHandle
+                ): T {
                     return productSetupViewModelFactory.create(
-                        mDataSource?.getProductSectionList().orEmpty()
+                        mDataSource?.getProductSectionList().orEmpty(),
+                        handle,
                     ) as T
                 }
             }

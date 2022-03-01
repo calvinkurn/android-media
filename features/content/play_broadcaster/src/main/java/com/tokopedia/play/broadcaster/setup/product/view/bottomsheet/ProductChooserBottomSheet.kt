@@ -194,7 +194,12 @@ class ProductChooserBottomSheet @Inject constructor(
                     state.selectedProductSectionList,
                 )
                 renderSortChips(prevState?.loadParam, state.loadParam)
-                renderEtalaseChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
+                renderEtalaseChips(
+                    prevState?.loadParam,
+                    state.loadParam,
+                    prevState?.campaignAndEtalase,
+                    state.campaignAndEtalase
+                )
                 renderSearchBar(
                     state.loadParam,
                     state.focusedProductList,
@@ -287,9 +292,10 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderEtalaseChips(
         prevParam: ProductListPaging.Param?,
         param: ProductListPaging.Param,
+        prevCampaignAndEtalase: CampaignAndEtalaseUiModel?,
         campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
-        if (prevParam == param) return
+        if (prevParam == param && prevCampaignAndEtalase == campaignAndEtalase) return
 
         val selectedTitle = when (param.etalase) {
             is SelectedEtalaseModel.Campaign -> param.etalase.campaign.title

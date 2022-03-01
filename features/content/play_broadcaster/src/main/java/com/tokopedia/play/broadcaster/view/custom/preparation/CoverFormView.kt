@@ -5,9 +5,12 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationCoverFormBinding
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
 
 /**
  * Created By : Jonathan Darwin on January 26, 2022
@@ -40,6 +43,18 @@ class CoverFormView : ConstraintLayout {
         binding.icCloseCoverForm.setOnClickListener { mListener?.onCloseCoverForm() }
         binding.clCoverFormPreview.setOnClickListener {
             mListener?.onClickCoverPreview(isCoverAvailable)
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        binding.icCloseCoverForm.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
         }
     }
 
