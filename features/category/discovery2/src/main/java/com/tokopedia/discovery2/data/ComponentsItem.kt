@@ -73,6 +73,7 @@ data class ComponentsItem(
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
         var design: String = "v1",
+        var parentListSize:Int? = null,
         var filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),

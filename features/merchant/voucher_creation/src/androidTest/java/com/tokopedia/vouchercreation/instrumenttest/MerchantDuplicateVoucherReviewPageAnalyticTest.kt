@@ -9,9 +9,9 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.mock.MerchantDuplicateVoucherReviewMockModelConfig
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before

@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
+import com.tokopedia.discovery2.repository.banner.BannerRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -113,6 +115,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideMerchantVoucherRepository():MerchantVoucherRepository{
         return MerchantVoucherGQLRepository()
+    }
+
+    @Provides
+    fun provideBannerRepository(): BannerRepository {
+        return BannerGQLRepository()
     }
 
     @Provides

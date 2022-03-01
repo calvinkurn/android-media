@@ -15,6 +15,8 @@ object ProductManageDataLayer {
     const val EVENT_CATEGORY = "product list page"
     const val EVENT_NAME_EDIT_PRODUCT = "clickEditProduct"
     const val EVENT_CATEGORY_EDIT_PRODUCT = "edit product page"
+    const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_CATEGORY_PRODUCT_LIST_PAGE = "product list page"
 
     const val EVENT_ACTION_CLICK_ADD = "click add product"
     const val EVENT_ACTION_CLICK_MULTIPLE = "click multiple select"
@@ -92,6 +94,8 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK = "click save stock - "
     const val EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT = "click preview variant product"
 
+    const val EVENT_ACTION_CLICK_CREATE_PRODUCT_COUPON = "click buat kupon produk"
+
     const val ALLOCATION_SINGLE_PRODUCT = "single product"
     const val ALLOCATION_VARIANT_PRODUCT = "variant product"
 
@@ -111,6 +115,7 @@ object ProductManageDataLayer {
     const val BUSINESS_UNIT = "businessUnit"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT_BROADCAST_CHAT = "communication, value"
     const val CURRENT_SITE_BROADCAST_CHAT = "tokopediamarketplace"
     const val EVENT_ACTION_CLICK_ON_CAROUSEL = "click on carousel"
@@ -121,5 +126,7 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_BROADCAST_CHAT = "click broadcast chat"
     const val CURRENT_SITE_BROADCAST_CHAT_SA = "tokopediaseller"
     const val BUSINESS_UNIT_BROADCAST_CHAT_SA = "communication"
+    const val TOKOPEDIA_SELLER = "tokopediaseller"
+    const val PHYSICAL_GOODS = "physical goods"
 
 }

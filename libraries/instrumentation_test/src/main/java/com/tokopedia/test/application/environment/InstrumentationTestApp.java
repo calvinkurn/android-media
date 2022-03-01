@@ -15,9 +15,9 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.CacheManager;
@@ -250,7 +250,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
 
         @Override
@@ -260,7 +260,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
     }
 

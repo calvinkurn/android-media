@@ -4,6 +4,10 @@
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
     <string name="shop_settings_info">Informasi Toko</string>
+    <string name="shop_settings_info_operational_hours">Jam Operasional %1$s</string>
+    <string name="shop_settings_info_holiday_text">Libur (%1$s)</string>
+    <string name="shop_settings_operational_hours">Jadwal Operasional Toko</string>
+    <string name="shop_settings_set_operational_hours">Jam operasional toko</string>
 
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
@@ -28,6 +32,7 @@
     <string name="shop_desc_must_be_filled">Deskripsi Toko harus diisi.</string>
     <string name="shop_status_current_label">Status Toko Saat ini</string>
 
+    <!-- Shop settings operational hours -->
     <string name="label_close_shop_now">Tutup Toko Sekarang</string>
     <string name="schedule_your_shop_close">Jadwalkan Tutup Toko</string>
     <string name="schedule_shop_close">Jadwal Tutup Toko</string>
@@ -36,6 +41,57 @@
     <string name="shop_close_note">Catatan</string>
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
+    <string name="shop_operational_hour_ops_hour_holiday_illustration">https://ecs7.tokopedia.net/img/android/shop/ops_hour_holiday_dialog_image.png</string>
+    <string name="shop_operational_hour_seller_edu_revamp">https://seller.tokopedia.com/edu/jadwal-toko/</string>
+    <string name="shop_operational_hour_title_set_hour">Atur jam operasional toko</string>
+    <string name="shop_operational_hour_title_holiday">Atur tanggal toko libur</string>
+    <string name="shop_operational_hour_desc_holiday">Kamu bisa atur tanggal toko libur jika ada tanggal merah atau keperluan mendesak. Selama menggunakan fitur ini, produk-produk di tokomu tidak bisa dibeli, ya.</string>
+    <string name="shop_operational_hour_desc_set_hour">Di sini kamu bisa mengatur jadwal tokomu beroperasi secara rutin setiap minggunya.</string>
+    <string name="shop_operational_hour_desc_ticker_holiday">Saat toko libur, pembeli tidak bisa membeli produkmu. <![CDATA[<a href="%1$s">Baca Selengkapnya</a>]]></string>
+    <string name="shop_operational_hour_desc_ticker_holiday_url">https://seller.tokopedia.com/edu/atur-jadwal-toko/</string>
+    <string name="shop_operational_copy_to_all_day_text_description">Jam operasional tokomu untuk semua hari sudah sama.</string>
+    <string name="shop_operational_success_update_operational_hours">Jam operasional toko diubah</string>
+    <string name="shop_operational_failed_update_operational_hours">Oops, jam operasional tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
+    <string name="shop_operational_hour_24_hours">Buka 24 Jam</string>
+    <string name="shop_operational_hour_holiday">Libur rutin (Produkmu bisa dibeli)</string>
+    <string name="shop_operational_hour_holiday_cannot_atc">Libur rutin (Produkmu tidak bisa dibeli)</string>
+    <string name="shop_operational_hour_choose">Pilih Jam</string>
+    <string name="shop_operational_hour_apply_to_all_day">Terapkan ke Semua Hari</string>
+    <string name="shop_operational_hour_read_tnc_label">Baca Ketentuan</string>
+    <string name="shop_operational_hour_holiday_can_atc_description">Pesanan wajib diproses sesuai batas waktu, namun ada keringanan di penilaian Performa Toko-mu.\nBaca Ketentuan</string>
+    <string name="shop_operational_hour_holiday_cannot_atc_description">Pembeli tidak bisa membeli produk hingga tokomu buka kembali. Baca Ketentuan</string>
+    <string name="shop_operational_hour_choose_open_shop">Pilih jam buka</string>
+    <string name="shop_operational_hour_choose_close_shop">Pilih jam tutup</string>
+    <string name="shop_operational_hour_format_with_timezone">%1$s:%2$s WIB</string>
+    <string name="shop_operational_hour_endtime_info">Pilih antara jam %1$s - %2$s</string>
+    <string name="shop_operational_hour_dialog_title">Simpan perubahan jam\noperasional tokomu?</string>
+    <string name="shop_operational_hour_dialog_data_change_title">Yakin hapus perubahan?</string>
+    <string name="shop_operational_hour_dialog_description">Info jam operasional toko akan langsung\nberubah sesuai pengaturanmu.</string>
+    <string name="shop_operational_hour_dialog_data_change_description">Semua pengaturan jam operasional toko\nyang sudah dibuat akan hilang, lho.</string>
+    <string name="shop_operational_hour_dialog_data_change_holiday_description">Semua pengaturan tanggal libur tokomu\nyang dibuat akan hilang, lho.</string>
+    <string name="shop_operational_hour_is_on_holiday">Toko sedang libur</string>
+    <string name="shop_operational_hour_close_now_text">Tutup sekarang</string>
+    <string name="shop_operational_hour_is_on_holiday_until">sampai %1$s</string>
+    <string name="shop_operational_hour_delete_holiday_text">Hapus tanggal libur</string>
+    <string name="shop_operational_hour_selected_holiday_date_text">%1$s, %2$s</string>
+    <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu libur. <![CDATA[<a href="%1$s">Atur di Sini</a>]]></string>
+    <string name="shop_operational_hour_ticker_description_auto_chat_dummy_url">https://tokopedia.com/#open-auto-reply-chat-settings</string>
+    <string name="shop_operational_hour_set_holiday_schedule_title">Atur tanggal libur</string>
+    <string name="shop_operational_hour_set_holiday_schedule_success">Tanggal toko libur disimpan.</string>
+    <string name="shop_operational_hour_set_holiday_schedule_failed">Oops, tanggal libur tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
+    <string name="shop_operational_hour_abort_holiday_schedule_success">Tanggal toko libur dihapus.</string>
+    <string name="shop_operational_hour_abort_ongoing_holiday_schedule_success">Tokomu sudah buka kembali. Cek jam operasional hari ini, ya.</string>
+    <string name="shop_operational_hour_abort_holiday_schedule_failed">Oops, gagal hapus tanggal libur. Cek koneksi dan ulangi lagi, ya.</string>
+    <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan tanggal libur tokomu?</string>
+    <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus tanggal libur tokomu?</string>
+    <string name="shop_operational_hour_abort_shop_holiday_dialog_title">Tokomu siap beroperasi lagi?</string>
+    <string name="shop_operational_hour_abort_shop_holiday_dialog_desc">Yuk, bersiap untuk terima pesanan pembeli.\nCek jam operasional tokomu hari ini, ya.</string>
+    <string name="shop_operational_hour_set_holiday_schedule_dialog_desc">Pembeli tidak bisa membeli produk selama\ntokomu libur. Jangan lupa proses pesanan\nyang masuk sebelumnya, ya.</string>
+    <string name="shop_operational_hour_delete_holiday_schedule_dialog_desc">Tokomu akan kembali beroperasi dan dapat\nmenerima pesanan dari pembeli, ya.</string>
+    <string name="shop_operational_hour_holiday_warning_dialog_title">Ingin libur tiap hari?</string>
+    <string name="shop_operational_hour_holiday_warning_dialog_desc">Libur rutin tidak bisa diterapkan setiap hari,\nya. Pengaturan tidak tersimpan, tapi kamu\nbisa jadwalkan di pengaturan tanggal libur.</string>
+    <string name="shop_operational_hour_label_set_holiday_sch">Atur Libur</string>
+    <string name="shop_operational_hour_label_back">Balik</string>
 
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>
@@ -144,9 +200,15 @@
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
 
     <string name="label_open">Buka</string>
+    <string name="label_open_shop">Buka Toko</string>
     <string name="label_cancel">Batal</string>
+    <string name="label_back">Balik</string>
     <string name="label_close">Tutup</string>
     <string name="label_save">Simpan</string>
+    <string name="label_reset">Reset</string>
+    <string name="label_choose">Pilih</string>
+    <string name="label_ok">Oke</string>
+    <string name="connector">-</string>
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
     <string name="label_regular_merchant">Regular Merchant</string>
     <string name="label_power_merchant">Power Merchant</string>
@@ -164,7 +226,7 @@
     <string name="shop_page_setting_profile">Profil Toko</string>
     <string name="shop_page_setting_action_change_profile">Ubah profil toko</string>
     <string name="shop_page_setting_action_change_note">Ubah catatan toko</string>
-    <string name="shop_page_setting_action_manage_opening_time">Atur jam buka toko</string>
+    <string name="shop_page_setting_action_manage_opening_time">Atur jadwal operasional toko</string>
 <!--    <string name="shop_page_setting_shop_status">Status Toko</string>-->
     <!-- shipping -->
     <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
