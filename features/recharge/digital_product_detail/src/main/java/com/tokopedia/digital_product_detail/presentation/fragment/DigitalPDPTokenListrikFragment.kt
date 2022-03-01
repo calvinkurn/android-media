@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
@@ -142,7 +143,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         getDataFromBundle()
         setupKeyboardWatcher()
         initClientNumberWidget()
-        initEmptyState()
         observeData()
         getCatalogMenuDetail()
         onShowGreenBox()
@@ -183,11 +183,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun initEmptyState() {
-        // [Misael] replace with catalogMenuDetail.banners
-        binding?.rechargePdpTokenListrikEmptyStateWidget?.setImageUrl(
-            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
-        )
+    private fun initEmptyState(banners: List<TopupBillsBanner>) {
+        binding?.rechargePdpTokenListrikEmptyStateWidget?.setImageUrl(banners[0].imageUrl)
     }
 
     private fun observeData() {
@@ -277,6 +274,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
         getFavoriteNumber()
+        initEmptyState(data.banners)
 
         renderPrefill(data.userPerso)
         renderRecommendation(data.recommendations)

@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -154,7 +155,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         getDataFromBundle()
         setupKeyboardWatcher()
         initClientNumberWidget()
-        initEmptyState()
         setAnimationAppBarLayout()
         observeData()
 
@@ -345,6 +345,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
         getFavoriteNumber()
+        initEmptyState(data.banners)
 
         renderPrefill(data.userPerso)
         renderRecommendation(data.recommendations)
@@ -610,11 +611,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun initEmptyState() {
-        // [Misael] replace with catalogMenuDetail.banners
-        binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(
-            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
-        )
+    private fun initEmptyState(banners: List<TopupBillsBanner>) {
+        binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(banners[0].imageUrl)
     }
 
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {
