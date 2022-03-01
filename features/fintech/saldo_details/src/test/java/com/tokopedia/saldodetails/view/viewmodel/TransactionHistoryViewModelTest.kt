@@ -17,6 +17,7 @@ import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
@@ -221,6 +222,15 @@ class TransactionHistoryViewModelTest {
         assert(viewModel.getEventLabelForList(RefundTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
         assert(viewModel.getEventLabelForList(IncomeTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
     }
+
+    @Test
+    fun `Test select transaction filter valid selection`() {
+        viewModel.selectTransactionFilter(1, IncomeTransaction)
+        assert(viewModel.currentSelectedFilter == 1)
+        assert(viewModel.preSelected == 0)
+        assert(viewModel.filterLiveData.value == IncomeTransaction)
+    }
+
 
 
 }
