@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.activateCheckout.presentation.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -30,7 +31,6 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
-    private var activationCheckoutFragment: ActivationCheckoutFragment? = null
 
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
@@ -72,8 +72,8 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
                 bundle.putString(PARAM_GATEWAY_CODE, it.getString(PARAM_GATEWAY_CODE))
             }
 
-            activationCheckoutFragment = ActivationCheckoutFragment.newInstance(bundle)
-            return activationCheckoutFragment
+
+            return  ActivationCheckoutFragment.newInstance(bundle)
         }
     }
 
@@ -113,7 +113,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
     override fun getComponent() = pdpSimulationComponent
     override fun setGatewayValue(gatewaySelected: Int) {
-        activationCheckoutFragment?.updateSelectedTenure(gatewaySelected)
+        (this.fragment as ActivationCheckoutFragment).updateSelectedTenure(gatewaySelected)
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
