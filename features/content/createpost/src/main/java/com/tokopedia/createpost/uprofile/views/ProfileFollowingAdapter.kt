@@ -16,12 +16,14 @@ import com.tokopedia.createpost.uprofile.model.ProfileFollowingListBase
 import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 
@@ -104,6 +106,23 @@ open class ProfileFollowingAdapter(
                 updateToFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
+                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext,
+                            checkWifi = true,
+                            checkCellular = true,
+                            checkEthernet = true)){
+
+                        val snackBar = Toaster.build(
+                            holder.btnAction as View,
+                            "Gagal unfollow. Coba lagi ya.",
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        )
+
+                        snackBar.show()
+
+                        return@setOnClickListener
+                    }
+
                     if (userSession?.isLoggedIn == false) {
                         fragment.startActivityForResult(
                             RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
@@ -119,6 +138,23 @@ open class ProfileFollowingAdapter(
                 updateToUnFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
+                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext,
+                            checkWifi = true,
+                            checkCellular = true,
+                            checkEthernet = true)){
+
+                        val snackBar = Toaster.build(
+                            holder.btnAction as View,
+                            "Gagal follow. Coba lagi ya.",
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        )
+
+                        snackBar.show()
+
+                        return@setOnClickListener
+                    }
+
                     if (userSession?.isLoggedIn == false) {
                         fragment.startActivityForResult(
                             RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
