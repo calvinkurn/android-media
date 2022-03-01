@@ -48,7 +48,7 @@ class AnalyticsUpload @Inject constructor(
     }
 
     companion object {
-        const val PARTNER_NAME = "Gopay-Cicil"
+        const val PARTNER_NAME = "Go-Cicil"
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
