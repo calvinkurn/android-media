@@ -912,7 +912,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             finalShippingFee = 0;
         }
         totalPrice = totalItemPrice + finalShippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-                shipmentCostModel.getProductDiscountAmount() - tradeInPrice;
+                shipmentCostModel.getProductDiscountAmount() - tradeInPrice + totalAddOnPrice;
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
