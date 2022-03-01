@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
@@ -30,6 +31,9 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
             if (simulationUiModel.isSelected) CardUnify.TYPE_BORDER_ACTIVE
             else CardUnify.TYPE_BORDER
         )
+        // need custom selected color
+        if (simulationUiModel.isSelected) view.clSimulationCard.setBackgroundColor(ContextCompat.getColor(view.context,com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+        else view.clSimulationCard.setBackgroundColor(ContextCompat.getColor(view.context,com.tokopedia.unifyprinciples.R.color.Unify_NN0))
     }
 
     companion object {
