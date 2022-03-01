@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -682,9 +681,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             submitButton?.isLoading = true
             validateInput()
             validateSpecificationList()
-        }
-
-        setupDefaultFieldMessage()
+               setupDefaultFieldMessage()
         setupSpecificationField()
         setupProductPriceRecommendationField()
         enableProductNameField()
