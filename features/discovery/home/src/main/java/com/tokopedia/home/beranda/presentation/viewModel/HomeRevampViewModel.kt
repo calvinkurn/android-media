@@ -636,7 +636,7 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             deleteWidget(homePayLaterWidgetDataModel, index)
             launchCatchError(coroutineContext, {
-                deletePayLaterWidgetUseCase.get().getPayLaterWidgeCloseData({
+                deletePayLaterWidgetUseCase.get().getPayLaterWidgetCloseData({
                     deleteWidget(homePayLaterWidgetDataModel, index)
                 },{ deleteWidget(homePayLaterWidgetDataModel, index)})
             }){

@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ClosePayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
         GraphqlUseCase<PayLaterHomeWidgetCloseResponse>(graphqlRepository) {
 
-    fun getPayLaterWidgeCloseData(
+    fun getPayLaterWidgetCloseData(
             onSuccess: (PayLaterCloseSuccessResponse) -> Unit,
             onError: (Throwable) -> Unit
     ) {

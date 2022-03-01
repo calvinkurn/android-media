@@ -1,7 +1,9 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gopayhomewidget.domain.data.PayLaterCloseSuccessResponse
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
+import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -21,6 +23,8 @@ class HomeViewModelPayLaterHomeWidgetTest {
 
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private val getGetPayLaterWidgetUseCase = mockk<GetPayLaterWidgetUseCase>(relaxed = true)
+    private val getGetPayLaterWidgetCloseUsecase = mockk<ClosePayLaterWidgetUseCase>(relaxed = true)
+
 
     private val errorMessage = "Failed"
     private val errorMockThrowable = Throwable(message = errorMessage)
@@ -87,6 +91,32 @@ class HomeViewModelPayLaterHomeWidgetTest {
         }
     }
 
+    @Test
+    fun `PayLaterWidget close Button Api Call`() {
+        val mockChannel = DynamicHomeChannel.Channels()
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDynamicChannelModel(
+                        list = listOf(
+                                HomePayLaterWidgetDataModel( null, mockChannel)
+                        ))
+        )
+        val result = mockk<PayLaterCloseSuccessResponse>(relaxed = true)
+        coEvery { getGetPayLaterWidgetCloseUsecase.getPayLaterWidgetCloseData( any(), any()) }
+                .coAnswers {
+                    firstArg<(PayLaterCloseSuccessResponse) -> Unit>().invoke(result)
+                }
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase,
+                deletePayLaterWidgetUseCase = getGetPayLaterWidgetCloseUsecase
+        )
+
+        homeViewModel.deletePayLaterWidgetLocally()
+
+        homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel }?.let {
+            assert((it as HomePayLaterWidgetDataModel).payLaterWidgetData == null)
+        }
+
+    }
     @Test
     fun `PayLaterWidget must be deleted when getPayLaterWidgetData Api result is failed`() {
         val mockChannel = DynamicHomeChannel.Channels()
