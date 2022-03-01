@@ -37,10 +37,18 @@ class ProductVideoAutoplay<T, R : T>(
             && firstVisibleItemIndex != -1
             && lastCompleteVisibleItemIndex != -1
         ) {
-            val subList = itemList.subList(
-                firstVisibleItemIndex,
-                lastCompleteVisibleItemIndex + 1
-            )
+            val subList = try {
+                val lastIndex = lastCompleteVisibleItemIndex + 1
+                val itemListSize = itemList.size
+                if(itemListSize > firstVisibleItemIndex && lastIndex <= itemListSize) {
+                    itemList.subList(firstVisibleItemIndex, lastIndex)
+                } else {
+                    emptyList()
+                }
+            } catch (t: Throwable) {
+                Timber.e(t)
+                emptyList()
+            }
             val visibleItems : List<R> = filter(subList)
             val currentlyVisibleVideoPlayers = visibleItems.map {
                 val index = itemList.indexOf(it)
