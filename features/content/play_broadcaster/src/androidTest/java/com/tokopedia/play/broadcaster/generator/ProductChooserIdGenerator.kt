@@ -2,8 +2,10 @@ package com.tokopedia.play.broadcaster.generator
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
@@ -39,6 +41,7 @@ import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -112,15 +115,26 @@ class ProductChooserIdGenerator {
     private val configStore = mockk<HydraConfigStore>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockViewModelFactory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return mockk<PlayBroadcastViewModel>(relaxed = true) as T
+    private val mockParentViewModelFactoryCreator = object : PlayBroadcastViewModelFactory.Creator {
+        override fun create(activity: FragmentActivity): PlayBroadcastViewModelFactory {
+            return PlayBroadcastViewModelFactory(
+                activity = activity,
+                playBroViewModelFactory = object : PlayBroadcastViewModel.Factory {
+                    override fun create(handle: SavedStateHandle): PlayBroadcastViewModel {
+                        return mockk(relaxed = true)
+                    }
+                }
+            )
         }
     }
     private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
-        override fun create(productSectionList: List<ProductTagSectionUiModel>): PlayBroProductSetupViewModel {
+        override fun create(
+            productSectionList: List<ProductTagSectionUiModel>,
+            savedStateHandle: SavedStateHandle
+        ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
                 productSectionList = mockProductSections,
+                savedStateHandle = savedStateHandle,
                 repo = repo,
                 configStore = configStore,
                 userSession = userSession,
@@ -132,7 +146,7 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(mockViewModelFactory, mockProductSetupViewModelFactory)
+                ProductSetupFragment(mockParentViewModelFactoryCreator, mockProductSetupViewModelFactory)
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
