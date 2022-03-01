@@ -221,6 +221,7 @@ const val CATEGORY_QUEST_WIDGET = "quest widget"
 const val ACTION_SHOP_CARD_VIEW = "shop card impression"
 const val ACTION_SHOP_CARD_CLICK = "shop card click"
 const val KEY_CREATIVE_SLOT = "creative_slot"
+const val KEY_UNIQUE_SHOP_CARD_IMPRESSION = "shop_card_rilisan_spesial"
 
 const val ANCHOR_TAB_COMPONENT = "anchor_tab"
 const val ANCHOR_TAB_IMPRESSION = "anchor tab impression"
