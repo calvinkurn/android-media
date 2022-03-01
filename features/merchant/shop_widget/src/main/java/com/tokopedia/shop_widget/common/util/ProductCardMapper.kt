@@ -6,6 +6,8 @@ import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 object ProductCardMapper {
+    const val LABEL_POSITION_INTEGRITY = "integrity"
+
     private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
             position = labelGroupUiModel.position,
