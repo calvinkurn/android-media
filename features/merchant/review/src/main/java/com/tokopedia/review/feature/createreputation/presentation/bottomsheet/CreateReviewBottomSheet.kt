@@ -28,7 +28,6 @@ import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
@@ -88,9 +87,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
         const val BAD_RATING_OTHER_ID = "6"
-        const val BAD_RATING_FLOW_EXPERIMENT_KEY = "Bad_ReviewForm_AB"
-        const val OLD_FORM_VARIANT = "old_form"
-        const val BAD_RATING_FORM_VARIANT = "bad_rating_form"
 
         fun createInstance(
             rating: Int,
@@ -183,7 +179,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
-        if (shouldShowBadRatingReasons()) setUpBadRatingCategoriesRecyclerView()
+        setUpBadRatingCategoriesRecyclerView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -413,9 +409,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
                 if (isGoodRating) {
-                    if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.hide()
+                    badRatingCategoryRecyclerView?.hide()
                 } else {
-                    if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.show()
+                    badRatingCategoryRecyclerView?.show()
                 }
                 setTemplateVisibility()
                 clearFocusAndHideSoftInput(view)
@@ -501,11 +497,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeProgressBarState() {
         createReviewViewModel.progressBarState.observe(this, {
-            if (shouldShowBadRatingReasons()) {
-                progressBar?.setProgressBarValue(it)
-                return@observe
-            }
-            progressBar?.setProgressBarValueForOldFlow(it)
+            progressBar?.setProgressBarValue(it)
         })
     }
 
@@ -1003,11 +995,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             createReviewViewModel.updateButtonState(isGoodRating)
         } else {
             createReviewViewModel.updateButtonState(
-                if (shouldShowBadRatingReasons()) {
-                    createReviewViewModel.isBadRatingReasonSelected(isTextAreaNotEmpty)
-                } else {
-                    isTextAreaNotEmpty
-                }
+                createReviewViewModel.isBadRatingReasonSelected(isTextAreaNotEmpty)
             )
         }
     }
@@ -1200,14 +1188,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         observeButtonState()
         observeProgressBarState()
         observePostSubmitBottomSheetData()
-        if (shouldShowBadRatingReasons()) observeBadRatingCategories()
+        observeBadRatingCategories()
     }
 
     private fun getData() {
         getForm()
         getIncentiveOvoData(productId, reputationId)
         getTemplates()
-        if (shouldShowBadRatingReasons()) getBadRatingCategories()
+        getBadRatingCategories()
     }
 
     private fun setOnTouchListenerToHideKeyboard() {
@@ -1339,17 +1327,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             adapter = badRatingCategoriesAdapter
             addItemDecoration(ReviewBadRatingItemDecoration())
-        }
-    }
-
-    private fun shouldShowBadRatingReasons(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                BAD_RATING_FLOW_EXPERIMENT_KEY,
-                OLD_FORM_VARIANT
-            ) == BAD_RATING_FORM_VARIANT
-        } catch (t: Throwable) {
-            false
         }
     }
 
