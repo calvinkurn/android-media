@@ -27,8 +27,8 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
             field = value
             field?.let { listener ->
                 val userSession = UserSession(context)
-                binding?.tokonowEmptyStateButtonChangeAddress?.setOnClickListener {
-                    listener.onChangeAddressClicked()
+                binding?.tokonowEmptyStatePrimaryBtn?.setOnClickListener {
+                    listener.onPrimaryBtnClicked()
 
                     if (listener.onGetNoAddressEmptyStateEventCategoryTracker().isNotEmpty()) {
                         TokoNowCommonAnalytics.onClickChangeAddressOnOoc(
@@ -37,8 +37,8 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
                         )
                     }
                 }
-                binding?.tokonowEmptyStateButtonReturn?.setOnClickListener {
-                    listener.onReturnClick()
+                binding?.tokonowEmptyStateSecondaryBtn?.setOnClickListener {
+                    listener.onSecondaryBtnClicked()
 
                     if (listener.onGetNoAddressEmptyStateEventCategoryTracker().isNotEmpty()) {
                         TokoNowCommonAnalytics.onClickShopOnTokopediaOoc(
@@ -50,13 +50,29 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
             }
         }
 
+    fun setTitle(title: String) {
+        binding?.tokonowEmptyStateTitle?.text = title
+    }
+
+    fun setDescription(description: String) {
+        binding?.tokonowEmptyStateDesc?.text = description
+    }
+
+    fun setPrimaryBtnText(text: String) {
+        binding?.tokonowEmptyStatePrimaryBtn?.text = text
+    }
+
+    fun setSecondaryBtnText(text: String) {
+        binding?.tokonowEmptyStateSecondaryBtn?.text = text
+    }
+
     private fun initRemoteView() {
         binding?.tokonowEmptyStateIcon?.setImageUrl(IMG_NO_ADDRESS)
     }
 
     interface ActionListener {
-        fun onChangeAddressClicked()
-        fun onReturnClick()
+        fun onPrimaryBtnClicked()
+        fun onSecondaryBtnClicked()
         fun onGetNoAddressEmptyStateEventCategoryTracker(): String
     }
 }

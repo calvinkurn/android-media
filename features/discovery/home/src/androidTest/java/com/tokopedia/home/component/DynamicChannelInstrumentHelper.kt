@@ -171,7 +171,37 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
 fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
     waitForData()
     clickRecommendationFeedTab()
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+    val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
+    val rvCount = recyclerView.adapter!!.itemCount
+    for (i in 0 until rvCount) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun clickHomeRecommendationItem(): ViewAction? {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click home recommendation item"
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val bannerView: View? = view.findViewById(R.id.bannerImageView)
+            if (bannerView != null) {
+                bannerView.performClick()
+            } else {
+                view.performClick()
+            }
+        }
+    }
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){

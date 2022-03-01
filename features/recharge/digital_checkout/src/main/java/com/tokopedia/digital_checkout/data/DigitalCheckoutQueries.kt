@@ -96,6 +96,7 @@ object DigitalCheckoutQueries {
             atc_source
             admin_fee_text
             admin_fee
+            admin_fee_included
           }
         }
     """.trimIndent()

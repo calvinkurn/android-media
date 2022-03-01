@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -24,6 +25,7 @@ class EditorItemSelectionAdapter constructor(
 ) : RecyclerView.Adapter<EditorItemSelectionAdapter.EditorItemSelectionViewHolder>() {
 
     private var selectedPosition = 0
+    private val listViewHolder = mutableListOf<EditorItemSelectionViewHolder>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,11 +37,13 @@ class EditorItemSelectionAdapter constructor(
     override fun onBindViewHolder(holder: EditorItemSelectionViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
+        listViewHolder.add(holder)
 
         holder.itemView.setOnClickListener {
             listener?.onItemSelected(position, item.placeholderBitmap, item.itemType)
             onItemSelected(position)
         }
+
     }
 
     fun setListener(listenerItem: EditorItemSelectionListener?) {
@@ -47,8 +51,17 @@ class EditorItemSelectionAdapter constructor(
     }
 
     fun clear() {
+        items.forEach {
+            it.placeholderBitmap?.recycle()
+            it.placeholderBitmap = null
+        }
+        listViewHolder.forEach {
+            it.clearImage()
+        }
+        listViewHolder.clear()
         items.clear()
         selectedPosition = 0
+        listener = null
         notifyDataSetChanged()
     }
 
@@ -58,6 +71,7 @@ class EditorItemSelectionAdapter constructor(
     }
 
     fun updateAll(list: List<ItemSelection>) {
+        listViewHolder.clear()
         items.clear()
         items.addAll(list)
         notifyDataSetChanged()
@@ -86,6 +100,12 @@ class EditorItemSelectionAdapter constructor(
         private val txtPlaceholder = itemView.findViewById<TextView>(R.id.txt_placeholder)
         private val viewSelection = itemView.findViewById<View>(R.id.view_selection)
         private val txtItem = itemView.findViewById<TextView>(R.id.txt_item)
+
+        //clear image with setbackground to null to clear memory
+        fun clearImage() {
+            imgItemPlaceholder.loadImageRounded(null, 0f) {
+            }
+        }
 
         fun bind(item: ItemSelection?) {
             val radius = context.resources.getDimensionPixelSize(R.dimen.image_editor_rounded)
@@ -122,9 +142,8 @@ class EditorItemSelectionAdapter constructor(
             // handling the placeholder of item
             when {
                 item.placeholderBitmap != null -> {
-                    imgItemPlaceholder.loadImageRounded(item.placeholderBitmap, radius.toFloat()) {
-                        centerCrop()
-                    }
+                    imgItemPlaceholder.scaleType = ImageView.ScaleType.CENTER_CROP
+                    imgItemPlaceholder.setImageBitmap(item.placeholderBitmap)
                 }
                 item.placeholderResId != 0 -> {
                     imgItemPlaceholder.loadImage(item.placeholderResId)
@@ -150,6 +169,7 @@ class EditorItemSelectionAdapter constructor(
         }
 
     }
+
 
     interface EditorItemSelectionListener {
         fun onItemSelected(position: Int, bitmap: Bitmap?, type: Int)

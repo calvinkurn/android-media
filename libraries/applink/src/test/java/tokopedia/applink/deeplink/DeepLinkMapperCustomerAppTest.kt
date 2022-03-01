@@ -16,7 +16,6 @@ import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -376,11 +375,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop operational hourappLink then should return tokopedia internal shop operational hour in customerapp`() {
+    fun `check shop operational hour appLink then should return tokopedia internal shop operational hour in customerapp`() {
         val mockShopId = "12345"
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/widget/operational-hour/$mockShopId/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_OPERATIONAL_HOUR, mockShopId)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop mvc locked to product shop id then should return tokopedia internal mvc locked to product shop id in customerapp`() {
+        val mockShopId = "12345"
+        val mockVoucherId = "6789"
+        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
@@ -1049,6 +1057,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check shop score detail appLink then should return tokopedia internal shop score detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/performance"
         assertEqualsDeepLinkMapper(ApplinkConst.SHOP_SCORE_DETAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop score detail appLink with coachmark param then should return tokopedia internal shop score performance with coachmark param in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/performance?coachmark=disabled"
+        val coachMarkParam = mapOf("coachmark" to "disabled")
+        val actualDeeplink = UriUtil.buildUriAppendParam(ApplinkConst.SHOP_SCORE_DETAIL, coachMarkParam)
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 
     @Test
