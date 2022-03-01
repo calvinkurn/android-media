@@ -219,24 +219,28 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                             }
                         }
                         _addOnUiModel.value.let {
-                            addOnData = listOf(
-                                    AddOnDataRequest().apply {
-                                        addOnId = it.addOnId.toLongOrZero()
-                                        addOnQty = it.addOnQty
-                                        addOnMetadata = AddOnMetadataRequest().apply {
-                                            addOnNote = AddOnNoteRequest().apply {
-                                                isCustomNote = it.isCustomNote
-                                                to = it.addOnNoteTo
-                                                from = it.addOnNoteFrom
-                                                notes = if (isCustomNote) {
-                                                    it.addOnNote
-                                                } else {
-                                                    ""
+                            if (it.isAddOnSelected) {
+                                addOnData = listOf(
+                                        AddOnDataRequest().apply {
+                                            addOnId = it.addOnId.toLongOrZero()
+                                            addOnQty = it.addOnQty
+                                            addOnMetadata = AddOnMetadataRequest().apply {
+                                                addOnNote = AddOnNoteRequest().apply {
+                                                    isCustomNote = it.isCustomNote
+                                                    to = it.addOnNoteTo
+                                                    from = it.addOnNoteFrom
+                                                    notes = if (isCustomNote) {
+                                                        it.addOnNote
+                                                    } else {
+                                                        ""
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                            )
+                                )
+                            } else {
+                                addOnData = emptyList()
+                            }
                         }
                     }
             )
