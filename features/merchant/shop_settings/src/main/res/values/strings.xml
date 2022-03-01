@@ -92,6 +92,7 @@
     <string name="shop_operational_hour_holiday_warning_dialog_desc">Libur rutin tidak bisa diterapkan setiap hari,\nya. Pengaturan tidak tersimpan, tapi kamu\nbisa jadwalkan di pengaturan tanggal libur.</string>
     <string name="shop_operational_hour_label_set_holiday_sch">Atur Libur</string>
     <string name="shop_operational_hour_label_back">Balik</string>
+    <string name="shop_operational_hour_image_ongoing_holiday_container_url">https://ecs7.tokopedia.net/img/android/shop/ops_hour_ongoing_holiday_image.png</string>
 
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>
