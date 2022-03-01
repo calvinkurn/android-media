@@ -1,6 +1,5 @@
 package com.tokopedia.videoTabComponent.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -319,14 +318,19 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
+                rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
                 if (dy > 0) {
                     // Scrolling up
                         isScrollingUp = true
-                    rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
+                    if (dy > 10)
+                    rvWidget?.setHeaderViewVisibility(false)
+
                 } else {
                     // Scrolling down
                         isScrollingUp = false
-                    rvWidget?.setShouldShowStickyHeaderValue(true, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
+                    if (dy < -10)
+                    rvWidget?.setHeaderViewVisibility(true)
+
                 }
 
             }
