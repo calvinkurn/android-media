@@ -420,6 +420,9 @@ data class DataItem(
         @SerializedName("backgroud_image_url")
         var backgroundImageUrl : String? = "",
 
+        @SerializedName("catalog_slugs")
+        var catalogSlug : List<String?>? = null,
+
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
 

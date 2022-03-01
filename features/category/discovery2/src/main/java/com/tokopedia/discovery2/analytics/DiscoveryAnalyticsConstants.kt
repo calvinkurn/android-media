@@ -224,3 +224,6 @@ const val ANCHOR_TAB_IMPRESSION = "anchor tab impression"
 const val ANCHOR_TAB_CLICK = "anchor tab click"
 const val ANCHOR_TYPE_TEXT_ONLY = "Title-Only"
 const val ANCHOR_TYPE_ICON_TEXT = "Icon-Text"
+
+const val ACTION_VIEW_MY_COUPON  = "view my coupon"
+const val ACTION_CLICK_MY_COUPON  = "click coupon"
