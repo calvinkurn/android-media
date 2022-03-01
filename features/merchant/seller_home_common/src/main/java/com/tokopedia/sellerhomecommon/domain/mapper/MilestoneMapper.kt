@@ -28,7 +28,8 @@ class MilestoneMapper @Inject constructor(
         return data.map {
             val missions = mapGetMilestoneMission(it.mission.orEmpty())
             val finishCard = mapGetMilestoneFinish(it.finishMission)
-            val allMissions = if (missions.all { m -> m.missionCompletionStatus }) {
+            val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
+            val allMissions = if (areAllMissionsCompleted) {
                 finishCard.plus(missions)
             } else {
                 missions.plus(finishCard)
