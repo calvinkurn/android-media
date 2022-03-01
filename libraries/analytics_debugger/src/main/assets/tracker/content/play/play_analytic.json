@@ -366,28 +366,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "impression on merchant voucher",
-      "event": "viewGroupChatIris",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click on merchant voucher",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*"
-    },
-    {
       "eventAction": "view on featured product",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
