@@ -8,6 +8,7 @@ object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {
         return ChannelModel(
                 id = channel.id,
+                name = channel.name,
                 groupId = channel.groupId,
                 type = channel.type,
                 layout = channel.layout,
