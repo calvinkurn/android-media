@@ -27,7 +27,7 @@ class SubmitBioUsernameUseCase @Inject constructor(private val repository: Graph
         val request = GraphqlRequest(graphqlQuery(), SubmitBioUsernameResponse::class.java, mapOf(paramQuery to param))
         val response = repository.response(listOf(request))
         val error = response.getError(SubmitBioUsernameResponse::class.java)
-        if ( error.isNotEmpty() || error != null) {
+        if ( error != null && error.isNotEmpty()) {
             throw SubmitProfileError(error.first(), error.first().message)
         } else {
             return response.getData(SubmitBioUsernameResponse::class.java)

@@ -27,6 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/et_bio"
         android:visibility="gone"
+        app:unify_text_field_input_type="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_text_field_label="@string/label_bio"

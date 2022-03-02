@@ -651,6 +651,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
         const val REQUEST_CODE_CHANGE_EMAIL = 305
+        const val REQUEST_CODE_CHANGE_USERNAME_BIO = 306
+
 
         const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 

@@ -10,16 +10,21 @@ import com.tokopedia.profilecompletion.changebiousername.data.SubmitProfileParam
 import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidation
 import com.tokopedia.profilecompletion.changebiousername.domain.usecase.SubmitBioUsernameUseCase
 import com.tokopedia.profilecompletion.changebiousername.domain.usecase.ValidateUsernameUseCase
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedData
+import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ChangeBioUsernameViewModel @Inject constructor(
+    private val profileFeedUsecase: ProfileFeedInfoUseCase,
     private val validateUseCase: ValidateUsernameUseCase,
     private val submitProfileUseCase: SubmitBioUsernameUseCase,
+    private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -40,15 +45,26 @@ class ChangeBioUsernameViewModel @Inject constructor(
 
     var validationUsernameJob: Job? = null
 
+    private val _profileFeed = MutableLiveData<Result<ProfileFeedData>>()
+
+    val profileFeed: LiveData<Result<ProfileFeedData>>
+    get() = _profileFeed
+
     val _loadingState = MutableLiveData<Boolean>()
 
     val loadingState: LiveData<Boolean>
         get() = _loadingState
 
+    fun getProfileFeed() {
+        launchCatchError(block = {
+            val result = profileFeedUsecase(userSession.userId)
+            _profileFeed.value = Success(result.profileFeedData)
+        }, onError = {
+            _profileFeed.value = Fail(it)
+        })
+    }
+
     fun validateUsername(username: String) {
-        if (username.length < 4) {
-            return
-        }
         if (validationUsernameJob != null && validationUsernameJob?.isActive == true) {
             validationUsernameJob?.cancel()
         }

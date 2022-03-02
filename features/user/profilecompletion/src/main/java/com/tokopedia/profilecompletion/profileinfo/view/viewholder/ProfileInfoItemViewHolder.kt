@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.profileinfo.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.databinding.ProfileItemViewBinding
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoItemUiModel
@@ -15,14 +16,18 @@ class ProfileInfoItemViewHolder(val view: View,
 
     override fun bind(element: ProfileInfoItemUiModel?) {
 	if(element?.isEnable == true) {
-	    binding?.root?.setOnClickListener {
+	    binding?.containerClick?.setOnClickListener {
 		element.action.invoke()
 		listener.onItemClicked(element)
 	    }
 	}
 	binding?.fragmentProfileItemTitle?.text = element?.title
 	binding?.fragmentProfileItemValue?.text = element?.itemValue
-	binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
+	if (element?.rightIcon != -1) {
+		binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
+	} else {
+		binding?.fragmentProfileItemIcon?.hide()
+	}
     }
 
     companion object {
