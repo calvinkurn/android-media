@@ -116,7 +116,13 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                         }
-                        val tenureType = orderPayment.walletData.goCicilData.selectedTerm?.installmentTerm ?: 0
+                        val tenureType: String = if (orderPayment.walletData.isGoCicil && orderPayment.walletData.goCicilData.selectedTerm != null) {
+                            orderPayment.walletData.goCicilData.selectedTerm.installmentTerm.toString()
+                        } else if (orderPayment.creditCard.selectedTerm != null) {
+                            orderPayment.creditCard.selectedTerm.term.toString()
+                        } else {
+                            ""
+                        }
                         products.forEach {
                             if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
                                 orderSummaryAnalytics.eventPPClickBayar(userId,

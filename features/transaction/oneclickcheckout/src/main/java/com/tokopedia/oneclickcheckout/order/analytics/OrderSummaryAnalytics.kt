@@ -135,14 +135,14 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
             userId: String,
             paymentId: String,
             paymentType: String,
-            tenureType: Int,
+            tenureType: String,
             ee: Map<String, Any>
     ) {
         val dataLayer = getGtmData(
                 EventName.CHECKOUT,
                 EventCategory.ORDER_SUMMARY,
                 if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
-                "success"
+                "success - $paymentType - $tenureType"
         )
         dataLayer[Key.E_COMMERCE] = ee
         dataLayer[Key.PAYMENT_ID] = paymentId
@@ -523,7 +523,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         val gtmData = getGtmData(
                 EventName.VIEW_PP_IRIS,
                 EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_PAYMENT_METHOD,
+                EventAction.VIEW_TENURE_OPTION,
                 tenureType
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM

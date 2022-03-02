@@ -1361,19 +1361,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
                 GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
-                    viewModel.orderCart, viewModel.orderPayment.value, orderTotal.orderCost, userSession.get().userId,
-                    object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                        override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
-                            viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)
-                        }
-
-                        override fun onFailedLoadInstallment() {
-                            view?.let { v ->
-                                Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                        viewModel.orderCart, viewModel.orderPayment.value, orderTotal.orderCost, userSession.get().userId,
+                        object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                            override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
+                                viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)
                             }
-                        }
-                    })
-//                orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
+
+                            override fun onFailedLoadInstallment() {
+                                view?.let { v ->
+                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                        })
+                orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
             }
         }
 

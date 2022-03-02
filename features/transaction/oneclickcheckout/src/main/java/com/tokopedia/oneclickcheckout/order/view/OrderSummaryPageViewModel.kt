@@ -182,7 +182,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, product.purchaseProtectionPlanData.protectionPricePerProduct, product.purchaseProtectionPlanData.protectionTitle)
                 }
             }
-//            orderSummaryAnalytics.eventViewPaymentMethod(orderProfile.value.payment.gatewayName)
+            orderSummaryAnalytics.eventViewPaymentMethod(orderProfile.value.payment.gatewayName)
             hasSentViewOspEe = true
         }
     }
@@ -586,6 +586,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (isSilent) {
                 return@launch
             }
+            orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
             var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value) ?: return@launch
             param = param.copy(skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
                     source = SOURCE_UPDATE_OCC_PAYMENT)
@@ -858,9 +859,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart)
             if (result != null) {
                 chooseInstallment(result.first, result.second, !result.third)
-//                if (!result.third) {
-//                    orderSummaryAnalytics.eventViewTenureOption(result.first.installmentTerm.toString())
-//                }
                 return
             } else {
                 val newWalletData = orderPayment.value.walletData
