@@ -25,7 +25,6 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.databinding.BottomsheetUpdateCouponPeriodBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
-import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import java.util.*
 import javax.inject.Inject
 
@@ -209,7 +208,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
             requireActivity(),
             getCouponStartDate(),
             currentStartDate.toCalendar(),
-            getCouponEndDate(),
+            getCouponEndDate(currentStartDate),
             null,
             DateTimePickerUnify.TYPE_DATETIMEPICKER
         )
@@ -242,7 +241,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
             requireActivity(),
             getCouponStartDate(),
             currentEndDate.toCalendar(),
-            getCouponEndDate(),
+            getCouponEndDate(currentStartDate),
             null,
             DateTimePickerUnify.TYPE_DATETIMEPICKER
         )
@@ -299,9 +298,9 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         return calendar
     }
 
-    private fun getCouponEndDate(): Calendar {
-        if (requireContext().isBeforeRollout()) return getCouponEndDateBeforeRollout()
+    private fun getCouponEndDate(currentStartDate: Date): Calendar {
         val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentStartDate.time
         calendar.add(
             Calendar.DAY_OF_MONTH,
             COUPON_END_DATE_OFFSET_IN_DAYS
@@ -312,14 +311,6 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
     private fun getCouponStartDateBeforeRollout(): Calendar {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
-        }
-        return calendar
-    }
-
-    private fun getCouponEndDateBeforeRollout(): Calendar {
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
-            add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
         }
         return calendar
     }
