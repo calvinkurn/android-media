@@ -182,7 +182,7 @@ class AffiliateCommissionDetailsUseCase @Inject constructor(
 
     }
 
-    fun affiliateTrafficCardDetails(transactionDate: String, lastItem: String?, type: String?): AffiliateTrafficCommissionCardDetails? {
+    fun affiliateTrafficCardDetails(transactionDate: String?, lastItem: String?, type: String?): AffiliateTrafficCommissionCardDetails? {
         return Gson().fromJson("{\n" +
                 "   \"getAffiliateTrafficCommissionDetailCards\":{\n" +
                 "      \"Data\":{\n" +

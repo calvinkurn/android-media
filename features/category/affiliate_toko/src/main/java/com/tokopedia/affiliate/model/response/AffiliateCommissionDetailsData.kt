@@ -39,7 +39,9 @@ data class AffiliateCommissionDetailsData(
             @SerializedName("CommissionType")
             var commissionType: String?,
             @SerializedName("PageType")
-            var pageType: String?
+            var pageType: String?,
+            @SerializedName("AdditionalQueryKey")
+            var additionQueryKey: String?
 
         ) {
 
