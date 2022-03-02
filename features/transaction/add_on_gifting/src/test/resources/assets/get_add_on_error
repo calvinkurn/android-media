@@ -1,9 +1,11 @@
 {
   "GetAddOnByProductResponse": {
     "error": {
-      "messages": "",
-      "reason": [],
-      "errorCode": ""
+      "messages": "Error",
+      "reason": [
+        "Reason error"
+      ],
+      "errorCode": "400"
     },
     "AddOnByProductResponse": [
       {
