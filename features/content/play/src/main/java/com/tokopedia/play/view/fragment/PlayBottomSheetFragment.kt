@@ -40,10 +40,9 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
-import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUi
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
@@ -749,7 +748,7 @@ class PlayBottomSheetFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomSheetTitle: String,
         partnerId: Long,
-        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUi
+        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel
     ) {
         if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
             productSheetView.showPlaceholder()

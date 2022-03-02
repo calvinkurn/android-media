@@ -24,7 +24,7 @@ import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUi
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
@@ -209,7 +209,7 @@ class ProductSheetViewComponent(
         )
     }
 
-    fun showEmpty(partnerId: Long, emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUi) {
+    fun showEmpty(partnerId: Long, emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel) {
         showContent(false)
         globalError.hide()
 

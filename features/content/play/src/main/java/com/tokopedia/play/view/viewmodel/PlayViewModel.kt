@@ -1713,6 +1713,8 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleClickPartnerName(applink: String) {
         viewModelScope.launch {
+            val partnerInfo = _partnerInfo.value
+            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
             _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
         }
     }

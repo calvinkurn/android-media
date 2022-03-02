@@ -298,7 +298,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapEmptyBottomSheet(emptyBottomSheet: ChannelDetailsWithRecomResponse.EmptyBottomSheet) =
-        PlayEmptyBottomSheetInfoUi(header = emptyBottomSheet.headerText, body = emptyBottomSheet.bodyText, button = emptyBottomSheet.redirectButtonText)
+        PlayEmptyBottomSheetInfoUiModel(header = emptyBottomSheet.headerText, body = emptyBottomSheet.bodyText, button = emptyBottomSheet.redirectButtonText)
 
     companion object {
         private const val MS_PER_SECOND = 1000
