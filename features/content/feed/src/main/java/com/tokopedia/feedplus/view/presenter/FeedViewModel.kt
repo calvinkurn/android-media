@@ -204,12 +204,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun getFeedFirstPage(shouldShowNewDesign: Boolean) {
+    fun getFeedFirstPage() {
         pagingHandler.resetPage()
         currentCursor = ""
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                getFeedFirstDataResult(shouldShowNewDesign)
+                getFeedFirstDataResult()
             }
             currentCursor = results.dynamicFeedDomainModel.cursor
             getFeedFirstPageResp.value = Success(results)
@@ -227,14 +227,14 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun getFeedNextPage(shouldShowNewDesign: Boolean) {
+    fun getFeedNextPage() {
         pagingHandler.nextPage()
         if (currentCursor.isEmpty()) {
             return
         }
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                getFeedDataResult(shouldShowNewDesign)
+                getFeedDataResult()
             }
             if (results.hasNext) {
                 currentCursor = results.cursor
@@ -469,9 +469,9 @@ class FeedViewModel @Inject constructor(
         return dataList
     }
 
-    private suspend fun getFeedFirstDataResult(shouldShowNewDesign: Boolean): DynamicFeedFirstPageDomainModel {
+    private suspend fun getFeedFirstDataResult(): DynamicFeedFirstPageDomainModel {
         return try {
-            val feedResponseModel = getFeedDataResult(shouldShowNewDesign)
+            val feedResponseModel = getFeedDataResult()
             if (userSession.isLoggedIn) {
                 val whiteListModel = getWhitelistNewUseCase.execute(type = WHITELIST_INTEREST)
                 DynamicFeedFirstPageDomainModel(
@@ -487,9 +487,9 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getFeedDataResult(shouldShowNewDesign:Boolean): DynamicFeedDomainModel {
+    private suspend fun getFeedDataResult(): DynamicFeedDomainModel {
         try {
-            return getDynamicFeedNewUseCase.execute(cursor = currentCursor, shouldShowNewTopadsOnly = shouldShowNewDesign)
+            return getDynamicFeedNewUseCase.execute(cursor = currentCursor)
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e

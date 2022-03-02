@@ -209,7 +209,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
-    private var shouldShowNewTopads: Boolean = false
 
     private var isUserEventTrackerDoneOnResume = false
     private var isFeedPageShown = false
@@ -363,7 +362,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedViewModel = viewModelProvider.get(FeedViewModel::class.java)
         }
         initVar()
-        shouldShowNewTopads = TopadsRollenceUtil.shouldShowFeedNewDesignValue(requireContext())
         retainInstance = true
     }
 
@@ -720,7 +718,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val size = adapter.getlist().size
         val lastIndex = size - 1
         if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
-            feedViewModel.getFeedNextPage(shouldShowNewTopads)
+            feedViewModel.getFeedNextPage()
     }
 
     override fun onCreateView(
@@ -793,7 +791,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun onRefreshForNewPostUpdated() {
-        feedViewModel.getFeedFirstPage(shouldShowNewTopads)
+        feedViewModel.getFeedFirstPage()
         isRefreshForPostCOntentCreation = true
     }
 
@@ -819,7 +817,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         adapter.removeRetry()
         adapter.showLoading()
         adapter.setEndlessScrollListener()
-        feedViewModel.getFeedNextPage(shouldShowNewTopads)
+        feedViewModel.getFeedNextPage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -2522,7 +2520,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun fetchFirstPage() {
         showRefresh()
         adapter.showShimmer()
-        feedViewModel.getFeedFirstPage(shouldShowNewTopads)
+        feedViewModel.getFeedFirstPage()
         afterRefresh = false
     }
 

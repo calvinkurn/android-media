@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
 import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedNewMapper
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -412,7 +413,10 @@ val SOURCE = "source"
 class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
+    var context: Context? = null
+
     init {
+        this.context = context
         setTypeClass(FeedXData::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         setGraphqlQuery(GetFeedXHomeQuery.GQL_QUERY)
@@ -431,10 +435,11 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         setRequestParams(map)
     }
 
-    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "", shouldShowNewTopadsOnly:Boolean = false):
+    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = ""):
             DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId)
         val dynamicFeedResponse = executeOnBackground()
+        val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
         return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
     }
 
