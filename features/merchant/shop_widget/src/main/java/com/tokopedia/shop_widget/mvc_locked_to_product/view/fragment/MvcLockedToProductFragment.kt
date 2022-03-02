@@ -168,6 +168,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         observeUpdateCartLiveData()
         observeDeleteCartLiveData()
         observeMvcAddToCartTrackerLiveData()
+        observeMiniCartSimplifiedData()
     }
 
     private fun initView() {
@@ -189,6 +190,18 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 else -> {
                     sendRemoveCartProductTracker(it)
                 }
+            }
+        })
+    }
+
+    private fun observeMiniCartSimplifiedData() {
+        viewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
+            rvProductList?.invalidateItemDecorations()
+            adapter.updateProductListDataWithMiniCartData(it)
+            if (it.isShowMiniCartWidget) {
+                showMiniCartWidget()
+            } else {
+                hideMiniCartWidget()
             }
         })
     }
@@ -705,13 +718,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         viewModel?.setMiniCartData(miniCartSimplifiedData)
-        rvProductList?.invalidateItemDecorations()
-        adapter.updateProductListDataWithMiniCartData(miniCartSimplifiedData)
-        if (miniCartSimplifiedData.isShowMiniCartWidget) {
-            showMiniCartWidget()
-        } else {
-            hideMiniCartWidget()
-        }
     }
 
 }

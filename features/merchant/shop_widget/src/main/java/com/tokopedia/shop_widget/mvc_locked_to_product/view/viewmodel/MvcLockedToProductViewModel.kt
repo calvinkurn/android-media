@@ -72,7 +72,9 @@ class MvcLockedToProductViewModel @Inject constructor(
         get() = _mvcAddToCartTracker
     private val _mvcAddToCartTracker = MutableLiveData<MvcLockedToProductAddToCartTracker>()
 
-    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
+    val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
+        get() = _miniCartSimplifiedData
+    private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
 
     fun getMvcLockedToProductData(mvcLockedToProductRequestUiModel: MvcLockedToProductRequestUiModel) {
         launchCatchError(dispatcherProvider.io, block = {
@@ -125,7 +127,7 @@ class MvcLockedToProductViewModel @Inject constructor(
     }
 
     fun setMiniCartData(miniCart: MiniCartSimplifiedData) {
-        miniCartSimplifiedData = miniCart
+        _miniCartSimplifiedData.value = miniCart
     }
 
     fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
@@ -230,7 +232,7 @@ class MvcLockedToProductViewModel @Inject constructor(
     }
 
     private fun getMiniCartItem(productId: String): MiniCartItem? {
-        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        val items = miniCartSimplifiedData.value?.miniCartItems.orEmpty()
         return items.firstOrNull { it.productId == productId }
     }
 }
