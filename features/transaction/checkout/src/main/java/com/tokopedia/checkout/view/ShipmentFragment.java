@@ -3335,8 +3335,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
             startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET);
 
-            // TODO: besok confirm lagi, jadinya mau cartString apa gimana di thread https://tokopedia.slack.com/archives/C02RGATQTBK/p1645783898420209?thread_ts=1645498027.992199&cid=C02RGATQTBK
-            checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(listProductId.toString());
+            if (shipmentCartItemModel.getCartString() != null) {
+                checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(shipmentCartItemModel.getCartString());
+            }
         }
     }
 
@@ -3347,11 +3348,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList) {
-        ArrayList<String> listProductId = new ArrayList<>();
+        ArrayList<String> listCartString = new ArrayList<>();
         for (CartItemModel cartItemModel : cartItemModelList) {
-            listProductId.add(String.valueOf(cartItemModel.getProductId()));
+            listCartString.add(cartItemModel.getCartString());
         }
-        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listProductId.toString());
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
