@@ -1467,6 +1467,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getTopadsIsAdsUseCase.executeOnBackground()
         } throws Throwable("error")
 
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
         verify(exactly = 1) {
