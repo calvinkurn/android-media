@@ -74,8 +74,9 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Crea
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -163,7 +164,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
-    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var ovoIncentiveBottomSheet: IncentiveOvoBottomSheet? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
@@ -723,25 +724,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            if (ovoIncentiveBottomSheet == null) {
-                                ovoIncentiveBottomSheet =
-                                    IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                                        context = context,
-                                        productRevIncentiveOvoDomain = data,
-                                        hasIncentive = hasIncentive(),
-                                        hasOngoingChallenge = hasOngoingChallenge(),
-                                        incentiveOvoListener = this@CreateReviewFragment,
-                                        category = ""
-                                    )
-                            }
-                            ovoIncentiveBottomSheet?.let { bottomSheet ->
+                            context?.let { context ->
+                                val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
+                                val bottomSheetData = IncentiveOvoBottomSheetUiModel(data)
+                                bottomSheet.init(bottomSheetData, this@CreateReviewFragment)
                                 activity?.supportFragmentManager?.let { supportFragmentManager ->
-                                    bottomSheet.show(
-                                        supportFragmentManager,
-                                        bottomSheet.tag
-                                    )
+                                    bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+                                    ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
                                 }
-                                ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
                             }
                         }
 
