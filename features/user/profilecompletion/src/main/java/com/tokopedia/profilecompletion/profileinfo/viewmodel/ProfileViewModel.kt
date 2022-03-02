@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
+import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileInfoUseCase: ProfileInfoUseCase,
     private val profileRoleUseCase: ProfileRoleUseCase,
+    private val profileFeedInfoUseCase: ProfileFeedInfoUseCase,
     private val uploader: UploaderUseCase,
     private val saveProfilePictureUseCase: SaveProfilePictureUseCase,
     private val userSession: UserSessionInterface,
@@ -41,10 +43,12 @@ class ProfileViewModel @Inject constructor(
             try {
                 val profileInfo = async { profileInfoUseCase(Unit) }
                 val profileRole = async { profileRoleUseCase(Unit) }
+                val profileFeed = async { profileFeedInfoUseCase(userSession.userId)}
 
                 mutableProfileInfoUiData.value = ProfileInfoUiModel(
                     profileInfo.await().profileInfoData,
-                    profileRole.await().profileRole
+                    profileRole.await().profileRole,
+                    profileFeed.await().profileFeedData
                 )
             } catch (e: Exception) {
                 mutableErrorMessage.value = e.message

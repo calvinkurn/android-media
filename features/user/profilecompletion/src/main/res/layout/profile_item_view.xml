@@ -22,23 +22,32 @@
         app:typographyWeight="reguler"
         android:layout_height="wrap_content"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        app:typographyType="body_1"
-        app:typographyWeight="reguler"
-        android:id="@+id/fragmentProfileItemValue"
-        android:layout_weight="7"
-        tools:text="Subtitle"
-        android:maxLines="1"
+    <LinearLayout
+        android:id="@+id/container_click"
         android:layout_width="0dp"
-        android:ellipsize="end"
-        android:textColor="@color/Unify_NN950"
-        android:layout_height="wrap_content"/>
+        android:layout_weight="7.5"
+        android:layout_height="wrap_content">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:layout_weight="0.5"
-        android:id="@+id/fragmentProfileItemIcon"
-        app:icon_name="CHEVRON_RIGHT"
-        android:layout_width="22dp"
-        android:layout_height="22dp"/>
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
+            android:id="@+id/fragmentProfileItemValue"
+            android:layout_weight="7"
+            tools:text="Subtitle"
+            android:maxLines="1"
+            android:layout_width="0dp"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_NN950"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_weight="0.5"
+            android:id="@+id/fragmentProfileItemIcon"
+            app:icon_name="CHEVRON_RIGHT"
+            android:layout_width="22dp"
+            android:layout_height="22dp"/>
+
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -17,5 +17,10 @@ data class ProfileRoleData(
     @SerializedName("chancesChangeName")
     var chancesChangeName: String = "0",
     @SerializedName("chancesChangeGender")
-    var chancesChangeGender: String = "0"
+    var chancesChangeGender: String = "0",
+    @SerializedName("changeNameMessageInfoTitle")
+    var changeNameMessageInfoTitle: String = "",
+    @SerializedName("changeNameMessageInfo")
+    var changeNameMessageInfo: String = ""
+
 )

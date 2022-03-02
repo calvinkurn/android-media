@@ -16,6 +16,9 @@ object ApplinkConstInternalUserPlatform {
     const val METHOD_LOGIN_GOOGLE = "google"
     const val METHOD_LOGIN_FACEBOOK = "facebook"
     const val METHOD_LOGIN_FINGERPRINT = "fingerprint"
+    const val PAGE_EDIT_INFO_PROFILE_BIO = "bio"
+    const val PAGE_EDIT_INFO_PROFILE_USERNAME = "username"
+    const val PAGE_EDIT_INFO_PARAM = "page"
 
     //LoginActivity
     const val LOGIN = "$INTERNAL_USER/login"
@@ -24,6 +27,7 @@ object ApplinkConstInternalUserPlatform {
     const val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
 
     const val NEW_PROFILE_INFO = "${NEW_INTERNAL_HOME}/profile-info"
+    const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_HOME}/edit-profile-info"
 
     fun getInactivePhoneInternalDeepLink(deepLink: String): String {
         return deepLink.replace(ApplinkConst.CHANGE_INACTIVE_PHONE, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)

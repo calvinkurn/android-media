@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="@dimen/unify_space_16"
+    android:paddingBottom="@dimen/unify_space_32"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:text="@string/title_personal_info"
+        tools:text ="Info Pribadi"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_marginTop="16dp"
+        android:text="@string/body_personal_info"
+        tools:text = "Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun."/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

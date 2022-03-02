@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -22,6 +23,12 @@ android {
         viewBinding true
     }
 }
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.mediauploader)

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_profile_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitXY"
+        tools:src="@drawable/chatbot_image_placeloader"
+        android:layout_marginHorizontal="@dimen/unify_space_16"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/iv_profile_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_personal_info"
+        tools:text ="Info Pribadi"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:text="@string/body_personal_info"
+        tools:text = "Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun."/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_profile_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_body"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="alternate"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:text="@string/see_page"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

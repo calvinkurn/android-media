@@ -20,8 +20,8 @@
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
-    <string name="change_name_note">Kamu hanya dapat mengubah nama %1$s kali. Pastikan nama sudah benar.</string>
-    <string name="change_name_fullname">Nama Lengkap</string>
+    <string name="change_name_note">Pakai nama asli untuk memudahkan verifikasi. Nama ini akan tampil di beberapa halaman.</string>
+    <string name="change_name_fullname">Nama</string>
     <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
@@ -173,4 +173,24 @@
     <string name="add_pin_success_button_title">Selesai</string>
     <string name="profile_completion_detail_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
     <string name="text_change_name_warning_message">Ubah nama akunmu jadi nama asli untuk meningkatkan keamanan akun.</string>
+    <string name="change_username">Username</string>
+    <string name="change_profile_info">Ubah Info Profil</string>
+    <string name="description_textfield_username">Username hanya bisa diubah 1 kali</string>
+    <string name="label_bio">Bio</string>
+    <string name="key_error_biography">Biography</string>
+    <string name="body_personal_info">Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun.</string>
+    <string name="title_personal_info">Info Pribadi</string>
+    <string name="see_page">Lihat Halaman</string>
+    <string name="change_username_success">Username berhasil diubah</string>
+    <string name="change_biography_success">Bio berhasil diubah</string>
+    <string name="btn_ok">Oke</string>
+    <string name="placeholder_dob">Pilih Tanggal Lahir</string>
+    <string name="placeholder_gender">Pilih Jenis Kelamin</string>
+    <string name="placeholder_email">Tambah E-mail</string>
+    <string name="placeholder_phone">Tambah Nomor HP</string>
+    <string name="placeholder_username">Buat nama akun</string>
+    <string name="title_username">Username</string>
+    <string name="title_bio">Bio</string>
+    <string name="placeholder_bio">Tulis bio kamu</string>
+
 </resources>
