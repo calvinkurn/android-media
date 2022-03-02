@@ -34,5 +34,5 @@ data class ShipmentCostModel(
         var productDiscountAmount: Int = 0,
         var cashbackLabel: String? = null,
         var cashbackAmount: Int = 0,
-        var totalAddOnPrice: Int = 0
+        var totalAddOnPrice: Double = 0.0
 ) : Parcelable

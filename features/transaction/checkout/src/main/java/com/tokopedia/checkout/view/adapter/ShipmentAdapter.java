@@ -814,7 +814,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double insuranceFee = 0;
         double orderPriorityFee = 0;
         int totalBookingFee = 0;
-        int totalAddOnPrice = 0;
+        double totalAddOnPrice = 0;
         for (Object shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentSingleAddressItem =
@@ -912,7 +912,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             finalShippingFee = 0;
         }
         totalPrice = totalItemPrice + finalShippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-                shipmentCostModel.getProductDiscountAmount() - tradeInPrice;
+                shipmentCostModel.getProductDiscountAmount() - tradeInPrice + totalAddOnPrice;
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);

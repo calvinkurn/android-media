@@ -39,7 +39,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData;
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -106,14 +106,8 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
@@ -157,7 +151,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -262,7 +255,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean hasRunningApiCall = false;
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
     private int shipmentLoadingIndex = -1;
-    private String _qty = "{{qty}}";
 
     private Subscription delayScrollToFirstShopSubscription;
 
@@ -3302,91 +3294,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
 
             if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
-                unavailableBottomSheetData.setDescription(addOnBottomSheetModel.getDescription());
-                unavailableBottomSheetData.setTickerMessage(addOnBottomSheetModel.getTicker().getText());
-
-                List<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listUnavailableProduct = new ArrayList<>();
-                for (AddOnProductItemModel addOnProductItemModel : addOnBottomSheetModel.getProducts()) {
-                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
-                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
-                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
-                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
-                    product.setProductQuantity(cartItemModel.getQuantity());
-                    product.setProductName(addOnProductItemModel.getProductName());
-                    product.setProductImageUrl(addOnProductItemModel.getProductImageUrl());
-                    product.setProductParentId(cartItemModel.getVariantParentId());
-                    listUnavailableProduct.add(product);
-                }
-                unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
+                unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel, cartItemModel);
             }
 
             if (cartItemModel.getAddOnProductLevelModel().getStatus() == ADD_ON_STATUS_ACTIVE) {
-                AddOnWordingData addOnWordingData = new AddOnWordingData();
-                String onlyGreetingCard = addOnWordingModel.getOnlyGreetingCard();
-                if (onlyGreetingCard.contains(_qty)) {
-                    onlyGreetingCard = onlyGreetingCard.replace(_qty, String.valueOf(cartItemModel.getQuantity()));
-                }
-                addOnWordingData.setOnlyGreetingCard(onlyGreetingCard);
-
-                String packageAndGreetingCard = addOnWordingModel.getPackagingAndGreetingCard();
-                if (packageAndGreetingCard.contains(_qty)) {
-                    packageAndGreetingCard = packageAndGreetingCard.replace(_qty, String.valueOf(cartItemModel.getQuantity()));
-                }
-
-                addOnWordingData.setPackagingAndGreetingCard(packageAndGreetingCard);
-                addOnWordingData.setInvoiceNotSendToRecipient(addOnWordingModel.getInvoiceNotSendToRecipient());
-                availableBottomSheetData.setAddOnInfoWording(addOnWordingData);
-
-                availableBottomSheetData.setShopName(cartItemModel.getShopName());
-
-                ArrayList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listProduct = new ArrayList<>();
-                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
-                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
-                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
-                    product.setProductName(cartItemModel.getName());
-                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
-                    product.setProductQuantity(cartItemModel.getQuantity());
-                    product.setProductImageUrl(cartItemModel.getImageUrl());
-                    product.setProductParentId(cartItemModel.getVariantParentId());
-                    listProduct.add(product);
-                availableBottomSheetData.setProducts(listProduct);
-
-                if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
-                    ArrayList<AddOnData> addOnDataList = new ArrayList<>();
-                    for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
-                        AddOnData addOnData = new AddOnData();
-                        addOnData.setAddOnId(addOnDataItemModel.getAddOnId());
-                        addOnData.setAddOnPrice((int) addOnDataItemModel.getAddOnPrice());
-                        addOnData.setAddOnQty((int) addOnDataItemModel.getAddOnQty());
-
-                        AddOnNote addOnNote = new AddOnNote();
-                        AddOnNoteItemModel addOnNoteItemModel = addOnDataItemModel.getAddOnMetadata().getAddOnNoteItemModel();
-                        addOnNote.setCustomNote(addOnNoteItemModel.isCustomNote());
-                        addOnNote.setNotes(addOnNoteItemModel.getNotes());
-                        addOnNote.setFrom(addOnNoteItemModel.getFrom());
-                        addOnNote.setTo(addOnNoteItemModel.getTo());
-
-                        AddOnMetadata addOnMetadata = new AddOnMetadata();
-                        addOnMetadata.setAddOnNote(addOnNote);
-
-                        addOnData.setAddOnMetadata(addOnMetadata);
-                        addOnDataList.add(addOnData);
-                    }
-                    availableBottomSheetData.setAddOnSavedStates(addOnDataList);
-                }
-
-                availableBottomSheetData.setCartString(cartItemModel.getCartString());
-                availableBottomSheetData.setTokoCabang(cartItemModel.isTokoCabang());
-                availableBottomSheetData.setWarehouseId(cartItemModel.getWarehouseId());
+                availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetProductLevelData(addOnWordingModel, cartItemModel);
             }
 
-            AddOnProductData addOnProductData = new AddOnProductData();
-            addOnProductData.setBottomSheetType(AddOnProductData.ADD_ON_BOTTOM_SHEET);
-            addOnProductData.setBottomSheetTitle(addOnBottomSheetModel.getHeaderTitle());
-            addOnProductData.setSource(AddOnProductData.SOURCE_NORMAL_CHECKOUT);
-            addOnProductData.setAvailableBottomSheetData(availableBottomSheetData);
-            addOnProductData.setUnavailableBottomSheetData(unavailableBottomSheetData);
-            addOnProductData.setBottomSheetType(addOnsDataModel.getAddOnsButtonModel().getAction());
+            AddOnProductData addOnProductData = ShipmentAddOnMapper.INSTANCE.mapAddOnBottomSheetParam(addOnsDataModel, availableBottomSheetData, unavailableBottomSheetData);
 
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
@@ -3405,95 +3320,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
 
-            if (addOnsDataModel.getStatus() == 2) {
-                unavailableBottomSheetData.setDescription(addOnBottomSheetModel.getDescription());
-                unavailableBottomSheetData.setTickerMessage(addOnBottomSheetModel.getTicker().getText());
-
-                List<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listUnavailableProduct = new ArrayList<>();
-                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
-                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
-                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
-                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
-                    product.setProductQuantity(cartItemModel.getQuantity());
-                    product.setProductName(cartItemModel.getName());
-                    product.setProductImageUrl(cartItemModel.getImageUrl());
-                    product.setProductParentId(cartItemModel.getVariantParentId());
-                    listUnavailableProduct.add(product);
-                }
-                unavailableBottomSheetData.setUnavailableProducts(listUnavailableProduct);
+            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
+                unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetOrderLevelData(addOnBottomSheetModel, shipmentCartItemModel);
             }
 
-            ArrayList<String> listProductId = new ArrayList<>();
-            if (addOnsDataModel.getStatus() == 1) {
-                AddOnWordingData addOnWordingData = new AddOnWordingData();
-                addOnWordingData.setOnlyGreetingCard(addOnWordingModel.getOnlyGreetingCard());
-                addOnWordingData.setPackagingAndGreetingCard(addOnWordingModel.getPackagingAndGreetingCard());
-                addOnWordingData.setInvoiceNotSendToRecipient(addOnWordingModel.getInvoiceNotSendToRecipient());
-                availableBottomSheetData.setAddOnInfoWording(addOnWordingData);
-
-                if (shipmentCartItemModel.getShopName() != null) {
-                    availableBottomSheetData.setShopName(shipmentCartItemModel.getShopName());
-                }
-
-                ArrayList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> listProduct = new ArrayList<>();
-                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product product = new com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product();
-                    product.setCartId(String.valueOf(cartItemModel.getCartId()));
-                    product.setProductId(String.valueOf(cartItemModel.getProductId()));
-                    product.setProductName(cartItemModel.getName());
-                    product.setProductPrice(Double.valueOf(cartItemModel.getPrice()).longValue());
-                    product.setProductQuantity(cartItemModel.getQuantity());
-                    product.setProductImageUrl(cartItemModel.getImageUrl());
-                    product.setProductParentId(cartItemModel.getVariantParentId());
-                    listProduct.add(product);
-                    listProductId.add(String.valueOf(cartItemModel.getProductId()));
-                }
-                availableBottomSheetData.setProducts(listProduct);
-
-                if (!addOnsDataModel.getAddOnsDataItemModelList().isEmpty()) {
-                    ArrayList<AddOnData> addOnDataList = new ArrayList<>();
-                    for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
-                        AddOnData addOnData = new AddOnData();
-                        addOnData.setAddOnId(addOnDataItemModel.getAddOnId());
-                        addOnData.setAddOnPrice((int) addOnDataItemModel.getAddOnPrice());
-                        addOnData.setAddOnQty((int) addOnDataItemModel.getAddOnQty());
-
-                        AddOnNote addOnNote = new AddOnNote();
-                        AddOnNoteItemModel addOnNoteItemModel = addOnDataItemModel.getAddOnMetadata().getAddOnNoteItemModel();
-                        addOnNote.setCustomNote(addOnNoteItemModel.isCustomNote());
-                        addOnNote.setNotes(addOnNoteItemModel.getNotes());
-                        addOnNote.setFrom(addOnNoteItemModel.getFrom());
-                        addOnNote.setTo(addOnNoteItemModel.getTo());
-
-                        AddOnMetadata addOnMetadata = new AddOnMetadata();
-                        addOnMetadata.setAddOnNote(addOnNote);
-
-                        addOnData.setAddOnMetadata(addOnMetadata);
-                        addOnDataList.add(addOnData);
-                    }
-                    availableBottomSheetData.setAddOnSavedStates(addOnDataList);
-                }
-
-                if (shipmentCartItemModel.getCartString() != null) {
-                    availableBottomSheetData.setCartString(shipmentCartItemModel.getCartString());
-                }
-                availableBottomSheetData.setTokoCabang(shipmentCartItemModel.isFulfillment());
-                availableBottomSheetData.setWarehouseId(String.valueOf(shipmentCartItemModel.getFulfillmentId()));
+            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_ACTIVE) {
+                availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetOrderLevelData(addOnWordingModel, shipmentCartItemModel);
             }
 
-            AddOnProductData addOnProductData = new AddOnProductData();
-            addOnProductData.setBottomSheetType(AddOnProductData.ADD_ON_BOTTOM_SHEET);
-            addOnProductData.setBottomSheetTitle(addOnBottomSheetModel.getHeaderTitle());
-            addOnProductData.setSource(AddOnProductData.SOURCE_NORMAL_CHECKOUT);
-            addOnProductData.setAvailableBottomSheetData(availableBottomSheetData);
-            addOnProductData.setUnavailableBottomSheetData(unavailableBottomSheetData);
-            addOnProductData.setBottomSheetType(addOnsDataModel.getAddOnsButtonModel().getAction());
+            AddOnProductData addOnProductData = ShipmentAddOnMapper.INSTANCE.mapAddOnBottomSheetParam(addOnsDataModel, availableBottomSheetData, unavailableBottomSheetData);
 
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
             startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET);
-            checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(listProductId.toString());
+
+            if (shipmentCartItemModel.getCartString() != null) {
+                checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(shipmentCartItemModel.getCartString());
+            }
         }
     }
 
@@ -3504,11 +3347,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList) {
-        ArrayList<String> listProductId = new ArrayList<>();
+        ArrayList<String> listCartString = new ArrayList<>();
         for (CartItemModel cartItemModel : cartItemModelList) {
-            listProductId.add(String.valueOf(cartItemModel.getProductId()));
+            listCartString.add(cartItemModel.getCartString());
         }
-        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listProductId.toString());
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
@@ -3576,5 +3419,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition());
         }
         shipmentAdapter.updateShipmentCostModel();
+        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
 }
