@@ -21,7 +21,6 @@ import javax.inject.Inject
  */
 class ProductSetupFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
 ) : Fragment() {
 
