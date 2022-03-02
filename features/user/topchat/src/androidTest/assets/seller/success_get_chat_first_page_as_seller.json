@@ -148,7 +148,7 @@
                 "attachment": {
                   "id": 827523084,
                   "type": 3,
-                  "attributes": "{\"product_id\":1261590628,\"product_profile\":{\"name\":\"tes etalase android 2 haha\",\"price\":\"Rp555\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/502b119f-723b-4ba2-8884-3ec2e12c7c63.jpg\",\"url\":\"https://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":1465130,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "attributes": "{\"product_id\":1261590628,\"product_profile\":{\"name\":\"tes etalase android 2 haha\",\"price\":\"Rp555\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/502b119f-723b-4ba2-8884-3ec2e12c7c63.jpg\",\"url\":\"https://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":1465130,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\"}}",
                   "fallback": {
                     "message": "",
                     "html": "Bisa dikirim hari ini."
@@ -200,7 +200,7 @@
                 "attachment": {
                   "id": 827523083,
                   "type": 3,
-                  "attributes": "{\"product_id\":1261590628,\"product_profile\":{\"name\":\"tes etalase android 2 haha\",\"price\":\"Rp555\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/502b119f-723b-4ba2-8884-3ec2e12c7c63.jpg\",\"url\":\"https://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":1465130,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "attributes": "{\"product_id\":1261590628,\"product_profile\":{\"name\":\"tes etalase android 2 haha\",\"price\":\"Rp555\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/502b119f-723b-4ba2-8884-3ec2e12c7c63.jpg\",\"url\":\"https://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":1465130,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\"}}",
                   "fallback": {
                     "message": "",
                     "html": "Bisa dikirim hari ini."

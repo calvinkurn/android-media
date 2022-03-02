@@ -87,7 +87,6 @@ class NewShopPageViewModelTest {
     @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
-
     @RelaxedMockK
     lateinit var context: Context
 

@@ -47,6 +47,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
+        const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
         const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
         const val KEYWORD_VIEW_SERVER_LOGGER = "View Server Logger"
@@ -120,7 +121,7 @@ class DeveloperOptionAdapter(
         )),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
-        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
+        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(listOf(
             KEYWORD_LOGGING_TO_SERVER,
             KEYWORD_SEND_LOG_TO_SERVER,

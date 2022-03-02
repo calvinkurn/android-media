@@ -2,8 +2,8 @@ package com.tokopedia.vouchercreation.common.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
-import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
+import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
+import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 
 /**
  * docs: https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=1732582873

@@ -274,7 +274,11 @@ public class RemoteConfigKey {
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
 
+    public static final String ENABLE_APLHA_OBSERVER = "android_enable_alpha_observer";
+
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
+
+    public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 }

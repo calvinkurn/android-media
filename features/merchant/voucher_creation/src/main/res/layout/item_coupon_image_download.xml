@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/mvc_dimen_6dp"
+    android:layout_marginBottom="@dimen/mvc_dimen_6dp"
+    android:background="@drawable/mvc_rectangle_white_border_grey_radius_8dp"
+    android:padding="@dimen/mvc_dimen_12dp">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbxMvcDownloadVoucher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginLeft="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcRatioDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcRatio" />
+
+    <TextView
+        android:id="@+id/tvMvcRatio"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/mvc_dimen_6dp"
+        android:layout_marginLeft="@dimen/mvc_dimen_6dp"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
+        android:textColor="@color/light_N700_96"
+        android:textStyle="bold"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintEnd_toStartOf="@+id/icMvcChevron"
+        app:layout_constraintStart_toEndOf="@+id/cbxMvcDownloadVoucher"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Ration 1:1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcRatioDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="@+id/tvMvcRatio"
+        app:layout_constraintStart_toStartOf="@+id/tvMvcRatio"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcRatio"
+        app:typographyType="body_3"
+        tools:text="Untuk post Instagram, Facebook" />
+
+    <ImageView
+        android:id="@+id/icMvcChevron"
+        android:layout_width="@dimen/mvc_dimen_12dp"
+        android:layout_height="@dimen/mvc_dimen_12dp"
+        android:layout_marginEnd="@dimen/mvc_dimen_6dp"
+        android:layout_marginRight="@dimen/mvc_dimen_6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcRatioDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcRatio"
+        app:srcCompat="@drawable/ic_mvc_chevron_down" />
+
+    <ImageView
+        android:id="@+id/imgMvcVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="@dimen/mvc_dimen_20dp"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvMvcRatio"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcRatioDescription"
+        tools:src="@tools:sample/avatars" />
+</androidx.constraintlayout.widget.ConstraintLayout>

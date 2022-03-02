@@ -7,7 +7,13 @@
     <string name="shop_ops_hour_datetime_format_24_hours_text">Buka 24 Jam</string>
     <string name="shop_ops_hour_datetime_format_holiday_text">Libur</string>
     <string name="shop_widget_ops_hour_retry">Coba Lagi</string>
-
+    <string name="mvc_choose_product_page_title">Produk Berkupon Khusus</string>
+    <!-- Mvc locked to product -->
+    <string name="mvc_locked_to_product_toolbar_name">mvc locked to product</string>
+    <string name="mvc_locked_to_product_voucher_dot">&#160;•&#160;</string>
+    <string name="mvc_locked_to_product_bottom_sheet_title">Urutkan</string>
+    <string name="mvc_discovery_sort_section_left_wording">Produk Pilihan</string>
+    <string name="mvc_discovery_sort_apply_button">Terapkan</string>
     <!-- Thematic Widget -->
     <string name="thematic_widget_see_all">Lihat Semua</string>
     <string name="thematic_widget_subtitle">Berakhir dalam</string>
