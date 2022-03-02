@@ -101,7 +101,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+    lateinit var topAdsHeadlineViewModel : TopAdsHeadlineViewModel
 
     var remoteConfig: RemoteConfig? = null
 

@@ -20,8 +20,8 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationSho
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
-class NotificationTypeFactoryImpl(
-    viewListener: Any
+class NotificationTypeFactoryImpl constructor(
+        viewListener: Any
 ) : BaseAdapterTypeFactory(), NotificationTypeFactory {
 
     var recommendationListener: RecommendationListener? = null

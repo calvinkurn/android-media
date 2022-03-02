@@ -191,17 +191,14 @@ class NotificationAdapter constructor(
     fun addRecomProducts(recommendations: List<Visitable<*>>, cpmModel: CpmModel?) {
         val shopAdsPosition = cpmModel?.data?.get(0)?.cpm?.position
         val currentItemSize = visitables.size
-        if (recommendations.isNotEmpty() && recommendations[0] is RecommendationTitleUiModel) {
-            recommendations.forEachIndexed { index, visitable ->
-                visitables.add(visitable)
-                if (shopAdsPosition != null && index == shopAdsPosition) {
-                    visitables.add(NotifTopAdsHeadline(cpmModel))
-                }
-            }
-        } else {
-            visitables.addAll(recommendations)
+        if (visitables.addAll(recommendations)) {
+            notifyItemRangeInserted(currentItemSize, recommendations.size)
         }
-        notifyItemRangeInserted(currentItemSize, recommendations.size)
+
+        //checking if 0th index of recommendations is title
+        if (recommendations.isNotEmpty() && recommendations[0] is RecommendationTitleUiModel && shopAdsPosition != null) {
+            visitables.add(currentItemSize + shopAdsPosition + 1, NotifTopAdsHeadline(cpmModel))
+        }
     }
 
     override fun showErrorNetwork() {
