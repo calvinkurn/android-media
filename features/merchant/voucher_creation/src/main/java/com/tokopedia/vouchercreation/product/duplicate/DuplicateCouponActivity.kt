@@ -14,10 +14,13 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
+import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import javax.inject.Inject
 
@@ -46,8 +49,8 @@ class DuplicateCouponActivity : AppCompatActivity() {
         CouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,
             ::navigateToCouponSettingPage,
+            ::navigateToAddProductPage,
             ::navigateToManageProductPage,
-            {},
             {},
             {},
             ::onDuplicateCouponSuccess,
@@ -101,6 +104,25 @@ class DuplicateCouponActivity : AppCompatActivity() {
         )
     }
 
+
+    private fun navigateToAddProductPage(coupon: Coupon) {
+        val couponSettings = coupon.settings
+        val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
+        val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putString(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
+                putInt(CreateCouponProductActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(CreateCouponProductActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProducts = arrayListOf<ProductUiModel>()
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
+                putParcelableArrayList(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
+            })
+        }
+        startActivityForResult(addProductIntent,
+            CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT
+        )
+    }
+
     private fun navigateToManageProductPage(coupon: Coupon) {
         val couponSettings = coupon.settings
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
@@ -127,8 +149,6 @@ class DuplicateCouponActivity : AppCompatActivity() {
         Toaster.build(view, text).show()
     }
 
-
-
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
         val couponInfoFragment = CreateCouponDetailFragment(couponInformationData,
@@ -139,6 +159,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
         }
         return couponInfoFragment
     }
+
     private fun buildCouponSettingFragmentInstance(): CouponSettingFragment {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
