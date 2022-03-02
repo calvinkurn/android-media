@@ -22,7 +22,8 @@ class ProductViewHolder(private val viewBinding: ItemProductBinding, private val
             if (element.isTokoCabang) {
                 labelHeaderMessage.text = itemView.context.getString(R.string.add_on_label_header_product_from_toko_cabang)
                 labelOtherProducts.text = String.format(itemView.context.getString(R.string.add_on_label_other_product), element.otherProductCount)
-                labelOtherProducts.show()
+                if (element.otherProductCount > 0) labelOtherProducts.show()
+                else labelOtherProducts.gone()
             } else {
                 labelHeaderMessage.text = String.format(itemView.context.getString(R.string.add_on_label_header_product), element.shopName)
                 labelOtherProducts.gone()

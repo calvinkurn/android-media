@@ -14,6 +14,7 @@ import com.tokopedia.gifting.domain.model.Inventory
 import com.tokopedia.gifting.domain.model.Shop
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.gifting.presentation.viewmodel.GiftingViewModel
+import com.tokopedia.gifting.tracking.GiftingBottomsheetTracking
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -23,6 +24,7 @@ import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.BottomsheetGiftingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -30,6 +32,9 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: GiftingViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var binding by autoClearedNullable<BottomsheetGiftingBinding>()
     private val titleTips by lazy { binding?.layoutContent?.titleTips }
     private val titleAddOn by lazy { binding?.layoutContent?.titleAddOn }
@@ -37,8 +42,9 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
     private val imageAddOn by lazy { binding?.layoutContent?.imageAddOn }
     private val textShopName by lazy { binding?.layoutContent?.textShopName }
     private val textShopLocation by lazy { binding?.layoutContent?.textShopLocation }
-    private val iconShop by lazy { binding?.layoutContent?.iconShop }
     private val textCaptionShopName by lazy { binding?.layoutContent?.textCaptionShopName }
+    private val textCaptionPromo by lazy { binding?.layoutContent?.textCaptionPromo }
+    private val iconPromo by lazy { binding?.layoutContent?.iconPromo }
     private val layoutContent by lazy { binding?.layoutContent?.root }
     private val layoutShimmer by lazy { binding?.layoutShimmer?.root }
 
@@ -73,8 +79,11 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
     private fun observeGetAddOnByProduct() {
         viewModel.getAddOnResult.observe(viewLifecycleOwner) {
             setPageLoading(false)
-            setTextShopLocationAction(it.staticInfo.infoURL.orEmpty())
+            setTextShopLocationAction(it.staticInfo.infoURL)
+            setTextPromo(it.staticInfo.promoText)
             setupPageFromResponseData(it.addOnByIDResponse.firstOrNull())
+            GiftingBottomsheetTracking.trackPageImpression(
+                bottomSheetTitle.text.toString(), userSession.userId, it.addOnByIDResponse)
         }
     }
 
@@ -124,9 +133,17 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
         bottomSheetHeader.isVisible = !isLoading
     }
 
+    private fun setTextPromo(promoText: String) {
+        textCaptionPromo?.text = promoText
+        textCaptionPromo?.isVisible = promoText.isNotEmpty()
+        iconPromo?.isVisible = promoText.isNotEmpty()
+    }
+
     private fun setTextShopLocationAction(infoUrl: String) {
         textShopLocation?.setOnClickListener {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, infoUrl))
+            GiftingBottomsheetTracking.trackInfoURLClick(
+                bottomSheetTitle.text.toString(), userSession.userId)
         }
     }
 }

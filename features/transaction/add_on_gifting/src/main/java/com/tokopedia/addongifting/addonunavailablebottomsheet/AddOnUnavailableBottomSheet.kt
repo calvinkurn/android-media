@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.LayoutAddOnUnavailableBottomSheetBinding
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
@@ -65,8 +66,8 @@ class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : Bott
         // View holder state is static, so it's ok to use notifyDataSetChanged
         adapter?.notifyDataSetChanged()
 
-        viewBinding?.labelDescription?.text = addOnProductData.unavailableBottomSheetData.description
-        viewBinding?.tickerInformation?.setTextDescription(addOnProductData.unavailableBottomSheetData.tickerMessage)
+        viewBinding?.labelDescription?.text = MethodChecker.fromHtml(addOnProductData.unavailableBottomSheetData.description)
+        viewBinding?.tickerInformation?.setHtmlDescription(addOnProductData.unavailableBottomSheetData.tickerMessage)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

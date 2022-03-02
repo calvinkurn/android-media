@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
@@ -12,6 +13,13 @@ object AddOnMapper {
                                  orderProduct: OrderProduct,
                                  orderShop: OrderShop,
                                  orderCart: OrderCart): AddOnProductData {
+
+        val productId = if (orderProduct.parentId.isNotEmpty() && orderProduct.parentId.toLongOrZero() > 0) {
+            orderProduct.parentId
+        } else {
+            orderProduct.productId.toString()
+        }
+
         return AddOnProductData(
                 bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET,
                 bottomSheetTitle = addOn.addOnsBottomSheetModel.headerTitle,
@@ -19,7 +27,7 @@ object AddOnMapper {
                 availableBottomSheetData = AvailableBottomSheetData(
                         products = listOf(Product(
                                 cartId = orderProduct.cartId,
-                                productId = if (orderProduct.parentId.isNotEmpty() && orderProduct.parentId != "0") orderProduct.parentId else orderProduct.productId.toString(),
+                                productId = productId,
                                 productName = orderProduct.productName,
                                 productImageUrl = orderProduct.productImageUrl,
                                 productPrice = orderProduct.productPrice,
