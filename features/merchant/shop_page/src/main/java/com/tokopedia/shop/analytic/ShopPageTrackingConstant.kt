@@ -332,6 +332,7 @@ object ShopPageTrackingConstant {
     const val DIMENSION_118 = "dimension118"
     const val DIMENSION_61 = "dimension61"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+    const val ITEM_LIST = "item_list"
 
     //SCREEN/PAGES
     const val SCREEN_SHOP_PAGE = "Shop Page"
@@ -370,7 +371,7 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_SHOWCASE = "Etalase"
     const val VALUE_SHOP_DECOR_PLAY = "Play"
     const val VALUE_STRING_ZERO = "0"
-
+    const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
 
     //dimension83
     const val BOE = "BoE"
