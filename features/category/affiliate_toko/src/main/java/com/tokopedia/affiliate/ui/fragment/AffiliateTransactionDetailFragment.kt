@@ -47,8 +47,7 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     private var listCount = 0
 
-    override fun onInfoClick(title: String?, desc: String?, advanceTooltip: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?
-    ) {
+    override fun onInfoClick(title: String?, desc: String?, advanceTooltip: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?) {
         AffiliateRecylerBottomSheet.newInstance(TYPE_WITHDRAWAL,title,desc,advanceTooltip).show(childFragmentManager, "")
     }
 
@@ -178,7 +177,8 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                affiliateVM.affiliateCommission(transactionId,page-1)
+                if(affiliateVM.commissionType == TRAFFIC_TYPE)
+                    affiliateVM.affiliateCommission(transactionId,page-1)
             }
         }
     }

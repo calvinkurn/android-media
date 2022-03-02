@@ -108,7 +108,7 @@ class AffiliateCommissionDetailsUseCase @Inject constructor(
                 "            \"TextType\": \"bold\",\n" +
                 "            \"TextStyle\": \"heading6\",\n" +
                 "            \"DetailTitle\": \"Total Diterima\",\n" +
-                "            \"DetailTooltip\": \"\",\n" +
+                "            \"DetailTooltip\": \"Semua total kunjungan yang dipilih berdasarkan aturan yang berlaku di Tokopedia dan juga dieliminasi dari pelanggaran & bot.\",\n" +
                 "            \"DetailDescription\": \"Rp50.000\",\n" +
                 "            \"AdvancedTooltip\": [ {\n" +
                 "                \"TooltipType\": \"text\",\n" +
@@ -168,7 +168,7 @@ class AffiliateCommissionDetailsUseCase @Inject constructor(
                 "              }]\n" +
                 "          }\n" +
                 "        ],\n" +
-                "        \"CommissionType\": \"TRAFFIC\",\n" +
+                 "        \"CommissionType\": \"TRAFFIC\",\n" +
                 "        \"PageType\": \"PDP\",\n" +
                 "        \"Notes\": \"1.025 total kunjungan\",\n" +
                 "        \"AdditionalQueryKey\": \"\",\n" +

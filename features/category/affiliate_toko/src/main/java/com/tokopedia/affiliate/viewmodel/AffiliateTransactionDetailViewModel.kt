@@ -13,6 +13,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.delay
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -27,6 +28,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private var additionKey: String? = ""
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var pageType :String? = ""
+    var commissionType :String? = ""
 
     fun affiliateCommission(transactionID:String,page :Int = PAGE_ZERO) {
         launchCatchError(block = {
@@ -36,6 +38,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                     var tempCardDetails: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
                     additionKey = affiliateCommissionDetail.data?.additionQueryKey
                     pageType = affiliateCommissionDetail.data?.pageType
+                    commissionType = affiliateCommissionDetail.data?.commissionType
                     if (affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
                         affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
                             tempCardDetails = it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail
@@ -48,6 +51,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                 progressBar.value = false
             }else{
                 shimmerVisibility.value = true
+                delay(2000)
                 affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
                     shimmerVisibility.value = false
                     detailList.value = getDetailListOrganize(null,it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail,page)

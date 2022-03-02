@@ -4,7 +4,7 @@
     android:id="@+id/affiliate_parent_linear"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl3"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:typographyType="body_2"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         />
 
     <androidx.recyclerview.widget.RecyclerView
