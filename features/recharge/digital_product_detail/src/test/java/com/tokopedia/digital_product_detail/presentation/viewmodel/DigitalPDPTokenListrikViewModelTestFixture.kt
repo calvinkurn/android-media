@@ -5,6 +5,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
@@ -81,7 +82,7 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetAddToCart_thenReturn(response: String) {
+    protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
             repo.addToCart(any(), any(), any(), any())
         } returns response
@@ -202,7 +203,7 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
     }
 
-    protected fun verifyAddToCartSuccess(expectedResponse: String) {
+    protected fun verifyAddToCartSuccess(expectedResponse: DigitalAtcResult) {
         val actualResponse = viewModel.addToCartResult.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
@@ -299,6 +300,14 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     protected fun verifyRecomCheckoutUrlUpdated(expectedResult: String) {
         val actualResult = viewModel.recomCheckoutUrl
         Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    protected fun verifyListInfoSuccess(expectedListInfo: List<String>, actualListInfo: List<String>){
+        Assert.assertEquals(expectedListInfo, actualListInfo)
+    }
+
+    protected fun verifyListInfoEmpty(actualListInfo: List<String>){
+        Assert.assertEquals(actualListInfo, listOf<String>())
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {

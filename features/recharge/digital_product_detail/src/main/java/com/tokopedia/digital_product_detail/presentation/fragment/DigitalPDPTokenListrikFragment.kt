@@ -145,7 +145,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         initEmptyState()
         observeData()
         getCatalogMenuDetail()
-        onShowGreenBox()
     }
 
     fun setupKeyboardWatcher() {
@@ -244,7 +243,18 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             when(atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(atcData.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        viewModel.operatorData.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        atcData.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        viewModel.operatorData.attributes.name,
+                        atcData.data.priceProduct
+                    )
+                    navigateToCart(atcData.data.categoryId)
                 }
 
                 is RechargeNetworkResult.Fail -> {
@@ -283,29 +293,27 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         renderTicker(data.tickers)
     }
 
-    private fun onShowGreenBox(){
+    private fun onHideGreenBox(){
+        binding?.rechargePdpTickerWidgetProductDesc?.hide()
+    }
+
+    private fun onShowGreenBox(listInfo: List<String>){
         binding?.let {
-            //TODO Firman change to real data
-            val dummyInfo = "Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB.</b> <b>Selengkapnya</b>"
-            val clickableInfo = "Selengkapnya"
-            val dummyListInfo = listOf<String>(
-                "Transaksi selama 23:40-00:20 WIB baru akan <b>diproses pada 00:45 WIB.</b>",
-                "Proses verifikasi transaksi membutuhkan <b>maksimal 2x24 jam</b> hari kerja",
-                "Harap cek <b>limit kWh</b> anda sebelum membeli token listrik ya"
-            )
+            val mainInfo = listInfo.first()
+            val title = getString(R.string.bottom_sheet_more_info)
             it.rechargePdpTickerWidgetProductDesc.apply {
-                setText(dummyInfo)
-                setLinks(clickableInfo, View.OnClickListener {
+                show()
+                setText(mainInfo)
+                setOnClickListener {
                     digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                        DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                        viewModel.operatorData.attributes.name,
                         loyaltyStatus,
-                        userSession.userId
+                        userSession.userId,
                     )
-                    showMoreInfoBottomSheet(dummyListInfo)
-                })
+                    showMoreInfoBottomSheet(listInfo, title)
+                }
             }
-
         }
     }
 
@@ -432,7 +440,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun onShimmeringDenomGrid() {
         binding?.let {
-            it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridShimmering()
+            it.rechargePdpTokenListrikDenomGridWidget.run {
+                show()
+                renderDenomGridShimmering()
+            }
         }
     }
 
@@ -473,6 +484,15 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun onSuccessGetOperatorSelectGroup() {
         renderProduct()
+    }
+
+    private fun renderGreenBox(){
+        val listInfo = viewModel.getListInfo()
+        if (!listInfo.isNullOrEmpty()){
+            onShowGreenBox(listInfo)
+        } else {
+            onHideGreenBox()
+        }
     }
 
     private fun onFailedGetOperatorSelectGroup(throwable: Throwable) {
@@ -561,7 +581,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
                 rechargePdpTokenListrikRecommendationWidget.show()
-                rechargePdpTickerWidgetProductDesc.show()
+                renderGreenBox()
             }
         }
     }
@@ -787,9 +807,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>){
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String){
+        digitalPDPTelcoAnalytics.impressionGreenBox(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            viewModel.operatorData.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            title
+        )
         fragmentManager?.let {
-            MoreInfoPDPBottomsheet(listInfo).show(it, "")
+            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
         }
     }
 

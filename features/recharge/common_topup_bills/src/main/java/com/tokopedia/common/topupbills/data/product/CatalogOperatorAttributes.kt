@@ -38,5 +38,12 @@ class CatalogOperatorAttributes(
         val operatorLabel: List<String> = listOf(),
         @SerializedName("prefix")
         @Expose
-        val prefix: List<RechargePrefix> = listOf()
+        val prefix: List<RechargePrefix> = listOf(),
+        @SerializedName("product_descriptions")
+        @Expose
+        val productDescriptions: List<String> = listOf(),
+        @SerializedName("operator_descriptions")
+        @Expose
+        val operatorDescriptions: List<String> = listOf()
+
 ) : Parcelable
