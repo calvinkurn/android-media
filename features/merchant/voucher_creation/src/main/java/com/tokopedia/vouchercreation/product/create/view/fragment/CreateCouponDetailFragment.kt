@@ -22,9 +22,11 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.*
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.databinding.FragmentMvcCreateCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
@@ -244,16 +246,61 @@ class CreateCouponDetailFragment(
         tfuCouponDateEnd?.getFirstIcon()?.tintDrawableToBlack()
 
         tfuCouponDateStart?.setFieldOnClickListener {
-            pickStartDate()
+            if (requireContext().isBeforeRollout()) {
+                pickStartDateBeforeRollout()
+            } else {
+                pickStartDate()
+            }
         }
 
         tfuCouponDateEnd?.setFieldOnClickListener {
-            pickEndDate()
+            if (requireContext().isBeforeRollout()) {
+                pickEndDateBeforeRollout()
+            } else {
+                pickEndDate()
+            }
         }
     }
 
     private fun onCouponTargetChanged(target: CouponTargetEnum) {
         viewModel.setSelectedCouponTarget(target)
+    }
+
+    private fun pickStartDateBeforeRollout() {
+        val thresholdDate = requireContext().getToday().apply { timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME }
+        val selectedDate = viewModel.startDateCalendarLiveData.value ?: thresholdDate
+        val title = getString(R.string.mvc_start_date_title)
+        val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
+        val minDate = thresholdDate
+        val maxDate = requireContext().getToday().apply  {
+            timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.DATE, DateTimeUtils.EXTRA_DAYS)
+        }
+        val defaultDate = if (selectedDate.timeInMillis < ROLLOUT_DATE_THRESHOLD_TIME) {
+            thresholdDate
+        } else {
+            selectedDate
+        }
+        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
+            viewModel.setStartDateCalendar(it)
+        }
+    }
+
+    private fun pickEndDateBeforeRollout() {
+        val thresholdDate = requireContext().getToday().apply { timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME }
+        val selectedDate = viewModel.startDateCalendarLiveData.value ?: thresholdDate
+        val title = getString(R.string.mvc_start_date_title)
+        val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
+        val minDate = DateTimeUtils.getMinEndDate(thresholdDate) ?: thresholdDate
+        val maxDate = DateTimeUtils.getMaxEndDate(thresholdDate) ?: thresholdDate
+        val defaultDate = if (selectedDate.timeInMillis < ROLLOUT_DATE_THRESHOLD_TIME) {
+            thresholdDate
+        } else {
+            selectedDate
+        }
+        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
+            viewModel.setEndDateCalendar(it)
+        }
     }
 
     private fun pickStartDate() {

@@ -10,6 +10,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
@@ -67,7 +70,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mvc_create_coupon)
         router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
         println(productId) //TODO: Auto select product based on productId
-        couponPreviewFragment.setCouponInformationData(populateDefaultCouponStartEndDate())
+
+        val startEndDate = if (isBeforeRollout()) {
+            populateDefaultCouponStartEndDateBeforeRollout()
+        } else {
+            populateDefaultCouponStartEndDate()
+        }
+        couponPreviewFragment.setCouponInformationData(startEndDate)
     }
 
     private fun setupDependencyInjection() {
@@ -186,6 +195,23 @@ class CreateCouponProductActivity : AppCompatActivity() {
             EMPTY_STRING,
             EMPTY_STRING,
             CouponInformation.Period(startDate, endDate)
+        )
+    }
+
+    private fun populateDefaultCouponStartEndDateBeforeRollout(): CouponInformation {
+        val startDate = getToday().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
+        }
+        val endDate = getToday().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        }
+        return CouponInformation(
+            CouponInformation.Target.NOT_SELECTED,
+            EMPTY_STRING,
+            EMPTY_STRING,
+            CouponInformation.Period(startDate.time, endDate.time)
         )
     }
 
