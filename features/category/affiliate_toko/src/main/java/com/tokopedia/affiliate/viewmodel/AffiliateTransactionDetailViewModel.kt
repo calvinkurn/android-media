@@ -51,7 +51,6 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                 progressBar.value = false
             }else{
                 shimmerVisibility.value = true
-                delay(2000)
                 affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
                     shimmerVisibility.value = false
                     detailList.value = getDetailListOrganize(null,it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail,page)

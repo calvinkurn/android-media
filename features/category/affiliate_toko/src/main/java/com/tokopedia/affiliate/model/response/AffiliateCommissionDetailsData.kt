@@ -93,7 +93,7 @@ data class AffiliateCommissionDetailsData(
                 @SerializedName("DetailTooltip")
                 var detailTooltip: String?,
                 @SerializedName("AdvancedTooltip")
-                var advanceTooltip: List<Tooltip>
+                var advanceTooltip: List<Tooltip?>?
             ){
                 data class Tooltip(
                     @SerializedName("TooltipType")

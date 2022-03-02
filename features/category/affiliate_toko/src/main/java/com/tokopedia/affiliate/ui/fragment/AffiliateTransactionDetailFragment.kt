@@ -47,7 +47,7 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     private var listCount = 0
 
-    override fun onInfoClick(title: String?, desc: String?, advanceTooltip: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?) {
+    override fun onInfoClick(title: String?, desc: String?, advanceTooltip: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip?>?) {
         AffiliateRecylerBottomSheet.newInstance(TYPE_WITHDRAWAL,title,desc,advanceTooltip).show(childFragmentManager, "")
     }
 

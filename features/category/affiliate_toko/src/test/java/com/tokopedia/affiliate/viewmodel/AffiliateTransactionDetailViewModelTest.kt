@@ -1,9 +1,11 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
+import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.usecase.*
@@ -45,20 +47,28 @@ class AffiliateTransactionDetailViewModelTest{
     /**************************** getAffiliateCommission() *******************************************/
     @Test
     fun getAffiliateCommission() {
-        val affiliateCommisionDetails : AffiliateCommissionDetailsData = mockk(relaxed = true)
-        val cardDetails : AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail = mockk(relaxed = true)
-        val data = AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data(null,"","",
-            arrayListOf(cardDetails),null,null,null,null,"","")
-        affiliateCommisionDetails.getAffiliateCommissionDetail?.data = data
+        val cardList = arrayListOf(AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail(null,null,"divider",null,null,null,null),
+            AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail(null,null,"non-divider",null,null,null,null))
+        val affiliateCommisionDetails = AffiliateCommissionDetailsData(AffiliateCommissionDetailsData.GetAffiliateCommissionDetail(AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data(null,"","",
+            cardList,null,null,null,null,"","","PRODUCT","","")))
         coEvery { affiliateCommissionDetailUserCase.affiliateCommissionDetails(any()) } returns affiliateCommisionDetails
-
+        val affiliateTrafficCommissionCardDetails = AffiliateTrafficCommissionCardDetails(
+            AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards(
+                AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data(
+                null,null,null,null, arrayListOf(AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail("","",null))
+            )))
+        coEvery { affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(any(),any(),any()) } returns affiliateTrafficCommissionCardDetails
         val response = affiliateTransactionDetailViewModel.getDetailListOrganize(affiliateCommisionDetails?.getAffiliateCommissionDetail?.data?.detail)
-
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
 
-        assertEquals(affiliateTransactionDetailViewModel.getDetailList().value,response)
+        assertEquals(Gson().toJson(affiliateTransactionDetailViewModel.getDetailList().value),Gson().toJson(response))
         assertEquals(affiliateTransactionDetailViewModel.getCommissionData().value,affiliateCommisionDetails.getAffiliateCommissionDetail)
         assertEquals(affiliateTransactionDetailViewModel.progressBar().value,false)
+        assertEquals(affiliateTransactionDetailViewModel.commissionType,"PRODUCT")
+        affiliateCommisionDetails.getAffiliateCommissionDetail?.data?.commissionType = "TRAFFIC"
+        affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
+        affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f",1)
+        assertEquals(affiliateTransactionDetailViewModel.getShimmerVisibility().value,false)
     }
 
     @Test
@@ -66,11 +76,15 @@ class AffiliateTransactionDetailViewModelTest{
 
         val exception = java.lang.Exception("Validate Data Exception")
         coEvery { affiliateCommissionDetailUserCase.affiliateCommissionDetails(any()) } throws exception
+        coEvery { affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(any(),any(),any()) } throws exception
 
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
 
         assertEquals(affiliateTransactionDetailViewModel.getErrorMessage().value, exception)
         assertEquals(affiliateTransactionDetailViewModel.progressBar().value,false)
+
+        affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f",1)
+        assertEquals(affiliateTransactionDetailViewModel.getShimmerVisibility().value,false)
 
     }
 }
