@@ -16,10 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
