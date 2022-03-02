@@ -17,12 +17,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
-class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
+class SelectGateWayBottomSheet : BottomSheetUnify(), GateWayCardClicked {
     private val childLayoutRes = R.layout.activation_gateway_brand
     private var listOfGateway: List<CheckoutData> = ArrayList()
     private var gatewayListAdapter: GatewayListAdapter? = null
 
-    private var quantitySelected = 0;
+    private var quantitySelected = 0
     private var variantSelected = ""
     private var productId = ""
     private var selectedTenure = ""
@@ -62,13 +62,13 @@ class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
         gatewayList.filter {
             it.gateway_id.toString() == selectedGateWayId
         }.map {
-            it.selectedGateway = true;
+            it.selectedGateway = true
         }.first()
         listOfGateway = gatewayList
         gatewayListAdapter =
-                context?.let { context ->
-                    GatewayListAdapter(listOfGateway, this, context)
-                }
+            context?.let { context ->
+                GatewayListAdapter(listOfGateway, this, context)
+            }
 
         gatewayListRecycler.layoutManager = LinearLayoutManager(context)
         gatewayListAdapter?.let {
@@ -80,7 +80,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
 
     private fun sendClickAnalytics(checkoutData: CheckoutData) {
         activity?.let {
-            sendAnalyticEvent(PdpSimulationEvent.ClickChangePartnerEvent(
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickChangePartnerEvent(
                     productId, checkoutData.userState ?: "",
                     checkoutData.gateway_name,
                     selectedEmiOption,
@@ -88,7 +89,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
                     quantitySelected.toString(),
                     checkoutData.userAmount ?: "",
                     variantSelected
-            ))
+                )
+            )
         }
     }
 
@@ -101,8 +103,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
 
     private fun initView() {
         val childView = LayoutInflater.from(context).inflate(
-                childLayoutRes,
-                null, false
+            childLayoutRes,
+            null, false
         )
         setChild(childView)
     }
@@ -128,8 +130,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
         const val CURRENT_SELECTED_TENURE = "selected_tenure"
 
         fun show(
-                bundle: Bundle,
-                childFragmentManager: FragmentManager
+            bundle: Bundle,
+            childFragmentManager: FragmentManager
         ): SelectGateWayBottomSheet {
             val actionStepsBottomSheet = SelectGateWayBottomSheet()
             actionStepsBottomSheet.arguments = bundle
@@ -141,7 +143,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify(),GateWayCardClicked {
     override fun gatewayCardSelected(gatewayId: Int, newPosition: Int) {
         activity?.let { fragmentActivity ->
             (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(
-                    gatewayId
+                gatewayId
             )
         }
         for (i in listOfGateway.indices) {

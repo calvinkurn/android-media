@@ -12,10 +12,10 @@ import dagger.Component
 
 @PdpSimulationScope
 @Component(
-        modules =
-        [PdpSimulationModule::class,
-            ViewModelModule::class],
-        dependencies = [BaseAppComponent::class]
+    modules =
+    [PdpSimulationModule::class,
+        ViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
 )
 interface PdpSimulationComponent {
 

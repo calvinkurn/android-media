@@ -6,7 +6,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.SupervisorUiModel
 
 class PayLaterSupervisorViewHolder(itemView: View) :
-        AbstractViewHolder<SupervisorUiModel>(itemView) {
+    AbstractViewHolder<SupervisorUiModel>(itemView) {
 
 
     companion object {

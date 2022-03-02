@@ -22,14 +22,18 @@ object PayLaterBundleGenerator {
         putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installmentDetails)
     }
 
-    fun getPayLaterImpressionEvent(data: ArrayList<SimulationUiModel>, defaultSelectedSimulation: Int): PayLaterAnalyticsBase {
+    fun getPayLaterImpressionEvent(
+        data: ArrayList<SimulationUiModel>,
+        defaultSelectedSimulation: Int
+    ): PayLaterAnalyticsBase {
         val simulationList = data[defaultSelectedSimulation].simulationList
         val firstDetail: BasePayLaterWidgetUiModel? = simulationList?.getOrNull(0)
         val (userState, linkStatus) = if (firstDetail is Detail)
             Pair(firstDetail.userState ?: "", firstDetail.linkingStatus ?: "")
         else Pair("", "")
 
-        val partnerList = if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
+        val partnerList =
+            if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
 
         return PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation

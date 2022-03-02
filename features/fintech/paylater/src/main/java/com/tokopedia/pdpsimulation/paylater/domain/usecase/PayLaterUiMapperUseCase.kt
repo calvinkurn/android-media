@@ -10,9 +10,9 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
     private var defaultTenure: Int = 0
 
     fun mapResponseToUi(
-            onSuccess: (ArrayList<SimulationUiModel>) -> Unit,
-            payLaterGetSimulation: PayLaterGetSimulation?,
-            defaultTenure: Int,
+        onSuccess: (ArrayList<SimulationUiModel>) -> Unit,
+        payLaterGetSimulation: PayLaterGetSimulation?,
+        defaultTenure: Int,
     ) {
         this.payLaterGetSimulation = payLaterGetSimulation
         this.defaultTenure = defaultTenure
@@ -64,11 +64,11 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
                     isTenureFound = true
 
                 val simulationUiModel = SimulationUiModel(
-                        tenure = data.tenure,
-                        text = data.text,
-                        smallText = data.smallText,
-                        simulationList = getPayLaterList,
-                        isSelected = defaultTenure == data.tenure
+                    tenure = data.tenure,
+                    text = data.text,
+                    smallText = data.smallText,
+                    simulationList = getPayLaterList,
+                    isSelected = defaultTenure == data.tenure
                 )
                 uiList.add(simulationUiModel)
             }

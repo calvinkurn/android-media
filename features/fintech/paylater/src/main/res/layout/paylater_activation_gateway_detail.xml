@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/gatewayImg"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/pay_later_dp_40"
+        android:layout_height="@dimen/pay_later_dp_40"
         app:layout_constraintBottom_toBottomOf="@+id/subheaderGatewayDetail"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/getwayBrandName" />
@@ -29,7 +29,7 @@
         android:id="@+id/subheaderGateway"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/unify_space_2"
         app:layout_constraintLeft_toLeftOf="@id/getwayBrandName"
         app:layout_constraintTop_toBottomOf="@id/getwayBrandName"
         app:typographyType="body_3"
@@ -38,9 +38,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subheaderGatewayDetail"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/unify_space_2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toLeftOf="@id/getwayBrandName"
         app:layout_constraintRight_toLeftOf="@id/changePayLaterPartner"

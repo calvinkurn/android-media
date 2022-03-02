@@ -22,12 +22,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterActivationViewModel @Inject constructor(
-        private val paylaterActivationUseCase: PaylaterActivationUseCase,
-        private val productDetailUseCase: ProductDetailUseCase,
-        private val addToCartUseCase: AddToCartOccMultiUseCase,
-        @CoroutineBackgroundDispatcher val dispatcher: CoroutineDispatcher
+    private val paylaterActivationUseCase: PaylaterActivationUseCase,
+    private val productDetailUseCase: ProductDetailUseCase,
+    private val addToCartUseCase: AddToCartOccMultiUseCase,
+    @CoroutineBackgroundDispatcher val dispatcher: CoroutineDispatcher
 ) :
-        BaseViewModel(dispatcher) {
+    BaseViewModel(dispatcher) {
 
     var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
 
@@ -35,9 +35,9 @@ class PayLaterActivationViewModel @Inject constructor(
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
     private val _payLaterActivationDetailLiveData =
-            MutableLiveData<Result<PaylaterGetOptimizedModel>>()
+        MutableLiveData<Result<PaylaterGetOptimizedModel>>()
     val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
-            _payLaterActivationDetailLiveData
+        _payLaterActivationDetailLiveData
 
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartOccMultiDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartOccMultiDataModel>> = _addToCartLiveData
@@ -72,9 +72,9 @@ class PayLaterActivationViewModel @Inject constructor(
         productDetailUseCase.cancelJobs()
 
         productDetailUseCase.getProductDetail(
-                ::onAvailableProductDetail,
-                ::onFailProductDetail,
-                productId
+            ::onAvailableProductDetail,
+            ::onFailProductDetail,
+            productId
         )
     }
 
@@ -101,11 +101,11 @@ class PayLaterActivationViewModel @Inject constructor(
     fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayCode: String) {
         paylaterActivationUseCase.cancelJobs()
         paylaterActivationUseCase.getPayLaterActivationDetail(
-                ::onSuccessActivationData,
-                ::onFailActivationData,
-                price,
-                productId,
-                gatewayCode
+            ::onSuccessActivationData,
+            ::onFailActivationData,
+            price,
+            productId,
+            gatewayCode
         )
     }
 
@@ -132,23 +132,23 @@ class PayLaterActivationViewModel @Inject constructor(
         shopId?.let {
 
             addToCartUseCase.setParams(
-                    AddToCartOccMultiRequestParams(
-                            carts = arrayListOf(
-                                    AddToCartOccMultiCartParam(
-                                            productId = productId,
-                                            shopId = it,
-                                            quantity = productQuantity.toString()
-                                    )
-                            )
+                AddToCartOccMultiRequestParams(
+                    carts = arrayListOf(
+                        AddToCartOccMultiCartParam(
+                            productId = productId,
+                            shopId = it,
+                            quantity = productQuantity.toString()
+                        )
                     )
+                )
             )
             addToCartUseCase.execute(
-                    onSuccess = {
-                        onSuccessAddToCartForCheckout(it)
-                    },
-                    onError = {
-                        onErrorAddToCartForCheckout(it)
-                    }
+                onSuccess = {
+                    onSuccessAddToCartForCheckout(it)
+                },
+                onError = {
+                    onErrorAddToCartForCheckout(it)
+                }
             )
         }
     }
@@ -159,12 +159,17 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onSuccessAddToCartForCheckout(addToCartOcc: AddToCartOccMultiDataModel) {
         if (addToCartOcc.isStatusError())
-            _addToCartLiveData.value = Fail(ShowToasterException(addToCartOcc.getAtcErrorMessage()
-                    ?: ""))
+            _addToCartLiveData.value = Fail(
+                ShowToasterException(
+                    addToCartOcc.getAtcErrorMessage()
+                        ?: ""
+                )
+            )
         else {
-            occRedirectionUrl = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${selectedTenureSelected}" +
-                    "&gateway_code=${gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: ""}" +
-                    "&fintech"
+            occRedirectionUrl =
+                ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT + "?selectedTenure=${selectedTenureSelected}" +
+                        "&gateway_code=${gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: ""}" +
+                        "&fintech"
             _addToCartLiveData.value = Success(addToCartOcc)
 
         }

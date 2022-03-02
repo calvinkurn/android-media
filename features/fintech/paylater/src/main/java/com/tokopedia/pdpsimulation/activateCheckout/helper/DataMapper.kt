@@ -17,7 +17,7 @@ object DataMapper {
             Content(it.title, it.value, it.type)
         }.toCollection(contentList)
         val installmentDetails =
-                InstallmentDetails(tenureDetail.installment_details.header, contentList)
+            InstallmentDetails(tenureDetail.installment_details.header, contentList)
         return TenureSelectedModel(priceText, tenure, installmentDetails)
     }
 }

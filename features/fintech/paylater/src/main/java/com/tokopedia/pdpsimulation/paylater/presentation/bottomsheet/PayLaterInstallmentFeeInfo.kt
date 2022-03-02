@@ -21,7 +21,7 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
     private val childLayoutRes = R.layout.paylater_additional_fee_info_bottomsheet
 
     private fun getAdapterTypeFactory() =
-            PayLaterAdapterFactoryImpl(PayLaterOptionInteraction({}, {}, {}, {}, {}))
+        PayLaterAdapterFactoryImpl(PayLaterOptionInteraction({}, {}, {}, {}, {}))
 
     private val simulationAdapter: PayLaterSimulationAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
@@ -29,8 +29,8 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         val childView = LayoutInflater.from(context).inflate(
-                childLayoutRes,
-                null, false
+            childLayoutRes,
+            null, false
         )
         setChild(childView)
 
@@ -53,7 +53,7 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         rvInstallmentDetail.adapter = simulationAdapter
         rvInstallmentDetail.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvInstallmentDetail.setHasFixedSize(true)
         simulationAdapter.addAllElements(installmentDetails?.content ?: listOf())
     }
@@ -73,8 +73,8 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
         const val INSTALLMENT_DETAIL = "installment"
 
         fun show(
-                bundle: Bundle,
-                childFragmentManager: FragmentManager
+            bundle: Bundle,
+            childFragmentManager: FragmentManager
         ) {
             val actionStepsBottomSheet = PayLaterInstallmentFeeInfo()
             actionStepsBottomSheet.arguments = bundle

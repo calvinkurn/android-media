@@ -10,7 +10,7 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.paylater_installment_info_item.view.*
 
 class PayLaterInstallmentInfoViewHolder(itemView: View) :
-        AbstractViewHolder<Content>(itemView) {
+    AbstractViewHolder<Content>(itemView) {
 
 
     companion object {

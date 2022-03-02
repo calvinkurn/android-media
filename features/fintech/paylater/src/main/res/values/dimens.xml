@@ -9,13 +9,18 @@
     <dimen name="pay_later_dp_18">18dp</dimen>
     <dimen name="pay_later_shimmer_width_dp_256">256dp</dimen>
     <dimen name="credit_card_dp_10">10dp</dimen>
-
+    <dimen name="paylater_sp_10">10sp</dimen>
     <dimen name="credit_card_offer_label_sp_10">10sp</dimen>
-
-
     <dimen name="pay_later_simulation_dp_38">38dp</dimen>
     <dimen name="paylater_occ_lable_25dp">25dp</dimen>
     <dimen name="pay_later_dp_20">20dp</dimen>
     <dimen name="pay_later_dp_21">21dp</dimen>
+    <dimen name="pay_later_dp_23">23dp</dimen>
+    <dimen name="pay_later_dp_51">51dp</dimen>
+    <dimen name="pay_later_dp_40">40dp</dimen>
+    <dimen name="pay_later_dp_5">5dp</dimen>
+    <dimen name="pay_later_dp_95">95dp</dimen>
+
+
 
 </resources>

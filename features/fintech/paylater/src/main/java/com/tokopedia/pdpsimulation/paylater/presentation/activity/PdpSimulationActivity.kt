@@ -23,7 +23,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>, PdpSimulationCallback {
+class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
+    PdpSimulationCallback {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -50,8 +51,8 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
 
         return if (!userSession.isLoggedIn) {
             startActivityForResult(
-                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
             )
             null
         } else {
@@ -67,11 +68,11 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     }
 
     private fun initInjector() =
-            DaggerPdpSimulationComponent.builder()
-                    .baseAppComponent(
-                            (applicationContext as BaseMainApplication)
-                                    .baseAppComponent
-                    ).build()
+        DaggerPdpSimulationComponent.builder()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication)
+                    .baseAppComponent
+            ).build()
 
 
     /**

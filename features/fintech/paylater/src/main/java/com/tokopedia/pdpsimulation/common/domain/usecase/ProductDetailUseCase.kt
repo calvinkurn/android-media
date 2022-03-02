@@ -9,23 +9,23 @@ import javax.inject.Inject
 
 @GqlQuery("ProductDetailQuery", GQL_GET_PRODUCT_DETAIL)
 class ProductDetailUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-        GraphqlUseCase<BaseProductDetailClass>(graphqlRepository) {
+    GraphqlUseCase<BaseProductDetailClass>(graphqlRepository) {
 
     fun getProductDetail(
-            onSuccess: (BaseProductDetailClass) -> Unit,
-            onError: (Throwable) -> Unit,
-            productId: String
+        onSuccess: (BaseProductDetailClass) -> Unit,
+        onError: (Throwable) -> Unit,
+        productId: String
     ) {
         try {
             this.setTypeClass(BaseProductDetailClass::class.java)
             this.setRequestParams(getRequestParams(productId))
             this.setGraphqlQuery(ProductDetailQuery.GQL_QUERY)
             this.execute(
-                    { result ->
-                        onSuccess(result)
-                    }, { error ->
-                onError(error)
-            }
+                { result ->
+                    onSuccess(result)
+                }, { error ->
+                    onError(error)
+                }
             )
         } catch (throwable: Throwable) {
             onError(throwable)

@@ -9,19 +9,23 @@ import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimu
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimulationTenureViewHolder
 
 class PayLaterSimulationTenureAdapter(
-        private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>) -> Unit) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>) -> Unit
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val tenureItemList = arrayListOf<SimulationUiModel>()
     var lastSelectedPosition = -1
 
     override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
+        parent: ViewGroup,
+        viewType: Int
     ): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            PayLaterSimulationShimmerViewHolder.LAYOUT_ID -> PayLaterSimulationShimmerViewHolder.getViewHolder(inflater, parent)
+            PayLaterSimulationShimmerViewHolder.LAYOUT_ID -> PayLaterSimulationShimmerViewHolder.getViewHolder(
+                inflater,
+                parent
+            )
             else ->
                 PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
                     if (isTenureSelectionChanged(pos)) {
@@ -32,11 +36,13 @@ class PayLaterSimulationTenureAdapter(
         }
     }
 
-    private fun isTenureSelectionChanged(pos: Int) = pos != RecyclerView.NO_POSITION && pos != lastSelectedPosition &&
-            !tenureItemList[pos].simulationList.isNullOrEmpty()
+    private fun isTenureSelectionChanged(pos: Int) =
+        pos != RecyclerView.NO_POSITION && pos != lastSelectedPosition &&
+                !tenureItemList[pos].simulationList.isNullOrEmpty()
 
     private fun changeAndUpdateSelection(pos: Int) {
-        tenureItemList[lastSelectedPosition].isSelected = !tenureItemList[lastSelectedPosition].isSelected
+        tenureItemList[lastSelectedPosition].isSelected =
+            !tenureItemList[lastSelectedPosition].isSelected
         tenureItemList[pos].isSelected = !tenureItemList[pos].isSelected
         notifyItemChanged(lastSelectedPosition)
         lastSelectedPosition = pos

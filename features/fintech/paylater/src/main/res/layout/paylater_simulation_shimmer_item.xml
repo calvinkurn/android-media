@@ -27,7 +27,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/tvMonthlyTenure"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_12"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"

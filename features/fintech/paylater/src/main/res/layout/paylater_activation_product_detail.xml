@@ -19,7 +19,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_one"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/unify_space_2"
         android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginRight="@dimen/unify_space_16"
         app:layout_constraintTop_toBottomOf="@id/productDetailWidget" />
@@ -28,7 +28,7 @@
         android:id="@+id/showVariantBottomSheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:text="@string/paylater_activation_change_variant"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/quantityEditor"
@@ -39,8 +39,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_two"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="@dimen/pay_later_dp_5"
+        android:layout_marginTop="@dimen/pay_later_dp_20"
         app:layout_constraintTop_toBottomOf="@id/showVariantBottomSheet" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toTopOf="@id/divider_two"
         app:layout_constraintEnd_toEndOf="parent"

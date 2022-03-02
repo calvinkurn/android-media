@@ -18,16 +18,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-        private val paylaterGetSimulationV3UseCase: PayLaterSimulationV3UseCase,
-        private val productDetailUseCase: ProductDetailUseCase,
-        private val mapperUseCase: PayLaterUiMapperUseCase,
-        @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
+    private val paylaterGetSimulationV3UseCase: PayLaterSimulationV3UseCase,
+    private val productDetailUseCase: ProductDetailUseCase,
+    private val mapperUseCase: PayLaterUiMapperUseCase,
+    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
     private val _payLaterOptionsDetailLiveData =
-            MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
+        MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
     val payLaterOptionsDetailLiveData: LiveData<Result<ArrayList<SimulationUiModel>>> =
-            _payLaterOptionsDetailLiveData
+        _payLaterOptionsDetailLiveData
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
@@ -47,24 +47,27 @@ class PayLaterViewModel @Inject constructor(
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
         paylaterGetSimulationV3UseCase.cancelJobs()
         paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
-                ::onAvailableDetailSuccess,
-                ::onAvailableDetailFail,
-                price, productId
+            ::onAvailableDetailSuccess,
+            ::onAvailableDetailFail,
+            price, productId
         )
     }
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
         productDetailUseCase.getProductDetail(
-                ::onAvailableProductDetail,
-                ::onFailProductDetail,
-                productId
+            ::onAvailableProductDetail,
+            ::onFailProductDetail,
+            productId
         )
     }
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
         baseProductDetailClass.getProductV3?.let { data ->
-            if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
+            if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(
+                    0.0
+                ) == true
+            )
                 onFailProductDetail(IllegalStateException("Data invalid"))
             else _productDetailLiveData.postValue(Success(data))
         }
@@ -80,16 +83,17 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         mapperUseCase.cancelJobs()
-        mapperUseCase.mapResponseToUi({ data ->
-            if (data.isNotEmpty()) {
-                tenureMap =
+        mapperUseCase.mapResponseToUi(
+            { data ->
+                if (data.isNotEmpty()) {
+                    tenureMap =
                         data.mapIndexed { index, simulationUiModel -> simulationUiModel.tenure to index }
-                                .toMap()
-                // set selection
-                defaultSelectedSimulation = tenureMap[defaultTenure] ?: data.size - 1
-            }
-            _payLaterOptionsDetailLiveData.postValue(Success(data))
-        }, paylaterGetSimulation, defaultTenure
+                            .toMap()
+                    // set selection
+                    defaultSelectedSimulation = tenureMap[defaultTenure] ?: data.size - 1
+                }
+                _payLaterOptionsDetailLiveData.postValue(Success(data))
+            }, paylaterGetSimulation, defaultTenure
         )
     }
 

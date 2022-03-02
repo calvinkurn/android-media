@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/paylater_occ_lable_25dp"
         android:background="@drawable/bg_occ_tenure_recommended"
-        android:elevation="@dimen/dp_1"
+        android:elevation="@dimen/pay_later_divider_height_dp_1"
         android:gravity="center"
         android:paddingLeft="@dimen/unify_space_2"
         android:paddingTop="@dimen/unify_space_4"

@@ -3,7 +3,6 @@ package com.tokopedia.pdpsimulation.activateCheckout.presentation.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 
 class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
-        GatewaySelectActivityListner, PdpSimulationCallback {
+    GatewaySelectActivityListner, PdpSimulationCallback {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
@@ -59,8 +58,8 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
         return if (!userSession.isLoggedIn) {
             startActivityForResult(
-                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
             )
             null
         } else {
@@ -73,7 +72,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
             }
 
 
-            return  ActivationCheckoutFragment.newInstance(bundle)
+            return ActivationCheckoutFragment.newInstance(bundle)
         }
     }
 
@@ -83,11 +82,11 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     private fun initInjector() =
-            DaggerPdpSimulationComponent.builder()
-                    .baseAppComponent(
-                            (applicationContext as BaseMainApplication)
-                                    .baseAppComponent
-                    ).build()
+        DaggerPdpSimulationComponent.builder()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication)
+                    .baseAppComponent
+            ).build()
 
 
     /**

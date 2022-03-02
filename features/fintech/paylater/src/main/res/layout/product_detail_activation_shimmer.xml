@@ -14,7 +14,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_one"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/unify_space_2"
         android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginRight="@dimen/unify_space_16"
@@ -23,9 +23,9 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/quantityShimmer"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="@dimen/pay_later_dp_20"
         android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/pay_later_dp_20"
         android:layout_marginRight="@dimen/unify_space_16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -35,8 +35,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_two"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="@dimen/pay_later_dp_5"
+        android:layout_marginTop="@dimen/pay_later_dp_20"
         app:layout_constraintTop_toBottomOf="@id/quantityShimmer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

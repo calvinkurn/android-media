@@ -9,15 +9,15 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.Gat
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.GatewayViewHolder
 
 class GatewayListAdapter(
-        var gatewayDetailList: List<CheckoutData>,
-        private val gatewayClickListener: GateWayCardClicked,
-        val context: Context,
+    var gatewayDetailList: List<CheckoutData>,
+    private val gatewayClickListener: GateWayCardClicked,
+    val context: Context,
 ) : RecyclerView.Adapter<GatewayViewHolder>() {
 
 
     override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
+        parent: ViewGroup,
+        viewType: Int
     ): GatewayViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return GatewayViewHolder.getViewHolder(inflater, parent, gatewayClickListener, context)

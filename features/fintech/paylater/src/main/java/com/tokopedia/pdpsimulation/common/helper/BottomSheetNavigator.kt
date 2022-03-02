@@ -9,15 +9,15 @@ import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTok
 class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 
     fun <T : Any> showBottomSheet(
-            modelClass: Class<T>,
-            bundle: Bundle,
-            productId: String? = null
+        modelClass: Class<T>,
+        bundle: Bundle,
+        productId: String? = null
     ) {
         when {
             modelClass.isAssignableFrom(PayLaterActionStepsBottomSheet::class.java) -> {
                 PayLaterActionStepsBottomSheet.show(
-                        bundle,
-                        childFragmentManager
+                    bundle,
+                    childFragmentManager
                 )
             }
 
@@ -27,8 +27,8 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
             modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) -> {
                 bundle.putString(productID, productId)
                 PayLaterTokopediaGopayBottomsheet.show(
-                        bundle,
-                        childFragmentManager
+                    bundle,
+                    childFragmentManager
                 )
             }
 

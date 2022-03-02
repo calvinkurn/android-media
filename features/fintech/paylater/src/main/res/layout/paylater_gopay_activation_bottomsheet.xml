@@ -4,11 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageDisplayer"
-        android:layout_width="0dp"
-        android:layout_height="95dp"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/pay_later_dp_95"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="@id/tokoToGoPayHeader"
         app:layout_constraintRight_toRightOf="@id/tokoToGoPayHeader"
@@ -17,11 +16,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokoToGoPayHeader"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="51dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginRight="51dp"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="@dimen/pay_later_dp_23"
+        android:layout_marginEnd="@dimen/pay_later_dp_51"
         android:gravity="center"
         android:text="@string/pay_later_connect_gopay"
         android:textColor="@color/Unify_N700_96"
@@ -33,7 +32,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokoToGoPaySubHeader"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
@@ -48,7 +47,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnRegister"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_24"
         android:layout_marginBottom="@dimen/unify_space_16"
@@ -60,8 +59,6 @@
         app:unifyButtonSize="medium"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="filled"
-
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

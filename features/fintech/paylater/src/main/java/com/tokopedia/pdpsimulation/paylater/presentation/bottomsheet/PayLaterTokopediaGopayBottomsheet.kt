@@ -69,8 +69,8 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         val childView = LayoutInflater.from(context).inflate(
-                childLayoutRes,
-                null, false
+            childLayoutRes,
+            null, false
         )
         setChild(childView)
     }
@@ -90,8 +90,8 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         const val REDIRECT_TOKO_ENV = 1
 
         fun show(
-                bundle: Bundle,
-                childFragmentManager: FragmentManager
+            bundle: Bundle,
+            childFragmentManager: FragmentManager
         ) {
             val payLaterTokopediaGopayBottomsheet = PayLaterTokopediaGopayBottomsheet().apply {
                 arguments = bundle

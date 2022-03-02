@@ -6,7 +6,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.Content
 
 class InstallmentDividerViewHolder(itemView: View) :
-        AbstractViewHolder<Content>(itemView) {
+    AbstractViewHolder<Content>(itemView) {
 
 
     companion object {

@@ -60,7 +60,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     private val payLaterActivationViewModel: PayLaterActivationViewModel by lazy(
-            LazyThreadSafetyMode.NONE
+        LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(PayLaterActivationViewModel::class.java)
@@ -84,8 +84,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         parentView = inflater.inflate(R.layout.fragment_activation_checkout, container, false)
         return parentView
@@ -119,8 +119,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 is Success ->
                     if (payLaterActivationViewModel.occRedirectionUrl.isNotEmpty())
                         RouteManager.route(
-                                context,
-                                payLaterActivationViewModel.occRedirectionUrl
+                            context,
+                            payLaterActivationViewModel.occRedirectionUrl
                         )
                 is Fail ->
                     when (it.throwable) {
@@ -133,10 +133,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun showToaster(atcErrorMessage: String?) {
         atcErrorMessage?.let {
             Toaster.build(
-                    parentView,
-                    it,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
+                parentView,
+                it,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
             ).show()
         }
     }
@@ -170,9 +170,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     }
 
                     payLaterActivationViewModel.getOptimizedCheckoutDetail(
-                            payLaterActivationViewModel.selectedProductId,
-                            payLaterActivationViewModel.price * quantity,
-                            payLaterActivationViewModel.selectedGatewayCode
+                        payLaterActivationViewModel.selectedProductId,
+                        payLaterActivationViewModel.price * quantity,
+                        payLaterActivationViewModel.selectedGatewayCode
                     )
                 }
                 is Fail -> {
@@ -180,7 +180,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     removeBottomDetailForError()
                     when (it.throwable) {
                         is UnknownHostException, is SocketTimeoutException -> fullPageGlobalError(
-                                GlobalError.NO_CONNECTION
+                            GlobalError.NO_CONNECTION
                         )
                         is IllegalStateException -> fullPageEmptyError()
                         else -> fullPageGlobalError(GlobalError.SERVER_ERROR)
@@ -222,7 +222,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     removeBottomDetailForError()
                     when (it.throwable) {
                         is UnknownHostException, is SocketTimeoutException -> showGlobalErrorInTenureDetail(
-                                GlobalError.NO_CONNECTION
+                            GlobalError.NO_CONNECTION
                         )
                         is IllegalStateException -> showEmptyErrorInTenureDetail()
                         else -> showGlobalErrorInTenureDetail(GlobalError.SERVER_ERROR)
@@ -238,16 +238,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
                 if (!isDisabled) {
                     sendAnalyticEvent(
-                            PdpSimulationEvent.OccImpressionEvent(
-                                    payLaterActivationViewModel.selectedProductId,
-                                    checkoutData.userState ?: "",
-                                    checkoutData.gateway_name,
-                                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                                    quantity.toString(),
-                                    checkoutData.userAmount ?: "",
-                                    variantName
-                            )
+                        PdpSimulationEvent.OccImpressionEvent(
+                            payLaterActivationViewModel.selectedProductId,
+                            checkoutData.userState ?: "",
+                            checkoutData.gateway_name,
+                            checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                            checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                            quantity.toString(),
+                            checkoutData.userAmount ?: "",
+                            variantName
+                        )
                     )
                 }
             }
@@ -376,17 +376,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             setGatewayProductImage(it)
             if (it.gateway_name.isNotBlank())
                 gatewayDetailLayout.getwayBrandName.text =
-                        it.gateway_name
+                    it.gateway_name
             else
                 gatewayDetailLayout.getwayBrandName.visibility = View.GONE
             if (it.subtitle.isNotBlank())
                 gatewayDetailLayout.subheaderGateway.text =
-                        it.subtitle
+                    it.subtitle
             else
                 gatewayDetailLayout.subheaderGateway.visibility = View.GONE
             if (it.subtitle2.isNotBlank())
                 gatewayDetailLayout.subheaderGatewayDetail.text =
-                        it.subtitle2
+                    it.subtitle2
             else
                 gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
             if (it.tenureDetail.isNotEmpty()) {
@@ -422,7 +422,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         productData.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
                 detailHeader.productDetailWidget.productImage.setImageUrl(
-                        urlThumbnail
+                    urlThumbnail
                 )
             }
         }
@@ -431,7 +431,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
 
         detailHeader.productDetailWidget.productPrice.text =
-                convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
+            convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
 
         showVariantProductHeader(productData)
     }
@@ -449,7 +449,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 if (combination != -1) {
                     detailHeader.showVariantBottomSheet.visibility = View.VISIBLE
                     detailHeader.productDetailWidget.productVariant.text =
-                            variant.selections[0].options[combination]?.value ?: ""
+                        variant.selections[0].options[combination]?.value ?: ""
                 }
                 variantName = detailHeader.productDetailWidget.productVariant.text.toString()
             } else {
@@ -488,20 +488,38 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
             if (this::listOfGateway.isInitialized) {
                 sendChangePartnerClickEvent()
-                SelectGateWayBottomSheet.show(
-                        OccBundleHelper.setBundleForBottomSheetPartner(
+                payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.tenureDetail?.let {
+                    if (it.size > selectedTenurePosition) {
+                        SelectGateWayBottomSheet.show(
+                            OccBundleHelper.setBundleForBottomSheetPartner(
                                 listOfGateway,
                                 payLaterActivationViewModel.selectedGatewayId,
                                 variantName,
                                 payLaterActivationViewModel.selectedProductId,
                                 payLaterActivationViewModel.selectedTenureSelected,
                                 quantity,
-                                payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.tenureDetail?.get(selectedTenurePosition)?.monthly_installment
-                                        ?: ""
-                        ), childFragmentManager
-                ).setOnDismissListener {
-                    setTenureDetailData()
+                                it[selectedTenurePosition].monthly_installment
+                            ), childFragmentManager
+                        ).setOnDismissListener {
+                            setTenureDetailData()
+                        }
+                    } else {
+                        SelectGateWayBottomSheet.show(
+                            OccBundleHelper.setBundleForBottomSheetPartner(
+                                listOfGateway,
+                                payLaterActivationViewModel.selectedGatewayId,
+                                variantName,
+                                payLaterActivationViewModel.selectedProductId,
+                                payLaterActivationViewModel.selectedTenureSelected,
+                                quantity,
+                                ""
+                            ), childFragmentManager
+                        ).setOnDismissListener {
+                            setTenureDetailData()
+                        }
+                    }
                 }
+
             }
         }
         quantityTextWatcher()
@@ -514,12 +532,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             sendVarintClickEvent()
             context?.let {
                 AtcVariantHelper.goToAtcVariant(
-                        context = it,
-                        productId = payLaterActivationViewModel.selectedProductId,
-                        pageSource = VariantPageSource.BNPL_PAGESOURCE,
-                        isTokoNow = false,
-                        shopId = shopId,
-                        saveAfterClose = false
+                    context = it,
+                    productId = payLaterActivationViewModel.selectedProductId,
+                    pageSource = VariantPageSource.BNPL_PAGESOURCE,
+                    isTokoNow = false,
+                    shopId = shopId,
+                    saveAfterClose = false
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
@@ -530,8 +548,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             if (this::installmentModel.isInitialized) {
                 val bundle = Bundle().apply {
                     putParcelable(
-                            PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                            installmentModel
+                        PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
+                        installmentModel
                     )
                 }
                 bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
@@ -540,8 +558,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         proceedToCheckout.setOnClickListener {
             payLaterActivationViewModel.addProductToCart(
-                    payLaterActivationViewModel.selectedProductId,
-                    quantity
+                payLaterActivationViewModel.selectedProductId,
+                quantity
             )
         }
     }
@@ -550,16 +568,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         try {
             payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
                 sendAnalyticEvent(
-                        PdpSimulationEvent.OccChangePartnerClicked(
-                                payLaterActivationViewModel.selectedProductId,
-                                checkoutData.userState ?: "",
-                                checkoutData.gateway_name,
-                                checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                                quantity.toString(),
-                                checkoutData.userAmount ?: "",
-                                variantName,
-                        )
+                    PdpSimulationEvent.OccChangePartnerClicked(
+                        payLaterActivationViewModel.selectedProductId,
+                        checkoutData.userState ?: "",
+                        checkoutData.gateway_name,
+                        checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                        checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                        quantity.toString(),
+                        checkoutData.userAmount ?: "",
+                        variantName,
+                    )
                 )
             }
         } catch (e: Exception) {
@@ -572,16 +590,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
 
                 sendAnalyticEvent(
-                        PdpSimulationEvent.OccChangeVariantClicked(
-                                payLaterActivationViewModel.selectedProductId,
-                                checkoutData.userState ?: "",
-                                checkoutData.gateway_name,
-                                checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
-                                checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
-                                quantity.toString(),
-                                checkoutData.userAmount ?: "",
-                                variantName,
-                        )
+                    PdpSimulationEvent.OccChangeVariantClicked(
+                        payLaterActivationViewModel.selectedProductId,
+                        checkoutData.userState ?: "",
+                        checkoutData.gateway_name,
+                        checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                        checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                        quantity.toString(),
+                        checkoutData.userAmount ?: "",
+                        variantName,
+                    )
                 )
 
 
@@ -604,14 +622,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             if (!s.isNullOrBlank()) {
                 when {
                     s.replace("[^0-9]".toRegex(), "")
-                            .toInt() > detailHeader.quantityEditor.maxValue -> {
+                        .toInt() > detailHeader.quantityEditor.maxValue -> {
                         detailHeader.limiterMessage.visibility = View.VISIBLE
                         detailHeader.limiterMessage.text =
-                                "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
+                            "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
                     }
                     s.replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
                         detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text = getString(R.string.paylater_occ_min_quantity)
+                        detailHeader.limiterMessage.text =
+                            getString(R.string.paylater_occ_min_quantity)
                     }
                     else -> detailHeader.limiterMessage.visibility = View.GONE
                 }
@@ -624,9 +643,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailShimmer.visibility = View.VISIBLE
         gatewayDetailLayout.visibility = View.GONE
         payLaterActivationViewModel.getOptimizedCheckoutDetail(
-                payLaterActivationViewModel.selectedProductId,
-                payLaterActivationViewModel.price * quantity,
-                payLaterActivationViewModel.selectedGatewayCode
+            payLaterActivationViewModel.selectedProductId,
+            payLaterActivationViewModel.price * quantity,
+            payLaterActivationViewModel.selectedGatewayCode
         )
     }
 
@@ -663,8 +682,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     override fun selectedTenure(
-            tenureSelectedModel: TenureSelectedModel,
-            newPositionToSelect: Int
+        tenureSelectedModel: TenureSelectedModel,
+        newPositionToSelect: Int
     ) {
         tenureSelectedModel.installmentDetails?.let {
             installmentModel = it

@@ -58,9 +58,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private val payLaterArgsDescriptor: PayLaterArgsDescriptor by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterArgsDescriptor(
-                arguments?.getString(PARAM_PRODUCT_ID) ?: "",
-                (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
-                arguments?.getString(PARAM_PRODUCT_URL) ?: "",
+            arguments?.getString(PARAM_PRODUCT_ID) ?: "",
+            (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
+            arguments?.getString(PARAM_PRODUCT_URL) ?: "",
         )
     }
 
@@ -75,13 +75,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
-            interaction = PayLaterOptionInteraction(
-                    onCtaClicked = { handleAction(it) },
-                    installementDetails = { openInstallmentBottomSheet(it) },
-                    seeMoreOptions = { simulationAdapter.updateOptionList(it) },
-                    invokeAnalytics = { sendEvent(it) },
-                    retryLoading = { retryLoading() }
-            )
+        interaction = PayLaterOptionInteraction(
+            onCtaClicked = { handleAction(it) },
+            installementDetails = { openInstallmentBottomSheet(it) },
+            seeMoreOptions = { simulationAdapter.updateOptionList(it) },
+            invokeAnalytics = { sendEvent(it) },
+            retryLoading = { retryLoading() }
+        )
     )
 
     private fun handleAction(detail: Detail) {
@@ -94,21 +94,31 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 "&gatewayID=${detail.gatewayDetail?.gateway_id}"
 
         PayLaterHelper.handleClickNavigation(context, detail, customUrl,
-                openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
-                openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
+            openHowToUse = {
+                bottomSheetNavigator.showBottomSheet(
+                    PayLaterActionStepsBottomSheet::class.java,
+                    it
+                )
+            },
+            openGoPay = {
+                bottomSheetNavigator.showBottomSheet(
+                    PayLaterTokopediaGopayBottomsheet::class.java,
+                    it
+                )
+            }
         )
     }
 
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
-                PayLaterInstallmentFeeInfo::class.java,
-                PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
+            PayLaterInstallmentFeeInfo::class.java,
+            PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
         )
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
     }
@@ -128,10 +138,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun initViews() {
         rvPayLaterSimulation.adapter = tenureAdapter
         rvPayLaterSimulation.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvPayLaterOption.adapter = simulationAdapter
         rvPayLaterOption.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvPayLaterOption.setHasFixedSize(true)
         rvPayLaterSimulation.setHasFixedSize(true)
         simulationAdapter.showLoadingInAdapter()
@@ -173,11 +183,16 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         if (defaultSelectedSimulation >= 0) {
             rvPayLaterSimulation.scrollToPosition(defaultSelectedSimulation)
             simulationAdapter.addAllElements(
-                    data.getOrNull(defaultSelectedSimulation)?.simulationList ?: arrayListOf()
+                data.getOrNull(defaultSelectedSimulation)?.simulationList ?: arrayListOf()
             )
         }
         if (data.isNotEmpty())
-            sendEvent(PayLaterBundleGenerator.getPayLaterImpressionEvent(data, defaultSelectedSimulation))
+            sendEvent(
+                PayLaterBundleGenerator.getPayLaterImpressionEvent(
+                    data,
+                    defaultSelectedSimulation
+                )
+            )
     }
 
     private fun simulationFailed(throwable: Throwable) {
@@ -238,8 +253,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     // THis method called on product detail api success
     private fun productDetailSuccess(data: GetProductV3) {
-        payLaterViewModel.getPayLaterAvailableDetail(data.price
-                ?: 0.0, payLaterArgsDescriptor.productId)
+        payLaterViewModel.getPayLaterAvailableDetail(
+            data.price
+                ?: 0.0, payLaterArgsDescriptor.productId
+        )
         setProductDetailView(data)
     }
 
@@ -248,13 +265,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
                 productDetail.productImage.setImageUrl(
-                        urlThumbnail
+                    urlThumbnail
                 )
             }
         }
         data.productName?.let { productDetail.productName.text = it }
         productDetail.productPrice.text =
-                PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
+            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
 
         showProductVariant(data)
     }
@@ -271,7 +288,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 }?.combination?.getOrNull(0) ?: -1
 
                 if (combinationIdx != -1)
-                    productDetail.productVariant.text = variant.selections[0].options[combinationIdx]?.value
+                    productDetail.productVariant.text =
+                        variant.selections[0].options[combinationIdx]?.value
                             ?: ""
             } else {
                 productDetail.productVariant.gone()
@@ -281,7 +299,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendEvent(event: PayLaterAnalyticsBase) =
-            activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
+        activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
 
     override fun getScreenName() = "PayLater & Cicilan"
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)

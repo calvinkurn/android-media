@@ -7,8 +7,11 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 
-class SimulationEmptyViewHolder(itemView: View, private val interaction: PayLaterOptionInteraction) :
-        AbstractViewHolder<EmptyModel>(itemView) {
+class SimulationEmptyViewHolder(
+    itemView: View,
+    private val interaction: PayLaterOptionInteraction
+) :
+    AbstractViewHolder<EmptyModel>(itemView) {
 
     private val emptyState: EmptyStateUnify = itemView.findViewById(R.id.emptyStateInstallment)
 

@@ -12,8 +12,12 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 
-class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayCardClicked, val context: Context) :
-        RecyclerView.ViewHolder(itemView) {
+class GatewayViewHolder(
+    itemView: View,
+    private val gatewayCardClicked: GateWayCardClicked,
+    val context: Context
+) :
+    RecyclerView.ViewHolder(itemView) {
 
 
     fun bindData(checkoutData: CheckoutData, position: Int) {
@@ -104,14 +108,14 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
         private val LAYOUT_ID = R.layout.gateway_activation_individual_item
 
         fun getViewHolder(
-                inflater: LayoutInflater,
-                parent: ViewGroup,
-                gatewayCardClicked: GateWayCardClicked,
-                parentContext: Context
+            inflater: LayoutInflater,
+            parent: ViewGroup,
+            gatewayCardClicked: GateWayCardClicked,
+            parentContext: Context
 
         ) =
-                GatewayViewHolder(
-                        inflater.inflate(LAYOUT_ID, parent, false), gatewayCardClicked, parentContext
-                )
+            GatewayViewHolder(
+                inflater.inflate(LAYOUT_ID, parent, false), gatewayCardClicked, parentContext
+            )
     }
 }

@@ -6,9 +6,9 @@ import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapter
 interface BasePayLaterWidgetUiModel : Visitable<PayLaterAdapterFactory>
 
 data class SimulationUiModel(
-        val tenure: Int?,
-        val text: String?,
-        val smallText: String?,
-        var isSelected: Boolean = false,
-        var simulationList: ArrayList<BasePayLaterWidgetUiModel>? = null
+    val tenure: Int?,
+    val text: String?,
+    val smallText: String?,
+    var isSelected: Boolean = false,
+    var simulationList: ArrayList<BasePayLaterWidgetUiModel>? = null
 )

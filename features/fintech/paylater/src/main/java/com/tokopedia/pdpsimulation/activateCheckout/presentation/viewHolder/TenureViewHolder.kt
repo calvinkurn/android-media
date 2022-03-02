@@ -12,12 +12,12 @@ import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
 class TenureViewHolder(itemView: View, private val tenureSelectListener: ActivationListner) :
-        RecyclerView.ViewHolder(itemView) {
+    RecyclerView.ViewHolder(itemView) {
 
     fun bindData(
-            tenureDetail: TenureDetail,
-            tenureSelectedModel: TenureSelectedModel,
-            currentPosition: Int
+        tenureDetail: TenureDetail,
+        tenureSelectedModel: TenureSelectedModel,
+        currentPosition: Int
     ) {
 
         itemView.apply {
@@ -97,12 +97,12 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         private val LAYOUT_ID = R.layout.paylater_activation_individual_tenure
 
         fun getViewHolder(
-                inflater: LayoutInflater,
-                parent: ViewGroup,
-                tenureSelectListener: ActivationListner
+            inflater: LayoutInflater,
+            parent: ViewGroup,
+            tenureSelectListener: ActivationListner
         ) =
-                TenureViewHolder(
-                        inflater.inflate(LAYOUT_ID, parent, false), tenureSelectListener
-                )
+            TenureViewHolder(
+                inflater.inflate(LAYOUT_ID, parent, false), tenureSelectListener
+            )
     }
 }

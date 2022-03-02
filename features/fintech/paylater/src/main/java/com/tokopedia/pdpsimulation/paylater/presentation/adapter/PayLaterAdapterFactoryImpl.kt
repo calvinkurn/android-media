@@ -11,18 +11,21 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.*
 
 class PayLaterAdapterFactoryImpl(
-        val interaction: PayLaterOptionInteraction,
+    val interaction: PayLaterOptionInteraction,
 ) : BaseAdapterTypeFactory(), PayLaterAdapterFactory {
 
     override fun type(detail: Detail) = PayLaterDetailViewHolder.LAYOUT
 
-    override fun type(seeMoreOptionsUiModel: SeeMoreOptionsUiModel) = PayLaterSeeMoreViewHolder.LAYOUT
+    override fun type(seeMoreOptionsUiModel: SeeMoreOptionsUiModel) =
+        PayLaterSeeMoreViewHolder.LAYOUT
 
-    override fun type(sectionTitleUiModel: SectionTitleUiModel) = PayLaterSectionHeaderViewHolder.LAYOUT
+    override fun type(sectionTitleUiModel: SectionTitleUiModel) =
+        PayLaterSectionHeaderViewHolder.LAYOUT
 
     override fun type(viewModel: LoadingModel) = PayLaterShimmerViewHolder.LAYOUT
 
-    override fun type(errorNetworkModel: ErrorNetworkModel) = SimulationLoadingFailedViewHolder.LAYOUT
+    override fun type(errorNetworkModel: ErrorNetworkModel) =
+        SimulationLoadingFailedViewHolder.LAYOUT
 
     override fun type(vm: EmptyModel) = SimulationEmptyViewHolder.LAYOUT
 
@@ -45,7 +48,10 @@ class PayLaterAdapterFactoryImpl(
             PayLaterInstallmentInfoViewHolder.LAYOUT -> PayLaterInstallmentInfoViewHolder(parent)
             InstallmentDividerViewHolder.LAYOUT -> InstallmentDividerViewHolder(parent)
             PayLaterShimmerViewHolder.LAYOUT -> PayLaterShimmerViewHolder(parent)
-            SimulationLoadingFailedViewHolder.LAYOUT -> SimulationLoadingFailedViewHolder(parent, interaction)
+            SimulationLoadingFailedViewHolder.LAYOUT -> SimulationLoadingFailedViewHolder(
+                parent,
+                interaction
+            )
             SimulationEmptyViewHolder.LAYOUT -> SimulationEmptyViewHolder(parent, interaction)
             else -> super.createViewHolder(parent, type)
         }

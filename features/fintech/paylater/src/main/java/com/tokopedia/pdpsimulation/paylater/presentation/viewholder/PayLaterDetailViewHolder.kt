@@ -20,7 +20,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
 
 class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLaterOptionInteraction) :
-        AbstractViewHolder<Detail>(itemView) {
+    AbstractViewHolder<Detail>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.paylater_partner_card_item
@@ -40,8 +40,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setUpRecommendation(element: Detail) {
         if (element.recommendationDetail?.flag == true) {
 
-            itemView.clDetailParent.background = MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
-            itemView.clPartnerCard.background = MethodChecker.getDrawable(context, R.drawable.bg_paylater_card_border_recommendation)
+            itemView.clDetailParent.background =
+                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
+            itemView.clPartnerCard.background = MethodChecker.getDrawable(
+                context,
+                R.drawable.bg_paylater_card_border_recommendation
+            )
             itemView.tvRecommendationTitle.visible()
             itemView.tvRecommendationTitle.text = element.recommendationDetail.text
 
@@ -56,10 +60,15 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpCta(element: Detail) {
         itemView.payLaterActionCta.text = element.cta.name
-        itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
+        itemView.payLaterActionCta.buttonVariant =
+            if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
         itemView.payLaterActionCta.setOnClickListener {
-            interaction.invokeAnalytics(getInstallmentInfoEvent(element, element.cta.android_url
-                    ?: ""))
+            interaction.invokeAnalytics(
+                getInstallmentInfoEvent(
+                    element, element.cta.android_url
+                        ?: ""
+                )
+            )
             interaction.onCtaClicked(element)
         }
     }
@@ -84,7 +93,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             val typography = Typography(itemView.context)
             typography.text = it
             typography.setType(Typography.BODY_3)
-            typography.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+            typography.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+            )
             itemView.llBenefits.addView(typography)
         }
 
@@ -103,10 +117,13 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setPayLaterHeader(element: Detail) {
         itemView.apply {
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
-            tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(element.installment_per_month_ceil
-                    ?: 0, false)
+            tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(
+                element.installment_per_month_ceil
+                    ?: 0, false
+            )
             if (element.tenure != 1)
-                tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
+                tvTenureMultiplier.text =
+                    context.getString(R.string.paylater_x_tenure, element.tenure)
             else {
                 tvTenureMultiplier.gone()
                 tvInstallmentAmount.text = element.optionalTenureHeader
@@ -124,15 +141,16 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         }
     }
 
-    private fun getInstallmentInfoEvent(detail: Detail, link: String = "") = PayLaterCtaClick().apply {
-        tenureOption = detail.tenure ?: 0
-        userStatus = detail.userState ?: ""
-        payLaterPartnerName = detail.gatewayDetail?.name ?: ""
-        emiAmount = detail.installment_per_month_ceil.toString()
-        limit = detail.limit ?: ""
-        redirectLink = link
-        ctaWording = detail.cta.name ?: ""
-        linkingStatus = detail.linkingStatus ?: ""
-        action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
-    }
+    private fun getInstallmentInfoEvent(detail: Detail, link: String = "") =
+        PayLaterCtaClick().apply {
+            tenureOption = detail.tenure ?: 0
+            userStatus = detail.userState ?: ""
+            payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+            emiAmount = detail.installment_per_month_ceil.toString()
+            limit = detail.limit ?: ""
+            redirectLink = link
+            ctaWording = detail.cta.name ?: ""
+            linkingStatus = detail.linkingStatus ?: ""
+            action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
+        }
 }

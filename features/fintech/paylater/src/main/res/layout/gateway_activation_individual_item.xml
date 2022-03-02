@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -21,7 +19,7 @@
             android:id="@+id/gatewayImage"
             android:layout_width="@dimen/unify_space_32"
             android:layout_height="@dimen/unify_space_32"
-            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="@id/barrier2"
@@ -62,7 +60,7 @@
             android:id="@+id/gatewaySubHeader2"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
+            android:layout_marginStart="@dimen/pay_later_margin_dp_10"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toTopOf="@+id/gatewayHeader"
             app:layout_constraintLeft_toRightOf="@id/gatewayImage"
