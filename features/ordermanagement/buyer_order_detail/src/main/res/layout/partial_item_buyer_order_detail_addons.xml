@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBomDetailAddonsIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@id/tvBomDetailAddonsTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_name="ADD_ON" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/icBomDetailAddonsIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icBomDetailAddonsIcon"
+        app:layout_constraintTop_toTopOf="@id/icBomDetailAddonsIcon"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Pelengkap Produk" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAddonsList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/icBomDetailAddonsIcon"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_buyer_order_detail_addons_list" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerBomDetailAddonsTotalPrice"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@id/rvAddonsList"
+        app:layout_constraintStart_toStartOf="@id/rvAddonsList"
+        app:layout_constraintTop_toBottomOf="@id/rvAddonsList" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsTotalPriceLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        tools:text="@string/order_addons_total_price_label"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/dividerBomDetailAddonsTotalPrice"
+        app:layout_constraintTop_toBottomOf="@id/dividerBomDetailAddonsTotalPrice"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsTotalPriceValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvBomDetailAddonsTotalPriceLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsTotalPriceLabel"
+        app:typographyType="heading_6"
+        tools:text="Rp4.000" />
+</androidx.constraintlayout.widget.ConstraintLayout>
