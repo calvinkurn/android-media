@@ -153,9 +153,7 @@ class PickerPreviewActivity : BaseActivity()
 
         binding?.btnRetake?.setOnClickListener {
             deleteLocalCameraMedia(media)
-
-            uiModel.clear()
-            finishIntent()
+            cancelIntent()
         }
     }
 
@@ -172,6 +170,11 @@ class PickerPreviewActivity : BaseActivity()
     private fun setUiModelData(elements: List<MediaUiModel>) {
         uiModel.clear()
         uiModel.addAll(elements)
+    }
+
+    private fun cancelIntent() {
+        uiModel.clear()
+        finishIntent()
     }
 
     private fun finishIntent() {
