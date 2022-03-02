@@ -69,115 +69,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   shop_type
                   badge_url
                 }
-                products {
-                  product_id
-                  order_detail_id
-                  product_name
-                  thumbnail
-                  price
-                  price_text
-                  quantity
-                  total_price
-                  total_price_text
-                  notes
-                  category
-                  category_id
-                  button {
-                    key
-                    display_name
-                    type
-                    variant
-                    url
-                    popup {
-                      title
-                      body
-                      action_button {
-                        key
-                        display_name
-                        color
-                        type
-                        uri_type
-                        uri
-                      }
-                    }
-                  }
-                }
-                have_product_bundle
-                bundle_detail {
-                  total_product
-                  product_bundling_icon
-                  bundle {
-                    bundle_id
-                    bundle_name
-                    bundle_price
-                    bundle_quantity
-                    bundle_subtotal_price
-                    order_detail {
-                      product_id
-                      order_detail_id
-                      product_name
-                      thumbnail
-                      price
-                      price_text
-                      quantity
-                      total_price
-                      total_price_text
-                      notes
-                      category
-                      category_id
-                      button {
-                        key
-                        display_name
-                        type
-                        variant
-                        url
-                        popup {
-                          title
-                          body
-                          action_button {
-                            key
-                            display_name
-                            color
-                            type
-                            uri
-                          }
-                        }
-                      }
-                    }
-                  }
-                  non_bundle {
-                    product_id
-                    order_detail_id
-                    product_name
-                    thumbnail
-                    price
-                    price_text
-                    quantity
-                    total_price
-                    total_price_text
-                    notes
-                    category
-                    category_id
-                    button {
-                      key
-                      display_name
-                      type
-                      variant
-                      url
-                      popup {
-                        title
-                        body
-                        action_button {
-                          key
-                          display_name
-                          color
-                          type
-                          uri
-                        }
-                      }
-                    }
-                  }
-                }
                 shipment {
                   shipping_name
                   shipping_product_name
@@ -276,6 +167,146 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   action {
                     name
                     link
+                  }
+                }
+                details {
+                  total_products
+                  bundle_icon
+                  addon_icon
+                  addon_label
+                  bundles {
+                    bundle_id
+                    bundle_variant_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      order_detail_id
+                      product_id
+                      product_name
+                      product_url
+                      thumbnail
+                      price
+                      price_text
+                      quantity
+                      total_price
+                      total_price_text
+                      notes
+                      category_id
+                      category
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
+                    }
+                  }
+                  non_bundles {
+                    order_detail_id
+                    product_id
+                    product_name
+                    product_url
+                    thumbnail
+                    price
+                    price_text
+                    quantity
+                    total_price
+                    total_price_text
+                    notes
+                    category_id
+                    category
+                    button {
+                      key
+                      display_name
+                      type
+                      variant
+                      url
+                      popup {
+                        title
+                        body
+                        action_button {
+                          key
+                          display_name
+                          color
+                          type
+                          uri
+                        }
+                      }
+                    }
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        level
+                        name
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          add_on_note {
+                            from
+                            to
+                            notes
+                            short_notes
+                            is_custom_note
+                          }
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
+                    }
+                  }
+                }
+                addon_info {
+                  label
+                  icon_url
+                  order_level {
+                    addons {
+                      order_id
+                      id
+                      level
+                      name
+                      price
+                      price_str
+                      subtotal_price
+                      subtotal_price_str
+                      quantity
+                      type
+                      image_url
+                      metadata {
+                        add_on_note {
+                          from
+                          to
+                          notes
+                          short_notes
+                          is_custom_note
+                        }
+                      }
+                    }
+                    total
+                    total_price
+                    total_price_str
+                    total_quantity
                   }
                 }
               }
