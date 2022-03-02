@@ -212,11 +212,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     private fun setupView() {
         surfaceView.setCallback(object : SurfaceAspectRatioView.Callback{
             override fun onSurfaceCreated() {
-                startPreview()
+//                startPreview()
             }
 
             override fun onSurfaceDestroyed() {
-                stopPreview()
+//                stopPreview()
             }
         })
     }
@@ -326,7 +326,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 permissionResultListener = object: PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
                         return {
-                            if (isGranted(Manifest.permission.CAMERA)) startPreview()
+                            if (isGranted(Manifest.permission.CAMERA)) {
+//                                startPreview()
+                            }
                             if (isAllGranted()) doWhenResume { configureChannelType(channelType) }
                             else doWhenResume { showPermissionPage() }
                         }
@@ -339,17 +341,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         )
     }
 
-    fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
+    private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
-    fun startPreview() {
-        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) {
+//    fun startPreview() {
+//        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) {
 //            viewModel.startPreview(surfaceView)
-        }
-    }
+//        }
+//    }
 
-    fun stopPreview() {
+//    fun stopPreview() {
 //        viewModel.stopPreview()
-    }
+//    }
 
     fun checkAllPermission() {
         if (isRequiredPermissionGranted()) configureChannelType(channelType)
