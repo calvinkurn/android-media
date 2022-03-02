@@ -165,6 +165,7 @@ class OfficialHomeAdapterTypeFactory(
                     itemView = view,
                     homeComponentListener = homeComponentListener,
                     featuredBrandListener = featuredBrandListener )
+            EmptyBlankViewHolder.LAYOUT -> EmptyBlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }  as AbstractViewHolder<Visitable<*>>
     }
