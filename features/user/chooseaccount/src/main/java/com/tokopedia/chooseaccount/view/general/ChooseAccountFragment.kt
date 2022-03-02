@@ -88,7 +88,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(savedInstanceState == null) {
+        if(savedInstanceState == null || uiModel?.selectedEmail?.isEmpty() == true) {
             getAccountList()
         }
     }
@@ -105,10 +105,10 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
             when (it) {
                 is Success -> onSuccessLoginToken()
                 is Fail -> {
-                    dismissLoadingProgress()
                     onErrorLoginToken(it.throwable)
                 }
             }
+            dismissLoadingProgress()
         })
 
         chooseAccountViewModel.popupError.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -149,12 +149,14 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     fun getAccountList() {
+        showLoadingProgress()
         LetUtil.ifLet(uiModel?.accessToken, uiModel?.phoneNumber) { (accessToken, phoneNumber) ->
             chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
         }
     }
 
     private fun loginToken(email: String?) {
+        showLoadingProgress()
         chooseAccountViewModel.loginTokenPhone(uiModel?.key.toEmptyStringIfNull(), email.toEmptyStringIfNull(), uiModel?.phoneNumber.toEmptyStringIfNull())
     }
 
@@ -185,10 +187,9 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
                 loginToken(userDetail.email)
             }
         } else {
-            dismissLoadingProgress()
             adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
         }
-
+        dismissLoadingProgress()
     }
 
     protected fun onErrorGetAccountList(e: Throwable) {
@@ -221,7 +222,6 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     override fun onSelectedAccount(account: UserDetailDataModel, phone: String) {
-        showLoadingProgress()
         if (account.challenge2Fa) {
             open2FA(account, phone)
         } else {

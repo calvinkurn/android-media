@@ -68,7 +68,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         initObserver()
-        showLoadingProgress()
     }
 
     private fun initToolbar() {
