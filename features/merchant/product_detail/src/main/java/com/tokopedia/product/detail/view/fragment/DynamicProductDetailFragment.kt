@@ -148,10 +148,9 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
-import com.tokopedia.product.detail.tracking.ContentWidgetTracker
-import com.tokopedia.product.detail.tracking.ContentWidgetTracking
-import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
-import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
+import com.tokopedia.product.detail.tracking.*
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -1534,7 +1533,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                                 topAdsData.data.product.name,
                                 topAdsData.data.product.image.m_ecs)
                         isTopadsDynamicsSlottingAlreadyCharged = true
+
+                        ProductTopAdsLogger.logServer(
+                            TOPADS_PDP_HIT_ADS_TRACKER,
+                            productId = topAdsData.data.product.id
+                        )
                     }
+                } else {
+                    ProductTopAdsLogger.logServer(
+                        TOPADS_PDP_IS_NOT_ADS,
+                        productId = topAdsData.data.product.id
+                    )
                 }
             },
                     {

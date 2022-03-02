@@ -51,9 +51,6 @@ import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -76,7 +73,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     lateinit var viewModelFactory: ViewModelProvider.Factory
     protected lateinit var flightSearchViewModel: FlightSearchViewModel
     protected var onFlightSearchFragmentListener: OnFlightSearchFragmentListener? = null
-    protected lateinit var remoteConfig: RemoteConfig
     private lateinit var flightSearchComponent: FlightSearchComponent
 
     private lateinit var flightSearchCache: FlightSearchCache
@@ -91,9 +87,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        context?.let {
-            remoteConfig = FirebaseRemoteConfigImpl(it)
-        }
         initViewModels()
         flightSearchCache = FlightSearchCache(requireContext())
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
@@ -428,8 +421,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     open fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel =
             filterModel.also {
-                it.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
-                it.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+                it.canFilterFreeRapidTest = it.freeRapidTestLabel.isNotEmpty()
+                it.canFilterSeatDistancing = it.freeRapidTestLabel.isNotEmpty()
                 it.departureArrivalTime = ""
             }
 
@@ -547,11 +540,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
             if (flightSearchViewModel.isFilterModelInitialized() &&
                     flightSearchViewModel.filterModel.canFilterSeatDistancing) {
-                val quickSeatDistancingFilter = SortFilterItem(getString(R.string.flight_search_has_seat_distancing_label))
+                val quickSeatDistancingFilter = SortFilterItem(flightSearchViewModel.filterModel.seatDistancingLabel)
                 quickSeatDistancingFilter.listener = {
                     if (flightSearchViewModel.isFilterModelInitialized() &&
                             flightSearchViewModel.filterModel.canFilterSeatDistancing &&
-                            flightSearchViewModel.filterModel.isSeatDistancing) {
+                            flightSearchViewModel.filterModel.seatDistancingLabel.isNotEmpty()) {
                         flightSearchViewModel.filterModel.isSeatDistancing = false
                         quickSeatDistancingFilter.unselect()
                     } else if (flightSearchViewModel.isFilterModelInitialized() &&
@@ -569,11 +562,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
             if (flightSearchViewModel.isFilterModelInitialized() &&
                     flightSearchViewModel.filterModel.canFilterFreeRapidTest) {
-                val quickFreeRapidTestFilter = SortFilterItem(getString(R.string.flight_search_free_rapid_test_label))
+                val quickFreeRapidTestFilter = SortFilterItem(flightSearchViewModel.filterModel.freeRapidTestLabel)
                 quickFreeRapidTestFilter.listener = {
                     if (flightSearchViewModel.isFilterModelInitialized() &&
                             flightSearchViewModel.filterModel.canFilterFreeRapidTest &&
-                            flightSearchViewModel.filterModel.isFreeRapidTest) {
+                            flightSearchViewModel.filterModel.freeRapidTestLabel.isNotEmpty()) {
                         flightSearchViewModel.filterModel.isFreeRapidTest = false
                         quickFreeRapidTestFilter.unselect()
                     } else if (flightSearchViewModel.isFilterModelInitialized() &&

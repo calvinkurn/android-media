@@ -72,7 +72,7 @@
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
-    <string name="saldo_info_ticker">Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia.</string>
+    <string name="saldo_info_ticker">Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia. Dana akan cair setelah proses verifikasi selesai.</string>
     <string name="merchant_credit_mcl_logo_text">MCl Logo</string>
     <string name="saldo_prioritas_title">Saldo Prioritas</string>
     <string name="saldo_kyc_description_text">Status: Menunggu Verifikasi Aplikasi</string>
