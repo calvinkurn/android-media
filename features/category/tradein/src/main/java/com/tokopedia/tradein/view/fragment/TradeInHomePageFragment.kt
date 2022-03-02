@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -91,9 +92,14 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     private fun setUpView() {
         view?.apply {
-            context?.let {
-                userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
-            }
+            userAddressData = context?.let {
+                try {
+                    ChooseAddressUtils.getLocalizingAddressData(it)
+                } catch (e: Throwable) {
+                    ChooseAddressConstant.emptyAddress
+                }
+            } ?: ChooseAddressConstant.emptyAddress
+
             arguments?.getString(CACHE_ID, "")?.let {
                 setUpPdpData(it)
             }
@@ -127,6 +133,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         childFragmentManager.beginTransaction()
             .replace(R.id.educational_frame_content_layout, newFragment, newFragment.tag)
             .commit()
+        tradeInAnalytics.openEducationalScreen()
     }
 
     override fun onClick() {

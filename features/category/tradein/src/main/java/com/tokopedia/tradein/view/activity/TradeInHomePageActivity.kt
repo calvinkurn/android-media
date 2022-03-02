@@ -134,6 +134,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         supportFragmentManager.beginTransaction()
             .replace(parentViewResourceID, newFragment, newFragment.tag)
             .commit()
+        tradeInAnalytics.openEducationalScreen()
     }
 
     override fun onClick() {
