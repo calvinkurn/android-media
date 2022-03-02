@@ -29,6 +29,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
@@ -442,21 +443,21 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     isNeedToShowOpenShopToaster = false
                 }
             }
+            if (result is Fail) {
+                hideLoader()
+                showToaster(ErrorHandler.getErrorMessage(context, result.throwable), Toaster.TYPE_ERROR)
+            }
         }
 
         // observe abort shop close schedule
         observe(shopSettingsOperationalHoursViewModel.shopInfoAbortSchedule) { result ->
             if (result is Success) {
-                setShopHolidayScheduleStatusMessage = if (isNeedToShowToaster) {
-                    getString(R.string.shop_operational_hour_abort_holiday_schedule_success)
-                } else {
-                    getString(R.string.shop_operational_hour_abort_ongoing_holiday_schedule_success)
-                }
+                setShopHolidayScheduleStatusMessage = result.data
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                 getInitialData()
             }
             if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_failed)
+                setShopHolidayScheduleStatusMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
                 hideLoader()
                 showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
@@ -466,12 +467,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // observe create shop close schedule
         observe(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule) { result ->
             if (result is Success) {
-                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_success)
+                setShopHolidayScheduleStatusMessage = result.data
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                 getInitialData()
             }
             if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
+                setShopHolidayScheduleStatusMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
                 hideLoader()
                 showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
