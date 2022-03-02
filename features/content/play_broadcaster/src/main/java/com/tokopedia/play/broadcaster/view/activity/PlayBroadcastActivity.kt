@@ -3,8 +3,6 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -109,7 +107,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
-        initStreamer()
+//        initStreamer()
         initView()
 
         if (savedInstanceState != null) {
@@ -196,14 +194,14 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
-    private fun initStreamer() {
-        try {
-            viewModel.createStreamer(this, Handler(Looper.getMainLooper()))
-        } catch (exception: IllegalAccessException) {
-            showDialogWhenUnSupportedDevices()
-            return
-        }
-    }
+//    private fun initStreamer() {
+//        try {
+//            viewModel.createStreamer(this, Handler(Looper.getMainLooper()))
+//        } catch (exception: IllegalAccessException) {
+//            showDialogWhenUnSupportedDevices()
+//            return
+//        }
+//    }
 
     private fun initView() {
         containerSetup = findViewById(R.id.fl_container)
@@ -344,11 +342,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
     fun startPreview() {
-        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(surfaceView)
+        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) {
+//            viewModel.startPreview(surfaceView)
+        }
     }
 
     fun stopPreview() {
-        viewModel.stopPreview()
+//        viewModel.stopPreview()
     }
 
     fun checkAllPermission() {
@@ -449,13 +449,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 primaryCta = getString(R.string.play_next),
                 primaryListener = { dialog ->
                     dialog.dismiss()
-                    viewModel.continueLiveStream()
+//                    viewModel.continueLiveStream()
                     analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
-                    viewModel.stopLiveStream(shouldNavigate = true)
+//                    viewModel.stopLiveStream(shouldNavigate = true)
                 }
             )
         }
