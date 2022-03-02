@@ -20,6 +20,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -29,6 +30,9 @@ import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
+    private val video: ProductCardVideo by lazy{
+        ProductCardVideo(this)
+    }
 
     constructor(context: Context): super(context) {
         init()
@@ -104,6 +108,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
 
         cartExtension.setProductModel(productCardModel)
+        video.setProductModel(productCardModel)
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -166,6 +171,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
         cartExtension.clear()
+        video.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
@@ -178,7 +184,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         return imageProduct
     }
 
-    override fun getProductVideoView(): ProductCardVideoView? {
-        return videoProduct
+    override fun getProductCardVideo(): ProductCardVideo {
+        return video
     }
 }

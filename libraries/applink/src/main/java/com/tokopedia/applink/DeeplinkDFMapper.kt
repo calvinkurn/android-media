@@ -145,8 +145,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
@@ -366,7 +368,13 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
-            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_page))
+            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_widget))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanExternalAppLinkPattern = SHOP_MVC_LOCKED_TO_PRODUCT.replace(regexPatternToReplace,".*")
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherExternalAppLink.matches(it)
+            }, DF_BASE, R.string.title_shop_widget))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
@@ -629,6 +637,10 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(VOUCHER_LIST) ||
                         it.startsWith(VOUCHER_DETAIL)
             }, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
+            add(DFP({
+                it.startsWith(CREATE_VOUCHER_PRODUCT) ||
+                        it.startsWith(VOUCHER_PRODUCT_DETAIL)
+            }, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
             add(DFP({ it.startsWith(SELLER_SEARCH) || it.startsWith(ApplinkConstInternalSellerapp.SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
@@ -661,7 +673,13 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
-            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_page))
+            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanExternalAppLinkPattern = SHOP_MVC_LOCKED_TO_PRODUCT.replace(regexPatternToReplace,".*")
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherExternalAppLink.matches(it)
+            }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({

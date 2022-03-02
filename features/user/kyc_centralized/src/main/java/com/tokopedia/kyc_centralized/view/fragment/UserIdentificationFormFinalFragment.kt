@@ -139,7 +139,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun initObserver() {
-        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, {
+        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     sendSuccessTimberLog()
@@ -152,9 +152,9 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     sendErrorTimberLog(it.throwable)
                 }
             }
-        })
+        }
 
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, {
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     uploadButton?.isEnabled = true
@@ -198,7 +198,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     Timber.w(it.throwable, "$LIVENESS_TAG: ENCRYPT ERROR")
                 }
             }
-        })
+        }
     }
 
     private fun sendErrorTimberLog(throwable: Throwable) {

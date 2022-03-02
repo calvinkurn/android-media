@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -112,6 +113,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
 
+    @RelaxedMockK
+    lateinit var remoteConfigInstance: FirebaseRemoteConfigImpl
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -159,6 +163,8 @@ abstract class BasePdpViewModelTest {
                 { deleteCartUseCase },
                 { getTopadsIsAdsUseCase },
                 playWidgetTools,
-                userSessionInterface)
+                remoteConfigInstance,
+                userSessionInterface
+        )
     }
 }

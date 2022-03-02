@@ -1499,6 +1499,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val errorCode = slot<Int>()
         val isTopAds = slot<Boolean>()
 
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
