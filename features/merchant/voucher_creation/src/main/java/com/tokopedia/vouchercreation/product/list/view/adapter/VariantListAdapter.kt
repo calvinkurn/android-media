@@ -12,7 +12,7 @@ import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVar
 class VariantListAdapter(private val variantItemClickListener: OnVariantItemClickListener)
     : RecyclerView.Adapter<ProductItemVariantViewHolder>() {
 
-    private var variantList: List<VariantUiModel> = listOf()
+    private var variantList: MutableList<VariantUiModel> = mutableListOf()
     private var dataSetPosition: Int? = null
     private var parentAdapterPosition: Int? = null
 
@@ -31,7 +31,7 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
 
     @SuppressLint("NotifyDataSetChanged")
     fun setVariantList(variantList: List<VariantUiModel>) {
-        this.variantList = variantList
+        this.variantList = variantList.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -41,5 +41,14 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
 
     fun setParentAdapterPosition(parentAdapterPosition: Int) {
         this.parentAdapterPosition = parentAdapterPosition
+    }
+
+    fun selectAllVariants() {
+        variantList.forEach {
+            if (!it.isError) {
+                it.isSelectAll = true
+                it.isSelected = true
+            }
+        }
     }
 }

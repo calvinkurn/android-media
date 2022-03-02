@@ -38,6 +38,7 @@ class AddProductViewModel @Inject constructor(
         const val BENEFIT_TYPE_PERCENT = "percent"
         const val COUPON_TYPE_CASHBACK = "cashback"
         const val COUPON_TYPE_SHIPPING = "shipping"
+        const val SORT_DEFAULT = "DEFAULT"
     }
 
     private var productUiModels: List<ProductUiModel> = listOf()
@@ -226,6 +227,13 @@ class AddProductViewModel @Inject constructor(
                     name = sort.name,
             )
         }
+    }
+
+    fun excludeDefaultSortSelection(sortList: List<Sort>): List<Sort> {
+        val filteredSortList = sortList.filter {
+            it.id != SORT_DEFAULT
+        }
+        return filteredSortList
     }
 
     fun mapCategoriesToCategorySelections(categoryList: List<Category>): List<CategorySelection> {

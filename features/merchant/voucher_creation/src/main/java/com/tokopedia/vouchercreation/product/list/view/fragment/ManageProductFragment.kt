@@ -137,6 +137,7 @@ class ManageProductFragment : BaseDaggerFragment(),
             viewModel.setSelectedProductIds(selectedProductIds)
             val selectedParentProductIds = viewModel.getSelectedParentProductIds()
             viewModel.getProductList(
+                    pageSize = viewModel.getMaxProductLimit(),
                     shopId = shopId,
                     selectedProductIds = selectedParentProductIds
             )
@@ -275,6 +276,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
                     val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
                     finalProductList.addAll(newAddedProducts?: listOf())
+                    viewModel.setSetSelectedProducts(finalProductList)
                     adapter?.setProductList(finalProductList)
                 }
                 is Fail -> {

@@ -219,7 +219,6 @@ class CouponPreviewViewModel @Inject constructor(
         val couponProductData = mutableListOf<CouponProduct>()
         selectedProducts.forEach { selectedProduct ->
             val isParentProductSelected = selectedProduct.isSelected
-
             if (isParentProductSelected) {
                 val variants = selectedProduct.variants
                 if (variants.isNotEmpty()) {
