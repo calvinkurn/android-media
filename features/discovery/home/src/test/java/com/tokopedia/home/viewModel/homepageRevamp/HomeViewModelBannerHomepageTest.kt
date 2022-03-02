@@ -25,11 +25,11 @@ class HomeViewModelBannerHomepageTest{
     @ExperimentalCoroutinesApi
     @Test
     fun `When new dynamic channel value collected on initFlow then currentNextPage token should be updated with latest value`(){
-        val mockNextPageToken = "12345"
+        val mockNextPageToken = "1"
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(), topadsNextPageToken = mockNextPageToken)
+                HomeDynamicChannelModel(list = listOf(), topadsPage = mockNextPageToken)
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        Assert.assertTrue(homeViewModel.currentTopAdsBannerToken == mockNextPageToken)
+        Assert.assertTrue(homeViewModel.currentTopAdsBannerPage == mockNextPageToken)
     }
 }

@@ -127,7 +127,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var popularKeywordRefreshCount = 1
 
     var homeDataModel = HomeDynamicChannelModel()
-    var currentTopAdsBannerToken: String = ""
+    var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
 
     @FlowPreview
@@ -238,7 +238,7 @@ open class HomeRevampViewModel @Inject constructor(
             homeFlowDynamicChannel.collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
-                    currentTopAdsBannerToken = homeNewDataModel.topadsNextPageToken
+                    currentTopAdsBannerPage = homeNewDataModel.topadsPage
                     onRefreshState = false
                     if (homeNewDataModel.list.isEmpty()) {
                         HomeServerLogger.warning_empty_channel_update(homeNewDataModel)

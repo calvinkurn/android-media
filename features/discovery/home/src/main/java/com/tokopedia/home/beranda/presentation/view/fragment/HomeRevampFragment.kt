@@ -2133,8 +2133,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun getTopAdsBannerNextPageToken(): String {
-        return getHomeViewModel().currentTopAdsBannerToken
+    override fun getTopAdsBannerNextPage(): String {
+        return getHomeViewModel().currentTopAdsBannerPage
     }
 
     override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {

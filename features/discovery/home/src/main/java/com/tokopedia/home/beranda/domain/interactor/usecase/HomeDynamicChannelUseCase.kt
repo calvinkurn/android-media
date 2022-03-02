@@ -82,11 +82,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
         private const val MINIMUM_DC_TO_SHOW_RECOM = 3
+        private const val DEFAULT_TOPADS_TDN_PAGE = "0"
     }
     val gson = Gson()
     var cachedHomeData: HomeData? = null
 
     var localHomeRecommendationFeedDataModel: HomeRecommendationFeedDataModel? = null
+    var topadsTdnPage = "0"
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
@@ -101,7 +103,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
         var isCacheDc = true
-
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
@@ -139,6 +140,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
         val homeDynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
+                topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
+
                 val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
                         homeData = it,
                         isCache = isCacheDc
@@ -233,6 +236,28 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             HomeTopAdsBannerDataModel,
                             ArrayList<TopAdsImageViewModel>>(
                         widgetRepository = homeTopadsImageRepository,
+                        iterateList = true,
+                        onWidgetExist = { size ->
+                            val currentPage = topadsTdnPage
+                            currentPage.toIntOrNull()?.let {
+                                val nextPage = ((it+1) + size)
+                                dynamicChannelPlainResponse.topadsPage = nextPage.toString()
+                            }
+                            emit(dynamicChannelPlainResponse)
+                        },
+                        bundleParam = {
+                            val currentPage = topadsTdnPage
+                            currentPage.toIntOrNull()?.let {
+                                val nextPage = (it + 1)
+                                topadsTdnPage = nextPage.toString()
+                            }
+                            Bundle().apply {
+                                putString(
+                                    HomeTopadsImageRepository.Companion.TOP_ADS_PAGE,
+                                    topadsTdnPage
+                                )
+                            }
+                        },
                         deleteWidgetWhen = {
                             it?.isEmpty() == true
                         }
@@ -241,7 +266,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         if (data.isNotEmpty()) {
                             newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
                         }
-                        dynamicChannelPlainResponse.topadsNextPageToken = newTopAdsModel.topAdsImageViewModel?.nextPageToken?:""
                         newTopAdsModel
                     }
 
@@ -448,25 +472,51 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExist(
             bundleParam: (T) -> Bundle = { Bundle() },
+            iterateList: Boolean = false,
             widgetRepository: HomeRepository<K>,
             predicate: (T?) -> Boolean = {true},
             deleteWidgetWhen:(K?) -> Boolean = {false},
+            onWidgetExist: (Int) -> Unit = {},
             mapToWidgetData: (T, K, Int) -> T
     ): HomeDynamicChannelModel {
         try {
-            findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
-                val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
-                if (!deleteWidgetWhen.invoke(data)) {
-                    this.updateWidgetModel(
+            if (!iterateList) {
+                findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
+                    onWidgetExist.invoke(1)
+                    val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                    if (!deleteWidgetWhen.invoke(data)) {
+                        this.updateWidgetModel(
                             visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
                             visitableToChange = visitableFound,
                             position = visitablePosition
-                    ) {}
-                } else {
-                    this.deleteWidgetModel(
+                        ) {}
+                    } else {
+                        this.deleteWidgetModel(
                             visitable = visitableFound,
                             position = visitablePosition
-                    ) {}
+                        ) {}
+                    }
+                }
+            } else {
+                findWidgetList<T>(this, predicate) { indexedValueList ->
+                    onWidgetExist.invoke(indexedValueList.size)
+                    indexedValueList.forEach {
+                        val visitableFound = it.value
+                        val visitablePosition = it.index
+                        val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                        if (!deleteWidgetWhen.invoke(data)) {
+                            this.updateWidgetModel(
+                                visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
+                                visitableToChange = visitableFound,
+                                position = visitablePosition
+                            ) {}
+                        } else {
+                            this.deleteWidgetModel(
+                                visitable = visitableFound,
+                                position = visitablePosition
+                            ) {}
+                        }
+                    }
                 }
             }
             return this
@@ -493,6 +543,24 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 }
             }
         }
+    }
+
+    private inline fun <reified T> findWidgetList(
+        homeDataModel: HomeDynamicChannelModel,
+        predicate: (T?) -> Boolean = {true},
+        actionOnFound: (List<IndexedValue<T>>
+        ) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
+        }
+        actionOnFound.invoke(listFound)
     }
 
     /**
