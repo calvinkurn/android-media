@@ -742,7 +742,7 @@ class PlayBottomSheetFragment @Inject constructor(
         prevTagItem: TagItemUiModel?,
         tagItem: TagItemUiModel,
         bottomSheetTitle: String,
-        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel
+        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel,
     ) {
         if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
             productSheetView.showPlaceholder()

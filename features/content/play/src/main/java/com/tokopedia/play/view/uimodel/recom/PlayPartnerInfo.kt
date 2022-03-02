@@ -13,7 +13,7 @@ data class PlayPartnerInfo(
         val iconUrl: String = "",
         val badgeUrl: String = "",
         val isLoadingFollow: Boolean = false,
-        val applink: String = ""
+        val appLink: String = ""
 )
 
 sealed class PlayPartnerFollowStatus {

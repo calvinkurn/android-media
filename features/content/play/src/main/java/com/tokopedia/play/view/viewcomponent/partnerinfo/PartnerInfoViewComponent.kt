@@ -35,7 +35,7 @@ class PartnerInfoViewComponent(
         } else ivBadge.hide()
         tvPartnerName.text = info.name
         setFollowStatus(info.status, info.isLoadingFollow)
-        setupListener(info.applink)
+        setupListener(info.appLink)
     }
 
     private fun setFollowStatus(
