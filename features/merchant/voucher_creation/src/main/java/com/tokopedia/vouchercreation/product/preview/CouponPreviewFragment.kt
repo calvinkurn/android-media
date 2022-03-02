@@ -40,7 +40,6 @@ import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
-import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
@@ -311,7 +310,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
             override fun onLinkClick(url: String?) {
                 tracker.sendTermAndConditionClickEvent()
-                displayTermAndConditionBottomSheet()
+                redirectToTermAndConditionPage()
             }
 
         }
@@ -659,6 +658,14 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         RouteManager.route(requireActivity(), route)
     }
 
+    private fun redirectToTermAndConditionPage() {
+        if (!isAdded) return
+        val url = UrlConstant.HOSTNAME + UrlConstant.PRODUCT_COUPON_TERM_AND_CONDITION
+        val encodedUrl = URLEncoder.encode(url, "utf-8")
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(requireActivity(), route)
+    }
+
     private fun displayExpenseEstimationDescription() {
         if (!isAdded) return
         val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
@@ -740,15 +747,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         )
         createCouponErrorNotice.dismiss()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
-    }
-
-
-    private fun displayTermAndConditionBottomSheet() {
-        val bottomSheet = TermAndConditionBottomSheet.newInstance(
-            requireActivity(),
-            getString(R.string.coupon_tnc)
-        )
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun displayCouponPreviewBottomSheet() {
