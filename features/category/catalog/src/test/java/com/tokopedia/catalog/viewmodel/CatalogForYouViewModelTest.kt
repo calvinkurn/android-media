@@ -121,7 +121,6 @@ class CatalogForYouViewModelTest {
         runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
-            assertEquals(viewModel.getHasMoreItems().value , false)
         }
     }
 
