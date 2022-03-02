@@ -15,6 +15,7 @@
       "userId": ".*",
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
       "component": "comp:.*;temp:.*;elem:.*;cpos:\\d{1,};",
+      "warehouseId": ".*",
       "promotions": [
         {
           "item_id": ".*",
@@ -54,6 +55,7 @@
       "currentSite": ".*",
       "component": ".*",
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
+      "warehouseId": ".*",
       "items": [
         {
           "item_category": ".*",
