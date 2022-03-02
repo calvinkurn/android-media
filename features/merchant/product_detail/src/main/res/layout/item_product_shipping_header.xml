@@ -155,7 +155,6 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_bo_desc"
-        app:layout_goneMarginTop="12dp"
         app:typographyType="body_3"
         tools:text="Estimasi tiba 23-25 Nov" />
 
