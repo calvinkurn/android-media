@@ -363,7 +363,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun onFailedRecommendation(){
@@ -518,7 +521,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         }
                     }
 
-                    override fun onClickFilterChip(isLabeled: Boolean) {
+                    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
                             onHideBuyWidget()
@@ -607,8 +610,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 it,
                 clientNumber,
                 dgCategoryIds,
+                arrayListOf(),
                 categoryName,
-                viewModel.operatorData,
                 isSwitchChecked,
                 loyaltyStatus
             )

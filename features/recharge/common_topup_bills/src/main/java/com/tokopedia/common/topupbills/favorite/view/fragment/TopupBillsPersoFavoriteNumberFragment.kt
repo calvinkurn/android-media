@@ -19,20 +19,18 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favorite.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.favorite.view.adapter.TopupBillsPersoFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberMenuBottomSheet.PersoFavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.favorite.view.bottomsheet.PersoFavoriteNumberModifyBottomSheet.PersoFavoriteNumberModifyListener
+import com.tokopedia.common.topupbills.favorite.view.listener.FavoriteNumberDeletionListener
 import com.tokopedia.common.topupbills.favorite.view.listener.PersoFavoriteNumberNotFoundStateListener
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberEmptyDataView
@@ -52,8 +50,6 @@ import com.tokopedia.common.topupbills.favorite.view.viewholder.PersoFavoriteNum
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -62,7 +58,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -105,6 +100,7 @@ class TopupBillsPersoFavoriteNumberFragment :
     private lateinit var numberListAdapter: TopupBillsPersoFavoriteNumberListAdapter
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: List<Int>
+    private lateinit var dgOperatorIds: List<Int>
     private lateinit var localCacheHandler: LocalCacheHandler
 
     private var currentCategoryName = ""
@@ -147,6 +143,8 @@ class TopupBillsPersoFavoriteNumberFragment :
             number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds =
                 arguments.getIntegerArrayList(ARG_PARAM_DG_CATEGORY_IDS)?.toList() ?: listOf()
+            dgOperatorIds =
+                arguments.getIntegerArrayList(ARG_PARAM_DG_OPERATOR_IDS)?.toList() ?: listOf()
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
@@ -238,7 +236,7 @@ class TopupBillsPersoFavoriteNumberFragment :
 
     private fun getPersoFavoriteNumber() {
         showShimmering()
-        favNumberViewModel.getPersoFavoriteNumbers(dgCategoryIds)
+        favNumberViewModel.getPersoFavoriteNumbers(dgCategoryIds, dgOperatorIds)
     }
 
     private fun onSuccessUndoDeleteFavoriteNumber(favoriteDetail: UpdateFavoriteDetail) {
@@ -374,11 +372,6 @@ class TopupBillsPersoFavoriteNumberFragment :
             ) { undoDelete(deletedFavoriteNumber) }.show()
         }
         getPersoFavoriteNumber()
-
-        val operatorName = getOperatorNameById(deletedFavoriteNumber.operatorID)
-        commonTopupBillsAnalytics.eventImpressionFavoriteNumberSuccessDeleteToaster(
-            currentCategoryName, operatorName, userSession.userId
-        )
     }
 
     private fun onFailedDeleteClientName() {
@@ -400,8 +393,7 @@ class TopupBillsPersoFavoriteNumberFragment :
                 totalTransaction = favoriteDetail.totalTransaction,
                 label = favoriteDetail.label,
                 isDelete = shouldDelete,
-                FavoriteNumberActionType.UNDO_DELETE
-
+                actionType = FavoriteNumberActionType.UNDO_DELETE
             )
         }
     }
@@ -531,9 +523,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
 
         val shouldShowDelete = clientNumbers.size > MIN_TOTAL_FAV_NUMBER
@@ -545,9 +536,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
 
         val shouldDelete = false
@@ -560,17 +550,16 @@ class TopupBillsPersoFavoriteNumberFragment :
             totalTransaction = DEFAULT_TOTAL_TRANSACTION,
             label = newName,
             isDelete = shouldDelete,
-            FavoriteNumberActionType.UPDATE
+            actionType = FavoriteNumberActionType.UPDATE
         )
     }
 
     override fun onChangeNameMenuClicked(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventImpressionEditBottomSheet(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
         commonTopupBillsAnalytics.eventClickMenuFavoriteNumberModify(
-            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
 
         val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
@@ -578,9 +567,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onDeleteContactClicked(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickMenuFavoriteNumberDelete(
-            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
         showDeleteConfirmationDialog(favNumberItem)
     }
@@ -621,16 +609,14 @@ class TopupBillsPersoFavoriteNumberFragment :
             }
         }
 
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberDeletePopUp(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberConfirmDelete(
-            currentCategoryName, operatorName, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
 
         val shouldDelete = true
@@ -642,12 +628,22 @@ class TopupBillsPersoFavoriteNumberFragment :
             totalTransaction = DEFAULT_TOTAL_TRANSACTION,
             label = favNumberItem.getClientName(),
             isDelete = shouldDelete,
-            FavoriteNumberActionType.DELETE
-        ) {
-            commonTopupBillsAnalytics.eventImpressionFavoriteNumberFailedDeleteToaster(
-                currentCategoryName, operatorName, userSession.userId
-            )
-        }
+            actionType = FavoriteNumberActionType.DELETE,
+            operatorName = favNumberItem.operatorName,
+            object: FavoriteNumberDeletionListener {
+                override fun onSuccessDelete(operatorName: String) {
+                    commonTopupBillsAnalytics.eventImpressionFavoriteNumberSuccessDeleteToaster(
+                        currentCategoryName, operatorName, userSession.userId
+                    )
+                }
+
+                override fun onFailedDelete() {
+                    commonTopupBillsAnalytics.eventImpressionFavoriteNumberFailedDeleteToaster(
+                        currentCategoryName, favNumberItem.operatorName, userSession.userId
+                    )
+                }
+            }
+        )
     }
 
     override fun onContinueClicked() {
@@ -658,9 +654,8 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onCloseClick(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickMenuCancelFavoriteNumberModify(
-            currentCategoryName, operatorName, loyaltyStatus, userSession.userId
+            currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
     }
 
@@ -679,7 +674,8 @@ class TopupBillsPersoFavoriteNumberFragment :
                 clientNumber = favNumber?.getClientNumber() ?: "",
                 categoryId = favNumber?.categoryId ?: "",
                 productId = favNumber?.productId ?: "",
-                inputNumberActionTypeIndex = inputNumberActionType?.ordinal ?: -1
+                inputNumberActionTypeIndex = inputNumberActionType?.ordinal ?: -1,
+                operatorId = favNumber?.operatorId ?: ""
             )
 
             intent.putExtra(
@@ -695,17 +691,6 @@ class TopupBillsPersoFavoriteNumberFragment :
         return localCacheHandler.getBoolean(key, false)
     }
 
-    private fun saveTelcoOperator(rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect) {
-        val operatorList = HashMap<String, TelcoAttributesOperator>()
-
-        rechargeCatalogPrefixSelect.prefixes.forEach {
-            if (!operatorList.containsKey(it.operator.id)) {
-                operatorList[it.operator.id] = it.operator.attributes
-            }
-        }
-
-        this.operatorList = operatorList
-    }
 
     private fun getOperatorNameById(operatorId: Int): String {
         return operatorList[operatorId.toString()]?.name ?: ""
@@ -715,6 +700,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
+        const val ARG_PARAM_DG_OPERATOR_IDS = "ARG_PARAM_DG_OPERATOR_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
         const val COACH_MARK_START_DELAY: Long = 200
@@ -727,7 +713,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         fun newInstance(
             clientNumberType: String, number: String,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
-            loyaltyStatus: String
+            digitalOperatorIds: ArrayList<String>, loyaltyStatus: String
         ): Fragment {
             val fragment = TopupBillsPersoFavoriteNumberFragment()
             val bundle = Bundle()
@@ -736,6 +722,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
             bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
+            bundle.putStringArrayList(ARG_PARAM_DG_OPERATOR_IDS, digitalOperatorIds)
             fragment.arguments = bundle
             return fragment
         }

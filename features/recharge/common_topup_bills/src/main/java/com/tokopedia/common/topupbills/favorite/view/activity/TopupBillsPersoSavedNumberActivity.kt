@@ -21,6 +21,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
     protected lateinit var dgCategoryIds: ArrayList<String>
+    protected lateinit var dgOperatorIds: ArrayList<String>
     protected var currentCategoryName = ""
     protected var isSwitchChecked = false
     protected var loyaltyStatus = ""
@@ -53,6 +54,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             this.number = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.currentCategoryName = extras.getString(EXTRA_DG_CATEGORY_NAME, "")
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
+            this.dgOperatorIds = extras.getStringArrayList(EXTRA_DG_OPERATOR_IDS) ?: arrayListOf()
             this.isSwitchChecked = extras.getBoolean(EXTRA_IS_SWITCH_CHECKED, false)
             this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
         }
@@ -68,8 +70,8 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DualTabSavedNumberFragment
-            .newInstance(clientNumberType, number,
-                currentCategoryName, dgCategoryIds, isSwitchChecked, loyaltyStatus)
+            .newInstance(clientNumberType, number, currentCategoryName,
+                dgCategoryIds, dgOperatorIds, isSwitchChecked, loyaltyStatus)
     }
 
     override fun onBackPressed() {
@@ -82,8 +84,8 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             context: Context,
             clientNumber: String,
             dgCategoryIds: ArrayList<String>,
+            dgOperatorIds: ArrayList<String>,
             categoryName: String,
-            operatorData: TelcoCatalogPrefixSelect,
             isSwitchChecked: Boolean,
             loyaltyStatus: String
         ): Intent {
@@ -92,6 +94,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
+            extras.putStringArrayList(EXTRA_DG_OPERATOR_IDS, dgOperatorIds)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
             extras.putBoolean(EXTRA_IS_SWITCH_CHECKED, isSwitchChecked)
@@ -103,6 +106,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
+        const val EXTRA_DG_OPERATOR_IDS = "EXTRA_DG_OPERATOR_IDS"
         const val EXTRA_IS_SWITCH_CHECKED = "EXTRA_IS_SWITCH_CHECKED"
         const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
 

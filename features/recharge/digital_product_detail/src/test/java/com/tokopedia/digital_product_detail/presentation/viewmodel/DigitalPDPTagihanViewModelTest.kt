@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
@@ -56,7 +57,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val response = dataFactory.getFavoriteNumberData()
         onGetFavoriteNumber_thenReturn(response)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumber(listOf(), listOf())
         verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
@@ -65,7 +66,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `when getting favoriteNumber should run and give fail result`() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumber(listOf(), listOf())
         verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberFail()
     }
@@ -86,6 +87,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         viewModel.getOperatorSelectGroup(MENU_ID)
         verifyGetOperatorSelectGroupRepoGetCalled()
         verifyGetOperatorSelectGroupSuccess(response)
+        verifySetOperatorListSuccess(response.response.operatorGroups?.firstOrNull()?.operators ?: listOf())
     }
 
     @Test
@@ -342,6 +344,35 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
             TagihanDataFactory.VALID_CLIENT_NUMBER,
         )
         verifyCheckoutPassDataUpdated(expectedResult)
+    }
+
+    @Test
+    fun `given operatorData empty when calling setOperatorDataById should update operatorData with correct data`() {
+        val operatorList = dataFactory.getOperatorList()
+        onGetOperatorList_thenReturn(operatorList)
+
+        viewModel.setOperatorDataById(TagihanDataFactory.OPERATOR_ID_TAGLIS)
+        verifyOperatorDataHasCorrectData(dataFactory.getOperatorDataTaglis())
+    }
+
+    @Test
+    fun `given operatorData not empty when calling setOperatorDataById should update operatorData with correct data`() {
+        val operatorData = dataFactory.getOperatorDataTaglis()
+        val operatorList = dataFactory.getOperatorList()
+        onGetOperatorData_thenReturn(operatorData)
+        onGetOperatorList_thenReturn(operatorList)
+
+        viewModel.setOperatorDataById(TagihanDataFactory.OPERATOR_ID_NON_TAGLIS)
+        verifyOperatorDataHasCorrectData(dataFactory.getOperatorDataNonTaglis())
+    }
+
+    @Test
+    fun `given operatorId not exists operatorList when calling setOperatorDataById should set default value`() {
+        val operatorList = dataFactory.getOperatorList()
+        onGetOperatorList_thenReturn(operatorList)
+
+        viewModel.setOperatorDataById(TagihanDataFactory.OPERATOR_ID_INVALID)
+        verifyOperatorDataHasCorrectData(CatalogOperator())
     }
 
     @Test

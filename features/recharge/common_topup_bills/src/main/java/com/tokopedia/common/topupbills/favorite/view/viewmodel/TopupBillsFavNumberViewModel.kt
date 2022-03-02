@@ -8,6 +8,7 @@ import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
 import com.tokopedia.common.topupbills.favorite.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.favorite.domain.usecase.GetRechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favorite.domain.usecase.ModifyRechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favorite.view.listener.FavoriteNumberDeletionListener
 import com.tokopedia.common.topupbills.favorite.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.favorite.view.util.FavoriteNumberActionType.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -40,12 +41,13 @@ class TopupBillsFavNumberViewModel @Inject constructor(
 
     fun getPersoFavoriteNumbers(
         categoryIds: List<Int>,
+        operatorIds: List<Int>,
         shouldRefreshInputNumber: Boolean = true,
         prevActionType: FavoriteNumberActionType? = null
     ) {
         launchCatchError(block = {
             val favoriteNumber = getRechargeFavoriteNumberUseCase.apply {
-                setRequestParams(categoryIds)
+                setRequestParams(categoryIds, operatorIds)
             }.executeOnBackground()
             _persoFavNumberData.postValue(Success(favoriteNumber.persoFavoriteNumber to shouldRefreshInputNumber))
         }) {
@@ -67,7 +69,8 @@ class TopupBillsFavNumberViewModel @Inject constructor(
         label: String,
         isDelete: Boolean,
         actionType: FavoriteNumberActionType,
-        onModifyCallback: (() -> Unit)? = null
+        operatorName: String = "",
+        onDeleteCallback: FavoriteNumberDeletionListener? = null
     ) {
         launchCatchError(block = {
             val data = modifyRechargeFavoriteNumberUseCase.apply {
@@ -78,7 +81,10 @@ class TopupBillsFavNumberViewModel @Inject constructor(
 
             when (actionType) {
                 UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
-                DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
+                DELETE -> {
+                    _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
+                    onDeleteCallback?.onSuccessDelete(operatorName)
+                }
                 UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
             }
         }) {
@@ -86,7 +92,7 @@ class TopupBillsFavNumberViewModel @Inject constructor(
                 UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
                 DELETE -> {
                     _seamlessFavNumberDeleteData.postValue(Fail(it))
-                    onModifyCallback?.invoke()
+                    onDeleteCallback?.onFailedDelete()
                 }
                 UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }

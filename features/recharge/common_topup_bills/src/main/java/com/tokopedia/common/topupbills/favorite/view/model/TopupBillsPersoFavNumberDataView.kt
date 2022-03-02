@@ -9,7 +9,8 @@ class TopupBillsPersoFavNumberDataView(
     val iconUrl: String,
     val categoryId: String,
     val operatorId: String,
-    val productId: String
+    val productId: String,
+    val operatorName: String
 ): Visitable<PersoFavoriteNumberTypeFactory> {
 
     override fun type(typeFactory: PersoFavoriteNumberTypeFactory): Int {

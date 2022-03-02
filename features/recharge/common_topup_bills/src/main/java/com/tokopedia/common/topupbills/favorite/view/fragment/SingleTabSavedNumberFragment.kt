@@ -25,6 +25,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
 
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
+    private lateinit var dgOperatorIds: ArrayList<String>
     private var currentCategoryName = ""
     private var number: String = ""
     private var loyaltyStatus: String = ""
@@ -44,6 +45,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
             number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
+            dgOperatorIds = arguments.getStringArrayList(ARG_PARAM_DG_OPERATOR_IDS) ?: arrayListOf()
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
         }
@@ -84,6 +86,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             number,
             currentCategoryName,
             dgCategoryIds,
+            dgOperatorIds,
             loyaltyStatus
         )
         childFragmentManager
@@ -157,7 +160,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
         fun newInstance(
             clientNumberType: String, number: String,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
-            loyaltyStatus: String
+            digitalOperatorIds: ArrayList<String>, loyaltyStatus: String
         ): Fragment {
 
             val fragment = SingleTabSavedNumberFragment()
@@ -167,14 +170,15 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.lowercase())
             bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
+            bundle.putStringArrayList(ARG_PARAM_DG_OPERATOR_IDS, digitalOperatorIds)
             fragment.arguments = bundle
             return fragment
         }
 
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
-        const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
+        const val ARG_PARAM_DG_OPERATOR_IDS = "ARG_PARAM_DG_OPERATOR_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
     }

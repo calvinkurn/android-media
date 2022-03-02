@@ -615,7 +615,10 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPaketDataClientNumberWidget?.setInputNumber(data.prefill, true)
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            setContactName(data.clientName)
+            setInputNumber(data.prefill, true)
+        }
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
@@ -858,8 +861,8 @@ class DigitalPDPDataPlanFragment :
                 it,
                 clientNumber,
                 dgCategoryIds,
+                arrayListOf(),
                 categoryName,
-                viewModel.operatorData,
                 isSwitchChecked,
                 loyaltyStatus
             )
@@ -977,7 +980,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean) {
+    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()

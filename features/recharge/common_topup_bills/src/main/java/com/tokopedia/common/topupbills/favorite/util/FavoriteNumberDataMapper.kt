@@ -24,7 +24,8 @@ object FavoriteNumberDataMapper {
                 iconUrl = it.mediaUrl,
                 categoryId = it.trackingData.categoryId,
                 operatorId = it.trackingData.operatorId,
-                productId = it.trackingData.productId
+                productId = it.trackingData.productId,
+                operatorName = it.trackingData.operatorName
             )
         }
     }

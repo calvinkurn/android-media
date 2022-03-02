@@ -40,6 +40,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
+    var operatorList: List<CatalogOperator> = listOf()
     var operatorData: CatalogOperator = CatalogOperator()
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -97,9 +98,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         _favoriteNumberData.value = RechargeNetworkResult.Loading
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>) {
+    fun getFavoriteNumber(categoryIds: List<Int>, operatorIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumber(categoryIds)
+            val favoriteNumber = repo.getFavoriteNumber(categoryIds, operatorIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
                 favoriteNumber.persoFavoriteNumber.items
             )
@@ -115,7 +116,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     fun getOperatorSelectGroup(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
-            val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
+            operatorList = data.response.operatorGroups?.firstOrNull()?.operators ?: listOf()
             if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()) {
                 operatorData = operatorList.get(0)
             }
@@ -207,6 +208,10 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
             }
         }
+    }
+
+    fun setOperatorDataById(operatorId: String) {
+        operatorData = operatorList.firstOrNull { it.id == operatorId } ?: CatalogOperator()
     }
 
     fun updateCategoryCheckoutPassData(categoryId: String) {
