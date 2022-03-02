@@ -880,7 +880,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         if (viewModel.isDuplicateMode(pageMode)) {
             showCouponDuplicatedToaster()
         }
-
     }
 
 }
