@@ -153,7 +153,7 @@ object HomeLayoutMapper {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
                 val state = when (layoutResponse.layout) {
-                    CATEGORY, REPURCHASE_PRODUCT -> HomeLayoutItemState.NOT_LOADED
+                    CATEGORY, REPURCHASE_PRODUCT, SHARING_EDUCATION, MAIN_QUEST  -> HomeLayoutItemState.NOT_LOADED
                     else ->  HomeLayoutItemState.LOADED
                 }
 
