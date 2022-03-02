@@ -1183,7 +1183,7 @@ class PlayViewModel @AssistedInject constructor(
      * and if it is not the viewer's own shop id
      */
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.status is PlayPartnerFollowStatus.Followable) {
+        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = if (userSession.isLoggedIn) {
                     repo.getIsFollowingPartner(partnerId = partnerInfo.id)
