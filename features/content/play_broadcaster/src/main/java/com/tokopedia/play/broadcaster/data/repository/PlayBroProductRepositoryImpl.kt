@@ -103,8 +103,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
     }
 
-    @ExperimentalStdlibApi
-    /** TODO: gonna remove the annotation later */
     override suspend fun getProductTagSummarySection(channelID: String) = withContext(dispatchers.io) {
         val response = getProductTagSummarySectionUseCase.apply {
             setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
