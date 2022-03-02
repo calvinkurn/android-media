@@ -38,7 +38,6 @@ class TradeInDetailUseCase @Inject constructor(
                     uniqueCode = "",
                     modelInfo = laku6DeviceModel.model,
                     originalPrice = productPrice,
-                    userId = userSession.userId,
                     userLocation = GetTradeInDetailInput.UserLocation(
                         districtId = userAddressData.district_id,
                         cityId = "1"/*userAddressData.city_id*/,

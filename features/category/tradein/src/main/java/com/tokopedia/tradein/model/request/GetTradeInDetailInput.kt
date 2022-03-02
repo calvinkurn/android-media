@@ -16,8 +16,6 @@ data class GetTradeInDetailInput(
     var traceId: String,
     @SerializedName("UniqueCode")
     var uniqueCode: String,
-    @SerializedName("UserId")
-    var userId: String,
     @SerializedName("UserLocation")
     var userLocation: UserLocation
 ) {
