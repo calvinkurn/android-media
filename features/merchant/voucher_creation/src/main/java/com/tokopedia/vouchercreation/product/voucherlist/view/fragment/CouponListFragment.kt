@@ -557,12 +557,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editCoupon(coupon: VoucherUiModel) {
-        VoucherCreationTracking.clickChangeOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status.toString())
+        VoucherCreationTracking.clickChangeOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         onEditCouponMenuSelected(coupon.id.toLong())
     }
 
     private fun viewDetailCoupon(coupon: VoucherUiModel) {
-        VoucherCreationTracking.clickDetailOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status.toString())
+        VoucherCreationTracking.clickDetailOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         onViewCouponDetailMenuSelected(coupon.id.toLong())
     }
 
@@ -594,13 +594,13 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         if (!isAdded) return
         val bottomSheet = DownloadCouponImageBottomSheet.newInstance(coupon.image, coupon.imageSquare, coupon.imagePortrait, userSession.userId)
         bottomSheet.setOnDownloadClickListener { couponList -> checkDownloadPermission(couponList) }
-        VoucherCreationTracking.clickDownloadOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status.toString())
+        VoucherCreationTracking.clickDownloadOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
 
     private fun cancelCoupon(coupon: VoucherUiModel) {
-        VoucherCreationTracking.clickCancelOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status.toString())
+        VoucherCreationTracking.clickCancelOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         CancelVoucherDialog(
             context = context ?: return
         ).setOnPrimaryClickListener {
@@ -609,7 +609,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun stopCoupon(coupon: VoucherUiModel) {
-        VoucherCreationTracking.clickStopOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status.toString())
+        VoucherCreationTracking.clickStopOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         StopVoucherDialog(
             context = context ?: return
         ).setOnPrimaryClickListener {
@@ -618,7 +618,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun duplicateCoupon(coupon: VoucherUiModel) {
-        VoucherCreationTracking.clickDuplicateOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status.toString())
+        VoucherCreationTracking.clickDuplicateOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         onDuplicateCouponMenuSelected(coupon.id.toLong())
     }
 

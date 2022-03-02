@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.common.analytics
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.ADD_PRODUCT
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_CANCEL
@@ -387,33 +388,33 @@ object VoucherCreationTracking {
     }
 
     // no 30
-    fun clickDownloadOnBottomsheet(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DOWNLOAD, label = voucherStatus, category = VOUCHER_LIST)
+    fun clickDownloadOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DOWNLOAD, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     // no 31
-    fun clickCancelOnBottomsheet(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_CANCEL, label = voucherStatus, category = VOUCHER_LIST)
+    fun clickCancelOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_CANCEL, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     // no 32
-    fun clickChangeOnBottomsheet(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_CHANGE, label = voucherStatus, category = VOUCHER_LIST)
+    fun clickChangeOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_CHANGE, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     // no 33
-    fun clickStopOnBottomsheet(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_STOP, label = voucherStatus, category = VOUCHER_LIST)
+    fun clickStopOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_STOP, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     // no 34
-    fun clickDuplicateOnBottomsheet(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DUPLICATE, label = voucherStatus, category = VOUCHER_LIST)
+    fun clickDuplicateOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DUPLICATE, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     // no 35
-    fun clickDetailOnBottomsheet(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DETAIL, label = voucherStatus, category = VOUCHER_LIST)
+    fun clickDetailOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DETAIL, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     private fun mapSelectedProductIds(products: List<ProductUiModel>): List<String> {
@@ -473,6 +474,18 @@ object VoucherCreationTracking {
             map.put(VoucherCreationAnalyticConstant.Key.PAGE_SOURCE, this)
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun getVoucherStatus(voucherStatus: Int): String {
+        return when {
+            voucherStatus == VoucherStatusConst.DELETED -> "DELETED"
+            voucherStatus == VoucherStatusConst.ENDED -> "ENDED"
+            voucherStatus == VoucherStatusConst.NOT_STARTED -> "NOT_STARTED"
+            voucherStatus == VoucherStatusConst.ONGOING -> "ONGOING"
+            voucherStatus == VoucherStatusConst.PROCESSING -> "PROCESSING"
+            voucherStatus == VoucherStatusConst.STOPPED -> "STOPPED"
+            else -> ""
+        }
     }
 
 }
