@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import javax.inject.Inject
@@ -26,6 +27,8 @@ class MvcLockedToProductUseCase @Inject constructor(
     }
 
     fun setParams(request: MvcLockedToProductRequest) {
+        val districtId = request.districtID.toLongOrZero()
+        val cityId = request.cityID.toLongOrZero()
         setRequestParams(
             mapOf<String, Any>(
                 KEY_SHOP_ID to request.shopID.toIntOrZero(),
@@ -33,8 +36,8 @@ class MvcLockedToProductUseCase @Inject constructor(
                 KEY_PAGE to request.page,
                 KEY_PER_PAGE to request.perPage,
                 KEY_SORT_BY to request.sortBy.toIntOrZero(),
-                KEY_DISTRICT_ID to request.districtID,
-                KEY_CITY_ID to request.cityID,
+                KEY_DISTRICT_ID to districtId,
+                KEY_CITY_ID to cityId,
                 KEY_LATITUDE to request.latitude,
                 KEY_LONGITUDE to request.longitude
             )
