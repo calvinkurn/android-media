@@ -3324,7 +3324,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetOrderLevelData(addOnBottomSheetModel, shipmentCartItemModel);
             }
 
-            ArrayList<String> listProductId = new ArrayList<>();
             if (addOnsDataModel.getStatus() == ADD_ON_STATUS_ACTIVE) {
                 availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetOrderLevelData(addOnWordingModel, shipmentCartItemModel);
             }

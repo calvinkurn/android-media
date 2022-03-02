@@ -22,33 +22,24 @@ object ShipmentAddOnMapper {
 
     fun mapAvailableBottomSheetOrderLevelData(addOnWordingModel: AddOnWordingModel, shipmentCartItemModel: ShipmentCartItemModel): AvailableBottomSheetData {
         val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
-        val products = addOnsDataModel?.addOnsBottomSheetModel?.products
 
         val addOnWordingData = AddOnWordingData()
         addOnWordingData.onlyGreetingCard = addOnWordingModel.onlyGreetingCard
         addOnWordingData.packagingAndGreetingCard = addOnWordingModel.packagingAndGreetingCard
         addOnWordingData.invoiceNotSendToRecipient = addOnWordingModel.invoiceNotSendToRecipient
 
-        val listProductId = arrayListOf<String>()
         val listProduct = arrayListOf<Product>()
-        if (products != null) {
-            for ((_, productName) in products) {
-                for ((cartId, _, _, productId, _, name, price, _, _, _, variantParentId, _, _, _, _, quantity, _, imageUrl) in shipmentCartItemModel.cartItemModels) {
-                    if (productName.equals(name, ignoreCase = true)) {
-                        val product = Product()
-                        product.cartId = cartId.toString()
-                        product.productId = productId.toString()
-                        product.productName = name
-                        product.productPrice = price.toLong()
-                        product.productQuantity = quantity
-                        product.productImageUrl = imageUrl
-                        product.productParentId = variantParentId
-                        listProduct.add(product)
-                        listProductId.add(productId.toString())
-                        break
-                    }
-                }
-            }
+        for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+                val product = Product()
+                product.cartId = cartItemModel.cartId.toString()
+                product.productId = cartItemModel.productId.toString()
+                product.productName = cartItemModel.name
+                product.productPrice = cartItemModel.price.toLong()
+                product.productQuantity = cartItemModel.quantity
+                product.productImageUrl = cartItemModel.imageUrl
+                product.productParentId = cartItemModel.variantParentId
+                listProduct.add(product)
+                break
         }
 
         val addOnDataList = arrayListOf<AddOnData>()
