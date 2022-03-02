@@ -19,7 +19,7 @@ object AddOnMapper {
                 availableBottomSheetData = AvailableBottomSheetData(
                         products = listOf(Product(
                                 cartId = orderProduct.cartId,
-                                productId = if (orderProduct.parentId.isNotEmpty()) orderProduct.parentId else orderProduct.productId.toString(),
+                                productId = if (orderProduct.parentId.isNotEmpty() && orderProduct.parentId != "0") orderProduct.parentId else orderProduct.productId.toString(),
                                 productName = orderProduct.productName,
                                 productImageUrl = orderProduct.productImageUrl,
                                 productPrice = orderProduct.productPrice,
