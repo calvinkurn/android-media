@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.duplicate
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,10 +15,12 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
+import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
-import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import javax.inject.Inject
 
@@ -28,6 +31,11 @@ class DuplicateCouponActivity : AppCompatActivity() {
         const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
         const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
+        const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
+        const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selectedWarehouseId"
+        const val BUNDLE_KEY_IS_EDITING = "isEditing"
+        const val REQUEST_CODE_ADD_PRODUCT = 101
+        const val REQUEST_CODE_MANAGE_PRODUCT = 102
 
         @JvmStatic
         fun start(context: Context, couponId : Long) {
@@ -46,8 +54,8 @@ class DuplicateCouponActivity : AppCompatActivity() {
         CouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,
             ::navigateToCouponSettingPage,
+            ::navigateToAddProductPage,
             ::navigateToManageProductPage,
-            {},
             {},
             {},
             ::onDuplicateCouponSuccess,
@@ -101,20 +109,41 @@ class DuplicateCouponActivity : AppCompatActivity() {
         )
     }
 
+
+    private fun navigateToAddProductPage(coupon: Coupon) {
+        val couponSettings = coupon.settings
+        val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
+        val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putString(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
+                putInt(CreateCouponProductActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(CreateCouponProductActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProducts = arrayListOf<ProductUiModel>()
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
+                putParcelableArrayList(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
+            })
+        }
+        startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
+    }
+
     private fun navigateToManageProductPage(coupon: Coupon) {
         val couponSettings = coupon.settings
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
-                putBoolean(ManageProductFragment.BUNDLE_KEY_IS_VIEWING, true)
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
+                putBoolean(BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProductIds = ArrayList<ProductId>()
                 selectedProductIds.addAll(couponPreviewFragment.getSelectedProductIds())
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
+                val selectedProducts = arrayListOf<ProductUiModel>()
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
-        startActivity(manageProductIntent)
+        startActivityForResult(manageProductIntent, REQUEST_CODE_MANAGE_PRODUCT)
     }
 
     private fun onDuplicateCouponSuccess() {
@@ -127,8 +156,6 @@ class DuplicateCouponActivity : AppCompatActivity() {
         Toaster.build(view, text).show()
     }
 
-
-
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
         val couponInfoFragment = CreateCouponDetailFragment(couponInformationData,
@@ -139,6 +166,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
         }
         return couponInfoFragment
     }
+
     private fun buildCouponSettingFragmentInstance(): CouponSettingFragment {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
@@ -147,5 +175,21 @@ class DuplicateCouponActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponSettingsData(it)
         }
         return fragment
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
+                val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                couponPreviewFragment.addProducts(selectedProducts)
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                couponPreviewFragment.setSelectedWarehouseId(selectedWarehouseId ?: "")
+            } else if (requestCode == REQUEST_CODE_MANAGE_PRODUCT) {
+                val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                couponPreviewFragment.setProducts(selectedProducts)
+                couponPreviewFragment.setSelectedProductIds(mutableListOf())
+            }
+        }
     }
 }

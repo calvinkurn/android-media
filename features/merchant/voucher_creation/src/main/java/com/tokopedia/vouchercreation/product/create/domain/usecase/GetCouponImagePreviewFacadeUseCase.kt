@@ -113,11 +113,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             else -> amount.toFloat()
         }
 
-        val nominalAmount = if (isInteger(formattedDiscountAmount)) {
-            formattedDiscountAmount.toInt()
-        } else {
-            formattedDiscountAmount
-        }
+        val nominalAmount = formattedDiscountAmount.toInt()
 
         val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
@@ -145,9 +141,4 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             audienceTarget
         )
     }
-
-    private fun isInteger(number : Float) : Boolean {
-        return number % 1 == 0.0f
-    }
-
 }

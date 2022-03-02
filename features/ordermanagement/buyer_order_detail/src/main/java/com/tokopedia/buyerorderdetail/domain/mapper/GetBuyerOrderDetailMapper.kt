@@ -410,7 +410,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
         return CopyableKeyValueUiModel(
             copyableText = formatDropshipperValue(dropship),
-            label = mapStringRes(resourceProvider.getDropshipLabel())
+            copyLabel = mapStringRes(resourceProvider.getCopyLabelDropshipper()),
+            copyMessage = mapStringRes(resourceProvider.getCopyMessageDropshipper()),
+            label = mapStringRes(resourceProvider.getDropshipperLabel())
         )
     }
 

@@ -156,7 +156,7 @@ object TopadsFeedXMapper {
                 bebasOngkirURL = freeOngkir.imageUrl,
                 name = name,
                 priceOriginalFmt = campaign.originalPrice,
-                priceFmt = priceFormat,
+                priceFmt = priceFormat.replace(" ",""),
                 isDiscount = isDiscount,
                 coverURL = imageProduct.imageUrl,
                 id = id,
@@ -167,7 +167,7 @@ object TopadsFeedXMapper {
                 star = productRating,
                 totalSold = countSold.toIntOrNull()?:0,
                 discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
-                priceDiscountFmt = priceFormat,
+                priceDiscountFmt = priceFormat.replace(" ",""),
                 shopName = shopName
                 )
         }
