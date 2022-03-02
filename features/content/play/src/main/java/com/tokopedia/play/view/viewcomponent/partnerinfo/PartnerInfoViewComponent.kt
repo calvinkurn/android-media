@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -42,7 +43,7 @@ class PartnerInfoViewComponent(
         followStatus: PlayPartnerFollowStatus,
         isLoading: Boolean
     ) {
-        if (followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing) {
+        if (followStatus is PlayPartnerFollowStatus.Followable && followStatus.followStatus != PartnerFollowableStatus.Followed) {
             btnFollow.isLoading = isLoading
             btnFollow.isEnabled = !isLoading
             btnFollow.show()

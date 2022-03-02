@@ -187,7 +187,8 @@ class PlayUpcomingViewModel @Inject constructor(
         if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
+                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
             }, onError = {
 
             })
@@ -336,10 +337,12 @@ class PlayUpcomingViewModel @Inject constructor(
         val shopId = channelData.partnerInfo.id
 
         val followStatus = _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable ?: return null
-        val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
+        val shouldFollow = if (shouldForceFollow) true else followStatus.followStatus != PartnerFollowableStatus.Followed
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
-        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
+        val result = if(shouldFollow) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+
+        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
 
         viewModelScope.launchCatchError(block = {
             repo.postFollowStatus(

@@ -18,7 +18,13 @@ data class PlayPartnerInfo(
 
 sealed class PlayPartnerFollowStatus {
 
-    data class Followable(val isFollowing: Boolean) : PlayPartnerFollowStatus()
+    data class Followable(val followStatus: PartnerFollowableStatus) : PlayPartnerFollowStatus()
     object NotFollowable : PlayPartnerFollowStatus()
     object Unknown : PlayPartnerFollowStatus()
+}
+
+enum class PartnerFollowableStatus{
+    Unknown,
+    Followed,
+    NotFollowed,
 }

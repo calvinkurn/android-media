@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.Group
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -61,7 +62,7 @@ class ToolbarViewComponent(
     fun setFollowStatus(followStatus: PlayPartnerFollowStatus) {
         if (followStatus is PlayPartnerFollowStatus.Followable) {
             tvFollow.text = getString(
-                    if (followStatus.isFollowing) R.string.play_following
+                    if (followStatus.followStatus == PartnerFollowableStatus.Followed) R.string.play_following
                     else R.string.play_follow
             )
             groupFollowable.show()

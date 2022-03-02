@@ -1188,7 +1188,9 @@ class PlayViewModel @AssistedInject constructor(
                 val isFollowing = if (userSession.isLoggedIn) {
                     repo.getIsFollowingPartner(partnerId = partnerInfo.id)
                 } else false
-                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
+
+                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
             }, onError = {
 
             })
@@ -1545,7 +1547,7 @@ class PlayViewModel @AssistedInject constructor(
         val shopId = channelData.partnerInfo.id
 
         val followStatus = _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable ?: return null
-        val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
+        val shouldFollow = if (shouldForceFollow) true else followStatus.followStatus != PartnerFollowableStatus.Followed
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
         _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
@@ -1556,7 +1558,8 @@ class PlayViewModel @AssistedInject constructor(
                     followAction = followAction,
             )
             _partnerInfo.setValue {
-                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(isFollowing))
+                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
         }) {
             _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
