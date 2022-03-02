@@ -28,8 +28,8 @@ class MvcLockedToProductUseCase @Inject constructor(
     }
 
     fun setParams(request: MvcLockedToProductRequest) {
-        val districtId = request.districtID.ifEmpty { Int.ZERO }
-        val cityId = request.cityID.ifEmpty { Int.ZERO }
+        val districtId = request.districtID.ifEmpty { Int.ZERO.toString() }
+        val cityId = request.cityID.ifEmpty { Int.ZERO.toString() }
         setRequestParams(
             mapOf<String, Any>(
                 KEY_SHOP_ID to request.shopID.toIntOrZero(),
