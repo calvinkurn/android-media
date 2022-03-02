@@ -151,7 +151,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                         imageUrl = product.imageURL,
                         stock = product.quantity,
                         price = if(product.discount == "0") {
-                            OriginalPrice(product.priceFmt, product.price.toDouble())
+                            OriginalPrice(product.originalPriceFmt, product.originalPrice.toDouble())
                         }
                         else DiscountedPrice(
                             originalPrice = product.originalPriceFmt,
