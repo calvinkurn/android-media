@@ -52,7 +52,7 @@ class GopayLinkBenefitAdapter(
                 )
             }
 
-        holder.benifitsText.text = arrayOfFeatures[position].text
+        holder.benifitsText.text = arrayOfFeatures[position].text?:""
     }
 
     override fun getItemCount(): Int {

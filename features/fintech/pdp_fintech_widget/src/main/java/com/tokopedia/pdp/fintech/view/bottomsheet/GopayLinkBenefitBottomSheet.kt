@@ -33,14 +33,13 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
     private var parentView: View? = null
     private val childLayoutRes = R.layout.bottom_sheet_pdp_widget_gopay_activation
     private var activationBottomSheetDetail: FintechRedirectionWidgetDataClass? = null
-    private lateinit var headerIcon: ImageUnify
-    private lateinit var recyclerBenifits: RecyclerView
-    private lateinit var bottomsheetTitle: Typography
-    private lateinit var proceedButton: UnifyButton
-    private lateinit var findyaText: Typography
-    private lateinit var findyaIcon: ImageUnify
-    private lateinit var supervisedText: Typography
-    private lateinit var supervisedIcon: ImageUnify
+    private  var headerIcon: ImageUnify? = null
+    private  var bottomsheetTitle: Typography? = null
+    private  var proceedButton: UnifyButton? = null
+    private  var findyaText: Typography? = null
+    private  var findyaIcon: ImageUnify? = null
+    private  var supervisedText: Typography? = null
+    private  var supervisedIcon: ImageUnify? = null
     private var webUrl: String? = null
     private var arrayOfFeatures: ArrayList<ActivationBottomSheetDescriptions> = ArrayList()
     private lateinit var gopayLinkBenefitAdapter: GopayLinkBenefitAdapter
@@ -63,7 +62,7 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
 
         headerIcon = view.findViewById(R.id.imageDisplayer)
         bottomsheetTitle = view.findViewById(R.id.gopayActivationBottomSheet)
-        recyclerBenifits = view.findViewById(R.id.activationBenifitRecycler)
+       val recyclerBenifits:RecyclerView = view.findViewById(R.id.activationBenifitRecycler)
         proceedButton = view.findViewById(R.id.btnRegister)
         findyaText = view.findViewById(R.id.findyaFootNote)
         findyaIcon = view.findViewById(R.id.findayaIcon)
@@ -77,7 +76,7 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
 
 
     private fun setListener() {
-        proceedButton.setOnClickListener {
+        proceedButton?.setOnClickListener {
             sendClickEvent()
             openRouteView(webUrl)
         }
@@ -118,10 +117,10 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
     private fun setData() {
         setHeaderIcon()
         setFooterIcon()
-        findyaText.text = activationBottomSheetDetail?.widgetBottomSheet?.productFootnote
-        supervisedText.text = activationBottomSheetDetail?.widgetBottomSheet?.footnote
-        bottomsheetTitle.text = activationBottomSheetDetail?.widgetBottomSheet?.title
-        proceedButton.text =
+        findyaText?.text = activationBottomSheetDetail?.widgetBottomSheet?.productFootnote
+        supervisedText?.text = activationBottomSheetDetail?.widgetBottomSheet?.footnote
+        bottomsheetTitle?.text = activationBottomSheetDetail?.widgetBottomSheet?.title
+        proceedButton?.text =
             activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText
         activationBottomSheetDetail?.widgetBottomSheet?.descriptions?.let { listOfBenefitDescription ->
             gopayLinkBenefitAdapter.updateData(
@@ -134,23 +133,23 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
     private fun setFooterIcon() {
         if (context?.isDarkMode() == true) {
             activationBottomSheetDetail?.widgetBottomSheet?.productFootnoteIconDark?.let { findyaDarkIcon ->
-                findyaIcon.setImageUrl(
+                findyaIcon?.setImageUrl(
                     findyaDarkIcon
                 )
             }
             activationBottomSheetDetail?.widgetBottomSheet?.footnoteIconDark?.let { supervisedDarkIcon ->
-                supervisedIcon.setImageUrl(
+                supervisedIcon?.setImageUrl(
                     supervisedDarkIcon
                 )
             }
         } else {
             activationBottomSheetDetail?.widgetBottomSheet?.productFootnoteIconLight?.let { findyaLightIcon ->
-                findyaIcon.setImageUrl(
+                findyaIcon?.setImageUrl(
                     findyaLightIcon
                 )
             }
             activationBottomSheetDetail?.widgetBottomSheet?.footnoteIconLight?.let { supervisedLightIcon ->
-                supervisedIcon.setImageUrl(
+                supervisedIcon?.setImageUrl(
                     supervisedLightIcon
                 )
             }
@@ -160,13 +159,13 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
     private fun setHeaderIcon() {
         if (context?.isDarkMode() == true)
             activationBottomSheetDetail?.widgetBottomSheet?.productIconDark?.let {
-                headerIcon.setImageUrl(
+                headerIcon?.setImageUrl(
                     it
                 )
             }
         else
             activationBottomSheetDetail?.widgetBottomSheet?.productIconLight?.let {
-                headerIcon.setImageUrl(
+                headerIcon?.setImageUrl(
                     it
                 )
             }

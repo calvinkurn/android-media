@@ -27,7 +27,6 @@ const val GQL_GET_WIDGET_DETAIL_V2 =
             type
             web_url
             android_url
-            ios_url
             bottomsheet {
               show
               product_icon_light

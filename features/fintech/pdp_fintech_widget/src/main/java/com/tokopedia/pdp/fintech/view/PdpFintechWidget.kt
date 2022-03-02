@@ -45,18 +45,22 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var idToPriceUrlMap = HashMap<String, FintechPriceUrlDataModel>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
     private var categoryId: String? = null
-    private lateinit var productID: String
-    private lateinit var productPrice: String
+    private  var productID: String? = ""
+    private  var productPrice: String? = ""
+    private val ACTIVATION_LINKINING_FLOW = 2
+    private val NOT_BRANDER_CHIPS = "not branded chips"
+    private val BRANDER_CHIPS = "branded chips"
+
 
     @Inject
     lateinit var pdpWidgetAnalytics: dagger.Lazy<PdpFintechWidgetAnalytics>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private lateinit var baseView: View
+    private  var baseView: View? = null
     private lateinit var titleTextView: Typography
-    private lateinit var fintechWidgetAdapter: FintechWidgetAdapter
-    private lateinit var instanceProductUpdateListner: ProductUpdateListner
+    private  var fintechWidgetAdapter: FintechWidgetAdapter? = null
+    private  var instanceProductUpdateListner: ProductUpdateListner? = null
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
     private var counter = 0
@@ -85,17 +89,25 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner) {
             when (it) {
                 is Success -> {
-                    setPriceToChipMap(it.data)
-                    it.data.baseWidgetResponse?.baseData?.let { baseChipResponse ->
-                        if (baseChipResponse.list.size > 0)
-                            titleTextView.text = baseChipResponse.list[0].title
-                    }
-                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
+                    onSuccessData(it)
                 }
                 is Fail -> {
-                    instanceProductUpdateListner.removeWidget()
+                    instanceProductUpdateListner?.removeWidget()
                 }
             }
+        }
+    }
+
+    private fun onSuccessData(it: Success<WidgetDetail>) {
+        setPriceToChipMap(it.data)
+        updateTestForChip(it.data)
+        getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
+    }
+
+    private fun updateTestForChip(widgetDetail: WidgetDetail) {
+        widgetDetail.baseWidgetResponse?.baseData?.let { baseChipResponse ->
+            if (baseChipResponse.list.size > 0)
+                titleTextView.text = baseChipResponse.list[0].title
         }
     }
 
@@ -115,8 +127,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun initRecycler() {
-        val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
-        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        val recyclerView = baseView?.findViewById<RecyclerView>(R.id.recycler_items)
+        recyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
             override fun clickedWidget(
                 fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
@@ -129,7 +141,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             }
 
         })
-        recyclerView.adapter = fintechWidgetAdapter
+        recyclerView?.adapter = fintechWidgetAdapter
     }
 
     private fun customRouter(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
@@ -141,11 +153,11 @@ class PdpFintechWidget @JvmOverloads constructor(
                     "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                     "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
 
-            if (fintechRedirectionWidgetDataClass.cta == 2 &&
+            if (fintechRedirectionWidgetDataClass.cta == ACTIVATION_LINKINING_FLOW &&
                 fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false
             ) {
                 openWebViewUrl(url = rediretionLink, false)
-            } else if (fintechRedirectionWidgetDataClass.cta == 2 &&
+            } else if (fintechRedirectionWidgetDataClass.cta == ACTIVATION_LINKINING_FLOW &&
                 fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true
             ) {
                 val intent = Intent(context, ActivationBottomSheetActivity::class.java)
@@ -174,8 +186,9 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
-        titleTextView =
-            baseView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.quickText)
+        baseView?.let {
+            titleTextView = it. findViewById(R.id.quickText)
+        }
     }
 
 
@@ -204,7 +217,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             }
 
         } catch (e: Exception) {
-            instanceProductUpdateListner.removeWidget()
+            instanceProductUpdateListner?.removeWidget()
         }
     }
 
@@ -214,14 +227,14 @@ class PdpFintechWidget @JvmOverloads constructor(
         }
         productPrice?.let {
             priceToChip[it]?.let { chipList ->
-                instanceProductUpdateListner.showWidget()
-                fintechWidgetAdapter.setData(chipList)
+                instanceProductUpdateListner?.showWidget()
+                fintechWidgetAdapter?.setData(chipList)
                 sendPdpImpression(chipList)
             } ?: run {
-                instanceProductUpdateListner.removeWidget()
+                instanceProductUpdateListner?.removeWidget()
             }
         } ?: run {
-            instanceProductUpdateListner.removeWidget()
+            instanceProductUpdateListner?.removeWidget()
         }
     }
 
@@ -233,17 +246,17 @@ class PdpFintechWidget @JvmOverloads constructor(
                         if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
                             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                                 FintechWidgetAnalyticsEvent.PdpWidgetImpression(
-                                    productID,
+                                    productID?:"",
                                     linkedStatus,
                                     userStatus,
-                                    "not branded chips ",
+                                    NOT_BRANDER_CHIPS,
                                     partnerName
                                 )
                             )
                         else
                             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                                 FintechWidgetAnalyticsEvent.PdpWidgetImpression(
-                                    productID, linkedStatus, userStatus, "branded chips",
+                                    productID?:"", linkedStatus, userStatus, BRANDER_CHIPS,
                                     partnerName
                                 )
                             )

@@ -45,7 +45,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         var listOfVariantDetail: MutableList<WidgetRequestModel> =
             setAmountList(listofAmountandUrls)
 
-        return mutableMapOf("request" to setProductDetailMap(productCategory, listOfVariantDetail))
+        return mutableMapOf(REQUEST to setProductDetailMap(productCategory, listOfVariantDetail))
     }
 
     private fun setAmountList(
@@ -78,6 +78,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     companion object {
         const val PARAM_PRODUCT_CATEGORY = "product_category"
         const val PARAM_LIST_PRODUCT_DETAIL = "list"
+        const val REQUEST = "request"
 
     }
 

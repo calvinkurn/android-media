@@ -158,36 +158,37 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    removeAllError()
-                    productInfoActivationShimmer.visibility = View.GONE
-                    detailHeader.visibility = View.VISIBLE
-                    setProductData(it.data)
-                    it.data.shopDetail?.shopId?.let { productShopId ->
-                        shopId = productShopId
-                    }
-                    it.data.stock?.let { productStock ->
-                        detailHeader.quantityEditor.maxValue = productStock
-                    }
-
-                    payLaterActivationViewModel.getOptimizedCheckoutDetail(
-                        payLaterActivationViewModel.selectedProductId,
-                        payLaterActivationViewModel.price * quantity,
-                        payLaterActivationViewModel.selectedGatewayCode
-                    )
+                    onSuccessProductData(it)
                 }
                 is Fail -> {
-                    loaderhideOnCheckoutApi()
-                    removeBottomDetailForError()
-                    when (it.throwable) {
-                        is UnknownHostException, is SocketTimeoutException -> fullPageGlobalError(
-                            GlobalError.NO_CONNECTION
-                        )
-                        is IllegalStateException -> fullPageEmptyError()
-                        else -> fullPageGlobalError(GlobalError.SERVER_ERROR)
-                    }
+                    onFailProductData(it)
                 }
             }
         }
+    }
+
+    private fun onFailProductData(it: Fail) {
+        loaderhideOnCheckoutApi()
+        removeBottomDetailForError()
+        when (it.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> fullPageGlobalError(
+                GlobalError.NO_CONNECTION
+            )
+            is IllegalStateException -> fullPageEmptyError()
+            else -> fullPageGlobalError(GlobalError.SERVER_ERROR)
+        }
+    }
+
+    private fun onSuccessProductData(it: Success<GetProductV3>) {
+        removeAllError()
+        productInfoActivationShimmer.visibility = View.GONE
+        detailHeader.visibility = View.VISIBLE
+        setProductData(it.data)
+        payLaterActivationViewModel.getOptimizedCheckoutDetail(
+            payLaterActivationViewModel.selectedProductId,
+            payLaterActivationViewModel.price * quantity,
+            payLaterActivationViewModel.selectedGatewayCode
+        )
     }
 
 
@@ -211,25 +212,33 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    showBottomDetail()
-                    loaderhideOnCheckoutApi()
-                    paylaterGetOptimizedModel = it.data
-                    removeErrorInTenure()
-                    setTenureDetailData()
+                    onSuccessTenureData(it)
                 }
                 is Fail -> {
-                    loaderhideOnCheckoutApi()
-                    removeBottomDetailForError()
-                    when (it.throwable) {
-                        is UnknownHostException, is SocketTimeoutException -> showGlobalErrorInTenureDetail(
-                            GlobalError.NO_CONNECTION
-                        )
-                        is IllegalStateException -> showEmptyErrorInTenureDetail()
-                        else -> showGlobalErrorInTenureDetail(GlobalError.SERVER_ERROR)
-                    }
+                    onFailTenureData(it)
                 }
             }
         }
+    }
+
+    private fun onFailTenureData(it: Fail) {
+        loaderhideOnCheckoutApi()
+        removeBottomDetailForError()
+        when (it.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> showGlobalErrorInTenureDetail(
+                GlobalError.NO_CONNECTION
+            )
+            is IllegalStateException -> showEmptyErrorInTenureDetail()
+            else -> showGlobalErrorInTenureDetail(GlobalError.SERVER_ERROR)
+        }
+    }
+
+    private fun onSuccessTenureData(it: Success<PaylaterGetOptimizedModel>) {
+        showBottomDetail()
+        loaderhideOnCheckoutApi()
+        paylaterGetOptimizedModel = it.data
+        removeErrorInTenure()
+        setTenureDetailData()
     }
 
 
@@ -419,6 +428,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setProductData(productData: GetProductV3) {
+        productData.shopDetail?.shopId?.let { productShopId ->
+            shopId = productShopId
+        }
+        productData.stock?.let { productStock ->
+            detailHeader.quantityEditor.maxValue = productStock
+        }
         productData.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
                 detailHeader.productDetailWidget.productImage.setImageUrl(
@@ -486,41 +501,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             payLaterActivationViewModel.getProductDetail(payLaterActivationViewModel.selectedProductId)
         }
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
-            if (this::listOfGateway.isInitialized) {
-                sendChangePartnerClickEvent()
-                payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.tenureDetail?.let {
-                    if (it.size > selectedTenurePosition) {
-                        SelectGateWayBottomSheet.show(
-                            OccBundleHelper.setBundleForBottomSheetPartner(
-                                listOfGateway,
-                                payLaterActivationViewModel.selectedGatewayId,
-                                variantName,
-                                payLaterActivationViewModel.selectedProductId,
-                                payLaterActivationViewModel.selectedTenureSelected,
-                                quantity,
-                                it[selectedTenurePosition].monthly_installment
-                            ), childFragmentManager
-                        ).setOnDismissListener {
-                            setTenureDetailData()
-                        }
-                    } else {
-                        SelectGateWayBottomSheet.show(
-                            OccBundleHelper.setBundleForBottomSheetPartner(
-                                listOfGateway,
-                                payLaterActivationViewModel.selectedGatewayId,
-                                variantName,
-                                payLaterActivationViewModel.selectedProductId,
-                                payLaterActivationViewModel.selectedTenureSelected,
-                                quantity,
-                                ""
-                            ), childFragmentManager
-                        ).setOnDismissListener {
-                            setTenureDetailData()
-                        }
-                    }
-                }
-
-            }
+            changePartnerLogic()
         }
         quantityTextWatcher()
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
@@ -530,30 +511,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
         detailHeader.showVariantBottomSheet.setOnClickListener {
             sendVarintClickEvent()
-            context?.let {
-                AtcVariantHelper.goToAtcVariant(
-                    context = it,
-                    productId = payLaterActivationViewModel.selectedProductId,
-                    pageSource = VariantPageSource.BNPL_PAGESOURCE,
-                    isTokoNow = false,
-                    shopId = shopId,
-                    saveAfterClose = false
-                ) { data, code ->
-                    startActivityForResult(data, code)
-                }
-            }
+            openVariantBottomSheet()
         }
 
         priceBreakdown.setOnClickListener {
-            if (this::installmentModel.isInitialized) {
-                val bundle = Bundle().apply {
-                    putParcelable(
-                        PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                        installmentModel
-                    )
-                }
-                bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
-            }
+            openPriceBreakDownBottomSheet()
 
         }
         proceedToCheckout.setOnClickListener {
@@ -561,6 +523,75 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 payLaterActivationViewModel.selectedProductId,
                 quantity
             )
+        }
+    }
+
+    private fun changePartnerLogic() {
+        if (this::listOfGateway.isInitialized) {
+            sendChangePartnerClickEvent()
+            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.tenureDetail?.let {
+                openBottomSheet(it)
+            }
+
+        }
+    }
+
+    private fun openPriceBreakDownBottomSheet() {
+        if (this::installmentModel.isInitialized) {
+            val bundle = Bundle().apply {
+                putParcelable(
+                    PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
+                    installmentModel
+                )
+            }
+            bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+        }
+    }
+
+    private fun openVariantBottomSheet() {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                context = it,
+                productId = payLaterActivationViewModel.selectedProductId,
+                pageSource = VariantPageSource.BNPL_PAGESOURCE,
+                isTokoNow = false,
+                shopId = shopId,
+                saveAfterClose = false
+            ) { data, code ->
+                startActivityForResult(data, code)
+            }
+        }
+    }
+
+    private fun openBottomSheet(it: List<TenureDetail>) {
+        if (it.size > selectedTenurePosition) {
+            SelectGateWayBottomSheet.show(
+                OccBundleHelper.setBundleForBottomSheetPartner(
+                    listOfGateway,
+                    payLaterActivationViewModel.selectedGatewayId,
+                    variantName,
+                    payLaterActivationViewModel.selectedProductId,
+                    payLaterActivationViewModel.selectedTenureSelected,
+                    quantity,
+                    it[selectedTenurePosition].monthly_installment
+                ), childFragmentManager
+            ).setOnDismissListener {
+                setTenureDetailData()
+            }
+        } else {
+            SelectGateWayBottomSheet.show(
+                OccBundleHelper.setBundleForBottomSheetPartner(
+                    listOfGateway,
+                    payLaterActivationViewModel.selectedGatewayId,
+                    variantName,
+                    payLaterActivationViewModel.selectedProductId,
+                    payLaterActivationViewModel.selectedTenureSelected,
+                    quantity,
+                    ""
+                ), childFragmentManager
+            ).setOnDismissListener {
+                setTenureDetailData()
+            }
         }
     }
 
@@ -694,6 +725,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         tenureSelectedModel.tenure?.let {
             paymentDuration.text = "X$it"
         }
+        updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
+    }
+
+    private fun updateRecyclerViewData(
+        newPositionToSelect: Int,
+        tenureSelectedModel: TenureSelectedModel
+    ) {
         listOfTenureDetail[selectedTenurePosition].isSelectedTenure = false
         listOfTenureDetail[newPositionToSelect].isSelectedTenure = true
         activationTenureAdapter.updatePartialList(listOfTenureDetail)

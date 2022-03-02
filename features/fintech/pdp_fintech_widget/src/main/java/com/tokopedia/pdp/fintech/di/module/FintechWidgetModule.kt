@@ -29,9 +29,6 @@ class FintechWidgetModule {
     @CoroutineMainDispatcher
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-    @Provides
-    @CoroutineBackgroundDispatcher
-    fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {

@@ -31,63 +31,78 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         chipsData[position].gatewayId?.let {
-            if (it == 0) {
-                holder.dummyView.visibility = View.GONE
-                holder.seeMoreIcon.visibility = View.VISIBLE
-            } else {
-                holder.dummyView.visibility = View.VISIBLE
-                holder.seeMoreIcon.visibility = View.GONE
-            }
+            setSeeMoreLogic(it,holder)
         }
-
         chipsData[position].header?.let {
-            if (it.isNotBlank()) {
-                holder.headerPartner.visibility = View.VISIBLE
-                holder.headerPartner.text = it.parseAsHtml()
-            } else
-                removeViewVisibility(holder.headerPartner)
+            setHeaderData(it,holder)
         } ?: run {
             removeViewVisibility(holder.headerPartner)
         }
-
         chipsData[position].subheaderColor?.let {
-            when {
-                it.equals("green", true) -> {
-                    holder.subheaderPartner.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
-                        )
-                    )
-
-                    holder.subheaderPartner.fontType = Typography.BOLD
-                }
-                else -> {
-                    holder.subheaderPartner.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                        )
-
-                    )
-                    holder.subheaderPartner.fontType = Typography.REGULAR
-
-                }
-            }
+            setSubHeaderColor(it, holder)
         }
-
         chipsData[position].subheader?.let {
-            if (it.isNotBlank()) {
-                holder.subheaderPartner.visibility = View.VISIBLE
-                holder.subheaderPartner.text = it.parseAsHtml()
-            } else
-                removeViewVisibility(holder.subheaderPartner)
+            setSubHeaderData(it,holder)
         } ?: run {
             removeViewVisibility(holder.subheaderPartner)
-
         }
-
         setIcon(position, holder.partnerIcon)
+    }
+
+    private fun setSeeMoreLogic(it: Int, holder: FintechWidgetAdapter.MyViewHolder) {
+        if (it == 0) {
+            holder.dummyView.visibility = View.GONE
+            holder.seeMoreIcon.visibility = View.VISIBLE
+        } else {
+            holder.dummyView.visibility = View.VISIBLE
+            holder.seeMoreIcon.visibility = View.GONE
+        }
+    }
+
+    private fun setHeaderData(it: String,
+                              holder: MyViewHolder)
+    {
+        if (it.isNotBlank()) {
+            holder.headerPartner.visibility = View.VISIBLE
+            holder.headerPartner.text = it.parseAsHtml()
+        } else
+            removeViewVisibility(holder.headerPartner)
+    }
+
+    private fun setSubHeaderData( it: String,
+                                  holder: MyViewHolder)
+    {
+        if (it.isNotBlank()) {
+            holder.subheaderPartner.visibility = View.VISIBLE
+            holder.subheaderPartner.text = it.parseAsHtml()
+        } else
+            removeViewVisibility(holder.subheaderPartner)
+    }
+
+    private fun setSubHeaderColor(
+        it: String,
+        holder: MyViewHolder
+    ) {
+        when {
+            it.equals("green", true) -> {
+                holder.subheaderPartner.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                )
+                holder.subheaderPartner.fontType = Typography.BOLD
+            }
+            else -> {
+                holder.subheaderPartner.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    )
+                )
+                holder.subheaderPartner.fontType = Typography.REGULAR
+            }
+        }
     }
 
     private fun setIcon(
