@@ -5,15 +5,14 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IS_FULF
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import timber.log.Timber
-import javax.inject.Inject
 
-open class AdsInjector {
+class AdsInjector {
 
     private var topAdsPosition = 1
 
-    open fun resetTopAdsPosition() { topAdsPosition = 1 }
+    fun resetTopAdsPosition() { topAdsPosition = 1 }
 
-    open fun injectAds(
+    fun injectAds(
         productList: List<ProductItemDataView>,
         adsModel: TopAdsModel,
         searchParameter: Map<String, Any>,
@@ -45,17 +44,17 @@ open class AdsInjector {
         return list
     }
 
-    protected open fun willInjectAds(
+    private fun willInjectAds(
         adsModel: TopAdsModel,
         index: Int,
         searchParameter: Map<String, Any>,
     ) = isInjectAdsByTemplate(adsModel, index)
         || isIgnoreTemplate(searchParameter)
 
-    protected open fun isInjectAdsByTemplate(adsModel: TopAdsModel, index: Int) =
+    private fun isInjectAdsByTemplate(adsModel: TopAdsModel, index: Int) =
         adsModel.templates.size > 0
             && adsModel.templates[index].isIsAd
 
-    protected open fun isIgnoreTemplate(searchParameter: Map<String, Any>) =
+    private fun isIgnoreTemplate(searchParameter: Map<String, Any>) =
         searchParameter[IS_FULFILLMENT].toString().toBoolean()
 }

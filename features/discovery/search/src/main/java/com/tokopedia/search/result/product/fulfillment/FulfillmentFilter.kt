@@ -5,14 +5,14 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IS_FULF
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.START
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-open class FulfillmentFilter {
+class FulfillmentFilter {
     private var consecutiveEmptyProductCount = 0
 
-    open fun resetCount() {
+    fun resetCount() {
         consecutiveEmptyProductCount = 0
     }
 
-    open fun checkFulfillmentFilter(
+    fun checkFulfillmentFilter(
         searchParameter: Map<String, Any>,
         totalData: Int,
         callbackLoadData: (Map<String, Any>) -> Unit,
