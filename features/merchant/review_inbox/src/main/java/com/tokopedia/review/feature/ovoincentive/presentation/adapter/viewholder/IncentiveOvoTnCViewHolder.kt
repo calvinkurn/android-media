@@ -7,12 +7,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.review.inbox.databinding.ItemIncentiveOvoBinding
+import com.tokopedia.review.inbox.databinding.ItemIncentiveOvoTncBinding
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class IncentiveOvoTnCViewHolder(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
 
-    private val binding = ItemIncentiveOvoBinding.bind(view)
+    private val binding = ItemIncentiveOvoTncBinding.bind(view)
 
     fun bindHero(explanation: String) {
         itemView.apply {
