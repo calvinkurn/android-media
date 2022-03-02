@@ -109,6 +109,9 @@ class SellerHomeViewModelTest {
     lateinit var getMilestoneDataUseCase: GetMilestoneDataUseCase
 
     @RelaxedMockK
+    lateinit var getCalendarDataUseCase: GetCalendarDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -144,6 +147,7 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { getCalendarDataUseCase },
             coroutineTestRule.dispatchers
         )
 
@@ -164,6 +168,7 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { getCalendarDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { sellerHomeLayoutHelper },
@@ -1610,6 +1615,255 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.lineGraphWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `get calendar widget data then returns success result`() = runBlocking {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        val result = listOf(CalendarDataUiModel())
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        coVerify {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.calendarWidgetData.value)
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on second load and cache disabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on second load and cache enabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on first load and cache disabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on first load and cache enabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on second load and cache disabled then throw exception should return failed result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val throwable = Throwable()
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } throws throwable
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Fail(throwable)
+            viewModel.calendarWidgetData.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data then returns failed result`() = runBlocking {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        val throwable = MessageErrorException("error message")
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        coVerify {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.calendarWidgetData.value is Fail)
     }
 
     @Test

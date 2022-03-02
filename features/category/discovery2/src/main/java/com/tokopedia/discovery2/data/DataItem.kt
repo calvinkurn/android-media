@@ -420,6 +420,9 @@ data class DataItem(
         @SerializedName("backgroud_image_url")
         var backgroundImageUrl : String? = "",
 
+        @SerializedName("catalog_slugs")
+        var catalogSlug : List<String?>? = null,
+
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
 
@@ -428,6 +431,9 @@ data class DataItem(
 
         @field:SerializedName("shopInfo")
         val shopInfo: ShopInfo? = null,
+
+        @field:SerializedName("target_section_id")
+        val targetSectionID: String? = null,
 
         var shopAdsClickURL: String? = "",
 
@@ -453,7 +459,9 @@ data class DataItem(
 
         var maxHeight : Int = 0,
 
-        var wishlistUrl: String? = ""
+        var wishlistUrl: String? = "",
+
+        var itemWeight: Float? = 1.0f
 ) {
     val leftMargin: Int
         get() {
