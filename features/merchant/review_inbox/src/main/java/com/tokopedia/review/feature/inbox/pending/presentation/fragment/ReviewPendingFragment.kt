@@ -23,10 +23,6 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
@@ -57,11 +53,11 @@ import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendin
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewPendingBinding
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -91,7 +87,7 @@ class ReviewPendingFragment :
     lateinit var viewModel: ReviewPendingViewModel
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
-    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var ovoIncentiveBottomSheet: IncentiveOvoBottomSheet? = null
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
     private var containerListener: InboxFragmentContainer? = null
@@ -504,24 +500,20 @@ class ReviewPendingFragment :
     }
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        if (ovoIncentiveBottomSheet == null) {
-            ovoIncentiveBottomSheet = context?.let {
-                IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                    context = it,
-                    productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
-                    hasIncentive = true,
-                    hasOngoingChallenge = false,
-                    incentiveOvoListener = this,
-                    category = ReviewInboxTrackingConstants.PENDING_TAB
+        context?.let { context ->
+            val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
+            val bottomSheetData = IncentiveOvoBottomSheetUiModel(
+                productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+                category = ReviewInboxTrackingConstants.PENDING_TAB
+            )
+            bottomSheet.init(bottomSheetData, this)
+            activity?.supportFragmentManager?.let { supportFragmentManager ->
+                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+                ReviewTracking.onClickReadSkIncentiveOvoTracker(
+                    productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
+                    ReviewInboxTrackingConstants.PENDING_TAB
                 )
             }
-        }
-        ovoIncentiveBottomSheet?.let { bottomSheet ->
-            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-            ReviewTracking.onClickReadSkIncentiveOvoTracker(
-                productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
-                ReviewInboxTrackingConstants.PENDING_TAB
-            )
         }
     }
 

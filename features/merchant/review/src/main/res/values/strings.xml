@@ -291,9 +291,6 @@
     <string name="review_create_text_area_empty_challenge">Tulis min. 40 karakter buat ikut Tantangan Ulasan ✍️</string>
     <string name="review_create_text_area_partial_challenge">Lengkapi sedikit lagi biar ikut Tantangan Ulasan 🙌</string>
     <string name="review_create_text_area_eligible_challenge">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
-    <string name="review_create_rating_condition_incentive">Kasih ratingnya</string>
-    <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
-    <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>
     <string name="review_create_send_another">Kasih Ulasan Lagi</string>
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>

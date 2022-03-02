@@ -67,8 +67,9 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.ReviewB
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -129,7 +130,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var progressBar: CreateReviewProgressBar? = null
     private var submitButton: UnifyButton? = null
     private var loadingView: View? = null
-    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var ovoIncentiveBottomSheet: IncentiveOvoBottomSheet? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var badRatingCategoryRecyclerView: RecyclerView? = null
 
@@ -565,25 +566,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 setHtmlDescription(it.ticker.subtitle)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        if (ovoIncentiveBottomSheet == null) {
-                            ovoIncentiveBottomSheet = context?.let { context ->
-                                IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                                    context = context,
-                                    productRevIncentiveOvoDomain = ovoDomain,
-                                    hasIncentive = hasIncentive(),
-                                    hasOngoingChallenge = hasOngoingChallenge(),
-                                    incentiveOvoListener = this@CreateReviewBottomSheet,
-                                    category = "",
-                                    trackerData = getTncBottomSheetTrackerData()
-                                )
-                            }
-                        }
-                        ovoIncentiveBottomSheet?.let { bottomSheet ->
+                        context?.let { context ->
+                            val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
+                            val bottomSheetData = IncentiveOvoBottomSheetUiModel(ovoDomain, getTncBottomSheetTrackerData())
+                            bottomSheet.init(bottomSheetData, this@CreateReviewBottomSheet)
                             activity?.supportFragmentManager?.let { supportFragmentManager ->
-                                bottomSheet.show(
-                                    supportFragmentManager,
-                                    bottomSheet.tag
-                                )
+                                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
                             }
                             if (hasIncentive()) {
                                 CreateReviewTracking.eventClickIncentivesTicker(
@@ -607,7 +595,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     override fun onDismiss() {
                         // No Op
                     }
-
                 })
                 viewTreeObserver.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {

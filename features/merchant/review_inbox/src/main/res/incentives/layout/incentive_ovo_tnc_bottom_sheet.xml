@@ -44,93 +44,21 @@
             app:typographyWeight="reguler"
             tools:text="Bantu penjual dengan kasih ulasan lengkap dan dapatkan OVO Points!" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/incentive_ovo_add_rating"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            android:layout_marginTop="@dimen/layout_lvl3"
-            android:scaleType="center"
-            app:layout_constraintEnd_toEndOf="@id/tvIncentiveOvoAddRating"
-            app:layout_constraintStart_toStartOf="@id/tvIncentiveOvoAddRating"
-            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvIncentiveOvoAddRating"
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_incentive_ovo_illustrations"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            app:layout_constraintEnd_toStartOf="@id/incentive_ovo_add_image_text"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_rating"
-            app:layout_constraintWidth_percent="0.3"
-            app:typographyType="small"
-            tools:text="@string/lorem" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/incentive_ovo_add_image"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            android:layout_marginTop="@dimen/layout_lvl3"
-            android:scaleType="center"
-            app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_image_text"
-            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_image_text"
-            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/incentive_ovo_add_image_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:gravity="center"
-            android:text="@string/review_create_photo_condition"
-            app:layout_constraintEnd_toStartOf="@id/incentive_ovo_add_review_text"
-            app:layout_constraintStart_toEndOf="@id/tvIncentiveOvoAddRating"
-            app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_image"
-            app:layout_constraintWidth_percent="0.3"
-            app:typographyType="small" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/incentive_ovo_add_review"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            android:layout_marginTop="@dimen/layout_lvl3"
-            android:scaleType="center"
-            app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_review_text"
-            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_review_text"
-            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/incentive_ovo_add_review_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:gravity="center"
-            android:text="@string/review_create_review_condition"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/incentive_ovo_add_image_text"
-            app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_review"
-            app:layout_constraintWidth_percent="0.3"
-            app:typographyType="small"
-            tools:text="@string/lorem" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/review_tnc_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="tvIncentiveOvoAddRating, incentive_ovo_add_image_text, incentive_ovo_add_review_text" />
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_incentive_ovo_illustration" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/incentiveOvoDivider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/layout_lvl3"
-            app:layout_constraintTop_toBottomOf="@id/review_tnc_barrier" />
+            app:layout_constraintTop_toBottomOf="@id/rv_incentive_ovo_illustrations" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgIncentiveOvoDescription"
@@ -150,8 +78,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:nestedScrollingEnabled="false"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingEnd="@dimen/layout_lvl2"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoDescription" />
 
         <com.tokopedia.unifycomponents.UnifyButton
