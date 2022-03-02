@@ -200,10 +200,15 @@ object ProductTrackingCommon {
         val shippingEta = ratesEstimateData?.etaText ?: ""
         val buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
 
+        val eventAction = if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON)
+            "click - tambah ke keranjang on global variant bottomsheet"
+        else
+            "click - $buttonText on global variant bottomsheet"
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
                 ProductTrackingConstant.Tracking.KEY_CATEGORY, String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
-                ProductTrackingConstant.Tracking.KEY_ACTION, "click - tambah ke keranjang on global variant bottomsheet",
+                ProductTrackingConstant.Tracking.KEY_ACTION, eventAction,
                 ProductTrackingConstant.Tracking.KEY_LABEL, if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                 KEY_PRODUCT_ID, productId,
                 ProductTrackingConstant.Tracking.KEY_HIT_USER_ID, userId,
