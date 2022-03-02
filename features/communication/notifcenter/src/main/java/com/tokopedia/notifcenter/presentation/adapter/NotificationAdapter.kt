@@ -37,6 +37,9 @@ class NotificationAdapter constructor(
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
     private val orderWidgetPool = RecyclerView.RecycledViewPool()
+    private var recommendationTitlePosi: Int? = null
+    var shopAdsWidgetAdded = false
+        private set
 
     interface Listener {
         fun hasFilter(): Boolean
@@ -188,16 +191,22 @@ class NotificationAdapter constructor(
         }
     }
 
-    fun addRecomProducts(recommendations: List<Visitable<*>>, cpmModel: CpmModel?) {
-        val shopAdsPosition = cpmModel?.data?.get(0)?.cpm?.position
+    fun addRecomProducts(recommendations: List<Visitable<*>>) {
         val currentItemSize = visitables.size
-        if (visitables.addAll(recommendations)) {
-            notifyItemRangeInserted(currentItemSize, recommendations.size)
+        recommendations.forEach { item ->
+            visitables.add(item)
+            if (item is RecommendationTitleUiModel) recommendationTitlePosi = visitables.size
         }
+        notifyItemRangeInserted(currentItemSize, recommendations.size)
+    }
 
-        //checking if 0th index of recommendations is title
-        if (recommendations.isNotEmpty() && recommendations[0] is RecommendationTitleUiModel && shopAdsPosition != null) {
-            visitables.add(currentItemSize + shopAdsPosition + 1, NotifTopAdsHeadline(cpmModel))
+    fun addShopAds(cpmModel: CpmModel) {
+        recommendationTitlePosi?.let {
+            val shopAdsPosition = it + (cpmModel.data?.get(0)?.cpm?.position ?: SHOPADS_POSITION_8)
+            if (shopAdsPosition <= visitables.size) {
+                (visitables.add(shopAdsPosition, NotifTopAdsHeadline(cpmModel)))
+                shopAdsWidgetAdded = true
+            }
         }
     }
 
@@ -300,6 +309,10 @@ class NotificationAdapter constructor(
             val payload = PayloadWishlistState(productData, notification)
             notifyItemChanged(itemPosition, payload)
         }
+    }
+
+    companion object {
+        private const val SHOPADS_POSITION_8 = 8
     }
 
 }

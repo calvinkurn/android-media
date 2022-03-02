@@ -69,7 +69,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -207,16 +206,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         setupLifecycleObserver()
     }
 
-    private fun loadShopAds(block: (CpmModel?) -> Unit) {
-        topAdsHeadlineViewModel.getTopAdsHeadlineData(NotificationTopAdsHeadlineHelper.getParams(
-            userSession.userId
-        ), {
-            block(it)
-        }, {
-            block(null)
-        })
-    }
-
     private fun setupLifecycleObserver() {
         recommendationLifeCycleAware?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
@@ -303,10 +292,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             rvAdapter?.addTopAdsBanner(it)
         })
 
-        viewModel.recommendations.observe(viewLifecycleOwner, Observer { recommendationData ->
-            loadShopAds { cpmModel ->
-                renderRecomList(recommendationData, cpmModel)
-            }
+        viewModel.recommendations.observe(viewLifecycleOwner, Observer {
+            renderRecomList(it)
         })
 
         viewModel.filterList.observe(viewLifecycleOwner, Observer {
@@ -402,10 +389,21 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return data.hasNext && viewModel.hasFilter()
     }
 
-    private fun renderRecomList(recoms: RecommendationDataModel, cpmModel: CpmModel?) {
+    private fun renderRecomList(recoms: RecommendationDataModel) {
         hideLoading()
-        rvAdapter?.addRecomProducts(recoms.item, cpmModel)
+        rvAdapter?.addRecomProducts(recoms.item)
+        loadShopAds()
         updateScrollListenerState(recoms)
+    }
+
+    private fun loadShopAds() {
+        if(rvAdapter == null || rvAdapter?.shopAdsWidgetAdded == true) return
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(
+            NotificationTopAdsHeadlineHelper.getParams(userSession.userId), {
+                rvAdapter?.addShopAds(it)
+            }, {
+            }
+        )
     }
 
     private fun updateScrollListenerState(recoms: RecommendationDataModel) {
