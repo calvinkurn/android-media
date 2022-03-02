@@ -732,6 +732,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                                 1500,
                                 500,
                                 0,
+                                0.0,
                                 listOf(
                                         OrderCostCashbackData(
                                                 description = "Dapat Cashback Senilai",
