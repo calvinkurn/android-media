@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/layout_lvl3"
+            android:background="@color/Unify_NN100"
             app:layout_constraintTop_toBottomOf="@id/rv_incentive_ovo_illustrations" />
 
         <com.tokopedia.unifyprinciples.Typography
