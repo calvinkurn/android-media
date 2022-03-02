@@ -440,7 +440,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun onShimmeringDenomGrid() {
         binding?.let {
-            it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridShimmering()
+            it.rechargePdpTokenListrikDenomGridWidget.run {
+                show()
+                renderDenomGridShimmering()
+            }
         }
     }
 

@@ -649,7 +649,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onShimmeringDenomGrid() {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridShimmering()
+            it.rechargePdpPulsaDenomGridWidget.run {
+                show()
+                renderDenomGridShimmering()
+            }
         }
     }
 
