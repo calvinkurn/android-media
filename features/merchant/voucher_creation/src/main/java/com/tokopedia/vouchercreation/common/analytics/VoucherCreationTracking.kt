@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_STOP
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_ETALASE
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_LOCATION
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_PRODUCT_CATEGORY
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_VOUCHER_STATUS
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_VOUCHER_TARGET
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_VOUCHER_TYPE
@@ -21,6 +22,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.CREATION
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventCategory.VoucherList.VOUCHER_LIST
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
+import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductData
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
@@ -351,7 +353,7 @@ object VoucherCreationTracking {
 
     // no 16
     fun clickFilterProductCategory(shopId: String, categoryName: List<String>) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_ETALASE, label = categoryName, category = CREATION)
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_PRODUCT_CATEGORY, label = categoryName, category = CREATION)
     }
 
     // no 17
@@ -370,12 +372,13 @@ object VoucherCreationTracking {
     }
 
     // no 20
-    fun clickAddProduct(shopId: String, productIds: List<ProductUiModel>) {
+    fun clickAddProduct(shopId: String, products: List<ProductUiModel>) {
+        val selectedProductIds = mapSelectedProductIds(products)
         val dataLayer = mutableMapOf<String, Any>(
                 VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_PG,
                 VoucherCreationAnalyticConstant.Key.EVENT_ACTION to ADD_PRODUCT,
                 VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to CREATION,
-                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to productIds,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to selectedProductIds,
                 VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
                 VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
                 VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId
@@ -413,6 +416,13 @@ object VoucherCreationTracking {
         sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DETAIL, label = voucherStatus, category = VOUCHER_LIST)
     }
 
+    private fun mapSelectedProductIds(products: List<ProductUiModel>): List<String> {
+        val list: MutableList<String> = mutableListOf()
+        products.map { productUiModel ->
+            list.add(productUiModel.id)
+        }
+        return list
+    }
 
     private fun sendGeneralClickProductListTracking(shopId: String, action: String, label: String, category: String) {
         val dataLayer = mutableMapOf<String, Any>(

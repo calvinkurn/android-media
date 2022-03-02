@@ -292,7 +292,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     putExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, viewModel.getWarehouseLocationId()?.toString())
                 }
                 this.activity?.setResult(Activity.RESULT_OK, resultIntent)
-                // VoucherCreationTracking.clickAddProduct(shopId = userSession.shopId, productId = selectedProducts)
+                VoucherCreationTracking.clickAddProduct(shopId = userSession.shopId, products = extraSelectedProducts)
                 this.activity?.finish()
             }
         }
