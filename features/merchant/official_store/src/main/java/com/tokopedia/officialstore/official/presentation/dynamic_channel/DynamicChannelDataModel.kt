@@ -12,8 +12,7 @@ class DynamicChannelDataModel(
 
     fun getLayoutType() = when(dynamicChannelData.channel.layout) {
         DynamicChannelLayout.LAYOUT_SPRINT_LEGO -> DynamicChannelSprintSaleViewHolder.LAYOUT
-        DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL -> DynamicChannelThematicViewHolder.LAYOUT
-        else -> DynamicChannelLegoViewHolder.LAYOUT
+        else -> DynamicChannelThematicViewHolder.LAYOUT
     }
 
     override fun visitableId(): String? = dynamicChannelData.channel.id
