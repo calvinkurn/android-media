@@ -64,5 +64,5 @@ object RollenceKey {
     const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
 
     // Fulfillment Rebranding
-    const val FULFILLMENT_REBRANDING = "andro_ff_rebranding"
+    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
 }
