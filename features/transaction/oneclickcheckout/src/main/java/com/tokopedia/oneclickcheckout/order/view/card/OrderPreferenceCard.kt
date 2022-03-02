@@ -483,8 +483,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvPaymentName.text = paymentModel.gatewayName
             val description = paymentModel.description
             if (description.isNotBlank()) {
-                val replace = description.replace('*', '\u2022')
-                tvPaymentDetail.text = replace
+                tvPaymentDetail.text = description.replace('*', '\u2022')
                 tvPaymentDetail.visible()
             } else {
                 tvPaymentDetail.gone()
