@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.common.utils
 import android.content.Context
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import timber.log.Timber
@@ -29,6 +30,7 @@ object DateTimeUtils {
     const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
     const val MINUTE_INTERVAL = 30
+    const val ROLLOUT_DATE_THRESHOLD_TIME = 1647536401000L
 
     private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
     private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
@@ -95,6 +97,8 @@ object DateTimeUtils {
     }
 
     fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
+
+    fun Context.isBeforeRollout() = getToday().timeInMillis.orZero() < ROLLOUT_DATE_THRESHOLD_TIME
 
     /**
      * Minimum start time should be 3 hours after current time
