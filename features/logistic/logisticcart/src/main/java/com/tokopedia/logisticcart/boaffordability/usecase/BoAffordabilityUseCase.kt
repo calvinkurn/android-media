@@ -21,7 +21,7 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
         return this
     }
 
-    @GqlQuery("BoAffordabilityQuery", QUERY)
+    @GqlQuery(QUERY_BO_AFFORDABILITY, QUERY)
     override suspend fun executeOnBackground(): BoAffordabilityDataResponse {
         val param = this.requestParam?.toBoAffordabilityMap(GlobalConfig.VERSION_NAME) ?: throw RuntimeException("Param must be initialized")
         val request = GraphqlRequest(
@@ -34,7 +34,9 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
     }
 
     companion object {
-        const val QUERY = """
+        private const val QUERY_BO_AFFORDABILITY = "BoAffordabilityQuery"
+
+        private const val QUERY = """
             query ongkirGetFreeShipping(${'$'}input: OngkirGetFreeShippingInput!) {
                 ongkirGetFreeShipping(input: ${'$'}input) {
                     freeshipping {

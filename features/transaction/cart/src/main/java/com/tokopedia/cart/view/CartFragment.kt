@@ -1869,7 +1869,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onNeedToRefreshMultipleShop() {
-        val firstShopIndexAndCount = cartAdapter.iterateAllAvailableShop {
+        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
             checkBoAffordability(it)
         }
         onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)

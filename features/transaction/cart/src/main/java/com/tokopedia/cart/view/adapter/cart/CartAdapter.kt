@@ -4,12 +4,51 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.*
+import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
+import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledReasonBinding
+import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
+import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
+import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
+import com.tokopedia.cart.databinding.ItemCartWishlistBinding
+import com.tokopedia.cart.databinding.ItemEmptyCartBinding
+import com.tokopedia.cart.databinding.ItemSelectAllBinding
+import com.tokopedia.cart.databinding.ItemShopBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
-import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.cart.view.viewholder.*
+import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.viewholder.CartChooseAddressViewHolder
+import com.tokopedia.cart.view.viewholder.CartEmptyViewHolder
+import com.tokopedia.cart.view.viewholder.CartLoadingViewHolder
+import com.tokopedia.cart.view.viewholder.CartRecentViewViewHolder
+import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
+import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
+import com.tokopedia.cart.view.viewholder.CartShopViewHolder
+import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
+import com.tokopedia.cart.view.viewholder.CartTopAdsHeadlineViewHolder
+import com.tokopedia.cart.view.viewholder.CartWishlistViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -1224,27 +1263,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return null
     }
 
-    fun getFirstShopAndShopCount(): Pair<Int, Int> {
-        var firstIndex = 0
-        var count = 0
-        cartDataList.forEachIndexed { index, any ->
-            when (any) {
-                is CartShopHolderData -> {
-                    count++
-                    if (firstIndex == 0) {
-                        firstIndex = index
-                    }
-                }
-                is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        return Pair(firstIndex, count)
-    }
-
-    fun iterateAllAvailableShop(func: (CartShopHolderData) -> Unit): Pair<Int, Int> {
+    fun getFirstShopAndShopCountWithIterateFunction(func: (CartShopHolderData) -> Unit): Pair<Int, Int> {
         var firstIndex = 0
         var count = 0
         cartDataList.forEachIndexed { index, any ->
