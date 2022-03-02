@@ -154,12 +154,18 @@ class ShipmentViewHolder(
         val destination = if (element.localDestination.isEmpty()) rates.destination
         else context.getString(R.string.pdp_shipping_to_builder, element.localDestination)
         pdpShipmentDestination.showIfWithBlock(destination.isNotEmpty()) {
-            text = destination.renderHtmlBold(context)
+            text = destination.renderHtmlBold(
+                context = context,
+                boldColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            )
         }
 
         val estimation = rates.etaText
         pdpShipmentEstimation.showIfWithBlock(estimation.isNotEmpty()) {
-            text = rates.etaText.renderHtmlBold(context)
+            text = rates.etaText.renderHtmlBold(
+                context = context,
+                boldColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            )
         }
     }
 
