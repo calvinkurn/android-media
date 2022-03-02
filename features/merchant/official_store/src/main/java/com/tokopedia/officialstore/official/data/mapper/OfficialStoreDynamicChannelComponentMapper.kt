@@ -87,18 +87,6 @@ object OfficialStoreDynamicChannelComponentMapper {
                                         url = label.imageUrl
                                 )
                             },
-                            shop =  ChannelShop(
-                                    id = it.shop.shopId,
-                                    shopLocation = it.shop.city,
-                                    shopName = it.shop.name,
-                                    shopAppLink = it.shop.applink
-                            ),
-                            badges = it.badges?.map { badge ->
-                                ChannelGridBadges(
-                                        title = badge.title,
-                                        imageUrl = badge.imageUrl
-                                )
-                            } ?: listOf(),
                             backColor = it.backColor,
                             productImageUrl = it.productImageUrl,
                             benefit = ChannelBenefit(it.benefit.type, it.benefit.value)

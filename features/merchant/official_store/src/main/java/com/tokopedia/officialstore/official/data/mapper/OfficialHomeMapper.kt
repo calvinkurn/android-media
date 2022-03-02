@@ -188,16 +188,6 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    DynamicChannelLayout.LAYOUT_MERCHANT_VOUCHER -> {
-                        views.add(
-                            MerchantVoucherDataModel(
-                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
-                                    officialStore.channel,
-                                    position
-                                )
-                            )
-                        )
-                    }
                     else -> views.add(DynamicChannelDataModel(officialStore))
                 }
             }
