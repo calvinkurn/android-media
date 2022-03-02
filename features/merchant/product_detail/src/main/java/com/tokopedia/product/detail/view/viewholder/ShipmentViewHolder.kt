@@ -139,7 +139,10 @@ class ShipmentViewHolder(
         } else {
             val subtitle = rates.shippingCtxDesc
             pdpShipmentSubtitle.showIfWithBlock(subtitle.isNotEmpty()) {
-                text = subtitle.renderHtmlBold(context)
+                text = subtitle.renderHtmlBold(
+                    context = context,
+                    boldColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
             }
         }
     }

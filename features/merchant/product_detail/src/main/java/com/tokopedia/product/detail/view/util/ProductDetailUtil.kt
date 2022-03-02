@@ -109,7 +109,10 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
     return builder
 }
 
-fun String.renderHtmlBold(context: Context): CharSequence? {
+fun String.renderHtmlBold(
+    context: Context,
+    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
     val spanHandler = SpannableStringBuilder(spannedHtmlString)
@@ -125,7 +128,7 @@ fun String.renderHtmlBold(context: Context): CharSequence? {
         val boldStart = spanHandler.getSpanStart(it)
         val boldEnd = spanHandler.getSpanEnd(it)
 
-        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, boldColor)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         spanHandler.setSpan(UnifyCustomTypefaceSpan(getTypeface(context, "RobotoBold.ttf")), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     }
 

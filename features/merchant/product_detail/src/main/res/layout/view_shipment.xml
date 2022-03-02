@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_title"
@@ -27,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Rp30.000" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -45,7 +48,7 @@
         android:id="@+id/pdp_shipment_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_title"
         app:typographyType="body_3"
@@ -55,7 +58,7 @@
         android:id="@+id/pdp_shipment_tc_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:text="@string/pdp_shipping_dilayani_label"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -119,7 +122,7 @@
         android:id="@+id/pdp_shipment_courier_label_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_estimation"
         app:typographyType="body_3"
@@ -168,7 +171,7 @@
         android:id="@+id/pdp_shipment_courier_label_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/Unify_G500"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:typographyType="body_3"
