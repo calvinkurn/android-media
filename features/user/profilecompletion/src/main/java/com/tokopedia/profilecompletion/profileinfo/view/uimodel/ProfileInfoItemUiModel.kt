@@ -9,6 +9,7 @@ data class ProfileInfoItemUiModel(
     var itemValue: String = "",
     var rightIcon: Int = IconUnify.CHEVRON_RIGHT,
     var isEnable: Boolean = true,
+    var placeholder: String = "",
     var action: () -> Unit = {}
 ): BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {

@@ -20,8 +20,8 @@
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
-    <string name="change_name_note">Kamu hanya dapat mengubah nama %1$s kali. Pastikan nama sudah benar.</string>
-    <string name="change_name_fullname">Nama Lengkap</string>
+    <string name="change_name_note">Pakai nama asli untuk memudahkan verifikasi. Nama ini akan tampil di beberapa halaman.</string>
+    <string name="change_name_fullname">Nama</string>
     <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
@@ -184,5 +184,13 @@
     <string name="change_username_success">Username berhasil diubah</string>
     <string name="change_biography_success">Bio berhasil diubah</string>
     <string name="btn_ok">Oke</string>
+    <string name="placeholder_dob">Pilih Tanggal Lahir</string>
+    <string name="placeholder_gender">Pilih Jenis Kelamin</string>
+    <string name="placeholder_email">Tambah E-mail</string>
+    <string name="placeholder_phone">Tambah Nomor HP</string>
+    <string name="placeholder_username">Buat nama akun</string>
+    <string name="title_username">Username</string>
+    <string name="title_bio">Bio</string>
+    <string name="placeholder_bio">Tulis bio kamu</string>
 
 </resources>

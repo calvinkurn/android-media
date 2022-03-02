@@ -175,7 +175,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
         val listItem = listOf(
 	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, "Info Profil"),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = "Nama", itemValue = data.profileInfoData.fullName) {
-	    	if (data.profileRoleData.isAllowedChangeName) {
+	    	if (!data.profileRoleData.isAllowedChangeName) {
 				val intent = RouteManager.getIntent(
 					context,
 					ApplinkConstInternalGlobal.CHANGE_NAME,
@@ -187,16 +187,26 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				openBottomSheetChangeName(data)
 			}
 		},
-	    ProfileInfoItemUiModel(ProfileInfoConstants.USERNAME, title = "Username", itemValue = data.profileFeedData.profile.username) {
+	    ProfileInfoItemUiModel(ProfileInfoConstants.USERNAME,
+			title = getString(R.string.title_username),
+			itemValue = data.profileFeedData.profile.username,
+			placeholder = getString(R.string.placeholder_username)
+		) {
 			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME)
 		},
-	    ProfileInfoItemUiModel(ProfileInfoConstants.BIO, title = "Bio", itemValue = data.profileFeedData.profile.biography) {
+	    ProfileInfoItemUiModel(ProfileInfoConstants.BIO,
+			title = getString(R.string.title_bio),
+			itemValue = data.profileFeedData.profile.biography,
+			placeholder = getString(R.string.placeholder_bio)
+		) {
 			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO)
 		},
 	    DividerProfileUiModel("line"),
 	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION, "Info Pribadi"),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.USER_ID, title = "User ID", itemValue = userSession.userId, rightIcon = IconUnify.COPY),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = "E-mail", itemValue = data.profileInfoData.email) {
+	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = "E-mail", itemValue = data.profileInfoData.email,
+			placeholder = getString(R.string.placeholder_email)
+		) {
 		if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
 		    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
 		    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
@@ -210,7 +220,9 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 		    }
 		}
 	    } ,
-	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = "Nomor HP", itemValue = data.profileInfoData.msisdn) {
+	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = "Nomor HP", itemValue = data.profileInfoData.msisdn,
+			placeholder = getString(R.string.placeholder_phone)
+		) {
 		if (data.profileInfoData.msisdn.isEmpty()) {
 		    goToAddPhone()
 		} else {
@@ -221,15 +233,23 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 		    }
 		}
 	    },
-	    ProfileInfoItemUiModel(ProfileInfoConstants.GENDER, title = "Jenis Kelamin", itemValue = getGenderText(data.profileInfoData.gender), isEnable = isEligibleChangeGender(data), rightIcon = entryPointIconGender(data)){
-		val genderType = data.profileInfoData.gender
-		if (genderType != GENDER_MALE && genderType != GENDER_FEMALE) {
-			val intent =
-				RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
-			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
-		}
+	    ProfileInfoItemUiModel(ProfileInfoConstants.GENDER, title = "Jenis Kelamin",
+			itemValue = getGenderText(data.profileInfoData.gender),
+			isEnable = data.profileRoleData.isAllowedChangeGender,
+			rightIcon = entryPointIconGender(data),
+			placeholder = getString(R.string.placeholder_gender)
+		){
+			if (data.profileRoleData.isAllowedChangeGender) {
+				val intent =
+					RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
+				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
+			}
 	    },
-	    ProfileInfoItemUiModel(ProfileInfoConstants.BIRTH_DATE, title = "Tanggal Lahir", itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay), isEnable = data.profileRoleData.isAllowedChangeDob) {
+	    ProfileInfoItemUiModel(ProfileInfoConstants.BIRTH_DATE, title = "Tanggal Lahir",
+			itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay),
+			isEnable = data.profileRoleData.isAllowedChangeDob,
+			placeholder = getString(R.string.placeholder_dob)
+		) {
 		if(data.profileInfoData.birthDay.isEmpty()) {
 		    goToAddDob()
 		} else {
@@ -262,12 +282,12 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 		data.profileInfoData.gender != GENDER_MALE && data.profileInfoData.gender != GENDER_FEMALE
 
 	private fun entryPointIconGender(data: ProfileInfoUiModel): Int {
-		if (data.profileInfoData.gender != GENDER_MALE && data.profileInfoData.gender != GENDER_FEMALE) return IconUnify.CHEVRON_RIGHT
+		if (data.profileRoleData.isAllowedChangeGender) return IconUnify.CHEVRON_RIGHT
 		else return -1
 	}
 
     private fun getGenderText(gender: Int): String {
-        return if(gender == GENDER_MALE) "Pria" else if (gender == GENDER_FEMALE) "Wanita" else "Pilih Jenis Kelamin"
+        return if(gender == GENDER_MALE) "Pria" else "Wanita"
     }
 
     private fun showToasterError(errorMsg: String) {

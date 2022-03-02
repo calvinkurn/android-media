@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.profilecompletion.R
@@ -67,9 +68,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (oldName.isNotEmpty()) {
-            changeNameTextName?.textFieldInput?.setText(oldName)
-            changeNameTextName?.textFieldInput?.text?.length?.let {
-                changeNameTextName?.textFieldInput?.setSelection(it)
+            changeNameTextName?.editText?.setText(oldName)
+            changeNameTextName?.editText?.text?.length?.let {
+                changeNameTextName?.editText?.setSelection(it)
             }
         }
 
@@ -79,21 +80,20 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
-        changeNameTextName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        changeNameTextName?.icon2?.setOnClickListener {
+            changeNameTextName?.editText?.text?.clear()
+        }
+
+        changeNameTextName?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                changeNameTextName.isInputError = false
+                changeNameTextName.setMessage("")
                 if (s != null) {
                     when {
-                        s.isEmpty() || s == "" -> activity?.let {
-                            changeNameTextMessage?.run {
-                                text = getString(R.string.change_name_visible_on_another_user)
-                                setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                                changeNameButtonSave?.isEnabled = false
-                            }
-                        }
                         s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
                             when {
                                 s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
@@ -106,27 +106,26 @@ class ChangeNameFragment : BaseDaggerFragment() {
                         }
                         else -> {
                             changeNameButtonSave?.isEnabled = true
-                            activity?.let {
-                                changeNameTextMessage?.run {
-                                    text = getString(R.string.change_name_visible_on_another_user)
-                                    setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                                }
-                            }
                         }
                     }
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
+                if (changeNameTextName?.editText?.text?.isNotEmpty() == true) {
+                    changeNameTextName?.icon2?.show()
+                } else {
+                    changeNameTextName?.icon2?.gone()
+                }
 
             }
         })
 
         changeNameButtonSave?.setOnClickListener {
-            val fullName = changeNameTextName?.textFieldInput?.text
+            val fullName = changeNameTextName?.editText?.text
             if (fullName != null) {
                 showLoading()
-                viewModel.changePublicName(changeNameTextName?.textFieldInput?.text.toString())
+                viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
             } else {
                 onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
             }
@@ -175,14 +174,11 @@ class ChangeNameFragment : BaseDaggerFragment() {
 
     private fun onErrorChangeName(throwable: Throwable) {
         hideLoading()
-
+        changeNameTextName.isInputError = true
         throwable.message?.let { message ->
             activity?.let {
-                changeNameTextMessage?.run {
-                    text = message
-                    setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R500))
-                    ChangeNameTracker().onFailedChangeName(throwable.message.toString())
-                }
+                changeNameTextName.setMessage(message)
+
             }
         }
     }
