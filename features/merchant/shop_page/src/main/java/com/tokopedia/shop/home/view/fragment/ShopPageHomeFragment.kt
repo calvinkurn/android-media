@@ -344,7 +344,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             StaggeredGridLayoutManager.VERTICAL
         )
         setupPlayWidgetAnalyticListener()
-        isThematicWidgetShown = true
+        isThematicWidgetShown = getRemoteConfigEnableThematicWidgetShop()
     }
 
     private fun isShopHomeTabSelected(): Boolean {

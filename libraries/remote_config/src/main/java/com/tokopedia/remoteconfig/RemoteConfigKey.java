@@ -276,5 +276,5 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 
-    public static final String ENABLE_THEMATIC_WIDGET_SHOP = "enable_thematic_widget_shop";
+    public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 }
