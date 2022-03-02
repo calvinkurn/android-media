@@ -43,12 +43,13 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
         this.parentAdapterPosition = parentAdapterPosition
     }
 
-    fun selectAllVariants() {
+    fun updateVariantSelections(isChecked: Boolean) {
         variantList.forEach {
             if (!it.isError) {
-                it.isSelectAll = true
-                it.isSelected = true
+                it.isSelectAll = isChecked
+                it.isSelected = isChecked
             }
         }
+        notifyDataSetChanged()
     }
 }

@@ -45,6 +45,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         CategoryBottomSheet.OnApplyButtonClickListener,
         SortBottomSheet.OnApplyButtonClickListener {
 
+    interface ProductSelectionListener {
+        fun onProductSelectionChanged(productCount: Int, maxProductLimit: Int)
+    }
+
     companion object {
         private const val ZERO = 0
         private const val NO_BACKGROUND: Int = 0
@@ -84,6 +88,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModelProvider.get(AddProductViewModel::class.java)
     }
 
+    private var productSelectionListener: ProductSelectionListener? = null
+
     private var locationBottomSheet: LocationBottomSheet? = null
     private var showCaseBottomSheet: ShowCaseBottomSheet? = null
     private var categoryBottomSheet: CategoryBottomSheet? = null
@@ -104,6 +110,11 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        activity?.run { productSelectionListener = this as ProductSelectionListener }
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -311,6 +322,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.selectionBar?.setBackgroundResource(NO_BACKGROUND)
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
                 binding?.tickerSellerLocationChange?.hide()
+                productSelectionListener?.onProductSelectionChanged(0, viewModel.getMaxProductLimit())
             } else {
                 val size = selectedProducts.size
                 if (binding?.tickerSellerLocationChange?.isVisible == false) {
@@ -319,6 +331,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.buttonAddProduct?.text = "Tambah $size Produk"
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
+                productSelectionListener?.onProductSelectionChanged(size, viewModel.getMaxProductLimit())
             }
         })
         viewModel.productListResult.observe(viewLifecycleOwner, { result ->
@@ -331,7 +344,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     if (productList.isNotEmpty()) {
                         binding?.selectionBar?.show()
                         binding?.emptyProductsLayout?.hide()
-                        binding?.buttonAddProduct?.isEnabled = false
                         viewModel.getCouponSettings()?.run {
                             viewModel.validateProductList(
                                     benefitType = viewModel.getBenefitType(this),
@@ -362,7 +374,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 is Success -> {
                     val validationResults = result.data.response.voucherValidationData.validationPartial
                     val productList = viewModel.getProductUiModels()
+                    val isSelectAll = binding?.cbuSelectAllProduct?.isChecked ?: false
                     val updatedProductList = viewModel.applyValidationResult(
+                            isSelectAll,
                             productList = productList,
                             validationResults = validationResults
                     )
@@ -370,6 +384,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     val hasNextPage = updatedProductList.isNotEmpty()
                     renderList(updatedProductList, hasNextPage)
                     setupSelectionBar(binding)
+
+                    if (isSelectAll) {
+                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+                    }
 
                     val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
                     viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
@@ -387,7 +405,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     } else {
                         binding?.tickerSellerLocationChange?.hide()
                         binding?.cbuSelectAllProduct?.isClickable = true
-                        binding?.buttonAddProduct?.isEnabled = true
+                        if (viewModel.getSelectedProducts().isNotEmpty()) binding?.buttonAddProduct?.isEnabled = true
                     }
 
                 }

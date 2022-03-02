@@ -247,7 +247,8 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun applyValidationResult(productList: List<ProductUiModel>,
+    fun applyValidationResult(isSelectAll:Boolean,
+                              productList: List<ProductUiModel>,
                               validationResults: List<VoucherValidationPartialProduct>): List<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
@@ -257,14 +258,22 @@ class AddProductViewModel @Inject constructor(
             productUiModel.isError = !validationResult.isEligible
             productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
-            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold)
+            productUiModel.isSelected = isSelectAll && validationResult.isEligible
+
+            val variantUiModels = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold, isSelectAll)
+            productUiModel.variants = variantUiModels
+            if (variantUiModels.isNotEmpty()) {
+                val eligibleVariants = variantUiModels.filter { !it.isError }
+                if (eligibleVariants.isEmpty()) productUiModel.isSelectable = false
+            }
         }
         return mutableProductList.toList()
     }
 
-    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
+    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int, isSelectAll: Boolean): List<VariantUiModel> {
         return variantValidationData.map { data ->
             VariantUiModel(
+                    isSelected = isSelectAll && data.is_eligible,
                     variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
@@ -383,6 +392,10 @@ class AddProductViewModel @Inject constructor(
 
     fun setCouponSettings(couponSettings: CouponSettings?) {
         this.couponSettings = couponSettings
+    }
+
+    fun getMaxProductLimit(): Int {
+        return maxProductLimit
     }
 
     fun getCouponSettings(): CouponSettings? {

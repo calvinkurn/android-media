@@ -49,6 +49,9 @@ class ProductItemViewHolder(
         binding.tpgProductPrice.text = productUiModel.price
         binding.tpgSoldAndStock.text = productUiModel.soldNStock
 
+        // disable product selection if all variants are errors
+        binding.cbuProductItem.isEnabled = productUiModel.isSelectable
+
         // view mode
         val isViewing = productUiModel.isViewing
         if (isViewing) {
@@ -111,10 +114,8 @@ class ProductItemViewHolder(
         binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
             val product = binding.root.getTag(R.id.product) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            if (!product.isSelectAll) {
-                productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
-            }
-            variantListAdapter.selectAllVariants()
+            productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
+            variantListAdapter.updateVariantSelections(isChecked)
         }
         binding.iuRemoveProduct.setOnClickListener {
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
