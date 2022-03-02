@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.presentation.model
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -10,9 +8,13 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.getFormattedPositionName
+import com.tokopedia.topads.sdk.domain.model.Badge
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir
+import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.utils.text.currency.StringUtils
+import com.tokopedia.topads.sdk.domain.model.Data as TopAdsProductData
 
-class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductListTypeFactory> {
+class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var productID: String = ""
     var warehouseID: String = ""
     var productName: String = ""
@@ -117,87 +119,64 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
 
-    private val shopType: String
-        get() = when {
-            isShopOfficialStore -> "official_store"
-            isShopPowerMerchant -> "gold_merchant"
-            else -> "reguler"
+    companion object {
+        fun create(
+            topAds: TopAdsProductData,
+            position: Int,
+            dimension90: String,
+        ): ProductItemDataView {
+            val item = ProductItemDataView()
+            item.productID = topAds.product.id
+            item.isTopAds = true
+            item.topadsImpressionUrl = topAds.product.image.s_url
+            item.topadsClickUrl = topAds.productClickUrl
+            item.topadsWishlistUrl = topAds.productWishlistUrl
+            item.topadsClickShopUrl = topAds.shopClickUrl
+            item.topadsTag = topAds.tag
+            item.productName = topAds.product.name
+            item.price = topAds.product.priceFormat
+            item.shopCity = topAds.shop.location
+            item.imageUrl = topAds.product.image.s_ecs
+            item.imageUrl300 = topAds.product.image.m_ecs
+            item.imageUrl700 = topAds.product.image.m_ecs
+            item.isWishlisted = topAds.product.isWishlist
+            item.ratingString = topAds.product.productRatingFormat
+            item.badgesList = mapBadges(topAds.shop.badges)
+            item.isNew = topAds.product.isProductNewLabel
+            item.shopID = topAds.shop.id
+            item.shopName = topAds.shop.name
+            item.isShopOfficialStore = topAds.shop.isShop_is_official
+            item.isShopPowerMerchant = topAds.shop.isGoldShop
+            item.shopUrl = topAds.shop.uri
+            item.originalPrice = topAds.product.campaign.originalPrice
+            item.discountPercentage = topAds.product.campaign.discountPercentage
+            item.labelGroupList = mapLabelGroupList(topAds.product.labelGroupList)
+            item.freeOngkirDataView = mapFreeOngkir(topAds.product.freeOngkir)
+            item.position = position
+            item.categoryID = topAds.product.category.id
+            item.categoryBreadcrumb = topAds.product.categoryBreadcrumb
+            item.productUrl = topAds.product.uri
+            item.minOrder = topAds.product.productMinimumOrder
+            item.dimension90 = dimension90
+            return item
         }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(productID)
-        dest.writeString(warehouseID)
-        dest.writeString(productName)
-        dest.writeString(imageUrl)
-        dest.writeString(imageUrl700)
-        dest.writeString(ratingString)
-        dest.writeString(price)
-        dest.writeString(priceRange)
-        dest.writeString(shopID)
-        dest.writeString(shopName)
-        dest.writeString(shopCity)
-        dest.writeByte(if (isWishlisted) 1.toByte() else 0.toByte())
-        dest.writeByte(if (isWishlistButtonEnabled) 1.toByte() else 0.toByte())
-        dest.writeTypedList(badgesList)
-        dest.writeInt(position)
-        dest.writeString(originalPrice)
-        dest.writeInt(discountPercentage)
-        dest.writeInt(categoryID)
-        dest.writeString(categoryName)
-        dest.writeString(categoryBreadcrumb)
-        dest.writeByte(if (isTopAds) 1.toByte() else 0.toByte())
-        dest.writeByte(if (isNew) 1.toByte() else 0.toByte())
-        dest.writeString(topadsImpressionUrl)
-        dest.writeString(topadsClickUrl)
-        dest.writeString(topadsWishlistUrl)
-        dest.writeTypedList(labelGroupList)
-        dest.writeParcelable(freeOngkirDataView, flags)
-    }
-
-    private constructor(parcel: Parcel): this() {
-        productID = parcel.readString() ?: ""
-        warehouseID = parcel.readString() ?: ""
-        productName = parcel.readString() ?: ""
-        imageUrl = parcel.readString() ?: ""
-        imageUrl700 = parcel.readString() ?: ""
-        ratingString = parcel.readString() ?: ""
-        price = parcel.readString() ?: ""
-        priceRange = parcel.readString()
-        shopID = parcel.readString() ?: ""
-        shopName = parcel.readString() ?: ""
-        shopCity = parcel.readString() ?: ""
-        isWishlisted = parcel.readByte().toInt() != 0
-        isWishlistButtonEnabled = parcel.readByte().toInt() != 0
-        badgesList = parcel.createTypedArrayList(BadgeItemDataView)
-        position = parcel.readInt()
-        originalPrice = parcel.readString() ?: ""
-        discountPercentage = parcel.readInt()
-        categoryID = parcel.readInt()
-        categoryName = parcel.readString()
-        categoryBreadcrumb = parcel.readString()
-        isTopAds = parcel.readByte().toInt() != 0
-        isNew = parcel.readByte().toInt() != 0
-        topadsImpressionUrl = parcel.readString()
-        topadsClickUrl = parcel.readString()
-        topadsWishlistUrl = parcel.readString()
-        labelGroupList = parcel.createTypedArrayList(LabelGroupDataView)
-        freeOngkirDataView = parcel.readParcelable(FreeOngkirDataView::class.java.classLoader) ?: FreeOngkirDataView()
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<ProductItemDataView> = object : Parcelable.Creator<ProductItemDataView> {
-            override fun createFromParcel(source: Parcel): ProductItemDataView {
-                return ProductItemDataView(source)
+        private fun mapBadges(badges: List<Badge>): List<BadgeItemDataView> {
+            return badges.map { badge ->
+                BadgeItemDataView(badge.imageUrl, badge.title, badge.isShow)
             }
+        }
 
-            override fun newArray(size: Int): Array<ProductItemDataView?> {
-                return arrayOfNulls(size)
+        private fun mapLabelGroupList(labelGroupList: List<LabelGroup>): List<LabelGroupDataView> {
+            return labelGroupList.map { labelGroup ->
+                LabelGroupDataView(
+                    labelGroup.position, labelGroup.type, labelGroup.title, labelGroup.imageUrl
+                )
             }
+        }
+
+        private fun mapFreeOngkir(freeOngkir: FreeOngkir): FreeOngkirDataView {
+            return FreeOngkirDataView(freeOngkir.isActive, freeOngkir.imageUrl)
         }
     }
 }
