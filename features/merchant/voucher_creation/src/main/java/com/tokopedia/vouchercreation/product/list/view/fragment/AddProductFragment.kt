@@ -501,7 +501,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.isFiltering = true
         loadInitialData()
         viewModel.setSelectedProducts(listOf())
-        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSort()?.value ?: "")
+        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSortName() ?: "")
     }
 
     override fun createAdapter() = ProductListAdapter(this)
