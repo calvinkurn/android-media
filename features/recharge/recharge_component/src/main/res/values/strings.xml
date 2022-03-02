@@ -7,4 +7,5 @@
     <string name="buy_widget_total_price_btn">Lanjutkan</string>
     <string name="buy_widget_simplify_total_price_btn">Lanjut Bayar</string>
     <string name="client_number_prefix_error">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
+    <string name="out_of_stock_label_denom_digital">Stok Habis</string>
 </resources>
