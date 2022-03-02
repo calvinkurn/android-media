@@ -38,6 +38,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMa
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
@@ -77,6 +78,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okhttp3.internal.toImmutableList
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -114,7 +116,8 @@ open class TopChatViewModel @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var payloadGenerator: WebsocketPayloadGenerator,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
+    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
+    private var chatPreAttachPayload: GetChatPreAttachPayloadUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -244,16 +247,12 @@ open class TopChatViewModel @Inject constructor(
     val errorSnackbar: LiveData<Throwable>
         get() = _errorSnackbar
 
-    private val _errorSnackbarStringRes = MutableLiveData<Int>()
-    val errorSnackbarStringRes: LiveData<Int>
-        get() = _errorSnackbarStringRes
-
     private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
     val uploadImageService: LiveData<ImageUploadServiceModel>
         get() = _uploadImageService
 
-    private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<Any>>>>()
-    val templateChat: LiveData<Result<ArrayList<Visitable<Any>>>>
+    private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<*>>>>()
+    val templateChat: LiveData<Result<ArrayList<Visitable<*>>>>
         get() = _templateChat
 
     var attachProductWarehouseId = "0"
@@ -262,6 +261,7 @@ open class TopChatViewModel @Inject constructor(
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
+    private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -997,31 +997,74 @@ open class TopChatViewModel @Inject constructor(
         attachmentsPreview.add(sendablePreview)
     }
 
-    fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
-        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
-        for (resultProduct in resultProducts) {
-            val productPreview = ProductPreview(
-                id = resultProduct.productId,
-                imageUrl = resultProduct.productImageThumbnail,
-                name = resultProduct.name,
-                price = resultProduct.price,
-                url = resultProduct.productUrl,
-                priceBefore = resultProduct.priceBefore,
-                dropPercentage = resultProduct.dropPercentage,
-                productFsIsActive = resultProduct.isFreeOngkirActive,
-                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-                remainingStock = resultProduct.stock,
-                isSupportVariant = resultProduct.isSupportVariant,
-                campaignId = resultProduct.campaignId,
-                isPreorder = resultProduct.isPreorder,
-                priceInt = resultProduct.priceInt,
-                categoryId = resultProduct.categoryId
-            )
-            if (productPreview.notEnoughRequiredData()) continue
-            val sendAbleProductPreview = SendableProductPreview(productPreview)
-            addAttachmentPreview(sendAbleProductPreview)
+    fun reloadCurrentAttachment() {
+        val productIds = attachmentsPreview.mapNotNull {
+            (it as? TopchatProductAttachmentPreviewUiModel)?.productId
         }
-        initAttachmentPreview()
+        loadProductPreview(productIds)
+    }
+
+    fun loadPendingProductPreview() {
+        if (pendingLoadProductPreview.isEmpty()) return
+        loadProductPreview(pendingLoadProductPreview.toImmutableList())
+        pendingLoadProductPreview.clear()
+    }
+
+    fun loadProductPreview(productIds: List<String>) {
+        if (productIds.isEmpty()) return
+        if (!roomMetaData.hasMsgId()) {
+            pendingLoadProductPreview.clear()
+            pendingLoadProductPreview.addAll(productIds)
+            return
+        }
+        clearAttachmentPreview()
+        launchCatchError(block = {
+            showLoadingProductPreview(productIds)
+            if (!alreadyHasAttachmentData(productIds)) {
+                val param = GetChatPreAttachPayloadUseCase.Param(
+                    ids = productIds.joinToString(separator = ","),
+                    msgId = roomMetaData.msgId.toLongOrZero(),
+                    type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
+                    addressID = userLocationInfo.address_id.toLongOrZero(),
+                    districtID = userLocationInfo.district_id.toLongOrZero(),
+                    postalCode = userLocationInfo.postal_code,
+                    latlon = userLocationInfo.latLong
+                )
+                val response = chatPreAttachPayload(param)
+                val mapAttachment = chatAttachmentMapper.map(response)
+                attachments.putAll(mapAttachment.toMap())
+            }
+            _chatAttachments.value = attachments
+        }, onError = {
+            val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
+            attachments.putAll(errorMapAttachment)
+            _chatAttachments.value = attachments
+        })
+    }
+
+    private fun alreadyHasAttachmentData(productIds: List<String>): Boolean {
+        for (productId in productIds) {
+            if (!attachments.contains(productId)
+                    || attachments[productId] is ErrorAttachment) return false
+        }
+        return true
+    }
+
+    private fun showLoadingProductPreview(productIds: List<String>) {
+        val sendablePreviews: List<TopchatProductAttachmentPreviewUiModel> = productIds.map { productId ->
+            val builder = TopchatProductAttachmentPreviewUiModel.Builder()
+                .withRoomMetaData(roomMetaData)
+                .withProductId(productId)
+            (builder as TopchatProductAttachmentPreviewUiModel.Builder).build()
+        }
+        attachmentsPreview.addAll(sendablePreviews)
+        _showableAttachmentPreviews.value = ArrayList(sendablePreviews)
+    }
+
+    fun isAttachmentPreviewReady(): Boolean {
+        val sendable = attachmentsPreview.firstOrNull() as? DeferredAttachment
+                ?: return attachmentsPreview.isNotEmpty()
+        return !sendable.isLoading && !sendable.isError
     }
 
     fun clearAttachmentPreview() {
@@ -1033,7 +1076,7 @@ open class TopChatViewModel @Inject constructor(
     }
 
     fun getProductIdPreview(): List<String> {
-        return attachmentsPreview.filterIsInstance<SendableProductPreview>()
+        return attachmentsPreview.filterIsInstance<TopchatProductAttachmentPreviewUiModel>()
             .map { it.productId }
     }
 
@@ -1079,18 +1122,12 @@ open class TopChatViewModel @Inject constructor(
         }
     }
 
-    private fun showErrorSnackbar(@StringRes stringId: Int) {
-        _errorSnackbarStringRes.value = stringId
-    }
-
     fun getTemplate(isSeller: Boolean) {
         launchCatchError(block = {
             val result = getTemplateChatRoomUseCase.getTemplateChat(isSeller)
-            val templateList = arrayListOf<Visitable<Any>>()
+            val templateList = arrayListOf<Visitable<*>>()
             if (result.isEnabled) {
-                result.listTemplate?.let {
-                    templateList.addAll(it)
-                }
+                templateList.addAll(result.listTemplate)
             }
             _templateChat.value = Success(templateList)
         }, onError = {
@@ -1105,6 +1142,10 @@ open class TopChatViewModel @Inject constructor(
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
         onGoingStockUpdate[productId] = result
+    }
+
+    fun updateMessageId(messageId: String) {
+        roomMetaData.updateMessageId(messageId)
     }
 
     companion object {

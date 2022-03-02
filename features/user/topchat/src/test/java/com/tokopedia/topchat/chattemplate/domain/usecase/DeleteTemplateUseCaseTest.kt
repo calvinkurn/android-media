@@ -1,105 +1,109 @@
 package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
+import org.junit.jupiter.api.assertThrows
 
 class DeleteTemplateUseCaseTest {
+
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     private lateinit var templateRepository: EditTemplateRepository
 
-    private lateinit var templateUseCase: DeleteTemplateUseCase
+    private lateinit var deleteTemplateUseCase: DeleteTemplateUseCase
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    private val testString = "Tokopedia saja!"
+    private val expectedThrowable = Throwable("Oops!")
+    private val testIndex = 1
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        templateUseCase = DeleteTemplateUseCase(templateRepository)
-    }
-
-
-    @Test
-    fun `delete chat template buyer`() {
-        val expectedResult = mockk<EditTemplateUiModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
-
-        every {
-            templateRepository.deleteTemplate(testIndex, false)
-        } returns Observable.just(expectedResult)
-
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(DeleteTemplateUseCase.generateParam(testIndex, false))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertValues(expectedResult)
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertCompleted()
+        deleteTemplateUseCase = DeleteTemplateUseCase(templateRepository, dispatchers)
     }
 
     @Test
-    fun `delete chat template seller`() {
-        val expectedResult = mockk<EditTemplateUiModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
+    fun should_get_template_data_when_success_delete_template_buyer() {
+        //Given
+        val expectedResponse = TemplateData().apply {
+            isIsEnable = true
+            isSuccess = true
+            templates = listOf(testString)
+        }
+        coEvery {
+            templateRepository.deleteTemplate(any(), any())
+        } returns expectedResponse
 
-        every {
-            templateRepository.deleteTemplate(testIndex, true)
-        } returns Observable.just(expectedResult)
+        runBlocking {
+            //When
+            val result = deleteTemplateUseCase.deleteTemplate(testIndex, false)
 
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(DeleteTemplateUseCase.generateParam(testIndex, true))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertValues(expectedResult)
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertCompleted()
+            //Then
+            Assert.assertEquals(result, expectedResponse)
+        }
     }
 
     @Test
-    fun `error when delete chat template buyer`() {
-        val expectedResult = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
+    fun should_get_template_data_when_success_delete_template_seller() {
+        //Given
+        val expectedResponse = TemplateData().apply {
+            isIsEnable = true
+            isSuccess = true
+            templates = listOf(testString)
+        }
+        coEvery {
+            templateRepository.deleteTemplate(any(), any())
+        } returns expectedResponse
 
-        every {
-            templateRepository.deleteTemplate(testIndex, false)
-        } returns Observable.error(expectedResult)
+        runBlocking {
+            //When
+            val result = deleteTemplateUseCase.deleteTemplate(testIndex, true)
 
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(DeleteTemplateUseCase.generateParam(testIndex, false))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertError(expectedResult)
-        testSubscriber.assertNotCompleted()
+            //Then
+            Assert.assertEquals(result, expectedResponse)
+        }
     }
 
     @Test
-    fun `error when delete chat template seller`() {
-        val expectedResult = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
+    fun should_get_error_when_fail_to_delete_template_buyer() {
+        //Given
+        coEvery {
+            templateRepository.deleteTemplate(any(), any())
+        } throws expectedThrowable
 
-        every {
-            templateRepository.deleteTemplate(testIndex, true)
-        } returns Observable.error(expectedResult)
+        //Then
+        assertThrows<Throwable> {
+            runBlocking {
+                deleteTemplateUseCase.deleteTemplate(testIndex, false)
+            }
+        }
+    }
 
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(DeleteTemplateUseCase.generateParam(testIndex, true))
+    @Test
+    fun should_get_error_when_fail_to_delete_template_seller() {
+        //Given
+        coEvery {
+            templateRepository.deleteTemplate(any(), any())
+        } throws expectedThrowable
 
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertError(expectedResult)
-        testSubscriber.assertNotCompleted()
+        //Then
+        assertThrows<Throwable> {
+            runBlocking {
+                deleteTemplateUseCase.deleteTemplate(testIndex, true)
+            }
+        }
     }
 }

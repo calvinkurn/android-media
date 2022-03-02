@@ -26,6 +26,8 @@ object ProductDetailCommonConstant {
     const val SHOP_ID_PARAM = "shopId"
     const val FIELDS_PARAM = "fields"
     const val PRODUCT_ID_PARAM = "productId"
+    const val GIFTABLE_PARAM = "isGiftable"
+    const val PARENT_ID_PARAM = "parentId"
 
 
     //notify me (teaser campaign)

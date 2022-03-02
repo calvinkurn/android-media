@@ -33,6 +33,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  isGiftable
                   isTokoNow
                   shopName
                   productID
@@ -225,6 +226,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        applink
                        separator
                        description
+                       label {
+                        value
+                        color
+                      }
                     }
                     ... on pdpDataProductVariant {
                       errorCode

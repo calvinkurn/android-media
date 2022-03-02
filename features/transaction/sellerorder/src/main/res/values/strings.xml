@@ -176,7 +176,7 @@
     <string name="som_buyer_cancellation_confirm_accept_cancellation_button">Batalkan Pesanan</string>
     <string name="som_buyer_cancellation_confirm_accept_order_title">Konfirmasi terima pesanan?</string>
     <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
-    <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_button">Terima Pesanan</string>
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
@@ -358,4 +358,10 @@
     <string name="som_detail_add_on_see_more_description"><![CDATA[<a href="#">Lihat Selengkapnya</a>.]]></string>
     <string name="som_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
     <string name="som_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
+
+  <!--wording cancellation dialog-->
+    <string name="som_request_cancellation_title_continue_send_order_dialog">Lanjut kirim pesanan ini?</string>
+    <string name="som_request_cancellation_desc_continue_send_order_dialog">Untuk menghindari komplain, pastikan pengiriman pesanan sudah dapat persetujuan dari pembeli.</string>
+    <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
+    <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
 </resources>
