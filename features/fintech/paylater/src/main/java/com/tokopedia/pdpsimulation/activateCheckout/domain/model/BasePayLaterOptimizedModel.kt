@@ -42,7 +42,7 @@ data class TenureDetail(
     @SerializedName("chip_title") val chip_title: String?,
     @SerializedName("monthly_installment") val monthly_installment: String?,
     @SerializedName("description") val description: String?,
-    @SerializedName("installment_details") val installment_details: ActivationInstallmentDetails
+    @SerializedName("installment_details") val installment_details: ActivationInstallmentDetails?
 ) : Parcelable
 
 @Parcelize

@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
@@ -16,37 +18,42 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
 
     fun bindData(
         tenureDetail: TenureDetail,
-        tenureSelectedModel: TenureSelectedModel,
+        tenureSelectedModel: TenureSelectedModel?,
         currentPosition: Int
     ) {
-
-        itemView.apply {
-            changeViewColor(tenureSelectListener.isDisable())
-            updateData(tenureDetail)
-            if (!tenureSelectListener.isDisable()) {
-                if (tenureDetail.isSelectedTenure) {
-                    containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-                    individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                    radioSelector.isChecked = true
+        tenureSelectedModel?.let {
+            itemView.visible()
+            itemView.apply {
+                changeViewColor(tenureSelectListener.isDisable())
+                updateData(tenureDetail)
+                if (!tenureSelectListener.isDisable()) {
+                    if (tenureDetail.isSelectedTenure) {
+                        containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                        individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                        radioSelector.isChecked = true
+                    } else {
+                        containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
+                        radioSelector.isChecked = false
+                    }
+                    individualTenureItemContainer.isClickable = true
+                    radioSelector.isClickable = true
+                    individualTenureItemContainer.setOnClickListener {
+                        tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+                    }
+                    radioSelector.setOnClickListener {
+                        tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+                    }
                 } else {
-                    containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                    individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                     radioSelector.isChecked = false
+                    individualTenureItemContainer.isClickable = false
+                    radioSelector.isClickable = false
                 }
-                individualTenureItemContainer.isClickable = true
-                radioSelector.isClickable = true
-                individualTenureItemContainer.setOnClickListener {
-                    tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
-                }
-                radioSelector.setOnClickListener {
-                    tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
-                }
-            } else {
-                radioSelector.isChecked = false
-                individualTenureItemContainer.isClickable = false
-                radioSelector.isClickable = false
             }
+        }?:run{
+            itemView.gone()
         }
+
     }
 
     private fun updateData(tenureDetail: TenureDetail) {

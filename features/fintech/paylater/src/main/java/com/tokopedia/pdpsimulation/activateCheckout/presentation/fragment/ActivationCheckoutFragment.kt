@@ -68,7 +68,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private var shopId: String = ""
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
-    private lateinit var installmentModel: InstallmentDetails
+    private  var installmentModel: InstallmentDetails? = null
     private var listOfTenureDetail: List<TenureDetail> = ArrayList()
     private lateinit var paylaterGetOptimizedModel: PaylaterGetOptimizedModel
     private lateinit var listOfGateway: PaylaterGetOptimizedModel
@@ -366,17 +366,21 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     selectedTenurePosition = 0
                 } else
                     checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
-
-                DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
-                    installmentModel = it
-                }
-                DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).tenure?.let {
-                    paymentDuration.text = "X$it"
-                }
-                DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).priceText?.let {
-                    amountToPay.text = it
-                }
+                val tenureSelectedModel = DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition])
+                setTenureData(tenureSelectedModel)
             }
+        }
+    }
+
+    private fun setTenureData(tenureSelectedModel : TenureSelectedModel?) {
+        tenureSelectedModel?.also { tenureSelectedModel ->
+            tenureSelectedModel.installmentDetails?.let { installmentDetails ->
+                this.installmentModel = installmentDetails
+            }
+            tenureSelectedModel.tenure?.let { tenure ->
+                paymentDuration.text = "X$tenure"
+            }
+            amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         }
     }
 
@@ -533,7 +537,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun openPriceBreakDownBottomSheet() {
-        if (this::installmentModel.isInitialized) {
+        installmentModel?.let {
             val bundle = Bundle().apply {
                 putParcelable(
                     PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
