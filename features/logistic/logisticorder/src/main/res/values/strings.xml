@@ -70,7 +70,6 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="last_driver_button">Hubungi</string>
     <string name="label_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
 <!--    Reschedule Pickup-->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_button_reschedule_pickup">Atur Ulang Jadwal Pick-up</string>
     <string name="label_detail_reason_reschedule_pickup">Detail Alasan Lainnya</string>
     <string name="label_reason_reschedule_pickup">Alasan Perubahan Jadwal</string>
@@ -83,4 +82,6 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="label_title_invoice_reschedule_pick_up">No. Invoice</string>
     <string name="label_title_courier_reschedule_pick_up">Kurir</string>
     <string name="label_title_order_detail_reschedule_pick_up">Detail Pesanan</string>
+    <string name="label_title_reschedule_detail">Estimasi pickup:</string>
+    <string name="label_subtitle_reschedule_pick_up"><![CDATA[Cek info detail pengaturan ulang jadwal pick-up di sini.]]></string>
 </resources>

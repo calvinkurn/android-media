@@ -14,8 +14,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,9 +139,7 @@
                 android:id="@+id/tips_reschedule_pickup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="@id/right_padding"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/subtitle_reschedule_pickup"
                 app:unify_tips_title="@string/title_tips_reschedule_pick_up" />
@@ -176,6 +173,7 @@
                 app:unify_text_field_placeholder="@string/placeholder_time_reschedule_pick_up" />
 
             <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_reschedule_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -213,7 +211,7 @@
                     app:layout_constraintStart_toEndOf="@id/icon_reschedule_detail"
                     app:layout_constraintTop_toBottomOf="@id/reschedule_detail"
                     app:typographyType="body_3"
-                    tools:text="Estimasi pickup:" />
+                    android:text="@string/label_title_reschedule_detail" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/reschedule_detail"
@@ -230,10 +228,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="23dp"
-                app:layout_constraintBottom_toTopOf="@id/et_reason_detail"
+                app:layout_goneMarginBottom="80dp"
                 app:layout_constraintEnd_toEndOf="@id/right_padding"
                 app:layout_constraintStart_toStartOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/layout_reschedule_detail"
+                app:layout_constraintBottom_toTopOf="@id/et_reason_detail"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
                 app:unify_text_field_label="@string/label_reason_reschedule_pickup"
                 app:unify_text_field_label_static="false" />
@@ -243,11 +242,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="23dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="80dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/right_padding"
                 app:layout_constraintStart_toStartOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/et_reason"
-                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:unify_text_field_label="@string/label_detail_reason_reschedule_pickup"
                 app:unify_text_field_label_static="false" />
 
