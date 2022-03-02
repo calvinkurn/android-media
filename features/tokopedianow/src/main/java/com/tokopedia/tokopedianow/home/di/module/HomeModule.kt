@@ -17,8 +17,8 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeAnalytic(): HomeAnalytics {
-        return HomeAnalytics()
+    fun provideHomeAnalytic(userSession: UserSessionInterface): HomeAnalytics {
+        return HomeAnalytics(userSession)
     }
 
     @HomeScope

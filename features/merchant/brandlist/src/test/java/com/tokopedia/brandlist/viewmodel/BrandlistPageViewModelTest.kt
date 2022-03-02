@@ -120,11 +120,48 @@ class BrandlistPageViewModelTest {
         val mockedCategory = Category()
         val brandFirstLetter = "b"
 
-        viewModel.loadMoreAllBrands(mockedCategory, brandFirstLetter)
+        viewModel.loadMoreAllBrands(brandFirstLetter)
+
+        if (viewModel.remindingRequestSize.value?.first?: 0 > 0)
+        {
+            viewModel.loadMoreAllBrandsReminding(viewModel.remindingRequestSize.value?.first?: 0, category = mockedCategory, brandFirstLetter)
+        }
         coVerify { getBrandListAllBrandUseCase.executeOnBackground() }
         Assert.assertTrue(viewModel.getAllBrandResult.value is Success)
     }
 
+    @Test
+    fun `given zero request size when load more brand reminding then get brand all brand will not success`() {
+        val brandFirstLetter = "b"
+        val mockedCategory = Category()
+        val mockedZeroRequestSize = 0
+
+        viewModel.loadMoreAllBrands(brandFirstLetter)
+        viewModel.loadMoreAllBrandsReminding(
+            mockedZeroRequestSize,
+            category = mockedCategory,
+            brandFirstLetter
+        )
+        Assert.assertTrue(viewModel.getAllBrandResult.value !is Success)
+    }
+
+    @Test
+    fun `given null category and letter B when load more data should return success value`() {
+        mockkObject(getBrandListAllBrandUseCase)
+        coEvery { getBrandListAllBrandUseCase.executeOnBackground() }
+
+        val mockCategory = null
+        val brandFirstLetter = "b"
+
+        viewModel.loadMoreAllBrands(brandFirstLetter)
+
+        if (viewModel.remindingRequestSize.value?.first?: 0 > 0)
+        {
+            viewModel.loadMoreAllBrandsReminding(viewModel.remindingRequestSize.value?.first?: 0, category = mockCategory, brandFirstLetter = brandFirstLetter)
+        }
+        coVerify { getBrandListAllBrandUseCase.executeOnBackground() }
+        Assert.assertTrue(viewModel.getAllBrandResult.value is Success)
+    }
 
     @Test
     fun `load brand per-alphabet when category and first letter are provided should return success value`() {

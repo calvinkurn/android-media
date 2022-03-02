@@ -39,4 +39,24 @@ object ChatbotConstant {
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
     }
+
+    object ChatbotUnification{
+        const val ARTICLE_ID = "articleId"
+        const val ARTICLE_TITLE = "articleTitle"
+        const val CODE = "code"
+        const val CREATE_TIME = "create_time"
+        const val DESCRIPTION = "description"
+        const val EVENT = "event"
+        const val ID = "id"
+        const val IMAGE_URL = "image_url"
+        const val IS_ATTACHED = "is_attached"
+        const val STATUS = "status"
+        const val STATUS_COLOR = "status_color"
+        const val STATUS_ID = "status_id"
+        const val TITLE = "title"
+        const val TOTAL_AMOUNT = "total_amount"
+        const val USED_BY = "used_by"
+        const val ARTICLE_ENTRY = "article_entry"
+        const val FALSE = "false"
+    }
 }

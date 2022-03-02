@@ -60,8 +60,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.authenticationExt
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.network)

@@ -157,7 +157,7 @@ class MenuSettingAdapter(private val context: Context?,
                 clickAction = {
                     goToApplinkWhenAccessAuthorized(
                         settingAccess.isInfoAccessAuthorized,
-                        ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE
+                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
                     )
                 }),
             DividerUiModel(DividerType.THIN_INDENTED),

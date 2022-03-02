@@ -2,7 +2,7 @@ package com.tokopedia.discovery2.discoverymapper
 
 import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
-import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.SINGLE_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
@@ -10,9 +10,6 @@ import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
-import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
-import com.tokopedia.discovery2.TRANSPARENT_BLACK
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -193,6 +190,32 @@ class DiscoveryDataMapper {
             dataItem.applinks = it?.applinks
             dataItemlist.add(dataItem)
             componentsItem.data = dataItemlist
+            list.add(componentsItem)
+        }
+        return list
+    }
+
+    fun mapAnchorListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
+                               parentComponentName: String?,
+                               position: Int, design: String = "", compId : String = "",anchorMap: MutableMap<String,Int>): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList.forEachIndexed { index, it ->
+            val componentsItem = ComponentsItem()
+            componentsItem.position = index
+            val id = "${CHIPS}_$index"
+            componentsItem.name = subComponentName
+            componentsItem.id = id
+            componentsItem.design = design
+            componentsItem.parentComponentId = compId
+            it.parentComponentName = parentComponentName
+            componentsItem.parentComponentPosition = position
+            componentsItem.parentListSize = itemList.size
+            val dataItem = mutableListOf<DataItem>()
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            it.targetSectionID?.let { targetId ->
+                anchorMap[targetId] = index
+            }
             list.add(componentsItem)
         }
         return list

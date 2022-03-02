@@ -98,6 +98,7 @@ class DeeplinkMatcher {
         add(Pattern(GT, 0, mapOf(0 to "deposit")) to SALDO_DEPOSIT)
         add(Pattern(EQ, 1, null) to SHOP)
         add(Pattern(EQ, 2, null) to PRODUCT)
+        add(Pattern(EQ, 3, mapOf(1 to "voucher")) to SHOP)
     }
 
     fun match(uri: Uri): Int {

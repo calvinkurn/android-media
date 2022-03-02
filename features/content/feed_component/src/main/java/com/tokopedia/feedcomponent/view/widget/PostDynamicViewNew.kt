@@ -238,12 +238,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
             val desc = context.getString(R.string.feed_share_default_text)
+            val url = if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
+                feedXCard.media[feedXCard.lastCarouselIndex].webLink
+            } else {
+                feedXCard.appLink
+            }
             listener?.onShareClick(
                 positionInFeed,
                 feedXCard.id.toIntOrZero(),
                 feedXCard.author.name + " `post",
                 desc.replace("%s", feedXCard.author.name),
-                feedXCard.appLink,
+                url = url,
                 feedXCard.media.firstOrNull()?.mediaUrl ?: "",
                 feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
                 feedXCard.typename,
@@ -258,8 +263,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindTracking(feedXCard: FeedXCard) {
                 addOnImpressionListener(feedXCard.impressHolder) {
+                    val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
                         imagePostListener.userCarouselImpression(
                                 feedXCard.id,
                                 feedXCard.media.first(),
@@ -273,7 +279,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                     }
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC ) {
                         listener?.onImpressionTracking(feedXCard, positionInFeed)
                     }
 
@@ -2165,6 +2171,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         if (feedXCard?.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
                             val list = mutableListOf<FeedXProduct>()
                             list.add(feedXCard.products[current])
+                            if (list.isNotEmpty())
                             imagePostListener.userProductImpression(
                                     positionInFeed,
                                     feedXCard.id,
@@ -2172,28 +2179,30 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     feedXCard.author.id,
                                     list
                             )
-
+                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current)
                             bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
                         } else if (feedXCard != null) {
-                            imagePostListener.userCarouselImpression(
-                                    feedXCard.id,
-                                    feedXCard.media[current],
-                                    current,
-                                    feedXCard.typename,
-                                    feedXCard.followers.isFollowed,
-                                    feedXCard.author.id,
-                                    positionInFeed,
-                                    feedXCard.cpmData,
-                                    feedXCard.listProduct
-                            )
+                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current) {
+                                imagePostListener.userCarouselImpression(
+                                        feedXCard.id,
+                                        feedXCard.media[current],
+                                        current,
+                                        feedXCard.typename,
+                                        feedXCard.followers.isFollowed,
+                                        feedXCard.author.id,
+                                        positionInFeed,
+                                        feedXCard.cpmData,
+                                        feedXCard.listProduct
+                                )
 
-                            if (feedXCard.media[current].type == TYPE_IMAGE) {
-                                videoPlayer?.pause()
-                                bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
-                            } else {
-                                detach(true)
-                                feedXCard.media[current].canPlay = true
-                                playVideo(feedXCard, current)
+                                if (feedXCard.media[current].type == TYPE_IMAGE) {
+                                    videoPlayer?.pause()
+                                    bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
+                                } else {
+                                    detach(true)
+                                    feedXCard.media[current].canPlay = true
+                                    playVideo(feedXCard, current)
+                                }
                             }
                         }
                     }
