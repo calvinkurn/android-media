@@ -32,6 +32,8 @@ class PlaySetupSaveProductViewModelTest {
     private val mockProduct = productSetupUiModelBuilder.buildProductUiModel()
     private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
+    private val mockSelectedProducts = mockProductTagSectionList.flatMap { it.products }
+
     private val mockException = uiModelBuilder.buildException()
 
     @Test
@@ -51,7 +53,7 @@ class PlaySetupSaveProductViewModelTest {
             }
 
             state[2].saveState.isLoading.assertEqualTo(true)
-            state[3].selectedProductSectionList.assertEqualTo(mockProductTagSectionList)
+            state[3].selectedProductList.assertEqualTo(mockSelectedProducts)
             state.last().saveState.isLoading.assertEqualTo(false)
             event.last().assertEqualTo(PlayBroProductChooserEvent.SaveProductSuccess)
         }

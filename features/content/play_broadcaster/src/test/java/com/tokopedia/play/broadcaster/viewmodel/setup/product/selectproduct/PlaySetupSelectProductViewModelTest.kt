@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -33,15 +34,20 @@ class PlaySetupSelectProductViewModelTest {
 
     private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
+    private val mockSelectedProducts = mockProductTagSectionList.flatMap { it.products }
+//
+//    private val mockSelectedSections = List(1) {
+//        productSetupUiModelBuilder.buildProductTagSection(
+//            products = mockSelectedProducts
+//        )
+//    }
+
     @Test
     fun `when user select product, it should emit uiState with new selected products`() {
         val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
-        val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
-        val mockNewProductList = mockNewProductTagSectionList.last().products.toMutableList()
-        val mockSection = mockNewProductTagSectionList.last()
 
-        mockNewProductTagSectionList.remove(mockSection)
-        mockNewProductTagSectionList.add(mockSection.copy(products = mockNewProductList + mockAddedProduct))
+        val expectedSelectedProducts = mockSelectedProducts.toMutableList()
+        expectedSelectedProducts.add(mockAddedProduct)
 
         coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
 
@@ -57,7 +63,7 @@ class PlaySetupSelectProductViewModelTest {
                 robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
             }
 
-            Assertions.assertEquals(state.selectedProductSectionList, mockNewProductTagSectionList)
+            state.selectedProductList.assertEqualTo(expectedSelectedProducts)
         }
     }
 
@@ -65,7 +71,9 @@ class PlaySetupSelectProductViewModelTest {
     fun `when user select product but exceed the max product allowed, it shouldnt change the selected products`() {
         val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns mockProductTagSectionList.sumOf { it.products.size }
+        val expectedSelectedProducts = mockSelectedProducts.toMutableList()
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns mockSelectedProducts.size
 
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
@@ -79,21 +87,17 @@ class PlaySetupSelectProductViewModelTest {
                 robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
             }
 
-            Assertions.assertEquals(state.selectedProductSectionList, mockProductTagSectionList)
+            state.selectedProductList
+                .assertEqualTo(expectedSelectedProducts)
         }
     }
 
     @Test
     fun `when user unselect product, it should emit uiState with fewer selected product`() {
-        val mockUnselectedProduct = mockProductTagSectionList.last().products.last()
+        val mockUnselectedProduct = mockSelectedProducts.last()
 
-        val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
-        val mockSection = mockProductTagSectionList.last()
-        val mockProductList = mockSection.products.toMutableList()
-        mockProductList.removeLast()
-
-        mockNewProductTagSectionList.remove(mockSection)
-        mockNewProductTagSectionList.add(mockSection.copy(products = mockProductList))
+        val expectedSelectedProducts = mockSelectedProducts.toMutableList()
+        expectedSelectedProducts.removeLast()
 
         coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
 
@@ -109,7 +113,8 @@ class PlaySetupSelectProductViewModelTest {
                 robot.submitAction(ProductSetupAction.SelectProduct(mockUnselectedProduct))
             }
 
-            Assertions.assertEquals(state.selectedProductSectionList, mockNewProductTagSectionList)
+            state.selectedProductList
+                .assertEqualTo(expectedSelectedProducts)
         }
     }
 

@@ -30,6 +30,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductLi
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButtonViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
@@ -181,8 +182,8 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                if (prevState?.selectedProductSectionList != null &&
-                    prevState.selectedProductSectionList != state.selectedProductSectionList) {
+                if (prevState?.selectedProductList != null &&
+                    prevState.selectedProductList != state.selectedProductList) {
 
                     isSelectedProductsChanged = true
                 }
@@ -190,8 +191,8 @@ class ProductChooserBottomSheet @Inject constructor(
                 renderProductList(
                     prevState?.focusedProductList,
                     state.focusedProductList,
-                    prevState?.selectedProductSectionList,
-                    state.selectedProductSectionList,
+                    prevState?.selectedProductList,
+                    state.selectedProductList,
                 )
                 renderSortChips(prevState?.loadParam, state.loadParam)
                 renderEtalaseChips(
@@ -208,8 +209,8 @@ class ProductChooserBottomSheet @Inject constructor(
                     state.config
                 )
                 renderBottomSheetTitle(
-                    prevState?.selectedProductSectionList,
-                    state.selectedProductSectionList,
+                    prevState?.selectedProductList,
+                    state.selectedProductList,
                     prevState?.config,
                     state.config
                 )
@@ -262,15 +263,15 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderProductList(
         prevProductListPaging: ProductListPaging?,
         productListPaging: ProductListPaging,
-        prevSelectedProducts: List<ProductTagSectionUiModel>?,
-        selectedProducts: List<ProductTagSectionUiModel>,
+        prevSelectedProducts: List<ProductUiModel>?,
+        selectedProducts: List<ProductUiModel>,
     ) {
         if (prevProductListPaging == productListPaging && prevSelectedProducts == selectedProducts) return
 
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             productListView.setProductList(
                 productList = productListPaging.productList,
-                selectedList = selectedProducts.flatMap { it.products },
+                selectedList = selectedProducts,
                 showLoading = productListPaging.resultState !is PageResultState.Success ||
                         productListPaging.resultState.hasNextPage,
             )
@@ -333,8 +334,8 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderBottomSheetTitle(
-        prevSelectedProducts: List<ProductTagSectionUiModel>?,
-        selectedProducts: List<ProductTagSectionUiModel>,
+        prevSelectedProducts: List<ProductUiModel>?,
+        selectedProducts: List<ProductUiModel>,
         prevConfig: ProductSetupConfig?,
         config: ProductSetupConfig,
     ) {
@@ -344,7 +345,7 @@ class ProductChooserBottomSheet @Inject constructor(
         setTitle(
             getString(
                 R.string.play_bro_selected_product_title,
-                selectedProducts.sumOf { it.products.size },
+                selectedProducts.size,
                 config.maxProduct,
             )
         )
