@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils.stripLastDot
-import com.tokopedia.sellerorder.databinding.ItemAddOnBinding
+import com.tokopedia.sellerorder.databinding.ItemSomDetailAddOnBinding
 import com.tokopedia.sellerorder.detail.data.model.AddOnSummary
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.sellerorder.detail.presentation.widget.AddOnDescriptionWidget
@@ -21,11 +21,11 @@ class SomDetailAddOnViewHolder(
     AddOnDescriptionWidget.Listener {
 
     companion object {
-        val RES_LAYOUT = R.layout.item_add_on
+        val RES_LAYOUT = R.layout.item_som_detail_add_on
         const val MAX_RECYCLED_VIEWS = 10
     }
 
-    private val binding by viewBinding<ItemAddOnBinding>()
+    private val binding by viewBinding<ItemSomDetailAddOnBinding>()
     private var element: AddOnUiModel? = null
 
     override fun bind(element: AddOnUiModel) {
@@ -60,12 +60,12 @@ class SomDetailAddOnViewHolder(
         }
     }
 
-    private fun ItemAddOnBinding.setupAddOnImage(thumbnailUrl: String) {
+    private fun ItemSomDetailAddOnBinding.setupAddOnImage(thumbnailUrl: String) {
         ivAddOn.loadImage(thumbnailUrl)
     }
 
     @SuppressLint("SetTextI18n")
-    private fun ItemAddOnBinding.setupAddOnName(
+    private fun ItemSomDetailAddOnBinding.setupAddOnName(
         type: String,
         name: String,
         providedByBranchShop: Boolean
@@ -74,11 +74,11 @@ class SomDetailAddOnViewHolder(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun ItemAddOnBinding.setupAddOnPrice(quantity: Int, priceText: String) {
+    private fun ItemSomDetailAddOnBinding.setupAddOnPrice(quantity: Int, priceText: String) {
         tvAddOnPrice.text = "$quantity x $priceText"
     }
 
-    private fun ItemAddOnBinding.setupAddOnDescriptions(
+    private fun ItemSomDetailAddOnBinding.setupAddOnDescriptions(
         metadata: AddOnSummary.Addon.Metadata?,
         descriptionExpanded: Boolean,
         providedByBranchShop: Boolean
