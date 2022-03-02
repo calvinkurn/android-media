@@ -48,6 +48,12 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
             if (!it.isError) {
                 it.isSelectAll = isSelectAll
                 it.isSelected = isSelectAll
+                it.variants.forEach { variantUiModel ->
+                    if (!variantUiModel.isError) {
+                        variantUiModel.isSelectAll = isSelectAll
+                        variantUiModel.isSelected = isSelectAll
+                    }
+                }
             }
         }
         notifyDataSetChanged()
