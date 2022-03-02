@@ -22,8 +22,10 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.toCalendar
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.databinding.BottomsheetUpdateCouponPeriodBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import java.util.*
 import javax.inject.Inject
 
@@ -288,6 +290,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun getCouponStartDate(): Calendar {
+        if (requireContext().isBeforeRollout()) return getCouponStartDateBeforeRollout()
         val calendar = Calendar.getInstance()
         calendar.add(
             Calendar.HOUR_OF_DAY,
@@ -297,11 +300,27 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun getCouponEndDate(): Calendar {
+        if (requireContext().isBeforeRollout()) return getCouponEndDateBeforeRollout()
         val calendar = Calendar.getInstance()
         calendar.add(
             Calendar.DAY_OF_MONTH,
             COUPON_END_DATE_OFFSET_IN_DAYS
         )
+        return calendar
+    }
+
+    private fun getCouponStartDateBeforeRollout(): Calendar {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+        }
+        return calendar
+    }
+
+    private fun getCouponEndDateBeforeRollout(): Calendar {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        }
         return calendar
     }
 
