@@ -48,20 +48,20 @@ data class RestrictionData(
     }
 
     fun restrictionCategoriesType(): Boolean {
-        return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.CATEGORIES_KYC_STATUS_TYPE ||
-                action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.CATEGORIES_AGE_TYPE
+        return action.firstOrNull()?.attributeName == RestrictionInfoResponse.CATEGORIES_KYC_STATUS_TYPE ||
+                action.firstOrNull()?.attributeName == RestrictionInfoResponse.CATEGORIES_AGE_TYPE
     }
 
     fun restrictionShopFollowersType(): Boolean {
-        return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.SHOP_FOLLOWERS_TYPE
+        return action.firstOrNull()?.attributeName == RestrictionInfoResponse.SHOP_FOLLOWERS_TYPE
     }
 
     fun restrictionExclusiveType(): Boolean {
-        return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.SHOP_EXCLUSIVE_TYPE
+        return action.firstOrNull()?.attributeName == RestrictionInfoResponse.SHOP_EXCLUSIVE_TYPE
     }
 
     fun restrictionGamificationType(): Boolean {
-        return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.GAMIFICATION_TYPE
+        return action.firstOrNull()?.attributeName == RestrictionInfoResponse.GAMIFICATION_TYPE
     }
 }
 
