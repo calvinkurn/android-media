@@ -13,6 +13,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
@@ -39,6 +40,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
+    var operatorList: List<CatalogOperator> = listOf()
     var operatorData: CatalogOperator = CatalogOperator()
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -75,8 +77,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<Pair<String, Boolean>>
         get() = _clientNumberValidatorMsg
 
-    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
-    val addToCartResult: LiveData<RechargeNetworkResult<String>>
+    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<DigitalAtcResult>>()
+    val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
     fun setMenuDetailLoading(){
@@ -96,9 +98,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         _favoriteNumberData.value = RechargeNetworkResult.Loading
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>) {
+    fun getFavoriteNumber(categoryIds: List<Int>, operatorIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumber(categoryIds)
+            val favoriteNumber = repo.getFavoriteNumber(categoryIds, operatorIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
                 favoriteNumber.persoFavoriteNumber.items
             )
@@ -114,7 +116,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     fun getOperatorSelectGroup(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
-            val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
+            operatorList = data.response.operatorGroups?.firstOrNull()?.operators ?: listOf()
             if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()) {
                 operatorData = operatorList.get(0)
             }
@@ -192,13 +194,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         userId: String
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val categoryIdAtc = repo.addToCart(
+            val atcResult = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
                 digitalSubscriptionParams,
                 userId
             )
-            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+            _addToCartResult.postValue(RechargeNetworkResult.Success(atcResult))
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
@@ -206,6 +208,10 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
             }
         }
+    }
+
+    fun setOperatorDataById(operatorId: String) {
+        operatorData = operatorList.firstOrNull { it.id == operatorId } ?: CatalogOperator()
     }
 
     fun updateCategoryCheckoutPassData(categoryId: String) {
@@ -227,6 +233,12 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getListInfo(): List<String> {
+        return if (operatorData.id.isNotEmpty()){
+            operatorData.attributes.operatorDescriptions
+        } else listOf()
     }
 
     companion object {

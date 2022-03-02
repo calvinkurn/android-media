@@ -1,7 +1,9 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -14,6 +16,7 @@ import org.junit.Test
 class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     private val dataFactory = TagihanDataFactory()
+    private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -54,7 +57,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val response = dataFactory.getFavoriteNumberData()
         onGetFavoriteNumber_thenReturn(response)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumber(listOf(), listOf())
         verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
@@ -63,7 +66,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `when getting favoriteNumber should run and give fail result`() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumber(listOf(), listOf())
         verifyGetFavoriteNumberRepoGetCalled()
         verifyGetFavoriteNumberFail()
     }
@@ -84,6 +87,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         viewModel.getOperatorSelectGroup(MENU_ID)
         verifyGetOperatorSelectGroupRepoGetCalled()
         verifyGetOperatorSelectGroupSuccess(response)
+        verifySetOperatorListSuccess(response.response.operatorGroups?.firstOrNull()?.operators ?: listOf())
     }
 
     @Test
@@ -133,7 +137,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `when getting addToCart should run and return success`() {
-        val response = dataFactory.getAddToCartData().relationships?.category?.data?.id ?: ""
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
@@ -340,6 +344,56 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
             TagihanDataFactory.VALID_CLIENT_NUMBER,
         )
         verifyCheckoutPassDataUpdated(expectedResult)
+    }
+
+    @Test
+    fun `given operatorData empty when calling setOperatorDataById should update operatorData with correct data`() {
+        val operatorList = dataFactory.getOperatorList()
+        onGetOperatorList_thenReturn(operatorList)
+
+        viewModel.setOperatorDataById(TagihanDataFactory.OPERATOR_ID_TAGLIS)
+        verifyOperatorDataHasCorrectData(dataFactory.getOperatorDataTaglis())
+    }
+
+    @Test
+    fun `given operatorData not empty when calling setOperatorDataById should update operatorData with correct data`() {
+        val operatorData = dataFactory.getOperatorDataTaglis()
+        val operatorList = dataFactory.getOperatorList()
+        onGetOperatorData_thenReturn(operatorData)
+        onGetOperatorList_thenReturn(operatorList)
+
+        viewModel.setOperatorDataById(TagihanDataFactory.OPERATOR_ID_NON_TAGLIS)
+        verifyOperatorDataHasCorrectData(dataFactory.getOperatorDataNonTaglis())
+    }
+
+    @Test
+    fun `given operatorId not exists operatorList when calling setOperatorDataById should set default value`() {
+        val operatorList = dataFactory.getOperatorList()
+        onGetOperatorList_thenReturn(operatorList)
+
+        viewModel.setOperatorDataById(TagihanDataFactory.OPERATOR_ID_INVALID)
+        verifyOperatorDataHasCorrectData(CatalogOperator())
+    }
+
+    @Test
+    fun `when getting listInfo should run and give success result`() {
+        val response = dataFactory.getOperatorSelectGroupData()
+        val expectedlistInfo = response.response.operatorGroups?.first()?.
+        operators?.first()?.attributes?.operatorDescriptions ?: listOf()
+        onGetOperatorSelectGroup_thenReturn(response)
+
+        viewModel.getOperatorSelectGroup(DigitalPDPTokenListrikViewModelTest.MENU_ID)
+        verifyGetOperatorSelectGroupRepoGetCalled()
+        verifyGetOperatorSelectGroupSuccess(response)
+
+        val actualListInfo = viewModel.getListInfo()
+        verifyListInfoSuccess(expectedlistInfo, actualListInfo)
+    }
+
+    @Test
+    fun `when getting listInfo should run and give empty result`() {
+        val actualListInfo = viewModel.getListInfo()
+        verifyListInfoEmpty(actualListInfo)
     }
 
     companion object {

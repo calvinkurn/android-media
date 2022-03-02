@@ -150,11 +150,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 if (number.subtitle.isEmpty()) {
                     setContactName("")
                     setInputNumber(number.title, true)
-                    mFilterChipListener?.onClickFilterChip(false)
+                    mFilterChipListener?.onClickFilterChip(false, number.trackingData.operatorId)
                 } else {
                     setContactName(number.title)
                     setInputNumber(number.subtitle, true)
-                    mFilterChipListener?.onClickFilterChip(true)
+                    mFilterChipListener?.onClickFilterChip(true, number.trackingData.operatorId)
                 }
                 clearFocusAutoComplete()
             }

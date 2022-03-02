@@ -3,6 +3,7 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
@@ -20,6 +21,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
     private val mapperFactory = DigitalDenomMapper()
+    private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -389,7 +391,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting addToCart should run and return success`() {
-        val response = dataFactory.getAddToCartData().relationships?.category?.data?.id ?: ""
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")

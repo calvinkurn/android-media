@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
@@ -44,6 +45,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
+    var operatorList: List<CatalogOperator> = listOf()
     var operatorData: CatalogOperator = CatalogOperator()
     var recomCheckoutUrl = ""
 
@@ -68,8 +70,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
         get() = _observableDenomData
 
-    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
-    val addToCartResult: LiveData<RechargeNetworkResult<String>>
+    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<DigitalAtcResult>>()
+    val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
@@ -132,7 +134,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     fun getOperatorSelectGroup(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
-            val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
+            operatorList = data.response.operatorGroups?.firstOrNull()?.operators ?: listOf()
             if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()) {
                 operatorData = operatorList.get(0)
             }
@@ -234,5 +236,11 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
 
     fun onResetSelectedProduct(){
         selectedGridProduct = SelectedProduct()
+    }
+
+    fun getListInfo(): List<String> {
+        return if (operatorData.id.isNotEmpty()){
+            operatorData.attributes.operatorDescriptions
+        } else listOf()
     }
 }

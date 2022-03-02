@@ -21,16 +21,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -128,7 +126,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         initEmptyState()
         observeData()
         getCatalogMenuDetail()
-        onShowGreenBox()
     }
 
     private fun setupKeyboardWatcher() {
@@ -195,7 +192,18 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(it.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        viewModel.operatorData.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        it.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        viewModel.operatorData.attributes.name,
+                        it.data.priceProduct
+                    )
+                    navigateToCart(it.data.categoryId)
                 }
                 is RechargeNetworkResult.Fail -> {
                     onLoadingBuyWidget(false)
@@ -313,7 +321,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         }
                     }
 
-                    override fun onClickFilterChip(isLabeled: Boolean) {
+                    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
@@ -330,6 +338,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                                 userSession.userId
                             )
                         }
+                        renderOperatorChipsByAutoSelect(operatorId)
                     }
 
                     override fun onClickIcon(isSwitchChecked: Boolean) {
@@ -341,8 +350,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                             )
                             val clientNumber = rechargePdpTagihanListrikClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(categoryId.toString())
+                            val dgOperatorIds: ArrayList<String> = ArrayList(viewModel.operatorList.map { it.id })
                             navigateToContact(
-                                clientNumber, dgCategoryIds,
+                                clientNumber, dgCategoryIds, dgOperatorIds,
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId)
                             )
                         }
@@ -392,8 +402,18 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 getString(R.string.selection_null_product_error)
             )
         }
+        getFavoriteNumber()
         renderProduct()
-        renderChipsAndTitle(operatorGroup)
+        renderOperatorChipsAndTitle(operatorGroup)
+    }
+
+    private fun renderGreenBox(){
+        val listInfo = viewModel.getListInfo()
+        if (!listInfo.isNullOrEmpty()){
+            onShowGreenBox(listInfo)
+        } else {
+            onHideGreenBox()
+        }
     }
 
     private fun onFailedGetOperatorSelectGroup(throwable: Throwable) {
@@ -422,7 +442,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        getFavoriteNumber()
 
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
@@ -455,29 +474,40 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onShowGreenBox(){
-        binding?.let {
-            //TODO Firman change to real data
-            val dummyInfo = "Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB.</b> <b>Selengkapnya</b>"
-            val clickableInfo = "Selengkapnya"
-            val dummyListInfo = listOf<String>(
-                "Transaksi selama 23:40-00:20 WIB baru akan <b>diproses pada 00:45 WIB.</b>",
-                "Proses verifikasi transaksi membutuhkan <b>maksimal 2x24 jam</b> hari kerja",
-                "Harap cek <b>limit kWh</b> anda sebelum membeli token listrik ya"
-            )
-            it.rechargePdpTickerWidgetProductDesc.apply {
-                setText(dummyInfo)
-                setLinks(clickableInfo, View.OnClickListener {
-                    showMoreInfoBottomSheet(dummyListInfo)
-                })
-            }
+    private fun onHideGreenBox(){
+        binding?.rechargePdpTickerWidgetProductDesc?.hide()
+    }
 
+    private fun onShowGreenBox(listInfo: List<String>){
+        binding?.let {
+            val mainInfo = listInfo.first()
+            val title = getString(R.string.bottom_sheet_more_info)
+            it.rechargePdpTickerWidgetProductDesc.apply {
+                show()
+                setText(mainInfo)
+                setOnClickListener {
+                    digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        viewModel.operatorData.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                    )
+                    showMoreInfoBottomSheet(listInfo, title)
+                }
+            }
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>){
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String){
+        digitalPDPTelcoAnalytics.impressionGreenBox(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            viewModel.operatorData.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            title
+        )
         fragmentManager?.let {
-            MoreInfoPDPBottomsheet(listInfo).show(it, "")
+            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
         }
     }
 
@@ -498,7 +528,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun getFavoriteNumber() {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(listOf(categoryId))
+            getFavoriteNumber(
+                listOf(categoryId),
+                viewModel.operatorList.map { it.id.toInt() }
+            )
         }
     }
 
@@ -549,13 +582,22 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun renderChipsAndTitle(catalogOperators: DigitalCatalogOperatorSelectGroup){
+    private fun renderOperatorChipsAndTitle(catalogOperators: DigitalCatalogOperatorSelectGroup){
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             val operators = catalogOperators.response.operatorGroups?.firstOrNull()?.operators
             if (!operators.isNullOrEmpty()){
                 setChipOperators(operators, viewModel.operatorData)
             }
             setTitleGeneral(catalogOperators.response.text)
+        }
+    }
+
+    private fun renderOperatorChipsByAutoSelect(operatorId: String) {
+        val position = viewModel.operatorList.indexOfFirst { it.id == operatorId }
+        if (!position.isLessThanZero()) {
+            binding?.rechargePdpTagihanListrikClientNumberWidget?.
+                selectChipOperatorByPosition(position)
+            viewModel.setOperatorDataById(operatorId)
         }
     }
 
@@ -602,7 +644,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpTagihanListrikEmptyStateWidget.isVisible) {
                 rechargePdpTagihanListrikEmptyStateWidget.hide()
-                rechargePdpTickerWidgetProductDesc.show()
+                renderGreenBox()
             }
         }
     }
@@ -641,11 +683,12 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun navigateToContact(
         clientNumber: String,
         dgCategoryIds: ArrayList<String>,
+        dgOperatorIds: ArrayList<String>,
         categoryName: String
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, categoryName, loyaltyStatus
+                it, clientNumber, dgCategoryIds, dgOperatorIds, categoryName, loyaltyStatus
             )
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -658,11 +701,14 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         clientNumber: String,
         productId: String,
         categoryId: String,
+        operatorId: String,
         inputNumberActionTypeIndex: Int
     ) {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
             inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         }
+
+        renderOperatorChipsByAutoSelect(operatorId)
 
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             setContactName(clientName)
@@ -736,14 +782,15 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             if (requestCode == DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
 
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,
                         orderClientNumber.clientNumber,
                         orderClientNumber.productId,
                         orderClientNumber.categoryId,
-                        orderClientNumber.inputNumberActionTypeIndex
+                        orderClientNumber.operatorId,
+                        orderClientNumber.inputNumberActionTypeIndex,
                     )
                 } else {
                     handleCallbackAnySavedNumberCancel()

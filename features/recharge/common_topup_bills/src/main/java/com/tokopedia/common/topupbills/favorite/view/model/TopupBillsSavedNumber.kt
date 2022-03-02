@@ -12,5 +12,6 @@ data class TopupBillsSavedNumber (
     val clientNumber: String = "",
     var clientName: String = "",
     val productId: String = "",
-    var inputNumberActionTypeIndex: Int
+    var inputNumberActionTypeIndex: Int,
+    val operatorId: String = ""
 ) : Parcelable

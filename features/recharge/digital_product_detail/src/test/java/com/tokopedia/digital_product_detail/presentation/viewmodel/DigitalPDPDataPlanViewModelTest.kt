@@ -3,6 +3,7 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
@@ -21,6 +22,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     private val dataFactory = DataPlanDataFactory()
     private val mapperFactory = DigitalDenomMapper()
+    private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -364,10 +366,10 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     @Test
     fun `when getting addToCart should run and return success`() {
-        val response = dataFactory.getAddToCartData().relationships?.category?.data?.id ?: ""
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(DigitalCheckoutPassData(), RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
@@ -379,7 +381,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(DigitalCheckoutPassData(), RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -391,7 +393,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(DigitalCheckoutPassData(), RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -401,7 +403,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(DigitalCheckoutPassData(), RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }

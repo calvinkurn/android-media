@@ -137,11 +137,12 @@ class DigitalDenomMapper @Inject constructor() {
                 specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                 slashPrice = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price else "",
                 slashPricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
-                isShowChevron = true,
+                isShowChevron = !it.attributes.productDescriptions.isNullOrEmpty(),
                 quotaInfo = getMapCustomAttributes(it.attributes.customAttributes, QUOTA_NAME_KEY),
                 expiredDays = getMapCustomAttributes(it.attributes.customAttributes, EXPIRED_DAYS_NAME_KEY),
                 discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
-                productDescriptions = it.attributes.productDescriptions
+                productDescriptions = it.attributes.productDescriptions,
+                greenLabel = getMapCustomAttributes(it.attributes.customAttributes, PRODUCT_DESC_TICKER_KEY)
             )
         }
     }
@@ -163,5 +164,6 @@ class DigitalDenomMapper @Inject constructor() {
 
         const val QUOTA_NAME_KEY = "product_paket_data_kuota"
         const val EXPIRED_DAYS_NAME_KEY = "product_paket_data_expire"
+        const val PRODUCT_DESC_TICKER_KEY = "product_detail_ticker"
     }
 }
