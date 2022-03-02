@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
@@ -27,8 +28,8 @@ class MvcLockedToProductUseCase @Inject constructor(
     }
 
     fun setParams(request: MvcLockedToProductRequest) {
-        val districtId = request.districtID.toLongOrZero()
-        val cityId = request.cityID.toLongOrZero()
+        val districtId = request.districtID.ifEmpty { Int.ZERO }
+        val cityId = request.cityID.ifEmpty { Int.ZERO }
         setRequestParams(
             mapOf<String, Any>(
                 KEY_SHOP_ID to request.shopID.toIntOrZero(),
