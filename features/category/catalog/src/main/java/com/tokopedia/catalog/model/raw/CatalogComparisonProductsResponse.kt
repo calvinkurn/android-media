@@ -10,7 +10,7 @@ data class CatalogComparisonProductsResponse(
 ) {
     data class CatalogComparisonList(
         @Expose @SerializedName("catalogComparisonList")
-        var catalogComparisonList: List<CatalogComparison?>?,
+        var catalogComparisonList: List<CatalogComparison?> = arrayListOf(),
         @Expose @SerializedName("header")
         val header: Header?
     ) {

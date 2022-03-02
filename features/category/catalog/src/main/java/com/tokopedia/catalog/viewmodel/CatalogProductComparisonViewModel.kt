@@ -55,9 +55,13 @@ class CatalogProductComparisonViewModel @Inject constructor(
             }
 
             is Fail -> {
-                hasMoreItems.value = false
+                handleFail()
             }
         }
+    }
+
+    private fun handleFail() {
+        hasMoreItems.value = false
     }
 
     private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {

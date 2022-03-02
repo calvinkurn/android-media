@@ -7,7 +7,6 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.catalog.model.datamodel.*
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,15 +28,17 @@ class CatalogForYouViewModel @Inject constructor(
     var lastScrollIndex = 0
     var isLoading = false
 
-    fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
-                                       limit: Int, page : Int, name : String) {
+    fun getComparisonProducts(
+        catalogId: String, brand: String, categoryId: String, limit: Int,
+        page: Int, name: String
+    ) {
         isLoading = true
         addShimmer(page)
         viewModelScope.launchCatchError(block = {
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page.toString(),name)
             removeShimmer()
-            processResult(recommendedCatalogId, result)
+            processResult(result)
             isLoading = false
         }, onError = {
             it.printStackTrace()
@@ -46,14 +47,14 @@ class CatalogForYouViewModel @Inject constructor(
         })
     }
 
-    private fun processResult(recommendedCatalogId : String, result: Result<CatalogComparisonProductsResponse>) {
+    private fun processResult(result: Result<CatalogComparisonProductsResponse>) {
         when(result){
             is Success -> {
                 if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
                     dataList.value = masterDataList
                     hasMoreItems.value = false
                 }else {
-                    addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
+                    addToMasterList(result.data.catalogComparisonList)
                     dataList.value = masterDataList
                     hasMoreItems.value = true
                     page ++
@@ -71,10 +72,10 @@ class CatalogForYouViewModel @Inject constructor(
         hasMoreItems.value = true
     }
 
-    private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
-        it?.catalogComparisonList?.let { items ->
-            for (product in items){
-                product?.let {
+    private fun addToMasterList(list: CatalogComparisonProductsResponse.CatalogComparisonList?) {
+        if(list != null) {
+            for (product in list.catalogComparisonList){
+                if(product != null){
                     masterDataList.add(CatalogForYouModel(CatalogConstant.COMPARISON_PRODUCT,
                         CatalogConstant.COMPARISON_PRODUCT,product))
                 }

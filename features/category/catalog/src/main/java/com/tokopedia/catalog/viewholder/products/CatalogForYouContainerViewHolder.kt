@@ -153,9 +153,9 @@ class CatalogForYouContainerViewHolder(private val view : View,
     private fun makeApiCall(page : Int) {
         if(catalogForYouViewModel?.isLoading == false) {
             catalogForYouViewModel?.getComparisonProducts(
-                "",
-                catalogId, brand,
-                categoryId, rowLimit, page, ""
+                catalogId,
+                brand, categoryId,
+                rowLimit, page, ""
             )
         }
     }

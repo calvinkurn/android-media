@@ -56,7 +56,7 @@ class CatalogDetailProductListingViewModel
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
     fun fetchProductListing(params: RequestParams) {
-        if(pageCount == 0){ comparisonCardIsAdded = false }
+        comparisonCardIsAdded = pageCount != 0
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->

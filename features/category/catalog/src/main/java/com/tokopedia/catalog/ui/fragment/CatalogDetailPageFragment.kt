@@ -123,9 +123,10 @@ class CatalogDetailPageFragment : Fragment(),
         )
     }
 
+    var isBottomSheetOpen = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        var isBottomSheetOpen = false
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -620,6 +621,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     fun onBackPressed(){
+        isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
