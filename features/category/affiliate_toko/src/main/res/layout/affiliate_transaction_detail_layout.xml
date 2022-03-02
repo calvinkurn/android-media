@@ -148,6 +148,7 @@
         app:layout_constraintTop_toBottomOf="@id/transaction_date_header" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingBottom="@dimen/unify_space_64"
         android:id="@+id/details_rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

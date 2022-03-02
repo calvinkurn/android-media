@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.TYPE_DIVIDER
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -24,24 +25,37 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private var progressBar = MutableLiveData<Boolean>()
     private var lastItem :String?= "0"
     private var additionKey: String? = ""
-    fun affiliateCommission(transactionID:String) {
+    private var shimmerVisibility = MutableLiveData<Boolean>()
+    private var pageType :String? = ""
+
+    fun affiliateCommission(transactionID:String,page :Int = PAGE_ZERO) {
         launchCatchError(block = {
-            progressBar.value = true
-            affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let {affiliateCommissionDetail ->
-               var tempCardDetails: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
-               additionKey = affiliateCommissionDetail.data?.additionQueryKey
-               if(affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
-                   affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem, affiliateCommissionDetail.data?.pageType)?.let {
-                       tempCardDetails = it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail
-                       lastItem = it.getAffiliateTrafficCommissionDetailCards?.data?.lastID
-                   }
-               }
-               detailList.value = getDetailListOrganize(affiliateCommissionDetail.data?.detail,tempCardDetails)
-               commssionData.value = affiliateCommissionDetail
-           }
-            progressBar.value = false
+            if(page == PAGE_ZERO) {
+                progressBar.value = true
+                affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let { affiliateCommissionDetail ->
+                    var tempCardDetails: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
+                    additionKey = affiliateCommissionDetail.data?.additionQueryKey
+                    pageType = affiliateCommissionDetail.data?.pageType
+                    if (affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
+                        affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
+                            tempCardDetails = it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail
+                            lastItem = it.getAffiliateTrafficCommissionDetailCards?.data?.lastID
+                        }
+                    }
+                    detailList.value = getDetailListOrganize(affiliateCommissionDetail.data?.detail, tempCardDetails)
+                    commssionData.value = affiliateCommissionDetail
+                }
+                progressBar.value = false
+            }else{
+                shimmerVisibility.value = true
+                affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
+                    shimmerVisibility.value = false
+                    detailList.value = getDetailListOrganize(null,it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail,page)
+                }
+            }
         }, onError = {
-            progressBar.value = false
+            if(page != PAGE_ZERO) shimmerVisibility.value = false
+            else progressBar.value = false
             it.printStackTrace()
             errorMessage.value = it
         })
@@ -49,7 +63,8 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
 
      fun getDetailListOrganize(
          detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?,
-         trafficCommissionCardDetail: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
+         trafficCommissionCardDetail: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null,
+         page: Int? = PAGE_ZERO
      ): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
             val tempList = ArrayList<Visitable<AffiliateAdapterTypeFactory>>()
             detail?.forEach {
@@ -59,8 +74,10 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                     tempList.add(AffiliateCommisionDividerItemModel())
             }
          trafficCommissionCardDetail?.let {
-             tempList.add(AffiliateCommisionThickDividerItemModel())
-             tempList.add(AffiliateWithdrawalTitleItemModel("10"))
+             if(page == PAGE_ZERO) {
+                 tempList.add(AffiliateCommisionThickDividerItemModel())
+                 tempList.add(AffiliateWithdrawalTitleItemModel("10"))
+             }
              it.forEach { cardDetail ->
                  tempList.add(AffiliateTrafficCardModel(cardDetail))
              }
@@ -72,4 +89,5 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     fun getCommissionData() : LiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail> = commssionData
     fun getDetailList(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = detailList
     fun progressBar(): LiveData<Boolean> = progressBar
+    fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -42,6 +43,10 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     private lateinit var affiliateVM: AffiliateTransactionDetailViewModel
 
+    private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+
+    private var listCount = 0
+
     override fun onInfoClick(title: String?, desc: String?, advanceTooltip: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?
     ) {
         AffiliateRecylerBottomSheet.newInstance(TYPE_WITHDRAWAL,title,desc,advanceTooltip).show(childFragmentManager, "")
@@ -72,7 +77,17 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
             setData(it)
         })
         affiliateVM.getDetailList().observe(viewLifecycleOwner,{
-            adapter.addMoreData(it)
+            if(it?.isNotEmpty() == true) {
+                listCount += it.size
+                adapter.addMoreData(it)
+                loadMoreTriggerListener?.updateStateAfterGetData()
+            }
+        })
+        affiliateVM.getShimmerVisibility().observe(viewLifecycleOwner,{shimmer ->
+            shimmer?.let {
+                if(it)adapter.addShimmer(false)
+                else adapter.removeShimmer(listCount)
+            }
         })
         affiliateVM.progressBar().observe(viewLifecycleOwner, { visibility ->
             if (visibility != null) {
@@ -152,9 +167,20 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(affiliateInfoClickInterfaces = this))
     private var detailsRV : RecyclerView? = null
     private fun initRv() {
+        val layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
         detailsRV = view?.findViewById(R.id.details_rv)
-        detailsRV?.layoutManager = LinearLayoutManager(context)
+        detailsRV?.layoutManager = layoutManager
+        loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         detailsRV?.adapter = adapter
+        loadMoreTriggerListener?.let { detailsRV?.addOnScrollListener(it) }
+    }
+
+    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                affiliateVM.affiliateCommission(transactionId,page-1)
+            }
+        }
     }
 
     private fun initNavBar() {
@@ -165,9 +191,12 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
         }
     }
 
+    private var transactionId = ""
+
     private fun getData() {
-        arguments?.getString(PARAM_TRANSACTION,null)?.let { transactionID ->
-            affiliateVM.affiliateCommission(transactionID)
+        arguments?.getString(PARAM_TRANSACTION,null)?.let { tID ->
+            transactionId = tID
+            affiliateVM.affiliateCommission(tID)
         }
     }
 
