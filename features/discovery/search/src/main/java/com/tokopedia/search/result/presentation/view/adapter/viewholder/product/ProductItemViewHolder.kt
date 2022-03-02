@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.video.ProductVideoPlayer
+import com.tokopedia.productcard.video.ProductVideoPlayerProvider
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -14,10 +16,12 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener
 
 abstract class ProductItemViewHolder(
         itemView: View,
-        protected val productListener: ProductListener
-) : AbstractViewHolder<ProductItemDataView>(itemView) {
+        protected val productListener: ProductListener,
+) : AbstractViewHolder<ProductItemDataView>(itemView), ProductVideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?
+
+    protected var productCardModel: ProductCardModel? = null
 
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
@@ -39,6 +43,7 @@ abstract class ProductItemViewHolder(
             labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
+            customVideoURL = customVideoURL
         )
     }
 
@@ -84,4 +89,7 @@ abstract class ProductItemViewHolder(
         productCardView.recycle()
         productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
+
+    override val productVideoPlayer : ProductVideoPlayer?
+        get() = productCardView?.getProductCardVideo()
 }

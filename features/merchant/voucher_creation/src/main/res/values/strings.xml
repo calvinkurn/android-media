@@ -446,7 +446,6 @@
     <string name="update_active_coupon_period">Ubah periode kupon aktif</string>
     <string name="start">Mulai</string>
     <string name="end">Selesai</string>
-    <string name="update">Ubah</string>
     <string name="download_coupon_product_success">Download Kupon Produk berhasil</string>
     <string name="download_coupon_product_failed">Download Kupon Produk tidak berhasil</string>
     <string name="download_coupon">Download Kupon</string>
@@ -454,17 +453,17 @@
     <string name="download_coupon_image_description">Download kupon menggunakan ukuran yang sesuai kebutuhanmu dari 3 ukuran berikut: </string>
     <string name="banner">Banner</string>
     <string name="banner_image_description">Untuk sampul tokomu</string>
-    <string name="placeholder_share_component_text_description">Dapatkan Voucher Toko %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-    <string name="share_component_outgoing_text_description">Yuk, belanja dan pakai Voucher Tokonya sekarang!</string>
-    <string name="placeholder_share_component_outgoing_title">Voucher Toko dari %s</string>
+    <string name="placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+    <string name="share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
+    <string name="placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="error_message_quota_is_zero">Min. 1 Kupon</string>
     <string name="mvc_placeholder_cancelled_at">Dibatalkan pada &lt;b>%s&lt;/b></string>
     <string name="mvc_total_expense">Total Pengeluaran</string>
     <string name="mvc_no_access">Oops, kamu nggak punya izin untuk mengakses halaman ini</string>
     <string name="mvc_no_access_description">Hubungi pemilik toko untuk mendapatkan akses halaman ini, ya.</string>
     <string name="mvc_understand">Oke, Saya mengerti</string>
-    <string name="error_message_exceed_max_coupon">Kupon Aktif Maksimal 10</string>
     <string name="mvc_free_shipping_coming_soon">Gratis Ongkir (Akan Datang)</string>
+    <string name="mvc_update">Ubah</string>
 
     <!--create coupon-->
     <string name="mvc_coupon_information_title">Informasi Kupon</string>
@@ -500,8 +499,8 @@
     <string name="mvc_max_product_limit_reached_message">Kamu tidak bisa tambah produk lagi, ya</string>
     <string name="mvc_no_products">Nggak ada Produk</string>
     <string name="mvc_add_coupon_product">Yuk, mulai tambah produk untuk kuponmu</string>
-    <string name="mvc_product_seller_location_warning_title">Kupon hanya bisa dipasang ke produk\ndari satu lokasi</string>
-    <string name="mvc_product_seller_location_warning_message">%s produk sudah ditambahkan dari\n %s. Hapus dulu produk yang\nterdaftar untuk mengubah lokasi,ya.</string>
+    <string name="mvc_product_seller_location_warning_title">Kupon tidak bisa dipasang</string>
+    <string name="mvc_product_seller_location_warning_message">kupon hanya bisa dipasang ke produk dari satu\nlokasi toko. Hapus dulu produk yang terdaftar untuk mengubah lokasi</string>
 
     <!-- more menu bottom sheet -->
     <string name="coupon_toaster_cta_oke">Oke</string>

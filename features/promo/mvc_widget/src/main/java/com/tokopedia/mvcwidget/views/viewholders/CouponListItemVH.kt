@@ -9,12 +9,14 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.views.MvcDetailViewContract
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
@@ -30,6 +32,8 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val divider: View = itemView.findViewById(R.id.divider)
     private val REDIRECT_CHECK = "redirect"
     private val INFO_CHECK = "info"
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(itemView.context) }
+    private val KEY_REMOTE_CONFIG_ENABLE_MVC_DISCO_PAGE = "android_enable_shop_mvc_disco_page"
 
     init {
         rvImage.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -54,7 +58,12 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         rel_cta.setOnClickListener {
                             contract.getMvcTracker()?.userClickEntryPointOnMVCLockToProduct(
                                 shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
-                            RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                            if(isMvcDiscoveryPageEnabled()){
+                                RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                            }else{
+                                val url = "${ApplinkConst.WEBVIEW}?titlebar=false&url=${data.ctaCatalog.url}"
+                                RouteManager.route(itemView.context, url)
+                            }
                         }
                     } else {
                         rel_cta.hide()
@@ -94,6 +103,10 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }else{
             view.visibility = View.VISIBLE
         }
+    }
+
+    private fun isMvcDiscoveryPageEnabled(): Boolean {
+        return remoteConfig.getBoolean(KEY_REMOTE_CONFIG_ENABLE_MVC_DISCO_PAGE,  true)
     }
 
     class ImageAdapter(val urlList: List<String?>) : RecyclerView.Adapter<ListItemImageVH>() {

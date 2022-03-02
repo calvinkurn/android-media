@@ -160,7 +160,7 @@ class MvcDetailView @JvmOverloads constructor(
 
 
         globalError.setActionClickListener {
-            viewModel.getListData(shopId)
+            viewModel.getListData(shopId, productId = productId, source = mvcSource)
         }
     }
 
@@ -233,7 +233,7 @@ class MvcDetailView @JvmOverloads constructor(
         this.shopId = shopId
         this.productId = productId
         this.mvcSource = mvcSource
-        viewModel.getListData(shopId)
+        viewModel.getListData(shopId, productId, source = mvcSource)
         this.adapter.setTracker(mvcTracker)
     }
 

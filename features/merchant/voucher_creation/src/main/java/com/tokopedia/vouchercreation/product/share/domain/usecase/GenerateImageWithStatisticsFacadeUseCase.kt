@@ -41,7 +41,7 @@ class GenerateImageWithStatisticsFacadeUseCase @Inject constructor(
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
 
-        val productIds = coupon.products.map { it.id.toLong() }
+        val productIds = coupon.productIds.map { it.parentProductId }
         val productsDeferred = scope.async { getProducts(productIds) }
         val products = productsDeferred.await()
 

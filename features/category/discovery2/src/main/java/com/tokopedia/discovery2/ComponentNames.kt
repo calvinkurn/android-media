@@ -41,6 +41,7 @@ enum class ComponentNames(val componentName: String) {
     QuickCoupon("quick_coupon"),
     BannerCarousel("banner_carousel"),
     BannerCarouselItemView("banner_carousel_item"),
+    BannerCarouselShimmer("banner_carousel_shimmer"),
     BottomNavigation("bottom_navigation"),
 
     // Product Card Revamp
@@ -94,6 +95,8 @@ enum class ComponentNames(val componentName: String) {
     MerchantVoucherCarouselItem("merchant_voucher_carousel_item"),
 
     Section("section"),
+    AnchorTabs("anchor_tabs"),
+    AnchorTabsItem("anchor_tabs_item"),
 
     //Calendar Widget
     CalendarWidgetCarousel("calendar"),

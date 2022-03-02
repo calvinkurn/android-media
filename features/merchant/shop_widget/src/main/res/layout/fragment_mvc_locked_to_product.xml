@@ -20,10 +20,10 @@
         app:toolbarInitialTheme="light"
         app:toolbarTitle="@string/mvc_choose_product_page_title" />
 
-
     <com.tokopedia.shop_widget.customview.StickySingleHeaderView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh"
@@ -34,8 +34,16 @@
                 android:id="@+id/rv_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:paddingBottom="8dp" />
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     </com.tokopedia.shop_widget.customview.StickySingleHeaderView>
+
+    <com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
+        android:id="@+id/mini_cart_simplified_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
 </LinearLayout>

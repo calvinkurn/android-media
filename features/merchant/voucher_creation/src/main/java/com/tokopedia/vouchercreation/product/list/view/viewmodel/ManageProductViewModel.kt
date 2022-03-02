@@ -99,17 +99,15 @@ class ManageProductViewModel @Inject constructor(
         mutableProductList.forEach { productUiModel ->
             productUiModel.isViewing = isViewing
             productUiModel.isEditing = isEditing
+            productUiModel.isVariantHeaderExpanded = false
+            productUiModel.isError = false
+            productUiModel.errorMessage = ""
+            productUiModel.variants.forEach { variantUiModel ->
+                variantUiModel.isError = false
+                variantUiModel.errorMessage = ""
+            }
         }
         return mutableProductList.toList()
-    }
-
-    private fun getVariantName(combination: List<Int>, selections: List<Selection>): String {
-        val sb = StringBuilder()
-        combination.forEach { index ->
-            sb.append(selections[index].options[index].value)
-            sb.append(" ")
-        }
-        return sb.toString().trim()
     }
 
     fun mapProductDataToProductUiModel(isViewing: Boolean, isEditing: Boolean, productDataList: List<ProductData>): List<ProductUiModel> {
@@ -138,8 +136,6 @@ class ManageProductViewModel @Inject constructor(
             val productUiModel = mutableProductList.first {
                 it.id == validationResult.parentProductId.toString()
             }
-            productUiModel.isError = !validationResult.isEligible
-            productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
             productUiModel.variants = mapVariantDataToUiModel(
                     isViewing = productUiModel.isViewing,
@@ -161,20 +157,18 @@ class ManageProductViewModel @Inject constructor(
             VariantUiModel(
                     isViewing = isViewing,
                     isEditing = isEditing,
-                    variantId = data.productId.toString(),
+                    variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
                     priceTxt = data.priceFormat,
-                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
-                    isError = !data.is_eligible,
-                    errorMessage = data.reason
+                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString()
             )
         }
     }
 
     fun setVariantSelection(productList: List<ProductUiModel>,
-                            selectedProductIds: List<ProductId>): List<ProductUiModel> {
+                            selectedProductIds: List<ProductId>): MutableList<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         selectedProductIds.forEach { productId ->
             val productUiModel = mutableProductList.firstOrNull() { productUiModel ->
@@ -190,7 +184,7 @@ class ManageProductViewModel @Inject constructor(
                 }
             }
         }
-        return mutableProductList.toList()
+        return mutableProductList
     }
 
     fun setProductUiModels(productUiModels: List<ProductUiModel>) {
@@ -290,5 +284,15 @@ class ManageProductViewModel @Inject constructor(
 
     fun isMaxProductLimitReached(selectedProductsSize: Int): Boolean {
         return selectedProductsSize > maxProductLimit
+    }
+
+    fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
+        val mutableSelectedProducts = selectedProducts.toMutableList()
+        mutableSelectedProducts.forEach {
+            it.isVariantHeaderExpanded = false
+            it.isEditing = true
+            it.isViewing = false
+        }
+        return mutableSelectedProducts.toList()
     }
 }

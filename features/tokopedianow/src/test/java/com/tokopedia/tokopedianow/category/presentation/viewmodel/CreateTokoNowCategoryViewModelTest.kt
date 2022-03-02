@@ -36,6 +36,17 @@ class CreateTokoNowCategoryViewModelTest:
         `Then assert category id for tracking`(defaultCategoryL1)
     }
 
+    @Test
+    fun `test create category view model with empty category`() {
+        `Given choose address data`()
+        `Given category view model`(categoryL1 = "", categoryL2 = "")
+
+        `Then assert query param has default sort`()
+        `Then assert category ids`(categoryL1 = "", categoryL2 = "")
+        `Then assert content is loading`()
+        `Then assert category id for tracking`(defaultCategoryL1 = "")
+    }
+
     private fun `Then assert query param has default sort`() {
         assertThat(
                 tokoNowCategoryViewModel.queryParam[SearchApiConst.OB],
@@ -43,14 +54,17 @@ class CreateTokoNowCategoryViewModelTest:
         )
     }
 
-    private fun `Then assert category ids`() {
+    private fun `Then assert category ids`(
+        categoryL1: String = defaultCategoryL1,
+        categoryL2: String = defaultCategoryL2
+    ) {
         assertThat(
                 tokoNowCategoryViewModel.categoryL1,
-                shouldBe(defaultCategoryL1)
+                shouldBe(categoryL1)
         )
         assertThat(
                 tokoNowCategoryViewModel.categoryL2,
-                shouldBe(defaultCategoryL2)
+                shouldBe(categoryL2)
         )
     }
 

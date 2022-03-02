@@ -1,10 +1,11 @@
 package com.tokopedia.shop_widget.mvc_locked_to_product.analytic
 
 import android.os.Bundle
-import android.text.TextUtils
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_BUSINESS_UNIT
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_CATEGORY_ID
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_CURRENT_SITE
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_DIMENSION_45
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_EVENT
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_EVENT_ACTION
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_EVENT_CATEGORY
@@ -22,12 +23,21 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProdu
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_PAGE_TYPE
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_PRICE
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_PRODUCT_ID
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_QUANTITY
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_SCREEN_NAME
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_SHOP_ID
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_SHOP_UNDERSCORE_ID
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_USER_ID
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.ADD_TO_CART
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.ATC_REMOVE_PRODUCT
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.ATC_UPDATE_ADD_PRODUCT_QUANTITY
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.ATC_UPDATE_REMOVE_PRODUCT_QUANTITY
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_ATC_ON_MVC_PRODUCT_CARD
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_MVC_PRODUCT_CARD
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_MVC_SORT_OPTION
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_PG
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_PRODUCT_QUANTITY
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_TRASH_BUTTON
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.EVENT_OPEN_SCREEN
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.LOGIN
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE
@@ -40,6 +50,8 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProdu
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.SHOP_PAGE_BUYER
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.SHOP_PAGE_SELLER
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.model.MvcLockedToProductAddToCartTracker
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridProductUiModel
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
@@ -165,4 +177,120 @@ class MvcLockedToProductTracking @Inject constructor() {
             putLong(KEY_PRICE, productPrice.toLongOrZero())
         }
     }
+
+    fun sendClickAddToCartTracker(
+        cartId: String,
+        productUiModel: MvcLockedToProductGridProductUiModel,
+        voucherId: String,
+        quantity: Int,
+        shopId: String,
+        userId: String,
+        isSellerView: Boolean
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(KEY_EVENT, ADD_TO_CART)
+            putString(KEY_EVENT_ACTION, CLICK_ATC_ON_MVC_PRODUCT_CARD)
+            putString(KEY_EVENT_CATEGORY, getShopPageEventCategory(isSellerView))
+            putString(KEY_EVENT_LABEL, "")
+            putString(KEY_BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(KEY_CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(KEY_PRODUCT_ID, productUiModel.productID)
+            putString(KEY_SHOP_ID, shopId)
+            putString(KEY_USER_ID, userId)
+            putParcelableArrayList(
+                KEY_ITEMS,
+                arrayListOf(
+                    getAtcProductItemTracking(
+                        cartId,
+                        shopId,
+                        quantity,
+                        productUiModel.productID,
+                        productUiModel.productCardModel.productName,
+                        productUiModel.finalPrice,
+                        voucherId
+                    )
+                )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, eventBundle)
+    }
+
+    private fun getAtcProductItemTracking(
+        cartId: String,
+        shopId: String,
+        quantity: Int,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        voucherId: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_CATEGORY_ID, "")
+            putString(KEY_DIMENSION_45, cartId)
+            putString(KEY_ITEM_BRAND, "")
+            putString(KEY_ITEM_CATEGORY, "")
+            putString(KEY_ITEM_ID, productId)
+            putString(KEY_ITEM_NAME, productName)
+            putString(KEY_ITEM_VARIANT, voucherId)
+            putLong(KEY_PRICE, productPrice.toLongOrZero())
+            putInt(KEY_QUANTITY, quantity)
+            putString(KEY_SHOP_UNDERSCORE_ID, shopId)
+        }
+    }
+
+    fun sendClickUpdateProductQuantityTracker(
+        productId: String,
+        quantity: Int,
+        atcType: MvcLockedToProductAddToCartTracker.AtcType,
+        shopId: String,
+        userId: String,
+        isSellerView: Boolean
+    ) {
+        val eventLabel = when(atcType){
+            MvcLockedToProductAddToCartTracker.AtcType.UPDATE_ADD -> {
+                String.format(ATC_UPDATE_ADD_PRODUCT_QUANTITY,quantity)
+            }
+            else -> {
+                String.format(ATC_UPDATE_REMOVE_PRODUCT_QUANTITY,quantity)
+            }
+        }
+        val eventMap = mapOf(
+            KEY_EVENT to CLICK_PG,
+            KEY_EVENT_ACTION to CLICK_PRODUCT_QUANTITY,
+            KEY_EVENT_CATEGORY to getShopPageEventCategory(isSellerView),
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
+            KEY_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            KEY_PRODUCT_ID to productId,
+            KEY_SHOP_ID to shopId,
+            KEY_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+
+    fun sendClickAtcTrashButton(
+        productId: String,
+        quantity: Int,
+        atcType: MvcLockedToProductAddToCartTracker.AtcType,
+        shopId: String,
+        userId: String,
+        voucherId: String,
+        isSellerView: Boolean
+    ) {
+        val eventLabel = String.format(ATC_REMOVE_PRODUCT, productId, voucherId)
+        val eventMap = mapOf(
+            KEY_EVENT to CLICK_PG,
+            KEY_EVENT_ACTION to CLICK_TRASH_BUTTON,
+            KEY_EVENT_CATEGORY to getShopPageEventCategory(isSellerView),
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
+            KEY_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            KEY_PRODUCT_ID to productId,
+            KEY_SHOP_ID to shopId,
+            KEY_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
 }

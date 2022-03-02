@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.databinding.ItemMvcLockedToProductProductGridCardLayoutBinding
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridProductUiModel
@@ -23,6 +24,9 @@ open class MvcLockedToProductGridViewHolder(
 
     interface Listener {
         fun onProductClicked(index: Int, uiModel: MvcLockedToProductGridProductUiModel)
+        fun onProductVariantClickAtc(uiModel: MvcLockedToProductGridProductUiModel)
+        fun onProductVariantQuantityChanged(productInCart: MvcLockedToProductGridProductUiModel.ProductInCart, quantity: Int)
+        fun onProductNonVariantAtcQuantityChanged(productId: String, quantity: Int)
     }
 
     override fun bind(uiModel: MvcLockedToProductGridProductUiModel) {
@@ -32,8 +36,21 @@ open class MvcLockedToProductGridViewHolder(
     private fun setProductCardData(uiModel: MvcLockedToProductGridProductUiModel) {
         viewBinding?.productCardView?.apply {
             setProductModel(uiModel.productCardModel)
+            uiModel.productCardModel.countSoldRating
             setOnClickListener {
                 listener.onProductClicked(adapterPosition, uiModel)
+            }
+            setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    if (uiModel.isVariant) {
+                        listener.onProductVariantQuantityChanged(uiModel.productInCart, quantity)
+                    } else {
+                        listener.onProductNonVariantAtcQuantityChanged(uiModel.productID, quantity)
+                    }
+                }
+            })
+            setAddToCartOnClickListener {
+                listener.onProductVariantClickAtc(uiModel)
             }
         }
     }

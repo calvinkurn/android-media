@@ -32,5 +32,6 @@ data class CouponUiModel(
     val isPublic: Boolean,
     var tnc: String,
     val productIds : List<Long>,
-    val products: List<ProductId>
+    val products: List<ProductId>,
+    val galadrielVoucherId: Long
 ): Parcelable

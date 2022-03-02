@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
-import com.tokopedia.authentication.HEADER_RELEASE_TRACK
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface

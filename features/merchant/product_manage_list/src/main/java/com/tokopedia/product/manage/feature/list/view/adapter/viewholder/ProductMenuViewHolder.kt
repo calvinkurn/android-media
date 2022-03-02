@@ -11,7 +11,7 @@ import com.tokopedia.product.manage.databinding.ItemProductManageMenuBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
+import java.util.Date
 
 class ProductMenuViewHolder(
     itemView: View,

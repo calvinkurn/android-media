@@ -29,6 +29,7 @@ class UpdateCouponActivity : AppCompatActivity() {
     companion object {
         const val BUNDLE_KEY_COUPON_ID = "coupon-id"
         const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
+        const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selectedWarehouseId"
         const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
         const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
@@ -90,6 +91,7 @@ class UpdateCouponActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProductIds = couponPreviewFragment.getSelectedProductIds()
@@ -106,6 +108,7 @@ class UpdateCouponActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putBoolean(BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
@@ -153,9 +156,12 @@ class UpdateCouponActivity : AppCompatActivity() {
             if (requestCode == CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.addProducts(selectedProducts)
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                couponPreviewFragment.setSelectedWarehouseId(selectedWarehouseId ?: "")
             } else if (requestCode == CreateCouponProductActivity.REQUEST_CODE_MANAGE_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.setProducts(selectedProducts)
+                couponPreviewFragment.setSelectedProductIds(mutableListOf())
             }
         }
     }

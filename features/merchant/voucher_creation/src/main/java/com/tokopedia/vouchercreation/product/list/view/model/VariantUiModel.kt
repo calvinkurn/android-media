@@ -5,11 +5,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class VariantUiModel(
-        var isAdding: Boolean = false,
         var isEditing: Boolean = false,
         var isViewing: Boolean = false,
         var isSelected: Boolean = false,
-        var isClick: Boolean = true,
+        var isSelectAll: Boolean = false,
+        var isClicked: Boolean = false,
         var variantId: String = "",
         var variantName: String = "",
         var sku: String = "",

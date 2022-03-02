@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
@@ -61,15 +63,14 @@ open class RecommendationPageViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
-        private val dispatcher: RecommendationDispatcher
+        private val dispatcher: RecommendationDispatcher,
+        private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
-        const val PARAM_TXSC = "txsc"
-        const val PARAM_JOB_TIMEOUT = 1000L
+        const val PARAM_JOB_TIMEOUT_DEFAULT = 1000L
         const val PARAM_SUCCESS_200 = 200
         const val PARAM_SUCCESS_300 = 300
-        const val POS_PRODUCT_ANCHOR = 0
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
@@ -180,7 +181,11 @@ open class RecommendationPageViewModel @Inject constructor(
             queryParam: String) {
         launchCatchError(coroutineContext, block = {
             var adsStatus = TopadsIsAdsQuery()
-            val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+            val timeout = remoteConfig.getLong(
+                GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
+                PARAM_JOB_TIMEOUT_DEFAULT
+            )
+            val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
                         productId = productId,
                         productKey = "",

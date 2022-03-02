@@ -17,7 +17,6 @@ import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,16 +34,12 @@ class CentralizedPromoViewModel @Inject constructor(
     private val sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
     private val sharedPreferences: SharedPreferences,
-    private val abTestPlatform: AbTestPlatform,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val UNAVAILABLE_PROMO_TYPE = 0
         private const val BROADCAST_CHAT_PROMO_TYPE = 2
-
-        private const val MVC_PRODUCT_ROLLENCE_KEY = "MVProductEntryPoint"
-        private const val MVC_PRODUCT_VARIANT_ON = "MVProductEntryPoint"
     }
 
     val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =
@@ -160,7 +155,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private fun getIsProductCouponEnabled(): Boolean {
         return try {
-            abTestPlatform.getString(MVC_PRODUCT_ROLLENCE_KEY, "") == MVC_PRODUCT_VARIANT_ON
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
         } catch (ex: Exception) {
             false
         }

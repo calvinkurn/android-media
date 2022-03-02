@@ -4,7 +4,6 @@ import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import javax.inject.Inject
 
 class GenerateImageParamsBuilder @Inject constructor() {
@@ -53,18 +52,19 @@ class GenerateImageParamsBuilder @Inject constructor() {
             else -> EMPTY_STRING
         }
 
-        val symbol = when {
-            couponSettings.discountAmount < THOUSAND -> "rb"
-            couponSettings.discountAmount >= MILLION -> "jt"
-            couponSettings.discountAmount >= THOUSAND -> "rb"
-            else -> EMPTY_STRING
-        }
 
         val amount = when {
             couponSettings.type == CouponType.FREE_SHIPPING -> couponSettings.discountAmount
             couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> couponSettings.discountAmount
             couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> couponSettings.maxDiscount
             else -> couponSettings.discountAmount
+        }
+
+        val symbol = when {
+            amount < THOUSAND -> "rb"
+            amount >= MILLION -> "jt"
+            amount >= THOUSAND -> "rb"
+            else -> "rb"
         }
 
         val formattedDiscountAmount : Float = when {

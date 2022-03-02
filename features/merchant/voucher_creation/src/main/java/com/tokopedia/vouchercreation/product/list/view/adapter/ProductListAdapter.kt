@@ -45,10 +45,36 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun updateAllProductSelections(isSelectAll: Boolean) {
         this.productUiModelList.forEach {
-            it.isSelectAll = isSelectAll
-            it.isSelected = isSelectAll
+            if (!it.isError) {
+                it.isSelectAll = isSelectAll
+                it.isSelected = isSelectAll
+            }
         }
         notifyDataSetChanged()
+    }
+
+    fun clearAllSelection() {
+        this.productUiModelList.forEach {
+            it.isSelected = false
+        }
+    }
+
+    fun disableAllProductSelections() {
+        this.productUiModelList.forEach {
+            it.isError = true
+            it.variants.forEach { variantUiModel ->
+                variantUiModel.isError = true
+            }
+        }
+    }
+
+    fun enableAllProductSelections() {
+        this.productUiModelList.forEach {
+            it.isError = false
+            it.variants.forEach { variantUiModel ->
+                variantUiModel.isError = false
+            }
+        }
     }
 
     fun isProductListEnabled(isEnabled: Boolean) {

@@ -13,7 +13,7 @@ class LocationListAdapter :
         RecyclerView.Adapter<WarehouseLocationItemViewHolder>(),
         WarehouseLocationItemViewHolder.OnListItemClickListener {
 
-    private var warehouseLocationSelections: List<WarehouseLocationSelection> = listOf()
+    private var warehouseLocationSelections: MutableList<WarehouseLocationSelection> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WarehouseLocationItemViewHolder {
         val binding = ItemMvcFilterLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -38,7 +38,15 @@ class LocationListAdapter :
     }
 
     fun setWarehouseLocationSelections(warehouseLocationSelections: List<WarehouseLocationSelection>) {
-        this.warehouseLocationSelections = warehouseLocationSelections
+        this.warehouseLocationSelections = warehouseLocationSelections.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun setSelectedWarehouseLocation(wareHouseId: Int?) {
+        warehouseLocationSelections.filter { warehouseLocationSelection ->
+            warehouseLocationSelection.warehouseId != wareHouseId
+        }.forEach { selection -> selection.isSelected = false }
+        warehouseLocationSelections.find { it.warehouseId == wareHouseId }?.isSelected = true
         notifyDataSetChanged()
     }
 

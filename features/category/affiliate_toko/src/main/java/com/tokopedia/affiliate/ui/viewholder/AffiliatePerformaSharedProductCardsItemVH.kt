@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class AffiliatePerformaSharedProductCardsItemVH(
     itemView: View,
@@ -139,6 +141,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_inactive)
             }
             itemView.setOnClickListener {
+                sendSelectContentEvent(product)
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "",
@@ -146,5 +149,11 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 )
             }
         }
+    }
+
+    private fun sendSelectContentEvent(product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
+        val label = if(product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.SELECT_CONTENT,AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
+        AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,UserSession(itemView.context).userId,product.itemID,adapterPosition-1,product.itemTitle,"${product.itemID} - $label",AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT)
     }
 }

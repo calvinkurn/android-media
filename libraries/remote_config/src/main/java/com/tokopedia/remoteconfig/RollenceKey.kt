@@ -2,12 +2,19 @@ package com.tokopedia.remoteconfig
 
 object RollenceKey {
 
+    // Shop Settings
+    const val AB_TEST_OPERATIONAL_HOURS_KEY = "operational_hour"
+    const val AB_TEST_OPERATIONAL_HOURS_NO_KEY = "no_key"
+
     //    Shop Page
     const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
+
+    // shop mvc discovery
+    const val AB_TEST_SHOP_MVC_DISCO_PAGE_PHASE_2 = "shop_page_mvc"
 
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"

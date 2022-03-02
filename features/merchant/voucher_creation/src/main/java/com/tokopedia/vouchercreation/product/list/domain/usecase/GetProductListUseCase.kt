@@ -24,11 +24,13 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
         private const val KEY_PAGE = "page"
         private const val KEY_PAGE_SIZE = "pageSize"
         private const val KEY_PRODUCT_IDS = "productIDInclude"
-        private const val PAGE_SIZE = "10"
+        private const val KEY_IS_PRE_ORDER_ONLY = "isPreorderOnly"
+        private const val VALUE_FALSE = "false"
 
         @JvmStatic
         fun createRequestParams(
                 page: Int? = null,
+                pageSize: Int? = null,
                 keyword: String? = null,
                 shopId: String?,
                 warehouseId: String? = null,
@@ -43,7 +45,8 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
                 shopShowCaseIds?.run { add(GoodsFilterInput(id = KEY_MENU, value = shopShowCaseIds)) }
                 categories?.run { add(GoodsFilterInput(id = KEY_CATEGORY, value = categories)) }
                 page?.run { add(GoodsFilterInput(id = KEY_PAGE, value = listOf(this.toString()))) }
-                add(GoodsFilterInput(id = KEY_PAGE_SIZE, value = listOf(PAGE_SIZE)))
+                pageSize?.run { add(GoodsFilterInput(id = KEY_PAGE_SIZE, value = listOf(this.toString()))) }
+                add(GoodsFilterInput(id = KEY_IS_PRE_ORDER_ONLY, value = listOf(VALUE_FALSE)))
             }
 
             return RequestParams.create().apply {

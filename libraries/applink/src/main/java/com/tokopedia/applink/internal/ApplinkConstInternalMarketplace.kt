@@ -158,6 +158,8 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
+    const val SHOP_SETTINGS_OPERATIONAL_HOURS = "$SHOP_SETTINGS_BASE-operational-hours"
+
     const val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
 
     const val SHOP_SETTINGS_COD = "$SHOP_SETTINGS_BASE-cod"

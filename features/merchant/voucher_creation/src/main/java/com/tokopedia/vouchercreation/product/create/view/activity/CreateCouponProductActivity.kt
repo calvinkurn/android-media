@@ -17,6 +17,7 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDe
 import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
+import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
@@ -28,6 +29,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
         const val BUNDLE_KEY_MAX_PRODUCT_LIMIT = "maxProductLimit"
         const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
+        const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selectedWarehouseId"
         const val BUNDLE_KEY_COUPON = "coupon"
         const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         const val REQUEST_CODE_CREATE_COUPON = 100
@@ -94,6 +96,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProducts = arrayListOf<ProductUiModel>()
@@ -109,6 +112,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putBoolean(ManageProductFragment.BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProducts = ArrayList<ProductUiModel>()
@@ -203,6 +207,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
             if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.addProducts(selectedProducts)
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                couponPreviewFragment.setSelectedWarehouseId(selectedWarehouseId ?: "")
             } else if (requestCode == REQUEST_CODE_MANAGE_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.setProducts(selectedProducts)

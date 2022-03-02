@@ -30,6 +30,8 @@ class AddProductViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
+        private const val FIRST_PAGE = 1
+        private const val PAGE_SIZE = 10
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
@@ -44,17 +46,21 @@ class AddProductViewModel @Inject constructor(
     private var maxProductLimit = 0
     private var couponSettings: CouponSettings? = null
     private var selectedProductIds = listOf<String>()
+    private var pageIndex = 1
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
-    private var warehouseLocationId: Int? = null
-    private var sellerWarehouseId: Int? = null
+    private var boundLocationId: Int? = null // bound location id - products
+    private var warehouseLocationId: Int? = null // selected warehouse id
+    private var sellerWarehouseId: Int? = null // seller location id
     private var showCaseSelections = listOf<ShowCaseSelection>()
     private var categorySelections = listOf<CategorySelection>()
     private var selectedSort: GoodsSortInput? = null
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
+    var isFiltering = false
+    var isSelectionChanged = false
 
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
@@ -83,6 +89,7 @@ class AddProductViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 val params = GetProductListUseCase.createRequestParams(
                         page = page,
+                        pageSize = PAGE_SIZE,
                         keyword = keyword,
                         shopId = shopId,
                         warehouseId = warehouseLocationId.toString(),
@@ -181,13 +188,19 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>): List<WarehouseLocationSelection> {
+    fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
+                                         selectedWarehouseId: Int?): List<WarehouseLocationSelection> {
+
         return warehouses.map { warehouse ->
+            var isSelected = warehouse.warehouseType == SELLER_WAREHOUSE_TYPE
+            selectedWarehouseId?.run {
+                isSelected = warehouse.warehouseId == this
+            }
             WarehouseLocationSelection(
                     warehouseId = warehouse.warehouseId,
                     warehouseType = warehouse.warehouseType,
                     warehouseName = warehouse.warehouseName,
-                    isSelected = warehouse.warehouseType == SELLER_WAREHOUSE_TYPE
+                    isSelected = isSelected
             )
         }
     }
@@ -230,7 +243,7 @@ class AddProductViewModel @Inject constructor(
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
             val productUiModel = mutableProductList.first {
-                it.id == validationResult.parentProductId.toString()
+                it.id == validationResult.parentProductId
             }
             productUiModel.isError = !validationResult.isEligible
             productUiModel.errorMessage = validationResult.reason
@@ -243,7 +256,7 @@ class AddProductViewModel @Inject constructor(
     private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
         return variantValidationData.map { data ->
             VariantUiModel(
-                    variantId = data.productId.toString(),
+                    variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
@@ -255,6 +268,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    // dont confuse this with selected warehouse id
     fun setSellerWarehouseId(warehouseId: Int) {
         this.sellerWarehouseId = warehouseId
     }
@@ -267,7 +281,7 @@ class AddProductViewModel @Inject constructor(
         return productUiModels
     }
 
-    fun setSetSelectedProducts(productList: List<ProductUiModel>) {
+    fun setSelectedProducts(productList: List<ProductUiModel>) {
         this.selectedProductListLiveData.value = productList
     }
 
@@ -286,6 +300,14 @@ class AddProductViewModel @Inject constructor(
 
     fun setWarehouseLocationId(warehouseLocation: Int?) {
         this.warehouseLocationId = warehouseLocation
+    }
+
+    fun setBoundLocationId(boundLocationId: Int?) {
+        this.boundLocationId = boundLocationId
+    }
+
+    fun getBoundLocationId(): Int? {
+        return boundLocationId
     }
 
     fun getWarehouseLocationId(): Int? {
@@ -317,8 +339,11 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun setSelectedSort(sortSelections: List<SortSelection>) {
-        sortSelections.firstOrNull()?.let {
-            this.selectedSort = GoodsSortInput(it.id, it.value)
+        if (sortSelections.isNullOrEmpty()) this.selectedSort = null
+        else {
+            sortSelections.firstOrNull()?.let {
+                this.selectedSort = GoodsSortInput(it.id, it.value)
+            }
         }
     }
 
@@ -393,10 +418,26 @@ class AddProductViewModel @Inject constructor(
         return selectedProductsSize > maxProductLimit
     }
 
+    fun isInitialLoad(pageIndex: Int): Boolean {
+        return pageIndex == FIRST_PAGE
+    }
+
+    fun setPagingIndex(pageIndex: Int) {
+        this.pageIndex = pageIndex
+    }
+
+    fun getPagingIndex(): Int {
+        return pageIndex
+    }
+
     fun excludeSelectedProducts(productList: List<ProductUiModel>,
                                 selectedProductIds: List<String>): List<ProductUiModel> {
         return productList.filter { productUiModel ->
             productUiModel.id !in selectedProductIds
         }
+    }
+
+    fun isSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
+        return origin != warehouseSelection
     }
 }

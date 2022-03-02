@@ -2,6 +2,8 @@ package com.tokopedia.vouchercreation.product.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -56,6 +58,8 @@ class CouponPreviewViewModel @Inject constructor(
     private val _couponCreationEligibility = MutableLiveData<Result<Int>>()
     val couponCreationEligibility: LiveData<Result<Int>>
         get() = _couponCreationEligibility
+
+    var selectedWarehouseId:String = ""
 
     fun validateCoupon(
         pageMode : CouponPreviewFragment.Mode,
@@ -223,32 +227,22 @@ class CouponPreviewViewModel @Inject constructor(
                         val isVariantSelected = variant.isSelected
                         if (isVariantSelected) {
                             couponProductData.add(CouponProduct(
-                                    id = variant.variantId,
-                                    imageUrl = selectedProduct.imageUrl,
-                                    soldCount = selectedProduct.sold
+                                id = variant.variantId,
+                                imageUrl = selectedProduct.imageUrl,
+                                soldCount = selectedProduct.sold
                             ))
                         }
                     }
                 } else {
                     couponProductData.add(CouponProduct(
-                            id = selectedProduct.id,
-                            imageUrl = selectedProduct.imageUrl,
-                            soldCount = selectedProduct.sold
+                        id = selectedProduct.id,
+                        imageUrl = selectedProduct.imageUrl,
+                        soldCount = selectedProduct.sold
                     ))
                 }
             }
         }
         return couponProductData.toList()
-    }
-
-    fun mapCouponProductDataToSelectedProducts(couponProductData: List<CouponProduct>): List<ProductUiModel> {
-        return couponProductData.map { couponProduct ->
-            ProductUiModel(
-                    id = couponProduct.id,
-                    imageUrl = couponProduct.imageUrl,
-                    sold = couponProduct.soldCount
-            )
-        }
     }
 
     fun mapSelectedProductIdsToProductUiModels(selectedProductIds: List<ProductId>): List<ProductUiModel> {
