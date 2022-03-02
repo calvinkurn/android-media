@@ -45,7 +45,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun updateAllProductSelections(isSelectAll: Boolean) {
         this.productUiModelList.forEach {
-            if (!it.isError) {
+            if (!it.isError && it.isSelectable) {
                 it.isSelectAll = isSelectAll
                 it.isSelected = isSelectAll
                 it.variants.forEach { variantUiModel ->

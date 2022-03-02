@@ -49,6 +49,9 @@ class ProductItemViewHolder(
         binding.tpgProductPrice.text = productUiModel.price
         binding.tpgSoldAndStock.text = productUiModel.soldNStock
 
+        // disable product selection if all variants are errors
+        binding.cbuProductItem.isEnabled = productUiModel.isSelectable
+
         // view mode
         val isViewing = productUiModel.isViewing
         if (isViewing) {
@@ -139,8 +142,11 @@ class ProductItemViewHolder(
         if (isSelected) {
             if (!isIndeterminate) binding.cbuProductItem.setIndeterminate(true)
             if (!isChecked) binding.cbuProductItem.isChecked = true
-        } else if (selectedVariantSize.isZero() && isIndeterminate) {
-            binding.cbuProductItem.setIndeterminate(false)
+        } else {
+            if (selectedVariantSize.isZero()) {
+                if (isIndeterminate) binding.cbuProductItem.setIndeterminate(false)
+                if (selectedVariantSize.isZero()) binding.cbuProductItem.isChecked = false
+            }
         }
     }
 }

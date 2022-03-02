@@ -259,7 +259,13 @@ class AddProductViewModel @Inject constructor(
             productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
             productUiModel.isSelected = isSelectAll && validationResult.isEligible
-            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold, isSelectAll)
+
+            val variantUiModels = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold, isSelectAll)
+            productUiModel.variants = variantUiModels
+            if (variantUiModels.isNotEmpty()) {
+                val eligibleVariants = variantUiModels.filter { !it.isError }
+                if (eligibleVariants.isEmpty()) productUiModel.isSelectable = false
+            }
         }
         return mutableProductList.toList()
     }
