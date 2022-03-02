@@ -41,8 +41,6 @@ data class AddOnByProductResponse(
 data class AddOnResponse(
         @SerializedName("Basic")
         val basicInfo: BasicInfoResponse = BasicInfoResponse(),
-        @SerializedName("Pictures")
-        val pictures: List<PictureResponse> = emptyList(),
         @SerializedName("Inventory")
         val inventory: InventoryResponse = InventoryResponse()
 )

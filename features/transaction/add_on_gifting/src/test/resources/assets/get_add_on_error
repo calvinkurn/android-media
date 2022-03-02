@@ -1,0 +1,60 @@
+{
+  "GetAddOnByProductResponse": {
+    "error": {
+      "messages": "",
+      "reason": [],
+      "errorCode": ""
+    },
+    "AddOnByProductResponse": [
+      {
+        "ProductID": "1234",
+        "WarehouseID": "5678",
+        "AddOnType": "PRODUCT_ADDON",
+        "HasAddOns": true,
+        "CouponText": "Some campaign text",
+        "Addons": [
+          {
+            "Basic": {
+              "ID": "898",
+              "ShopID": "123",
+              "Name": "name of addon",
+              "Rules": {
+                "MaxOrder": 10,
+                "CustomNotes": true
+              },
+              "Metadata": {
+                "Pictures": [
+                  {
+                    "FilePath": "/filepath",
+                    "FileName": "Filename.jpg",
+                    "URL": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                    "URL100": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                    "URL200": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png"
+                  }
+                ],
+                "NotesTemplate": "some template"
+              },
+              "ProductAddOnType": "GREETING_CARD_TYPE",
+              "Status": "ADD_ON_ACTIVE"
+            },
+            "Pictures": [
+              {
+                "FilePath": "/filepath",
+                "FileName": "Filename.jpg",
+                "URL": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                "URL100": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                "URL200": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png"
+              }
+            ],
+            "Inventory": {
+              "WarehouseID": "1234",
+              "Price": 10000.00,
+              "Stock": "100",
+              "UnlimitedStock": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
