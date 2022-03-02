@@ -17,6 +17,7 @@
     <string name="message_invoice_copied">Kode invoice telah tersalin</string>
     <string name="message_awb_copied">Nomor resi telah tersalin</string>
     <string name="message_receiver_address_copied">Alamat penerima telah tersalin</string>
+    <string name="message_dropshipper_copied">Dropshipper telah di salin</string>
     <string name="html_link">%1$s &lt;a href=\"%2$s\"&gt;%3$s&lt;/a&gt;</string>
     <string name="label_product_price_and_quantity">%1$d x %2$s</string>
     <string name="failed_to_get_information">Informasi gagal dimuat</string>
@@ -41,6 +42,7 @@
     <string name="buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
     <string name="copy_label_awb_number">bom_awb</string>
     <string name="copy_label_receiver_address">bom_receiver_address</string>
+    <string name="copy_label_dropship">bom_dropship</string>
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
