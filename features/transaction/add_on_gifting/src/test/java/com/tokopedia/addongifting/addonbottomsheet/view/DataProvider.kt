@@ -12,4 +12,8 @@ object DataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_add_on_success"), GetAddOnByProductResponse::class.java)
     }
 
+    fun provideLoadAddOnDataError(): GetAddOnByProductResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_add_on_error"), GetAddOnByProductResponse::class.java)
+    }
+
 }
