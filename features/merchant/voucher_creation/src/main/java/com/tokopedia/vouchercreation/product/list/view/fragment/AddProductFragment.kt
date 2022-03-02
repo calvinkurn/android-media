@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -174,6 +175,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 val keyword = textView.text.toString().lowercase()
                 viewModel.setSearchKeyword(keyword)
                 loadInitialData()
+                VoucherCreationTracking.clickSearchProduct(shopId = userSession.shopId, productName = keyword)
                 return@setOnEditorActionListener true
             } else return@setOnEditorActionListener false
         }
@@ -302,6 +304,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     putExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, viewModel.getWarehouseLocationId()?.toString())
                 }
                 this.activity?.setResult(Activity.RESULT_OK, resultIntent)
+                VoucherCreationTracking.clickAddProduct(shopId = userSession.shopId, products = extraSelectedProducts)
                 this.activity?.finish()
             }
         }
@@ -486,6 +489,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
+        VoucherCreationTracking.clickFilterLocation(shopId = userSession.shopId, location = selectedWarehouseLocation.warehouseName)
     }
 
     override fun onApplyShowCaseFilter(selectedShowCases: List<ShowCaseSelection>) {
@@ -496,6 +500,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.isFiltering = true
         loadInitialData()
         viewModel.setSelectedProducts(listOf())
+         VoucherCreationTracking.clickFilterEtalase(shopId = userSession.shopId, etalaseName = viewModel.getSelectedShopShowcaseNames())
     }
 
     override fun onApplyCategoryFilter(selectedCategories: List<CategorySelection>) {
@@ -506,6 +511,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.isFiltering = true
         loadInitialData()
         viewModel.setSelectedProducts(listOf())
+        VoucherCreationTracking.clickFilterProductCategory(shopId = userSession.shopId, categoryName = viewModel.getSelectedCategoryNames())
     }
 
     override fun onApplySortFilter(selectedSort: List<SortSelection>) {
@@ -516,6 +522,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.isFiltering = true
         loadInitialData()
         viewModel.setSelectedProducts(listOf())
+        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSortName() ?: "")
     }
 
     override fun createAdapter() = ProductListAdapter(this)

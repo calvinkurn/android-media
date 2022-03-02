@@ -57,6 +57,7 @@ class AddProductViewModel @Inject constructor(
     private var showCaseSelections = listOf<ShowCaseSelection>()
     private var categorySelections = listOf<CategorySelection>()
     private var selectedSort: GoodsSortInput? = null
+    private var selectedSortName: String? = null
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
@@ -339,6 +340,12 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedShopShowcaseNames(): List<String> {
+        return showCaseSelections.map { showCaseSelection ->
+            showCaseSelection.name
+        }
+    }
+
     fun setSelectedCategories(categorySelections: List<CategorySelection>) {
         this.categorySelections = categorySelections
     }
@@ -349,17 +356,28 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedCategoryNames(): List<String> {
+        return categorySelections.map { categorySelection ->
+            categorySelection.name
+        }
+    }
+
     fun setSelectedSort(sortSelections: List<SortSelection>) {
         if (sortSelections.isNullOrEmpty()) this.selectedSort = null
         else {
             sortSelections.firstOrNull()?.let {
                 this.selectedSort = GoodsSortInput(it.id, it.value)
+                this.selectedSortName = it.name
             }
         }
     }
 
     fun getSelectedSort(): GoodsSortInput? {
         return selectedSort
+    }
+
+    fun getSelectedSortName(): String? {
+        return selectedSortName
     }
 
     fun setMaxProductLimit(maxProductLimit: Int) {
