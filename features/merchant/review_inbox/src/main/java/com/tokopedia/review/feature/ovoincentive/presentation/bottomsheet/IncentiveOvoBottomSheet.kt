@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.feature.ovoincentive.analytics.IncentiveOvoTracking
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
-import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
+import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoTnCAdapter
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.layoutmanager.IncentiveOvoIllustrationLayoutManager
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.typefactory.IncentiveOvoIllustrationAdapterTypeFactory
+import com.tokopedia.review.feature.ovoincentive.presentation.adapter.viewholder.IncentiveOvoTnCViewHolder
 import com.tokopedia.review.feature.ovoincentive.presentation.mapper.IncentiveOvoIllustrationMapper
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoIllustrationUiModel
@@ -23,14 +25,19 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 
-class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify() {
+class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
+    IncentiveOvoTnCViewHolder.Listener {
 
     companion object {
         private const val BOTTOM_SHEET_WRAPPER_TOP_PADDING = 16
     }
 
     private var binding: IncentiveOvoTncBottomSheetBinding = IncentiveOvoTncBottomSheetBinding.inflate(LayoutInflater.from(context))
+    private var incentiveOvoListener: IncentiveOvoListener? = null
     private val incentiveOvoIllustrationMapper by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationMapper() }
+    private val illustrationAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationAdapterTypeFactory() }
+    private val illustrationAdapter by lazy(LazyThreadSafetyMode.NONE) { BaseAdapter(illustrationAdapterTypeFactory) }
+    private val tncAdapter by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoTnCAdapter(emptyList(), this) }
 
     init {
         setChild(binding.root)
@@ -44,6 +51,10 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupShowBehavior()
+    }
+
+    override fun onClickTnCLink(url: String): Boolean {
+        return incentiveOvoListener?.onUrlClicked(url).orFalse()
     }
 
     private fun setupShowBehavior() {
@@ -63,9 +74,10 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify() {
     private fun setupIllustrationView(illustrations: List<IncentiveOvoIllustrationUiModel>) {
         with(binding.rvIncentiveOvoIllustrations) {
             layoutManager = IncentiveOvoIllustrationLayoutManager(context)
-            adapter = BaseAdapter(IncentiveOvoIllustrationAdapterTypeFactory()).apply {
-                setElements(illustrations)
+            if (adapter != illustrationAdapter) {
+                adapter = illustrationAdapter
             }
+            illustrationAdapter.setElements(illustrations)
         }
     }
 
@@ -75,6 +87,7 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify() {
         category: String,
         incentiveOvoListener: IncentiveOvoListener
     ) {
+        this.incentiveOvoListener = incentiveOvoListener
         with(binding) {
             tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title.orEmpty()
             tgIncentiveOvoSubtitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle?.toSpannedHtmlLink(root.context) ?: ""
@@ -83,10 +96,10 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify() {
                 text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText.orEmpty()
             }
             tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description.orEmpty()
-            rvIncentiveOvoExplain.adapter = IncentiveOvoAdapter(
-                productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList.orEmpty(),
-                incentiveOvoListener
-            )
+            if (rvIncentiveOvoExplain.adapter != tncAdapter) {
+                rvIncentiveOvoExplain.adapter = tncAdapter
+            }
+            tncAdapter.setElements(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList.orEmpty())
         }
     }
 
