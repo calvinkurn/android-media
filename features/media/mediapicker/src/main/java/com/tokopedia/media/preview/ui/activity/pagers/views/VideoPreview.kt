@@ -14,7 +14,7 @@ import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 class VideoPreview(
     private val context: Context,
-    private val videoPlayer: PickerVideoPlayer
+    val videoPlayer: PickerVideoPlayer
 ) : BasePagerPreview {
 
     override val layout: Int
@@ -22,7 +22,6 @@ class VideoPreview(
 
     override fun setupView(media: PreviewUiModel): View {
         return rootLayoutView(context).also {
-            val imgPreview = it.findViewById<ImageView>(R.id.img_preview)
             val viewPlayer = it.findViewById<PlayerView>(R.id.video_preview)
             val videoControl = it.findViewById<PlayerControlView>(R.id.video_control)
 
@@ -42,17 +41,7 @@ class VideoPreview(
                 }
             }
 
-            videoPlayer.player().addVideoListener(object : VideoListener {
-                override fun onRenderedFirstFrame() {
-                    super.onRenderedFirstFrame()
-                    val firstFrame = (viewPlayer.videoSurfaceView as TextureView).bitmap
-
-//                    imgPreview.loadImage(firstFrame) {
-//                        setPlaceHolder(-1)
-//                        centerCrop()
-//                    }
-                }
-            })
+            videoPlayer.start()
         }
     }
 

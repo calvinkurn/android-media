@@ -38,13 +38,12 @@
         app:placeholder="@drawable/picker_ic_placeholder_media_preview"
         tools:visibility="visible" />
 
-<!--    <com.tokopedia.unifycomponents.UnifyButton-->
-<!--        android:id="@+id/btn_action"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="ACTION"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        tools:visibility="visible" />-->
+    <com.tokopedia.media.preview.ui.widget.button.RetakeActionButtonWidget
+        android:id="@+id/btn_retake"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

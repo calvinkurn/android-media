@@ -11,6 +11,9 @@
 <!--    action button -->
     <string name="picker_toolbar_continue">Lanjut</string>
     <string name="picker_title_all_media">Semua Media</string>
+    <string name="picker_button_retake_common">Pilih Ulang</string>
+    <string name="picker_button_retake_video">Rekam Video Ulang</string>
+    <string name="picker_button_retake_image">Ambil Gambar Ulang</string>
 
 <!--    menus-->
     <string name="picker_camera_picture_mode">PHOTO</string>

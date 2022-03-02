@@ -16,10 +16,9 @@ import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
-import com.tokopedia.media.picker.ui.observer.EventFlowFactory
-import com.tokopedia.media.picker.ui.observer.EventState
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
 import com.tokopedia.utils.view.binding.viewBinding
+import java.io.File
 
 class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
@@ -69,7 +68,7 @@ class PickerPreviewActivity : BaseActivity()
 
     override fun onContinueClicked() {
         uiModel.forEach {
-            println("MEDIAPICKER -> $it")
+            println("MEDIAPICKER -> ${it.path}")
         }
     }
 
@@ -81,13 +80,17 @@ class PickerPreviewActivity : BaseActivity()
         when (action) {
             is DrawerActionType.Remove -> {
                 pickerPager.removeData(action.mediaToRemove)
-                setIntentData(action.data)
+                setUiModelData(action.data)
+
+                if (action.data.isEmpty()) {
+                    finishIntent()
+                }
             }
             is DrawerActionType.Add -> {
-                setIntentData(action.data)
+                setUiModelData(action.data)
             }
             is DrawerActionType.Reorder -> {
-                setIntentData(action.data)
+                setUiModelData(action.data)
             }
         }
     }
@@ -100,14 +103,14 @@ class PickerPreviewActivity : BaseActivity()
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
         PreviewIntent.extractData(intent).also { elements ->
-            setIntentData(elements)
+            setUiModelData(elements)
         }
 
         // temporary cache of uiModel
         savedInstanceState?.let {
             it.getParcelableArrayList<MediaUiModel>(CACHE_LAST_SELECTION)
                 ?.let { elements ->
-                    setIntentData(elements)
+                    setUiModelData(elements)
                 }
         }
     }
@@ -128,15 +131,45 @@ class PickerPreviewActivity : BaseActivity()
         val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(5) // TODO
+            binding?.drawerSelector?.setMaxAdapterSize(uiModel.size)
             binding?.drawerSelector?.addAllData(uiModel)
             binding?.drawerSelector?.show()
         } else {
-//            binding?.btnAction?.show()
+            val media = uiModel.first()
+            retakeButtonAction(media)
         }
     }
 
-    private fun setIntentData(elements: List<MediaUiModel>) {
+    private fun retakeButtonAction(media: MediaUiModel) {
+        binding?.btnRetake?.show()
+
+        if (media.isVideo() && media.isFromPickerCamera) {
+            binding?.btnRetake?.videoMode()
+        } else if (!media.isVideo() && media.isFromPickerCamera) {
+            binding?.btnRetake?.photoMode()
+        } else {
+            binding?.btnRetake?.commonMode()
+        }
+
+        binding?.btnRetake?.setOnClickListener {
+            deleteLocalCameraMedia(media)
+
+            uiModel.clear()
+            finishIntent()
+        }
+    }
+
+    private fun deleteLocalCameraMedia(media: MediaUiModel) {
+        if (media.isFromPickerCamera) {
+            val file = File(media.path)
+
+            if (file.exists()) {
+                file.delete()
+            }
+        }
+    }
+
+    private fun setUiModelData(elements: List<MediaUiModel>) {
         uiModel.clear()
         uiModel.addAll(elements)
     }

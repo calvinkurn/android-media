@@ -6,12 +6,13 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 
 class PickerVideoPlayer constructor(
@@ -19,7 +20,6 @@ class PickerVideoPlayer constructor(
 ) {
 
     var videoUrl = ""
-    var shouldCache = false
 
     var listener: Listener? = null
 
@@ -47,16 +47,14 @@ class PickerVideoPlayer constructor(
     fun start() {
         if (videoUrl.isEmpty()) return
 
-        val mediaSource = getOrCreateMediaSource(
-            Uri.parse(videoUrl),
-            shouldCache
-        )
+        val mediaSource = getOrCreateMediaSource(Uri.parse(videoUrl))
 
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
     }
 
     fun stop() {
+        exoPlayer.playWhenReady = false
         exoPlayer.stop()
     }
 
@@ -66,28 +64,21 @@ class PickerVideoPlayer constructor(
         } catch (ignored: Throwable) {}
     }
 
-    private fun getOrCreateMediaSource(uri: Uri, isCache: Boolean): MediaSource {
-        val defaultDataSourceFactory = DefaultDataSourceFactory(
-            context,
-            Util.getUserAgent(context, "Tokopedia")
-        )
+    private fun getOrCreateMediaSource(uri: Uri): MediaSource {
+        val userAgent = Util.getUserAgent(context, "Tokopedia")
+        val dataSourceFactory = DefaultDataSourceFactory(context, userAgent)
+        val mediaSourceFactory = generateMediaSourceFactory(uri, dataSourceFactory)
+        return mediaSourceFactory.createMediaSource(uri)
+    }
 
-        val dataSourceFactory = if (!isCache) defaultDataSourceFactory else {
-            CacheDataSourceFactory(
-                PickerPlayerViewCache.get(context),
-                defaultDataSourceFactory
-            )
-        }
-
-        val mediaSourceFactory = when(val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
-            C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
-            C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
+    private fun generateMediaSourceFactory(uri: Uri, dsFactory: DataSource.Factory): MediaSourceFactory {
+        return when(val type = Util.inferContentType(uri)) {
+            C.TYPE_SS -> SsMediaSource.Factory(dsFactory)
+            C.TYPE_DASH -> DashMediaSource.Factory(dsFactory)
+            C.TYPE_HLS -> HlsMediaSource.Factory(dsFactory)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dsFactory)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
-
-        return mediaSourceFactory.createMediaSource(uri)
     }
 
     interface Listener {

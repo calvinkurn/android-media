@@ -4,23 +4,14 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import com.tokopedia.media.preview.ui.activity.pagers.views.BasePagerPreview
 import com.tokopedia.media.preview.ui.activity.pagers.views.ImagePreview
 import com.tokopedia.media.preview.ui.activity.pagers.views.VideoPreview
-import com.tokopedia.media.preview.ui.player.PickerVideoPlayer
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 class PreviewPagerAdapter constructor(
     private val context: Context,
     private val elements: MutableList<PreviewUiModel> = mutableListOf()
 ) : PagerAdapter() {
-
-    override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view === `object`
-    }
-
-    override fun getCount() = elements.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val item = elements[position]
@@ -42,11 +33,13 @@ class PreviewPagerAdapter constructor(
         container.removeView(`object` as View)
     }
 
-    override fun getItemPosition(`object`: Any): Int {
-        return POSITION_NONE
-    }
+    override fun getItemPosition(`object`: Any) = POSITION_NONE
 
-    fun removeItem(element: PreviewUiModel) {
+    override fun isViewFromObject(view: View, `object`: Any) = view === `object`
+
+    override fun getCount() = elements.size
+
+    fun remove(element: PreviewUiModel?) {
         val position = elements.indexOf(element)
 
         if (position > -1 && position < elements.size) {

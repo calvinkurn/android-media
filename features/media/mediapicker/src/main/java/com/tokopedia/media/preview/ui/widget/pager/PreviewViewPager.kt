@@ -1,4 +1,4 @@
-package com.tokopedia.media.preview.ui.widget
+package com.tokopedia.media.preview.ui.widget.pager
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,13 +11,13 @@ class PreviewViewPager : ViewPager {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-//    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-//        return false
-//    }
-//
-//    @SuppressLint("ClickableViewAccessibility")
-//    override fun onTouchEvent(ev: MotionEvent?): Boolean {
-//        return false
-//    }
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return false
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(ev: MotionEvent?): Boolean {
+        return false
+    }
 
 }
