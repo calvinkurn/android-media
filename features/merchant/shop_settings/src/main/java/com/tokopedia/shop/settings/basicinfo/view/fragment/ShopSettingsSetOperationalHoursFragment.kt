@@ -33,6 +33,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
@@ -77,6 +78,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         val CHOOSE_TIME_OPTION_ID = R.id.option_choose
 
         const val EXTRA_IS_NEED_TO_OPEN_CALENDAR_KEY = "open_calendar"
+        const val EXTRA_SET_OPS_HOUR_RESPONSE_KEY = "set_ops_hour_result"
         private const val DEFAULT_FIRST_INDEX = 0
         private const val MIN_OPEN_HOUR = 0
         private const val MIN_OPEN_MINUTE = 0
@@ -257,6 +259,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 }
                 hideLoader()
             }
+            if (result is Fail) {
+                hideLoader()
+                showToaster(ErrorHandler.getErrorMessage(context, result.throwable), Toaster.TYPE_ERROR)
+            }
         }
 
         // set new shop operational hours list
@@ -264,17 +270,18 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             if (result is Success) {
                 val updateShopOperationalHoursListResult = result.data
                 if (updateShopOperationalHoursListResult.success) {
+                    activity?.intent?.putExtra(EXTRA_SET_OPS_HOUR_RESPONSE_KEY, updateShopOperationalHoursListResult.message)
                     activity?.setResult(Activity.RESULT_OK)
                     activity?.finish()
                 } else {
                     hideLoader()
-                    showToaster(getString(R.string.shop_operational_failed_update_operational_hours), Toaster.TYPE_ERROR)
+                    showToaster(updateShopOperationalHoursListResult.message, Toaster.TYPE_ERROR)
                     opsHourAccordion?.collapseAllGroup()
                 }
             }
             if (result is Fail) {
                 hideLoader()
-                showToaster(getString(R.string.shop_operational_failed_update_operational_hours), Toaster.TYPE_ERROR)
+                showToaster(ErrorHandler.getErrorMessage(context, result.throwable), Toaster.TYPE_ERROR)
             }
         }
     }

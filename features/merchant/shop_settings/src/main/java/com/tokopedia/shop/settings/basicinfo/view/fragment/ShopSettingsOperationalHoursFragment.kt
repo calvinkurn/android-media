@@ -156,7 +156,10 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         if (requestCode == REQUEST_CODE_SET_OPS_HOUR) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_success_update_operational_hours)
+                    setShopHolidayScheduleStatusMessage = data?.extras?.getString(
+                            ShopSettingsSetOperationalHoursFragment.EXTRA_SET_OPS_HOUR_RESPONSE_KEY,
+                            ""
+                    ) ?: ""
                     setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                     isNeedToShowToaster = true
                     showLoader()
