@@ -80,7 +80,7 @@ class ProductDataResponse(
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("add_ons")
-        val addOns: List<AddOnsResponse> = emptyList()
+        val addOns: AddOnsResponse = AddOnsResponse()
 )
 
 class ProductImage(

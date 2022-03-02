@@ -122,7 +122,7 @@ class GetOccCartMapper @Inject constructor() {
             maximumWeight = shop.maximumShippingWeight
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
-            addOn = mapAddOns(groupShop.addOns.firstOrNull())
+            addOn = mapAddOns(groupShop.addOns)
 //            addOn = mapAddOns(AddOnsResponse())
         }
     }
@@ -190,7 +190,7 @@ class GetOccCartMapper @Inject constructor() {
             productInformation = product.productInformation.reversed()
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
-            addOn = mapAddOns(product.addOns.firstOrNull())
+            addOn = mapAddOns(product.addOns)
 //            addOn = mapAddOns(AddOnsResponse())
         }
         return orderProduct
