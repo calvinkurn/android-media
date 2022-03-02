@@ -288,7 +288,7 @@ class CreateCouponDetailFragment(
 
     private fun pickEndDateBeforeRollout() {
         val thresholdDate = requireContext().getToday().apply { timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME }
-        val selectedDate = viewModel.startDateCalendarLiveData.value ?: thresholdDate
+        val selectedDate = viewModel.endDateCalendarLiveData.value ?: thresholdDate
         val title = getString(R.string.mvc_start_date_title)
         val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
         val minDate = DateTimeUtils.getMinEndDate(thresholdDate) ?: thresholdDate
