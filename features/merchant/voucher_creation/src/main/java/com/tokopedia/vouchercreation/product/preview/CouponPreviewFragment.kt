@@ -868,7 +868,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun getCouponDefaultStartDateBeforeRollout() : Date {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
-            add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
         }
         return calendar.time
     }

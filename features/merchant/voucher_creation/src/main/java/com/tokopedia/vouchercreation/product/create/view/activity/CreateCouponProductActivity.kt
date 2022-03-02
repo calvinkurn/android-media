@@ -201,7 +201,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private fun populateDefaultCouponStartEndDateBeforeRollout(): CouponInformation {
         val startDate = getToday().apply {
             timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
-            add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
         }
         val endDate = getToday().apply {
             timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
