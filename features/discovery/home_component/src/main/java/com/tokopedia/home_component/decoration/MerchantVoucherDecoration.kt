@@ -14,7 +14,7 @@ class MerchantVoucherDecoration : RecyclerView.ItemDecoration() {
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = 12f.toDpInt()
+            outRect.left = 13f.toDpInt()
         }
 
         if (parent.getChildAdapterPosition(view) == state.itemCount-1) {
