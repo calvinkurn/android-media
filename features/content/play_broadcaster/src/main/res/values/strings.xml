@@ -7,7 +7,7 @@
 
     <string name="play_etalase_picker_title">Pilih Produk</string>
     <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
-    <string name="play_etalase_search_hint">Cari Produk</string>
+    <string name="play_etalase_search_hint">Cari di toko %s</string>
     <string name="play_etalase_product_amount">%d Produk</string>
     <string name="play_etalase_detail_header">%s (%d)</string>
 
@@ -37,6 +37,7 @@
     <string name="play_broadcast_try_again">Coba Lagi</string>
     <string name="play_broadcast_exit">Keluar</string>
     <string name="play_broadcast_end">Akhiri</string>
+    <string name="play_batal">Batal</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -67,11 +68,6 @@
     <string name="play_prepare_cover_gallery_error_pixel_label">Oops, file foto minimal harus %1$dx%2$d piksel</string>
     <string name="play_prepare_cover_gallery_error_size_label">Oops, file foto maksimal harus %d MB</string>
     <string name="play_prepare_cover_gallery_error_not_found_label">Oops, file foto tidak ditemukan</string>
-    
-    <!--Title & Tags-->
-    <string name="play_title_and_tags_title">Tambah Judul &amp; Tag</string>
-    <string name="play_title_input_label">Judul Siaran</string>
-    <string name="play_tags_instruction_text">Pilih tag supaya videomu lebih mudah ditemukan.</string>
 
     <string name="play_camera_cancel_label">Cancel</string>
     <string name="play_camera_timer_label">Timer</string>
@@ -218,4 +214,44 @@
     <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
     <string name="play_bro_product_tag_no_price">Rp -</string>
     <string name="play_bro_product_discount_template">%d%%</string>
+
+    <!-- New Preparation -->
+    <string name="play_bro_title_label">Judul</string>
+    <string name="play_bro_cover_label">Cover</string>
+    <string name="play_bro_product_label">Produk</string>
+
+    <string name="play_bro_title_form_hint">Tulis Judul Live</string>
+    <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
+
+    <string name="play_bro_cover_form_instruction">Pilih cover yang keren &amp; menarik perhatian, ya!</string>
+    <string name="play_bro_cover_empty_error">Kamu perlu upload cover dulu, ya.</string>
+
+    <!--Campaign & Etalase-->
+    <string name="play_bro_campaign_and_etalase">Campaign &amp; Etalase</string>
+    <string name="play_bro_campaign">Campaign</string>
+    <string name="play_bro_etalase">Etalase</string>
+    <string name="play_bro_upcoming_campaign">Mendatang</string>
+    <string name="play_bro_ongoing_campaign">Berlangsung</string>
+    <string name="play_bro_campaign_product_stock">%d Produk</string>
+    <string name="play_bro_etalase_product_stock">%d Barang</string>
+    <string name="play_bro_campaign_date_start_end">%s s.d.\n%s</string>
+    <string name="play_bro_etalase_sort">Urutkan</string>
+    <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
+    <string name="play_bro_product_stock">Stok %d</string>
+    <string name="play_bro_add_product">Tambah Produk</string>
+    <string name="play_bro_product_chooser_exit_dialog_title">Yakin ingin keluar?</string>
+    <string name="play_bro_product_chooser_exit_dialog_desc">Semua produk yang kamu pilih akan hilang jika keluar dari halaman ini.</string>
+    <string name="play_bro_product_chooser_stock">Stok %d</string>
+    <string name="play_bro_product_chooser_error_save">Produk gagal disimpan.</string>
+
+    <!-- Product Tag Summary -->
+    <string name="play_bro_product_summary_title">Produk terpilih</string>
+    <string name="play_bro_product_summary_title_with_count">Produk terpilih (%d/%d)</string>
+    <string name="play_bro_product_add_more">Tambah</string>
+    <string name="play_bro_product_summary_done">Selesai</string>
+    <string name="play_bro_product_summary_empty_title">Oops, kamu belum punya produk terpilih</string>
+    <string name="play_bro_product_summary_empty_description">Pilih produk untuk dijual selama live berlangsung.</string>
+    <string name="play_bro_product_summary_empty_action_text">Tambah Produk</string>
+    <string name="play_bro_product_summary_fail_to_delete_product">Produk gagal dihapus</string>
+    <string name="play_bro_product_summary_success_delete_product">%d produk telah dihapus.</string>
 </resources>

@@ -113,6 +113,8 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
@@ -122,7 +124,9 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'

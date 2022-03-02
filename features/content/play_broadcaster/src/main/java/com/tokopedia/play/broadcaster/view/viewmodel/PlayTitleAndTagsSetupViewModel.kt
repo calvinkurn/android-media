@@ -15,6 +15,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filterIsInstance
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -31,6 +32,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         get() = _observableAddedTags.value.orEmpty()
     val channelId: String
         get() = hydraConfigStore.getChannelId()
+    val maxTitleChars: Int
+        get() = hydraConfigStore.getMaxTitleChars()
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
         get() = _observableRecommendedTagsModel
@@ -92,6 +95,17 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     fun saveTitleAndTags(title: String) {
         setupDataStore.setTitle(title)
         setupDataStore.setTags(addedTags)
+    }
+
+    fun uploadTitle(title: String) {
+        viewModelScope.launchCatchError(dispatcher.main, block = {
+            setupDataStore.setTitle(title)
+            uploadTitle()
+
+            _observableUploadEvent.value = Event(NetworkResult.Success(Unit))
+        }) {
+            _observableUploadEvent.value = Event(NetworkResult.Fail(it))
+        }
     }
 
     fun finishSetup(title: String) {

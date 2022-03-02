@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -38,14 +37,11 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
-import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
+import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -67,7 +63,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -106,10 +102,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        initViewModel()
         setFragmentFactory()
         startPageMonitoring()
         super.onCreate(savedInstanceState)
+        initViewModel()
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
@@ -190,7 +186,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactoryCreator.create(this)
+        ).get(PlayBroadcastViewModel::class.java)
     }
 
     private fun setFragmentFactory() {
@@ -318,7 +317,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 openBroadcastActivePage()
                 showDialogContinueLiveStreaming()
             }
-            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
     }
@@ -359,12 +357,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun openBroadcastSetupPage() {
-        navigateToFragment(PlayBroadcastPrepareFragment::class.java)
+        navigateToFragment(PlayBroadcastPreparationFragment::class.java)
         analytic.openSetupScreen()
-    }
-
-    private fun openBroadcastFinalSetupPage() {
-        navigateToFragment(PlayBeforeLiveFragment::class.java)
     }
 
     private fun openBroadcastActivePage() {

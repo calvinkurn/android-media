@@ -22,20 +22,17 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
-import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -44,10 +41,7 @@ import javax.inject.Inject
 class PlayBroadcastSetupBottomSheet :
         BottomSheetDialogFragment(),
         PlayBottomSheetCoordinator,
-        PlayEtalasePickerFragment.Listener,
-        ProductSetupListener,
-        PlayCoverSetupFragment.Listener,
-        PlayTitleAndTagsSetupFragment.Listener
+        PlayCoverSetupFragment.Listener
 {
 
     private val retainedComponent by retainedComponent({ requireActivity() }) {
@@ -75,7 +69,8 @@ class PlayBroadcastSetupBottomSheet :
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    private var mListener: SetupResultListener? = null
+    private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
 
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
@@ -98,7 +93,6 @@ class PlayBroadcastSetupBottomSheet :
                     childFragmentManager.popBackStack()
                 } else {
                     cancel()
-                    mListener?.onSetupCanceled()
                 }
             }
         }.apply {
@@ -127,6 +121,11 @@ class PlayBroadcastSetupBottomSheet :
         setupView(view)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mListener = null
+    }
+
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         openFragment(fragmentClass, extras, sharedElements)
     }
@@ -135,50 +134,23 @@ class PlayBroadcastSetupBottomSheet :
         dialog?.onBackPressed()
     }
 
-    override fun onEtalaseClicked(id: String, sharedElements: List<View>) {
-        navigateToFragment(
-                PlayEtalaseDetailFragment::class.java,
-                extras = Bundle().apply {
-                    putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, id)
-                },
-                sharedElements = sharedElements
-        )
-    }
-
-    override suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        navigateToFragment(
-                fragmentClass = PlayCoverSetupFragment::class.java,
-                sharedElements = sharedElements
-        )
-
-        return null
-    }
-
-    override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        navigateToFragment(
-                fragmentClass = PlayTitleAndTagsSetupFragment::class.java,
-        )
-
-        return null
-    }
-
-    override suspend fun onTitleAndTagsSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        val error = mListener?.onSetupCompletedWithData(this@PlayBroadcastSetupBottomSheet, dataStore)
-        return if (error == null) {
-            dismiss()
-            null
-        }
-        else error
+    override fun onCoverSetupFinished(cover: PlayCoverUiModel) {
+        mListener?.onCoverChanged(cover)
+        dismiss()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
 
         when (childFragment) {
-            is PlayEtalasePickerFragment -> childFragment.setListener(this)
-            is PlayEtalaseDetailFragment -> childFragment.setListener(this)
-            is PlayCoverSetupFragment -> childFragment.setListener(this)
-            is PlayTitleAndTagsSetupFragment -> childFragment.setListener(this)
+            is PlayCoverSetupFragment -> {
+                childFragment.setListener(this)
+                childFragment.setDataSource(object : PlayCoverSetupFragment.DataSource {
+                    override fun getProductList(): List<ProductUiModel> {
+                        return mDataSource?.getProductList().orEmpty()
+                    }
+                })
+            }
         }
     }
 
@@ -186,7 +158,11 @@ class PlayBroadcastSetupBottomSheet :
         show(fragmentManager, TAG)
     }
 
-    fun setListener(listener: SetupResultListener) {
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
+    }
+
+    fun setListener(listener: Listener?) {
         mListener = listener
     }
 
@@ -227,7 +203,7 @@ class PlayBroadcastSetupBottomSheet :
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(
-                PlayEtalasePickerFragment::class.java
+                PlayCoverSetupFragment::class.java
         )
     }
 
@@ -248,5 +224,13 @@ class PlayBroadcastSetupBottomSheet :
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
+    }
+
+    interface DataSource {
+        fun getProductList(): List<ProductUiModel>
+    }
+
+    interface Listener {
+        fun onCoverChanged(cover: PlayCoverUiModel)
     }
 }
