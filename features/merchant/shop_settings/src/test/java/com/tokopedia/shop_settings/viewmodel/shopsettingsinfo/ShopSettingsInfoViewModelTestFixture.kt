@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
@@ -31,6 +32,9 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
     lateinit var getShopStatusUseCase: GetPMStatusUseCase
 
     @RelaxedMockK
+    lateinit var shopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase
+
+    @RelaxedMockK
     lateinit var updateShopScheduleUseCase: UpdateShopScheduleUseCase
 
     @RelaxedMockK
@@ -46,6 +50,7 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 checkOsMerchantUseCase,
                 getShopBasicDataUseCase,
                 getShopStatusUseCase,
+                shopOperationalHoursListUseCase,
                 updateShopScheduleUseCase,
                 getShopInfoUseCase,
                 CoroutineTestDispatchersProvider

@@ -1,15 +1,28 @@
 package com.tokopedia.mvcwidget.trackers
 
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
 
 class MvcTracker{
     var trackerImpl:MvcTrackerImpl = DefaultMvcTrackerImpl()
     
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean){
-        trackerImpl.userClickEntryPoints(shopId,userId,source,isTokomember)
+    fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean,
+        productId: String = ""
+    ){
+        trackerImpl.userClickEntryPoints(shopId,userId,source,isTokomember, productId)
+    }
+
+    fun userClickEntryPointOnMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String){
+        trackerImpl.userClickEntryPointOnMVCLockToProduct(shopId,userId,source, productId)
+    }
+
+    fun viewMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String){
+        trackerImpl.viewMVCLockToProduct(shopId,userId,source, productId)
     }
 
     //3, 18

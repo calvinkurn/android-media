@@ -9,7 +9,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
+import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.mock.MerchantUpComingVoucherDetailMockModelConfig
 import org.hamcrest.MatcherAssert
 import org.junit.After

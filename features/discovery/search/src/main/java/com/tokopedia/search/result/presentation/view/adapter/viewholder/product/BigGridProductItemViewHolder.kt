@@ -31,7 +31,7 @@ class BigGridProductItemViewHolder(
 
         val productCardModel =
             productItemData.toProductCardModel(productItemData.imageUrl700, true)
-
+        this.productCardModel = productCardModel
         registerLifecycleObserver(productCardModel)
 
         productCardView.setProductModel(productCardModel)

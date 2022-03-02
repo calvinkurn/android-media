@@ -12,7 +12,6 @@ import androidx.work.Configuration;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
@@ -20,6 +19,7 @@ import com.tokopedia.intl.R;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -64,20 +64,14 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     @Override
-    public void registerActivityLifecycleCallbacks() {
-        super.registerActivityLifecycleCallbacks();
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
-            @Override
-            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
-                openFeedbackForm(uri, className, isFromScreenshot);
-            }
-        }));
+    public void onCreate() {
+        super.onCreate();
+        registerScreenshootObserver();
     }
 
     public void initConfigValues() {
         setVersionCode();
         setVersionName();
-
         GlobalConfig.APPLICATION_TYPE = 3;
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
         GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_customerapp_pro;
@@ -141,7 +135,15 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             map.put("type", "init");
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
-            throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
+    }
+
+    private void registerScreenshootObserver() {
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+            @Override
+            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                openFeedbackForm(uri, className, isFromScreenshot);
+            }
+        }));
     }
 }

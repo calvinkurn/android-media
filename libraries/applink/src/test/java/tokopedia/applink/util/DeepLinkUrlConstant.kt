@@ -48,6 +48,7 @@ object DeepLinkUrlConstant {
     const val DEALS_LINK_URL = "https://www.tokopedia.com/deals/"
     const val AKTIVASI_POWER_MERCHANT_LINK_URL = "https://www.tokopedia.com/terms/aktivasi-powermerchant"
     const val SHOP_LINK_URL = "https://www.tokopedia.com/nicestuff88"
+    const val SHOP_MVC_LOCKED_TO_PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/voucher/456"
     const val PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/magic-tas-kantong-belanja-shopping-bag-roll-up-berkualitas"
     const val CAMPAIGN_LINK_URL = "https://www.tokopedia.com/dettol/campaign/123"
     const val LOGIN_BY_QR_LINK_URL = "https://www.tokopedia.com/qrcode-login"

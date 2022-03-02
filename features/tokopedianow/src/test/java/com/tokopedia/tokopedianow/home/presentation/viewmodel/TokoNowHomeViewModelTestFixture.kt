@@ -43,7 +43,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
-import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +60,6 @@ import org.junit.Rule
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import kotlin.coroutines.Continuation
 
 abstract class TokoNowHomeViewModelTestFixture {
 
@@ -254,6 +252,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
     }
 
+    protected fun verifyGetQuestWidgetListUseCaseNotCalled() {
+        coVerify(exactly = 0) { getQuestWidgetListUseCase.execute(any()) }
+    }
+
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
         coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
     }
@@ -418,14 +420,6 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetHomeLayoutItemList_returnNull() {
         viewModel.mockPrivateField("homeLayoutItemList", null)
-    }
-
-    protected fun getLayoutComponentData(warehouseId: String) {
-        viewModel.getPrivateMethod(
-            "getLayoutComponentData",
-            String::class.java,
-            Continuation::class.java
-        ).invoke(viewModel, warehouseId, Continuation<Any>(CoroutineTestDispatchersProvider.io) {})
     }
 
     object UnknownHomeLayout: HomeLayoutUiModel("1") {

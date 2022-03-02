@@ -115,8 +115,8 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
         filterModel.journeyId = flightSearchReturnViewModel.selectedFlightDepartureId
         filterModel.isReturn = isReturnTrip()
-        filterModel.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
-        filterModel.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+        filterModel.canFilterFreeRapidTest = filterModel.freeRapidTestLabel.isNotEmpty()
+        filterModel.canFilterSeatDistancing = filterModel.seatDistancingLabel.isNotEmpty()
 
         return filterModel
     }

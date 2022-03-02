@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -45,6 +44,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
@@ -111,10 +111,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_PICKER
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.SHOWCASE_PICKER_RESULT_REQUEST_CODE
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -127,7 +124,7 @@ import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 @FlowPreview
-class AddEditProductDetailFragment : BaseDaggerFragment(),
+class AddEditProductDetailFragment : AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
         WholeSaleInputViewHolder.TextChangedListener,
@@ -224,9 +221,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productShowCasesReloadButton: Typography? = null
 
     // button continue
-    private var submitButton: ViewGroup? = null
-    private var submitTextView: AppCompatTextView? = null
-    private var submitLoadingIndicator: LoaderUnify? = null
+    private var submitButton: UnifyButton? = null
 
     // PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -292,6 +287,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set bg color programatically, to reduce overdraw
         setFragmentToUnifyBgColor()
 
+        // set navigation highlight
+        highlightNavigationButton(PageIndicator.INDICATOR_DETAIL_PAGE)
+
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
@@ -332,6 +330,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
+            categoryAlertDialog?.setDefaultMaxWidth()
             categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
             categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
             categoryAlertDialog?.setPrimaryCTAClickListener {
@@ -493,8 +492,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // submit button
         submitButton = view.findViewById(R.id.btn_submit)
-        submitTextView = view.findViewById(R.id.tv_submit_text)
-        submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
         setupButton()
 
         // fill the form with detail input model
@@ -672,8 +669,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // Continue to add product description
         submitButton?.setOnClickListener {
-            submitTextView?.hide()
-            submitLoadingIndicator?.show()
+            submitButton?.isLoading = true
             validateInput()
             // validate product name before submit data
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
@@ -793,9 +789,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun setupButton() {
         if (viewModel.isAdding && viewModel.isFirstMoved) {
-            submitTextView?.text = getString(R.string.action_continue)
+            submitButton?.text = getString(R.string.action_continue)
         } else {
-            submitTextView?.text = getString(R.string.action_save)
+            submitButton?.text = getString(R.string.action_save)
         }
     }
 
@@ -1465,8 +1461,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToInputStatus() {
         viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
-            if (it) enableSubmitButton()
-            else disableSubmitButton()
+            submitButton?.isEnabled = it
         })
     }
 
@@ -1551,8 +1546,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToProductNameValidationFromNetwork() {
         viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
+            submitButton?.isLoading = false
             when(it) {
                 is Success -> {
                     val isError = it.data.isNotBlank()
@@ -1791,18 +1785,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun disableWholesale() {
         productWholeSaleSwitch?.isChecked = false
         viewModel.shouldUpdateVariant = false
-    }
-
-    private fun enableSubmitButton() {
-        submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
-    }
-
-    private fun disableSubmitButton() {
-        submitButton?.isClickable = false
-        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)) }
     }
 
     private fun showDurationUnitOption() {
