@@ -339,7 +339,7 @@
     <string name="label_group">Grup:</string>
     <string name="no_of_searches">Jumlah pencarian <![CDATA["<font color='#000000'><b>+%drb</b></font>]]>/bulan</string>
     <string name="per_click_value">%d/klik</string>
-    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>%d</b></font>]]>/klik</string>
+    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>%d</b></font>]]>/1.000x tampil</string>
     <string name="keyword_recommended_budget">•Rekomendasi Rp%d</string>
     <string name="biaya_optimal">Biaya optimal ✔️</string>
     <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>

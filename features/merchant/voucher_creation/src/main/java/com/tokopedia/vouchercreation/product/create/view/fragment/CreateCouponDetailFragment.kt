@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +14,21 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.clickFillCouponProduct
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.clickSaveInfo
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
@@ -65,6 +74,8 @@ class CreateCouponDetailFragment(
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -95,6 +106,7 @@ class CreateCouponDetailFragment(
 
         setupToolbar()
         setupRecyclerViewTarget()
+        setupCouponInput()
         setupDateInput()
         setupNextButton()
 
@@ -225,6 +237,24 @@ class CreateCouponDetailFragment(
         }
     }
 
+    private fun setupCouponInput() {
+        val onTextFilledWatcher = object: TextWatcher {
+            var textOld = ""
+
+            override fun afterTextChanged(editable: Editable?) {
+                if (textOld.isEmpty() && editable?.isNotEmpty().orFalse()) onCouponInputChanged()
+            }
+
+            override fun beforeTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                textOld = text.toString()
+            }
+
+            override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        }
+        tfuFillCouponCode?.textFieldInput?.addTextChangedListener(onTextFilledWatcher)
+        tfuFillCouponName?.textFieldInput?.addTextChangedListener(onTextFilledWatcher)
+    }
+
     private fun setupNextButton() {
         btnCouponCreateNext?.isButtonEnabled = false
         btnCouponCreateNext?.setOnClickListener {
@@ -233,6 +263,7 @@ class CreateCouponDetailFragment(
             viewModel.validateCouponTarget(promoCode, couponName)
             viewModel.validateCouponPeriod()
             clearErrorMessage()
+            clickSaveInfo(userSession.shopId, viewModel.selectedCouponTargetValue.name)
         }
     }
 
@@ -264,6 +295,21 @@ class CreateCouponDetailFragment(
 
     private fun onCouponTargetChanged(target: CouponTargetEnum) {
         viewModel.setSelectedCouponTarget(target)
+        onCouponInputChanged()
+    }
+
+    private fun onCouponInputChanged() {
+        val couponCode = tfuFillCouponCode?.textFieldInput?.text
+        val couponName = tfuFillCouponName?.textFieldInput?.text
+        if (viewModel.selectedCouponTargetValue == CouponTargetEnum.PRIVATE)  {
+            if (!couponCode.isNullOrEmpty() && !couponName.isNullOrEmpty()) {
+                clickFillCouponProduct(userSession.shopId, viewModel.selectedCouponTargetValue.name)
+            }
+        } else if (viewModel.selectedCouponTargetValue == CouponTargetEnum.PUBLIC) {
+            if (!couponName.isNullOrEmpty()) {
+                clickFillCouponProduct(userSession.shopId, viewModel.selectedCouponTargetValue.name)
+            }
+        }
     }
 
     private fun pickStartDateBeforeRollout() {
