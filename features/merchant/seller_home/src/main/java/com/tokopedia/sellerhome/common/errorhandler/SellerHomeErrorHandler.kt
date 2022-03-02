@@ -18,6 +18,7 @@ object SellerHomeErrorHandler {
 
     const val SELLER_HOME_TAG = "SELLER_HOME_ERROR"
     const val OTHER_MENU = "OTHER_MENU_ERROR"
+    const val SELLER_EDU_TAG = "SELLER_EDU_ERROR"
 
     internal const val WIDGET_TYPE_KEY = "widget_type"
     internal const val LAYOUT_ID_KEY = "layout_id"

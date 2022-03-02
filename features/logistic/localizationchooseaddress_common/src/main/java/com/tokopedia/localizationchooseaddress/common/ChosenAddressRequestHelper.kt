@@ -83,8 +83,8 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                 postalCode = it.postal_code,
                 geolocation = it.latLong,
                 tokonow = ChosenAddressTokonow(
-                    shopId = it.shop_id,
-                    warehouseId = it.warehouse_id,
+                    shopId = it.shop_id.toZeroStringIfNullOrBlank(),
+                    warehouseId = it.warehouse_id.toZeroStringIfNullOrBlank(),
                     warehouses = it.warehouses,
                     serviceType = it.service_type
                 )

@@ -60,5 +60,6 @@ data class FeedXProduct(
         val authorName : String = "",
         var shopID : String = "",
         val isTopads: Boolean = false,
-        val adClickUrl: String = ""
+        val adClickUrl: String = "",
+        val shopName : String = ""
         ):Parcelable

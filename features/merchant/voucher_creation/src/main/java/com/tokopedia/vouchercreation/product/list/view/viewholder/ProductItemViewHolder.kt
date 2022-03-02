@@ -108,11 +108,11 @@ class ProductItemViewHolder(
 
         // error layout
         if (productUiModel.isError) {
-            binding.root.isEnabled = false
+            binding.cbuProductItem.isClickable = false
             binding.errorLayout.show()
-            binding.tpgProductError.text = productUiModel.errorMessage
+            if (productUiModel.errorMessage.isNotBlank()) binding.tpgProductError.text = productUiModel.errorMessage
         } else {
-            binding.root.isEnabled = true
+            binding.cbuProductItem.isClickable = true
             binding.errorLayout.hide()
         }
     }
