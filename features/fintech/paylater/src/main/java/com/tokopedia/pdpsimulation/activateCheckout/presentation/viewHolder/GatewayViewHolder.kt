@@ -60,17 +60,17 @@ class GatewayViewHolder(
     }
 
     private fun View.inflateAllDetails(checkoutData: CheckoutData) {
-        if (checkoutData.gateway_name.isNotBlank())
+        if (!checkoutData.gateway_name.isNullOrBlank())
             gatewayHeader.text = checkoutData.gateway_name
         else
             gatewayHeader.visibility = View.GONE
 
-        if (checkoutData.subtitle.isNotBlank())
+        if (!checkoutData.subtitle.isNullOrBlank())
             gatewaySubHeader.text = checkoutData.subtitle
         else
             gatewaySubHeader.visibility = View.GONE
 
-        if (checkoutData.subtitle2.isNotBlank())
+        if (!checkoutData.subtitle2.isNullOrBlank())
             gatewaySubHeader2.text = checkoutData.subtitle2
         else
             gatewaySubHeader2.visibility = View.GONE
@@ -78,9 +78,9 @@ class GatewayViewHolder(
 
     private fun View.setIcon(checkoutData: CheckoutData) {
         if (context.isDarkMode())
-            gatewayImage.setImageUrl(checkoutData.dark_img_url)
+            checkoutData.dark_img_url?.let { gatewayImage.setImageUrl(it) }
         else
-            gatewayImage.setImageUrl(checkoutData.light_img_url)
+            checkoutData.light_img_url?.let { gatewayImage.setImageUrl(it) }
     }
 
 

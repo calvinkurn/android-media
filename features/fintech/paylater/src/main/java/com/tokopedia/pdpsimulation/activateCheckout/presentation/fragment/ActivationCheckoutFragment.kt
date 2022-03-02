@@ -250,8 +250,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         PdpSimulationEvent.OccImpressionEvent(
                             payLaterActivationViewModel.selectedProductId,
                             checkoutData.userState ?: "",
-                            checkoutData.gateway_name,
-                            checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                            checkoutData.gateway_name.orEmpty(),
+                            checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                             checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                             quantity.toString(),
                             checkoutData.userAmount ?: "",
@@ -288,7 +288,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun setTickerVisibility(it: CheckoutData) {
         if (isDisabled) {
             gatewayDetailLayout.errorTicker.visibility = View.VISIBLE
-            gatewayDetailLayout.errorTicker.setTextDescription(it.reason_long)
+            gatewayDetailLayout.errorTicker.setTextDescription(it.reason_long.orEmpty())
             proceedToCheckout.isEnabled = false
             priceBreakdown.visibility = View.GONE
 
@@ -383,23 +383,24 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { it ->
             setGatewayProductImage(it)
-            if (it.gateway_name.isNotBlank())
+            if (!it.gateway_name.isNullOrBlank())
                 gatewayDetailLayout.getwayBrandName.text =
                     it.gateway_name
             else
                 gatewayDetailLayout.getwayBrandName.visibility = View.GONE
-            if (it.subtitle.isNotBlank())
+
+            if (!it.subtitle.isNullOrBlank())
                 gatewayDetailLayout.subheaderGateway.text =
                     it.subtitle
             else
                 gatewayDetailLayout.subheaderGateway.visibility = View.GONE
-            if (it.subtitle2.isNotBlank())
+            if (!it.subtitle2.isNullOrBlank())
                 gatewayDetailLayout.subheaderGatewayDetail.text =
                     it.subtitle2
             else
                 gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
             if (it.tenureDetail.isNotEmpty()) {
-                gatewayDetailLayout.additionalDetail.text = data.footer
+                gatewayDetailLayout.additionalDetail.text = data.footer.orEmpty()
             } else {
                 gatewayDetailLayout.additionalDetail.text = ""
                 removeBottomDetailForError()
@@ -421,9 +422,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun setGatewayProductImage(checkoutData: CheckoutData) {
         if (context.isDarkMode())
-            gatewayDetailLayout.gatewayImg.setImageUrl(checkoutData.dark_img_url)
+            checkoutData.dark_img_url?.let { gatewayDetailLayout.gatewayImg.setImageUrl(it) }
         else
-            gatewayDetailLayout.gatewayImg.setImageUrl(checkoutData.light_img_url)
+            checkoutData.light_img_url?.let { gatewayDetailLayout.gatewayImg.setImageUrl(it) }
 
     }
 
@@ -441,10 +442,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 )
             }
         }
-        productData.productName.let {
-            detailHeader.productDetailWidget.productName.text = it
-        }
-
+        detailHeader.productDetailWidget.productName.text = productData.productName.orEmpty()
         detailHeader.productDetailWidget.productPrice.text =
             convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
 
@@ -513,10 +511,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             sendVarintClickEvent()
             openVariantBottomSheet()
         }
-
         priceBreakdown.setOnClickListener {
             openPriceBreakDownBottomSheet()
-
         }
         proceedToCheckout.setOnClickListener {
             payLaterActivationViewModel.addProductToCart(
@@ -573,7 +569,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     payLaterActivationViewModel.selectedProductId,
                     payLaterActivationViewModel.selectedTenureSelected,
                     quantity,
-                    it[selectedTenurePosition].monthly_installment
+                    it[selectedTenurePosition].monthly_installment.orEmpty()
                 ), childFragmentManager
             ).setOnDismissListener {
                 setTenureDetailData()
@@ -602,8 +598,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     PdpSimulationEvent.OccChangePartnerClicked(
                         payLaterActivationViewModel.selectedProductId,
                         checkoutData.userState ?: "",
-                        checkoutData.gateway_name,
-                        checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                        checkoutData.gateway_name.orEmpty(),
+                        checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                         checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                         quantity.toString(),
                         checkoutData.userAmount ?: "",
@@ -624,8 +620,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     PdpSimulationEvent.OccChangeVariantClicked(
                         payLaterActivationViewModel.selectedProductId,
                         checkoutData.userState ?: "",
-                        checkoutData.gateway_name,
-                        checkoutData.tenureDetail[selectedTenurePosition].monthly_installment,
+                        checkoutData.gateway_name.orEmpty(),
+                        checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                         checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                         quantity.toString(),
                         checkoutData.userAmount ?: "",
@@ -719,12 +715,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         tenureSelectedModel.installmentDetails?.let {
             installmentModel = it
         }
-        tenureSelectedModel.priceText?.let {
-            amountToPay.text = it
-        }
-        tenureSelectedModel.tenure?.let {
-            paymentDuration.text = "X$it"
-        }
+        amountToPay.text = tenureSelectedModel.priceText.orEmpty()
+        paymentDuration.text =  tenureSelectedModel.tenure.orEmpty()
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
