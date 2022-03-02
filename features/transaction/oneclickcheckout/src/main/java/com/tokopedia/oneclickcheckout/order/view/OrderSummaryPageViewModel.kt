@@ -168,6 +168,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
+                sendPaymentTracker()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -182,8 +183,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, product.purchaseProtectionPlanData.protectionPricePerProduct, product.purchaseProtectionPlanData.protectionTitle)
                 }
             }
-            orderSummaryAnalytics.eventViewPaymentMethod(orderProfile.value.payment.gatewayName)
             hasSentViewOspEe = true
+        }
+    }
+
+    private fun sendPaymentTracker() {
+        val payment = orderPayment.value
+        orderSummaryAnalytics.eventViewPaymentMethod(payment.gatewayName)
+        if (payment.creditCard.selectedTerm != null) {
+            orderSummaryAnalytics.eventViewTenureOption(payment.creditCard.selectedTerm.term.toString())
         }
     }
 
@@ -571,6 +579,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
                 calculateTotal(skipDynamicFee = true)
                 globalEvent.value = OccGlobalEvent.Normal
+                orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.term.toString())
                 return@launch
             }
             globalEvent.value = newGlobalEvent
