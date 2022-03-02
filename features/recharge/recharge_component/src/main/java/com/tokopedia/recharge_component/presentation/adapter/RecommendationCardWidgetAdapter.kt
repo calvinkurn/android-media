@@ -13,7 +13,10 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card.RecommendationCardBigViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card.RecommendationCardSmallViewHolder
 
-class RecommendationCardWidgetAdapter(private val recommendationListener: RechargeRecommendationCardListener) :
+class RecommendationCardWidgetAdapter(
+    private val recommendationListener: RechargeRecommendationCardListener,
+    private var recommendationTitle: String
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var listRecommendationProduct = emptyList<RecommendationCardWidgetModel>()
@@ -44,7 +47,7 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                     parent,
                     false
                 )
-                RecommendationCardBigViewHolder(recommendationListener, binding)
+                RecommendationCardBigViewHolder(recommendationTitle, recommendationListener, binding)
             }
 
             RecommendationCardEnum.SMALL.ordinal -> {
@@ -53,7 +56,7 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                     parent,
                     false
                 )
-                RecommendationCardSmallViewHolder(recommendationListener, binding)
+                RecommendationCardSmallViewHolder(recommendationTitle, recommendationListener, binding)
             }
 
             else -> {
@@ -62,7 +65,7 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                     parent,
                     false
                 )
-                RecommendationCardSmallViewHolder(recommendationListener, binding)
+                RecommendationCardSmallViewHolder(recommendationTitle, recommendationListener, binding)
             }
         }
         if (listRecommendationProduct.size == 1){

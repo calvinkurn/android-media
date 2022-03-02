@@ -3,6 +3,7 @@ package com.tokopedia.digital_product_detail.data.mapper
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCustomAttributes
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
+import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
 import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationItem
 import com.tokopedia.digital_product_detail.data.model.data.RechargeCatalogDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
@@ -13,6 +14,7 @@ import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import javax.inject.Inject
 
 @DigitalPDPScope
@@ -53,25 +55,11 @@ class DigitalDenomMapper @Inject constructor() {
         return getProductDataCollection(product?.dataCollections)?.firstOrNull()?.products?.firstOrNull()
     }
 
-    fun mapDigiPersoToRecommendation(data: PersoRecommendationItem, isBigRecommendation: Boolean): RecommendationCardWidgetModel {
-        return data.let {
-            RecommendationCardWidgetModel(
-                if (isBigRecommendation) RecommendationCardEnum.BIG else RecommendationCardEnum.SMALL,
-                imageUrl = it.mediaURL,
-                clientNumber = it.trackingData.clientNumber,
-                title = it.title,
-                price = it.price,
-                discount = it.discount,
-                slashPrice = it.slashPrice,
-                appUrl = it.appLink,
-                id = it.trackingData.productId,
-                categoryId = it.trackingData.categoryId,
-                productId = it.trackingData.productId,
-                operatorId = it.trackingData.operatorId,
-                productType = if (isBigRecommendation) it.label1 else "",
-                productExpired = if (isBigRecommendation) it.label2 else ""
-            )
-        }
+    fun mapDigiPersoToRecommendation(data: PersoRecommendationData, isBigRecommendation: Boolean): RecommendationWidgetModel {
+        return RecommendationWidgetModel(
+            title = data.title,
+            recommendations = data.items.map { digiPersoToRecommendationCard(it, isBigRecommendation) }
+        )
     }
 
     private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
@@ -172,6 +160,31 @@ class DigitalDenomMapper @Inject constructor() {
         return customAttributes?.filter {
             it.name.equals(keyName)
         }?.firstOrNull()?.value ?: ""
+    }
+
+
+    private fun digiPersoToRecommendationCard(
+        data: PersoRecommendationItem,
+        isBigRecommendation: Boolean
+    ): RecommendationCardWidgetModel {
+        return data.let {
+            RecommendationCardWidgetModel(
+                if (isBigRecommendation) RecommendationCardEnum.BIG else RecommendationCardEnum.SMALL,
+                imageUrl = it.mediaURL,
+                clientNumber = it.trackingData.clientNumber,
+                title = it.title,
+                price = it.price,
+                discount = it.discount,
+                slashPrice = it.slashedPrice,
+                appUrl = it.appLink,
+                id = it.trackingData.productId,
+                categoryId = it.trackingData.categoryId,
+                productId = it.trackingData.productId,
+                operatorId = it.trackingData.operatorId,
+                productType = if (isBigRecommendation) it.label1 else "",
+                productExpired = if (isBigRecommendation) it.label2 else ""
+            )
+        }
     }
 
     companion object {

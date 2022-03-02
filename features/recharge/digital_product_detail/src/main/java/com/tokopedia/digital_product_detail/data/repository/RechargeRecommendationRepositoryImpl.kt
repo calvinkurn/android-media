@@ -6,6 +6,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetP
 import com.tokopedia.digital_product_detail.domain.repository.RechargeRecommendationRepository
 import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeRecommendationUseCase
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -19,14 +20,12 @@ class RechargeRecommendationRepositoryImpl @Inject constructor(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>,
         isBigRecommendation: Boolean
-    ): List<RecommendationCardWidgetModel> = withContext(dispatchers.io) {
+    ): RecommendationWidgetModel = withContext(dispatchers.io) {
 
         val data = getRechargeRecommendationUseCase.apply {
             createParams(clientNumbers, dgCategoryIds)
         }.executeOnBackground()
 
-        return@withContext data.recommendationData.items.map {
-            mapper.mapDigiPersoToRecommendation(it, isBigRecommendation)
-        }
+        return@withContext mapper.mapDigiPersoToRecommendation(data.recommendationData, isBigRecommendation)
     }
 }

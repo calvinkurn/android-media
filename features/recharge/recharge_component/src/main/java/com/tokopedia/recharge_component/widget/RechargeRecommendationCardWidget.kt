@@ -1,8 +1,10 @@
 package com.tokopedia.recharge_component.widget
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,14 +23,15 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
     private var rechargeRecommendationViewBinding: WidgetRechargeRecommendationCardBinding = WidgetRechargeRecommendationCardBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderRecommendationLayout(recommendationListener: RechargeRecommendationCardListener, titleRecommendation:String, listRecommendation: List<RecommendationCardWidgetModel>){
-            val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener)
+            val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener, titleRecommendation)
             with(rechargeRecommendationViewBinding) {
                 root.show()
                 shimmeringRecommendation.root.hide()
                 if (!listRecommendation.isNullOrEmpty()) {
                 tgRechargeRecommendationCardTitle.show()
                 rvRechargeRecommendationCardTitle.show()
-                tgRechargeRecommendationCardTitle.text = titleRecommendation
+                tgRechargeRecommendationCardTitle.text =
+                    HtmlCompat.fromHtml(titleRecommendation, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 rvRechargeRecommendationCardTitle.apply {
                     adapterRecommendation.setRecommendationList(listRecommendation)
                     adapter = adapterRecommendation

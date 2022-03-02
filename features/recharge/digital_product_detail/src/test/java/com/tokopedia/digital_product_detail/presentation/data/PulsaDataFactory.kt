@@ -6,6 +6,8 @@ import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberDat
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
+import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -34,6 +36,13 @@ class PulsaDataFactory {
         return gson.fromJson(
             gson.JsonToString(GET_PREFIX_OPERATOR_EMPTY_VALIDATION),
             TelcoCatalogPrefixSelect::class.java
+        )
+    }
+
+    fun getRecommendationData(): DigitalDigiPersoGetPersonalizedItem {
+        return gson.fromJson(
+            gson.JsonToString(GET_RECOMMENDATION),
+            DigitalDigiPersoGetPersonalizedItem::class.java
         )
     }
 
@@ -130,6 +139,7 @@ class PulsaDataFactory {
 
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
+        const val GET_RECOMMENDATION = "common_telco/get_recommendation_mock.json"
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "pulsa/get_catalog_input_multitab_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"

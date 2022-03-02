@@ -69,6 +69,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -341,7 +342,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         onFailedRecommendation()
     }
 
-    private fun onSuccessGetRecommendations(recommendations: List<RecommendationCardWidgetModel>) {
+    private fun onSuccessGetRecommendations(recommendations: RecommendationWidgetModel) {
         renderRecommendation(recommendations)
     }
 
@@ -388,12 +389,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
     }
 
-    fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
+    private fun renderRecommendation(data: RecommendationWidgetModel) {
         binding?.let {
             it.rechargePdpTokenListrikRecommendationWidget.show()
-            it.rechargePdpTokenListrikRecommendationWidget.renderRecommendationLayout(this,
-                getString(R.string.digital_pdp_recommendation_title),
-                recommendations
+            it.rechargePdpTokenListrikRecommendationWidget.renderRecommendationLayout(
+                this,
+                data.title,
+                data.recommendations
             )
         }
     }
@@ -887,9 +889,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
      * RechargeRecommendationCardListener
      */
 
-    override fun onProductRecommendationCardClicked(recommendation: RecommendationCardWidgetModel, position: Int) {
+    override fun onProductRecommendationCardClicked(title: String, recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
-            getString(R.string.digital_pdp_recommendation_title),
+            title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             DigitalPDPCategoryUtil.getOperatorName(operatorId),
             loyaltyStatus,

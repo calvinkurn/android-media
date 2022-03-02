@@ -47,6 +47,34 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     }
 
     @Test
+    fun `given recommendationData loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRecommendationLoading()
+        verifyGetRecommendationLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting recommendation should run and give success result`() {
+        val response = dataFactory.getRecommendationData()
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        onGetRecommendation_thenReturn(mappedResponse)
+
+        viewModel.getRecommendations(listOf(), listOf())
+        verifyGetRecommendationsRepoGetCalled()
+        verifyGetRecommendationSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `when getting recommendation should run and give fail result`() {
+        onGetRecommendation_thenReturn(NullPointerException())
+
+        viewModel.getRecommendations(listOf(), listOf())
+        verifyGetRecommendationsRepoGetCalled()
+        verifyGetRecommendationFail()
+    }
+
+    @Test
     fun `given favoriteNumber loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
 

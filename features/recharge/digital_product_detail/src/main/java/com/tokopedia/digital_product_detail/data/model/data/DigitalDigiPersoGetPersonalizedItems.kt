@@ -39,8 +39,8 @@ data class PersoRecommendationItem(
     val price: String,
     @SerializedName("discount")
     val discount: String,
-    @SerializedName("slashPrice")
-    val slashPrice: String,
+    @SerializedName("slashedPrice")
+    val slashedPrice: String,
     @SerializedName("appLink")
     val appLink: String,
     @SerializedName("webLink")

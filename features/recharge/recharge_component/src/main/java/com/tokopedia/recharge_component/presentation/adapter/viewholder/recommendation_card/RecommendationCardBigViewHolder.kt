@@ -9,8 +9,10 @@ import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListe
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class RecommendationCardBigViewHolder(
+    private val recommendationTitle: String,
     private val recommendationListener: RechargeRecommendationCardListener,
-    private val binding: ViewRechargeRecommendationCardBigBinding) :
+    private val binding: ViewRechargeRecommendationCardBigBinding
+) :
     RecyclerView.ViewHolder(binding.root) {
 
         fun bind(recommendation: RecommendationCardWidgetModel, position: Int){
@@ -22,12 +24,19 @@ class RecommendationCardBigViewHolder(
                 tgPriceRechargeRecommendationCardBig.text = recommendation.price
 
                 root.setOnClickListener {
-                    recommendationListener.onProductRecommendationCardClicked(recommendation, position)
+                    recommendationListener.onProductRecommendationCardClicked(
+                        recommendationTitle,
+                        recommendation,
+                        position
+                    )
                 }
 
-                root.addOnImpressionListener(recommendation, {
-                    recommendationListener.onProductRecommendationCardImpression(recommendation, position)
-                })
+                root.addOnImpressionListener(recommendation) {
+                    recommendationListener.onProductRecommendationCardImpression(
+                        recommendation,
+                        position
+                    )
+                }
             }
         }
 }

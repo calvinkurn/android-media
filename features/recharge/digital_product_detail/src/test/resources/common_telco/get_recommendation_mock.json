@@ -1,0 +1,35 @@
+{
+  "digiPersoGetPersonalizedItems": {
+    "title": "Paling sering kamu beli \u0026#128071;",
+    "mediaURL": "",
+    "appLink": "",
+    "webLink": "",
+    "textLink": "Lihat Semua",
+    "items": [
+      {
+        "id": 1,
+        "title": "Telkomsel - Simpati 30.000",
+        "mediaURL": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+        "mediaUrlType": "frame",
+        "appLink": "tokopedia://digital/cart?category_id\u003d1\u0026client_number\u003d081287375643\u0026idem_potency_key\u003d1646212480-1-081287375643-3445-12\u0026operator_id\u003d12\u0026product_id\u003d3445",
+        "webLink": "https://pulsa.tokopedia.com?action\u003dinit_data\u0026client_number\u003d081287375643\u0026idem_potency_key\u003d1646212480-1-081287375643-3445-12\u0026operator_id\u003d12\u0026product_id\u003d3445",
+        "label1": "",
+        "label2": "",
+        "price": "Rp31.500",
+        "slashedPrice": "",
+        "discount": "",
+        "backgroundColor": "",
+        "trackingData": {
+          "productID": "3445",
+          "operatorID": "12",
+          "businessUnit": "recharge",
+          "itemLabel": "product",
+          "itemType": "last transactions by client number",
+          "clientNumber": "081287375643",
+          "categoryID": "1",
+          "categoryName": "Pulsa"
+        }
+      }
+    ]
+  }
+}

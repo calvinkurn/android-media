@@ -26,6 +26,7 @@ import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.*
 import java.util.regex.Pattern
@@ -77,8 +78,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
-    private val _recommendationData = MutableLiveData<RechargeNetworkResult<List<RecommendationCardWidgetModel>>>()
-    val recommendationData: LiveData<RechargeNetworkResult<List<RecommendationCardWidgetModel>>>
+    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
 
     fun setMenuDetailLoading(){

@@ -1,6 +1,6 @@
 package com.tokopedia.digital_product_detail.domain.usecase
 
-import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
+import com.tokopedia.common.topupbills.data.requests.DigiPersoRequestParam
 import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -32,16 +32,19 @@ class GetRechargeRecommendationUseCase @Inject constructor(
 
     fun createParams(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         params = RequestParams.create().apply {
-            putString(KEY_CHANNEL_NAME, CHANNEL_NAME)
-            putObject(KEY_DG_CATEGORY_IDS, dgCategoryIds)
-            putObject(KEY_CLIENT_NUMBERS, clientNumbers)
+            putObject(
+                KEY_DIGI_PERSO_INPUT, DigiPersoRequestParam(
+                    channelName = CHANNEL_NAME,
+                    clientNumbers = clientNumbers,
+                    dgCategoryIDs = dgCategoryIds,
+                    pgCategoryIDs = listOf(),
+                )
+            )
         }
     }
 
     companion object {
-        private const val KEY_CHANNEL_NAME = "channelName"
-        private const val KEY_DG_CATEGORY_IDS = "dgCategoryIDs"
-        private const val KEY_CLIENT_NUMBERS = "clientNumbers"
+        private const val KEY_DIGI_PERSO_INPUT = "input"
         private const val CHANNEL_NAME = "recharge_pdp_last_trx_client_number"
         private const val QUERY = """
         query digiPersoGetPersonalizedItems(${'$'}input: DigiPersoGetPersonalizedItemsRequest!) {
@@ -61,7 +64,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
               label1
               label2
               price
-              slashPrice
+              slashedPrice
               discount
               backgroundColor
               trackingData {

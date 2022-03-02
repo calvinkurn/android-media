@@ -74,6 +74,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -426,7 +427,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         showErrorToaster(throwable)
     }
 
-    private fun onSuccessGetRecommendations(recommendations: List<RecommendationCardWidgetModel>) {
+    private fun onSuccessGetRecommendations(recommendations: RecommendationWidgetModel) {
         renderRecommendation(recommendations)
     }
 
@@ -669,12 +670,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
+    private fun renderRecommendation(data: RecommendationWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaRecommendationWidget.show()
-            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(this,
-                getString(R.string.digital_pdp_recommendation_title),
-                recommendations
+            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(
+                this,
+                data.title,
+                data.recommendations
             )
         }
     }
@@ -1035,9 +1037,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
      * RechargeRecommendationCardListener
      */
 
-    override fun onProductRecommendationCardClicked(recommendation: RecommendationCardWidgetModel, position: Int) {
+    override fun onProductRecommendationCardClicked(title: String, recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
-            getString(R.string.digital_pdp_recommendation_title),
+            title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
