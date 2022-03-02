@@ -85,7 +85,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         appLink = partnerResponse.appLink
     )
 
-    private fun getFollowStatus(isFollowBtnShown: Boolean) = if (isFollowBtnShown) PlayPartnerFollowStatus.Unknown else PlayPartnerFollowStatus.NotFollowable
+    private fun getFollowStatus(isFollowBtnShown: Boolean) = if (isFollowBtnShown) PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Unknown) else PlayPartnerFollowStatus.NotFollowable
 
     private fun mapLikeInfo(
         feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam,
