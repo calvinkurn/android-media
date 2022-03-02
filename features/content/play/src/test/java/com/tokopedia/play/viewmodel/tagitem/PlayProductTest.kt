@@ -219,7 +219,7 @@ class PlayProductTest {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         every { mockRepo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
-                product = modelBuilder.buildProductModel(emptyList(), true)
+                product = modelBuilder.buildProductModel(emptyList())
             )
         )
 
@@ -244,9 +244,6 @@ class PlayProductTest {
                 .forEachIndexed { index, section ->
                     section.config.title.assertEqualTo("$sectionTitle ${index + 1}")
                 }
-
-            state.tagItems.product.canShow
-                .assertTrue()
         }
     }
 }
