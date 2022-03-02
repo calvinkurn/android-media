@@ -33,7 +33,7 @@ class GroupShopOccResponse(
         @SerializedName("warehouse")
         val warehouse: WarehouseDataResponse = WarehouseDataResponse(),
         @SerializedName("add_ons")
-        val addOns: List<AddOnsResponse> = emptyList()
+        val addOns: AddOnsResponse = AddOnsResponse()
 )
 
 class CourierSelectionError(
