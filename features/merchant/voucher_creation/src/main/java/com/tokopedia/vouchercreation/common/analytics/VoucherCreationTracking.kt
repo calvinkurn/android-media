@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductData
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 
 /**
@@ -329,7 +330,7 @@ object VoucherCreationTracking {
 
     // no 28
     fun clickFilterVoucherStatus(shopId: String, voucherStatus: String) {
-        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_VOUCHER_STATUS, label = voucherStatus, category = VOUCHER_LIST)
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_VOUCHER_STATUS, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
     }
 
     // no 41
@@ -484,6 +485,16 @@ object VoucherCreationTracking {
             voucherStatus == VoucherStatusConst.ONGOING -> "ONGOING"
             voucherStatus == VoucherStatusConst.PROCESSING -> "PROCESSING"
             voucherStatus == VoucherStatusConst.STOPPED -> "STOPPED"
+            else -> ""
+        }
+    }
+
+    private fun getVoucherStatus(voucherStatus: String): String {
+        return when {
+            voucherStatus == VoucherStatus.NOT_STARTED -> "NOT_STARTED"
+            voucherStatus == VoucherStatus.ONGOING -> "ONGOING"
+            voucherStatus == VoucherStatus.HISTORY -> "HISTORY"
+            voucherStatus == VoucherStatus.NOT_STARTED_AND_ONGOING -> "NOT_STARTED_AND_ONGOING"
             else -> ""
         }
     }
