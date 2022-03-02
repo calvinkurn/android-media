@@ -43,7 +43,7 @@ class PartnerInfoViewComponent(
         followStatus: PlayPartnerFollowStatus,
         isLoading: Boolean
     ) {
-        if (followStatus is PlayPartnerFollowStatus.Followable && followStatus.followStatus != PartnerFollowableStatus.Followed) {
+        if (followStatus is PlayPartnerFollowStatus.Followable && followStatus.followStatus == PartnerFollowableStatus.NotFollowed) {
             btnFollow.isLoading = isLoading
             btnFollow.isEnabled = !isLoading
             btnFollow.show()

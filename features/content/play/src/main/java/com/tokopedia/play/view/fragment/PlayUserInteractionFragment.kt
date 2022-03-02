@@ -1458,7 +1458,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         interactiveView?.showFollowMode(
             partner.status is PlayPartnerFollowStatus.Followable &&
-                    partner.status.followStatus != PartnerFollowableStatus.Followed
+                    partner.status.followStatus == PartnerFollowableStatus.NotFollowed
         )
 
         when (state.visibility) {
