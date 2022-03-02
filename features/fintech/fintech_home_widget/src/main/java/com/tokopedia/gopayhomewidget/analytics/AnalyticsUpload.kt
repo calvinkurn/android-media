@@ -7,7 +7,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AnalyticsUpload @Inject constructor(
-        private val userSession: dagger.Lazy<UserSessionInterface>,
+    private val userSession: dagger.Lazy<UserSessionInterface>,
 ) {
 
     private val analyticTracker: ContextAnalytics
@@ -15,27 +15,32 @@ class AnalyticsUpload @Inject constructor(
 
     fun sendWidgetAnalyticsEvent(analyticsEventGenerator: AnalyticsEventGenerator) {
         when (analyticsEventGenerator) {
-            is AnalyticsEventGenerator.WidgetCtaClickedButton -> sendClickEvent(analyticsEventGenerator.redirectionPage, analyticsEventGenerator.widgetType)
-            is AnalyticsEventGenerator.WidgetImpressionAnalytics -> sendImpressionEvent(analyticsEventGenerator.widgetType)
+            is AnalyticsEventGenerator.WidgetCtaClickedButton -> sendClickEvent(
+                analyticsEventGenerator.redirectionPage,
+                analyticsEventGenerator.widgetType
+            )
+            is AnalyticsEventGenerator.WidgetImpressionAnalytics -> sendImpressionEvent(
+                analyticsEventGenerator.widgetType
+            )
         }
     }
 
     private fun sendImpressionEvent(widgetType: String) {
         val map = TrackAppUtils.gtmData(
-                WIDGET_IMPRESSION_EVENT,
-                WIDGET_IMPRESSION_CATEGORY,
-                WIDGET_IMPRESSION_ACTION,
-                "${userSession.get().name} - $widgetType - $PARTNER_NAME"
+            WIDGET_IMPRESSION_EVENT,
+            WIDGET_IMPRESSION_CATEGORY,
+            WIDGET_IMPRESSION_ACTION,
+            "${userSession.get().name} - $widgetType - $PARTNER_NAME"
         )
         sendGeneralEvent(map)
     }
 
     private fun sendClickEvent(redirectionPage: String, widgetType: String) {
         val map = TrackAppUtils.gtmData(
-                WIDGET_CLICK_EVENT,
-                WIDGET_IMPRESSION_CATEGORY,
-                WIDGET_CLICK_ACTION,
-                "${userSession.get().name} - $widgetType - $PARTNER_NAME - $redirectionPage"
+            WIDGET_CLICK_EVENT,
+            WIDGET_IMPRESSION_CATEGORY,
+            WIDGET_CLICK_ACTION,
+            "${userSession.get().name} - $widgetType - $PARTNER_NAME - $redirectionPage"
         )
         sendGeneralEvent(map)
     }

@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class PayLaterHomeWidgetCloseResponse(
 
-        @SerializedName("paylater_getHomeWidget")
-        val paylaterCloseSuccessData: PayLaterCloseSuccessResponse
+    @SerializedName("paylater_getHomeWidget")
+    val paylaterCloseSuccessData: PayLaterCloseSuccessResponse
 )
 
 data class PayLaterCloseSuccessResponse(
-        @SerializedName("success")
-        val closeSuccessStatus: Boolean
+    @SerializedName("success")
+    val closeSuccessStatus: Boolean
 )

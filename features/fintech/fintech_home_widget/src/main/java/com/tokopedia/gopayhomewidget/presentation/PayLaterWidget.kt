@@ -12,6 +12,7 @@ import com.tokopedia.gopayhomewidget.analytics.AnalyticsEventGenerator
 import com.tokopedia.gopayhomewidget.analytics.AnalyticsUpload
 import com.tokopedia.gopayhomewidget.databinding.LayoutGopayHomeWidgetBinding
 import com.tokopedia.gopayhomewidget.di.component.DaggerPayLaterHomeWidgetComponent
+import com.tokopedia.gopayhomewidget.domain.data.PayLaterButton
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
 import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -19,9 +20,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class PayLaterWidget @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        @AttrRes defStyleAttr: Int = 0,
+    context: Context,
+    attrs: AttributeSet? = null,
+    @AttrRes defStyleAttr: Int = 0,
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var payLaterWidgetListener: PayLaterWidgetListener? = null
@@ -40,13 +41,13 @@ class PayLaterWidget @JvmOverloads constructor(
 
     private fun initInjector() {
         DaggerPayLaterHomeWidgetComponent.builder()
-                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private fun initView() {
         layoutGopayBinding =
-                LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this, true)
+            LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this, true)
         this.visibility = INVISIBLE
     }
 
@@ -57,34 +58,67 @@ class PayLaterWidget @JvmOverloads constructor(
     @SuppressLint("SetTextI18n")
     fun setData(payLaterWidgetData: PayLaterWidgetData) {
         if (payLaterWidgetData.isShow == true) {
-               analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetImpressionAnalytics(payLaterWidgetData.caseType.toString()))
+            analyticsUpload.sendWidgetAnalyticsEvent(
+                AnalyticsEventGenerator.WidgetImpressionAnalytics(
+                    payLaterWidgetData.caseType.toString()
+                )
+            )
             this.visibility = VISIBLE
-            layoutGopayBinding.userName.text = "${userSession.get().name}!"
+            layoutGopayBinding.userName.text = "Hi, ${userSession.get().name}!"
             layoutGopayBinding.gopayDetail.text = payLaterWidgetData.description
+
             payLaterWidgetData.imageLight?.let { imageUrl ->
                 layoutGopayBinding.gatewayIcon.setImageUrl(imageUrl)
             }
             layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
-            layoutGopayBinding.proccedToGopay.setOnClickListener {
-                when (payLaterWidgetData.button?.ctaType) {
-                    1 -> {
-                            analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetCtaClickedButton(payLaterWidgetData.caseType.toString(),payLaterWidgetData.button.appsUrl?:""))
-                        RouteManager.route(context, payLaterWidgetData.button.appsUrl)
-                    }
-                    2 -> {
-                            analyticsUpload.sendWidgetAnalyticsEvent(AnalyticsEventGenerator.WidgetCtaClickedButton(payLaterWidgetData.caseType.toString(),payLaterWidgetData.button.webUrl?:""))
-                        val webViewAppLink =
-                                ApplinkConst.WEBVIEW + "?url=" + payLaterWidgetData.button.webUrl
-                        RouteManager.route(context, webViewAppLink)
-                    }
-                }
-            }
-            layoutGopayBinding.crossIcon.setOnClickListener {
-                payLaterWidgetListener?.onClosePayLaterWidget()
-            }
+
+            initListner(payLaterWidgetData)
+
 
         }
 
+    }
+
+    private fun initListner(payLaterWidgetData: PayLaterWidgetData) {
+        layoutGopayBinding.proccedToGopay.setOnClickListener {
+            payLaterWidgetData.button?.let { buttonDetail ->
+                ctaLogic(
+                    payLaterWidgetData,
+                    buttonDetail
+                )
+            }
+        }
+        layoutGopayBinding.crossIcon.setOnClickListener {
+            payLaterWidgetListener?.onClosePayLaterWidget()
+        }
+    }
+
+    private fun ctaLogic(
+        payLaterWidgetData: PayLaterWidgetData,
+        button: PayLaterButton
+    ) {
+        when (payLaterWidgetData.button?.ctaType) {
+            1 -> {
+                analyticsUpload.sendWidgetAnalyticsEvent(
+                    AnalyticsEventGenerator.WidgetCtaClickedButton(
+                        payLaterWidgetData.caseType.toString(),
+                        button.appsUrl ?: ""
+                    )
+                )
+                RouteManager.route(context, button.appsUrl)
+            }
+            2 -> {
+                analyticsUpload.sendWidgetAnalyticsEvent(
+                    AnalyticsEventGenerator.WidgetCtaClickedButton(
+                        payLaterWidgetData.caseType.toString(),
+                        button.webUrl ?: ""
+                    )
+                )
+                val webViewAppLink =
+                    ApplinkConst.WEBVIEW + "?url=" + button.webUrl
+                RouteManager.route(context, webViewAppLink)
+            }
+        }
     }
 
 }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="paylater_home_widger_dp_68">68dp</dimen>
+    <dimen name="paylater_home_widger_dp_14">14dp</dimen>
+    <dimen name="paylater_home_widger_dp_10">10dp</dimen>
 
 </resources>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -17,21 +16,30 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/gatewayIconBackground"
-            android:layout_width="68dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/paylater_home_widger_dp_68"
+            android:layout_height="@dimen/unify_space_0"
             android:scaleType="centerCrop"
-            android:src="@drawable/paylater_homewidget_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/paylater_homewidget_icon" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            app:layout_constraintBottom_toBottomOf="@+id/gatewayIcon"
+            app:layout_constraintEnd_toEndOf="@+id/gatewayIcon"
+            app:layout_constraintStart_toStartOf="@+id/gatewayIcon"
+            app:layout_constraintTop_toTopOf="@+id/gatewayIcon"
+            app:srcCompat="@drawable/paylater_homewidget_ic_squircle" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/gatewayIcon"
             android:layout_width="@dimen/unify_space_48"
             android:layout_height="@dimen/unify_space_48"
             android:layout_marginStart="@dimen/unify_space_8"
-            android:background="@drawable/paylater_homewidget_ic_squircle"
-            android:padding="@dimen/dp_10"
+            android:padding="@dimen/unify_space_8"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -40,22 +48,25 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/userName"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="@dimen/paylater_home_widger_dp_14"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/light_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/crossIcon"
             app:layout_constraintStart_toEndOf="@+id/gatewayIconBackground"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Hi Rara" />
+            tools:text="Hi Rara sdjo;nfodjfng sadkjfnas adfngjdkfgnjdsfg dfknjgljkdfgv" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/proccedToGopay"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="@dimen/paylater_home_widger_dp_14"
             android:layout_marginEnd="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -64,34 +75,27 @@
             app:unifyButtonSize="small"
             tools:text="Lanjut Daftar" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="userName,crossIcon" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/gopayDetail"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_2"
             android:layout_marginBottom="@dimen/unify_space_8"
             app:layout_constraintBottom_toTopOf="@+id/proccedToGopay"
             app:layout_constraintEnd_toEndOf="@+id/proccedToGopay"
             app:layout_constraintStart_toStartOf="@+id/proccedToGopay"
-            app:layout_constraintTop_toBottomOf="@id/barrier1"
+            app:layout_constraintTop_toBottomOf="@id/crossIcon"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Data yang udah kamu isi masih tersimpan. Lanjut daftar GoPayLater Cicil, yuk." />
+            tools:text="Data yang udah kamu isi masih tersimpan. Lanjut daftar GoPayLater Cicil, yuk sdfjnvkdfv." />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/crossIcon"
             android:layout_width="@dimen/unify_space_16"
             android:layout_height="@dimen/unify_space_16"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_gopay_home_close"
+            android:layout_marginTop="@dimen/paylater_home_widger_dp_10"
+            android:layout_marginEnd="@dimen/paylater_home_widger_dp_10"
+            app:icon_name="CLOSE"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

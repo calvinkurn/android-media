@@ -8,9 +8,9 @@ import dagger.Component
 
 @PaylaterHomeWidget
 @Component(
-        modules =
-        [PaylaterHomeWidgetModule::class],
-        dependencies = [BaseAppComponent::class]
+    modules =
+    [PaylaterHomeWidgetModule::class],
+    dependencies = [BaseAppComponent::class]
 )
 interface PayLaterHomeWidgetComponent {
 

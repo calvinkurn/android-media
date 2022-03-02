@@ -10,21 +10,21 @@ import javax.inject.Inject
 
 @GqlQuery("ClosePaylaterHomeWidgetData", GQL_QUERY_PAYLATER_WIDGET_CLOSE)
 class ClosePayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-        GraphqlUseCase<PayLaterHomeWidgetCloseResponse>(graphqlRepository) {
+    GraphqlUseCase<PayLaterHomeWidgetCloseResponse>(graphqlRepository) {
 
     fun getPayLaterWidgetCloseData(
-            onSuccess: (PayLaterCloseSuccessResponse) -> Unit,
-            onError: (Throwable) -> Unit
+        onSuccess: (PayLaterCloseSuccessResponse) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(PayLaterHomeWidgetCloseResponse::class.java)
             this.setGraphqlQuery(ClosePaylaterHomeWidgetData())
             this.execute(
-                    { result ->
-                        onSuccess(result.paylaterCloseSuccessData)
-                    }, { error ->
-                onError(error)
-            })
+                { result ->
+                    onSuccess(result.paylaterCloseSuccessData)
+                }, { error ->
+                    onError(error)
+                })
         } catch (throwable: Throwable) {
             onError(throwable)
         }

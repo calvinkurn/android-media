@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 @GqlQuery("GetPaylaterHomeWidgetData", GQL_QUERY_PAYLATER_WIDGET_DATA)
 class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-        GraphqlUseCase<GetPayLaterWidgetDataGqlResponse>(graphqlRepository) {
+    GraphqlUseCase<GetPayLaterWidgetDataGqlResponse>(graphqlRepository) {
 
     fun getPayLaterWidgetData(
-            onSuccess: (PayLaterWidgetData) -> Unit,
-            onError: (Throwable) -> Unit
+        onSuccess: (PayLaterWidgetData) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(GetPayLaterWidgetDataGqlResponse::class.java)
@@ -22,11 +22,11 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
             this.setRequestParams(getRequestParam(""))
             this.setGraphqlQuery(GetPaylaterHomeWidgetData())
             this.execute(
-                    { result ->
-                        onSuccess(result.payLaterWidgetData)
-                    }, { error ->
-                onError(error)
-            })
+                { result ->
+                    onSuccess(result.payLaterWidgetData)
+                }, { error ->
+                    onError(error)
+                })
         } catch (throwable: Throwable) {
             onError(throwable)
         }
@@ -35,9 +35,9 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     private fun getRequestParam(backUrl: String): MutableMap<String, Any?> {
         return mutableMapOf(
-                REQUEST_PARAMS to mutableMapOf(
-                        BACK_URL to backUrl
-                )
+            REQUEST_PARAMS to mutableMapOf(
+                BACK_URL to backUrl
+            )
         )
     }
 
