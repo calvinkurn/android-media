@@ -1,13 +1,17 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
+import com.tokopedia.common_tradein.model.DeviceDiagnostics
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.request.Laku6TestDataModel
 import com.tokopedia.tradein.model.TradeInDetailModel
+import com.tokopedia.tradein.usecase.InsertLogisticPreferenceUseCase
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.tradein.viewmodel.liveState.TradeInHomeState
 import com.tokopedia.url.Env
@@ -16,7 +20,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
-class TradeInHomePageVM @Inject constructor(private val userSession: UserSessionInterface) : BaseTradeInViewModel(), CoroutineScope {
+class TradeInHomePageVM @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val insertLogisticPreferenceUseCase: InsertLogisticPreferenceUseCase) : BaseTradeInViewModel(), CoroutineScope {
 
     val askUserLogin = MutableLiveData<Int>()
     val laku6DeviceModel = MutableLiveData<Laku6DeviceModel>()
@@ -44,6 +50,11 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
 
     fun getDeviceModel() {
         laku6DeviceModel.value = Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
+    }
+
+    fun getDiagnosticData(intent: Intent): DeviceDiagnostics {
+        val result = intent.getStringExtra("test-result")
+        return Gson().fromJson(result, DeviceDiagnostics::class.java)
     }
 
     private fun setTestData(deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute?) {
@@ -94,5 +105,24 @@ class TradeInHomePageVM @Inject constructor(private val userSession: UserSession
 
     fun goToCheckout() {
         tradeInHomeStateLiveData.value = GoToCheckout(imei, laku6DeviceModel.value?.model ?: "", price)
+    }
+
+    fun insertLogisticOptions(intent: Intent) {
+        launchCatchError(block = {
+            val diagnosticsData = getDiagnosticData(intent)
+            val data = insertLogisticPreferenceUseCase.insertLogistic()
+            data?.insertTradeInLogisticPreference?.apply {
+                if (isSuccess) {
+                    goToCheckout()
+                } else {
+                    warningMessage.value = "$errCode : $errMessage"
+                }
+            }
+            progBarVisibility.value = false
+        }, onError = {
+            it.printStackTrace()
+            progBarVisibility.value = false
+            warningMessage.value = it.localizedMessage
+        })
     }
 }

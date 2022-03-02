@@ -1,143 +1,54 @@
+package com.tokopedia.common_tradein.model
 
-package com.tokopedia.common_tradein.model;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-import java.util.List;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class DeviceDiagnostics {
-
+class DeviceDiagnostics {
     @SerializedName("trade_in_unique_code")
     @Expose
-    private String tradeInUniqueCode;
+    var tradeInUniqueCode: String? = null
+
     @SerializedName("status")
     @Expose
-    private Integer status;
+    var status: Int? = null
+
     @SerializedName("model_id")
     @Expose
-    private Integer modelId;
+    var modelId: Int? = null
+
     @SerializedName("model")
     @Expose
-    private String model;
+    var model: String? = null
+
     @SerializedName("brand")
     @Expose
-    private String brand;
+    var brand: String? = null
+
     @SerializedName("storage")
     @Expose
-    private String storage;
+    var storage: String? = null
+
     @SerializedName("ram")
     @Expose
-    private String ram;
+    var ram: String? = null
+
     @SerializedName("imei")
     @Expose
-    private String imei;
+    var imei: String? = null
+
     @SerializedName("trade_in_price")
     @Expose
-    private Integer tradeInPrice;
+    var tradeInPrice: Int? = null
+
     @SerializedName("grade")
     @Expose
-    private String grade;
+    var grade: String? = null
+
     @SerializedName("timestamp")
     @Expose
-    private Integer timestamp;
+    var timestamp: Int? = null
+
     @SerializedName("review_details")
     @Expose
-    private List<String> reviewDetails = null;
-
-    public String getTradeInUniqueCode() {
-        return tradeInUniqueCode;
-    }
-
-    public void setTradeInUniqueCode(String tradeInUniqueCode) {
-        this.tradeInUniqueCode = tradeInUniqueCode;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getModelId() {
-        return modelId;
-    }
-
-    public void setModelId(Integer modelId) {
-        this.modelId = modelId;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getStorage() {
-        return storage;
-    }
-
-    public void setStorage(String storage) {
-        this.storage = storage;
-    }
-
-    public String getRam() {
-        return ram;
-    }
-
-    public void setRam(String ram) {
-        this.ram = ram;
-    }
-
-    public String getImei() {
-        return imei;
-    }
-
-    public void setImei(String imei) {
-        this.imei = imei;
-    }
-
-    public Integer getTradeInPrice() {
-        return tradeInPrice;
-    }
-
-    public void setTradeInPrice(Integer tradeInPrice) {
-        this.tradeInPrice = tradeInPrice;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public Integer getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Integer timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public List<String> getReviewDetails() {
-        return reviewDetails;
-    }
-
-    public void setReviewDetails(List<String> reviewDetails) {
-        this.reviewDetails = reviewDetails;
-    }
-
+    var reviewDetails: List<String>? = null
 }

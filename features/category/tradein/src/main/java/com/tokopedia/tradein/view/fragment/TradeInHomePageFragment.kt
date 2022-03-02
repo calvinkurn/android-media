@@ -190,6 +190,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         viewModel.getWarningMessage().observe(viewLifecycleOwner, Observer {
             showToast(it, "", {})
         })
+        tradeInHomePageVM.getWarningMessage().observe(viewLifecycleOwner, Observer {
+            setErrorTokopedia(Throwable(it))
+        })
         viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
                 view?.findViewById<View>(R.id.tradein_loading_layout)?.show()
@@ -197,42 +200,50 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 view?.findViewById<View>(R.id.tradein_loading_layout)?.hide()
         })
         tradeInHomePageVM.getErrorMessage().observe(viewLifecycleOwner, Observer {
-            view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
-                //LAKU6 errors
-                setType(GlobalError.SERVER_ERROR)
-                errorIllustration.hide()
-                errorDescription.text = it.message
-                view?.findViewById<View>(R.id.tradein_error_layout)?.show()
-                view?.findViewById<View>(R.id.error_image_view)?.show()
-                setActionClickListener {
-                    view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                    refreshPage()
-                }
-            }
+            setErrorLaku6(it)
         })
         viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
-            view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
-                //Tokopedia Backend errors
-                when (it) {
-                    is UnknownHostException, is SocketTimeoutException -> {
-                        setType(GlobalError.NO_CONNECTION)
-                    }
-                    is IllegalStateException -> {
-                        setType(GlobalError.PAGE_FULL)
-                    }
-                    else -> {
-                        setType(GlobalError.SERVER_ERROR)
-                        errorDescription.text = it.message
-                    }
+            setErrorTokopedia(it)
+        })
+    }
+
+    private fun setErrorLaku6(it: Throwable?) {
+        view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+            //LAKU6 errors
+            setType(GlobalError.SERVER_ERROR)
+            errorIllustration.hide()
+            errorDescription.text = it?.message
+            view?.findViewById<View>(R.id.tradein_error_layout)?.show()
+            view?.findViewById<View>(R.id.error_image_view)?.show()
+            setActionClickListener {
+                view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
+                refreshPage()
+            }
+        }
+    }
+
+    private fun setErrorTokopedia(it: Throwable?) {
+        view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+            //Tokopedia Backend errors
+            when (it) {
+                is UnknownHostException, is SocketTimeoutException -> {
+                    setType(GlobalError.NO_CONNECTION)
                 }
-                view?.findViewById<View>(R.id.error_image_view)?.hide()
-                view?.findViewById<View>(R.id.tradein_error_layout)?.show()
-                setActionClickListener {
-                    view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                    refreshPage()
+                is IllegalStateException -> {
+                    setType(GlobalError.PAGE_FULL)
+                }
+                else -> {
+                    setType(GlobalError.SERVER_ERROR)
+                    errorDescription.text = it?.message
                 }
             }
-        })
+            view?.findViewById<View>(R.id.error_image_view)?.hide()
+            view?.findViewById<View>(R.id.tradein_error_layout)?.show()
+            setActionClickListener {
+                view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
+                refreshPage()
+            }
+        }
     }
 
     private fun setUpLaku6Data(laku6DeviceModel: Laku6DeviceModel?) {
@@ -428,7 +439,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     override fun onImeiButtonClick(imei: String) {
         tradeInHomePageVM.imei = imei
-        tradeInHomePageVM.goToCheckout()
+        startLaku6Testing()
     }
 
     private fun startLaku6Testing() {

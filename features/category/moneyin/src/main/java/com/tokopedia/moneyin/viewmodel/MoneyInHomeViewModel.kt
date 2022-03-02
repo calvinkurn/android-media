@@ -47,7 +47,7 @@ class MoneyInHomeViewModel @Inject constructor(
 
     fun processMessage(intent: Intent) {
         val diagnostics = getDiagnosticData(intent)
-        if (diagnostics.imei.isEmpty()) {
+        if (diagnostics.imei?.isEmpty() == true) {
             diagnostics.imei = imei
         }
         tradeInParams.deviceId = diagnostics.imei

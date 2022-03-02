@@ -1,7 +1,10 @@
 package com.tokopedia.tradein.view.activity
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -20,6 +24,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
+import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.fragment.TradeInEducationalPageFragment
@@ -27,6 +32,7 @@ import com.tokopedia.tradein.view.fragment.TradeInHomePageFragment
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 import javax.inject.Inject
 
 const val APP_SETTINGS = 9988
@@ -43,6 +49,47 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     lateinit var tradeInAnalytics: TradeInAnalytics
 
     private lateinit var viewModel: TradeInHomePageVM
+
+    private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            viewModel.insertLogisticOptions(intent)
+        }
+    }
+
+    private val mBackReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Timber.d("Do back action to parent")
+        }
+    }
+
+    private val laku6GTMReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent?) {
+            if (intent != null && TradeInGTMConstants.ACTION_LAKU6_GTM == intent.action) {
+                val page = intent.getStringExtra(TradeInGTMConstants.PAGE)
+                val action = intent.getStringExtra(TradeInGTMConstants.ACTION)
+                val value = intent.getStringExtra(TradeInGTMConstants.VALUE)
+                val cekFisik = TradeInGTMConstants.CEK_FISIK_TRADE_IN
+                val cekFungsi = TradeInGTMConstants.CEK_FUNGSI_TRADE_IN
+                val cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN
+                when (page) {
+                    TradeInGTMConstants.CEK_FISIK -> {
+                        when (action) {
+                            TradeInGTMConstants.CLICK_SALIN, TradeInGTMConstants.CLICK_SOCIAL_SHARE -> tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                cekFisik, action, value)
+                        }
+                    }
+                    TradeInGTMConstants.CEK_FUNGSI_TRADE_IN -> {
+                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                            cekFungsi, action, value)
+                    }
+                    TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN -> {
+                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                            cekFisikResult, action, value)
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -192,5 +239,21 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         setResult(RESULT_OK, intent)
         finish()
     }
+    override fun onStart() {
+        super.onStart()
+        val localBroadcastManager = LocalBroadcastManager.getInstance(this)
+        localBroadcastManager.registerReceiver(mMessageReceiver, IntentFilter("laku6-test-end"))
+        localBroadcastManager.registerReceiver(mBackReceiver, IntentFilter("laku6-back-action"))
+        localBroadcastManager.registerReceiver(laku6GTMReceiver, IntentFilter("laku6-gtm"))
+    }
 
+    override fun onStop() {
+        super.onStop()
+        if (isFinishing) {
+            val localBroadcastManager = LocalBroadcastManager.getInstance(this)
+            localBroadcastManager.unregisterReceiver(mMessageReceiver)
+            localBroadcastManager.unregisterReceiver(mBackReceiver)
+            localBroadcastManager.unregisterReceiver(laku6GTMReceiver)
+        }
+    }
 }

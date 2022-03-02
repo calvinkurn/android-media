@@ -1,11 +1,22 @@
 package com.tokopedia.tradein
 
 object TradeInGTMConstants {
+    const val CEK_FISIK = "cek fisik"
+    const val CLICK_SALIN = "click salin"
+    const val CLICK_SOCIAL_SHARE = "click social share"
+    const val CEK_FISIK_TRADE_IN = "cek fisik trade in"
+    const val CEK_FUNGSI_TRADE_IN = "cek fungsi trade in"
+    const val CEK_FISIK_RESULT_TRADE_IN = "cek fisik result trade in"
+    const val ACTION_VIEW_TRADEIN = "viewTradeIn"
     const val ACTION_CLICK_TRADEIN = "clickTradeIn"
     const val ACTION_VIEW_TRADEIN_IRIS = "viewTradeInIris"
+    const val ACTION_LAKU6_GTM = "laku6-gtm"
     const val ACTION_CLICK = "click"
     const val ACTION_POP_UP = "pop up"
     const val OPEN_SCREEN = "openScreen"
+    const val ACTION = "action"
+    const val PAGE = "page"
+    const val VALUE = "value"
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
     const val EVENT_ACTION = "eventAction"
