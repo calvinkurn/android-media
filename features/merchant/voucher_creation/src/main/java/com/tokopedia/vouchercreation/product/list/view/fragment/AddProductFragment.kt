@@ -341,7 +341,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     if (productList.isNotEmpty()) {
                         binding?.selectionBar?.show()
                         binding?.emptyProductsLayout?.hide()
-                        binding?.buttonAddProduct?.isEnabled = false
                         viewModel.getCouponSettings()?.run {
                             viewModel.validateProductList(
                                     benefitType = viewModel.getBenefitType(this),
@@ -372,7 +371,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 is Success -> {
                     val validationResults = result.data.response.voucherValidationData.validationPartial
                     val productList = viewModel.getProductUiModels()
+                    val isSelectAll = binding?.cbuSelectAllProduct?.isChecked ?: false
                     val updatedProductList = viewModel.applyValidationResult(
+                            isSelectAll,
                             productList = productList,
                             validationResults = validationResults
                     )
@@ -380,6 +381,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     val hasNextPage = updatedProductList.isNotEmpty()
                     renderList(updatedProductList, hasNextPage)
                     setupSelectionBar(binding)
+
+                    if (isSelectAll) {
+                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+                    }
 
                     val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
                     viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
@@ -397,7 +402,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     } else {
                         binding?.tickerSellerLocationChange?.hide()
                         binding?.cbuSelectAllProduct?.isClickable = true
-                        binding?.buttonAddProduct?.isEnabled = true
+                        if (viewModel.getSelectedProducts().isNotEmpty()) binding?.buttonAddProduct?.isEnabled = true
                     }
 
                 }

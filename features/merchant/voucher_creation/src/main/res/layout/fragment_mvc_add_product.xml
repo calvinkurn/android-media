@@ -197,6 +197,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/mvc_dimen_12dp"
+        android:enabled="false"
         android:text="@string/add_product"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

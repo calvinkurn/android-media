@@ -111,9 +111,7 @@ class ProductItemViewHolder(
         binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
             val product = binding.root.getTag(R.id.product) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            if (!product.isSelectAll) {
-                productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
-            }
+            productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
             variantListAdapter.updateVariantSelections(isChecked)
         }
         binding.iuRemoveProduct.setOnClickListener {
@@ -141,11 +139,8 @@ class ProductItemViewHolder(
         if (isSelected) {
             if (!isIndeterminate) binding.cbuProductItem.setIndeterminate(true)
             if (!isChecked) binding.cbuProductItem.isChecked = true
-        } else {
-            if (selectedVariantSize.isZero()) {
-                if (isIndeterminate) binding.cbuProductItem.setIndeterminate(false)
-                if (selectedVariantSize.isZero()) binding.cbuProductItem.isChecked = false
-            }
+        } else if (selectedVariantSize.isZero() && isIndeterminate) {
+            binding.cbuProductItem.setIndeterminate(false)
         }
     }
 }

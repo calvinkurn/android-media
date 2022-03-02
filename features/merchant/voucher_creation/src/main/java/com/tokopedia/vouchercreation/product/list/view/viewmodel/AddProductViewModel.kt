@@ -246,7 +246,8 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun applyValidationResult(productList: List<ProductUiModel>,
+    fun applyValidationResult(isSelectAll:Boolean,
+                              productList: List<ProductUiModel>,
                               validationResults: List<VoucherValidationPartialProduct>): List<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
@@ -256,14 +257,16 @@ class AddProductViewModel @Inject constructor(
             productUiModel.isError = !validationResult.isEligible
             productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
-            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold)
+            productUiModel.isSelected = isSelectAll && validationResult.isEligible
+            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold, isSelectAll)
         }
         return mutableProductList.toList()
     }
 
-    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
+    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int, isSelectAll: Boolean): List<VariantUiModel> {
         return variantValidationData.map { data ->
             VariantUiModel(
+                    isSelected = isSelectAll && data.is_eligible,
                     variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
