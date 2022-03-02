@@ -169,8 +169,9 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     }
 
     private fun needRebindLeaderboard(): Boolean {
-        val liveState = parentViewModel.observableLiveViewState.value
-        return liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)
+//        val liveState = parentViewModel.observableLiveViewState.value
+//        return liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)
+        return true
     }
 
     private fun setupDialog(dialog: Dialog) {
