@@ -35,6 +35,7 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
     private var binding: IncentiveOvoTncBottomSheetBinding = IncentiveOvoTncBottomSheetBinding.inflate(LayoutInflater.from(context))
     private var incentiveOvoListener: IncentiveOvoListener? = null
     private val incentiveOvoIllustrationMapper by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationMapper() }
+    private val illustrationLayoutManager by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationLayoutManager(context) }
     private val illustrationAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationAdapterTypeFactory() }
     private val illustrationAdapter by lazy(LazyThreadSafetyMode.NONE) { BaseAdapter(illustrationAdapterTypeFactory) }
     private val tncAdapter by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoTnCAdapter(emptyList(), this) }
@@ -73,7 +74,9 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
 
     private fun setupIllustrationView(illustrations: List<IncentiveOvoIllustrationUiModel>) {
         with(binding.rvIncentiveOvoIllustrations) {
-            layoutManager = IncentiveOvoIllustrationLayoutManager(context)
+            if (layoutManager != illustrationLayoutManager) {
+                layoutManager = illustrationLayoutManager
+            }
             if (adapter != illustrationAdapter) {
                 adapter = illustrationAdapter
             }
