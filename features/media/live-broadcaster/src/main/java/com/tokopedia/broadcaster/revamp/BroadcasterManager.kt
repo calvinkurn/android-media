@@ -18,6 +18,7 @@ import com.wmspanel.libstream.Streamer.*
 import com.wmspanel.libstream.StreamerGL
 import com.wmspanel.libstream.StreamerGLBuilder
 import org.json.JSONObject
+import java.util.*
 
 /**
  * Created by meyta.taliti on 01/03/22.
@@ -33,9 +34,12 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     private var mVideoCaptureState: CAPTURE_STATE? = CAPTURE_STATE.FAILED
     private var mAudioCaptureState: CAPTURE_STATE? = CAPTURE_STATE.FAILED
 
+    private var mCameraManager: BroadcasterCameraManager? = null
+
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
     private var mStatisticManager: BroadcasterStatisticManager? = null
+    private var mStatisticTimer: Timer? = null
 
     private var mListener: Broadcaster.Listener? = null
 
@@ -69,8 +73,9 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
             return
         }
 
-        val cameraManager = BroadcasterCameraManager.newInstance(context)
-        if (cameraManager.getCameraList().isEmpty()) {
+        mCameraManager = BroadcasterCameraManager.newInstance(context)
+        val cameraManager = mCameraManager ?: return
+        if (cameraManager.getCameraList().isNullOrEmpty()) {
             // todo: log & show error to user
             return
         }
@@ -94,7 +99,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         // get default camera id
         val activeCamera = cameraManager.getCameraList()
             .firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT } ?:
-            cameraManager.getCameraList().first()
+        cameraManager.getCameraList().first()
 
         // video resolution for stream and mp4 recording,
         // larix uses same resolution for camera preview and stream to simplify setup
@@ -241,13 +246,13 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         }
 
         mConnectionId = Pair<Int, ConnectionConfig>(connectionId, connectionConfig)
-        mStatisticManager = BroadcasterStatisticManager(this)
+        startTracking(connectionId)
 
         mAdaptiveBitrate?.start(connectionId)
     }
 
     override fun stop() {
-        mStatisticManager = null
+        stopTracking()
 
         mConnectionId?.let {
             mStreamer?.releaseConnection(it.first)
@@ -281,10 +286,26 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun flip() {
-        TODO("Not yet implemented")
+        if (mStreamer == null || !isVideoCaptureStarted()) {
+            // preventing accidental touch issues
+            return
+        }
+        mAdaptiveBitrate?.pause()
+        mStreamerGL?.flip()
+
+        // camera is changed, so update aspect ratio to actual value
+        mStreamerGL?.activeCameraVideoSize?.let { mListener?.updatePreviewRatio(it) }
+
+        updateFpsRanges()
+        mAdaptiveBitrate?.resume()
     }
 
     override fun snapShot() {
+        if (mStreamer == null || !isVideoCaptureStarted()) {
+            // preventing accidental touch issues
+            return
+        }
+
         TODO("Not yet implemented")
     }
 
@@ -295,7 +316,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     override fun onConnectionStateChanged(
         connectionId: Int,
         state: CONNECTION_STATE?,
-        status: Streamer.STATUS?,
+        status: STATUS?,
         info: JSONObject?,
     ) {
         if (mStreamer == null) return
@@ -306,7 +327,9 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         when (state) {
             CONNECTION_STATE.INITIALIZED,
             CONNECTION_STATE.SETUP,
-            CONNECTION_STATE.RECORD -> { }
+            CONNECTION_STATE.RECORD,
+            -> {
+            }
             CONNECTION_STATE.CONNECTED -> mStatisticManager?.start(connectionId)
             CONNECTION_STATE.IDLE -> {
                 // connection established successfully, but no data is flowing
@@ -318,27 +341,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
                 // ongoing stream recording on server; so idle state is expected and ignored
             }
             CONNECTION_STATE.DISCONNECTED, null -> {
-                // save info for auto-retry and error message
-                val connection = mConnectionId?.second
-                // remove from active connections list
-                // releaseConnection()
-
-                // show error message including connection name
-
-                // show error message including connection name
-                // showToast(connectionErrorMsg(connection, status, info))
-
-                // do not try to reconnect in case of wrong credentials
-                // if (status != Streamer.STATUS.AUTH_FAIL) {
-                //    mHandler.postDelayed(com.wmspanel.streamer.Abc1Activity.RetryRunnable(connection),
-                //        com.wmspanel.streamer.Abc1Activity.RETRY_TIMEOUT.toLong())
-                //    mRetryPending.incrementAndGet()
-                // }
-
-                // all connections totally failed, stop broadcast
-                // if (mRetryPending.get() == 0) {
-                //    releaseConnections()
-                // }
+                // todo: log & show error to user: error message including connection name
             }
         }
     }
@@ -380,16 +383,17 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun onRecordStateChanged(
-        state: Streamer.RECORD_STATE?,
+        state: RECORD_STATE?,
         uri: Uri?,
-        method: Streamer.SAVE_METHOD?,
+        method: SAVE_METHOD?,
     ) {
+        // unused, can be ignored at least for now
     }
 
     override fun onSnapshotStateChanged(
-        state: Streamer.RECORD_STATE?,
+        state: RECORD_STATE?,
         uri: Uri?,
-        method: Streamer.SAVE_METHOD?,
+        method: SAVE_METHOD?,
     ) {
         TODO("Not yet implemented")
     }
@@ -441,5 +445,42 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
     private fun isVideoCaptureStarted(): Boolean {
         return mVideoCaptureState == CAPTURE_STATE.STARTED
+    }
+
+    private fun updateFpsRanges() {
+        if (mAdaptiveBitrate == null) return
+
+        val camId = mStreamerGL?.activeCameraId
+        val activeCamera = mCameraManager?.getCameraList()?.firstOrNull { it.cameraId == camId }
+        activeCamera?.let {
+            if (it.fpsRanges != null) mAdaptiveBitrate?.setFpsRanges(it.fpsRanges)
+        }
+    }
+
+    private fun startTracking(connectionId: Int) {
+        mStatisticManager = BroadcasterStatisticManager(this)
+
+        mStatisticTimer = Timer()
+        mStatisticTimer?.schedule(object : TimerTask() {
+            override fun run() {
+                val connectionState = mConnectionState ?: return
+                if (connectionState != CONNECTION_STATE.RECORD) return
+
+                val statisticManager = mStatisticManager ?: return
+                statisticManager.update(connectionId)
+                mListener?.onStatisticInfoChanged(statisticManager.getStatistic())
+            }
+        }, STATISTIC_TIMER_DELAY, STATISTIC_TIMER_INTERVAL)
+    }
+
+    private fun stopTracking() {
+        mStatisticTimer?.cancel()
+        mStatisticTimer = null
+        mStatisticManager = null
+    }
+
+    companion object {
+        private const val STATISTIC_TIMER_DELAY = 1000L
+        private const val STATISTIC_TIMER_INTERVAL = 1000L
     }
 }

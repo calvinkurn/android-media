@@ -3,6 +3,7 @@ package com.tokopedia.broadcaster.revamp
 import android.content.Context
 import android.os.Handler
 import android.view.SurfaceHolder
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
 import com.wmspanel.libstream.Streamer
 
 /**
@@ -31,5 +32,7 @@ interface Broadcaster {
         val context: Context?
 
         fun updatePreviewRatio(size: Streamer.Size)
+
+        fun onStatisticInfoChanged(statistic: BroadcasterStatistic)
     }
 }
