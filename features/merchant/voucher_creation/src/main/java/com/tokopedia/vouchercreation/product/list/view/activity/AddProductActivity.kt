@@ -11,7 +11,7 @@ import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponPr
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity.Companion.BUNDLE_KEY_SELECTED_WAREHOUSE_ID
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
 
-class AddProductActivity : BaseSimpleActivity() {
+class AddProductActivity : BaseSimpleActivity(), AddProductFragment.ProductSelectionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,5 +33,9 @@ class AddProductActivity : BaseSimpleActivity() {
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    override fun onProductSelectionChanged(productCount: Int, maxProductLimit: Int) {
+        updateTitle("Tambah Produk ($productCount/$maxProductLimit)")
     }
 }

@@ -44,6 +44,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         CategoryBottomSheet.OnApplyButtonClickListener,
         SortBottomSheet.OnApplyButtonClickListener {
 
+    interface ProductSelectionListener {
+        fun onProductSelectionChanged(productCount: Int, maxProductLimit: Int)
+    }
+
     companion object {
         private const val ZERO = 0
         private const val NO_BACKGROUND: Int = 0
@@ -83,6 +87,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModelProvider.get(AddProductViewModel::class.java)
     }
 
+    private var productSelectionListener: ProductSelectionListener? = null
+
     private var locationBottomSheet: LocationBottomSheet? = null
     private var showCaseBottomSheet: ShowCaseBottomSheet? = null
     private var categoryBottomSheet: CategoryBottomSheet? = null
@@ -103,6 +109,11 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        activity?.run { productSelectionListener = this as ProductSelectionListener }
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -228,6 +239,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             viewModel.setSelectedShowCases(listOf())
             viewModel.setSelectedSort(listOf())
             viewModel.setSelectedCategories(listOf())
+            viewModel.setSelectedProducts(listOf())
             loadInitialData()
         }
     }
@@ -269,7 +281,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     private fun resetSelectionBar(binding: FragmentMvcAddProductBinding?) {
-        binding?.cbuSelectAllProduct?.setOnCheckedChangeListener { _, isChecked -> }
+        binding?.cbuSelectAllProduct?.setOnCheckedChangeListener { _, _ -> }
         binding?.cbuSelectAllProduct?.setIndeterminate(false)
         binding?.cbuSelectAllProduct?.isSelected = false
     }
@@ -307,6 +319,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.selectionBar?.setBackgroundResource(NO_BACKGROUND)
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
                 binding?.tickerSellerLocationChange?.hide()
+                productSelectionListener?.onProductSelectionChanged(0, viewModel.getMaxProductLimit())
             } else {
                 val size = selectedProducts.size
                 if (binding?.tickerSellerLocationChange?.isVisible == false) {
@@ -315,6 +328,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.buttonAddProduct?.text = "Tambah $size Produk"
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
+                productSelectionListener?.onProductSelectionChanged(size, viewModel.getMaxProductLimit())
             }
         })
         viewModel.productListResult.observe(viewLifecycleOwner, { result ->
@@ -362,9 +376,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             productList = productList,
                             validationResults = validationResults
                     )
-                    renderList(updatedProductList, true)
-                    setupSelectionBar(binding)
 
+                    val hasNextPage = updatedProductList.isNotEmpty()
+                    renderList(updatedProductList, hasNextPage)
+                    setupSelectionBar(binding)
 
                     val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
                     viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
@@ -434,7 +449,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 is Success -> {
                     val sort = result.data.response.data.sort
                     val categories = result.data.response.data.category
-                    val sortSelections = viewModel.mapSortListToSortSelections(sort)
+                    val filteredSort = viewModel.excludeDefaultSortSelection(sort)
+                    val sortSelections = viewModel.mapSortListToSortSelections(filteredSort)
                     setupSortBottomSheet(sortSelections)
                     val categorySelections = viewModel.mapCategoriesToCategorySelections(categories)
                     setupCategoryBottomSheet(categorySelections)
@@ -511,15 +527,17 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     override fun loadData(page: Int) {
         viewModel.setPagingIndex(page)
-        viewModel.getProductList(
-                page = page,
-                keyword = viewModel.getSearchKeyWord(),
-                shopId = userSession.shopId,
-                warehouseLocationId = viewModel.getWarehouseLocationId(),
-                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
-                categoryList = viewModel.getSelectedCategoryIds(),
-                sort = viewModel.getSelectedSort()
-        )
+        viewModel.getWarehouseLocationId()?.run {
+            viewModel.getProductList(
+                    page = page,
+                    keyword = viewModel.getSearchKeyWord(),
+                    shopId = userSession.shopId,
+                    warehouseLocationId = viewModel.getWarehouseLocationId(),
+                    shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                    categoryList = viewModel.getSelectedCategoryIds(),
+                    sort = viewModel.getSelectedSort()
+            )
+        }
     }
 
     override fun clearAdapterData() {

@@ -27,33 +27,11 @@ class ProductItemViewHolder(
 
     init {
         context = binding.root.context
-        binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
-            val product = binding.root.getTag(R.id.product) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            if (!product.isSelectAll) productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
-        }
-        binding.iuRemoveProduct.setOnClickListener {
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            productItemClickListener.onRemoveProductButtonClicked(adapterPosition, dataSetPosition)
-        }
-        binding.variantHeader.setOnClickListener {
-            val product = binding.root.getTag(R.id.product) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            val isVariantHeaderExpanded = product.isVariantHeaderExpanded
-            // !isVariantHeaderExpanded => current condition after clicked
-            binding.variantDivider.isVisible = !isVariantHeaderExpanded
-            binding.rvProductVariants.isVisible = !isVariantHeaderExpanded
-            if (!isVariantHeaderExpanded) { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) } }
-            else { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) } }
-            productItemClickListener.onProductVariantHeaderClicked(!isVariantHeaderExpanded, dataSetPosition)
-        }
-        binding.rvProductVariants.apply {
-            adapter = variantListAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
     }
 
     fun bindData(productUiModel: ProductUiModel, dataSetPosition: Int) {
+
+        resetListeners()
 
         // bind data set position
         binding.root.setTag(R.id.dataset_position, dataSetPosition)
@@ -84,6 +62,10 @@ class ProductItemViewHolder(
         }
 
         // variant layout
+        binding.rvProductVariants.apply {
+            adapter = variantListAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
         if (productUiModel.hasVariant && !productUiModel.isError) {
             variantListAdapter.setVariantList(productUiModel.variants)
             variantListAdapter.setDataSetPosition(dataSetPosition)
@@ -114,6 +96,40 @@ class ProductItemViewHolder(
         } else {
             binding.cbuProductItem.isClickable = true
             binding.errorLayout.hide()
+        }
+
+        setupListeners()
+    }
+
+    private fun resetListeners() {
+        binding.cbuProductItem.setOnCheckedChangeListener { _, _ -> }
+        binding.iuRemoveProduct.setOnClickListener { }
+        binding.variantHeader.setOnClickListener { }
+    }
+
+    private fun setupListeners() {
+        binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
+            val product = binding.root.getTag(R.id.product) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            if (!product.isSelectAll) {
+                productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
+            }
+            variantListAdapter.updateVariantSelections(isChecked)
+        }
+        binding.iuRemoveProduct.setOnClickListener {
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            productItemClickListener.onRemoveProductButtonClicked(adapterPosition, dataSetPosition)
+        }
+        binding.variantHeader.setOnClickListener {
+            val product = binding.root.getTag(R.id.product) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val isVariantHeaderExpanded = product.isVariantHeaderExpanded
+            // !isVariantHeaderExpanded => current condition after clicked
+            binding.variantDivider.isVisible = !isVariantHeaderExpanded
+            binding.rvProductVariants.isVisible = !isVariantHeaderExpanded
+            if (!isVariantHeaderExpanded) { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) } }
+            else { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) } }
+            productItemClickListener.onProductVariantHeaderClicked(!isVariantHeaderExpanded, dataSetPosition)
         }
     }
 
