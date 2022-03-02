@@ -118,9 +118,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
                 putParcelableArrayList(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
-        startActivityForResult(addProductIntent,
-            CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT
-        )
+        startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
     }
 
     private fun navigateToManageProductPage(coupon: Coupon) {
