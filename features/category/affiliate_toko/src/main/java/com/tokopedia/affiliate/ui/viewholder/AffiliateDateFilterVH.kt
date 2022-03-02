@@ -20,6 +20,9 @@ class AffiliateDateFilterVH(itemView: View,private val onDateRangeClickInterface
 
     override fun bind(element: AffiliateDateFilterModel?) {
         itemView.findViewById<Typography>(R.id.text).text = element?.data?.title
+        itemView.findViewById<Typography>(R.id.filter_message)?.apply {
+            text = element?.data?.message
+        }
         itemView.findViewById<ConstraintLayout>(R.id.date_range).setOnClickListener {
             onDateRangeClickInterface?.onRangeSelectionButtonClicked()
         }

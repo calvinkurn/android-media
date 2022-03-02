@@ -12,8 +12,8 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.ArrayList
 import javax.inject.Inject
+import java.util.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class DiscoMerchantVoucherViewModel(
@@ -57,6 +57,10 @@ class DiscoMerchantVoucherViewModel(
 
     fun getShopID(): String {
         return components.data?.firstOrNull()?.shopIds?.firstOrNull()?.toString() ?: ""
+    }
+
+    fun getProductId(): String{
+        return components.data?.firstOrNull()?.productId ?: ""
     }
 
     fun updateData(shopID: Any, isShown: Boolean, listInfo: ArrayList<AnimatedInfos>?) {

@@ -6,6 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.attachvoucher.common.matchers.withRecyclerView
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.test.base.AttachVoucherTest
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class AttachVoucherListTest: AttachVoucherTest() {
@@ -89,5 +90,35 @@ class AttachVoucherListTest: AttachVoucherTest() {
         onView(withRecyclerView(R.id.recycler_view)
             .atPositionOnView(0, R.id.validStatus))
             .check(matches(withSubstring("Tersisa : 5")))
+    }
+
+    @Test
+    fun should_not_show_additional_text_for_non_product_voucher() {
+        //Given
+        getVoucherUseCase.response = successGetMerchantPromotionGetMVListResponse
+        launchAttachVoucherActivity()
+
+        //When
+        scrollListToPosition(0)
+
+        //Then
+        onView(withRecyclerView(R.id.recycler_view)
+            .atPositionOnView(0, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc))
+            .check(matches(not(withSubstring("untuk produk tertentu"))))
+    }
+
+    @Test
+    fun should_show_additional_text_for_product_voucher() {
+        //Given
+        getVoucherUseCase.response = successGetMerchantPromotionGetMVListResponse
+        launchAttachVoucherActivity()
+
+        //When
+        scrollListToPosition(2)
+
+        //Then
+        onView(withRecyclerView(R.id.recycler_view)
+            .atPositionOnView(2, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc))
+            .check(matches(withSubstring("untuk produk tertentu")))
     }
 }

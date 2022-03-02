@@ -40,7 +40,7 @@ interface DynamicProductDetailListener {
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
-    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
+    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
 
 
 
