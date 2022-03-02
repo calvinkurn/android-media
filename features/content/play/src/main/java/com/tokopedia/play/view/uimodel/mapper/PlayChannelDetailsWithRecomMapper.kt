@@ -45,7 +45,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     ),
                     videoInfo = mapVideoInfo(it.video),
                     bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
-                    emptyBottomSheetInfo = mapEmptyBottomSheet(it.config.emptyBottomSheet)
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -297,8 +297,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         title = String.format(freezeDataResponse.title, title),
     )
 
-    private fun mapEmptyBottomSheet(emptyBottomSheet: ChannelDetailsWithRecomResponse.EmptyBottomSheet) =
-        PlayEmptyBottomSheetInfoUiModel(header = emptyBottomSheet.headerText, body = emptyBottomSheet.bodyText, button = emptyBottomSheet.redirectButtonText)
+    private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) =
+        PlayEmptyBottomSheetInfoUiModel(header = data.config.emptyBottomSheet.headerText, body = data.config.emptyBottomSheet.bodyText, button = data.config.emptyBottomSheet.redirectButtonText, partnerAppLink = data.partner.appLink)
 
     companion object {
         private const val MS_PER_SECOND = 1000

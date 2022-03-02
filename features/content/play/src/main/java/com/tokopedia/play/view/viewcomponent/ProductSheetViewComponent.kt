@@ -209,7 +209,7 @@ class ProductSheetViewComponent(
         )
     }
 
-    fun showEmpty(partnerId: Long, emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel) {
+    fun showEmpty(emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel) {
         showContent(false)
         globalError.hide()
 
@@ -218,7 +218,7 @@ class ProductSheetViewComponent(
         btnProductEmpty.text = emptyBottomSheetInfoUi.button
 
         btnProductEmpty.setOnClickListener {
-            listener.onEmptyButtonClicked(this@ProductSheetViewComponent, partnerId)
+            listener.onEmptyButtonClicked(this@ProductSheetViewComponent, emptyBottomSheetInfoUi.partnerAppLink)
         }
     }
 
@@ -301,7 +301,7 @@ class ProductSheetViewComponent(
         fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
         fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int)
-        fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
+        fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerAppLink: String)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)

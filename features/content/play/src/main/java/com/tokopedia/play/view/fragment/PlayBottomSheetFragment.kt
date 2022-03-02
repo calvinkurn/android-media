@@ -184,8 +184,8 @@ class PlayBottomSheetFragment @Inject constructor(
         shouldOpenProductDetail(product, position)
     }
 
-    override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long) {
-        openShopPage(partnerId)
+    override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerAppLink: String) {
+        openPageByApplink(applink = partnerAppLink, pipMode = true)
     }
 
     override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
@@ -385,10 +385,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun initAnalytic() {
         productAnalyticHelper = ProductAnalyticHelper(analytic)
-    }
-
-    private fun openShopPage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
     }
 
     private fun closeProductSheet() {
@@ -723,7 +719,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     prevState?.tagItems,
                     state.tagItems,
                     state.channel.bottomSheetTitle,
-                    state.partner.id,
                     state.channel.emptyBottomSheetInfo
                 )
 
@@ -747,7 +742,6 @@ class PlayBottomSheetFragment @Inject constructor(
         prevTagItem: TagItemUiModel?,
         tagItem: TagItemUiModel,
         bottomSheetTitle: String,
-        partnerId: Long,
         emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel
     ) {
         if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
@@ -767,7 +761,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
             if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
         } else {
-            productSheetView.showEmpty(partnerId, emptyBottomSheetInfoUi)
+            productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
     }
 

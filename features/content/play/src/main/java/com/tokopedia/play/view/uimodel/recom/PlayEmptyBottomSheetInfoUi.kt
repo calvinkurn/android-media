@@ -6,5 +6,6 @@ package com.tokopedia.play.view.uimodel.recom
 data class PlayEmptyBottomSheetInfoUiModel(
     val header: String = "",
     val body: String = "",
-    val button: String = ""
+    val button: String = "",
+    val partnerAppLink: String = "",
 )
