@@ -58,6 +58,7 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
             val fragment = CouponImagePreviewBottomSheet()
             fragment.arguments = args
             return fragment
+
         }
     }
 
