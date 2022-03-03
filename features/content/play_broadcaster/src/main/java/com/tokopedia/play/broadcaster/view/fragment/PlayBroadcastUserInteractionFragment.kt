@@ -84,8 +84,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
             override fun onCameraIconClicked() {
-//                parentViewModel.switchCamera()
                 analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+                (activity as? PlayBroadcastActivity)?.flipCamera()
             }
 
             override fun onEndStreamClicked() {

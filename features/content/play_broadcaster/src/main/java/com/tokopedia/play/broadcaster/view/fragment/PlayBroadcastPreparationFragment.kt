@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
@@ -236,8 +237,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
             icBroPreparationSwitchCamera.setOnClickListener {
                 analytic.clickSwitchCameraOnPreparation()
-
-//                parentViewModel.switchCamera()
+                (activity as? PlayBroadcastActivity)?.flipCamera()
             }
         }
     }

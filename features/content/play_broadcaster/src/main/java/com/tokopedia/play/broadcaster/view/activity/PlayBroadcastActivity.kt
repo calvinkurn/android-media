@@ -57,7 +57,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.Listener {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.Callback {
 
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
@@ -104,7 +104,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.L
 
     private lateinit var pauseLiveDialog: DialogUnify
 
-    private val playBroadcaster = PlayBroadcaster.newInstance()
+    private val playBroadcaster = PlayBroadcaster.newInstance(this)
     private var mHandler: Handler? = null
 
     private var surfaceHolder: SurfaceHolder? = null
@@ -171,6 +171,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.L
         releaseStreamer()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.sendLogs()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playBroadcaster.destroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -597,7 +602,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.L
     // todo: showDialogWhenUnSupportedDevices()
     private fun createStreamer() {
         val holder = surfaceHolder ?: return
-        playBroadcaster.setListener(this)
         playBroadcaster.create(holder, Broadcaster.Size(surfaceView.width, surfaceView.height))
     }
 
@@ -615,6 +619,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.L
 
     override fun updateAspectFrameSize(size: Broadcaster.Size) {
         aspectFrameLayout.setAspectRatio(size.height.toDouble() / size.width.toDouble())
+    }
+
+    fun flipCamera() {
+        playBroadcaster.flip()
     }
 
     companion object {

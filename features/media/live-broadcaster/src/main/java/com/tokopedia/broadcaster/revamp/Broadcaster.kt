@@ -3,13 +3,16 @@ package com.tokopedia.broadcaster.revamp
 import android.content.Context
 import android.os.Handler
 import android.view.SurfaceHolder
+import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
 
 /**
  * Created by meyta.taliti on 01/03/22.
  */
 interface Broadcaster {
 
-    fun setListener(listener: Listener)
+    fun setCallback(callback: Callback?)
+
+    fun setLogger(logger: BroadcasterLogger)
 
     fun create(holder: SurfaceHolder, surfaceSize: Size)
 
@@ -25,7 +28,7 @@ interface Broadcaster {
 
     fun snapShot()
 
-    interface Listener {
+    interface Callback {
 
         fun getHandler(): Handler?
 

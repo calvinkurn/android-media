@@ -2,7 +2,6 @@ package com.tokopedia.broadcaster.revamp
 
 import android.net.Uri
 import android.os.Handler
-import android.util.Log
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
@@ -11,6 +10,8 @@ import com.tokopedia.broadcaster.revamp.util.bitrate.BroadcasterAdaptiveBitrate
 import com.tokopedia.broadcaster.revamp.util.bitrate.BroadcasterAdaptiveBitrateImpl
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCamera
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCameraManager
+import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
+import com.tokopedia.broadcaster.revamp.util.log.DefaultBroadcasterLogger
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatisticManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.wmspanel.libstream.*
@@ -39,7 +40,10 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     private var mStatisticManager: BroadcasterStatisticManager? = null
     private var mStatisticTimer: Timer? = null
 
-    private var mListener: Broadcaster.Listener? = null
+    private var mCallback: Broadcaster.Callback? = null
+    private var mLogger: BroadcasterLogger = DefaultBroadcasterLogger()
+
+    private var mBroadcastOn = false
 
     private val mAudioCallback =
         AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
@@ -58,20 +62,23 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
             // Arrays.fill(data, (byte) 0); // "Mute" audio
         }
 
-    override fun setListener(listener: Broadcaster.Listener) {
-        mListener = listener
+    override fun setCallback(callback: Broadcaster.Callback?) {
+        mCallback = callback
+    }
+
+    override fun setLogger(logger: BroadcasterLogger) {
+        mLogger = logger
     }
 
     override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
         if (mStreamer != null) {
-            Log.e(TAG, "mStreamer != null")
+            mLogger.i("mStreamer != null")
             return
         }
 
-        val context = mListener?.getActivityContext()
-        if (mListener == null || context == null) {
-            // todo: log & show error to user
-            Log.e(TAG, "mListener == null ||  context == null")
+        val context = mCallback?.getActivityContext()
+        if (mCallback == null || context == null) {
+            mLogger.e("mListener == null ||  context == null")
             return
         }
 
@@ -79,8 +86,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         val cameraManager = mCameraManager ?: return
         val cameraList = cameraManager.getCameraList()
         if (cameraList.isNullOrEmpty()) {
-            // todo: log & show error to user
-            Log.e(TAG, "cameraList.isNullOrEmpty()")
+            mLogger.e("cameraList.isNullOrEmpty()")
             return
         }
 
@@ -142,8 +148,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         // verify video resolution support by encoder
         val supportedSize = BroadcasterUtil.verifyResolution(videoConfig.type, videoConfig.videoSize)
         if (!videoConfig.videoSize.equals(supportedSize)) {
-            // todo: log & show error to user
-            Log.i(TAG, "!videoConfig.videoSize.equals(supportedSize)")
+            mLogger.i("!videoConfig.videoSize.equals(supportedSize)")
             videoConfig.videoSize = supportedSize
         }
 
@@ -215,7 +220,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
         mStreamerGL = builder.build()
         if (mStreamerGL == null) {
-            Log.e(TAG, "mStreamerGL == null)")
+            mLogger.e("mStreamerGL == null)")
             return
         }
 
@@ -229,7 +234,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
         // Deal with preview's aspect ratio
         mStreamerGL?.activeCameraVideoSize?.let {
-            mListener?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
+            mCallback?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
         }
 
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
@@ -248,12 +253,12 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun start(rtmpUrl: String) {
-        if (mStreamer == null || mListener == null) return
-        val context = mListener?.getActivityContext() ?: return
+        if (mStreamer == null || mCallback == null) return
+        val context = mCallback?.getActivityContext() ?: return
 
         val isStreamerReady = isAudioCaptureStarted() && isVideoCaptureStarted()
         if (!isStreamerReady) {
-            // todo: log & show error to user => Streamer is not ready, please wait
+            mLogger.e("Streamer is not ready, please wait")
             return
         }
 
@@ -261,21 +266,23 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
                 checkWifi = true,
                 checkCellular = true,
                 checkEthernet = true)) {
-            // todo: log & show error to user => No internet connection
+            mLogger.e("No internet connection")
             return
         }
 
         if (rtmpUrl.isEmpty()) {
-            // todo: log & show error to user => RTMP URL is Empty
+            mLogger.e("RTMP URL is empty")
             return
         }
 
         val connectionConfig = BroadcasterUtil.getConnectionConfig(rtmpUrl)
         val connectionId = mStreamer?.createConnection(connectionConfig) ?: -1
         if (connectionId == -1) {
-            // todo: log & show error to user => connection.name: Unknown error, please try again later.
+            mLogger.e("Unknown error, please try again later")
             return
         }
+
+        mBroadcastOn = true
 
         mConnectionId = Pair<Int, ConnectionConfig>(connectionId, connectionConfig)
         startTracking(connectionId)
@@ -284,6 +291,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun stop() {
+        mBroadcastOn = false
         stopTracking()
 
         mConnectionId?.let {
@@ -296,7 +304,6 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun release() {
-        // check if Streamer instance exists
         if (mStreamer == null) return
         // stop broadcast
         stop()
@@ -313,8 +320,6 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mAdaptiveBitrate = null
 
         mStreamerGL = null
-
-        mListener = null
     }
 
     override fun flip() {
@@ -327,11 +332,11 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
         // camera is changed, so update aspect ratio to actual value
         mStreamerGL?.activeCameraVideoSize?.let {
-            mListener?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
+            mCallback?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
         }
 
         updateFpsRanges()
-        mAdaptiveBitrate?.resume()
+        if (mBroadcastOn) mAdaptiveBitrate?.resume()
     }
 
     override fun snapShot() {
@@ -344,7 +349,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun getHandler(): Handler? {
-        return mListener?.getHandler()
+        return mCallback?.getHandler()
     }
 
     override fun onConnectionStateChanged(
@@ -393,7 +398,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
             }
             CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED, null -> {
                 mStreamer?.stopVideoCapture()
-                // todo: log & show error to user
+                mLogger.e("Video CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED or null")
             }
         }
     }
@@ -411,7 +416,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
             }
             CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED, null -> {
                 mStreamer?.stopAudioCapture()
-                // todo: log & show error to user
+                mLogger.e("Audio CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED or null")
             }
         }
     }
@@ -429,7 +434,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         uri: Uri?,
         method: SAVE_METHOD?,
     ) {
-        TODO("Not yet implemented")
+        // todo: Not yet implemented
     }
 
     override fun isEligibleQuery(): Boolean {
@@ -516,7 +521,5 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
         private const val STATISTIC_TIMER_INTERVAL = 1000L
-
-        private const val TAG = "BroadcasterManager"
     }
 }

@@ -440,7 +440,6 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
                     },
                     intentHandler = { intent, requestCode ->
-//                        (activity as? PlayBroadcastActivity)?.stopPreview()
                         startActivityForResult(intent, requestCode)
                     }
             )

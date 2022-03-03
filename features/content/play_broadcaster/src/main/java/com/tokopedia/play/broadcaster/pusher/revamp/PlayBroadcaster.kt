@@ -7,14 +7,21 @@ import com.tokopedia.broadcaster.revamp.BroadcasterManager
  * Created by meyta.taliti on 03/03/22.
  */
 class PlayBroadcaster(
-    broadcaster: Broadcaster
+    private val broadcaster: Broadcaster
 ) : Broadcaster by broadcaster {
+
+    // call this onDestroy() to avoid memory leak
+    fun destroy() {
+        broadcaster.setCallback(null)
+    }
 
     companion object {
 
-        fun newInstance(): PlayBroadcaster {
+        fun newInstance(callback: Broadcaster.Callback): PlayBroadcaster {
             return PlayBroadcaster(
-                BroadcasterManager()
+                BroadcasterManager().apply {
+                    setCallback(callback)
+                }
             )
         }
     }

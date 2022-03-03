@@ -89,7 +89,7 @@ class BroadcasterAdaptiveBitrateImpl(
     }
 
     override fun stop() {
-        if (mFullBitrate > 0)  updateFps(mFullBitrate.toLong())
+        if (mFullBitrate > 0) updateFps(mFullBitrate.toLong())
         mCurrentBitrate = 0
         mListener = null
         mConnectionId = null
