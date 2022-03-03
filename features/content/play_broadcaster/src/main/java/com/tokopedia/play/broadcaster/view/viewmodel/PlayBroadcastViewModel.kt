@@ -314,32 +314,36 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _configInfo.value = configUiModel
 
-            // create channel when there are no channel exist
-            if (configUiModel.channelType == ChannelType.Unknown) createChannel()
+            if (!configUiModel.streamAllowed) {
+                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+            } else {
+                // create channel when there are no channel exist
+                if (configUiModel.channelType == ChannelType.Unknown) createChannel()
 
-            // get channel when channel status is paused
-            if (configUiModel.channelType == ChannelType.Pause
+                // get channel when channel status is paused
+                if (configUiModel.channelType == ChannelType.Pause
                     // also when complete draft is true
                     || configUiModel.channelType == ChannelType.CompleteDraft
                     || configUiModel.channelType == ChannelType.Draft) {
-                        val deferredChannel = async { getChannelById(configUiModel.channelId) }
-                        val deferredProductMap = async {
-                            repo.getProductTagSummarySection(channelID = configUiModel.channelId)
-                        }
+                    val deferredChannel = async { getChannelById(configUiModel.channelId) }
+                    val deferredProductMap = async {
+                        repo.getProductTagSummarySection(channelID = configUiModel.channelId)
+                    }
 
-                        val error = deferredChannel.await()
-                        val productMap = deferredProductMap.await()
+                    val error = deferredChannel.await()
+                    val productMap = deferredProductMap.await()
 
-                        if (error != null) throw error
-                        setSelectedProduct(productMap)
+                    if (error != null) throw error
+                    setSelectedProduct(productMap)
+                }
+
+                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+
+                setProductConfig(configUiModel.productTagConfig)
+                setCoverConfig(configUiModel.coverConfig)
+                setDurationConfig(configUiModel.durationConfig)
+                setScheduleConfig(configUiModel.scheduleConfig)
             }
-
-            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-
-            setProductConfig(configUiModel.productTagConfig)
-            setCoverConfig(configUiModel.coverConfig)
-            setDurationConfig(configUiModel.durationConfig)
-            setScheduleConfig(configUiModel.scheduleConfig)
 
             // configure live streaming duration
 //            livePusherMediator.setLiveStreamingDuration(
