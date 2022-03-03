@@ -22,8 +22,6 @@ class GatewayViewHolder(
 
     fun bindData(checkoutData: CheckoutData, position: Int) {
         itemView.apply {
-//            if(checkoutData.selectedGateway)
-//                radioGatewaySelector.isChecked = true
             changeColorToEnableDisable(checkoutData.disable)
             setIcon(checkoutData)
             inflateAllDetails(checkoutData)
