@@ -22,25 +22,28 @@ class GatewayViewHolder(
 
     fun bindData(checkoutData: CheckoutData, position: Int) {
         itemView.apply {
-            changeColorToEnableDisable(checkoutData.disable)
+            changeColorToEnableDisable(checkoutData.disable,checkoutData.selectedGateway)
             setIcon(checkoutData)
             inflateAllDetails(checkoutData)
-
-            if (!checkoutData.disable && checkoutData.selectedGateway) {
-                individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
-                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                radioGatewaySelector.isChecked = true
-            } else {
-                individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
-                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
-                radioGatewaySelector.isChecked = checkoutData.selectedGateway
-            }
-
+            updateDateLogic(checkoutData)
             if (!checkoutData.disable && !checkoutData.selectedGateway) {
                 onClickLogic(checkoutData, position)
             }
         }
+    }
 
+    private fun View.updateDateLogic(checkoutData: CheckoutData) {
+        if (!checkoutData.disable && checkoutData.selectedGateway) {
+            individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            radioGatewaySelector.isChecked = true
+        } else {
+            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+            individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
+            if (!checkoutData.disable)
+                radioGatewaySelector.isChecked = false
+
+        }
     }
 
     private fun View.onClickLogic(checkoutData: CheckoutData, position: Int) {
@@ -84,23 +87,32 @@ class GatewayViewHolder(
     }
 
 
-    private fun changeColorToEnableDisable(disable: Boolean) {
+    private fun changeColorToEnableDisable(disable: Boolean, selectedGateway: Boolean) {
         itemView.apply {
             if (disable) {
-                gatewayHeader.isEnabled = false
-                gatewaySubHeader.isEnabled = false
-                gatewaySubHeader2.isEnabled = false
-                radioGatewaySelector.isEnabled = false
-                gatewayImage.alpha = 0.4f
+                setDisableViewLogic(selectedGateway)
             } else {
-                gatewayImage.alpha = 1.0f
-                gatewayHeader.isEnabled = true
-                gatewaySubHeader.isEnabled = true
-                radioGatewaySelector.isEnabled = true
-                gatewaySubHeader2.isEnabled = true
+                setEnableViewLogic()
             }
         }
 
+    }
+
+    private fun View.setEnableViewLogic() {
+        gatewayImage.alpha = 1.0f
+        gatewayHeader.isEnabled = true
+        gatewaySubHeader.isEnabled = true
+        radioGatewaySelector.isEnabled = true
+        gatewaySubHeader2.isEnabled = true
+    }
+
+    private fun View.setDisableViewLogic(selectedGateway: Boolean) {
+        gatewayHeader.isEnabled = false
+        gatewaySubHeader.isEnabled = false
+        gatewaySubHeader2.isEnabled = false
+        radioGatewaySelector.isChecked = selectedGateway
+        radioGatewaySelector.isEnabled = false
+        gatewayImage.alpha = 0.4f
     }
 
 
