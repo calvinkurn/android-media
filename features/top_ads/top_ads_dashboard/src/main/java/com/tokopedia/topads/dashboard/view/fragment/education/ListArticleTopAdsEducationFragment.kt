@@ -54,16 +54,8 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment(), CoroutineScope 
     }
 
     private fun loadArticles() {
-        launchCatchError(block = {
-            var data: ListArticle.ListArticleItem
-            withContext(Dispatchers.Default) {
-                val raw = arguments?.getString(ARTICLES)
-                data = Gson().fromJson(raw, ListArticle.ListArticleItem::class.java)
-            }
-            withContext(Dispatchers.Main) {
-                initView(data)
-            }
-        }, onError = {})
+        val data = arguments?.getParcelable<ListArticle.ListArticleItem>(ARTICLES)
+        data?.let { initView(it) }
     }
 
     override fun onDestroy() {
@@ -95,7 +87,7 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment(), CoroutineScope 
         private const val ARTICLES = "articles"
         fun createInstance(listArticleItem: ListArticle.ListArticleItem): ListArticleTopAdsEducationFragment {
             val bundle = Bundle()
-            bundle.putString(ARTICLES, Gson().toJson(listArticleItem))
+            bundle.putParcelable(ARTICLES, listArticleItem)
             val fragment = ListArticleTopAdsEducationFragment()
             fragment.arguments = bundle
             return fragment
