@@ -632,7 +632,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun deletePayLaterWidgetLocally() {
+    fun deletePayLaterWidget() {
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             deleteWidget(homePayLaterWidgetDataModel, index)
             launchCatchError(coroutineContext, {

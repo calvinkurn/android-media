@@ -2872,6 +2872,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun deletePayLaterWidget() {
-        getHomeViewModel().deletePayLaterWidgetLocally()
+        getHomeViewModel().deletePayLaterWidget()
     }
 }
