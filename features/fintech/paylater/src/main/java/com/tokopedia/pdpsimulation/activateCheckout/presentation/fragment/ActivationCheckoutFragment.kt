@@ -68,7 +68,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private var shopId: String = ""
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
-    private  var installmentModel: InstallmentDetails? = null
+    private var installmentModel: InstallmentDetails? = null
     private var listOfTenureDetail: List<TenureDetail> = ArrayList()
     private lateinit var paylaterGetOptimizedModel: PaylaterGetOptimizedModel
     private lateinit var listOfGateway: PaylaterGetOptimizedModel
@@ -366,13 +366,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     selectedTenurePosition = 0
                 } else
                     checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
-                val tenureSelectedModel = DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition])
+                val tenureSelectedModel =
+                    DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition])
                 setTenureData(tenureSelectedModel)
             }
         }
     }
 
-    private fun setTenureData(tenureSelectedModel : TenureSelectedModel?) {
+    private fun setTenureData(tenureSelectedModel: TenureSelectedModel?) {
         tenureSelectedModel?.also { tenureSelectedModel ->
             tenureSelectedModel.installmentDetails?.let { installmentDetails ->
                 this.installmentModel = installmentDetails
@@ -456,10 +457,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun productStockLogic(productStock: Int) {
         detailHeader.quantityEditor.maxValue = productStock
         detailHeader.quantityEditor.isEnabled = productStock != 1
-        if (detailHeader.quantityEditor.editText.text.toString().toInt() > productStock) {
-            detailHeader.quantityEditor.editText.setText(productStock.toString())
-            quantity = productStock
+        val currentDetailQuantityValue = detailHeader.quantityEditor.editText.text.toString()
+        try {
+            if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toInt() > productStock) {
+                detailHeader.quantityEditor.editText.setText(productStock.toString())
+                quantity = productStock
+            }
+        } catch (e: java.lang.Exception) {
+            detailHeader.quantityEditor.editText.setText("1")
+            quantity = 1
         }
+
     }
 
     private fun showVariantProductHeader(data: GetProductV3) {
@@ -660,14 +668,20 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         })
         detailHeader.quantityEditor.editText.afterTextChanged { s ->
             if (!s.isNullOrBlank()) {
+
+                val mQuantity = try {
+                    s.replace("[^0-9]".toRegex(), "").toInt()
+                } catch (e: Exception) {
+                    1
+                }
+
                 when {
-                    s.replace("[^0-9]".toRegex(), "")
-                        .toInt() > detailHeader.quantityEditor.maxValue -> {
+                    mQuantity > detailHeader.quantityEditor.maxValue -> {
                         detailHeader.limiterMessage.visibility = View.VISIBLE
                         detailHeader.limiterMessage.text =
                             "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
                     }
-                    s.replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
+                    mQuantity < 1 -> {
                         detailHeader.limiterMessage.visibility = View.VISIBLE
                         detailHeader.limiterMessage.text =
                             getString(R.string.paylater_occ_min_quantity)
@@ -729,7 +743,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             installmentModel = it
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
-        paymentDuration.text =  tenureSelectedModel.tenure.orEmpty()
+        paymentDuration.text = tenureSelectedModel.tenure.orEmpty()
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
