@@ -5,8 +5,8 @@
     android:id="@+id/parentLayout"
     android:layout_width="@dimen/dp_130"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
@@ -18,7 +18,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageShop"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="@dimen/dp_130"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -32,10 +32,10 @@
 
         <androidx.legacy.widget.Space
             android:id="@+id/marginSpacer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageShop"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginBottom="@dimen/dp_20"
+            app:layout_constraintBottom_toBottomOf="@id/imageShop"
             app:layout_constraintLeft_toLeftOf="@id/imageShop"
             app:layout_constraintRight_toRightOf="@id/imageShop" />
 
@@ -45,14 +45,14 @@
             app:layout_constraintTop_toTopOf="@id/shop_logo"
             app:layout_constraintEnd_toEndOf="@id/shop_logo"
             app:layout_constraintBottom_toBottomOf="@id/shop_logo"
-            android:layout_width="62dp"
-            android:layout_height="62dp"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
             android:background="@drawable/shop_card_shop_border_image" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_logo"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -64,8 +64,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_sub_logo"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
             android:gravity="center"
             app:unify_image_corner_radius="0"
             app:layout_constraintBottom_toBottomOf="@id/shop_logo"
@@ -75,11 +75,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
@@ -88,18 +88,18 @@
             app:layout_constraintEnd_toEndOf="@id/imageShop"
             app:layout_constraintStart_toStartOf="@id/imageShop"
             app:layout_constraintTop_toBottomOf="@id/shop_logo"
-            app:layout_goneMarginTop="4dp"
+            app:layout_goneMarginTop="@dimen/dp_4"
             app:typographyType="small"
             tools:text="Abditama Officialadlssdd"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_header_title"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
@@ -108,7 +108,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
-            app:layout_goneMarginTop="4dp"
+            app:layout_goneMarginTop="@dimen/dp_4"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Rilisan Spesial mulaiasa"
@@ -118,7 +118,7 @@
             android:id="@+id/benefit_parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="@dimen/dp_2"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +133,7 @@
                 android:maxLines="1"
                 android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
-                app:layout_goneMarginTop="4dp"
+                app:layout_goneMarginTop="@dimen/dp_4"
                 app:typographyType="heading_6"
                 app:typographyWeight="bold"
                 tools:text="Rp"
@@ -143,7 +143,7 @@
                 android:id="@+id/benefit_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="2dp"
+                android:layout_marginHorizontal="@dimen/dp_2"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
@@ -154,8 +154,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/benefit_symbol_image"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
                 android:layout_gravity="center"
                 android:scaleType="center"
                 app:layout_constraintDimensionRatio="1:1"
@@ -167,8 +167,8 @@
             android:id="@+id/timerParent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_12"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -177,8 +177,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/timer_logo"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="@dimen/dp_10"
                 android:layout_gravity="center"
                 android:scaleType="fitXY"
                 android:src="@drawable/unify_timer2_ic"
@@ -189,7 +189,7 @@
                 android:id="@+id/tv_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="@dimen/dp_2"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"

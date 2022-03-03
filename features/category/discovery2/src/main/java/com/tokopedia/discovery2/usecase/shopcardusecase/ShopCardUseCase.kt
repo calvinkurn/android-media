@@ -1,23 +1,18 @@
 package com.tokopedia.discovery2.usecase.shopcardusecase
 
+import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.RPC_NEXT_PAGE
+import com.tokopedia.discovery2.Utils.Companion.RPC_PAGE_NUMBER
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
 class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCardRepository) {
     companion object {
         private const val SHOP_PER_PAGE = 10
         private const val PAGE_START = 1
-        private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_NEXT_PAGE = "rpc_next_page"
-        private const val RPC_PAGE__SIZE = "rpc_page_size"
+        private const val PAGE_LOADED_2 = 1
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, shopLimit: Int = SHOP_PER_PAGE): Boolean {
@@ -34,10 +29,10 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
                     pageEndPoint, it.name)
             it.showVerticalLoader = shopCardListData.isNotEmpty()
             it.setComponentsItem(shopCardListData, component.tabName)
-            it.noOfPagesLoaded = 1
+            it.noOfPagesLoaded = PAGE_START
             it.nextPageKey = nextPage
             if (shopCardListData.isEmpty()) return true
-            it.pageLoadedCounter = 2
+            it.pageLoadedCounter = PAGE_LOADED_2
             it.verticalProductFailState = false
             return true
         }
@@ -70,7 +65,7 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[RPC_PAGE__SIZE] = shopPerPage.toString()
+        queryParameterMap[Utils.RPC_PAGE__SIZE] = shopPerPage.toString()
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
 
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""

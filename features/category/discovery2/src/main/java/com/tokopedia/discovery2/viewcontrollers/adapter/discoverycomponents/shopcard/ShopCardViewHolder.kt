@@ -15,10 +15,8 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
@@ -106,6 +104,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 constraint.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
             }
         } catch (e: Exception) {
+            constraint.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
             e.printStackTrace()
         }
     }
@@ -127,11 +126,8 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun handleErrorState() {
-        mDiscoveryRecycleAdapter.notifyDataSetChanged()
         hideShimmer()
-        if (constraint.childCount > 0)
-            constraint.removeAllViews()
-
+        mDiscoveryRecycleAdapter.notifyDataSetChanged()
         if (mShopCardViewModel.getShopList() == null) {
             shopEmptyState?.run {
                 title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
@@ -139,27 +135,27 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 refreshBtn?.setOnClickListener {
                     reloadComponent()
                 }
-                shopEmptyState?.visible()
-                mShopCardRecyclerView.gone()
+                shopEmptyState?.show()
             }
+        } else {
+            shopEmptyState?.hide()
         }
+
+        mShopCardRecyclerView.hide()
     }
 
     private fun reloadComponent() {
-        mShopCardRecyclerView.visible()
-        shopEmptyState?.gone()
+        mShopCardRecyclerView.show()
+        shopEmptyState?.hide()
         mShopCardViewModel.resetComponent()
         mShopCardViewModel.fetchShopCardData()
     }
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
-        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
-        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
-        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
-        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
-        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        for (i in 1..6) {
+            list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        }
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 

@@ -1850,7 +1850,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackShopCardImpression(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
-        componentsItems.data?.get(0)?.let {
+        componentsItems.data?.firstOrNull()?.let {
             shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - shop_card_banner"
             shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
@@ -1877,7 +1877,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickShopCard(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
-        componentsItems.data?.get(0)?.let {
+        componentsItems.data?.firstOrNull().let {
             shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - shop_card_banner"
             shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"

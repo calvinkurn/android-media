@@ -75,8 +75,9 @@ class Utils {
         const val SECTION_ID = "section_id"
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
-        private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_PAGE_NUMBER = "rpc_page_number"
+        const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_NEXT_PAGE = "rpc_next_page"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
