@@ -119,7 +119,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
 
     fun getFavoriteNumber(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumber(categoryIds)
+            val favoriteNumber = repo.getFavoriteNumberChips(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
                 favoriteNumber.persoFavoriteNumber.items)
         }) {

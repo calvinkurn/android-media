@@ -47,7 +47,7 @@ class TopupBillsFavNumberViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val favoriteNumber = getRechargeFavoriteNumberUseCase.apply {
-                setRequestParams(categoryIds, operatorIds)
+                setRequestParams(categoryIds, operatorIds, CHANNEL_FAVORITE_NUMBER_LIST)
             }.executeOnBackground()
             _persoFavNumberData.postValue(Success(favoriteNumber.persoFavoriteNumber to shouldRefreshInputNumber))
         }) {
@@ -100,6 +100,7 @@ class TopupBillsFavNumberViewModel @Inject constructor(
     }
 
     companion object {
+        const val CHANNEL_FAVORITE_NUMBER_LIST = "favorite_number_list"
         const val ERROR_FETCH_AFTER_UPDATE = "ERROR_UPDATE"
         const val ERROR_FETCH_AFTER_DELETE = "ERROR_DELETE"
         const val ERROR_FETCH_AFTER_UNDO_DELETE = "ERROR_UNDO_DELETE"

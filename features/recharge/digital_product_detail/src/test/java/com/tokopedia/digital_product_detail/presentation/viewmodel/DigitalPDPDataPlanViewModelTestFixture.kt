@@ -11,7 +11,6 @@ import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomMo
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
-import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -60,13 +59,13 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
-            repo.getFavoriteNumber(any())
+            repo.getFavoriteNumberChips(any())
         } returns response
     }
 
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumber(any())
+            repo.getFavoriteNumberChips(any())
         } throws error
     }
 
@@ -121,7 +120,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun verifyGetFavoriteNumberRepoGetCalled() {
-        coVerify { repo.getFavoriteNumber(any()) }
+        coVerify { repo.getFavoriteNumberChips(any()) }
     }
 
     protected fun verifyGetOperatorListRepoGetCalled() {

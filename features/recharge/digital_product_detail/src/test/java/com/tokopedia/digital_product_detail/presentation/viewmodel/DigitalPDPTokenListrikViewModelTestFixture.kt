@@ -8,7 +8,6 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
-import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
@@ -60,13 +59,13 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
-            repo.getFavoriteNumber(any())
+            repo.getFavoriteNumberChips(any())
         } returns response
     }
 
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumber(any())
+            repo.getFavoriteNumberChips(any())
         } throws error
     }
 
@@ -123,7 +122,7 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     }
 
     protected fun verifyGetFavoriteNumberRepoGetCalled() {
-        coVerify { repo.getFavoriteNumber(any()) }
+        coVerify { repo.getFavoriteNumberChips(any()) }
     }
 
     protected fun verifyAddToCartRepoGetCalled() {

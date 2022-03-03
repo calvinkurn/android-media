@@ -58,13 +58,13 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
-            repo.getFavoriteNumber(any())
+            repo.getFavoriteNumberChips(any())
         } returns response
     }
 
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumber(any())
+            repo.getFavoriteNumberChips(any())
         } throws error
     }
 
@@ -129,7 +129,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     }
 
     protected fun verifyGetFavoriteNumberRepoGetCalled() {
-        coVerify { repo.getFavoriteNumber(any()) }
+        coVerify { repo.getFavoriteNumberChips(any()) }
     }
 
     protected fun verifyGetOperatorSelectGroupRepoGetCalled() {
