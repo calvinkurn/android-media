@@ -17,7 +17,7 @@ import org.junit.Test
 
 
 @ExperimentalCoroutinesApi
-class PdpFintectWidgetViewModelTest {
+class PdpFintechWidgetViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -29,12 +29,11 @@ class PdpFintectWidgetViewModelTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
-
     @Before
     fun setUp() {
         viewModel = FintechWidgetViewModel(
-            dispatcher,
-            fintechWidgetUseCase
+            fintechWidgetUseCase,
+            dispatcher
         )
     }
 

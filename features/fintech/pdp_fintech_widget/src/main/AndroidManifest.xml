@@ -5,7 +5,7 @@
     <application>
 
         <activity android:name="com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"
+            android:theme="@style/pdp_fintech_widget_Widget.Theme.AppCompat.Translucent"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
