@@ -3,5 +3,8 @@
     <dimen name="paylater_home_widger_dp_68">68dp</dimen>
     <dimen name="paylater_home_widger_dp_14">14dp</dimen>
     <dimen name="paylater_home_widger_dp_10">10dp</dimen>
+    <dimen name="paylater_home_widger_dp_50">50dp</dimen>
+    <dimen name="paylater_home_widger_dp_9">9dp</dimen>
+
 
 </resources>

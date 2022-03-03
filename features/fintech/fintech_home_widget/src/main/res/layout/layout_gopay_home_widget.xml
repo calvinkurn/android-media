@@ -36,10 +36,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/gatewayIcon"
-            android:layout_width="@dimen/unify_space_48"
-            android:layout_height="@dimen/unify_space_48"
+            android:layout_width="@dimen/paylater_home_widger_dp_50"
+            android:layout_height="@dimen/paylater_home_widger_dp_50"
             android:layout_marginStart="@dimen/unify_space_8"
-            android:padding="@dimen/unify_space_8"
+            android:padding="@dimen/paylater_home_widger_dp_9"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
