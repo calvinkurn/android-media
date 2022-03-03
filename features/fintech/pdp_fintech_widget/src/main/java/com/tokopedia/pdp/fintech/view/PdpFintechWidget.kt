@@ -240,29 +240,24 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
         for (i in 0 until chipList.size) {
-            chipList[i].userStatus?.let { userStatus ->
-                chipList[i].productCode?.let { partnerName ->
-                    chipList[i].linkingStatus?.let { linkedStatus ->
                         if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
                             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                                 FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                                     productID?:"",
-                                    linkedStatus,
-                                    userStatus,
+                                    chipList[i].linkingStatus?:"",
+                                    chipList[i].userStatus?:"",
                                     NOT_BRANDER_CHIPS,
-                                    partnerName
+                                    chipList[i].productCode?:""
                                 )
                             )
                         else
                             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                                 FintechWidgetAnalyticsEvent.PdpWidgetImpression(
-                                    productID?:"", linkedStatus, userStatus, BRANDER_CHIPS,
-                                    partnerName
+                                    productID?:"", chipList[i].linkingStatus?:"", chipList[i].userStatus?:"", BRANDER_CHIPS,
+                                    chipList[i].productCode?:""
                                 )
                             )
-                    }
-                }
-            }
+
         }
 
     }

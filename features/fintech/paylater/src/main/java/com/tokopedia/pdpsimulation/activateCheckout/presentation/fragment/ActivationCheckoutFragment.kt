@@ -668,7 +668,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
         })
         detailHeader.quantityEditor.editText.afterTextChanged { s ->
-            if (!s.isNullOrBlank()) {
+            if (s.isNotBlank()) {
 
                 val mQuantity = try {
                     s.replace("[^0-9]".toRegex(), "").toInt()

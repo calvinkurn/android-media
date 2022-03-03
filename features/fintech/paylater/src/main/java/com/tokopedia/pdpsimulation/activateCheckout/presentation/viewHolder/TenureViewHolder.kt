@@ -27,23 +27,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                 changeViewColor(tenureSelectListener.isDisable())
                 updateData(tenureDetail)
                 if (!tenureSelectListener.isDisable()) {
-                    if (tenureDetail.isSelectedTenure) {
-                        containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-                        individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                        radioSelector.isChecked = true
-                    } else {
-                        containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                        individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
-                        radioSelector.isChecked = false
-                    }
-                    individualTenureItemContainer.isClickable = true
-                    radioSelector.isClickable = true
-                    individualTenureItemContainer.setOnClickListener {
-                        tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
-                    }
-                    radioSelector.setOnClickListener {
-                        tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
-                    }
+                    setTenureEnableLogic(tenureDetail, it, currentPosition)
                 } else {
                     radioSelector.isChecked = false
                     individualTenureItemContainer.isClickable = false
@@ -54,6 +38,30 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             itemView.gone()
         }
 
+    }
+
+    private fun View.setTenureEnableLogic(
+        tenureDetail: TenureDetail,
+        tenureSelectedModel: TenureSelectedModel,
+        currentPosition: Int
+    ) {
+        if (tenureDetail.isSelectedTenure) {
+            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+            individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            radioSelector.isChecked = true
+        } else {
+            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
+            radioSelector.isChecked = false
+        }
+        individualTenureItemContainer.isClickable = true
+        radioSelector.isClickable = true
+        individualTenureItemContainer.setOnClickListener {
+            tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+        }
+        radioSelector.setOnClickListener {
+            tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+        }
     }
 
     private fun updateData(tenureDetail: TenureDetail) {
