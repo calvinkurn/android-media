@@ -45,7 +45,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     override fun onCreate(savedInstanceState: Bundle?) {
         pdpSimulationComponent.inject(this)
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.pdp_simulation_header_title))
+        updateTitle(getString(R.string.pdp_activation_header_title))
     }
 
     override fun getLayoutRes() = R.layout.activity_pdp_simulation
@@ -78,7 +78,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
 
     companion object {
-        const val SCREEN_NAME = "PayLater & Cicilan"
+        const val SCREEN_NAME = "Beli Pakai PayLater"
     }
 
     private fun initInjector() =

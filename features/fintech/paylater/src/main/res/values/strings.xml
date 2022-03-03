@@ -2,7 +2,7 @@
 
     <!--Content Switcher Headings -->
     <string name="pdp_simulation_header_title">PayLater &amp; Cicilan</string>
-
+    <string name="pdp_activation_header_title">Beli Pakai PayLater</string>
     <!-- PayLater Simulation Page -->
     <string name="pay_later_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
 

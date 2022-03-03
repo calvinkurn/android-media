@@ -437,8 +437,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             shopId = productShopId
         }
         productData.stock?.let { productStock ->
-            detailHeader.quantityEditor.isEnabled = productStock != 1
-            detailHeader.quantityEditor.maxValue = productStock
+            productStockLogic(productStock)
         }
         productData.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
@@ -452,6 +451,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
 
         showVariantProductHeader(productData)
+    }
+
+    private fun productStockLogic(productStock: Int) {
+        detailHeader.quantityEditor.maxValue = productStock
+        detailHeader.quantityEditor.isEnabled = productStock != 1
+        if (detailHeader.quantityEditor.editText.text.toString().toInt() > productStock) {
+            detailHeader.quantityEditor.editText.setText(productStock.toString())
+            quantity = productStock
+        }
     }
 
     private fun showVariantProductHeader(data: GetProductV3) {
