@@ -2,6 +2,7 @@ package com.tokopedia.broadcaster.revamp
 
 import android.net.Uri
 import android.os.Handler
+import android.util.Log
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
@@ -12,11 +13,8 @@ import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCamera
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCameraManager
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatisticManager
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.wmspanel.libstream.ConnectionConfig
-import com.wmspanel.libstream.Streamer
+import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.*
-import com.wmspanel.libstream.StreamerGL
-import com.wmspanel.libstream.StreamerGLBuilder
 import org.json.JSONObject
 import java.util.*
 
@@ -64,19 +62,25 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mListener = listener
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Size) {
-        if (mStreamer != null) return
+    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
+        if (mStreamer != null) {
+            Log.e(TAG, "mStreamer != null")
+            return
+        }
 
-        val context = mListener?.context
+        val context = mListener?.getActivityContext()
         if (mListener == null || context == null) {
             // todo: log & show error to user
+            Log.e(TAG, "mListener == null ||  context == null")
             return
         }
 
         mCameraManager = BroadcasterCameraManager.newInstance(context)
         val cameraManager = mCameraManager ?: return
-        if (cameraManager.getCameraList().isNullOrEmpty()) {
+        val cameraList = cameraManager.getCameraList()
+        if (cameraList.isNullOrEmpty()) {
             // todo: log & show error to user
+            Log.e(TAG, "cameraList.isNullOrEmpty()")
             return
         }
 
@@ -139,6 +143,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         val supportedSize = BroadcasterUtil.verifyResolution(videoConfig.type, videoConfig.videoSize)
         if (!videoConfig.videoSize.equals(supportedSize)) {
             // todo: log & show error to user
+            Log.i(TAG, "!videoConfig.videoSize.equals(supportedSize)")
             videoConfig.videoSize = supportedSize
         }
 
@@ -156,7 +161,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
         builder.setSurface(holder.surface)
         // builder.setSurfaceSize(Streamer.Size(binding.surfaceView.getWidth(), binding.surfaceView.getHeight()))
-        builder.setSurfaceSize(surfaceSize)
+        builder.setSurfaceSize(Size(surfaceSize.width, surfaceSize.height))
 
         // orientation will be later changed to actual device orientation when user press "Broadcast" button
         // or will be updated dynamically from onConfigurationChanged listener if Live rotation is on
@@ -181,27 +186,50 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         // will be updated from onConfigurationChanged and mCaptureButtonListener
         // with corresponding mStreamerGL.setDisplayRotation(...) method call
         // this value is required to make correct video rotation
-        builder.setDisplayRotation(Surface.ROTATION_90)
+        builder.setDisplayRotation(Surface.ROTATION_0)
 
-        // if you absolutely do not plan to broadcast video, skip video setup
-        // and call builder.build(Streamer.MODE.AUDIO_ONLY)
-        // this will save some resources because video encoder will not be created
-        // in this case app is responsible for:
-        // 1) do not call startVideoCapture()
-        // 2) limit connection mode to Streamer.MODE.AUDIO_ONLY
+        // start adding cameras from default camera, then add second camera
+        // larix uses same resolution for camera preview and stream to simplify setup
+
+        // add first camera to flip list, make sure you called setVideoConfig before
+        builder.addCamera(
+            CameraConfig().apply {
+                this.cameraId = activeCamera.cameraId
+                this.videoSize = videoSize
+            }
+        )
+
+        // set start position in flip list to camera id
+        builder.setCameraId(activeCamera.cameraId)
+        cameraList.forEach {
+            if (it.cameraId != activeCamera.cameraId) {
+                // add next camera to flip list
+                builder.addCamera(
+                    CameraConfig().apply {
+                        this.cameraId = it.cameraId
+                        this.videoSize = BroadcasterUtil.findFlipSize(it, videoSize)
+                    }
+                )
+            }
+        }
+
         mStreamerGL = builder.build()
+        if (mStreamerGL == null) {
+            Log.e(TAG, "mStreamerGL == null)")
+            return
+        }
 
-        if (mStreamerGL != null) {
-            mStreamer = mStreamerGL
+        mStreamer = mStreamerGL
 
-            // Streamer build succeeded, can start Video/Audio capture
-            // call startVideoCapture, wait for onVideoCaptureStateChanged callback
-            startVideoCapture()
-            // call startAudioCapture, wait for onAudioCaptureStateChanged callback
-            startAudioCapture()
+        // Streamer build succeeded, can start Video/Audio capture
+        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
+        startVideoCapture()
+        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
+        startAudioCapture()
 
-            // Deal with preview's aspect ratio
-            mStreamerGL?.activeCameraVideoSize?.let { mListener?.updatePreviewRatio(it) }
+        // Deal with preview's aspect ratio
+        mStreamerGL?.activeCameraVideoSize?.let {
+            mListener?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
         }
 
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
@@ -215,9 +243,13 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         }
     }
 
+    override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
+        mStreamerGL?.setSurfaceSize(Size(surfaceSize.width, surfaceSize.height))
+    }
+
     override fun start(rtmpUrl: String) {
         if (mStreamer == null || mListener == null) return
-        val context = mListener?.context ?: return
+        val context = mListener?.getActivityContext() ?: return
 
         val isStreamerReady = isAudioCaptureStarted() && isVideoCaptureStarted()
         if (!isStreamerReady) {
@@ -294,7 +326,9 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mStreamerGL?.flip()
 
         // camera is changed, so update aspect ratio to actual value
-        mStreamerGL?.activeCameraVideoSize?.let { mListener?.updatePreviewRatio(it) }
+        mStreamerGL?.activeCameraVideoSize?.let {
+            mListener?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
+        }
 
         updateFpsRanges()
         mAdaptiveBitrate?.resume()
@@ -310,7 +344,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun getHandler(): Handler? {
-        return mListener?.handler
+        return mListener?.getHandler()
     }
 
     override fun onConnectionStateChanged(
@@ -468,7 +502,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
                 val statisticManager = mStatisticManager ?: return
                 statisticManager.update(connectionId)
-                mListener?.onStatisticInfoChanged(statisticManager.getStatistic())
+                // mListener?.onStatisticInfoChanged(statisticManager.getStatistic())
             }
         }, STATISTIC_TIMER_DELAY, STATISTIC_TIMER_INTERVAL)
     }
@@ -482,5 +516,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
         private const val STATISTIC_TIMER_INTERVAL = 1000L
+
+        private const val TAG = "BroadcasterManager"
     }
 }

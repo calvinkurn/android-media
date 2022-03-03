@@ -1,16 +1,15 @@
 package com.tokopedia.broadcaster.revamp.util
 
-import android.content.Context
 import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import android.media.MediaFormat
 import android.media.MediaRecorder
-import android.net.ConnectivityManager
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCamera
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.ConnectionConfig
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.VideoConfig
+import kotlin.math.abs
 
 /**
  * Created by meyta.taliti on 01/03/22.
@@ -87,5 +86,42 @@ object BroadcasterUtil {
         uri = url
         mode = Streamer.MODE.AUDIO_VIDEO
         auth = Streamer.AUTH.DEFAULT
+    }
+
+    // Set the same video size for both cameras
+    // If not possible (for example front camera has no FullHD support)
+    // try to find video size with the same aspect ratio
+    fun findFlipSize(cameraInfo: BroadcasterCamera, videoSize: Streamer.Size): Streamer.Size? {
+        val flipSize = cameraInfo.recordSizes?.firstOrNull { it == videoSize }
+
+        // If secondary camera supports same resolution, use it
+        if (flipSize != null) return flipSize
+
+        // If same resolution not found, search for same aspect ratio
+        fun findFlipSizeForSameAspectRatio(
+            target: Double,
+            recordSize: Streamer.Size
+        ): Boolean {
+            return if (recordSize.width < videoSize.width) {
+                val aspectRatio = recordSize.width / recordSize.height
+                val aspectDiff = target / aspectRatio - 1
+                abs(aspectDiff) < 0.01
+            } else false
+        }
+
+        val targetAspectRatio = videoSize.width.toDouble() / videoSize.height
+        val flipSizeSameAspectRatio = cameraInfo.recordSizes?.firstOrNull {
+            findFlipSizeForSameAspectRatio(targetAspectRatio, it)
+        }
+        if (flipSizeSameAspectRatio != null) return flipSizeSameAspectRatio
+
+        // Same aspect ratio not found, search for less or similar frame sides
+        val flipSizeSimilarFrameSize = cameraInfo.recordSizes?.firstOrNull {
+            it.height <= videoSize.height && it.width <= videoSize.width
+        }
+        if (flipSizeSimilarFrameSize != null) return flipSizeSimilarFrameSize
+
+        // Nothing found, use default
+        return cameraInfo.recordSizes?.first()
     }
 }

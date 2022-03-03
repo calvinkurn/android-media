@@ -1,10 +1,13 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
+import android.os.Handler
+import android.os.Looper
+import android.view.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -16,13 +19,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
+import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.pusher.revamp.PlayBroadcaster
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
@@ -52,7 +57,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.Listener {
 
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
@@ -76,7 +81,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
-    private lateinit var surfaceView: SurfaceAspectRatioView
+    private lateinit var aspectFrameLayout: AspectFrameLayout
+    private lateinit var surfaceView: SurfaceView
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
@@ -98,6 +104,30 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
 
     private lateinit var pauseLiveDialog: DialogUnify
 
+    private val playBroadcaster = PlayBroadcaster.newInstance()
+    private var mHandler: Handler? = null
+
+    private var surfaceHolder: SurfaceHolder? = null
+    private var surfaceHolderCallback: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
+        override fun surfaceCreated(holder: SurfaceHolder) {
+            if (surfaceHolder != null) {
+                return
+            }
+            surfaceHolder = holder
+            // We got surface to draw on, start streamer creation
+            createStreamer()
+        }
+
+        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            playBroadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
+        }
+
+        override fun surfaceDestroyed(holder: SurfaceHolder) {
+            surfaceHolder = null
+            releaseStreamer()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         setFragmentFactory()
@@ -107,29 +137,38 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
-//        initStreamer()
+        mHandler = Handler(Looper.getMainLooper())
+
         initView()
+        setupView()
 
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
             requestPermission()
         }
 
-        setupView()
         setupObserve()
 
         getConfiguration()
         observeConfiguration()
     }
 
+    override fun onStart() {
+        super.onStart()
+        aspectFrameLayout.setAspectRatio(AspectFrameLayout.DEFAULT_RATION_WINDOW_SIZE)
+    }
+
     override fun onResume() {
         super.onResume()
         setLayoutFullScreen()
+        lockOrientation()
+        createStreamer()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onPause() {
         super.onPause()
+        releaseStreamer()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.sendLogs()
     }
@@ -194,31 +233,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
-//    private fun initStreamer() {
-//        try {
-//            viewModel.createStreamer(this, Handler(Looper.getMainLooper()))
-//        } catch (exception: IllegalAccessException) {
-//            showDialogWhenUnSupportedDevices()
-//            return
-//        }
-//    }
-
     private fun initView() {
         containerSetup = findViewById(R.id.fl_container)
         globalErrorView = findViewById(R.id.global_error)
-        surfaceView = findViewById(R.id.surface_aspect_ratio_view)
+        aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
+        surfaceView = findViewById(R.id.surface_view)
     }
 
     private fun setupView() {
-        surfaceView.setCallback(object : SurfaceAspectRatioView.Callback{
-            override fun onSurfaceCreated() {
-//                startPreview()
-            }
-
-            override fun onSurfaceDestroyed() {
-//                stopPreview()
-            }
-        })
+        surfaceView.holder.addCallback(surfaceHolderCallback)
     }
 
     private fun setupObserve() {
@@ -326,9 +349,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 permissionResultListener = object: PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
                         return {
-                            if (isGranted(Manifest.permission.CAMERA)) {
-//                                startPreview()
-                            }
+                            if (isGranted(Manifest.permission.CAMERA)) createStreamer()
                             if (isAllGranted()) doWhenResume { configureChannelType(channelType) }
                             else doWhenResume { showPermissionPage() }
                         }
@@ -342,16 +363,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
-
-//    fun startPreview() {
-//        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) {
-//            viewModel.startPreview(surfaceView)
-//        }
-//    }
-
-//    fun stopPreview() {
-//        viewModel.stopPreview()
-//    }
 
     fun checkAllPermission() {
         if (isRequiredPermissionGranted()) configureChannelType(channelType)
@@ -572,6 +583,38 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     @TestOnly
     fun getPltPerformanceResultData(): PltPerformanceData {
         return pageMonitoring.getPltPerformanceData()
+    }
+
+    /**
+     * Larix
+     */
+    // temporarily lock the orientation
+    // because we don't handle onConfigurationChanged()
+    private fun lockOrientation() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+    }
+
+    // todo: showDialogWhenUnSupportedDevices()
+    private fun createStreamer() {
+        val holder = surfaceHolder ?: return
+        playBroadcaster.setListener(this)
+        playBroadcaster.create(holder, Broadcaster.Size(surfaceView.width, surfaceView.height))
+    }
+
+    private fun releaseStreamer() {
+        playBroadcaster.release()
+    }
+
+    override fun getHandler(): Handler? {
+        return mHandler
+    }
+
+    override fun getActivityContext(): Context {
+        return this
+    }
+
+    override fun updateAspectFrameSize(size: Broadcaster.Size) {
+        aspectFrameLayout.setAspectRatio(size.height.toDouble() / size.width.toDouble())
     }
 
     companion object {

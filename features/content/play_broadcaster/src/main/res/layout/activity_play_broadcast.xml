@@ -6,14 +6,23 @@
     android:background="@color/play_dms_broadcaster_background"
     >
 
-    <com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
-        android:id="@+id/surface_aspect_ratio_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
+        android:id="@+id/aspect_ratio_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <SurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout>
 
     <include
         layout="@layout/layout_play_gradient_background"
