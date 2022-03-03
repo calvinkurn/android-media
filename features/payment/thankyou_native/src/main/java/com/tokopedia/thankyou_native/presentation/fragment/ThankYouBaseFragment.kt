@@ -146,7 +146,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
             if (isThanksWidgetEnabled && shouldHideFeatureRecom == false)
-                thanksPageDataViewModel.getFeatureEngine(thanksPageData)
+                thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
         }
     }
 
