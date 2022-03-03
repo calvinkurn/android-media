@@ -49,7 +49,7 @@
             android:layout_gravity="center"
             android:contentDescription="null"
             android:padding="10dp"
-            app:srcCompat="@drawable/kol_comment_send" />
+            app:srcCompat="@drawable/kol_commeent_send_new" />
 
     </LinearLayout>
 
