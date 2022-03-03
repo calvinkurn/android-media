@@ -17,6 +17,7 @@ class OrientationAwareRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
     private var lastX = 0.0f
     private var lastY = 0.0f
+    private val minDyForMove = 2.0f
     override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
         val lm = layoutManager ?: return super.onInterceptTouchEvent(e)
         val allowScroll: Boolean
@@ -36,6 +37,10 @@ class OrientationAwareRecyclerView @JvmOverloads constructor(
                 val currentY = e.y
                 val dx = abs(currentX - lastX)
                 val dy = abs(currentY - lastY)
+                if(dy.toInt() < minDyForMove){
+                    //Consider Click
+                    return false
+                }
                 allowScroll = if (isHorizontalOrientation) {
                     dy < dx
                 } else {
