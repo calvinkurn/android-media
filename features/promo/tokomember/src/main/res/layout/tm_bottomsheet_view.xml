@@ -25,8 +25,7 @@
                 android:layout_width="@dimen/unify_space_64"
                 android:layout_height="@dimen/unify_space_64"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/tm_ic_shop" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <FrameLayout
                 android:layout_width="@dimen/unify_space_64"

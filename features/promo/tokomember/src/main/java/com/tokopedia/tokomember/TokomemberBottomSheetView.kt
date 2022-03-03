@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ViewFlipper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember.TokomemberActivity.Companion.KEY_MEMBERSHIP
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
 import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.tokomember.trackers.TokomemberTracker
 import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_OPEN
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
@@ -24,6 +26,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
     private var textTitle: Typography? = null
     private var textDesc: Typography? = null
     private var button: UnifyButton? = null
+    private var imageShop: ImageUnify? = null
     private var viewContainer: ViewFlipper? = null
     private var bottomSheetData: BottomSheetContentItem? = null
 
@@ -54,6 +57,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         textTitle = view.findViewById(R.id.tvTitle)
         textDesc = view.findViewById(R.id.tvSubtitle)
         button = view?.findViewById(R.id.tokoButton)
+        imageShop = view?.findViewById(R.id.imageOne)
         viewContainer?.displayedChild = SHIMMER
         setUpBottomSheet()
         setChild(view)
@@ -93,6 +97,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         textTitle?.text = Html.fromHtml(bottomSheetData?.title ?: "")
         textDesc?.text = bottomSheetData?.description
         button?.text = bottomSheetData?.cta?.text
+        imageShop?.loadImage(bottomSheetData?.imageURL)
 
         button?.setOnClickListener {
             TokomemberTracker().userClickBottomSheetButton(

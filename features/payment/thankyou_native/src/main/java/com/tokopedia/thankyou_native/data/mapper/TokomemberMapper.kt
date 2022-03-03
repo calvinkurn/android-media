@@ -7,6 +7,7 @@ import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.tokomember.model.MembershipGetShopRegistrationWidget
 import com.tokopedia.tokomember.model.WidgetContentItem
 
+var membershipType = -1
 object TokomemberMapper {
     var waitingWidgetData = WidgetContentItem()
     var successWidgetData = WidgetContentItem()
@@ -14,7 +15,7 @@ object TokomemberMapper {
         shopRegisterResponse: MembershipGetShopRegistrationWidget?,
         tokomemberRequestParam: TokoMemberRequestParam
     ): TokomemberModel {
-        val membershipType = shopRegisterResponse?.membershipType ?: 0
+        membershipType = shopRegisterResponse?.membershipType ?: 0
         val cardId = shopRegisterResponse?.cardID ?: 0
 
         if (membershipType == CLOSE_MEMBERSHIP) {
@@ -72,6 +73,10 @@ object TokomemberMapper {
     private fun populateWidgetContent(shopRegisterResponse: MembershipGetShopRegistrationWidget?){
         waitingWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_WAITING_WIDGET) ?: WidgetContentItem()
         successWidgetData = shopRegisterResponse?.widgetContent?.getOrNull(TOKOMEMBER_SUCCESS_WIDGET) ?: WidgetContentItem()
+    }
+
+    fun getMembershipType():Int{
+        return membershipType
     }
 
 }
