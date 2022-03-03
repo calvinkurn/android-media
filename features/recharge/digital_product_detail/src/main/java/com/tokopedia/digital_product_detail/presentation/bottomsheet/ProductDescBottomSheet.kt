@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.BottomSheetProductDescBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.ProductDescAdapter
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -48,8 +51,29 @@ class ProductDescBottomSheet(
                 layoutManager = linearLayoutManager
                 addItemDecoration(dividerItemDecoration)
             }
-            // [Misael] TODO: use custom attributes for ticker content
-            tickerWidgetProductDesc.setText("Dummy")
+
+            if (!denomData.title.isNullOrEmpty()){
+                tgTitleProductDesc.show()
+                tgTitleProductDesc.text = denomData.title
+            } else tgTitleProductDesc.hide()
+
+            if (!denomData.greenLabel.isNullOrEmpty()){
+                    tickerWidgetProductDesc.show()
+                    tickerWidgetProductDesc.setText(denomData.greenLabel)
+            } else {
+                tickerWidgetProductDesc.hide()
+                rvProductDesc.setMargin(
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl9)
+                        .toInt()
+                )
+            }
+
             buyWidgetProductDesc.showBuyWidget(denomData, listener)
         }
         setTitle(getString(R.string.bottom_sheet_prod_desc_title))

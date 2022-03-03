@@ -26,6 +26,13 @@ interface DigitalPDPEventTracking {
             const val EMPTY_DISCOUNT_PRICE = "Rp0"
             const val MCCM = "mccm"
             const val FLASH_SALE = "flash sale"
+
+            const val CATEGORY_ID = "category_id"
+            const val DIMENSION45 = "dimension45"
+            const val QUANTITY = "quantity"
+            const val SHOP_ID = "shop_id"
+            const val SHOP_NAME = "shop_name"
+            const val SHOP_TYPE = "shop_type"
         }
     }
 
@@ -36,12 +43,14 @@ interface DigitalPDPEventTracking {
             const val VIEW_ITEM = "view_item"
             const val CLICK_DIGITAL = "clickDigital"
             const val SELECT_CONTENT = "select_content"
+            const val ADD_TO_CART = "add_to_cart"
         }
     }
 
     interface Category {
         companion object {
             const val DIGITAL_HOMEPAGE = "digital - homepage"
+            const val DIGITAL_NATIVE = "digital - native"
         }
     }
 
@@ -75,6 +84,7 @@ interface DigitalPDPEventTracking {
             const val CLICK_SCAN_BARCODE = "click scan barcode"
             const val CLICK_TRANSACTION_DETAIL_INFO = "click transaction detail info"
             const val CLICK_LIST_FAVORITE_NUMBER = "click list favorite number"
+            const val CLICK_LANJUT_BAYAR = "click lanjut bayar"
         }
     }
 }

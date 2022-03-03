@@ -57,9 +57,19 @@ class GetRechargeCatalogOperatorSelectGroupUseCase @Inject constructor(
                 id
                 attributes{
                   name
-                  operator_labels
+                  image
                   image_url
-                  description
+                  prefix
+                  operator_descriptions
+                  custom_attributes {
+                    id
+                  }
+                  custom_data {
+                      tabs {
+                      name
+                      value
+                  }
+                 }
                 }
               }
             }

@@ -28,7 +28,12 @@
               "name": "Tagihan Listrik",
               "operator_labels": [],
               "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
-              "description": ""
+              "description": "",
+              "operator_descriptions": [
+                "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:40-00.20 WIB akan <b>mulai diproses pada pukul 00.20 WIB</b> sesuai kebijakan pihak PLN",
+                "2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b>",
+                "3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik"
+              ]
             }
           },
           {
@@ -38,7 +43,12 @@
               "name": "PLN Non-Taglis",
               "operator_labels": [],
               "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_bb3dfb1e-ed2c-4f6c-8301-f2bf7cc0e52e.jpg",
-              "description": ""
+              "description": "",
+              "operator_descriptions": [
+                "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:40-00.20 WIB akan <b>mulai diproses pada pukul 00.20 WIB</b> sesuai kebijakan pihak PLN",
+                "2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b>",
+                "3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik"
+              ]
             }
           }
         ]

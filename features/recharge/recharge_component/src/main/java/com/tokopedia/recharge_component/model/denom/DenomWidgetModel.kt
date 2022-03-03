@@ -30,5 +30,6 @@ data class DenomData(
     val pricePlain: Int = 0,
     val isShowChevron: Boolean = true,
     val appLink: String = "",
-    val productDescriptions: List<String> = listOf()
+    val productDescriptions: List<String> = listOf(),
+    val greenLabel: String = ""
 ): ImpressHolder()

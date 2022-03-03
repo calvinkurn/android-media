@@ -32,7 +32,12 @@
               "custom_attributes": [],
               "custom_data": {
                 "tabs": []
-              }
+              },
+              "operator_descriptions": [
+                "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:40-00.20 WIB akan <b>mulai diproses pada pukul 00.20 WIB</b> sesuai kebijakan pihak PLN",
+                "2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b>",
+                "3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik"
+              ]
             }
           }
         ]

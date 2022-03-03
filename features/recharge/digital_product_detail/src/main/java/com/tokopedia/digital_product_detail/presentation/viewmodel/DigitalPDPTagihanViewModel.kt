@@ -13,6 +13,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
@@ -76,8 +77,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<Pair<String, Boolean>>
         get() = _clientNumberValidatorMsg
 
-    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
-    val addToCartResult: LiveData<RechargeNetworkResult<String>>
+    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<DigitalAtcResult>>()
+    val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
     fun setMenuDetailLoading(){
@@ -193,13 +194,13 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         userId: String
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val categoryIdAtc = repo.addToCart(
+            val atcResult = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
                 digitalSubscriptionParams,
                 userId
             )
-            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+            _addToCartResult.postValue(RechargeNetworkResult.Success(atcResult))
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
@@ -232,6 +233,12 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getListInfo(): List<String> {
+        return if (operatorData.id.isNotEmpty()){
+            operatorData.attributes.operatorDescriptions
+        } else listOf()
     }
 
     companion object {
