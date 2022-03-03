@@ -744,7 +744,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             installmentModel = it
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
-        paymentDuration.text = tenureSelectedModel.tenure.orEmpty()
+        paymentDuration.text = "X${tenureSelectedModel.tenure.orEmpty()}"
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
