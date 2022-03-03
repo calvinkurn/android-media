@@ -43,21 +43,25 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
-    private val graphLayoutFragment by lazy { TopAdsMultiLineGraphFragment() }
+    private val graphLayoutFragment by lazy(LazyThreadSafetyMode.NONE) { TopAdsMultiLineGraphFragment() }
 
-    private val summaryAdTypeList by lazy { context?.resources?.getSummaryAdTypes() ?: listOf() }
+    private val summaryAdTypeList by lazy(LazyThreadSafetyMode.NONE) {
+        context?.resources?.getSummaryAdTypes() ?: listOf()
+    }
     private var selectedAdType = Chip()
-    private val summaryAdTypesBottomSheet by lazy {
+    private val summaryAdTypesBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
         SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
     }
-    private val summaryInformationBottomSheet by lazy { SummaryInformationBottomSheet.createInstance() }
+    private val summaryInformationBottomSheet by lazy(LazyThreadSafetyMode.NONE) { SummaryInformationBottomSheet() }
 
-    private val kataKunciChipsDetailRvAdapter by lazy { TopAdsBerandsKataKunciChipsDetailRvAdapter() }
-    private val kataKunciChipsRvAdapter by lazy { TopAdsBerandsKataKunciChipsRvAdapter(::kataKunciItemSelected) }
-    private val anggarnHarianAdapter by lazy { TopAdsBerandaAnggarnHarianAdapter() }
-    private val produkBerpotensiAdapter by lazy { TopadsImageRvAdapter.createInstance() }
-    private val summaryRvAdapter by lazy { TopAdsBerandaSummaryRvAdapter.createInstance() }
-    private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
+    private val kataKunciChipsDetailRvAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandsKataKunciChipsDetailRvAdapter() }
+    private val kataKunciChipsRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TopAdsBerandsKataKunciChipsRvAdapter(::kataKunciItemSelected)
+    }
+    private val anggarnHarianAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandaAnggarnHarianAdapter() }
+    private val produkBerpotensiAdapter by lazy(LazyThreadSafetyMode.NONE) { TopadsImageRvAdapter() }
+    private val summaryRvAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandaSummaryRvAdapter() }
+    private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) { LatestReadingTopAdsDashboardRvAdapter() }
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -71,7 +75,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         binding =
             FragmentTopadsDashboardBerandaBaseBinding.inflate(layoutInflater, container, false)
@@ -433,14 +437,5 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 REQUEST_CODE_SET_AUTO_TOPUP
             )
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        topAdsDashboardViewModel.summaryStatisticsLiveData.removeObservers(this)
-    }
-
-    interface GoToInsight {
-        fun gotToInsights()
     }
 }

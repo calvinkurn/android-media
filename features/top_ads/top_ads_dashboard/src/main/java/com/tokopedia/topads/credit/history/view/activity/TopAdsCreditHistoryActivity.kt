@@ -26,8 +26,7 @@ class TopAdsCreditHistoryActivity : BaseSimpleActivity(), HasComponent<TopAdsDas
         private const val PARAM_IS_FROM_SELECTION = "is_from_selection"
         fun createInstance(
             context: Context, isFromSelection: Boolean = false, datePickerIndex: Int
-        ) =
-            Intent(context, TopAdsCreditHistoryActivity::class.java)
+        ) = Intent(context, TopAdsCreditHistoryActivity::class.java)
                 .putExtra(PARAM_IS_FROM_SELECTION, isFromSelection)
                 .putExtra(PARAM_DATE_PICKER_INDEX, datePickerIndex)
     }

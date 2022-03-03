@@ -16,7 +16,7 @@ class ListArticleRvAdapter :
     private val list = mutableListOf<ListArticle.ListArticleItem.Article>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LatestReadingViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rv_latest_reading, parent, false)
         return LatestReadingViewHolder(view)
     }
 
@@ -43,10 +43,5 @@ class ListArticleRvAdapter :
         val thumbnail: ImageUnify = view.findViewById(R.id.creditHistoryImage)
         val txtTitle: Typography = view.findViewById(R.id.txtTitle)
         val txtDescription: Typography = view.findViewById(R.id.txtDescription)
-    }
-
-    companion object {
-        private val layout = R.layout.item_rv_latest_reading
-        fun createInstance() = ListArticleRvAdapter()
     }
 }

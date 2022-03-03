@@ -7,6 +7,7 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.beranda.KataKunciDetail
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -49,11 +50,5 @@ class TopAdsBerandsKataKunciChipsDetailRvAdapter() :
                 HtmlCompat.fromHtml(item.footer, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     }
-
-    data class KataKunciDetail(
-        val title: String,
-        val count: Int,
-        val footer: String
-    )
 }
 

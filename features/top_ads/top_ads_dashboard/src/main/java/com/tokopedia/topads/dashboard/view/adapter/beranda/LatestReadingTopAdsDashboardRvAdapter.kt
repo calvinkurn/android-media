@@ -15,7 +15,7 @@ class LatestReadingTopAdsDashboardRvAdapter :
     private val list = mutableListOf<TopAdsLatestReading.TopAdsLatestReadingItem.Article>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LatestReadingViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rv_latest_reading, parent, false)
         return LatestReadingViewHolder(view)
     }
 
@@ -30,6 +30,7 @@ class LatestReadingTopAdsDashboardRvAdapter :
     }
 
     fun addItems(data: List<TopAdsLatestReading.TopAdsLatestReadingItem.Article>) {
+        list.clear()
         list.addAll(data)
         notifyDataSetChanged()
     }
@@ -40,10 +41,5 @@ class LatestReadingTopAdsDashboardRvAdapter :
         val creditHistoryImage: ImageUnify = view.findViewById(R.id.creditHistoryImage)
         val txtTitle: Typography = view.findViewById(R.id.txtTitle)
         val txtDescription: Typography = view.findViewById(R.id.txtDescription)
-    }
-
-    companion object {
-        private val layout = R.layout.item_rv_latest_reading
-        fun createInstance() = LatestReadingTopAdsDashboardRvAdapter()
     }
 }

@@ -16,17 +16,17 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class SummaryInformationBottomSheet() : BottomSheetUnify() {
 
     private lateinit var recyclerView: RecyclerView
-    private val adapter by lazy { InformationRvAdapter.createInstance(getInformationList()) }
+    private val adapter by lazy { InformationRvAdapter(getInformationList()) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         setUpChildView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun setUpChildView() {
-        val view = View.inflate(context, childLayout, null)
+        val view = View.inflate(context, R.layout.topads_single_recyclerview_layout, null)
         setChild(view)
         recyclerView = view.findViewById(R.id.rvSelectAdsTypeTopAdsInsight)
 
@@ -84,10 +84,5 @@ class SummaryInformationBottomSheet() : BottomSheetUnify() {
                 )
             )
         }
-    }
-
-    companion object {
-        private val childLayout = R.layout.topads_single_recyclerview_layout
-        fun createInstance() = SummaryInformationBottomSheet()
     }
 }

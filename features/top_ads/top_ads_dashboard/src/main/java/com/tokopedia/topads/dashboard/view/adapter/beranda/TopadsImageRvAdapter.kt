@@ -44,8 +44,4 @@ class TopadsImageRvAdapter : RecyclerView.Adapter<TopadsImageRvAdapter.ViewHolde
             }
         }
     }
-
-    companion object {
-        fun createInstance() = TopadsImageRvAdapter()
-    }
 }

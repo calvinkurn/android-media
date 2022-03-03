@@ -1,37 +1,13 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class TopAdsWidgetSummaryStatisticsUseCase @Inject constructor(
-    private val userSession: UserSessionInterface
-) {
-
-    suspend fun getSummaryStatistics(
-        startDate: String, endDate: String, adTypes: String,
-    ): TopadsWidgetSummaryStatisticsModel? {
-        val params = createParams(startDate, endDate, adTypes)
-        return Utils.executeQuery(query,TopadsWidgetSummaryStatisticsModel::class.java,params)
-    }
-
-    private fun createParams(
-        startDate: String, endDate: String, adTypes: String,
-    ): Map<String, Any> {
-        return mapOf(
-            TopAdsDashboardConstant.PARAM_SHOP_ID to userSession.shopId,
-            TopAdsDashboardConstant.PARAM_START_DATE to startDate,
-            TopAdsDashboardConstant.PARAM_END_DATE to endDate,
-            TopAdsDashboardConstant.PARAM_AD_TYPES to adTypes,
-        )
-    }
-
-    companion object {
-        private val query = """
+private const val query = """
             query topadsWidgetSummaryStatistics(${'$'}shopID: String!, ${'$'}startDate: String!, ${'$'}endDate: String!, ${'$'}adTypes: String!){
   topadsWidgetSummaryStatistics(shopID:${'$'}shopID, startDate:${'$'}startDate, endDate:${'$'}endDate, adTypes:${'$'}adTypes) {
     header {
@@ -74,6 +50,28 @@ class TopAdsWidgetSummaryStatisticsUseCase @Inject constructor(
     }
     
   }
-}""".trimIndent()
+}"""
+
+@GqlQuery("SummaryStatisticsGql", query)
+class TopAdsWidgetSummaryStatisticsUseCase @Inject constructor(
+    private val userSession: UserSessionInterface
+) {
+
+    suspend fun getSummaryStatistics(
+        startDate: String, endDate: String, adTypes: String,
+    ): TopadsWidgetSummaryStatisticsModel? {
+        val params = createParams(startDate, endDate, adTypes)
+        return Utils.executeQuery(SummaryStatisticsGql.GQL_QUERY,TopadsWidgetSummaryStatisticsModel::class.java,params)
+    }
+
+    private fun createParams(
+        startDate: String, endDate: String, adTypes: String,
+    ): Map<String, Any> {
+        return mapOf(
+            TopAdsDashboardConstant.PARAM_SHOP_ID to userSession.shopId,
+            TopAdsDashboardConstant.PARAM_START_DATE to startDate,
+            TopAdsDashboardConstant.PARAM_END_DATE to endDate,
+            TopAdsDashboardConstant.PARAM_AD_TYPES to adTypes,
+        )
     }
 }

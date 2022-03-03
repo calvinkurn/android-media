@@ -38,18 +38,6 @@ object Utils {
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
 
-    fun Resources.getFormattedTextFromHtml(stringId: Int, vararg params: Any?): String {
-        return HtmlCompat.fromHtml(
-            String.format(getString(stringId), *params), HtmlCompat.FROM_HTML_MODE_LEGACY
-        ).toString()
-    }
-
-    fun getFormattedTextFromHtml(string: String): String {
-        return HtmlCompat.fromHtml(
-            string, HtmlCompat.FROM_HTML_MODE_LEGACY
-        ).toString()
-    }
-
     internal suspend fun <T : Any> executeQuery(
         query: String, responseClass: Class<T>, params: Map<String, Any?>
     ): T? {

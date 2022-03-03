@@ -144,12 +144,7 @@ class TopAdsCreditHistoryFragment :
         }
         viewModel.getShopDeposit()
 
-        viewModel.getAutoTopUpStatus(
-            GraphqlHelper.loadRawString(
-                resources,
-                R.raw.gql_query_get_status_auto_topup
-            )
-        )
+        viewModel.getAutoTopUpStatus()
         addCredit?.setOnClickListener {
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
@@ -240,12 +235,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        viewModel.getAutoTopUpStatus(
-            GraphqlHelper.loadRawString(
-                resources,
-                R.raw.gql_query_get_status_auto_topup
-            )
-        )
+        viewModel.getAutoTopUpStatus()
     }
 
     override fun getEmptyDataViewModel() =
@@ -263,12 +253,7 @@ class TopAdsCreditHistoryFragment :
             viewModel.getShopDeposit()
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
             sendResultIntentOk()
-            viewModel.getAutoTopUpStatus(
-                GraphqlHelper.loadRawString(
-                    resources,
-                    R.raw.gql_query_get_status_auto_topup
-                )
-            )
+            viewModel.getAutoTopUpStatus()
         }
     }
 

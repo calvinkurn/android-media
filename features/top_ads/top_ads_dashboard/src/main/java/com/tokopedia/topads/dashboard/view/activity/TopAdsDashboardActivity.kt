@@ -82,9 +82,8 @@ private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
-    TopAdsProductIklanFragment.AppBarAction, TopAdsDashboardBerandaFragment.GoToInsight,
-    TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline,
-    CustomDatePicker.ActionListener {
+    TopAdsProductIklanFragment.AppBarAction, TopAdsProductIklanFragment.AdInfo,
+    TopAdsHeadlineBaseFragment.AppBarActionHeadline, CustomDatePicker.ActionListener {
 
     private lateinit var headerToolbar: HeaderUnify
     lateinit var ivEducationTopAdsActionBar: ImageUnify
@@ -473,10 +472,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
             app_bar_layout.setExpanded(true)
         }
-    }
-
-    override fun gotToInsights() {
-        view_pager?.currentItem = INSIGHT_PAGE
     }
 
     override fun adInfo(adInfo: String) {

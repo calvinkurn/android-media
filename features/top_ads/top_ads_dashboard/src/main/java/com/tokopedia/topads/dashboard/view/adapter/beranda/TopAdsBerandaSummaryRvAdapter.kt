@@ -15,13 +15,16 @@ import com.tokopedia.unifyprinciples.Typography
 class TopAdsBerandaSummaryRvAdapter :
     RecyclerView.Adapter<TopAdsBerandaSummaryRvAdapter.RingkasanViewHolder>() {
 
+    private val selectedBackgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+    private val unSelectedBackgroundColor =
+        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
     private val list = mutableListOf<SummaryBeranda>()
     var infoClicked: (() -> Unit)? = null
     var itemClicked: ((Set<SummaryBeranda>) -> Unit)? = null
     private val selectedItems = mutableSetOf<SummaryBeranda>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RingkasanViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rv_ringkasan, parent, false)
         val holder = RingkasanViewHolder(view)
         holder.ivInformation.setOnClickListener { infoClicked?.invoke() }
         return holder
@@ -95,13 +98,5 @@ class TopAdsBerandaSummaryRvAdapter :
         val txtPercentageChange: Typography = view.findViewById(R.id.txtPercentageChange)
         val rootLayout: ConstraintLayout = view.findViewById(R.id.root_layout)
         val bottomView: View = view.findViewById(R.id.bottomView)
-    }
-
-    companion object {
-        private val selectedBackgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_B100_44
-        private val unSelectedBackgroundColor =
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-        private val layout = R.layout.item_rv_ringkasan
-        fun createInstance() = TopAdsBerandaSummaryRvAdapter()
     }
 }

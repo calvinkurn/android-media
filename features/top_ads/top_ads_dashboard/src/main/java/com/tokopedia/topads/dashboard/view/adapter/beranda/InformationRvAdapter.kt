@@ -33,8 +33,4 @@ class InformationRvAdapter(private val list: List<Information>) :
         val title = view.findViewById<Typography>(R.id.txt_title)
         val subTitle = view.findViewById<Typography>(R.id.txt_sub_title)
     }
-
-    companion object {
-        fun createInstance(list: List<Information>) = InformationRvAdapter(list)
-    }
 }
