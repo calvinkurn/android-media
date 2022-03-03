@@ -97,7 +97,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     var datePickerIndex = 2
         private set
 
-    private val headerToolbarRight by lazy {
+    private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
             R.layout.layout_topads_dashboard_actionbar, null, false
         )
