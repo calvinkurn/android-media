@@ -22,6 +22,8 @@ class GatewayViewHolder(
 
     fun bindData(checkoutData: CheckoutData, position: Int) {
         itemView.apply {
+//            if(checkoutData.selectedGateway)
+//                radioGatewaySelector.isChecked = true
             changeColorToEnableDisable(checkoutData.disable)
             setIcon(checkoutData)
             inflateAllDetails(checkoutData)
@@ -33,7 +35,7 @@ class GatewayViewHolder(
             } else {
                 individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
                 individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
-                radioGatewaySelector.isChecked = false
+                radioGatewaySelector.isChecked = checkoutData.selectedGateway
             }
 
             if (!checkoutData.disable && !checkoutData.selectedGateway) {

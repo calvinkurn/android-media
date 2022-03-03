@@ -437,6 +437,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             shopId = productShopId
         }
         productData.stock?.let { productStock ->
+            detailHeader.quantityEditor.isEnabled = productStock != 1
             detailHeader.quantityEditor.maxValue = productStock
         }
         productData.pictures?.get(0)?.let { pictures ->
