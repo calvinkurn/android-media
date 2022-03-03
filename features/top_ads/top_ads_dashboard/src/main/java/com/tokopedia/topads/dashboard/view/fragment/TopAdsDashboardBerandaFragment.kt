@@ -50,7 +50,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
     private var selectedAdType = Chip()
     private val summaryAdTypesBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
+        SummaryAdTypesBottomSheet(summaryAdTypeList, ::adTypeChanged)
     }
     private val summaryInformationBottomSheet by lazy(LazyThreadSafetyMode.NONE) { SummaryInformationBottomSheet() }
 

@@ -11,8 +11,9 @@ import com.tokopedia.topads.dashboard.data.model.beranda.Chip
 import com.tokopedia.topads.dashboard.view.adapter.beranda.AdPlacementRvAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class SummaryAdTypesBottomSheet(private val list: List<Chip>, private val itemClick: (Chip) -> Unit) :
-    BottomSheetUnify() {
+class SummaryAdTypesBottomSheet(
+    private val list: List<Chip>, private val itemClick: (Chip) -> Unit,
+) : BottomSheetUnify() {
 
     private lateinit var rvAdPlacement: RecyclerView
     private lateinit var adapter: AdPlacementRvAdapter
@@ -25,7 +26,7 @@ class SummaryAdTypesBottomSheet(private val list: List<Chip>, private val itemCl
     }
 
     private fun setUpChildView() {
-        val view = View.inflate(context, childLayout, null)
+        val view = View.inflate(context, R.layout.topads_single_recyclerview_layout, null)
         setChild(view)
         rvAdPlacement = view.findViewById(R.id.rvSelectAdsTypeTopAdsInsight)
 
@@ -45,14 +46,8 @@ class SummaryAdTypesBottomSheet(private val list: List<Chip>, private val itemCl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = AdPlacementRvAdapter.createInstance(list, itemClick)
+        adapter = AdPlacementRvAdapter(list, itemClick)
         rvAdPlacement.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
         rvAdPlacement.adapter = adapter
-    }
-
-    companion object {
-        private val childLayout = R.layout.topads_single_recyclerview_layout
-        fun createInstance(list: List<Chip>, itemClick: (Chip) -> Unit) =
-            SummaryAdTypesBottomSheet(list, itemClick)
     }
 }

@@ -21,7 +21,7 @@ class TopAdsEducationFragment : TkpdBaseV4Fragment() {
 
     private val articles by lazy { Gson().fromJson(articlesJson, ListArticle::class.java) }
     private lateinit var recyclerView: RecyclerView
-    private val adapter by lazy { TopadsEducationRvAdapter.createInstance(articles) }
+    private val adapter by lazy { TopadsEducationRvAdapter(articles) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

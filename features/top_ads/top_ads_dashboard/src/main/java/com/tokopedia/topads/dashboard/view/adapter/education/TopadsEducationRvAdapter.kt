@@ -74,8 +74,4 @@ class TopadsEducationRvAdapter(private val list: ListArticle) :
             )
         }
     }
-
-    companion object {
-        fun createInstance(list: ListArticle) = TopadsEducationRvAdapter(list)
-    }
 }

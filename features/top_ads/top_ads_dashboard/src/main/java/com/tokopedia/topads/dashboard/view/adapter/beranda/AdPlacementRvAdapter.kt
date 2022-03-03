@@ -35,9 +35,4 @@ class AdPlacementRvAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val chip: ChipsUnify = view.findViewById(R.id.tabInsightId)
     }
-
-    companion object {
-        fun createInstance(list: List<Chip>, itemClick: (Chip) -> Unit) =
-            AdPlacementRvAdapter(list, itemClick)
-    }
 }
