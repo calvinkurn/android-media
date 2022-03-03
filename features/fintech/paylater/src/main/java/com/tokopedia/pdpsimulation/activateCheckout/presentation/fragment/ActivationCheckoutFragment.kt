@@ -379,7 +379,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 this.installmentModel = installmentDetails
             }
             tenureSelectedModel.tenure?.let { tenure ->
-                paymentDuration.text = "X$tenure"
+                paymentDuration.text = "x$tenure"
             }
             amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         }
@@ -744,7 +744,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             installmentModel = it
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
-        paymentDuration.text = "X${tenureSelectedModel.tenure.orEmpty()}"
+        paymentDuration.text = "x${tenureSelectedModel.tenure.orEmpty()}"
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
