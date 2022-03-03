@@ -89,7 +89,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerTenureDetail"
         app:typographyType="body_3"
-        android:layout_marginLeft="@dimen/pay_later_dp_5"
+        android:layout_marginStart="@dimen/pay_later_dp_5"
         tools:text="Ongkir dan asuransi akan dihitung saat Pembayaran." />
 
     <com.tokopedia.globalerror.GlobalError
