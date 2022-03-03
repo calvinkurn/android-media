@@ -214,12 +214,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                 } else {
                     operator = TelcoOperator()
-                    viewModel.cancelCatalogProductJob()
+                    viewModel.run {
+                        cancelRecommendationJob()
+                        cancelCatalogProductJob()
+                    }
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
-                viewModel.cancelCatalogProductJob()
+                viewModel.run {
+                    cancelRecommendationJob()
+                    cancelCatalogProductJob()
+                }
                 binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                 rechargePdpPulsaClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
@@ -327,6 +333,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun getRecommendations() {
         val clientNumbers = listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
+        viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
     }
 

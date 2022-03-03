@@ -136,6 +136,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         coVerify { repo.getRecommendations(any(), any(), any()) }
     }
 
+    protected fun verifyGetRecommendationRepoWasNotCalled() {
+        coVerify { repo.getRecommendations(any(), any(), any()) wasNot Called }
+    }
+
     protected fun verifyGetFavoriteNumberRepoGetCalled() {
         coVerify { repo.getFavoriteNumber(any()) }
     }
@@ -271,13 +275,17 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyGetRecommendationSuccess(expectedResponse: RecommendationWidgetModel) {
         val actualResponse = viewModel.recommendationData.value
-        println("actualResponse: $actualResponse")
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
     protected fun verifyGetRecommendationFail() {
         val actualResponse = viewModel.recommendationData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetRecommendationErrorCancellation() {
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertNull(actualResponse)
     }
 
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
@@ -345,6 +353,18 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
     }
 
+    protected fun verifyRecommendationJobIsNull() {
+        Assert.assertNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsNotNull() {
+        Assert.assertNotNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsCancelled() {
+        Assert.assertTrue(viewModel.recommendationJob?.isCancelled == true)
+    }
+
     protected fun verifyValidatorJobIsNull() {
         Assert.assertNull(viewModel.validatorJob)
     }
@@ -381,6 +401,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun TestCoroutineScope.skipMultitabDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    }
+
+    protected fun TestCoroutineScope.skipRecommendationDelay() {
         advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
     }
 

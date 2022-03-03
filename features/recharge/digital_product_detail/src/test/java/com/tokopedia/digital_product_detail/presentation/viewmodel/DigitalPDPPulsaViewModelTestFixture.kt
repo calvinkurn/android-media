@@ -128,6 +128,10 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         coVerify { repo.getRecommendations(any(), any()) }
     }
 
+    protected fun verifyGetRecommendationsRepoWasNotCalled() {
+        coVerify { repo.getRecommendations(any(), any()) wasNot Called }
+    }
+
     protected fun verifyGetFavoriteNumberRepoGetCalled() {
         coVerify { repo.getFavoriteNumber(any()) }
     }
@@ -248,6 +252,11 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
+    protected fun verifyGetRecommendationErrorCancellation() {
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertNull(actualResponse)
+    }
+
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
         val actualResult = viewModel.digitalCheckoutPassData
         assertDigitalCheckoutPassDataEqual(expectedResult, actualResult)
@@ -305,6 +314,18 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
     }
 
+    protected fun verifyRecommendationJobIsNull() {
+        Assert.assertNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsNotNull() {
+        Assert.assertNotNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsCancelled() {
+        Assert.assertTrue(viewModel.recommendationJob?.isCancelled == true)
+    }
+
     protected fun verifyValidatorJobIsNull() {
         Assert.assertNull(viewModel.validatorJob)
     }
@@ -341,6 +362,10 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     }
 
     protected fun TestCoroutineScope.skipMultitabDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    }
+
+    protected fun TestCoroutineScope.skipRecommendationDelay() {
         advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
     }
 

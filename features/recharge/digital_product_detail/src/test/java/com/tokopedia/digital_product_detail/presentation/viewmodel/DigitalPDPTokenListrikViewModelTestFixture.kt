@@ -129,6 +129,10 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         coVerify { repo.getRecommendations(any(), any()) }
     }
 
+    protected fun verifyGetRecommendationsRepoWasNotCalled() {
+        coVerify { repo.getRecommendations(any(), any()) wasNot Called }
+    }
+
     protected fun verifyGetProductInputMultiTabRepoWasNotCalled() {
         coVerify { repo.getProductTokenListrikDenomGrid(any(), any(), any()) wasNot Called }
     }
@@ -192,6 +196,11 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     protected fun verifyGetRecommendationFail() {
         val actualResponse = viewModel.recommendationData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetRecommendationErrorCancellation() {
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertNull(actualResponse)
     }
 
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
@@ -322,6 +331,18 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         Assert.assertNotNull(viewModel.catalogProductJob)
     }
 
+    protected fun verifyRecommendationJobIsNull() {
+        Assert.assertNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsNotNull() {
+        Assert.assertNotNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsCancelled() {
+        Assert.assertTrue(viewModel.recommendationJob?.isCancelled == true)
+    }
+
     protected fun verifyRecomCheckoutUrlUpdated(expectedResult: String) {
         val actualResult = viewModel.recomCheckoutUrl
         Assert.assertEquals(expectedResult, actualResult)
@@ -342,6 +363,10 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     }
 
     protected fun TestCoroutineScope.skipMultitabDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    }
+
+    protected fun TestCoroutineScope.skipRecommendationDelay() {
         advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
     }
 

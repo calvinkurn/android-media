@@ -45,6 +45,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var filterData = emptyList<TelcoFilterTagComponent>()
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
+    var recommendationJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedFullProduct = SelectedProduct()
@@ -159,6 +160,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelRecommendationJob() {
+        recommendationJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
@@ -195,7 +200,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     }
 
     fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
             val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds, true)
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {

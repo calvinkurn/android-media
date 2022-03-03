@@ -42,6 +42,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
 
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
+    var recommendationJob: Job? = null
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
@@ -152,10 +153,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelRecommendationJob() {
+        recommendationJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
-
 
     fun setAddToCartLoading() {
         _addToCartResult.value = RechargeNetworkResult.Loading
@@ -182,7 +186,8 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     }
 
     fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
             val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {

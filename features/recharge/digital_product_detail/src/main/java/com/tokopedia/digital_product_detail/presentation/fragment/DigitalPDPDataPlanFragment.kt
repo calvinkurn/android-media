@@ -243,12 +243,18 @@ class DigitalPDPDataPlanFragment :
 
                 } else {
                     operator = TelcoOperator()
-                    viewModel.cancelCatalogProductJob()
+                    viewModel.run {
+                        cancelRecommendationJob()
+                        cancelCatalogProductJob()
+                    }
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
-                viewModel.cancelCatalogProductJob()
+                viewModel.run {
+                    cancelRecommendationJob()
+                    cancelCatalogProductJob()
+                }
                 binding?.rechargePdpPaketDataClientNumberWidget?.setLoading(false)
                 rechargePdpPaketDataClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
@@ -377,6 +383,7 @@ class DigitalPDPDataPlanFragment :
     private fun getRecommendations() {
         val clientNumbers = listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
+        viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
     }
 

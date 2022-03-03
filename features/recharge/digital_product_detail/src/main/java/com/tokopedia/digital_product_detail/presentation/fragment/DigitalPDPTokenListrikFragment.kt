@@ -353,6 +353,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun getRecommendations() {
         val clientNumbers = listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
+        viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
     }
 
@@ -544,7 +545,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 if (!viewModel.isEligibleToBuy) onHideBuyWidget()
 
             } else {
-                viewModel.cancelCatalogProductJob()
+                viewModel.run {
+                    cancelRecommendationJob()
+                    cancelCatalogProductJob()
+                }
                 showEmptyState()
             }
         }

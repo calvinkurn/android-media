@@ -57,23 +57,23 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when getting recommendation should run and give success result`() {
+    fun `when getting recommendation should run and give success result`() = testCoroutineRule.runBlockingTest {
         val response = dataFactory.getRecommendationData()
-        println("response: $response")
         val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
-        println("mappedResponse: $response")
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf())
+        skipRecommendationDelay()
         verifyGetRecommendationsRepoGetCalled()
         verifyGetRecommendationSuccess(mappedResponse)
     }
 
     @Test
-    fun `when getting recommendation should run and give fail result`() {
+    fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
         onGetRecommendation_thenReturn(NullPointerException())
 
         viewModel.getRecommendations(listOf(), listOf())
+        skipRecommendationDelay()
         verifyGetRecommendationsRepoGetCalled()
         verifyGetRecommendationFail()
     }
@@ -486,6 +486,31 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         verifyCatalogProductJobIsCancelled()
         verifyGetProductInputMultiTabRepoWasNotCalled()
         verifyGetCatalogInputMultitabErrorCancellation()
+    }
+
+    @Test
+    fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
+        val response = dataFactory.getRecommendationData()
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        onGetRecommendation_thenReturn(mappedResponse)
+
+        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.cancelRecommendationJob()
+        verifyRecommendationJobIsCancelled()
+        verifyGetRecommendationRepoWasNotCalled()
+        verifyGetRecommendationErrorCancellation()
+    }
+
+    @Test
+    fun `given recommendationJob null when cancelRecommendationJob called should do nothing`() {
+        viewModel.cancelRecommendationJob()
+        verifyRecommendationJobIsNull()
+    }
+
+    @Test
+    fun `given recommendationJob null when implicit setRecommendationJob called should update recommendationJob to non-null`() {
+        viewModel.recommendationJob = Job()
+        verifyRecommendationJobIsNotNull()
     }
 
     @Test
