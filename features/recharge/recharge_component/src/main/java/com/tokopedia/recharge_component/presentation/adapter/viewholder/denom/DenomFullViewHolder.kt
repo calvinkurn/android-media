@@ -14,6 +14,7 @@ import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.model.denom.DenomConst
+import com.tokopedia.recharge_component.model.denom.DenomConst.setStatusNormal
 import com.tokopedia.recharge_component.model.denom.DenomConst.setStatusOutOfStockColor
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
@@ -120,7 +121,7 @@ class DenomFullViewHolder(
                             .toInt(),
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt())
-                    text = denomFull.discountLabel
+                    setStatusNormal(denomFull.discountLabel)
                 } else hide()
             }
 

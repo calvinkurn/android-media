@@ -16,11 +16,23 @@ object DenomConst {
                     com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
+        } else {
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                )
+            )
         }
     }
 
     fun Label.setStatusOutOfStockColor(outOfStockTitle: String) {
        setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
        text = outOfStockTitle
+    }
+
+    fun Label.setStatusNormal(normalTitle: String) {
+        setLabelType(Label.GENERAL_LIGHT_RED)
+        text = normalTitle
     }
 }

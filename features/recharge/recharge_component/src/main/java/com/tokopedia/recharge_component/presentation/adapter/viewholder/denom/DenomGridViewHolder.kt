@@ -10,6 +10,7 @@ import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomConst.DENOM_STATUS_OUT_OF_STOCK
+import com.tokopedia.recharge_component.model.denom.DenomConst.setStatusNormal
 import com.tokopedia.recharge_component.model.denom.DenomConst.setStatusOutOfStockColor
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
@@ -78,7 +79,7 @@ class DenomGridViewHolder (
 
                 } else if (!denomGrid.discountLabel.isNullOrEmpty()){
                     show()
-                    text = denomGrid.discountLabel
+                    setStatusNormal(denomGrid.discountLabel)
                 } else hide()
             }
 
