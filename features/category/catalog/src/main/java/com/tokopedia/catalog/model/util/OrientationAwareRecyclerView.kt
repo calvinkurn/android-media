@@ -37,7 +37,7 @@ class OrientationAwareRecyclerView @JvmOverloads constructor(
                 val currentY = e.y
                 val dx = abs(currentX - lastX)
                 val dy = abs(currentY - lastY)
-                if(dy.toInt() < minDyForMove){
+                if(dy < minDyForMove){
                     //Consider Click
                     return false
                 }
