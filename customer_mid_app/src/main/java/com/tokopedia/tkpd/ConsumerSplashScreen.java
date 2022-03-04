@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import androidx.annotation.NonNull;
+
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -18,7 +20,9 @@ import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
+import com.tokopedia.installreferral.InstallReferrerInterface;
 import com.tokopedia.keys.Keys;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -79,6 +83,16 @@ public class ConsumerSplashScreen extends SplashScreen {
     protected void onStart() {
         super.onStart();
         preferences.registerOnSharedPreferenceChangeListener(deepLinkListener);
+        initiateBranchAndInstallReferrerFlow();
+    }
+
+    private void initiateBranchAndInstallReferrerFlow(){
+        if(LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())){
+            LinkerManager.getInstance().setDelayedSessionInitFlag();
+        }else {
+            getBranchDefferedDeeplink();
+        }
+        checkInstallReferrerInitialised();
     }
 
     @Override
@@ -114,12 +128,26 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
+    public InstallReferrerInterface getInstallReferrerInterface(){
+        return new InstallReferrerInterface() {
+            @Override
+            public void installReferrerDataRetrived(@NonNull String installReferrerData) {
+                LinkerManager.getInstance().setDataFromInstallReferrerParams(installReferrerData);
+                getBranchDefferedDeeplink();
+            }
+        };
+    }
+
     private void checkInstallReferrerInitialised() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(ConsumerSplashScreen.this, InstallReferralKt.KEY_INSTALL_REF_SHARED_PREF_FILE_NAME);
         Boolean installRefInitialised = localCacheHandler.getBoolean(InstallReferralKt.KEY_INSTALL_REF_INITIALISED);
         if (!installRefInitialised) {
             localCacheHandler.applyEditor();
-            new InstallReferral().initilizeInstallReferral(this);
+            InstallReferral installReferral = new InstallReferral();
+            if(LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
+                installReferral.setInstallReferrerInterface(getInstallReferrerInterface());
+            }
+            installReferral.initilizeInstallReferral(this);
         }
     }
 
@@ -132,7 +160,6 @@ public class ConsumerSplashScreen extends SplashScreen {
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
-                checkInstallReferrerInitialised();
                 syncFcmToken();
                 registerPushNotif();
                 return checkApkTempered();
