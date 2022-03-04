@@ -576,7 +576,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun getKolHeader(partnerInfo: PlayPartnerInfo){
         if(userSession.isLoggedIn && partnerInfo.type == PartnerType.Buyer){
-            viewModelScope.launchCatchError(dispatchers.io, block =  {
+            viewModelScope.launchCatchError(block =  {
                 val kolId = repo.getProfileHeader(partnerInfo.id.toString())
                 _observableKolId.value = kolId
             }){}

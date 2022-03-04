@@ -30,7 +30,9 @@ class PostFollowKolUseCase @Inject constructor(
             mutation followKOL(${'$'}userIDEnc: String){
                 SocialNetworkFollow(userIDEnc: ${'$'}userIDEnc){
                     data{
-                        is_success
+                        user_id_source
+                        user_id_target
+                        relation
                     }
                     messages
                 }
