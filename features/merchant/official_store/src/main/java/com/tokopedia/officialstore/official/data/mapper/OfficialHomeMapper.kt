@@ -188,7 +188,12 @@ class OfficialHomeMapper (
                             )
                         )
                     }
-                    else -> views.add(DynamicChannelDataModel(officialStore))
+                    DynamicChannelLayout.LAYOUT_SPRINT_LEGO,
+                    DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL -> views.add(
+                        DynamicChannelDataModel(
+                            officialStore
+                        )
+                    )
                 }
             }
             _listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }

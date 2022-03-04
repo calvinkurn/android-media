@@ -65,6 +65,11 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -91,7 +96,6 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companio
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -875,23 +879,48 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         if (queryParams.contains(PARAM_TXSC)) {
             launchCatchError(coroutineContext, block = {
                 val timeOut = remoteConfig.getLong(TIMEOUT_REMOTE_CONFIG_KEY, PARAM_JOB_TIMEOUT)
-                var adsStatus = TopadsIsAdsQuery()
-
+                ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_HIT_DYNAMIC_SLOTTING,
+                    productId = productId,
+                    queryParam = queryParams
+                )
                 val job = withTimeoutOrNull(timeOut) {
                     getTopadsIsAdsUseCase.get().setParams(
                             productId = productId,
                             urlParam = queryParams,
                             pageName = "im_pdp"
                     )
-                    adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
+                    val adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                     val errorCode = adsStatus.data.status.error_code
-                    if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
+                    val isTopAds = adsStatus.data.productList[0].isCharge
+                    if (errorCode in CODE_200..CODE_300 && isTopAds) {
                         _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
+                    } else {
+                        ProductTopAdsLogger.logServer(
+                            tag = TOPADS_PDP_BE_ERROR,
+                            reason = "Error code $errorCode",
+                            productId = productId,
+                            queryParam = queryParams
+                        )
                     }
+                    ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                            isSuccess = true,
+                            errorCode = errorCode,
+                            isTopAds = isTopAds
+                    )
                 }
+                if (job == null) ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_TIMEOUT_EXCEEDED,
+                    productId = productId,
+                    queryParam = queryParams
+                )
             }) {
                 it.printStackTrace()
                 _topAdsRecomChargeData.postValue(it.asFail())
+                ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                        isSuccess = false,
+                        errorMessage = it.message,
+                )
                 //nothing to do since fire and forget
             }
         }

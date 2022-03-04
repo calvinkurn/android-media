@@ -187,6 +187,7 @@ object ProductTrackingConstant {
 
         const val ACTION_CLICK_VARIANT = "click - pilih varian"
         const val ACTION_CLICK_TOKOCABANG = "click - tokocabang hyperlink"
+        const val ACTION_CLICK_RESTRICTION_COMPONENT = "click - button on pdp restriction component"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 

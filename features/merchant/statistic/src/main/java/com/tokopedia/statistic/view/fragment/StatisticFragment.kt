@@ -111,7 +111,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private var mLayoutManager: StatisticLayoutManager? = null
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
         val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
             statisticPage?.pageTitle != getString(R.string.stc_shop)
@@ -212,7 +211,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        initDateFilterBottomSheet()
 
         inflater.inflate(R.menu.menu_stc_action_calendar, menu)
 
@@ -668,10 +666,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
-        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
-            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
-            applyDateRange(it)
-        }?.show()
+        val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
+        val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
+        DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
+            .setOnApplyChanges {
+                setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+                applyDateRange(it)
+            }.show(childFragmentManager)
 
         val tabName = statisticPage?.pageTitle.orEmpty()
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
@@ -979,15 +980,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             title = TICKER_NAME,
             dataKey = TICKER_NAME
         )
-    }
-
-    private fun initDateFilterBottomSheet() {
-        if (dateFilterBottomSheet == null) {
-            val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
-            val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
-            dateFilterBottomSheet =
-                DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
-        }
     }
 
     private fun setMenuItemVisibility(menu: Menu) {

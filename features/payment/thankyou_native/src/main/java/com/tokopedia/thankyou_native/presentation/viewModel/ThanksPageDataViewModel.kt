@@ -9,6 +9,7 @@ import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
@@ -23,6 +24,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val thanksPageDataUseCase: ThanksPageDataUseCase,
     private val thanksPageMapperUseCase: ThanksPageMapperUseCase,
     private val gyroEngineRequestUseCase: GyroEngineRequestUseCase,
+    private val fetchWalletBalanceUseCase: FetchWalletBalanceUseCase,
     private val gyroEngineMapperUseCase: GyroEngineMapperUseCase,
     private val topTickerDataUseCase: TopTickerUseCase,
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
@@ -61,10 +63,19 @@ class ThanksPageDataViewModel @Inject constructor(
         )
     }
 
-    fun getFeatureEngine(thanksPageData: ThanksPageData) {
+    fun checkForGoPayActivation(thanksPageData: ThanksPageData) {
+        fetchWalletBalanceUseCase.cancelJobs()
+        fetchWalletBalanceUseCase.getGoPayBalance {
+            getFeatureEngine(thanksPageData, it)
+        }
+    }
+
+    @VisibleForTesting
+    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?) {
         gyroEngineRequestUseCase.cancelJobs()
         gyroEngineRequestUseCase.getFeatureEngineData(
-            thanksPageData
+            thanksPageData,
+            walletBalance
         ) {
             if (it.success) {
                 it.engineData?.let { featureEngineData ->
@@ -142,6 +153,7 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.cancelJobs()
         thanksPageMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.cancelJobs()
+        fetchWalletBalanceUseCase.cancelJobs()
         super.onCleared()
     }
 

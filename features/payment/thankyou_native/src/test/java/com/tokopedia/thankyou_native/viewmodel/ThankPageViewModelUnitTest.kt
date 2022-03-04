@@ -2,10 +2,7 @@ package com.tokopedia.thankyou_native.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
-import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
-import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
-import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
+import com.tokopedia.thankyou_native.domain.model.*
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
@@ -38,6 +35,7 @@ class ThankPageViewModelUnitTest {
     private val gyroEngineMapperUseCase = mockk<GyroEngineMapperUseCase>(relaxed = true)
     private val topTickerUseCase = mockk<TopTickerUseCase>(relaxed = true)
     private val defaultAddressUseCase = mockk<GetDefaultAddressUseCase>(relaxed = true)
+    private val walletBalanceUseCase = mockk<FetchWalletBalanceUseCase>(relaxed = true)
     private val thankYouTopAdsViewModelUseCase =
         mockk<ThankYouTopAdsViewModelUseCase>(relaxed = true)
 
@@ -47,6 +45,7 @@ class ThankPageViewModelUnitTest {
             thankPageUseCase,
             thanksPageMapperUseCase,
             gyroEngineRequestUseCase,
+            walletBalanceUseCase,
             gyroEngineMapperUseCase,
             topTickerUseCase,
             defaultAddressUseCase,
@@ -190,6 +189,15 @@ class ThankPageViewModelUnitTest {
         Assert.assertEquals(viewModel.topAdsDataLiveData.value, topAdsRequestParams)
     }
 
+    @Test
+    fun `check for wallet activation`() {
+        val walletBalanceData = WalletBalance("SUCCESS", arrayListOf())
+        coEvery {
+            walletBalanceUseCase.getGoPayBalance(any())
+        } coAnswers {
+            firstArg<(WalletBalance?) -> Unit>().invoke(walletBalanceData)
+        }
+    }
 
     @Test
     fun successGyroResponseLiveData()
@@ -197,12 +205,14 @@ class ThankPageViewModelUnitTest {
         val thankPageData = mockk<ThanksPageData>(relaxed = true)
         val featureEngineData = mockk<FeatureEngineData>(relaxed = true)
         val validateEngineResponse = ValidateEngineResponse(true,"","",featureEngineData)
+
+        `check for wallet activation`()
         coEvery {
-            gyroEngineRequestUseCase.getFeatureEngineData(thankPageData,any())
+            gyroEngineRequestUseCase.getFeatureEngineData(thankPageData,any(), any())
         } coAnswers {
-            secondArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
+            thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
-        viewModel.getFeatureEngine(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData)
         Assert.assertEquals(viewModel.gyroResponseLiveData.value,featureEngineData)
     }
 }

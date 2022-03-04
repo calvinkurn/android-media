@@ -136,6 +136,7 @@ object TopChatWebSocketParam {
         productProfile.addProperty("wishlist", product.wishList)
         productProfile.addProperty("is_fulfillment", product.isFulfillment)
         productProfile.addProperty("icon_tokocabang", product.urlTokocabang)
+        productProfile.addProperty("desc_tokocabang", product.descTokoCabang)
         val locationStock = gson.toJsonTree(product.locationStock)
         productProfile.add("location_stock", locationStock)
         val images = gson.toJsonTree(product.images)
