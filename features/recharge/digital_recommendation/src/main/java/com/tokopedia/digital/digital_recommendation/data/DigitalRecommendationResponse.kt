@@ -178,6 +178,9 @@ data class TrackingData(
         @field:SerializedName("__typename")
         val __typename: String = "",
 
+        @field:SerializedName("pricePlain")
+        val pricePlain: String = "",
+
         @field:SerializedName("businessUnit")
         val businessUnit: String = "",
 

@@ -93,6 +93,7 @@ class DigitalRecommendationMapper {
 
                 val itemTracking = DigitalRecommendationTrackingModel(
                     typeName = it.trackingData.__typename,
+                    pricePlain = it.trackingData.pricePlain,
                     businessUnit = it.trackingData.businessUnit,
                     categoryId = it.trackingData.categoryID,
                     categoryName = it.trackingData.categoryName,

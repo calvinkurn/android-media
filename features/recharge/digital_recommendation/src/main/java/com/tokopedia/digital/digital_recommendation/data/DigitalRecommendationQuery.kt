@@ -77,6 +77,7 @@ class DigitalRecommendationQuery {
                     categoryID
                     itemType
                     itemLabel
+                    pricePlain
                     __typename
                   }
                 }

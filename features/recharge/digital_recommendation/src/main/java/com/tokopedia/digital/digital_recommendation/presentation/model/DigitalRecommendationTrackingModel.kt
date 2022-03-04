@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DigitalRecommendationTrackingModel(
         val typeName: String = "",
+        val pricePlain: String = "",
         val businessUnit: String = "",
         val categoryId: String = "",
         val categoryName: String = "",

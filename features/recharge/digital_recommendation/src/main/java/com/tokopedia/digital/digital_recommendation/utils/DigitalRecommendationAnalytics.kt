@@ -54,8 +54,7 @@ class DigitalRecommendationAnalytics {
                             digitalRecommendationModel.tracking.productId else "0")
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.unify.title)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putString(DigitalRecommendationKeys.PRICE, if (digitalRecommendationModel.unify.priceData.price.isNotEmpty())
-                            digitalRecommendationModel.unify.priceData.price else "0")
+                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.tracking.pricePlain)
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
@@ -106,7 +105,7 @@ class DigitalRecommendationAnalytics {
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.unify.title)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.unify.priceData.price)
+                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.tracking.pricePlain)
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
