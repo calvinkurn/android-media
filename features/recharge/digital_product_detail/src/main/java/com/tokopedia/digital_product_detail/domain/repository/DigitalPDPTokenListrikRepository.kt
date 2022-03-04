@@ -4,4 +4,5 @@ interface DigitalPDPTokenListrikRepository : RechargeFavoriteNumberRepository,
     RechargeCatalogMenuDetailRepository,
     RechargeAddToCartRepository,
     RechargeCatalogProductInputMultiTabRepository,
-    RechargeCatalogOperatorSelectGroupRepository
+    RechargeCatalogOperatorSelectGroupRepository,
+    RechargeRecommendationRepository

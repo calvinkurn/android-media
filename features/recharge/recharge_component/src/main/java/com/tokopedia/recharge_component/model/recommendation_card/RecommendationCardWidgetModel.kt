@@ -7,6 +7,8 @@ data class RecommendationCardWidgetModel(
     val imageUrl: String = "",
     val title: String = "",
     val price: String = "",
+    val discount: String = "",
+    val slashPrice: String = "",
     val appUrl: String = "",
     val productType: String = "",
     val productExpired: String = "",

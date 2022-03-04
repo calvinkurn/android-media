@@ -9,7 +9,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 data class MenuDetailModel(
     val catalog: TopupBillsCatalog = TopupBillsCatalog(),
     val userPerso: TopupBillsUserPerso = TopupBillsUserPerso(),
-    val recommendations: List<RecommendationCardWidgetModel> = listOf(),
     val tickers: List<TopupBillsTicker> = listOf(),
     val banners: List<TopupBillsBanner> = listOf()
 )

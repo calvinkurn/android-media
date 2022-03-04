@@ -27,6 +27,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -42,6 +43,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
 
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
+    var recommendationJob: Job? = null
     var validators: List<RechargeValidation> = listOf()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
@@ -82,6 +84,10 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         MutableLiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>()
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
+
+    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
+        get() = _recommendationData
 
     fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
@@ -149,10 +155,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelRecommendationJob() {
+        recommendationJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
-
 
     fun setAddToCartLoading() {
         _addToCartResult.value = RechargeNetworkResult.Loading
@@ -171,6 +180,20 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
+        }
+    }
+
+    fun setRecommendationLoading() {
+        _recommendationData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+        recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
+            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
+            _recommendationData.value = RechargeNetworkResult.Success(recommendations)
+        }) {
+            _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
