@@ -21,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapter
@@ -170,11 +169,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
     }
 
     private fun initializeData(addOnProductData: AddOnProductData) {
-        // Todo : remove mock data before merge to release
-        val mockAddOnResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_response)
-        val mockAddOnSavedStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_saved_state_response)
         showLoading()
-        viewModel.loadAddOnData(addOnProductData, mockAddOnResponse, mockAddOnSavedStateResponse)
+        viewModel.loadAddOnData(addOnProductData)
     }
 
     private fun initializeObserver(viewBinding: LayoutAddOnBottomSheetBinding) {
@@ -251,10 +247,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
             amountCtaView.show()
             amountCtaView.setOnClickListener {
                 if (viewModel.hasChangedState()) {
-                    // Todo : remove mock data before merge to release
-                    val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
                     viewBinding.totalAmount.amountCtaView.isLoading = true
-                    viewModel.saveAddOnState(addOnProductData, mockSaveAddOnStateResponse)
+                    viewModel.saveAddOnState(addOnProductData)
                     checkoutAnalyticsCourierSelection.eventSaveAddOnsBottomSheet(isChecked, source)
                 } else {
                     dismiss()

@@ -49,14 +49,12 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         }
     }.flowOn(executorDispatchers.immediate)
 
-    fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String? = "", mockAddOnSavedStateResponse: String? = "") {
-//        getAddOnByProductUseCase.mockResponse = mockAddOnResponse ?: ""
-
+    fun loadAddOnData(addOnProductData: AddOnProductData) {
         val params = generateGetAddOnByProductRequestParams(addOnProductData)
         getAddOnByProductUseCase.setParams(params)
         getAddOnByProductUseCase.execute(
                 onSuccess = {
-                    handleOnSuccessGetAddOnByProduct(it, addOnProductData, mockAddOnSavedStateResponse)
+                    handleOnSuccessGetAddOnByProduct(it, addOnProductData)
                 },
                 onError = {
                     handleOnErrorGetAddOnProduct(it)
@@ -93,10 +91,9 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
-                                                 addOnProductData: AddOnProductData,
-                                                 mockAddOnSavedStateResponse: String?) {
+                                                 addOnProductData: AddOnProductData) {
         if (getAddOnByProductResponse.dataResponse.error.errorCode.isBlank()) {
-            loadSavedStateData(addOnProductData, getAddOnByProductResponse, mockAddOnSavedStateResponse)
+            loadSavedStateData(addOnProductData, getAddOnByProductResponse)
         } else {
             throw ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message)
         }
@@ -114,10 +111,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     private fun loadSavedStateData(addOnProductData: AddOnProductData,
-                                   addOnByProductResponse: GetAddOnByProductResponse,
-                                   mockAddOnSavedStateResponse: String? = "") {
-//        getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse ?: ""
-
+                                   addOnByProductResponse: GetAddOnByProductResponse) {
         val params = generateGetAddOnSavedStateRequestParams(addOnProductData)
         getAddOnSavedStateUseCase.setParams(params)
         getAddOnSavedStateUseCase.execute(
@@ -181,9 +175,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         }
     }
 
-    fun saveAddOnState(addOnProductData: AddOnProductData, mockSaveStateResponse: String? = null) {
-//        saveAddOnStateUseCase.mockResponse = mockSaveStateResponse ?: ""
-
+    fun saveAddOnState(addOnProductData: AddOnProductData) {
         val params = generateSaveAddOnStateRequestParams(addOnProductData)
         saveAddOnStateUseCase.setParams(params)
         saveAddOnStateUseCase.execute(
