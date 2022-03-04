@@ -123,7 +123,6 @@ class GetOccCartMapper @Inject constructor() {
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
             addOn = mapAddOns(groupShop.addOns)
-//            addOn = mapAddOns(AddOnsResponse())
         }
     }
 
@@ -191,7 +190,6 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
-//            addOn = mapAddOns(AddOnsResponse())
         }
         return orderProduct
     }
@@ -448,8 +446,6 @@ class GetOccCartMapper @Inject constructor() {
         return if (addOnsResponse != null) {
             AddOnsDataModel(
                     status = addOnsResponse.status,
-//                    status = 1,
-//                    addOnsDataItemModelList = listOf(mapAddOnDataItem(AddOnsResponse.AddOnDataItem())),
                     addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
                     addOnsButtonModel = mapAddOnButton(addOnsResponse.addOnButton),
                     addOnsBottomSheetModel = mapAddOnBottomSheet(addOnsResponse.addOnBottomsheet),
@@ -464,9 +460,6 @@ class GetOccCartMapper @Inject constructor() {
                 addOnPrice = addOnDataItem.addOnPrice,
                 addOnId = addOnDataItem.addOnId,
                 addOnQty = addOnDataItem.addOnQty,
-//                addOnPrice = 5000,
-//                addOnId = "101",
-//                addOnQty = 1,
                 addOnMetadata = mapAddOnMetadata(addOnDataItem.addOnMetadata)
         )
     }
@@ -483,10 +476,6 @@ class GetOccCartMapper @Inject constructor() {
                 to = addOnNote.to,
                 from = addOnNote.from,
                 notes = addOnNote.notes
-//                isCustomNote = true,
-//                to = "You",
-//                from = "Me",
-//                notes = "Hello, World!"
         )
     }
 
@@ -497,11 +486,6 @@ class GetOccCartMapper @Inject constructor() {
                 description = addOnButton.description,
                 action = addOnButton.action,
                 title = addOnButton.title
-//                leftIconUrl = "https://fashionsista.co/downloadpng/png/20201006/discount-coupon-line-icon-e-commerce-royalty-free-vector.jpg",
-//                rightIconUrl = addOnButton.rightIconUrl,
-//                description = "Kemasan & Kartu Ucapan",
-//                action = 1,
-//                title = "Pelengkap Hadiah (Rp5.000)"
         )
     }
 
@@ -509,8 +493,6 @@ class GetOccCartMapper @Inject constructor() {
         return AddOnBottomSheetModel(
                 headerTitle = addOnBottomSheet.headerTitle,
                 description = addOnBottomSheet.description,
-//                headerTitle = "Atur pelengkap hadiah",
-//                description = "",
                 ticker = mapAddOnTicker(addOnBottomSheet.ticker),
                 products = addOnBottomSheet.products.map { mapAddOnProduct(it) }
         )
@@ -519,7 +501,6 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
         return AddOnTickerModel(
                 text = ticker.text
-//                text = "Untuk kirim sebagai hadiah, pastikan kamu hanya pilih barang bertanda khusus di Keranjang."
         )
     }
 
@@ -527,8 +508,6 @@ class GetOccCartMapper @Inject constructor() {
         return AddOnProductItemModel(
                 productName = product.productName,
                 productImageUrl = product.productImageUrl
-//                productName = "Product 1",
-//                productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
         )
     }
 
@@ -536,8 +515,6 @@ class GetOccCartMapper @Inject constructor() {
         return PopUpData(
                 title = popUp.title,
                 description = popUp.description,
-//                title = "Ada perubahan asal kirim",
-//                description = "Pelengkap dihapus karena lokasi asal kirim yang baru tidak punya pelengkap bingkisan.",
                 button = mapButton(popUp.button)
         )
     }
@@ -545,7 +522,6 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapButton(button: Button): ButtonData {
         return ButtonData(
                 text = button.text
-//                text = "Cek Lagi"
         )
     }
 
@@ -554,9 +530,6 @@ class GetOccCartMapper @Inject constructor() {
                 packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
                 onlyGreetingCard = addOnWording.onlyGreetingCard,
                 invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
-//                packagingAndGreetingCard = "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
-//                onlyGreetingCard = "{{qty}} barang hanya dapat 1 kartu ucapan",
-//                invoiceNotSendToRecipient = "Invoice tidak dikirim ke penerima pesanan"
         )
     }
 }
