@@ -61,8 +61,6 @@
     <li>Demi keamanan transaksi, jangan berikan bukti transfer pada siapapun.</li>
     </ul>]]></string>
 
-
-    <!--<string name="pms_hwp_transfer_3_digit_info">Penting! Transfer dengan jumlah yang tepat hingga 3 digit terakhir.</string>-->
     <string name="pms_hwp_pay_other_store_info">Kamu juga bisa bayar di gerai lainnya dengan biaya layanan yang bervariasi.</string>
     <string name="pms_hwp_view_store_list">Lihat Daftar Gerai</string>
     <string name="pms_hwp_bank_info">%1$s Cabang %2$s</string>
