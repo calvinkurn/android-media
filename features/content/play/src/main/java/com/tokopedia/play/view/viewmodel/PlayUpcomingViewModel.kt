@@ -202,7 +202,8 @@ class PlayUpcomingViewModel @Inject constructor(
         return if (userSession.isLoggedIn) {
             when(partnerInfo.type){
                 PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                else -> repo.getFollowingKOL(partnerInfo.id.toString())
+                PartnerType.Buyer -> repo.getFollowingKOL(partnerInfo.id.toString())
+                else -> false
             }
         } else false
     }
@@ -573,7 +574,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun getKolHeader(partnerId: String){
-        if(userSession.isLoggedIn && latestChannelData.partnerInfo.type !=  PartnerType.Shop){
+        if(userSession.isLoggedIn && latestChannelData.partnerInfo.type ==  PartnerType.Buyer){
             viewModelScope.launch {
                 val kolId = repo.getProfileHeader(partnerId)
                 _observableKolId.value = kolId
