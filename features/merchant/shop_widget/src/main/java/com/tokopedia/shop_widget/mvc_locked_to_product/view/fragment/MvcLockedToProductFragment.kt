@@ -196,6 +196,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun observeMiniCartSimplifiedData() {
         viewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
+            refreshCartCounterData()
             rvProductList?.invalidateItemDecorations()
             adapter.updateProductListDataWithMiniCartData(it)
             if (it.isShowMiniCartWidget) {
@@ -305,6 +306,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
         view?.let { view ->
             if (message.isNotBlank()) {
+                Toaster.toasterCustomBottomHeight = getMiniCartHeight()
                 Toaster.build(
                     view = view,
                     text = message,
@@ -346,7 +348,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun refreshCartCounterData() {
         if (isUserLogin && !MvcLockedToProductUtil.isSellerApp())
-            navigationToolbar?.setBadgeCounter(IconList.ID_CART, getCartCounter())
+            navigationToolbar?.updateNotification()
     }
 
     private fun sendOpenScreenTracker() {
@@ -555,6 +557,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun setupToolbar() {
         navigationToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             if (!MvcLockedToProductUtil.isSellerApp()) {
                 val iconBuilder = IconBuilder()
                 iconBuilder.addIcon(IconList.ID_CART) {}
@@ -714,6 +717,10 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun resetEndlessScrollState() {
         endlessRecyclerViewScrollListener?.resetState()
+    }
+
+    private fun getMiniCartHeight(): Int {
+        return miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toInt()
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
