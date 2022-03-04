@@ -165,8 +165,7 @@ class OfficialHomeAdapterTypeFactory(
                     itemView = view,
                     homeComponentListener = homeComponentListener,
                     featuredBrandListener = featuredBrandListener )
-            //deprecated - exist for remote config
-            DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(view, dcEventHandler)
+            EmptyBlankViewHolder.LAYOUT -> EmptyBlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }  as AbstractViewHolder<Visitable<*>>
     }
