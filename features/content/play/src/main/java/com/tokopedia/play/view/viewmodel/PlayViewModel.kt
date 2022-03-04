@@ -883,6 +883,7 @@ class PlayViewModel @AssistedInject constructor(
         trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
 
         updateTagItems()
+        getKolHeader(channelData.partnerInfo)
         updateChannelStatus()
 
         updateChannelInfo(channelData)
@@ -1569,7 +1570,7 @@ class PlayViewModel @AssistedInject constructor(
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(followedKol = _observableKolId.toString(), followAction = followAction)
+                repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
             }
             _partnerInfo.setValue {
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed

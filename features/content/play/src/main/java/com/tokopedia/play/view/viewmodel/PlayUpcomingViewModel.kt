@@ -363,7 +363,7 @@ class PlayUpcomingViewModel @Inject constructor(
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(followedKol = _observableKolId.toString(), followAction = followAction)
+                repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
             }
         }) {}
 
