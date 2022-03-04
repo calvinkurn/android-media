@@ -35,6 +35,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.SHOP_TYPE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.ADD_TO_CART
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.CLICK_DIGITAL
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.OPEN_SCREEN
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.SELECT_CONTENT
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_DIGITAL_IRIS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_ITEM
@@ -487,7 +488,6 @@ class DigitalPDPTelcoAnalytics {
         categoryId: String,
         categoryName: String,
         operatorName: String,
-        loyaltyStatus: String,
         userId: String,
         cartId: String,
         productId: String,
@@ -497,7 +497,7 @@ class DigitalPDPTelcoAnalytics {
 
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LANJUT_BAYAR)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName} - ${operatorName}")
             putParcelableArrayList(ITEMS, mapperAtcToItemList(
                 categoryId, categoryName, cartId, operatorName, productId, productName, price
             ))
@@ -505,6 +505,41 @@ class DigitalPDPTelcoAnalytics {
 
         eventDataLayer.clickATCGeneralTracker(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, eventDataLayer)
+    }
+
+    fun viewPDPPage(
+        categoryName: String,
+        userId: String
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.VIEW_PDP_PAGE,
+            TrackAppUtils.EVENT_LABEL,  categoryName
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun openScreenPDPPage(
+        categoryName: String,
+        userId: String,
+        isLogin: Boolean
+    ){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, OPEN_SCREEN)
+            putString(
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+            )
+           putString(
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
+            )
+            putString(DigitalPDPEventTracking.Additional.USER_ID, userId)
+            putString(DigitalPDPEventTracking.Additional.SCREEN_NAME, "/digital/${categoryName}")
+            putString(DigitalPDPEventTracking.Additional.IS_LOGGEDIN_STATUS, "$isLogin")
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)
     }
 
 

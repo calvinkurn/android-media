@@ -201,6 +201,17 @@ class DigitalPDPDataPlanFragment :
                 setInputNumber(clientNumber, true)
             }
         }
+
+        digitalPDPTelcoAnalytics.openScreenPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId,
+            userSession.isLoggedIn
+        )
+
+        digitalPDPTelcoAnalytics.viewPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
     }
 
     private fun renderProduct() {
@@ -327,7 +338,6 @@ class DigitalPDPDataPlanFragment :
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
-                        loyaltyStatus,
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
