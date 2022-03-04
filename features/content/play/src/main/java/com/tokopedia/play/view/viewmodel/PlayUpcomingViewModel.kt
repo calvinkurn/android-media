@@ -186,13 +186,22 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                val isFollowing = getFollowingStatus(partnerInfo)
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
             }, onError = {
 
             })
         }
+    }
+
+    private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo) : Boolean {
+        return if (userSession.isLoggedIn) {
+            when(partnerInfo.type){
+                PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                else -> repo.getFollowingKOL(partnerInfo.id.toString())
+            }
+        } else false
     }
 
     private suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
@@ -312,7 +321,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
         val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
         val shopId = _partnerInfo.value.id
-        playAnalytic.clickFollowShop(mChannelId, channelType, shopId.toString(), action.value)
+        if(_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(mChannelId, channelType, shopId.toString(), action.value)
     }
 
     private fun handleClickPartnerName() {
@@ -343,10 +352,14 @@ class PlayUpcomingViewModel @Inject constructor(
         _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
 
         viewModelScope.launchCatchError(block = {
-            repo.postFollowStatus(
-                shopId = shopId.toString(),
-                followAction = followAction,
-            )
+            if(channelData.partnerInfo.type == PartnerType.Shop){
+                repo.postFollowStatus(
+                    shopId = shopId.toString(),
+                    followAction = followAction,
+                )
+            } else {
+                repo.postFollowKol(shopId.toString())
+            }
         }) {}
 
         return followAction

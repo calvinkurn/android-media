@@ -34,6 +34,9 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
         }.executeOnBackground()
     }
 
+    /**
+     * Get KOL encUserId to do post follow / un
+     * */
     override suspend fun getProfileHeader(kolId: String): String = withContext(dispatchers.io){
         val encUserId = getProfileInfoUseCase.apply {
             setRequestParams(createParam(kolId).parameters)

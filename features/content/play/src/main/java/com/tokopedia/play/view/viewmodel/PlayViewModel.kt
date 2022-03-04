@@ -412,6 +412,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private val _observableKolId = MutableLiveData<String>()
+
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
     private val amountStringStepArray = arrayOf("k", "m")
@@ -884,6 +886,8 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+
+        getKolHeader(channelData.partnerInfo.id.toString())
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1185,9 +1189,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = if (userSession.isLoggedIn) {
-                    repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                } else false
+                val isFollowing = getFollowingStatus(partnerInfo)
 
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
@@ -1195,6 +1197,15 @@ class PlayViewModel @AssistedInject constructor(
 
             })
         }
+    }
+
+    private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo) : Boolean {
+        return if (userSession.isLoggedIn) {
+            when(partnerInfo.type){
+                PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                else -> repo.getFollowingKOL(partnerInfo.id.toString())
+            }
+        } else false
     }
 
     private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
@@ -1551,10 +1562,14 @@ class PlayViewModel @AssistedInject constructor(
         _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
-            val isFollowing = repo.postFollowStatus(
+            val isFollowing = if(channelData.partnerInfo.type == PartnerType.Shop){
+                repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
-            )
+                )
+            } else {
+                repo.postFollowKol(shopId.toString())
+            }
             _partnerInfo.setValue {
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
@@ -2011,6 +2026,15 @@ class PlayViewModel @AssistedInject constructor(
             metaTitle = shareInfo.metaTitle,
             metaDescription = shareInfo.metaDescription,
         )
+    }
+
+    private fun getKolHeader(partnerId: String){
+        if(userSession.isLoggedIn && latestCompleteChannelData.partnerInfo.type !=  PartnerType.Shop){
+            viewModelScope.launch {
+                val kolId = repo.getProfileHeader(partnerId)
+                _observableKolId.value = kolId
+            }
+        }
     }
 
     companion object {
