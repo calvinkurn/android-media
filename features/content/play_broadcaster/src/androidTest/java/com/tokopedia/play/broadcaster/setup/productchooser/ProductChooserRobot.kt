@@ -16,12 +16,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
+import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.helper.waitFor
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.every
 import com.tokopedia.unifycomponents.R as unifyR
 import io.mockk.mockk
 import org.hamcrest.Matchers.not
@@ -50,7 +54,9 @@ class ProductChooserRobot(
                 CoroutineDispatchersProvider,
                 mockk(relaxed = true),
                 analyticManager = ProductChooserAnalyticManager(
-                    analytic = mockk(relaxed = true),
+                    analytic = PlayBroSetupProductAnalyticImpl(
+                        userSession = analyticUserSession,
+                    ),
                     CoroutineDispatchersProvider,
                 )
             )
