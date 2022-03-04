@@ -94,6 +94,7 @@ internal class ProductSummaryViewHolder private constructor() {
                 is OriginalPrice -> {
                     binding.tvProductSummaryPrice.text = item.product.price.price
                     binding.labelProductSummaryDiscount.visibility = View.GONE
+                    binding.tvProductSummaryOriginalPrice.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
                     binding.tvProductSummaryPrice.text = item.product.price.discountedPrice
@@ -103,10 +104,12 @@ internal class ProductSummaryViewHolder private constructor() {
                         item.product.price.discountPercent
                     )
                     binding.labelProductSummaryDiscount.visibility = View.VISIBLE
+                    binding.tvProductSummaryOriginalPrice.visibility = View.VISIBLE
                 }
                 else -> {
                     binding.tvProductSummaryPrice.text = ""
                     binding.labelProductSummaryDiscount.visibility = View.GONE
+                    binding.tvProductSummaryOriginalPrice.visibility = View.GONE
                 }
             }
 
