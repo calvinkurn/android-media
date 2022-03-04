@@ -120,16 +120,15 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun renderOtherSection(element: ProductShipmentDataModel) = with(itemView) {
         val rates = element.rates
-        val usedLabel = mutableListOf<String>()
 
         val labels = element.rates.chipsLabel
         if (labels.isEmpty()) {
+            adjustUiSuccess(rates.title, labels, element.isCod)
             renderSubtitleGreen(element.isTokoNow)
             hideLabelAndBo()
             shipmentArrow?.hide()
         } else {
-            renderSubtitleNormal(rates.subtitle)
-
+            val usedLabel = mutableListOf<String>()
             val labelViews = listOf(shipmentLabelInstant, shipmentLabelCod)
             labelViews.forEachIndexed { index, view ->
                 val label = labels.getOrElse(index) { "" }
@@ -138,9 +137,9 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
                     usedLabel += label
                 }
             }
+            adjustUiSuccess(rates.title, usedLabel, element.isCod)
+            renderSubtitleNormal(rates.subtitle)
         }
-
-        adjustUiSuccess(rates.title, usedLabel, element.isCod)
     }
 
     private fun renderSubtitleGreen(isTokoNow: Boolean) = with(itemView) {
